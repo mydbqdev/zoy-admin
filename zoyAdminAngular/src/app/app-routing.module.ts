@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { SignupComponent } from './components/signup/signup.component';
 import { UnderConstructionComponent } from './under-construction/under-construction.component';
 import { HomeComponent } from './components/home/home.component';
+import { UserListComponent } from './user-management/user-list/user-list.component';
 
 const routes: Routes = [
 	{path:'',redirectTo:'/startup',pathMatch:'full'},
@@ -13,6 +14,7 @@ const routes: Routes = [
 	{ path: 'signin', component: SigninComponent },
 	{ path: 'under-construction', component:UnderConstructionComponent},
 	{ path: 'home', component: HomeComponent },
+	{ path: 'user-list', component: UserListComponent },
 ];
 
 @NgModule({

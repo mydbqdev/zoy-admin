@@ -30,7 +30,8 @@ import { SignupComponent } from './components/signup/signup.component';
 import { UnderConstructionComponent } from './under-construction/under-construction.component';
 import { ToastrModule } from 'ngx-toastr';
 import { HomeComponent } from './components/home/home.component';
-
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { UserListComponent } from './user-management/user-list/user-list.component';
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
 ];
@@ -46,7 +47,8 @@ const appRoutes: Routes = [
     SigninComponent,
     SignupComponent,
     UnderConstructionComponent,
-    HomeComponent
+    HomeComponent,
+    UserListComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -62,6 +64,7 @@ const appRoutes: Routes = [
     MainPipe,
     NgxSpinnerModule.forRoot(),
     ToastrModule.forRoot(),
+    NgMultiSelectDropDownModule.forRoot(),
     DragDropModule,
   ],
   providers: [
