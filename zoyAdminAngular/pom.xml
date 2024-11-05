@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.myne</groupId>
-        <artifactId>myne-portal</artifactId>
+        <groupId>com.zoy</groupId>
+        <artifactId>zoyadmin-portal</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>myneangular</artifactId>
+    <artifactId>zoyadminangular</artifactId>
     <version>0.0.1-SNAPSHOT</version>
  <profiles>
    <profile>
@@ -18,7 +18,7 @@
     <build>
         <resources>
             <resource>
-                <directory>./dist/myneangular</directory>
+                <directory>./dist/zoyangular</directory>
                 <targetPath>static</targetPath>
             </resource>
         </resources>
@@ -51,7 +51,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run build -- --base-href /myneportal/</arguments>
+                            <arguments>run build -- --base-href /zoyportal/</arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -79,8 +79,8 @@
           <goal>copy</goal>
         </goals>
         <configuration>
-          <sourceFile>${project.parent.basedir}/myneangular/src/index.myneportal.html</sourceFile>
-          <destinationFile>${project.parent.basedir}/myneangular/dist/myneangular/index.html</destinationFile>
+          <sourceFile>${project.parent.basedir}/zoyangular/src/index.zoyportal.html</sourceFile>
+          <destinationFile>${project.parent.basedir}/zoyangular/dist/zoyangular/index.html</destinationFile>
         </configuration>
       </execution>
     </executions>
@@ -93,7 +93,7 @@
     <build>
         <resources>
             <resource>
-                <directory>./dist/myneangular</directory>
+                <directory>./dist/zoyangular</directory>
                 <targetPath>static</targetPath>
             </resource>
         </resources>
@@ -126,7 +126,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run ng build -- --configuration production -- --base-href /myneportal/</arguments>
+                            <arguments>run ng build -- --configuration production -- --base-href /zoyportal/</arguments>
                         </configuration>
                     </execution>
                 </executions>

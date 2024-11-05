@@ -12,7 +12,7 @@ import { CanonicalService } from './common/shared/CanonicalService';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Myne Portal';
+  title = 'ZOY Admin';
 
   isSignedin = false;
 
