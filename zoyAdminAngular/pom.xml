@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.myne</groupId>
+        <artifactId>myne-portal</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>myneangular</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+ <profiles>
+   <profile>
+     <id>dev</id>
+    <build>
+        <resources>
+            <resource>
+                <directory>./dist/myneangular</directory>
+                <targetPath>static</targetPath>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.7.6</version>
+                <configuration>
+                    <workingDirectory>./</workingDirectory>
+                    <nodeVersion>v18.10.0</nodeVersion>
+                    <npmVersion>9.5.0</npmVersion>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm run build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build -- --base-href /myneportal/</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+			<!--plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>3.8.1</version>
+			<executions>
+			  <execution>
+				<id>default-jar</id>
+				<phase/>
+			  </execution>
+			</executions>
+		</plugin-->
+<!--plugin>
+    <groupId>com.coderplus.maven.plugins</groupId>
+    <artifactId>copy-rename-maven-plugin</artifactId>
+    <version>1.0.1</version>
+    <executions>
+      <execution>
+        <id>rename-file</id>
+        <phase>package</phase>
+        <goals>
+          <goal>copy</goal>
+        </goals>
+        <configuration>
+          <sourceFile>${project.parent.basedir}/myneangular/src/index.myneportal.html</sourceFile>
+          <destinationFile>${project.parent.basedir}/myneangular/dist/myneangular/index.html</destinationFile>
+        </configuration>
+      </execution>
+    </executions>
+  </plugin-->
+        </plugins>
+    </build>
+</profile>
+   <profile>
+     <id>prod</id>
+    <build>
+        <resources>
+            <resource>
+                <directory>./dist/myneangular</directory>
+                <targetPath>static</targetPath>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.7.6</version>
+                <configuration>
+                    <workingDirectory>./</workingDirectory>
+                    <nodeVersion>v18.10.0</nodeVersion>
+                    <npmVersion>9.5.0</npmVersion>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>ng build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run ng build -- --configuration production -- --base-href /myneportal/</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+				
+				
+            </plugin>
+			<!--plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>3.8.1</version>
+			<executions>
+			  <execution>
+				<id>default-jar</id>
+				<phase/>
+			  </execution>
+			</executions>
+		</plugin-->
+        </plugins>
+    </build>
+</profile>
+</profiles>
+</project>

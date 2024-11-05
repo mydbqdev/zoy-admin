@@ -1,0 +1,237 @@
+/* -------------------------------------------- login page ------------------------------------------*/
+
+.loginPage .form-section {
+    position: relative;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 15px;
+    border-radius: 4px;
+    border: rgb(187, 186, 186) 1px solid;
+    box-shadow: #999;
+}
+
+.loginPage .form-section .invalid-feedback {
+    text-align: left;
+}
+
+.loginPage a {
+    text-decoration: none;
+}
+
+.loginPage .form-section .form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-top: 0px;
+    position: absolute;
+    border-radius: 4px;
+    border: none;
+    background-color: #fff;
+    margin-left: -22px;
+}
+
+.loginPage .form-check-input:focus {
+    border-color: snow;
+    outline: 0;
+    box-shadow: none;
+}
+
+.loginPage .form-check-input:checked {
+    background-color: #f5c025 !important;
+}
+
+.loginPage .form-section p {
+    margin-bottom: 0;
+    font-size: 16px;
+}
+
+.loginPage .form-section h3 {
+    margin: 0 0 5px;
+    font-size: 22px;
+    font-weight: 400;
+    text-align: left;
+}
+.loginPage .form-section h6 {
+    margin: 0 0 15px;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: left;
+    color: rgb(165, 164, 164);
+}
+
+.loginPage .form-section .form-group {
+    margin-bottom: 20px;
+}
+
+.loginPage .form-section .form-control {
+    padding: 7px 10px;
+    font-size: 16px;
+    outline: none;
+    height: 40px;
+    color: #535353;
+    border-radius: 5px;
+    font-weight: 400;
+    border: 1px solid #dfdddd;
+    background: #fff;
+}
+
+.loginPage .form-section .form-check {
+    margin-bottom: 0;
+}
+
+.loginPage .form-section .form-check-label {
+    padding-left: 5px;
+    font-size: 16px;
+}
+
+.loginPage .form-section a.forgot-password {
+    font-size: 14px;
+    color: #000000;
+}
+.loginPage .form-inner {
+    max-width: 400px;
+    width: 100%;
+}
+.login-section .password-indicator {
+    position: absolute;
+    right: 15px;
+    top: 17px;
+    cursor: pointer;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s linear 300ms, opacity 500ms;
+    font-size: 17px;
+    color: #999;
+}
+
+.login-section .password-wrapper:hover .password-indicator{
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s linear 0s, opacity 500ms;
+    font-size: 17px;
+    color: #555;
+}
+
+.logo img {
+    margin-top: 20px;
+    margin-bottom: 1px;
+    height: 60px;
+}
+
+.loginPage .lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    z-index: -1;
+}
+
+.loginPage .line {
+    position: absolute;
+    width: 5px;
+    height: 100%;
+    top: 0;
+    left: 50%;
+    background: rgb(255 255 255 / 3%);
+    overflow: hidden;
+}
+
+.loginPage .line::after {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 15vh;
+    width: 100%;
+    top: -50%;
+    left: 0;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #ffffff 75%, #ffffff 100%);
+    animation: drop 7s 0s infinite;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.4, 0.26, 0, 0.97);
+    z-index: -888;
+}
+
+.loginPage .line:nth-child(1) {
+    margin-left: -40%;
+}
+
+.loginPage .line:nth-child(1)::after {
+    animation-delay: 1s;
+}
+
+.loginPage .line:nth-child(3) {
+    margin-left: 40%;
+}
+
+.loginPage .line:nth-child(3)::after {
+    animation-delay: 2s;
+}
+
+.loginPage .line:nth-child(4) {
+    margin-left: -20%;
+}
+
+.loginPage .line:nth-child(4)::after {
+    animation-delay: 3s;
+}
+
+.loginPage .line:nth-child(5) {
+    margin-left: 20%;
+}
+
+.loginPage .line:nth-child(5)::after {
+    animation-delay: 4s;
+}
+
+@keyframes drop {
+    0% {top: -50%; }
+    100% {top: 110%; }
+}
+
+@keyframes loginbg {
+    0% {background-position: 0% 50%;}
+    100% {background-position: 100% 50%; }
+}
+
+.loginPage .info{
+    max-width: 650px;
+}
+
+.loginPage .info h1 {
+    font-size: 34px;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    z-index: 9;
+    position: relative;
+}
+
+.loginPage .info p {
+    margin-bottom: 0;
+    color: #fff;
+    opacity: 1;
+    line-height: 28px;
+    font-size: 16px;
+    z-index: 9;
+    position: relative;
+}
+
+@media (max-width: 992px)
+{
+    .loginPage .none-992 {
+        display: none !important;
+    }
+}
+
+hr {
+    margin: 1rem 0;
+    color: inherit;
+    border: 0;
+    border-top: var(--bs-border-width) solid;
+    opacity: 0.8 !important;
+}
+
+/* ----------------------------------- End login page ---------------------------------------------  */

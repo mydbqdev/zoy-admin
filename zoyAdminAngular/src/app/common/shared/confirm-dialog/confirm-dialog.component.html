@@ -1,0 +1,28 @@
+    
+    <div *ngIf="message" class="modal" tabindex="-1" role="dialog" style="display:block!important;z-index: 1050!important;">  
+        <div class="modal-dialog custom-alert" role="document">  
+            <div class="modal-content bg">  
+      
+                <div *ngIf="message" class="modal-body">  
+                    <div class="row">  
+                        <div class="col-md-12">  
+                            <p class="text-center confirm-message">{{message}}</p>  
+                        </div>  
+                    </div>  
+                    <div class="row">  
+                        <div class="col-md-12">  
+                            <p class="confirm-button">  
+                                <a (click)="accept()">  
+                                    <button class="btn btn-yes btn-primary">Yes</button>  
+                                </a> &nbsp;  
+                                <a (click)="decline()">  
+                                    <button class="btn btn-no btn-danger">No</button>  
+                                </a>  
+                            </p>  
+                        </div>  
+                    </div>  
+                </div>  
+            </div>  
+        </div>  
+    </div> 
+    
