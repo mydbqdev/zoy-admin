@@ -1,88 +1,64 @@
 <ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
 	<p style="color: white;">Loading ...</p>
 </ngx-spinner>
-<div class="m-3">
-	<!-- Outer Row -->
-	<div class="row">
-		<div class="col-sm-6">
-		 	<div>
-				<a href="index.html">
-					<img  style="height: 60px;" alt="logo">
-				</a>
-			 </div>
-			 <div class="d-flex justify-content-center">
-				 <div></div>
-				<div style="width: 370px;">
-				<h3>Get started now! </h3>
-				<div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf='error'>
-					<strong>{{error}}</strong> 
-					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-				</div>
-				<form  name='signupForm' (ngSubmit)="doSignup()">
-					<div class="form-group position-relative clearfix" style="margin-bottom: 0.5rem !important;">
-						<div class="row">
-							<div class="col-sm-5">
-							<label for="exampleInputFirst1" class="form-label">First name</label>
-							<input type="text" class="form-control form-control-sm" id="exampleInputFirst1" name="firstname" [(ngModel)]="firstname"  placeholder="First name" required>
-							<div *ngIf="submitted && firstname==''" class="text-danger">
-								Please enter your first name
-							</div>
-							</div>
-							<div class="col-sm-2"></div>
-							<div class="col-sm-5">
-								<label for="exampleInputLast1" class="form-label">Last name</label>
-								<input type="text" class="form-control form-control-sm" id="exampleInputLast1" name="lastname" [(ngModel)]="lastname"  placeholder="Last name"  required>
-								<div *ngIf="submitted && lastname==''" class="text-danger">
-									Please enter your last name
-								</div>
-								</div>
-						  </div>
-					</div>
-					<div class="form-group position-relative clearfix" style="margin-bottom: 0.5rem !important;">
-						<div>
-							<label for="exampleInputEmail1" class="form-label">Email</label>
-							<input type="email" class="form-control form-control-sm" id="exampleInputEmail1" [(ngModel)]="email" name="email" (ngModelChange)=" email = $event.toLowerCase()"  placeholder="Email" aria-describedby="emailHelp" required>
-							<div *ngIf="submitted && email==''" class="text-danger">
-								Please enter your email
-						    </div>
-						  </div>
-					</div>
-					<div class="form-group clearfix position-relative" style="margin-bottom: 0.5rem !important;">
-						<div>
-							<label for="exampleInputPassword1" class="form-label">Password</label>
-							<input type="password" class="form-control form-control-sm" name="password" id="exampleInputPassword1" [(ngModel)]="password" placeholder="Password" required>
-							<div *ngIf="submitted && password==''" class="text-danger">
-								Please enter the password
-						    </div>
-						  </div>
-					</div>
-					<div class="form-group clearfix position-relative" style="margin-bottom: 0.5rem !important;">
-						<div>
-							<label for="exampleInputZipcode1" class="form-label">Zipcode</label>
-							<input type="text" class="form-control form-control-sm" id="exampleInputZipcode1" [(ngModel)]="zipcode" name="zipcode" placeholder="Zipcode" maxlength="10" required>
-							<div *ngIf="submitted && zipcode==''" class="text-danger">
-								Please enter the zipcode
-						    </div>
-						  </div>
-					</div>
-                    <div class="clearfix m-1" style="text-align: center;font-size: 12px;">
-						By signing up, you agree to our <a  routerLink="/signup" class="forgot-password ml-2"><span style="opacity: 0.5;">Terms of Service</span></a> and <a  routerLink="/signup" class="forgot-password ml-2"><span style="opacity: 0.5;">Privacy Policy</span></a>
-					</div>
-					<div style="margin-top: 0px;">
-						<button type="submit" class="btn-sm btn-primary btn-lg btn-block border" style="background-color: #05838B;">Sign up</button>
-					</div>
-					
-					
-					<div class="clearfix" style="margin-top: 10px;text-align: center;">
-						Already have an account ?<a  routerLink="/signin" class="forgot-password ml-2"><span style="opacity: 0.5;">Log in</span></a>
-					</div>
-				</form>
-				</div>
-				<div></div>
-			</div>
-		</div>
-		<div class="col-sm-6">
-					
-		</div>
-	</div>
+<div class="bg-gradient-dark">
+    <div class="container h-100 p-4">
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-block bg-register-image">
+                        <div style="margin-top: 50%;text-align: center;">
+                            <img src="img/logo.png">
+                            <br/>
+                            <h1>ZOY Admin</h1>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                            </div>
+                            <form class="user">
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="text" class="form-control form-control-user" id="exampleFirstName"
+                                            placeholder="First Name">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-user" id="exampleLastName"
+                                            placeholder="Last Name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" class="form-control form-control-user" id="exampleInputEmail"
+                                        placeholder="Email Address">
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="password" class="form-control form-control-user"
+                                            id="exampleInputPassword" placeholder="Password">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="password" class="form-control form-control-user"
+                                            id="exampleRepeatPassword" placeholder="Repeat Password">
+                                    </div>
+                                </div>
+                                <a href="login.html" class="btn btn-primary btn-user btn-block">
+                                    Register Account
+                                </a>
+                            </form>
+                            <hr>
+                            <div class="text-center">
+                                <a class="small" href="forgot-password.html">Forgot Password?</a>
+                            </div>
+                            <div class="text-center">
+								Already have an account? <a class="small" href="login.html"> Login!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
