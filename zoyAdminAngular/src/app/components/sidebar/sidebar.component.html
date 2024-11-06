@@ -3,9 +3,9 @@
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
       <div class="sidebar-brand-icon">
-          <img src="img/logo.png" />
+          <img src="assets/images/ZOY-logo.svg" style="height: 60px;width: auto;" />
       </div>
-      <div class="sidebar-brand-text mx-3">ZOY</div>
+      <div class="sidebar-brand-text mx-3">Admin</div>
   </a>
   <!-- Divider -->
   <hr class="sidebar-divider my-0">
@@ -46,6 +46,23 @@
           </div>
       </div>
   </li>
+  <!-- Nav Item - Reports Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse" data-target="#collapseReports"
+        aria-expanded="true" aria-controls="collapseReports">
+        <i class="fas fa-fw fa-wrench"></i>
+        <span>Reports</span>
+    </a>
+    <div id="collapseReports" class="collapse" aria-labelledby="headingReports"
+        data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item active" routerLink="/report-list">Report 1</a>
+            <a class="collapse-item" routerLink="/home">Report 2</a>
+            <a class="collapse-item" routerLink="/home">Report 3</a>
+            <a class="collapse-item" routerLink="/home">Report 4</a>
+        </div>
+    </div>
+   </li>
    <li class="nav-item">
      <a class="nav-link" routerLink="/user-list" >
          <i class="fas fa-fw fa-folder"></i>

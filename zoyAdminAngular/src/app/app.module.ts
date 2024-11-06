@@ -34,6 +34,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { UserListComponent } from './user-management/user-list/user-list.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HeaderComponent } from './components/header/header.component';
+import { ReportListComponent } from './reports/report-list/report-list.component';
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
 ];
@@ -52,7 +53,8 @@ const appRoutes: Routes = [
     HomeComponent,
     UserListComponent,
     SidebarComponent,
-    HeaderComponent
+    HeaderComponent,
+    ReportListComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,

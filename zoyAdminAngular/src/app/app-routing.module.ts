@@ -6,6 +6,7 @@ import { SignupComponent } from './components/signup/signup.component';
 import { UnderConstructionComponent } from './under-construction/under-construction.component';
 import { HomeComponent } from './components/home/home.component';
 import { UserListComponent } from './user-management/user-list/user-list.component';
+import { ReportListComponent } from './reports/report-list/report-list.component';
 
 const routes: Routes = [
 	{path:'',redirectTo:'/startup',pathMatch:'full'},
@@ -15,6 +16,7 @@ const routes: Routes = [
 	{ path: 'under-construction', component:UnderConstructionComponent},
 	{ path: 'home', component: HomeComponent },
 	{ path: 'user-list', component: UserListComponent },
+	{ path: 'report-list', component: ReportListComponent },
 ];
 
 @NgModule({
