@@ -51,5 +51,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		//this.sidemenuComp.expandMenu(1);
 		//this.sidemenuComp.activeMenu(1, '');
 	}
+
+	test(){
+		this.notifyService.showNotification("Success","");
+	}
 	
 }

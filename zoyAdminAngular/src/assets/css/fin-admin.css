@@ -2349,6 +2349,44 @@ fieldset:disabled a.btn {
   pointer-events: none;
 }
 
+.btn-primary-custom {
+  color: #fff;
+  background-color: #925FE2;
+  border-color: #955cf1;
+}
+
+.btn-primary-custom:hover {
+  color: #fff;
+  background-color:#9960f5;
+  border-color: #8e4ef5;
+}
+
+.btn-primary-custom:focus, .btn-primary-custom.focus {
+  color: #fff;
+  background-color:#9960f5;
+  border-color: #8e4ef5;
+  box-shadow: 0 0 0 0.2rem rgba(105, 136, 228, 0.5);
+}
+
+.btn-primary-custom.disabled, .btn-primary-custom:disabled {
+  color: #fff;
+  background-color: #925FE2;
+  border-color: #ac81f1;
+}
+
+.btn-primary-custom:not(:disabled):not(.disabled):active, .btn-primary-custom:not(:disabled):not(.disabled).active,
+.show > .btn-primary-custom.dropdown-toggle {
+  color: #fff;
+  background-color: #925FE2;
+  border-color: #965ef1;
+}
+
+.btn-primary-custom:not(:disabled):not(.disabled):active:focus, .btn-primary-custom:not(:disabled):not(.disabled).active:focus,
+.show > .btn-primary-custom.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(115, 46, 228, 0.5);
+}
+
+
 .btn-primary {
   color: #fff;
   background-color: #4e73df;
@@ -10855,8 +10893,8 @@ a:focus {
 }
 
 .bg-login-image {
-  /*background : url("https://source.unsplash.com/K4mSJ7kc0As/600x800");*/
-  background-color: rgb(230, 241, 248);
+  background : url("/assets/images/login-bg-right-side.png");
+  background-color: #925FE2;
   background-position: center;
   background-size: cover;
 }
