@@ -73,12 +73,28 @@
                                         <h1 class="h4 text-gray-900 mt-4">Login</h1>
                                         <div class="small mb-4">Enter your account details</div>
                                     </div>
-                                    <form class="user">
+                                    <form class="user" (ngSubmit)="doSignin()">
                                         <div class="form-group">
-                                            <input type="email" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                                            <input type="email" class="form-control "
+                                            id="exampleInputEmail" aria-describedby="emailHelp" [(ngModel)]="username" (ngModelChange)="username = $event.toLowerCase()"
+                                            placeholder="Enter Email Address...">
+                                            <div *ngIf="submitted && username==''" class="text-danger">
+                                                Please enter your email
+                                            </div>
+
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" class="form-control" id="exampleInputPassword" placeholder="Password">
+                                            <div class="input-group">
+                                            <input  type="{{ isPasswordVisible ? 'text' : 'password' }}" class="form-control"
+                                                id="exampleInputPassword" placeholder="Password" [(ngModel)]="password"  >
+                                                <span class="input-group-text" (click)="togglePasswordVisibility()" style="cursor: pointer;">
+                                                    <i class="fas" [ngClass]="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                                  </span>
+                                            </div>
+                                                <div *ngIf="submitted && password==''" class="text-danger">
+                                                    Please enter the password
+                                                </div>
+
                                         </div>
                                         <div class="text-right alert-light">
                                             <a class="small alert-link" style="font-weight: 400;" href="#">Forgot Password?</a>

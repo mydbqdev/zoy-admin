@@ -29,23 +29,89 @@
           </div>
       </div>
   </li>
-  <!-- Nav Item - Utilities Collapse Menu -->
-  <li class="nav-item">
-      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-          aria-expanded="true" aria-controls="collapseUtilities">
-          <i class="fas fa-fw fa-wrench"></i>
-          <span>Utilities</span>
-      </a>
-      <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-          data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="#">Colors</a>
-              <a class="collapse-item" href="#">Borders</a>
-              <a class="collapse-item" href="#">Animations</a>
-              <a class="collapse-item" href="#">Other</a>
-          </div>
-      </div>
-  </li>
+
+    <!-- Nav Item - Owner Management Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOwnerManagement"
+            aria-expanded="false" aria-controls="collapseOwnerManagement">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Owner Management</span>
+        </a>
+        <div id="collapseOwnerManagement" class="collapse" aria-labelledby="headingOwnerManagement" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" routerLink="/onboarding-registration">Onboarding and Registration</a>
+                <a class="collapse-item" routerLink="/ekyc-verification">Owner eKYC Verification</a>
+                <a class="collapse-item" routerLink="/managing-owners">Managing Owners</a>
+            </div>
+        </div>
+    </li>
+
+
+
+    <!-- Nav Item - User Management Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUserManagement"
+            aria-expanded="false" aria-controls="collapseUserManagement">
+            <i class="fas fa-fw fa-users-cog"></i>
+            <span>User Management</span>
+        </a>
+        <div id="collapseUserManagement" class="collapse" aria-labelledby="headingUserManagement" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" routerLink="/managing-users">Managing Users</a>
+                <a class="collapse-item" routerLink="/user-master">User Roles</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Financial Management Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFinancialManagement"
+            aria-expanded="false" aria-controls="collapseFinancialManagement">
+            <i class="fas fa-fw fa-dollar-sign"></i>
+            <span>Financial Management</span>
+        </a>
+        <div id="collapseFinancialManagement" class="collapse" aria-labelledby="headingFinancialManagement" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" routerLink="/incoming-payments">Incoming Payments</a>
+                <a class="collapse-item" routerLink="/outgoing-payments">Outgoing Payments</a>
+            </div>
+        </div>
+    </li>
+
+
+    <!-- Nav Item - Configuration Settings Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseConfigSettings"
+            aria-expanded="false" aria-controls="collapseConfigSettings">
+            <i class="fas fa-fw fa-cogs"></i>
+            <span>Configuration Settings</span>
+        </a>
+        <div id="collapseConfigSettings" class="collapse" aria-labelledby="headingConfigSettings" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" routerLink="/role-master">Create Roles</a>
+                <a class="collapse-item" routerLink="/cancellation-refund-rules">Cancellation and Refund Rules</a>
+                <a class="collapse-item" routerLink="/percentage-charge-configurations">Percentage and Charge Configurations</a>
+                <a class="collapse-item" routerLink="/promotion-offers-management">Promotion & Offers Management</a>
+            </div>
+        </div>
+    </li>
+
+
+    <!-- Nav Item - Support Management Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSupportManagement"
+            aria-expanded="false" aria-controls="collapseSupportManagement">
+            <i class="fas fa-fw fa-headset"></i>
+            <span>Support Management</span>
+        </a>
+        <div id="collapseSupportManagement" class="collapse" aria-labelledby="headingSupportManagement" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" routerLink="/handling-enquiries">Handling Enquiries</a>
+                <a class="collapse-item" routerLink="/owner-user-support">Owner and User Support</a>
+            </div>
+        </div>
+    </li>
+
   <!-- Nav Item - Reports Collapse Menu -->
   <li class="nav-item">
     <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse" data-target="#collapseReports"
@@ -93,4 +159,6 @@
       <button class="rounded-circle border-0" id="sidebarToggle"></button>
   </div>
 </ul>
+
+
 <!-- End of Sidebar -->

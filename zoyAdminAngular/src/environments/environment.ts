@@ -7,6 +7,22 @@ export const environment = {
   basePath:'http://localhost:8087/zoy-admin/v1/',
   version:'1.0.0-04-05-2020-11:41:00',
   oDataBlockSize:100,
+  defMenuEnable:{
+    "ownerManagement":true,
+    "ownerManagementSubMenu":{
+      "ownerOnboardingAndRegistration":true,
+      "ownerEKYCVerification":true,
+      "managingOwners":true
+    },
+    "userManagement":true,
+    "financialManagement":true,
+    "configurationSettings":true,
+    "configurationSettingsSubMenu":{
+      "cancellationAndRefundRules":true,
+      "percentageAndChargeConfigurations":true,
+      "promotionAndOffersManagement":true
+    }
+  }
 };
 
 /*

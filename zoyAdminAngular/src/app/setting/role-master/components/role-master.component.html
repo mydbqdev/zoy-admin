@@ -1,0 +1,322 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+   <p style="color: white;">Loading ...</p>
+ </ngx-spinner>
+ <!-- Content Wrapper. Contains page content -->
+ <div id="page-top">
+   <!-- Page Wrapper -->
+   <div id="wrapper">
+     <!-- Sidebar -->
+     <app-sidebar></app-sidebar>
+     <!-- End of Sidebar -->
+ 
+     <!-- Content Wrapper -->
+     <div id="content-wrapper" class="d-flex flex-column">
+         <!-- Main Content -->
+         <div id="content">
+             <!-- Topbar -->
+             <app-header></app-header>
+             <!-- End of Topbar -->
+ 
+             <!-- Begin Page Content -->
+             <div class="container-fluid">
+ 
+                 <!-- Page Heading -->
+                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                     <h1 class="h3 mb-0 text-gray-800">Role Master</h1>
+                     <a href="javascript:void(0)" data-bs-toggle="modal"  data-bs-target="#createRole" (click)="clearArrays(); myForm.reset();" aria-controls="createRole" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" ><i
+                        class="fas fa-fw fa-user-shield fa-sm text-white-50"></i> New Role</a>
+                 </div>
+ 
+                 <!-- Content Row -->
+ 
+                 <div class="row">
+ 
+                     <!-- Area Chart -->
+                     <div class="col-xl-12 col-lg-12">
+                         <div class="card shadow mb-4">
+                             <!-- Card Header - Dropdown -->
+                             
+                             <!-- Card Body -->
+                             <div class="card-body">
+                            
+                                 <div class="chart-area">
+                                    <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"  matSortActive="name" matSortDirection="asc" matSortDisableClear  multiTemplateDataRows>                   
+                                      
+                                        <ng-container matColumnDef="role">
+                                          <mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;">User Name </mat-header-cell>
+                                          <mat-cell data-label="roleName"  *matCellDef="let element"> 
+                                            {{element.roleName}}
+                                          </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="description">
+                                            <mat-header-cell style="font-weight: 600;" *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+                                            <mat-cell data-label="description"  *matCellDef="let element;"  >
+                                              {{element.description}}
+                                             </mat-cell>
+                                        </ng-container>
+                      
+                                          <ng-container matColumnDef="action">
+                                            <mat-header-cell style="font-weight: 600;max-width: 80px;" *matHeaderCellDef></mat-header-cell>
+                                            <mat-cell class="example-box" style="max-width: 80px;" data-label="action" *matCellDef="let element"  >
+                                            
+                                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                    aria-labelledby="dropdownMenuLink">
+                                                    <a class="dropdown-item" data-bs-toggle="modal"  data-bs-target="#updateModal" (click)="getEditData(element.id)">Edit</a>
+                                                    <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal"  data-bs-target="#removeModalCenter" (click)="deleteRecord(element.id)" >Delete</a>
+                                                </div>
+                                            </mat-cell>
+                                            
+                                          </ng-container> 
+                                       
+                                    
+                                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let element; columns: displayedColumns;"></mat-row>
+                                      </mat-table>  
+                                      <div style="text-align: center;border-bottom: 1px solid #bfbbbb;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>
+                                  
+                                </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <!-- /.container-fluid -->
+ 
+         </div>
+         <!-- End of Main Content -->
+ 
+     </div>
+     <!-- End of Content Wrapper -->
+ 
+ </div>
+ <!-- End of Page Wrapper -->
+ </div>
+ 
+
+
+<!-- /.Create Role -->
+  <div class="modal fade" id="createRole" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalLabelCreate" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabelCreate">Create Role</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" #closeNewModal>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form  (submit)="saveRoleModel()" [formGroup]="form" #myForm>
+                <div class="form-group">
+                    <label for="roleName" class="col-form-label">Role Name<i class="fa fa-asterisk"></i></label>
+                    <input type="hidden" name="id"  [(ngModel)]="id" />
+                    <input type="text" [ngClass]="{'is-invalid':submitted && form.controls.roleName.errors}" class="form-control" formControlName="roleName" id="roleName" name="roleName"  [(ngModel)]="role"  onkeyup="this.value=this.value.toUpperCase();" value="" autocomplete="off" required/>
+                    <div *ngIf="submitted && form.controls.roleName.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.roleName.errors.required">
+                          Role is required
+                        </div>
+                        </div>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="col-form-label">Description<i class="fa fa-asterisk"></i></label>
+                    <input type="text" [ngClass]="{'is-invalid':submitted && form.controls.description.errors}"  class="form-control" formControlName="description" id="description" name="description"  [(ngModel)]="description"   autocomplete="off" />
+                    <div *ngIf="submitted && form.controls.description.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.description.errors.required">
+                            Description is required
+                        </div>
+                        </div>
+                </div>
+                
+                <div class="accordion" id="accordionRole">
+                    <div class="row">
+                         <div class="col-sm-8" style="font-weight:500;font-size:14px;">Authorization</div>
+                         <div class="col-sm-2" style="font-weight:500;font-size:14px;">Read</div>
+                         <div class="col-sm-2" style="font-weight:500;font-size:14px;">Write</div>
+                 </div>
+                 <div>    
+
+                  <div  class="row">									         
+                     <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                     <span  class="collapsed" data-toggle="collapse" data-target="#collapseOWNERMANAGEMENTC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                     <span class="title"> Owner Management</span>
+                     </div>
+                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerManagementcreadAll"  (click)="onChangeCheckAll($event,'read','ownerManagementc')"/></div>
+                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerManagementcwriteAll" (click)="onChangeCheckAll($event,'write','ownerManagementc')" /></div>								                
+                    </div>
+                   <div  id="collapseOWNERMANAGEMENTC" class="collapse" data-parent="#accordionRole" #ownerManagementctab>
+                     <div class="row" >
+                        <div class="col-sm-8 pl-5">Owner Onboarding And Registration</div>
+                        <div class="col-sm-2"><input type="checkbox" name="ownerManagementcread"    value="OWNER_ONBOARDING_AND_REGISTRATION_READ" id="ownerManagementcReadOOR"  (click)="onChangeCheck($event,'read','ownerManagementc','OOR')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="ownerManagementcwrite"   value="OWNER_ONBOARDING_AND_REGISTRATION_WRITE"  id="ownerManagementcWriteOOR" (click)="onChangeCheck($event,'write','ownerManagementc','OOR')"/></div>
+                     </div>         
+                     <div class="row" >
+                        <div class="col-sm-8 pl-5">Owner eKYC Verification</div>
+                        <div class="col-sm-2"><input type="checkbox" name="ownerManagementcread"    value="OWNER_EKYC_VERIFICATION_READ" id="ownerManagementcReadOEV"  (click)="onChangeCheck($event,'read','ownerManagementc','OEV')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="ownerManagementcwrite"   value="OWNER_EKYC_VERIFICATION_WRITE"  id="ownerManagementcWriteOEV" (click)="onChangeCheck($event,'write','ownerManagementc','OEV')"/></div>
+                     </div>
+                     <div class="row" >
+                        <div class="col-sm-8 pl-5">Managing Owners</div>
+                        <div class="col-sm-2"><input type="checkbox" name="ownerManagementcread"    value="MANAGING_OWNERS_READ" id="ownerManagementcReadMO"  (click)="onChangeCheck($event,'read','ownerManagementc','MO')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="ownerManagementcwrite"   value="MANAGING_OWNERS_WRITE"  id="ownerManagementcWriteMO" (click)="onChangeCheck($event,'write','ownerManagementc','MO')"/></div>
+                     </div>
+                  </div>
+
+                  <div  class="row">									         
+                     <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                     <span  class="collapsed" data-toggle="collapse" data-target="#collapseCONFIGURATIONSETTINGSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                     <span class="title"> Configuration Settings</span>
+                     </div>
+                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="configurationSettingscreadAll"  (click)="onChangeCheckAll($event,'read','configurationSettingsc')"/></div>
+                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="configurationSettingscwriteAll" (click)="onChangeCheckAll($event,'write','configurationSettingsc')" /></div>								                
+                    </div>
+                   <div  id="collapseCONFIGURATIONSETTINGSC" class="collapse" data-parent="#accordionRole" #configurationSettingsctab>
+                     <div class="row" >
+                        <div class="col-sm-8 pl-5">Cancellation And Refund Rules</div>
+                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscread"    value="CANCELLATION_AND_REFUND_RULES_READ" id="configurationSettingscReadCRR"  (click)="onChangeCheck($event,'read','configurationSettingsc','CRR')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscwrite"   value="CANCELLATION_AND_REFUND_RULES_WRITE"  id="configurationSettingscWriteCRR" (click)="onChangeCheck($event,'write','configurationSettingsc','CRR')"/></div>
+                     </div>         
+                     <div class="row" >
+                        <div class="col-sm-8 pl-5">Percentage And Charge Configurations</div>
+                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="configurationSettingscReadPCC"  (click)="onChangeCheck($event,'read','configurationSettingsc','PCC')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscwrite"   value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_WRITE"  id="configurationSettingscReadPCC" (click)="onChangeCheck($event,'write','configurationSettingsc','PCC')"/></div>
+                     </div>
+                  </div> 
+                  
+                     
+                  
+              
+            </div>
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-primary" value="Save"  />
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- /.Update Role -->
+<div class="modal fade" id="updateModal"  data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Update Role</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" #editNewModal>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"> 
+                <form  (submit)="saveEditedData()" >
+                <div class="form-group">
+                    <label for="roleName" class="col-form-label">Role Name:</label>
+                    <input type="hidden" name="id" value={{editRoles.id}}  id="roleId" /><input type="text" class="form-control" id="roleName" value={{editRoles.roleName}}  name="roleName"  onkeypress="$event.value=$event.value.toUpperCase();" value="" autocomplete="off" readonly="readonly"/>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="col-form-label">Description<i class="fa fa-asterisk"></i></label>
+                    <input type="text" class="form-control" id="description" name="description" [ngClass]="{'is-invalid':submitted &&  (editRoles.description=='' || editRoles.description==' ')}" value={{editRoles.description}}  [(ngModel)]="editRoles.description" autocomplete="off" />
+                
+                    <div *ngIf="submitted &&( editRoles.description=='' || editRoles.description==' ')" class="text-danger">
+                     <div *ngIf="submitted && editRoles.description==''">
+                         Description is required
+                     </div>
+                     </div>
+                
+                  </div>
+                <div class="accordion" id="accordionRoleE">
+                    <div class="row">
+                         <div class="col-sm-8" style="font-weight:500;font-size:14px;">Authorization</div>
+                         <div class="col-sm-2" style="font-weight:500;font-size:14px;">Read</div>
+                         <div class="col-sm-2" style="font-weight:500;font-size:14px;">Write</div>
+                    </div>
+             <div>    
+
+               <div  class="row">									         
+                  <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                  <span  class="collapsed" data-toggle="collapse" data-target="#collapseOWNERMANAGEMENTE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                  <span class="title"> Owner Management</span>
+                  </div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerManagementereadAll"  (click)="onChangeCheckAll($event,'read','ownerManagemente')"/></div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerManagementewriteAll" (click)="onChangeCheckAll($event,'write','ownerManagemente')" /></div>								                
+                 </div>
+                <div  id="collapseOWNERMANAGEMENTE" class="collapse" data-parent="#accordionRole" #ownerManagementetab>
+                  <div class="row" >
+                     <div class="col-sm-8 pl-5">Owner Onboarding And Registration</div>
+                     <div class="col-sm-2"><input type="checkbox" name="ownerManagementeread"    value="OWNER_ONBOARDING_AND_REGISTRATION_READ" id="ownerManagementcReadOOR"  (click)="onChangeCheck($event,'read','ownerManagemente','OOR')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="ownerManagementewrite"   value="OWNER_ONBOARDING_AND_REGISTRATION_WRITE"  id="ownerManagementcWriteOOR" (click)="onChangeCheck($event,'write','ownerManagemente','OOR')"/></div>
+                  </div>         
+                  <div class="row" >
+                     <div class="col-sm-8 pl-5">Owner eKYC Verification</div>
+                     <div class="col-sm-2"><input type="checkbox" name="ownerManagementeread"    value="OWNER_EKYC_VERIFICATION_READ" id="ownerManagementeReadOEV"  (click)="onChangeCheck($event,'read','ownerManagemente','OEV')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="ownerManagementewrite"   value="OWNER_EKYC_VERIFICATION_WRITE"  id="ownerManagementeWriteOEV" (click)="onChangeCheck($event,'write','ownerManagemente','OEV')"/></div>
+                  </div>
+                  <div class="row" >
+                     <div class="col-sm-8 pl-5">Managing Owners</div>
+                     <div class="col-sm-2"><input type="checkbox" name="ownerManagementeread"    value="MANAGING_OWNERS_READ" id="ownerManagementeReadMO"  (click)="onChangeCheck($event,'read','ownerManagemente','MO')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="ownerManagementewrite"   value="MANAGING_OWNERS_WRITE"  id="ownerManagementcWriteMO" (click)="onChangeCheck($event,'write','ownerManagemente','MO')"/></div>
+                  </div>
+               </div>
+
+               <div  class="row">									         
+                  <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                  <span  class="collapsed" data-toggle="collapse" data-target="#collapseCONFIGURATIONSETTINGSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                  <span class="title"> Configuration Settings</span>
+                  </div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="configurationSettingsereadAll"  (click)="onChangeCheckAll($event,'read','configurationSettingse')"/></div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="configurationSettingsewriteAll" (click)="onChangeCheckAll($event,'write','configurationSettingse')" /></div>								                
+                 </div>
+                <div  id="collapseCONFIGURATIONSETTINGSE" class="collapse" data-parent="#accordionRole" #configurationSettingsetab>
+                  <div class="row" >
+                     <div class="col-sm-8 pl-5">Cancellation And Refund Rules</div>
+                     <div class="col-sm-2"><input type="checkbox" name="configurationSettingseread"    value="CANCELLATION_AND_REFUND_RULES_READ" id="configurationSettingseReadCRR"  (click)="onChangeCheck($event,'read','configurationSettingse','CRR')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="configurationSettingsewrite"   value="CANCELLATION_AND_REFUND_RULES_WRITE"  id="configurationSettingseWriteCRR" (click)="onChangeCheck($event,'write','configurationSettingse','CRR')"/></div>
+                  </div>         
+                  <div class="row" >
+                     <div class="col-sm-8 pl-5">Percentage And Charge Configurations</div>
+                     <div class="col-sm-2"><input type="checkbox" name="configurationSettingseread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="configurationSettingseReadPCC"  (click)="onChangeCheck($event,'read','configurationSettingse','PCC')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="configurationSettingsewrite"   value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_WRITE"  id="configurationSettingseReadPCC" (click)="onChangeCheck($event,'write','configurationSettingse','PCC')"/></div>
+                  </div>
+               </div>           
+         </div>
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+               <input type="submit" class="btn btn-primary" value="Save" />
+              </div>   
+             </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+     <!-- #Modal for removing users -->
+     <div class="modal fade" id="removeModalCenter" tabindex="-1" role="dialog" data-bs-keyboard="false"  aria-labelledby="removeModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="removeModalCenterTitle">Alert message</h5>
+                    <button type="button" class="close btn btn-danger" data-bs-dismiss="modal" aria-label="Close" #deleteNewModal>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="alert alert-warning">
+                       Are You sure You want to delete this Role?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="button" (click)="deleteRole();" class="btn btn-primary" >Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    

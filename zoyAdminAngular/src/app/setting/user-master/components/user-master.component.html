@@ -1,0 +1,391 @@
+
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+  <p style="color: white;">Loading ...</p>
+</ngx-spinner>
+<!-- Content Wrapper. Contains page content -->
+<div id="page-top">
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+    <!-- Sidebar -->
+    <app-sidebar></app-sidebar>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <app-header></app-header>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">User Management</h1>
+                    <a href="javascript:void(0)" (click)="resetForm()"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" ><i
+                       class="fas fa-fw fa-user-plus fa-sm text-white-50"></i> Create a user</a>
+                </div>
+
+                <!-- Content Row -->
+                <div class="row">
+
+                    <!-- Earnings (Monthly) Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Earnings (Monthly)</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings (Monthly) Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Earnings (Annual)</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings (Monthly) Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                                        </div>
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-auto">
+                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="progress progress-sm mr-2">
+                                                    <div class="progress-bar bg-info" role="progressbar"
+                                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                        aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Requests Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                            Pending Requests</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Row -->
+
+                <div class="row">
+
+                    <!-- Area Chart -->
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"  matSortActive="name" matSortDirection="asc" matSortDisableClear  multiTemplateDataRows>                   
+                                      
+                                        <ng-container matColumnDef="userName">
+                                          <mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> <i class="fas fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i> <i class="fas fa-sort-up"  style="margin-right: 3px;margin-left: -12px;"></i> <i class="fas fa-sort-down" style="margin-right: 3px;margin-left: -12px;"></i> User Name </mat-header-cell>
+                                          <mat-cell data-label="name"  *matCellDef="let element"> 
+                                            {{element.empName}}
+                                          </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="userMail">
+                                            <mat-header-cell style="font-weight: 600;max-width: 150px;" *matHeaderCellDef mat-sort-header><i class="fas fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i> <i class="fas fa-sort-up"  style="margin-right: 3px;margin-left: -12px;"></i> <i class="fas fa-sort-down" style="margin-right: 3px;margin-left: -12px;"></i>User Mail </mat-header-cell>
+                                            <mat-cell data-label="userMail"  *matCellDef="let element;"  >
+                                              {{element.empMail}}
+                                             </mat-cell>
+                                        </ng-container>
+                                        <ng-container matColumnDef="roles">
+                                          <mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> <i class="fas fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i> <i class="fas fa-sort-up"  style="margin-right: 3px;margin-left: -12px;"></i> <i class="fas fa-sort-down"  style="margin-right: 3px;margin-left: -12px;"></i> Role </mat-header-cell>
+                                          <mat-cell data-label="roles"  *matCellDef="let element;"  >
+                                            {{element.roles}}
+                                          </mat-cell>
+                                        </ng-container>
+                      
+                                          <ng-container matColumnDef="action">
+                                            <mat-header-cell style="font-weight: 600;max-width: 80px;" *matHeaderCellDef></mat-header-cell>
+                                            <mat-cell class="example-box" style="max-width: 80px;" data-label="action" *matCellDef="let element"  >
+                                            
+                                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                    aria-labelledby="dropdownMenuLink">
+                                                    <div class="dropdown-header">Action</div>
+                                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#updateModal" (click)="editRole(element)" >Edit</a>
+                                                    <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Another action</a>
+                                                    <a class="dropdown-item" href="javascript:void(0)" (click)="sendInfo(element)" >Send Info</a>
+                                                    <a class="dropdown-item" href="javascript:void(0)" (click)="deleteUser(element)" >Delete</a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item" href="javascript:void(0)">Something else here</a>
+                                                </div>
+                                          
+                                            </mat-cell>
+                                            
+                                          </ng-container> 
+                                       
+                                    
+                                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let element; columns: displayedColumns;"></mat-row>
+                                      </mat-table>  
+                                      <div style="text-align: center;border-bottom: 1px solid #bfbbbb;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>
+                                      <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
+                                  
+                                  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+</div>
+
+
+
+  <div class="modal fade" id="updateModal" tabindex="-1" data-bs-keyboard="false"  role="dialog" data-bs-backdrop="static" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Update/Add Role</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"  #editCloseModal>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- <div class="form-group">
+                <input  type="hidden" class="form-control" id="userId" value=""/>    
+                </div> -->
+               
+                <div class="form-group">
+                    <label for="lastName" class="col-form-label">Employee Name:</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="editUserRole.empName" autocomplete="off"  disabled/>
+                </div>
+                <div class="form-group">
+                    <label for="username" class="col-form-label">User Name:</label>
+                    <input type="text" class="form-control" id="userName" name="userName"[(ngModel)]="editUserRole.empMail"  disabled autocomplete="off" />
+                
+            </div>
+
+            <div class="form-group">
+                <label for="username" class="col-form-label">Roles:</label>
+ 
+                 <ng-multiselect-dropdown #multiSelect
+                    [placeholder]="'Select options'"
+                    [data]="dropdownList"
+                    [(ngModel)]="selectedItems"
+                    [settings]="settings"
+                    (onSelect)="onItemSelect($event)" 
+                    (onDeSelect)="onDeSelect($event)"
+                    (onSelectAll)="onSelectAll($event)"
+                    (onDeSelectAll)="onDeSelectAll($event)"
+                  >
+                  </ng-multiselect-dropdown>
+                       
+
+        </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-primary" value="Save" (click)="saveUser()" />
+            </div>
+        </div>
+    </div>
+</div>
+  </div>
+ <!-- #Modal for removing users -->
+ <div class="modal fade" id="removeModalCenter" tabindex="-1" role="dialog" data-bs-keyboard="false"  aria-labelledby="removeModalCenterTitle" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeModalCenterTitle">Alert message</h5>
+                <button type="button" class="close btn btn-danger" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="alert alert-warning">
+                   Are You sure You want to delete this User?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ 
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasRightLabel">Create a new user</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #registerCloseModal></button>
+  </div>
+  <hr class="sidebar-divider my-0">
+  <div class="offcanvas-body">
+      <form [formGroup]="form" (ngSubmit)="doRegister()" autocomplete="off">
+          <div class="form-group">
+              <label for="exampleInputEmail1">First name</label>
+              <input type="text" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' maxlength="20" class="form-control" id="firstName"  placeholder="Enter First Name"  [(ngModel)]="userReg.firstName" formControlName="firstName" autocomplete="off"
+                [ngClass]="{'is-invalid':submitted && form.controls.firstName.errors}" required autocomplete="off" (paste)="nameValidation($event,'firstName')" />
+                    <div *ngIf="submitted && form.controls.firstName.errors" class="text-danger">
+                    <div *ngIf="submitted && form.controls.firstName.errors?.required">
+                         First Name is required
+                    </div>
+          </div>
+          </div>
+          <div class="form-group">
+              <label for="exampleInputEmail1">Last name</label>
+              <input type="text" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' maxlength="20" class="form-control" id="lastname"  placeholder="Enter Last Name" required autocomplete="false" formControlName="lastName" [(ngModel)]="userReg.lastName" autocomplete="off"
+              [ngClass]="{'is-invalid':submitted && form.controls.lastName.errors}" (paste)="nameValidation($event,'lastName')" />
+              <div *ngIf="submitted && form.controls.lastName.errors" class="text-danger">
+                <div *ngIf="submitted && form.controls.lastName.errors?.required">
+                     Last Name is required
+                </div>
+          </div>
+          </div>
+          <div class="form-group">
+              <label for="exampleInputZipcode1" class="form-label">Designation/Role</label>
+              <select class="form-select "  formControlName="designation" [ngClass]="{'is-invalid':submitted && form.controls.designation.errors}"  [(ngModel)]="userReg.designation">
+                <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+               </select>
+               <div *ngIf="submitted && form.controls.designation.errors" class="text-danger">
+                <div *ngIf="submitted && form.controls.designation.errors?.required">
+                     Designation is required
+                </div>
+                </div>
+          </div>
+          <div class="form-group">
+          <label for="email">Email address</label>
+                          <input type="email" class="form-control" id="email" name="email" placeholder="Enter personal Email" formControlName="email"  [(ngModel)]="userReg.email" (ngModelChange)="userReg.email = $event?.toLowerCase()" autocomplete="off"
+                          [ngClass]="{'is-invalid':submitted && form.controls.email.errors}"  maxlength="100"/>
+                          <div *ngIf="submitted && form.controls.email.errors" class="text-danger">
+                            <div *ngIf="submitted && form.controls.email.errors?.required">
+                                 Email Id is required
+                            </div>
+                            <div *ngIf="submitted && form.controls.email.errors.pattern">
+                              Email Id is invalid
+                            </div>
+                            </div>
+          </div>
+          <div class="form-group">
+              <label for="password">Password</label>
+              <div class="input-group">
+                <input
+                  type="{{ isPasswordVisible ? 'text' : 'password' }}"
+                  class="form-control "
+                  id="password"
+                  [(ngModel)]="userReg.password"
+                  name="password"
+                  placeholder="Password"
+                  [ngClass]="{'is-invalid':submitted && form.controls.password.errors}"
+                  required>
+                  <span class="input-group-text"  style="cursor: pointer;">
+                    <i class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="left" title=" Must be 8-16 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character."  ></i>
+                  </span>
+                  <span class="input-group-text" (click)="togglePasswordVisibility()" style="cursor: pointer;">
+                  <i class="fas" [ngClass]="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+                </span>
+              </div>
+         
+              <!-- Error message section -->
+              <div *ngIf="submitted && form.controls.password.errors" class="text-danger">
+                  <div *ngIf="form.controls.password.errors?.required">
+                    Please enter the password.
+                  </div>
+                  <div *ngIf="form.controls.password.errors?.pattern">
+                    Please enter a strong password.
+                  </div>
+              </div>
+         
+              <!-- Password requirements message -->
+              <!-- <div *ngIf="form.controls.password.errors" class="text-muted" style="color: green;">
+                  Must be 8-16 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.
+              </div> -->
+          </div>
+         
+           
+            <div class="form-group">
+              <label for="repeatPassword">Repeat password</label>
+              <input
+                type="password"
+                class="form-control "
+                id="repeatPassword"
+                [(ngModel)]="userReg.repeatPassword"
+                name="repeatPassword"
+                placeholder="Repeat password"
+                [ngClass]="{'is-invalid':submitted && (form.controls.repeatPassword.errors || userReg.password !== userReg.repeatPassword)}"
+                required>
+                <div *ngIf="submitted && form.controls.repeatPassword.errors" class="text-danger">
+                  <div *ngIf="submitted  && form.controls.repeatPassword.errors?.required">
+                Please enter the repeat password.
+              </div>
+              </div>
+              <div *ngIf="submitted && userReg.password !== userReg.repeatPassword && !form.controls.repeatPassword.errors" class="text-danger">
+                Passwords do not match.
+              </div>
+            </div>
+         
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="reset" class="btn btn-dark ml-2" (click)="resetForm()">Reset</button>
+        </form>
+  </div>
+</div>

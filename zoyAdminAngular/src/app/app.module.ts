@@ -35,6 +35,9 @@ import { UserListComponent } from './user-management/user-list/user-list.compone
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ReportListComponent } from './reports/report-list/report-list.component';
+import { RoleMasterComponent } from './setting/role-master/components/role-master.component';
+import { UserMasterComponent } from './setting/user-master/components/user-master.component';
+import { AppSettingMenuRoutingModule } from './setting/settings-menu-routing.module';
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
 ];
@@ -54,7 +57,9 @@ const appRoutes: Routes = [
     UserListComponent,
     SidebarComponent,
     HeaderComponent,
-    ReportListComponent
+    ReportListComponent,
+    UserMasterComponent,
+    RoleMasterComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -72,6 +77,7 @@ const appRoutes: Routes = [
     ToastrModule.forRoot(),
     NgMultiSelectDropDownModule.forRoot(),
     DragDropModule,
+    AppSettingMenuRoutingModule,
   ],
   providers: [
     {

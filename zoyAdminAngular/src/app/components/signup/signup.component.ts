@@ -20,6 +20,7 @@ export class SignupComponent implements OnInit {
 	error: string = '';
 	errorMsg: any;
 	user :SignupDetails=new SignupDetails();
+	roles:string[]=['Super Admin','Finance Admin','Support Admin']
 	constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService,private spinner:NgxSpinnerService,private notifyService:NotificationService) { }
 	ngOnInit() {}
 

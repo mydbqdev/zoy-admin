@@ -31,13 +31,17 @@ export class SigninComponent implements OnInit {
 			this.rememberme=JSON.parse(localStorage.getItem('rememberme'));
 		}
 	}
+	isPasswordVisible:boolean=false;
 
+	togglePasswordVisibility(){
+		this.isPasswordVisible=!this.isPasswordVisible;
+	}
 	doSignin() {
-		
 		this.submitted=true;    
 		if (this.username !== '' && this.username !== null && this.password !== '' && this.password !== null) {
 			const user: User = { userEmail: this.username.toLowerCase(), password: this.password };
             this.submitted=false;
+			this.router.navigate(['/home']);
 			this.authService.getAuthUser(user).subscribe((result) => {
 				const res: ResponseStore = { userEmail: this.username.toLowerCase(), token: result.token };
 				this.authService.setSessionStore(res);

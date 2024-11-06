@@ -50,3 +50,7 @@
   .desc-inner::-webkit-scrollbar-thumb:hover {
     background: #555; 
   }
+  .fa-asterisk{
+    color:#dc3545;
+    font-size: 9px;
+}
