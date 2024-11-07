@@ -71,7 +71,68 @@
                           <div class="card shadow mb-4">
                               <!-- Card Body -->
                               <div class="card-body" style="padding: 0px;margin: 0px;">
-                                List here
+                                <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
+                                class="mat-elevation-z8">
+                           <ng-container matColumnDef="customerID">
+                             <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by customerID">
+                               Customer_ID
+                             </th>
+                             <td mat-cell *matCellDef="let element; let n=index;" > 
+                              <input type="checkbox" id="checkId"  >
+                              {{element.customerID}} 
+                          </td>
+                           </ng-container>
+                         
+                           <ng-container matColumnDef="pgId">
+                             <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pgId">
+                               PG_ID
+                             </th>
+                             <td mat-cell *matCellDef="let element"> {{element.pgId}} </td>
+                           </ng-container>
+                         
+                           <ng-container matColumnDef="transactionDate">
+                             <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionDate">
+                               Transaction_Date
+                             </th>
+                             <td mat-cell *matCellDef="let element"> {{element.transactionDate}} </td>
+                           </ng-container>
+
+                           <ng-container matColumnDef="transactionStatus">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionStatus">
+                              Transaction_Status
+                            </th>
+                            <td mat-cell *matCellDef="let element"> {{element.transactionStatus}} </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="totalAmount">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by totalAmount">
+                              Total_Amount
+                            </th>
+                            <td mat-cell *matCellDef="let element"> {{element.totalAmount}} </td>
+                          </ng-container>
+                         
+                          <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions">
+                              Actions
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                              <span style="cursor: pointer;" (click)="onView(element)">
+                                <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"></i>
+                              </span>
+                              <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
+                                <i class="bi bi-upload" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="Export"></i>
+                            </span>
+                            </td>
+                          </ng-container>
+                          
+
+                           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                         </table>
+                         <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                         showFirstLastButtons
+                         aria-label="Select page of periodic elements">
+                         </mat-paginator>                             
                               </div>
                           </div>
                       </div>
