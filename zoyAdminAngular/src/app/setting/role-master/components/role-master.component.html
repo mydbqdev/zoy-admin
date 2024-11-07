@@ -18,32 +18,26 @@
              <!-- End of Topbar -->
  
              <!-- Begin Page Content -->
-             <div class="container-fluid">
- 
-                 <!-- Page Heading -->
-                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                     <h1 class="h3 mb-0 text-gray-800">Role Master</h1>
-                     <a href="javascript:void(0)" data-bs-toggle="modal"  data-bs-target="#createRole" (click)="clearArrays(); myForm.reset();" aria-controls="createRole" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" ><i
-                        class="fas fa-fw fa-user-shield fa-sm text-white-50"></i> New Role</a>
-                 </div>
- 
-                 <!-- Content Row -->
- 
+             <div class="container-fluid"> 
+                 <!-- Content Row --> 
                  <div class="row">
- 
                      <!-- Area Chart -->
                      <div class="col-xl-12 col-lg-12">
-                         <div class="card shadow mb-4">
-                             <!-- Card Header - Dropdown -->
-                             
-                             <!-- Card Body -->
-                             <div class="card-body">
-                            
-                                 <div class="chart-area">
-                                    <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"  matSortActive="name" matSortDirection="asc" matSortDisableClear  multiTemplateDataRows>                   
-                                      
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Role List</h6>
+                                <div>
+                                    <a href="javascript:void(0)" data-bs-toggle="modal"  data-bs-target="#createRole" (click)="clearArrays(); myForm.reset();" aria-controls="createRole" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" ><i
+                                        class="fas fa-fw fa-user-shield fa-sm text-white-50"></i> New Role</a>
+                                </div>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body" style="margin: 0px;padding: 0px;">
+                                <div>
+                                    <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"  matSortActive="name" matSortDirection="asc" matSortDisableClear  multiTemplateDataRows>                                                     
                                         <ng-container matColumnDef="role">
-                                          <mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;">User Name </mat-header-cell>
+                                          <mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;">Name </mat-header-cell>
                                           <mat-cell data-label="roleName"  *matCellDef="let element"> 
                                             {{element.roleName}}
                                           </mat-cell>
@@ -59,8 +53,7 @@
                                           <ng-container matColumnDef="action">
                                             <mat-header-cell style="font-weight: 600;max-width: 80px;" *matHeaderCellDef></mat-header-cell>
                                             <mat-cell class="example-box" style="max-width: 80px;" data-label="action" *matCellDef="let element"  >
-                                            
-                                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                                <a class="dropdown no-arrow dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                                 </a>
@@ -78,10 +71,9 @@
                                         <mat-row *matRowDef="let element; columns: displayedColumns;"></mat-row>
                                       </mat-table>  
                                       <div style="text-align: center;border-bottom: 1px solid #bfbbbb;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>
-                                  
                                 </div>
-                             </div>
-                         </div>
+                            </div>
+                        </div>
                      </div>
                  </div>
              </div>

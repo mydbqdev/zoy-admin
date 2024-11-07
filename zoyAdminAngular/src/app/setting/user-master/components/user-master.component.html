@@ -20,17 +20,8 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">User Management</h1>
-                    <a href="javascript:void(0)" (click)="resetForm()"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" ><i
-                       class="fas fa-fw fa-user-plus fa-sm text-white-50"></i> Create a user</a>
-                </div>
-
                 <!-- Content Row -->
                 <div class="row">
-
                     <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-primary shadow h-100 py-2">
@@ -123,10 +114,16 @@
                     <div class="col-xl-12 col-lg-12">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-                            
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">User List</h6>
+                                <div>
+                                    <a href="javascript:void(0)" (click)="resetForm()"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" ><i
+                                        class="fas fa-fw fa-user-plus fa-sm text-white-50"></i> Create a user</a>
+                                </div>
+                            </div>
                             <!-- Card Body -->
-                            <div class="card-body">
-                                <div class="chart-area">
+                            <div class="card-body" style="padding:0px;margin:0px;">
+                                <div>
                                     <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"  matSortActive="name" matSortDirection="asc" matSortDisableClear  multiTemplateDataRows>                   
                                       
                                         <ng-container matColumnDef="userName">
@@ -152,7 +149,7 @@
                                             <mat-header-cell style="font-weight: 600;max-width: 80px;" *matHeaderCellDef></mat-header-cell>
                                             <mat-cell class="example-box" style="max-width: 80px;" data-label="action" *matCellDef="let element"  >
                                             
-                                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                                <a class="dropdown no-arrow dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                                 </a>
