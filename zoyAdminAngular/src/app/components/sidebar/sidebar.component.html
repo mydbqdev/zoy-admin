@@ -11,7 +11,7 @@
   <hr class="sidebar-divider my-0">
   <!-- Nav Item - Dashboard -->
   <li class="nav-item active">
-      <a class="nav-link" routerLink="/home">
+      <a class="nav-link" routerLink="/home" (click)="setHeaderName('Dashboard')">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
   </li>
@@ -57,8 +57,8 @@
         </a>
         <div id="collapseUserManagement" class="collapse" aria-labelledby="headingUserManagement" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" routerLink="/user-master">Managing Users</a>
-                <a class="collapse-item" routerLink="/user-master">User Roles</a>
+                <a class="collapse-item" routerLink="/user-master" (click)="setHeaderName('Managing Users')">Managing Users</a>
+                <a class="collapse-item" routerLink="/user-master" (click)="setHeaderName('User Roles')">User Roles</a>
             </div>
         </div>
     </li>
@@ -88,7 +88,7 @@
         </a>
         <div id="collapseConfigSettings" class="collapse" aria-labelledby="headingConfigSettings" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" routerLink="/role-master">Role & Permission</a>
+                <a class="collapse-item" routerLink="/role-master" (click)="setHeaderName('Role & Permission')" >Role & Permission</a>
                 <a class="collapse-item" routerLink="/cancellation-refund-rules">Cancellation & Refund Rules</a>
                 <a class="collapse-item" routerLink="/percentage-charge-configurations">Percentage & Charge</a>
                 <a class="collapse-item" routerLink="/promotion-offers-management">Promotion & Offers Management</a>
@@ -122,7 +122,7 @@
     <div id="collapseReports" class="collapse" aria-labelledby="headingReports"
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item active" routerLink="/report-list">Report 1</a>
+            <a class="collapse-item active" routerLink="/report-list" (click)="setHeaderName('Report')">Report 1</a>
             <a class="collapse-item" routerLink="/home">Report 2</a>
             <a class="collapse-item" routerLink="/home">Report 3</a>
             <a class="collapse-item" routerLink="/home">Report 4</a>
