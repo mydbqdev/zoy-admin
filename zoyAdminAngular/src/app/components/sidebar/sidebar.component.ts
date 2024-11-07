@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
+import { DataService } from 'src/app/common/service/data.service';
 import { UserService } from 'src/app/common/service/user.service';
 
 @Component({
@@ -11,7 +12,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
   userNameSession: any;
   mySubscription: any;
 
-  constructor( private userService: UserService, private router: Router) {
+  constructor( private userService: UserService, private router: Router,private dataService:DataService) {
     this.userNameSession = userService.getUsername();
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
@@ -38,4 +39,9 @@ export class SidebarComponent implements OnInit,AfterViewInit {
     }
   }
 
+  setHeaderName(headerName:string){
+  this.dataService.setHeaderName(headerName);
+  }
+
+  
 }

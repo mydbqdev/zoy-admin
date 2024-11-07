@@ -9,4 +9,5 @@ export interface ApplicationSession{
     emp_code?:string;
     designation?:string;
     firstTimePwd?:string;
+    empEmail?:string;
 }

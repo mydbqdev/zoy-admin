@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
+import { DataService } from 'src/app/common/service/data.service';
 import { UserService } from 'src/app/common/service/user.service';
 
 @Component({
@@ -10,8 +11,8 @@ import { UserService } from 'src/app/common/service/user.service';
 export class HeaderComponent implements OnInit,AfterViewInit {
   userNameSession: any;
   mySubscription: any;
-
-  constructor( private userService: UserService, private router: Router) {
+  headerName:string='';
+  constructor( private userService: UserService, private router: Router,private dataService:DataService) {
     this.userNameSession = userService.getUsername();
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
@@ -23,6 +24,10 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         this.router.navigated = false;
       }
     });
+    this.dataService.getHeaderName.subscribe(name=>{
+			this.headerName=name;
+		});
+    console.log("HeaderComponent >>this.headerName",this.headerName);
   }
   ngAfterViewInit(): void {
     

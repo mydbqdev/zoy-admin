@@ -73,6 +73,10 @@
                                         <h1 class="h4 text-gray-900 mt-4">Login</h1>
                                         <div class="small mb-4">Enter your account details</div>
                                     </div>
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf='error'>
+                                        <strong>{{error}}</strong> 
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
                                     <form class="user" (ngSubmit)="doSignin()">
                                         <div class="form-group">
                                             <input type="email" class="form-control" style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;"

@@ -27,4 +27,11 @@ export class DataService{
     setTopSearch(topSearch:string){
         this.$topSearch.next(topSearch);
      }
+
+     public headerName=new BehaviorSubject<string>("Dashboard");
+
+     getHeaderName=this.headerName.asObservable();
+     setHeaderName(headerName:string){
+        this.headerName.next(headerName);
+     }
 }
