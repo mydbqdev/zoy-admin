@@ -18,43 +18,60 @@
 
               <!-- Begin Page Content -->
               <div class="container-fluid">
-
-                  <!-- Page Heading -->
-                  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                      <h1 class="h3 mb-0 text-gray-800">Reports</h1>
-                      <button data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-light shadow-sm"><i
-                              class="fas fa-filter"></i> Filter</button>
+                  <div class="d-flex mb-1">
+                    <div class="text-search-header pr-2 mt-1">
+                        Report Type
+                    </div>
+                    <div style="width: 200px;">
+                        <select class="form-select form-select-sm" aria-label="Default select example">
+                            <option selected>Open this select menu</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                    <div></div>
                   </div>
-
                   <div class="row">
-
-                      <!-- Area Chart -->
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1" class="text-search-header">Keyword Search</label>
+                            <input type="text" class="form-control form-control-sm" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter first name">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1" class="text-search-header">Date Range</label>
+                            <input type="text" class="form-control form-control-sm" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter first name">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1" class="text-search-header">ZOY Code</label>
+                            <select class="form-select form-select-sm">
+                                <option>Small select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group mt-4" style="padding-top:6px">
+                            <button type="button" class="btn btn-primary-custom btn-sm">Generate Report</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group mt-4" style="padding-top:6px">
+                            <select class="form-select form-select-sm">
+                                <option>Download</option>
+                            </select>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="row">
                       <div class="col-xl-12 col-lg-12">
                           <div class="card shadow mb-4">
-                              <!-- Card Header - Dropdown -->
-                              <div
-                                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                  <h6 class="m-0 font-weight-bold text-primary">Report List</h6>
-                                  <div class="dropdown no-arrow">
-                                      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                      </a>
-                                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                          aria-labelledby="dropdownMenuLink">
-                                          <div class="dropdown-header">Dropdown Header:</div>
-                                          <a class="dropdown-item" href="#">Action</a>
-                                          <a class="dropdown-item" href="#">Another action</a>
-                                          <div class="dropdown-divider"></div>
-                                          <a class="dropdown-item" href="#">Something else here</a>
-                                      </div>
-                                  </div>
-                              </div>
                               <!-- Card Body -->
-                              <div class="card-body">
-                                  <div class="chart-area">
-                                      
-                                  </div>
+                              <div class="card-body" style="padding: 0px;margin: 0px;">
+                                List here
                               </div>
                           </div>
                       </div>
