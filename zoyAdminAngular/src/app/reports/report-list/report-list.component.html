@@ -71,8 +71,8 @@
                           <div class="card shadow mb-4">
                               <!-- Card Body -->
                               <div class="card-body" style="padding: 0px;margin: 0px;">
-                                <div style="max-height: 415px;overflow: auto;">
-                                <div class="desc-inner">
+                                <div style="max-height: 390px;overflow: auto;">
+                                <div class="desc-inner" style="height: 360px;">
                                     <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
                                     class="mat-elevation-z8">
                                     <ng-container matColumnDef="customerID">
@@ -129,9 +129,9 @@
                                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                                     </table>  
-                                    <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons ></mat-paginator>    
-                                </div> 
-                                </div>                     
+                                    </div> 
+                                  </div> 
+                                    <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons ></mat-paginator>                        
                               </div>
                           </div>
                       </div>
