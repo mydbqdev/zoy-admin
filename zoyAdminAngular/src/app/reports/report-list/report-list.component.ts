@@ -29,7 +29,9 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
+  public totalProduct:number=0;
+  pageSize:number=10;
+  pageSizeOptions=[10,20,50];
 
 	public userNameSession: string = "";
 	errorMsg: any = "";
@@ -76,7 +78,6 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	ELEMENT_DATA:ReportsModel[]=[]
 	getRolesData() {
 		this.reportService.getRolesSaved().subscribe(data=>{
-console.log("data>>>",data)
 this.ELEMENT_DATA=Object.assign([],data);
 this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 		});
