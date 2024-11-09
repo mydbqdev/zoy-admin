@@ -7559,6 +7559,29 @@ button.bg-dark:focus {
   z-index: 1030;
 }
 
+.fixed-top-collaspe {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 104px;
+  z-index: 1030;
+}
+
+.fixed-top-expand {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 225px;
+  z-index: 1030;
+}
+
+.side-bar-expand{
+  margin-left:225px;
+}
+.side-bar-collaspe{
+  margin-left:104px;
+}
+
 .fixed-bottom {
   position: fixed;
   right: 0;

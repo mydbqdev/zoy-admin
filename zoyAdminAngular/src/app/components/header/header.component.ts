@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { DataService } from 'src/app/common/service/data.service';
 import { UserService } from 'src/app/common/service/user.service';
+import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,10 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   userNameSession: any;
   mySubscription: any;
   headerName:string='';
+  userInfo:UserInfo=new UserInfo();
+  isExpandSideBar:boolean=true;
   constructor( private userService: UserService, private router: Router,private dataService:DataService) {
+   this.userInfo=this.userService.getUserinfo();
     this.userNameSession = userService.getUsername();
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
@@ -26,8 +30,11 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     });
     this.dataService.getHeaderName.subscribe(name=>{
 			this.headerName=name;
+    });	
+    
+    this.dataService.getIsExpandSideBar.subscribe(name=>{
+			this.isExpandSideBar=name;
 		});
-    console.log("HeaderComponent >>this.headerName",this.headerName);
   }
   ngAfterViewInit(): void {
     

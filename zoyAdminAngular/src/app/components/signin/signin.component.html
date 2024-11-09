@@ -71,11 +71,10 @@
                                     </div>
                                     <div>
                                         <h1 class="h4 text-gray-900 mt-4">Login</h1>
-                                        <div class="small mb-4">Enter your account details</div>
+                                        <div class="small mb-3">Enter your account details</div>
                                     </div>
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf='error'>
-                                        <strong>{{error}}</strong> 
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <div style="height: 24px;color:red;">
+                                        <strong *ngIf='error'>{{error}}</strong>
                                     </div>
                                     <form class="user" (ngSubmit)="doSignin()">
                                         <div class="form-group">
@@ -103,7 +102,7 @@
                                         <div class="text-right alert-light">
                                             <a class="small alert-link" style="font-weight: 400;" href="#">Forgot Password?</a>
                                         </div>
-                                        <div class="form-group">
+                                        <div style="margin-bottom: 2px;margin-top:-2px">
                                             <div class="custom-control custom-checkbox small">
                                                 <input type="checkbox" class="custom-control-input" id="customCheck">
                                                 <label class="custom-control-label" for="customCheck">Remember me</label>

@@ -81,3 +81,18 @@
   width: 100%;
   min-height: 20px !important;
 }
+
+.profile-top{
+  width: 35px;
+  height: 35px;
+  background-color: #925fe2;
+  font-weight: 500;
+  font-size: 17px;
+  text-align: center;
+  line-height: 35px; 
+  color: #fff;
+  border-radius: 50%; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+

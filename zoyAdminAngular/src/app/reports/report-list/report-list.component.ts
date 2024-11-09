@@ -36,7 +36,15 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	public userNameSession: string = "";
 	errorMsg: any = "";
 	mySubscription: any;
-
+	columnSortDirections1: { [key: string]: string | null } = {
+        customerID: null,
+        pgId: null,
+        transactionDate: null,
+        transactionStatus: null,
+        totalAmount: null,
+      };
+    columnSortDirections = Object.assign({}, this.columnSortDirections1);
+	isExpandSideBar:boolean=true;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : ReportService) {
 		this.userNameSession = userService.getUsername();
@@ -53,6 +61,9 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 				// Trick the Router into believing it's last link wasn't previously loaded
 				this.router.navigated = false;
 			}
+		});
+		this.dataService.getIsExpandSideBar.subscribe(name=>{
+			this.isExpandSideBar=name;
 		});
 	}
 
@@ -83,10 +94,9 @@ this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 		});
 	}
 	announceSortChange(sortState: Sort) {
-		// This example uses English messages. If your application supports
-		// multiple language, you would internationalize these strings.
-		// Furthermore, you can customize the message to add additional
-		// details about the values being sorted.
+		this.columnSortDirections = Object.assign({}, this.columnSortDirections1);
+        this.columnSortDirections[sortState.active] = sortState.direction;
+		
 		if (sortState.direction) {
 		  this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
 		} else {
