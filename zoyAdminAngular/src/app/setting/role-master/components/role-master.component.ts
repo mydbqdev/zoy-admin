@@ -9,7 +9,6 @@ import { AlertDialogService } from "src/app/common/shared/alert-dialog/alert-dia
 import { DefMenu } from "src/app/common/shared/def-menu";
 import { NotificationService } from "src/app/common/shared/message/notification.service";
 import { defMenuEnable } from "src/app/common/shared/variables";
-//import { SideNavMenuComponent } from "src/app/components/sideBar/side-nav.component";
 import { RoleModel } from "../models/role-model";
 import { RoleMasterService } from "../service/role-master.service";
 import * as $ from 'jquery';
@@ -45,7 +44,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   public userNameSession:string="";
   mySubscription: any;
   public rolesArray: string[] = []; 
-  
+
   
   public ELEMENT_DATA:RoleModel[];
   dataSource:MatTableDataSource<RoleModel>=new MatTableDataSource<RoleModel>();

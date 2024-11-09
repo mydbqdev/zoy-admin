@@ -28,7 +28,7 @@
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">Role List</h6>
                                 <div>
-                                    <a href="javascript:void(0)" data-bs-toggle="modal"  data-bs-target="#createRole" (click)="clearArrays(); myForm.reset();" aria-controls="createRole" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" ><i
+                                    <a href="javascript:void(0)" data-bs-toggle="modal"  data-bs-target="#createRole" (click)="clearArrays(); myForm.reset();" aria-controls="createRole" class="d-none d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm" ><i
                                         class="fas fa-fw fa-user-shield fa-sm text-white-50"></i> New Role</a>
                                 </div>
                             </div>
@@ -71,6 +71,7 @@
                                         <mat-row *matRowDef="let element; columns: displayedColumns;"></mat-row>
                                       </mat-table>  
                                       <div style="text-align: center;border-bottom: 1px solid #bfbbbb;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>
+                                      
                                 </div>
                             </div>
                         </div>
@@ -185,8 +186,8 @@
             </div>
                 </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                <input type="submit" class="btn btn-primary" value="Save"  />
+                <button type="button" class="btn btn-dark ml-2" data-bs-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-primary-custom" value="Save"  />
             </div>
         </form>
         </div>

@@ -32,8 +32,8 @@
                 "src/assets/css/fin-admin.css" ,
                 "node_modules/ngx-toastr/toastr.css"  ,
                 "node_modules/ngx-spinner/animations/ball-circus.css" ,
-                "node_modules/summernote/dist/summernote-bs4.css"   
-            
+                "node_modules/summernote/dist/summernote-bs4.css",
+                "bootstrap-icons/font/bootstrap-icons.css"             
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

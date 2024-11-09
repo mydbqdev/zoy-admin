@@ -1,3 +1,4 @@
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 /** ----------------------------- Common css ------------------------------------------------------- **/
 
 /* Custom scrollbar for WebKit browsers */
@@ -59,4 +60,24 @@
   font-size: 14px;
   font-weight: 500;
   color:#000000;
+}
+
+.mat-mdc-table .mdc-data-table__row{
+  height:32px !important;
+}
+.mat-mdc-table .mdc-data-table__pagination{
+  min-height:32px !important;
+}
+.mat-mdc-table .mdc-data-table__header-row{
+  height:36px !important;
+}
+
+.mat-mdc-paginator-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 4px !important;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: 20px !important;
 }
