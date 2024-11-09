@@ -9,6 +9,7 @@ import { UserListComponent } from './user-management/user-list/user-list.compone
 import { ReportListComponent } from './reports/report-list/report-list.component';
 import { RoleMasterComponent } from './setting/role-master/components/role-master.component';
 import { UserMasterComponent } from './setting/user-master/components/user-master.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 
 const routes: Routes = [
 	{path:'',redirectTo:'/startup',pathMatch:'full'},
@@ -19,8 +20,9 @@ const routes: Routes = [
 	{ path: 'home', component: HomeComponent },
 	{ path: 'user-list', component: UserListComponent },
 	{ path: 'report-list', component: ReportListComponent },
-	{ path: 'role-master', component: RoleMasterComponent },
+	{ path: 'role-master', component: RoleMasterComponent },	
 	{ path: 'user-master', component: UserMasterComponent },
+	{ path: 'forgot-password', component: ForgotPasswordComponent },
 ];
 
 @NgModule({

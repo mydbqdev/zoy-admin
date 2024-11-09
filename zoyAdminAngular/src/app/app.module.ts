@@ -38,6 +38,7 @@ import { ReportListComponent } from './reports/report-list/report-list.component
 import { RoleMasterComponent } from './setting/role-master/components/role-master.component';
 import { UserMasterComponent } from './setting/user-master/components/user-master.component';
 import { AppSettingMenuRoutingModule } from './setting/settings-menu-routing.module';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
@@ -60,7 +61,9 @@ const appRoutes: Routes = [
     HeaderComponent,
     ReportListComponent,
     UserMasterComponent,
-    RoleMasterComponent
+    RoleMasterComponent,
+    ForgotPasswordComponent
+
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
