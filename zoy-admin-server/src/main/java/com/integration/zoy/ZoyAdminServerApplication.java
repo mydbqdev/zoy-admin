@@ -31,7 +31,7 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.SslProvider;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.integration.zoy", "com.integration.zoy.controller" , "com.integration.zoy.config"})
+@ComponentScan(basePackages = { "com.integration.zoy", "com.integration.zoy.controller" , "com.integration.zoy.config","com.integration.zoy.service"})
 public class ZoyAdminServerApplication {
 
 	private final int TIMEOUT = (int) TimeUnit.SECONDS.toMillis(30);

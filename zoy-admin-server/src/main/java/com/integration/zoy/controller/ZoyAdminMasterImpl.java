@@ -40,7 +40,7 @@ public interface ZoyAdminMasterImpl {
 
 	//Ameneties
 	@Operation(summary = "Get Ameneties", description = "Getting Ameneties", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -51,7 +51,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminAmenities();
 
 	@Operation(summary = "Post Ameneties", description = "Posting Ameneties", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -63,7 +63,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminAmenitiesPost(@RequestBody Amenetie amenetie);
 
 	@Operation(summary = "Put Ameneties", description = "Updating Ameneties", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -76,7 +76,7 @@ public interface ZoyAdminMasterImpl {
 
 	//Due Factor
 	@Operation(summary = "Get Due Factor", description = "Getting Due Factor", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -87,7 +87,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminFactor();
 
 	@Operation(summary = "Post Due Factor", description = "Posting Due Factor", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -99,7 +99,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminFactorPost(@RequestBody DueFactor dueFactor);
 
 	@Operation(summary = "Put Due Factor", description = "Updating Due Factor", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -112,7 +112,7 @@ public interface ZoyAdminMasterImpl {
 
 	//Rent Cycle
 	@Operation(summary = "Get Rent Cycle", description = "Getting Rent Cycle", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -123,7 +123,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminRentCycle();
 
 	@Operation(summary = "Post Rent Cycle", description = "Posting Rent Cycle", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -135,7 +135,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminRentCyclePost(@RequestBody RentCycle rentCycle);
 
 	@Operation(summary = "Put Rent Cycle", description = "Updating Rent Cycle", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -148,7 +148,7 @@ public interface ZoyAdminMasterImpl {
 
 	//Rome Type
 	@Operation(summary = "Get Room Type", description = "Getting Room Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -159,7 +159,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminRoomType();
 
 	@Operation(summary = "Post Room Type", description = "Posting Room Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -171,7 +171,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminRoomTypePost(@RequestBody RoomType roomType);
 
 	@Operation(summary = "Put Room Type", description = "Updating Room Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -184,7 +184,7 @@ public interface ZoyAdminMasterImpl {
 
 	//Share Type
 	@Operation(summary = "Get Share Type", description = "Getting Share Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -195,7 +195,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminShareType();
 
 	@Operation(summary = "Post Share Type", description = "Posting Share Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -207,7 +207,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminShareTypePost(@RequestBody ShareType shareType);
 
 	@Operation(summary = "Put Share Type", description = "Updating Share Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -220,7 +220,7 @@ public interface ZoyAdminMasterImpl {
 
 	//Pg Type
 	@Operation(summary = "Get Pg Type", description = "Getting Pg Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -231,7 +231,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminPgType();
 
 	@Operation(summary = "Post Pg Type", description = "Posting Pg Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -243,7 +243,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminPgTypePost(@RequestBody PgType pgType);
 
 	@Operation(summary = "Put Pg Type", description = "Updating Pg Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -256,7 +256,7 @@ public interface ZoyAdminMasterImpl {
 
 	//Notification
 	@Operation(summary = "Get Notification Mode", description = "Getting Notification Mode", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -267,7 +267,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminNotificationModeName();
 
 	@Operation(summary = "Post Notification Mode", description = "Posting Notification Mode", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -279,7 +279,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminNotificationModeNamePost(@RequestBody NotificationMode notificationMode);
 	
 	@Operation(summary = "Put Notification Mode", description = "Updating Notification Mode", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -292,7 +292,7 @@ public interface ZoyAdminMasterImpl {
 	
 	//Billing Type
 	@Operation(summary = "Get Billing Type", description = "Getting Billing Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "400", description = "Bad Request" , content = @Content(mediaType = "application/json")),
@@ -303,7 +303,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminBillingType();
 	
 	@Operation(summary = "Post Billing Type", description = "Posting Billing Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "400", description = "Bad Request" , content = @Content(mediaType = "application/json")),
@@ -315,7 +315,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminBillingTypePost(@RequestBody BillingType billingType);
 	
 	@Operation(summary = "Put Billing Type", description = "Updating Billing Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "400", description = "Bad Request" , content = @Content(mediaType = "application/json")),
@@ -328,7 +328,7 @@ public interface ZoyAdminMasterImpl {
 
 	//Currency Type
 	@Operation(summary = "Get Currency Type", description = "Getting Currency Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -339,7 +339,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminCurrencyType();
 	
 	@Operation(summary = "Post Currency Type", description = "Posting Currency Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -351,7 +351,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminCurrencyTypePost(@RequestBody CurrencyType currencyType);
 	
 	@Operation(summary = "Put Currency Type", description = "Updating Currency Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -364,7 +364,7 @@ public interface ZoyAdminMasterImpl {
 
 	//Due Type
 	@Operation(summary = "Get Due Type", description = "Getting Due Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -375,7 +375,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminDueType();
 	
 	@Operation(summary = "Post Due Type", description = "Posting Due Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -387,7 +387,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminDueTypePost(@RequestBody DueType dueType);
 	
 	@Operation(summary = "Put Due Type", description = "Updating Due Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -400,7 +400,7 @@ public interface ZoyAdminMasterImpl {
 
 	//Ekyc Type
 	@Operation(summary = "Get Ekyc Type", description = "Getting Ekyc Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -411,7 +411,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminEkycType();
 	
 	@Operation(summary = "Post Ekyc Type", description = "Posting Ekyc Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -422,7 +422,7 @@ public interface ZoyAdminMasterImpl {
 	ResponseEntity<String> zoyAdminEkycTypePost(@RequestBody EkycType ekycType);
 	
 	@Operation(summary = "Put Ekyc Type", description = "Updating Ekyc Type", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin master" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),

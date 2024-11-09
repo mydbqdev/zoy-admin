@@ -56,7 +56,9 @@ public class ResponseBody {
 	private Long totalDuesAmount;
    
 	
-	
+	@SerializedName("email")
+	private String email;
+
 
 	public String getDocId() {
 		return docId;
@@ -192,6 +194,14 @@ public class ResponseBody {
 
 	public void setOwnerId(String ownerId) {
 		this.ownerId = ownerId;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 

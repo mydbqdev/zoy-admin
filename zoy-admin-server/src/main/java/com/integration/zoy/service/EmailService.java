@@ -45,7 +45,7 @@ public class EmailService {
 		try {
 			NotificationRequest notificationRequest = new NotificationRequest();
 			notificationRequest.setProcessType("immediate");
-			notificationRequest.setAppName("ZOY PG");
+			notificationRequest.setAppName("ZOY Admin");
 			notificationRequest.setMessageType("email");
 			notificationRequest.setEmail(email);
 
