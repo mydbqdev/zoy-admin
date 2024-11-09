@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	public userNameSession: string = "";
 	errorMsg: any = "";
 	mySubscription: any;
+	isExpandSideBar:boolean=true;
 
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
@@ -34,6 +35,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 				// Trick the Router into believing it's last link wasn't previously loaded
 				this.router.navigated = false;
 			}
+		});
+		this.dataService.getIsExpandSideBar.subscribe(name=>{
+			this.isExpandSideBar=name;
 		});
 	}
 

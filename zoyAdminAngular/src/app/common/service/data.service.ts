@@ -7,29 +7,24 @@ import { SignupDetails } from '../shared/signup-details';
 
 export class DataService{
     public userDetails=new BehaviorSubject<SignupDetails>(null);
-
     getUserDetails=this.userDetails.asObservable();
-
     setUserDetails(userDetails:SignupDetails){
        this.userDetails.next(userDetails);  
     }
 
-    public isSale=new BehaviorSubject<boolean>(true);
-
-    public $topSearch=new BehaviorSubject<string>("");
-    
-    getIsSale=this.isSale.asObservable();
-    setIsSale(isSale:boolean){
-       this.isSale.next(isSale);
+    public isExpandSideBar=new BehaviorSubject<boolean>(true);
+    getIsExpandSideBar=this.isExpandSideBar.asObservable();
+    setIsExpandSideBar(isExpandSideBar:boolean){
+       this.isExpandSideBar.next(isExpandSideBar);
     }
 
+    public $topSearch=new BehaviorSubject<string>("");
     getTopSearch=this.$topSearch.asObservable();
     setTopSearch(topSearch:string){
         this.$topSearch.next(topSearch);
      }
 
      public headerName=new BehaviorSubject<string>("Dashboard");
-
      getHeaderName=this.headerName.asObservable();
      setHeaderName(headerName:string){
         this.headerName.next(headerName);

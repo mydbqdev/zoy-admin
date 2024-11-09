@@ -11,7 +11,7 @@ import { UserService } from 'src/app/common/service/user.service';
 export class SidebarComponent implements OnInit,AfterViewInit {
   userNameSession: any;
   mySubscription: any;
-
+  isExpandSideBar:boolean=true;
   constructor( private userService: UserService, private router: Router,private dataService:DataService) {
     this.userNameSession = userService.getUsername();
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -24,6 +24,10 @@ export class SidebarComponent implements OnInit,AfterViewInit {
         this.router.navigated = false;
       }
     });
+
+    this.dataService.getIsExpandSideBar.subscribe(name=>{
+			this.isExpandSideBar=name;
+		});
   }
   ngAfterViewInit(): void {
     
@@ -43,5 +47,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
   this.dataService.setHeaderName(headerName);
   }
 
-  
+  collaspeExpand(){
+    this.dataService.setIsExpandSideBar(this.isExpandSideBar ? false:true);
+  }
 }

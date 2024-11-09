@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<ul class="navbar-nav bg-gradient-dark fixed-left sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient-dark fixed-left sidebar sidebar-dark accordion" [ngClass]="isExpandSideBar?'':'toggled'" id="accordionSidebar" style="position: fixed;z-index: 1030;">
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
       <div class="sidebar-brand-icon">
@@ -136,6 +136,10 @@
      </a>
    </li>
   <!-- Divider -->
+  <!-- Sidebar Toggler (Sidebar) -->
+  <div class="text-center d-none d-md-inline">
+    <button class="rounded-circle border-0" id="sidebarToggle" (click)="collaspeExpand()"></button>
+  </div>
   <hr class="sidebar-divider">
   <!-- Heading -->
   <div class="sidebar-heading">
@@ -154,10 +158,6 @@
         <span>Page 2</span>
     </a>
   </li>
-  <!-- Sidebar Toggler (Sidebar) -->
-  <!--div class="text-center d-none d-md-inline">
-      <button class="rounded-circle border-0" id="sidebarToggle"></button>
-  </div-->
 </ul>
 
 
