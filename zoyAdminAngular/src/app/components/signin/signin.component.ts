@@ -4,7 +4,6 @@ import { AuthService } from 'src/app/common/service/auth.service';
 import { User } from 'src/app/common/shared/user';
 import { ResponseStore } from 'src/app/common/models/response.model';
 import { DataService } from 'src/app/common/service/data.service';
-import { SignupDetails } from 'src/app/common/shared/signup-details';
 
 
 @Component({

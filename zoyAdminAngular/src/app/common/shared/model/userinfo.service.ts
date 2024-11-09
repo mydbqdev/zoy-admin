@@ -1,7 +1,7 @@
-export interface UserInfo{
+export class UserInfo{
     userEmail?:string;
     firstName?:string;
-    lasName?:string;
+    lastName?:string;
     designation?:string;
     previlageList?:string[];
 }

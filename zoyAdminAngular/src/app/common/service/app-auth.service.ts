@@ -52,22 +52,15 @@ export class AppAuthService extends AuthService{
         const url1=this.basePath +'auth/login';
       //  let loginUser : User ={userEmail:user.userEmail,password:this.encryptDecryptHelper.encrypt(user.password)};
         let loginUser : User ={userEmail:user.userEmail,password:user.password};
-        /* above line(line number :58) will be remove once we will implement decrypt password functionality in backend using request header.
-           below line (line number : 61) will be uncommented.
-        */
-        //let loginUser : User ={userEmail:user.userEmail};password
+
         let encrypt=this.encryptDecryptHelper.encrypt(user.password);
         var res=new MockData().login.filter(d =>d.userEmail == user.userEmail);
        
         if(res.length>0){
-        //     console.log("loginUser>>",loginUser)
-        //     console.log("res>>",res)
-        //     console.log("res[0].password == loginUser.password>>",res[0].password == loginUser.password)
-           if( res[0].password == loginUser.password){
+            if( res[0].password == loginUser.password){
             this.userService.setUsername(res[0].userEmail);
            
             const mockData: ApplicationSession = Object.assign(res[0]);
-            console.log("this.userService>>>",this.userService,of(mockData))
             return of(mockData);
            }else{
             return  throwError(() => new Error('Invalid credentials.'));
@@ -103,14 +96,10 @@ export class AppAuthService extends AuthService{
 
     public checkLoginUserOnServer() : Observable<ApplicationSession>{
         const url1=this.basePath +'checkLoginUser';
-        console.log("this.userService",this.userService)
-        console.log("this.userService.userName",this.userService.getUsername())
         let userEmail =this.userService.getUsername();
         var res=new MockData().checkLoginUserResponce.filter(d =>d.userEmail == userEmail);
-        console.log("chrOnServer",userEmail,res)
-        const mockData: ApplicationSession = Object.assign(res);
+        const mockData: ApplicationSession = Object.assign(res[0]);
 
-        console.log("checkLoginUserOnServer",mockData)
         return of(mockData);
         // return this.httpclient.post<ApplicationSession>(
         //     url1,
@@ -129,7 +118,7 @@ export class AppAuthService extends AuthService{
         this.message ='';
         this.checkLoginUserOnServer().subscribe(
             (result)=>{
-                console.log("checkLoginUserOnServer result",result)
+ 
                this.sessionSnapshot = result;
                this.sessionSnapshot.username = result.empEmail;
                this.sessionSnapshot.token = result.token;
@@ -163,79 +152,6 @@ export class AppAuthService extends AuthService{
         );
        
     }
-
-    
-
-    //  public checkLoginUserOnServer() : Observable<ApplicationSession>{
-    //      const url1=this.basePath +'checkLoginUser';
-    //      return this.httpclient.post<ApplicationSession>(
-    //          url1,
-    //          '',
-    //          {
-    //              headers:ServiceHelper.buildHeaders(),
-    //             observe : 'body',
-    //             withCredentials:true
-    //          }
-    //      );
-    //  }
-  
-     
-
-    //  public checkLoginUser() : void{
-    //      var msg:string;
-    //      this.sessionSnapshot =null;
-    //      this.message ='';
-    //      //this.checkLoginUserOnServer().subscribe(
-    //         /* (result)=>{
-    //             this.sessionSnapshot = result;
-    //             this.sessionSnapshot.username = result.userEmail;
-    //             this.sessionSnapshot.token = result.token;
-    //             this.userService.setUsername(result.userEmail);
-    //             this.userService.setUserinfo(result);
-    //             this.userService.setDbquser(true);
-
-    //             let resp: ResponseStore={userEmail:result.userEmail,token:result.token};
-    //             this.setSessionStore(resp);*/
-    //             if(sessionStorage==undefined || sessionStorage ==null || sessionStorage.getItem('user')==null){
-    //                 this.router.navigateByUrl('/signin');
-    //            // }else if(result.firstTimePwd!=undefined && result.firstTimePwd!='Y'){
-    //             //    this.router.navigateByUrl('/first-time-chng-pwd')              
-    //            }else{
-    //                 this.getUserSignupDetails(sessionStorage.getItem('user')).subscribe((data) => {
-    //                     let user:SignupDetails = new SignupDetails() ;
-    //                     user.userId= data.id !=undefined?data.id:"";
-    //                     user.userEmail= data.userEmail !=undefined?data.userEmail:"";
-    //                     user.userFirstName= data.userFirstName !=undefined?data.userFirstName:"";
-    //                     user.userLastName= data.userLastName !=undefined?data.userLastName:"";
-    //                     user.zipCode= data.zipCode !=undefined?data.zipCode:"";
-    //                     this.dataService.setUserDetails(user);
-    //                     this.router.navigateByUrl('/home'); 
-    //                 },error =>{
-    //                     this.checkLogout();
-    //                  }
-    //                 );
-    //                 this.router.navigateByUrl('/home'); 
-    //            }
-    //          /*},
-    //          (err) =>{
-    //             if(err.error && err.error.message){
-    //                 msg=err.error.message;
-    //             }else{
-    //             msg='An error occured while processing your request.Please contact your Help Desk.';
-    //             }
-    //             this.message=msg;
-    //             this.router.navigateByUrl('/signin');
-    //          },
-    //          () =>{
-    //              if(!this.sessionSnapshot){
-    //                 msg='An error occured while processing your request.Please contact your Help Desk.';
-    //                 this.message=msg;
-    //                 this.router.navigateByUrl('/signin');
-    //              }
-    //          }
-    //      );*/
-        
-    //  }
 
      public getUserDetails() : void{
         var msg:string;

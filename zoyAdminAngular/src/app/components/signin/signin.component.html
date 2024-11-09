@@ -79,9 +79,12 @@
                                     </div>
                                     <form class="user" (ngSubmit)="doSignin()">
                                         <div class="form-group">
+                                            <div class="form-floating">
                                             <input type="email" class="form-control" style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;"
                                             id="exampleInputEmail" aria-describedby="emailHelp" [(ngModel)]="username" (ngModelChange)="username = $event.toLowerCase()"
                                             placeholder="Email">
+                                            <label for="exampleInputEmail">Email</label>
+                                        </div>
                                             <div *ngIf="submitted && username==''" class="text-danger">
                                                 Please enter your email
                                             </div>

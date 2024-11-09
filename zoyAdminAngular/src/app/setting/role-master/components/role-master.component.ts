@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Inject, Renderer2 } from "@angular/core";
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Inject, Renderer2, inject } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
@@ -14,6 +14,8 @@ import { RoleMasterService } from "../service/role-master.service";
 import * as $ from 'jquery';
 import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator } from "@angular/material/paginator";
+import { MatSort, Sort } from "@angular/material/sort";
+import { LiveAnnouncer } from "@angular/cdk/a11y";
 
 @Component({
   selector: 'app-role-master',
@@ -44,11 +46,21 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   public userNameSession:string="";
   mySubscription: any;
   public rolesArray: string[] = []; 
-
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  public totalProduct:number=0;
+  pageSize:number=10;
+  pageSizeOptions=[10,20,50];
   
   public ELEMENT_DATA:RoleModel[];
   dataSource:MatTableDataSource<RoleModel>=new MatTableDataSource<RoleModel>();
   displayedColumns: string[] = [ 'role', 'description','action'];
+  columnSortDirectionsOg: { [key: string]: string | null } = {
+    role: null,
+    description: null
+  };
+ 
+columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
  //
 //@Inject(defMenuEnable) private defMenuEnable:
   constructor( private route: ActivatedRoute,private roleService : RoleMasterService , private renderer: Renderer2, private router: Router, private http: HttpClient, private userService: UserService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private authService: AuthService, private notifyService: NotificationService, private alertDialogService: AlertDialogService) {
@@ -106,6 +118,8 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   ngAfterViewInit(){
     // this.sidemenuComp.expandMenu(16);
     // this.sidemenuComp.activeMenu(16,'role-master');
+    this.dataSource.sort = this.sort;
+		this.dataSource.paginator = this.paginator;
   }
   
  clearArrays(){
@@ -236,30 +250,133 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
    getRoleMockData(){
     let res = [
       {
-          "id": 225,
+          "id": 25,
           "roleName": "ADMIN",
           "description": "Admin role only test"
       },
       {
-          "id": 227,
+          "id": 27,
           "roleName": "EMS HR",
           "description": "EMS HR only"
       },
       {
-          "id": 230,
+          "id": 20,
           "roleName": "ALL ACCESS",
           "description": "All Access"
       },
       {
-          "id": 238,
+          "id": 28,
           "roleName": "RM",
           "description": "RM"
       },
       {
-          "id": 263,
+          "id": 23,
           "roleName": "ADMIN1",
           "description": "admin"
       },
+      
+        {
+          "id": 25,
+          "roleName": "ADMIN",
+          "description": "Admin role only test"
+        },
+        {
+          "id": 27,
+          "roleName": "EMS HR",
+          "description": "EMS HR only"
+        },
+        {
+          "id": 20,
+          "roleName": "ALL ACCESS",
+          "description": "All Access"
+        },
+        {
+          "id": 238,
+          "roleName": "RM",
+          "description": "RM"
+        },
+        {
+          "id": 263,
+          "roleName": "ADMIN1",
+          "description": "admin"
+        },
+        {
+          "id": 290,
+          "roleName": "SUPPORT",
+          "description": "Support role"
+        },
+        {
+          "id": 300,
+          "roleName": "MARKETING",
+          "description": "Marketing team role"
+        },
+        {
+          "id": 310,
+          "roleName": "SALES",
+          "description": "Sales team role"
+        },
+        {
+          "id": 320,
+          "roleName": "CUSTOMER_SERVICE",
+          "description": "Customer service role"
+        },
+        {
+          "id": 330,
+          "roleName": "IT_ADMIN",
+          "description": "IT admin role"
+        },
+        {
+          "id": 340,
+          "roleName": "HR_MANAGER",
+          "description": "Human resources manager"
+        },
+        {
+          "id": 350,
+          "roleName": "FINANCE_ADMIN",
+          "description": "Finance department admin"
+        },
+        {
+          "id": 360,
+          "roleName": "PRODUCT_MANAGER",
+          "description": "Product management role"
+        },
+        {
+          "id": 370,
+          "roleName": "QUALITY_ASSURANCE",
+          "description": "Quality assurance role"
+        },
+        {
+          "id": 380,
+          "roleName": "BUSINESS_ANALYST",
+          "description": "Business analyst role"
+        },
+        {
+          "id": 390,
+          "roleName": "DEVOPS_ENGINEER",
+          "description": "DevOps engineer role"
+        },
+        {
+          "id": 400,
+          "roleName": "SOFTWARE_ENGINEER",
+          "description": "Software engineering role"
+        },
+        {
+          "id": 410,
+          "roleName": "DATA_SCIENTIST",
+          "description": "Data scientist role"
+        },
+        {
+          "id": 420,
+          "roleName": "UX_UI_DESIGNER",
+          "description": "UX/UI designer role"
+        },
+        {
+          "id": 430,
+          "roleName": "LEGAL_ADVISOR",
+          "description": "Legal advisor role"
+        }
+      
+      
       
   ];
 
@@ -619,6 +736,17 @@ getMenuSelectedForEDITPOPUP(menuList:string[],opt:string,menuListEdit:string[]){
        
   }
 }
+private _liveAnnouncer = inject(LiveAnnouncer);
+announceSortChange(sortState: Sort) {
+
+  this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+  this.columnSortDirections[sortState.active] = sortState.direction;
+  if (sortState.direction) {
+    this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+  } else {
+    this._liveAnnouncer.announce('Sorting cleared');
+  }
+  }
 
 }
 
