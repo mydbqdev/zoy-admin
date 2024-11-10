@@ -19,6 +19,7 @@ import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
 import { DataService } from 'src/app/common/service/data.service';
+import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-user-master',
@@ -34,7 +35,7 @@ export class UserMasterComponent implements OnInit,AfterViewInit{
   public lastPageSize:number=0;
   public totalProduct:number=0;
   displayedColumns: string[] = [ 'userName', 'userMail', 'roles', 'action'];
- // @ViewChild(SideNavMenuComponent) sidemenuComp;
+  @ViewChild(SidebarComponent) sidemenuComp;
 
  @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -233,8 +234,8 @@ return;
 
    
 ngAfterViewInit(){
-  // this.sidemenuComp.expandMenu(9);
-  // this.sidemenuComp.activeMenu(9,'user-master');
+  this.sidemenuComp.expandMenu(3);
+  this.sidemenuComp.activeMenu(3,'user-master');
   this.dataSource.paginator=this.paginator;
    setTimeout(()=>{
      this.loadInitialData(this.paginator.pageIndex +1, this.paginator.pageSize);

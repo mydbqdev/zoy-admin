@@ -17,6 +17,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatSort, Sort } from "@angular/material/sort";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { DataService } from 'src/app/common/service/data.service';
+import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-role-master',
@@ -25,7 +26,7 @@ import { DataService } from 'src/app/common/service/data.service';
 })
 export class RoleMasterComponent implements OnInit,AfterViewInit{
   public defRoleMenu: DefMenu;
- // @ViewChild(SideNavMenuComponent) sidemenuComp;
+ @ViewChild(SidebarComponent) sidemenuComp;
   form !: FormGroup;
   roleModel: RoleModel = new RoleModel();
   getRoles : RoleModel[] = [];
@@ -119,8 +120,8 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 		}
 	  }
   ngAfterViewInit(){
-    // this.sidemenuComp.expandMenu(16);
-    // this.sidemenuComp.activeMenu(16,'role-master');
+    this.sidemenuComp.expandMenu(4);
+    this.sidemenuComp.activeMenu(4,'role-master');
     this.dataSource.sort = this.sort;
 		this.dataSource.paginator = this.paginator;
   }

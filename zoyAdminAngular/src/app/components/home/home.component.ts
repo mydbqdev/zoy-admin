@@ -7,6 +7,7 @@ import { UserService } from 'src/app/common/service/user.service';
 import { AuthService } from 'src/app/common/service/auth.service';
 import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
 	selector: 'app-home',
@@ -18,7 +19,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	errorMsg: any = "";
 	mySubscription: any;
 	isExpandSideBar:boolean=true;
-
+	@ViewChild(SidebarComponent) sidemenuComp;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 		this.userNameSession = userService.getUsername();
@@ -52,8 +53,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		//}
 	}
 	ngAfterViewInit() {
-		//this.sidemenuComp.expandMenu(1);
-		//this.sidemenuComp.activeMenu(1, '');
+		this.sidemenuComp.expandMenu(1);
+		this.sidemenuComp.activeMenu(1, 'home');
 	}
 
 	test(){

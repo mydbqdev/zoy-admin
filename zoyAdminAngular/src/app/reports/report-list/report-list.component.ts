@@ -13,9 +13,8 @@ import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import { ReportService } from '../service/reportService';
 import { ReportsModel } from '../model/report_Model';
-
-
-  
+import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
+ 
 @Component({
 	selector: 'app-report-list',
 	templateUrl: './report-list.component.html',
@@ -26,9 +25,9 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	dataSource:MatTableDataSource<ReportsModel>=new MatTableDataSource<ReportsModel>();
 	private _liveAnnouncer = inject(LiveAnnouncer);
 	displayedColumns: string[] = ['customerID', 'pgId', 'transactionDate', 'transactionStatus','totalAmount','actions'];
-
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+	@ViewChild(SidebarComponent) sidemenuComp;
+    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(MatPaginator) paginator: MatPaginator;
   public totalProduct:number=0;
   pageSize:number=10;
   pageSizeOptions=[10,20,50];
@@ -79,8 +78,8 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		this.getRolesData();
 	}
 	ngAfterViewInit() {
-		//this.sidemenuComp.expandMenu(1);
-		//this.sidemenuComp.activeMenu(1, '');
+		this.sidemenuComp.expandMenu(5);
+		this.sidemenuComp.activeMenu(5, 'report-list');
 		this.dataSource.sort = this.sort;
 		this.dataSource.paginator = this.paginator;
 
