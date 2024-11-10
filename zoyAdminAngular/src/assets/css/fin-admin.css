@@ -6642,6 +6642,10 @@ button.bg-dark:focus {
   border-radius: 50% !important;
 }
 
+.rounded-elispe {
+  border-radius: 10px !important;
+}
+
 .rounded-pill {
   border-radius: 50rem !important;
 }
@@ -10466,7 +10470,7 @@ a:focus {
 }
 
 .sidebar #sidebarToggle {
-  width: 2.5rem;
+  width: 1.5rem;
   height: 2.5rem;
   text-align: center;
   margin-bottom: 1rem;
@@ -10501,6 +10505,14 @@ a:focus {
 
 .sidebar.toggled .sidebar-card {
   display: none;
+}
+
+.expand-button-margin-right{
+  margin-right:-70px ;
+}
+
+.collaspe-button-margin-right{
+  margin-right:-40px ;
 }
 
 .sidebar .sidebar-brand {

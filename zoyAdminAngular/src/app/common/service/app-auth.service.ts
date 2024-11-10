@@ -94,9 +94,9 @@ export class AppAuthService extends AuthService{
         );
     }
 
-    public checkLoginUserOnServer() : Observable<ApplicationSession>{
+   /* public checkLoginUserOnServer() : Observable<ApplicationSession>{
         const url1=this.basePath +'checkLoginUser';
-        let userEmail =this.userService.getUsername();
+        let userEmail =this.userService?.getUsername();
         var res=new MockData().checkLoginUserResponce.filter(d =>d.userEmail == userEmail);
         const mockData: ApplicationSession = Object.assign(res[0]);
 
@@ -151,8 +151,58 @@ export class AppAuthService extends AuthService{
             }
         );
        
+    }*/
+    public checkLoginUserOnServer() : Observable<ApplicationSession>{
+        const url1=this.basePath +'checkLoginUser';
+        return this.httpclient.post<ApplicationSession>(
+            url1,
+            '',
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
     }
 
+    public checkLoginUser() : void{
+        var msg:string;
+        this.sessionSnapshot =null;
+        this.message ='';
+        this.checkLoginUserOnServer().subscribe(
+            (result)=>{
+               this.sessionSnapshot = result;
+               this.sessionSnapshot.username = result.empEmail;
+               this.sessionSnapshot.token = result.token;
+               this.userService.setUsername(result.empEmail);
+               this.userService.setUserinfo(result);
+               //let resp: ResponseStore={empEmail:result.empEmail,token:result.token};
+               //this.setSessionStore(resp);
+               if(!this.sessionSnapshot.username){
+                   this.router.navigateByUrl('/signin');
+               }{
+                   this.router.navigateByUrl('/home'); 
+              }
+            },
+            (err) =>{
+               if(err.error && err.error.message){
+                   msg=err.error.message;
+               }else{
+               msg='An error occured while processing your request.Please contact your Help Desk.';
+               }
+               this.message=msg;
+               this.router.navigateByUrl('/signin');
+            },
+            () =>{
+                if(!this.sessionSnapshot){
+                   msg='An error occured while processing your request.Please contact your Help Desk.';
+                   this.message=msg;
+                   this.router.navigateByUrl('/signin');
+                }
+            }
+        );
+       
+    }
      public getUserDetails() : void{
         var msg:string;
         this.sessionSnapshot =null;
