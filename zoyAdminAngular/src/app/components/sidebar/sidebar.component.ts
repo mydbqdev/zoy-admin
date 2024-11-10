@@ -12,6 +12,24 @@ export class SidebarComponent implements OnInit,AfterViewInit {
   userNameSession: any;
   mySubscription: any;
   isExpandSideBar:boolean=true;
+  public menu1: boolean = true;
+	public menu2: boolean = false;
+	public menu3: boolean = false;
+	public menu4: boolean = false;
+	public menu5: boolean = false;
+	public menu6: boolean = false;
+	public menu7: boolean = false;
+
+	public menu11: boolean = true;
+	public menu21: boolean = false;
+	public menu31: boolean = false;
+	public menu41: boolean = false;
+	public menu51: boolean = false;
+	public menu61: boolean = false;
+	public menu71: boolean = false;
+
+	public activeSubNenuName: string = '';
+
   constructor( private userService: UserService, private router: Router,private dataService:DataService) {
     this.userNameSession = userService.getUsername();
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -50,4 +68,251 @@ export class SidebarComponent implements OnInit,AfterViewInit {
   collaspeExpand(){
     this.dataService.setIsExpandSideBar(this.isExpandSideBar ? false:true);
   }
+
+  expandMenu(id: number): void {
+		switch (id) {
+			case 1: {
+				if (!this.menu1) {
+					this.menu1 = true;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				} else {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				}
+				break;
+			}
+			case 2: {
+				if (!this.menu2) {
+					this.menu1 = false;
+					this.menu2 = true;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				} else {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				}
+				break;
+			}
+			case 3: {
+				if (!this.menu3) {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = true;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				} else {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				}
+				break;
+			}
+			case 4: {
+				if (!this.menu4) {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = true;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				} else {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				}
+				break;
+			}
+			case 5: {
+				if (!this.menu5) {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = true;
+					this.menu6 = false;
+					this.menu7 = false;
+				} else {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				}
+				break;
+			}
+			case 6: {
+				if (!this.menu6) {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = true;
+					this.menu7 = false;
+				} else {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				}
+				break;
+			}
+			case 7: {
+				if (!this.menu7) {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = true;
+				} else {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+				}
+				break;
+			}
+			
+			default: {
+				this.menu1 = false;
+				this.menu2 = false;
+				this.menu3 = false;
+				this.menu4 = false;
+				this.menu5 = false;
+				this.menu6 = false;
+				this.menu7 = false;
+				break;
+			}
+    }
+    console.info("this.menu3:"+this.menu3);
+	}
+
+	activeMenu(id: number, menuName: string): void {
+		switch (id) {
+			case 1: {
+				this.menu11 = true;
+				this.menu21 = false;
+				this.menu31 = false;
+				this.menu41 = false;
+				this.menu51 = false;
+				this.menu61 = false;
+				this.menu71 = false;
+				break;
+			}
+			case 2: {
+				this.menu11 = false;
+				this.menu21 = true;
+				this.menu31 = false;
+				this.menu41 = false;
+				this.menu51 = false;
+				this.menu61 = false;
+				this.menu71 = false;
+				break;
+			}
+			case 3: {
+				this.menu11 = false;
+				this.menu21 = false;
+				this.menu31 = true;
+				this.menu41 = false;
+				this.menu51 = false;
+				this.menu61 = false;
+				this.menu71 = false;
+				break;
+			}
+			case 4: {
+				this.menu11 = false;
+				this.menu21 = false;
+				this.menu31 = false;
+				this.menu41 = true;
+				this.menu51 = false;
+				this.menu61 = false;
+				this.menu71 = false;
+				break;
+			}
+			case 5: {
+				this.menu11 = false;
+				this.menu21 = false;
+				this.menu31 = false;
+				this.menu41 = false;
+				this.menu51 = true;
+				this.menu61 = false;
+				this.menu71 = false;
+				break;
+			}
+			case 6: {
+				this.menu11 = false;
+				this.menu21 = false;
+				this.menu31 = false;
+				this.menu41 = false;
+				this.menu51 = false;
+				this.menu61 = true;
+				this.menu71 = false;
+				break;
+			}
+			case 7: {
+				this.menu11 = false;
+				this.menu21 = false;
+				this.menu31 = false;
+				this.menu41 = false;
+				this.menu51 = false;
+				this.menu61 = false;
+				this.menu71 = true;
+				break;
+			}
+
+			default: {
+				this.menu11 = false;
+				this.menu21 = false;
+				this.menu31 = false;
+				this.menu41 = false;
+				this.menu51 = false;
+				this.menu61 = false;
+				this.menu71 = false;
+				break;
+			}
+
+		}
+    this.activeSubNenuName = menuName;
+    console.info("this.menu31:"+this.menu31);
+    console.info("this.activeSubNenuName:"+this.activeSubNenuName);
+	}
 }
