@@ -17,7 +17,10 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatSort, Sort } from "@angular/material/sort";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { DataService } from 'src/app/common/service/data.service';
+import { RoleScreenPrv } from "../models/role-screen-model";
+import { RoleScreenModel } from "src/app/common/models/rolescreen-model";
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
+import { ConfirmationDialogService } from "src/app/common/shared/confirm-dialog/confirm-dialog.service";
 
 @Component({
   selector: 'app-role-master',
@@ -33,8 +36,8 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   editRoles : RoleModel = new RoleModel();
   deleteRoles : RoleModel = new RoleModel();
   role : string = '';
-  description : string = '';
-  editDescription : string = '';
+  desc : string = '';
+  editDesc : string = '';
   id : number = 0;
   dataSelectedRead: string[] = [];
   dataSelectedWrite: string[] = [];
@@ -61,12 +64,13 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
     role: null,
     description: null
   };
- 
+  private _liveAnnouncer = inject(LiveAnnouncer);
 columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
  //
 //@Inject(defMenuEnable) private defMenuEnable:
-  constructor( private route: ActivatedRoute,private roleService : RoleMasterService , private renderer: Renderer2, private router: Router, private http: HttpClient, private userService: UserService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private authService: AuthService, private notifyService: NotificationService, private alertDialogService: AlertDialogService,private dataService:DataService) {
-    // this.userNameSession=userService.getUsername();
+  constructor( private route: ActivatedRoute,private roleService : RoleMasterService , private renderer: Renderer2, private router: Router,private confirmationDialogService:ConfirmationDialogService,
+    private http: HttpClient, private userService: UserService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private authService: AuthService, private notifyService: NotificationService, private alertDialogService: AlertDialogService,private dataService:DataService) {
+  // this.userNameSession=userService.getUsername();
   //  console.log("defMenuEnable",defMenuEnable);
     // this.defRoleMenu=defMenuEnable;
      this.defRoleMenu={
@@ -110,7 +114,7 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
     this.form = this.formBuilder.group({
       id:[''],
       roleName : ['', [Validators.required]],
-      description : ['', [Validators.required]]
+      desc : ['', [Validators.required]]
     });
     
   }
@@ -130,36 +134,61 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
   this.submitted = false;
   this.dataSelectedRead = [];
   this.dataSelectedWrite = [];
+
  }
 
+ 
   saveRoleModel() {
    // this.authService.checkLoginUserVlidaate();
     this.forValidations(); 
+    if(this.ELEMENT_DATA.filter(d=>d.roleName == this.role)){
+      this.notifyService.showInfo(this.role+' role name is already available.', "Please change role name.");  
+      return;
+    }
     this.dataSelectedRead =[];
     this.dataSelectedWrite =[];
     this.getCheckedMenulist("CREATE",'read');
     this.getCheckedMenulist("CREATE",'write');
+
+    const convertToRoleScreen = (dataread: string[], datawrite: string[]): RoleModel=> {
+      const roleScreen: RoleModel= new RoleModel();
+    
+      const allScreens = [...dataread, ...datawrite];
+      const screenNames = new Set<string>();
+    
+      allScreens.forEach(screen => {
+        const baseScreenName = screen.replace(/_READ|_WRITE/g, ''); 
+        screenNames.add(baseScreenName);
+      });
+    
+      screenNames.forEach(screenName => {
+        roleScreen.roleScreen.push({
+          screenName,
+          readPrv: dataread.some(screen => screen.includes(screenName + '_READ')),
+          writePrv: datawrite.some(screen => screen.includes(screenName + '_WRITE'))
+        });
+      });
+    
+      return roleScreen;
+    };
+    
+    // Get the result
+    this.roleModel = convertToRoleScreen(this.dataSelectedRead, this.dataSelectedWrite);
+
     this.roleModel.id = this.id;
     this.roleModel.roleName = this.role;
-    this.roleModel.description = this.description;
-    this.roleModel.dataread = this.dataSelectedRead;
-    this.roleModel.datawrite = this.dataSelectedWrite;
+    this.roleModel.desc = this.desc;
+
+    // this.roleModel.dataread = this.dataSelectedRead;
+    // this.roleModel.datawrite = this.dataSelectedWrite;
     if(!this.form.invalid){
-      console.log("this.roleModel",this.roleModel)
-      return;
       this.spinner.show();
       this.roleService.saveMyRole(this.roleModel).subscribe((result) =>{
         this.spinner.hide();
-        if (result.status == '1'){     
-          this.notifyService.showSuccess("Role has been added successfully", "");         
-        }else if (result.status == '2'){     
-          this.notifyService.showWarning("Role has been added successfully but no screen is associated", "");     
-        }else{
-          this.notifyService.showError(result.status, "");
-        }
+        this.notifyService.showSuccess(result.message, "");  
         this.closeNewModal.nativeElement.click(); 
         this.reloadCurrentPage(); 
-        this.getRolesData();
+        // this.getRolesData();
        }, error => {
         this.spinner.hide();
         if(error.status==403){
@@ -197,33 +226,54 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
     }
 
     saveEditedData(){  
-      this.authService.checkLoginUserVlidaate();
+     // this.authService.checkLoginUserVlidaate();
       this.submitted=true;      
-      if(this.editRoles.description=="" || this.editRoles.description==" "){
+      if(this.editRoles.desc=="" || this.editRoles.desc==" "){
         return;
       }
       this.dataSelectedRead =[];
       this.dataSelectedWrite =[];
       this.getCheckedMenulist("EDIT",'read');
       this.getCheckedMenulist("EDIT",'write');
+      
+      const convertToRoleScreen = (dataread: string[], datawrite: string[]): RoleModel=> {
+        const roleScreen: RoleModel= new RoleModel();
+      
+        const allScreens = [...dataread, ...datawrite];
+        const screenNames = new Set<string>();
+      
+        allScreens.forEach(screen => {
+          const baseScreenName = screen.replace(/_READ|_WRITE/g, ''); // Remove '_READ' or '_WRITE' for screen name
+          screenNames.add(baseScreenName);
+        });
+      
+        screenNames.forEach(screenName => {
+          roleScreen.roleScreen.push({
+            screenName,
+            readPrv: dataread.some(screen => screen.includes(screenName + '_READ')),
+            writePrv: datawrite.some(screen => screen.includes(screenName + '_WRITE'))
+          });
+        });
+      
+        return roleScreen;
+      };
+      
+
+      this.roleModel = convertToRoleScreen(this.dataSelectedRead, this.dataSelectedWrite);
+
       this.roleModel.id  = this.editRoles.id;
       this.roleModel.roleName = this.editRoles.roleName;
-      this.roleModel.description = this.editRoles.description;
-      this.roleModel.dataread = this.dataSelectedRead;
-      this.roleModel.datawrite = this.dataSelectedWrite;
+      this.roleModel.desc = this.editRoles.desc;
+
+      // this.roleModel.dataread = this.dataSelectedRead;
+      // this.roleModel.datawrite = this.dataSelectedWrite;
       this.spinner.show();
-      this.roleService.saveMyRole(this.roleModel).subscribe((result) =>{
+      this.roleService.editRole(this.roleModel).subscribe((result) =>{
         this.spinner.hide();
-       if (result.status == '1'){
-         this.notifyService.showSuccess("Role has been edited successfully", "");        
-        }else if (result.status == '2'){     
-          this.notifyService.showWarning("Role has been edited successfully but no screen is associated", "");    
-        }else{ 
-         this.notifyService.showError(result.status, "");
-       }
+        this.notifyService.showSuccess(result.message, "");  
        this.editNewModal.nativeElement.click(); 
           this.reloadCurrentPage(); 
-          this.getRolesData();
+          // this.getRolesData();
       }, error => {
         this.spinner.hide();
         if(error.status==403){
@@ -250,154 +300,14 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
        }
       });
      }
-     
-   getRoleMockData(){
-    let res = [
-      {
-          "id": 25,
-          "roleName": "ADMIN",
-          "description": "Admin role only test"
-      },
-      {
-          "id": 27,
-          "roleName": "EMS HR",
-          "description": "EMS HR only"
-      },
-      {
-          "id": 20,
-          "roleName": "ALL ACCESS",
-          "description": "All Access"
-      },
-      {
-          "id": 28,
-          "roleName": "RM",
-          "description": "RM"
-      },
-      {
-          "id": 23,
-          "roleName": "ADMIN1",
-          "description": "admin"
-      },
-      
-        {
-          "id": 25,
-          "roleName": "ADMIN",
-          "description": "Admin role only test"
-        },
-        {
-          "id": 27,
-          "roleName": "EMS HR",
-          "description": "EMS HR only"
-        },
-        {
-          "id": 20,
-          "roleName": "ALL ACCESS",
-          "description": "All Access"
-        },
-        {
-          "id": 238,
-          "roleName": "RM",
-          "description": "RM"
-        },
-        {
-          "id": 263,
-          "roleName": "ADMIN1",
-          "description": "admin"
-        },
-        {
-          "id": 290,
-          "roleName": "SUPPORT",
-          "description": "Support role"
-        },
-        {
-          "id": 300,
-          "roleName": "MARKETING",
-          "description": "Marketing team role"
-        },
-        {
-          "id": 310,
-          "roleName": "SALES",
-          "description": "Sales team role"
-        },
-        {
-          "id": 320,
-          "roleName": "CUSTOMER_SERVICE",
-          "description": "Customer service role"
-        },
-        {
-          "id": 330,
-          "roleName": "IT_ADMIN",
-          "description": "IT admin role"
-        },
-        {
-          "id": 340,
-          "roleName": "HR_MANAGER",
-          "description": "Human resources manager"
-        },
-        {
-          "id": 350,
-          "roleName": "FINANCE_ADMIN",
-          "description": "Finance department admin"
-        },
-        {
-          "id": 360,
-          "roleName": "PRODUCT_MANAGER",
-          "description": "Product management role"
-        },
-        {
-          "id": 370,
-          "roleName": "QUALITY_ASSURANCE",
-          "description": "Quality assurance role"
-        },
-        {
-          "id": 380,
-          "roleName": "BUSINESS_ANALYST",
-          "description": "Business analyst role"
-        },
-        {
-          "id": 390,
-          "roleName": "DEVOPS_ENGINEER",
-          "description": "DevOps engineer role"
-        },
-        {
-          "id": 400,
-          "roleName": "SOFTWARE_ENGINEER",
-          "description": "Software engineering role"
-        },
-        {
-          "id": 410,
-          "roleName": "DATA_SCIENTIST",
-          "description": "Data scientist role"
-        },
-        {
-          "id": 420,
-          "roleName": "UX_UI_DESIGNER",
-          "description": "UX/UI designer role"
-        },
-        {
-          "id": 430,
-          "roleName": "LEGAL_ADVISOR",
-          "description": "Legal advisor role"
-        }
-      
-      
-      
-  ];
 
-  this.ELEMENT_DATA=Object.assign([],res);
-  this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-     
-  this.getRoles = Object.assign( res);
+  getRolesData() {
 
-   }
-
-getRolesData() {
-  this.getRoleMockData();
  // this.authService.checkLoginUserVlidaate();
- return;
         this.spinner.show();
-        this.roleService.getRolesSaved().subscribe(res => {
-          this.ELEMENT_DATA=Object.assign([],res.listObj);
+        this.roleService.getRolesList().subscribe(res => {
+          console.log("getRolesList>res",res)
+          this.ELEMENT_DATA=Object.assign([],res);
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
       
         this.spinner.hide();
@@ -430,13 +340,13 @@ getRolesData() {
 }
 
 
-getEditMock(){
+getEditData(data:any){
 
  var res= {
     "id": 225,
     "roleName": "ADMIN",
     "description": "Admin role only test",
-    "roleScreen": {
+    "roleScreenList": {
       "OWNER_ONBOARDING_AND_REGISTRATION_WRITE": true,
       "OWNER_EKYC_VERIFICATION_WRITE": true,
       "OWNER_ONBOARDING_AND_REGISTRATION_READ": true,
@@ -448,9 +358,35 @@ getEditMock(){
       "PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ": true,        
     }
 }
-this.editRoles =Object.assign(res); 
-const propertyNames = Object.keys(this.editRoles.roleScreen).filter((propertyName) => {
-  return  this.editRoles.roleScreen[propertyName] !== false;
+
+function convertRoleData(input: RoleModel): any {
+  const output: RoleModel = new RoleModel();
+  output.id=input.id;
+  output.roleName=input.roleName;
+  output.desc=input.desc;
+  output.roleScreenList=new RoleScreenModel();
+
+  // Iterate over the roleScreen array and build the permissions structure
+  input.roleScreen.forEach(screen => {
+      if (screen.readPrv) {
+          output.roleScreenList[`${screen.screenName.toUpperCase()}_READ`] = true;
+      }
+      if (screen.writePrv) {
+          output.roleScreenList[`${screen.screenName.toUpperCase()}_WRITE`] = true;
+      }
+  });
+
+  return output;
+}
+console.log("data",data)
+// Apply the conversion
+const model = convertRoleData(data);
+console.log("model",model)
+
+
+this.editRoles =Object.assign(model); 
+const propertyNames = Object.keys(this.editRoles.roleScreenList).filter((propertyName) => {
+  return  this.editRoles.roleScreenList[propertyName] !== false;
 });
 for(let roles of propertyNames){
   if(roles.includes("READ"))
@@ -464,60 +400,96 @@ this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"write",this.dataSelectedWrit
 }
 
 
-getEditData(id : number){
+// getEditData1(data : any){
 
- // this.authService.checkLoginUserVlidaate();
-  this.submitted=false;
- this.dataSelectedRead = [];
-  this.dataSelectedWrite= [];
-  this.getEditMock();
-  return;
-  this.spinner.show();
-  this.roleService.editRole(id).subscribe(res => {
-         this.editRoles = res; 
-          const propertyNames = Object.keys(this.editRoles.roleScreen).filter((propertyName) => {
-            return  this.editRoles.roleScreen[propertyName] !== false;
-          });
-          for(let roles of propertyNames){
-            if(roles.includes("READ"))
-                this.dataSelectedRead.push(roles);
-            else
-              this.dataSelectedWrite.push(roles);    
-          }
+//  // this.authService.checkLoginUserVlidaate();
+//   this.submitted=false;
+//  this.dataSelectedRead = [];
+//   this.dataSelectedWrite= [];
+//  // this.getEditMock();
+  
+//   function convertRoleData(input: RoleModel): any {
+//     const output: any = {
+//         id: input.id,
+//         roleName: input.roleName,  // Unchanged from input
+//         description: input.desc,   // Renaming 'desc' to 'description'
+//         roleScreen: {}  // Will store the mapped permissions
+//     };
 
-          this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"read",this.dataSelectedRead);
-          this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"write",this.dataSelectedWrite);
-          this.spinner.hide();
-  },error =>{
-    this.spinner.hide();
-    if(error.status==403){
-      this.router.navigate(['/forbidden']);
-    }else if (error.error && error.error.message) {
-      this.errorMsg =error.error.message;
-      console.log("Error:"+this.errorMsg);
-      this.notifyService.showError(this.errorMsg, "");
-    } else {
-      if(error.status==500 && error.statusText=="Internal Server Error"){
-        this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-      }else{
-        let str;
-          if(error.status==400){
-          str=error.error;
-          }else{
-            str=error.message;
-            str=str.substring(str.indexOf(":")+1);
-          }
-          console.log("Error:"+str);
-          this.errorMsg=str;
-      }
-      if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-    }
-  }) ;
+//     // Iterate over the roleScreen array and build the permissions structure
+//     input.roleScreen.forEach(screen => {
+//         if (screen.readPrv) {
+//             output.roleScreen[`${screen.screenName.toUpperCase()}_READ`] = true;
+//         }
+//         if (screen.writePrv) {
+//             output.roleScreen[`${screen.screenName.toUpperCase()}_WRITE`] = true;
+//         }
+//     });
+
+//     return output;
+// }
+
+// // Apply the conversion
+// const model = convertRoleData(data);
+
+  
+//   // Perform the transformation
+ 
+//   return;
+//   this.spinner.show();
+//   this.roleService.editRole(model).subscribe(res => {
+//          this.editRoles = res; 
+//           const propertyNames = Object.keys(this.editRoles.roleScreenList).filter((propertyName) => {
+//             return  this.editRoles.roleScreenList[propertyName] !== false;
+//           });
+//           for(let roles of propertyNames){
+//             if(roles.includes("READ"))
+//                 this.dataSelectedRead.push(roles);
+//             else
+//               this.dataSelectedWrite.push(roles);    
+//           }
+
+//           this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"read",this.dataSelectedRead);
+//           this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"write",this.dataSelectedWrite);
+//           this.spinner.hide();
+//   },error =>{
+//     this.spinner.hide();
+//     if(error.status==403){
+//       this.router.navigate(['/forbidden']);
+//     }else if (error.error && error.error.message) {
+//       this.errorMsg =error.error.message;
+//       console.log("Error:"+this.errorMsg);
+//       this.notifyService.showError(this.errorMsg, "");
+//     } else {
+//       if(error.status==500 && error.statusText=="Internal Server Error"){
+//         this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+//       }else{
+//         let str;
+//           if(error.status==400){
+//           str=error.error;
+//           }else{
+//             str=error.message;
+//             str=str.substring(str.indexOf(":")+1);
+//           }
+//           console.log("Error:"+str);
+//           this.errorMsg=str;
+//       }
+//       if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+//     }
+//   }) ;
   
 
-}
+// }
 
-deleteRole(){
+deleteRecord(id : number){
+  this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to delete the User?')
+  .then(
+    (confirmed) =>{
+     if(confirmed){
+  this.deleteRoles = this.getRoles.find(r => r.id == id);
+
+  this.notifyService.showError("The Api is not read", "");
+  return
   this.authService.checkLoginUserVlidaate();
   this.spinner.show();
   this.roleService.deleteRole(this.deleteRoles.id.toString()).subscribe((result) => {
@@ -558,12 +530,14 @@ deleteRole(){
       if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
     }
   });
+  }
+  }).catch(
+    () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+    ); 
   
 }
 
-deleteRecord(id : number){
-  this.deleteRoles = this.getRoles.find(r => r.id == id);
-}
+
 reloadCurrentPage(){
   let currentUrl = this.router.url;
   this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
@@ -677,7 +651,10 @@ menuSubMenus: string[] = [
   "OWNER_EKYC_VERIFICATION",
   "MANAGING_OWNERS",
   "CANCELLATION_AND_REFUND_RULES",
-  "PERCENTAGE_AND_CHARGE_CONFIGURATIONS"
+  "PERCENTAGE_AND_CHARGE_CONFIGURATIONS",
+  "ROLE_AND_PERMISSION",
+  "MANAGING_USERS",
+  "USER_ROLES"
 ];
 
 getCheckedMenulist(id:string,opt:string){
@@ -740,7 +717,7 @@ getMenuSelectedForEDITPOPUP(menuList:string[],opt:string,menuListEdit:string[]){
        
   }
 }
-private _liveAnnouncer = inject(LiveAnnouncer);
+
 announceSortChange(sortState: Sort) {
 
   this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
@@ -750,7 +727,10 @@ announceSortChange(sortState: Sort) {
   } else {
     this._liveAnnouncer.announce('Sorting cleared');
   }
+
   }
+
+  
 
 }
 

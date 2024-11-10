@@ -1,15 +1,19 @@
 import { RoleScreenModel } from "../../../common/models/rolescreen-model";
+import { RoleScreenPrv } from "./role-screen-model";
 
 export class RoleModel {
 
     public id : number;
     public roleName : string;
-    public description : string;
+    public desc : string;
 
   
     dataread : string[];
     datawrite : string[];
 
-    roleScreen : RoleScreenModel;
+
+    roleScreen :RoleScreenPrv[]=[];
+
+    roleScreenList : RoleScreenModel;
    
 }

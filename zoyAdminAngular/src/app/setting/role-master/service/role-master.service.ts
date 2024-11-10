@@ -20,7 +20,7 @@ export class RoleMasterService {
   constructor(private httpclient: HttpClient, private router: Router, private messageService: MessageService, @Inject(BASE_PATH) private basePath: string) { }
 
   saveMyRole(data : any): Observable<any>{
-    let url1=this.basePath +'rolescreenmaster/user/roleScreenMasterSave';
+    let url1=this.basePath +'zoy_admin/role_create';
         return this.httpclient.post<any>(
             url1,
             data,
@@ -33,11 +33,10 @@ export class RoleMasterService {
 
   }
 
-getRolesSaved(): Observable<any> {
-  const url1=this.basePath +"rolescreenmaster/user/roleScreenMaster";
-        return this.httpclient.post<any>(
+  getRolesList(): Observable<any> {
+  const url1=this.basePath +"zoy_admin/role_list";
+        return this.httpclient.get<any>(
             url1,
-            '',
             {
                 headers:ServiceHelper.buildHeaders(),
                observe : 'body',
@@ -47,11 +46,11 @@ getRolesSaved(): Observable<any> {
 } 
 
 
-editRole(id : number){
-  let url1=this.basePath + "rolescreenmaster/user/roleScreenMasterEdit?code=" + id ;
-        return this.httpclient.post<any>(
+editRole(data : any){
+  let url1=this.basePath + "zoy_admin/role_update" ;
+        return this.httpclient.put<any>(
             url1,
-            '',
+            data,
             {
                 headers:ServiceHelper.buildHeaders(),
                observe : 'body',

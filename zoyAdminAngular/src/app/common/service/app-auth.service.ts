@@ -49,36 +49,21 @@ export class AppAuthService extends AuthService{
     }
 
     public getAuthUser(user:User) : Observable<any>{
-        const url1=this.basePath +'auth/login';
+        const url1=this.basePath +'zoy_admin/login';
       //  let loginUser : User ={userEmail:user.userEmail,password:this.encryptDecryptHelper.encrypt(user.password)};
-        let loginUser : User ={userEmail:user.userEmail,password:user.password};
+        let loginUser : User ={email:user.email,password:user.password};
 
         let encrypt=this.encryptDecryptHelper.encrypt(user.password);
-        var res=new MockData().login.filter(d =>d.userEmail == user.userEmail);
-       
-        if(res.length>0){
-            if( res[0].password == loginUser.password){
-            this.userService.setUsername(res[0].userEmail);
-           
-            const mockData: ApplicationSession = Object.assign(res[0]);
-            return of(mockData);
-           }else{
-            return  throwError(() => new Error('Invalid credentials.'));
-           }
-
-        }else{
-            return  throwError(() => new Error('Invalid User Email.'));
-        }
-
-        // return this.httpclient.post<User>(
-        //     url1,
-        //     loginUser,
-        //     {
-        //         headers:ServiceHelper.buildHeadersAuth(encrypt),
-        //         observe : 'body',
-        //         withCredentials:true
-        //     }
-        // );
+   
+        return this.httpclient.post<User>(
+            url1,
+            loginUser,
+            {
+                headers:ServiceHelper.buildHeadersBasicAuth(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
     }
 
     public signupUser(user:SignupDetails) : Observable<any>{
@@ -152,11 +137,29 @@ export class AppAuthService extends AuthService{
         );
        
     }*/
-    public checkLoginUserOnServer() : Observable<ApplicationSession>{
+
+    public checkLoginUserOnServer1() : Observable<ApplicationSession>{
         const url1=this.basePath +'checkLoginUser';
         return this.httpclient.post<ApplicationSession>(
             url1,
             '',
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+    }
+    public checkLoginUserOnServer() : Observable<ApplicationSession>{
+        const url1=this.basePath +'zoy_admin/user_assign';
+        let token ={"token":""};
+        if(!sessionStorage.getItem("token")){
+            this.router.navigateByUrl('/signin');
+        }
+         token ={"token":sessionStorage.getItem("token").replace("Bearer ","")}
+        return this.httpclient.post<any>(
+            url1,
+            token,
             {
                 headers:ServiceHelper.buildHeaders(),
                observe : 'body',

@@ -72,7 +72,7 @@
                                                   </span>
                                             </th>
                                             <td mat-cell data-label="description"  *matCellDef="let element;"  >
-                                              {{element.description}}
+                                              {{element.desc}}
                                             </td>
                                         </ng-container>
                       
@@ -85,8 +85,8 @@
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                                     aria-labelledby="dropdownMenuLink">
-                                                    <a class="dropdown-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUpdateLabel" aria-controls="offcanvasUpdateLabel" (click)="getEditData(element.id)">Edit</a>
-                                                    <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal"  data-bs-target="#removeModalCenter" (click)="deleteRecord(element.id)" >Delete</a>
+                                                    <a class="dropdown-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUpdateLabel" aria-controls="offcanvasUpdateLabel" (click)="getEditData(element)">Edit</a>
+                                                    <a class="dropdown-item" href="javascript:void(0)"  (click)="deleteRecord(element.id)" >Delete</a>
                                                 </div>
                                             </td>
                                             
@@ -319,7 +319,7 @@
 </div> -->
 
 
-     <!-- #Modal for removing users -->
+     <!-- #Modal for removing users 
      <div class="modal fade" id="removeModalCenter" tabindex="-1" role="dialog" data-bs-keyboard="false"  aria-labelledby="removeModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -341,12 +341,12 @@
             </div>
         </div>
     </div>
-    
+    -->
    <!----Update Role----->
    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUpdateLabel" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasUpdateLabel">Update Role</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #registerCloseModal></button>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #closeNewModal></button>
     </div>
     <hr class="sidebar-divider my-0">
     <div class="offcanvas-body">
@@ -357,10 +357,10 @@
             </div>
             <div class="form-group">
                 <label for="description" class="col-form-label">Description<i class="fa fa-asterisk"></i></label>
-                <input type="text" class="form-control" id="description" name="description" [ngClass]="{'is-invalid':submitted &&  (editRoles.description=='' || editRoles.description==' ')}" value={{editRoles.description}}  [(ngModel)]="editRoles.description" autocomplete="off" />
+                <input type="text" class="form-control" id="description" name="description" [ngClass]="{'is-invalid':submitted &&  (editRoles.desc=='' || editRoles.desc==' ')}" [(ngModel)]="editRoles.desc" autocomplete="off" />
             
-                <div *ngIf="submitted &&( editRoles.description=='' || editRoles.description==' ')" class="text-danger">
-                 <div *ngIf="submitted && editRoles.description==''">
+                <div *ngIf="submitted &&( editRoles.desc=='' || editRoles.desc==' ')" class="text-danger">
+                 <div *ngIf="submitted && editRoles.desc==''">
                      Description is required
                  </div>
                  </div>
@@ -385,8 +385,8 @@
             <div  id="collapseOWNERMANAGEMENTE" class="collapse" data-parent="#accordionRole" #ownerManagementetab>
               <div class="row" >
                  <div class="col-sm-8 pl-5">Owner Onboarding And Registration</div>
-                 <div class="col-sm-2"><input type="checkbox" name="ownerManagementeread"    value="OWNER_ONBOARDING_AND_REGISTRATION_READ" id="ownerManagementcReadOOR"  (click)="onChangeCheck($event,'read','ownerManagemente','OOR')"/></div>
-                 <div class="col-sm-2"><input type="checkbox" name="ownerManagementewrite"   value="OWNER_ONBOARDING_AND_REGISTRATION_WRITE"  id="ownerManagementcWriteOOR" (click)="onChangeCheck($event,'write','ownerManagemente','OOR')"/></div>
+                 <div class="col-sm-2"><input type="checkbox" name="ownerManagementeread"    value="OWNER_ONBOARDING_AND_REGISTRATION_READ" id="ownerManagementeReadOOR"  (click)="onChangeCheck($event,'read','ownerManagemente','OOR')"/></div>
+                 <div class="col-sm-2"><input type="checkbox" name="ownerManagementewrite"   value="OWNER_ONBOARDING_AND_REGISTRATION_WRITE"  id="ownerManagementeWriteOOR" (click)="onChangeCheck($event,'write','ownerManagemente','OOR')"/></div>
               </div>         
               <div class="row" >
                  <div class="col-sm-8 pl-5">Owner eKYC Verification</div>
@@ -399,6 +399,26 @@
                  <div class="col-sm-2"><input type="checkbox" name="ownerManagementewrite"   value="MANAGING_OWNERS_WRITE"  id="ownerManagementcWriteMO" (click)="onChangeCheck($event,'write','ownerManagemente','MO')"/></div>
               </div>
            </div>
+           <div  class="row">									         
+            <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+            <span  class="collapsed" data-toggle="collapse" data-target="#collapseUSERMANAGEMENTE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+            <span class="title"> User Management</span>
+            </div>
+            <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="userManagementereadAll"  (click)="onChangeCheckAll($event,'read','userManagemente')"/></div>
+            <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="userManagementewriteAll" (click)="onChangeCheckAll($event,'write','userManagemente')" /></div>								                
+           </div>
+          <div  id="collapseUSERMANAGEMENTE" class="collapse" data-parent="#accordionRole" #userManagementetab>
+            <div class="row" >
+               <div class="col-sm-8 pl-5">Managing Users</div>
+               <div class="col-sm-2"><input type="checkbox" name="userManagementeread"    value="MANAGING_USERS_READ" id="userManagementeReadMU"  (click)="onChangeCheck($event,'read','userManagemente','MU')"/></div>
+               <div class="col-sm-2"><input type="checkbox" name="userManagementewrite"   value="MANAGING_USERS_WRITE"  id="userManagementeWriteMU" (click)="onChangeCheck($event,'write','userManagemente','MU')"/></div>
+            </div>         
+            <div class="row" >
+               <div class="col-sm-8 pl-5">Owner eKYC Verification</div>
+               <div class="col-sm-2"><input type="checkbox" name="userManagementeread"    value="USER_ROLES_READ" id="userManagementeReadUR"  (click)="onChangeCheck($event,'read','userManagemente','UR')"/></div>
+               <div class="col-sm-2"><input type="checkbox" name="userManagementewrite"   value="USER_ROLES_WRITE"  id="userManagementeWriteUR" (click)="onChangeCheck($event,'write','userManagemente','UR')"/></div>
+            </div>
+         </div>
 
            <div  class="row">									         
               <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -409,7 +429,13 @@
               <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="configurationSettingsewriteAll" (click)="onChangeCheckAll($event,'write','configurationSettingse')" /></div>								                
              </div>
             <div  id="collapseCONFIGURATIONSETTINGSE" class="collapse" data-parent="#accordionRole" #configurationSettingsetab>
-              <div class="row" >
+              
+                <div class="row" >
+                    <div class="col-sm-8 pl-5">Role & Permission</div>
+                    <div class="col-sm-2"><input type="checkbox" name="configurationSettingseread"    value="ROLE_AND_PERMISSION_READ" id="configurationSettingseReadRP"  (click)="onChangeCheck($event,'read','configurationSettingse','RP')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="configurationSettingsewrite"   value="ROLE_AND_PERMISSION_WRITE"  id="configurationSettingseWriteRP" (click)="onChangeCheck($event,'write','configurationSettingse','RP')"/></div>
+                 </div>   
+                <div class="row" >
                  <div class="col-sm-8 pl-5">Cancellation And Refund Rules</div>
                  <div class="col-sm-2"><input type="checkbox" name="configurationSettingseread"    value="CANCELLATION_AND_REFUND_RULES_READ" id="configurationSettingseReadCRR"  (click)="onChangeCheck($event,'read','configurationSettingse','CRR')"/></div>
                  <div class="col-sm-2"><input type="checkbox" name="configurationSettingsewrite"   value="CANCELLATION_AND_REFUND_RULES_WRITE"  id="configurationSettingseWriteCRR" (click)="onChangeCheck($event,'write','configurationSettingse','CRR')"/></div>
@@ -439,7 +465,7 @@
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasRightLabel">Create Role</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #registerCloseModal></button>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #editNewModal></button>
         </div>
         <hr class="sidebar-divider my-0">
         <div class="offcanvas-body">
@@ -456,9 +482,9 @@
                 </div>
                 <div class="form-group">
                     <label for="description" class="col-form-label">Description<i class="fa fa-asterisk"></i></label>
-                    <input type="text" [ngClass]="{'is-invalid':submitted && form.controls.description.errors}"  class="form-control" formControlName="description" id="description" name="description"  [(ngModel)]="description"   autocomplete="off" />
-                    <div *ngIf="submitted && form.controls.description.errors" class="text-danger">
-                        <div *ngIf="submitted && form.controls.description.errors.required">
+                    <input type="text" [ngClass]="{'is-invalid':submitted && form.controls.desc.errors}"  class="form-control" formControlName="desc" id="description" name="description"  [(ngModel)]="desc"   autocomplete="off" />
+                    <div *ngIf="submitted && form.controls.desc.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.desc.errors.required">
                             Description is required
                         </div>
                         </div>
@@ -497,6 +523,26 @@
                         <div class="col-sm-2"><input type="checkbox" name="ownerManagementcwrite"   value="MANAGING_OWNERS_WRITE"  id="ownerManagementcWriteMO" (click)="onChangeCheck($event,'write','ownerManagementc','MO')"/></div>
                      </div>
                   </div>
+                  <div  class="row">									         
+                    <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                    <span  class="collapsed" data-toggle="collapse" data-target="#collapseUSERMANAGEMENTC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                    <span class="title"> User Management</span>
+                    </div>
+                    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="userManagementcreadAll"  (click)="onChangeCheckAll($event,'read','userManagementc')"/></div>
+                    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="userManagementcwriteAll" (click)="onChangeCheckAll($event,'write','userManagementc')" /></div>								                
+                   </div>
+                  <div  id="collapseUSERMANAGEMENTC" class="collapse" data-parent="#accordionRole" #userManagementctab>
+                    <div class="row" >
+                       <div class="col-sm-8 pl-5">Managing Users</div>
+                       <div class="col-sm-2"><input type="checkbox" name="userManagementcread"    value="MANAGING_USERS_READ" id="userManagementcReadMU"  (click)="onChangeCheck($event,'read','userManagementc','MU')"/></div>
+                       <div class="col-sm-2"><input type="checkbox" name="userManagementcwrite"   value="MANAGING_USERS_WRITE"  id="userManagementcWriteMU" (click)="onChangeCheck($event,'write','userManagementc','MU')"/></div>
+                    </div>         
+                    <div class="row" >
+                       <div class="col-sm-8 pl-5">Owner eKYC Verification</div>
+                       <div class="col-sm-2"><input type="checkbox" name="userManagementcread"    value="USER_ROLES_READ" id="userManagementcReadUR"  (click)="onChangeCheck($event,'read','userManagementc','UR')"/></div>
+                       <div class="col-sm-2"><input type="checkbox" name="userManagementcwrite"   value="USER_ROLES_WRITE"  id="userManagementcWriteUR" (click)="onChangeCheck($event,'write','userManagementc','UR')"/></div>
+                    </div>
+                 </div>
 
                   <div  class="row">									         
                      <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -507,11 +553,11 @@
                      <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="configurationSettingscwriteAll" (click)="onChangeCheckAll($event,'write','configurationSettingsc')" /></div>								                
                     </div>
                    <div  id="collapseCONFIGURATIONSETTINGSC" class="collapse" data-parent="#accordionRole" #configurationSettingsctab>
-                     <div class="row" >
-                        <div class="col-sm-8 pl-5">Cancellation And Refund Rules</div>
-                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscread"    value="CANCELLATION_AND_REFUND_RULES_READ" id="configurationSettingscReadCRR"  (click)="onChangeCheck($event,'read','configurationSettingsc','CRR')"/></div>
-                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscwrite"   value="CANCELLATION_AND_REFUND_RULES_WRITE"  id="configurationSettingscWriteCRR" (click)="onChangeCheck($event,'write','configurationSettingsc','CRR')"/></div>
-                     </div>         
+                    <div class="row" >
+                        <div class="col-sm-8 pl-5">Role & Permission</div>
+                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscread"    value="ROLE_AND_PERMISSION_READ" id="configurationSettingscReadRP"  (click)="onChangeCheck($event,'read','configurationSettingsc','RP')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscwrite"   value="ROLE_AND_PERMISSION_WRITE"  id="configurationSettingscWriteRP" (click)="onChangeCheck($event,'write','configurationSettingsc','RP')"/></div>
+                     </div>          
                      <div class="row" >
                         <div class="col-sm-8 pl-5">Percentage And Charge Configurations</div>
                         <div class="col-sm-2"><input type="checkbox" name="configurationSettingscread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="configurationSettingscReadPCC"  (click)="onChangeCheck($event,'read','configurationSettingsc','PCC')"/></div>
