@@ -35,8 +35,10 @@ import com.integration.zoy.entity.AdminUserTemporary;
 import com.integration.zoy.entity.AppRole;
 import com.integration.zoy.entity.RoleScreen;
 import com.integration.zoy.model.AdminUserDetails;
+import com.integration.zoy.model.AdminUserUpdateDetails;
 import com.integration.zoy.model.LoginDetails;
 import com.integration.zoy.model.RoleDetails;
+import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.EmailService;
@@ -121,15 +123,15 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 
 	@Override
-	public ResponseEntity<String> zoyAdminUserDetails(String token) {
+	public ResponseEntity<String> zoyAdminUserDetails(Token token) {
 		ResponseBody response=new ResponseBody();
 		try {
-			String emailId=jwtUtil.getUserName(token);
+			String emailId=jwtUtil.getUserName(token.getToken());
 			if(emailId!=null) {
 				List<String[]> user=adminDBImpl.findAllAdminUserDetails(emailId);
 				AdminUserDetailPrevilage adminUserList=new AdminUserDetailPrevilage();
 				if(user.size()>0) {
-					adminUserList.setToken(token);
+					adminUserList.setToken(token.getToken());
 					adminUserList.setFirstName(user.get(0)[0]);
 					adminUserList.setLastName(user.get(0)[1]!=null?user.get(0)[1]:"");
 					adminUserList.setUserEmail(user.get(0)[2]);
@@ -204,20 +206,25 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	}
 
 	@Override
-	public ResponseEntity<String> zoyAdminUserUpdate(AdminUserDetails adminUserDetails) {
+	public ResponseEntity<String> zoyAdminUserUpdate(String email,AdminUserUpdateDetails adminUserDetails) {
 		ResponseBody response=new ResponseBody();
 		try {
-			AdminUserMaster master=adminDBImpl.findAdminUserMaster(adminUserDetails.getEmailId());
-			master.setFirstName(adminUserDetails.getFirstName());
-			master.setLastName(adminUserDetails.getLastName());
-			master.setDesignation(adminUserDetails.getDesignation());
-			master.setContactNumber(adminUserDetails.getMobileNumber());
-			master.setUserEmail(adminUserDetails.getEmailId());
-			adminDBImpl.updateAdminUser(master);
+			AdminUserMaster master=adminDBImpl.findAdminUserMaster(email);
+			if(master!=null) {
+				master.setFirstName(adminUserDetails.getFirstName());
+				master.setLastName(adminUserDetails.getLastName());
+				master.setDesignation(adminUserDetails.getDesignation());
+				master.setContactNumber(adminUserDetails.getMobileNumber());
+				adminDBImpl.updateAdminUser(master);
 
-			response.setStatus(HttpStatus.OK.value());
-			response.setMessage("User updated Successfully");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+				response.setStatus(HttpStatus.OK.value());
+				response.setMessage("User updated Successfully");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				response.setStatus(HttpStatus.OK.value());
+				response.setMessage("User email not found" + email);
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
 		} catch (Exception e) {
 			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

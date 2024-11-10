@@ -18,6 +18,7 @@ import { RegisterDetails } from '../models/register-details';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
+import { DataService } from 'src/app/common/service/data.service';
 
 @Component({
   selector: 'app-user-master',
@@ -76,9 +77,9 @@ export class UserMasterComponent implements OnInit,AfterViewInit{
 	desigRole:string="";
   
   
-
+  isExpandSideBar:boolean=true;
   constructor(private userMasterService : UserMasterService,private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private notifyService:NotificationService,
-    private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService){
+    private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService){
 
       this.userNameSession=userService.getUsername();
       if (userService.getUserinfo() != undefined) {
@@ -92,7 +93,10 @@ export class UserMasterComponent implements OnInit,AfterViewInit{
 			  // Trick the Router into believing it's last link wasn't previously loaded
 			  this.router.navigated = false;
 			}
-		  });
+      });
+      this.dataService.getIsExpandSideBar.subscribe(name=>{
+        this.isExpandSideBar=name;
+      });
   }
  
   ngOnDestroy() {

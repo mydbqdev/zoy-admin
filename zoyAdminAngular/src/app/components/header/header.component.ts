@@ -14,6 +14,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   mySubscription: any;
   headerName:string='';
   userInfo:UserInfo=new UserInfo();
+  isExpandSideBar:boolean=true;
   constructor( private userService: UserService, private router: Router,private dataService:DataService) {
    this.userInfo=this.userService.getUserinfo();
     this.userNameSession = userService.getUsername();
@@ -29,7 +30,11 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     });
     this.dataService.getHeaderName.subscribe(name=>{
 			this.headerName=name;
-		});	
+    });	
+    
+    this.dataService.getIsExpandSideBar.subscribe(name=>{
+			this.isExpandSideBar=name;
+		});
   }
   ngAfterViewInit(): void {
     

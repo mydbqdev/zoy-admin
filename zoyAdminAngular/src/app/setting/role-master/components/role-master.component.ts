@@ -16,6 +16,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort, Sort } from "@angular/material/sort";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
+import { DataService } from 'src/app/common/service/data.service';
 
 @Component({
   selector: 'app-role-master',
@@ -51,7 +52,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   public totalProduct:number=0;
   pageSize:number=10;
   pageSizeOptions=[10,20,50];
-  
+  isExpandSideBar:boolean=true;
   public ELEMENT_DATA:RoleModel[];
   dataSource:MatTableDataSource<RoleModel>=new MatTableDataSource<RoleModel>();
   displayedColumns: string[] = [ 'role', 'description','action'];
@@ -63,7 +64,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
 columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
  //
 //@Inject(defMenuEnable) private defMenuEnable:
-  constructor( private route: ActivatedRoute,private roleService : RoleMasterService , private renderer: Renderer2, private router: Router, private http: HttpClient, private userService: UserService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private authService: AuthService, private notifyService: NotificationService, private alertDialogService: AlertDialogService) {
+  constructor( private route: ActivatedRoute,private roleService : RoleMasterService , private renderer: Renderer2, private router: Router, private http: HttpClient, private userService: UserService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private authService: AuthService, private notifyService: NotificationService, private alertDialogService: AlertDialogService,private dataService:DataService) {
     // this.userNameSession=userService.getUsername();
   //  console.log("defMenuEnable",defMenuEnable);
     // this.defRoleMenu=defMenuEnable;
@@ -95,7 +96,9 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 		// 	  this.router.navigated = false;
 		// 	}
 		//   });
-
+    this.dataService.getIsExpandSideBar.subscribe(name=>{
+			this.isExpandSideBar=name;
+		});
   }
   
   ngOnInit(){

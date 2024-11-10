@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.integration.zoy.entity.AdminUserLoginDetails;
 import com.integration.zoy.model.AdminUserDetails;
+import com.integration.zoy.model.AdminUserUpdateDetails;
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
 import com.integration.zoy.model.BillingType;
@@ -36,6 +37,7 @@ import com.integration.zoy.model.RoomType;
 import com.integration.zoy.model.RoomTypeId;
 import com.integration.zoy.model.ShareType;
 import com.integration.zoy.model.ShareTypeId;
+import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
 
 
@@ -66,7 +68,7 @@ public interface ZoyAdminUserImpl {
 	@PostMapping(value = "/zoy_admin/user_details",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminUserDetails(@RequestBody String token);
+	ResponseEntity<String> zoyAdminUserDetails(@RequestBody Token token);
 	
 	
 	@Operation(summary = "Create Admin User", description = "Creating new admin User", security = {
@@ -99,10 +101,10 @@ public interface ZoyAdminUserImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PutMapping(value = "/zoy_admin/user_update",
+	@PutMapping(value = "/zoy_admin/user_update/{email}",
 	produces = { "application/json" },
 	consumes = { "application/json" })
-	ResponseEntity<String> zoyAdminUserUpdate(@RequestBody AdminUserDetails adminUserDetails);
+	ResponseEntity<String> zoyAdminUserUpdate(@PathVariable String email,@RequestBody AdminUserUpdateDetails adminUserDetails);
 	
 	@Operation(summary = "Create Admin User Role", description = "Creating Admin User Role", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })

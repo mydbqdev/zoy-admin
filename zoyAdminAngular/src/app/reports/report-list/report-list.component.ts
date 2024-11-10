@@ -44,7 +44,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
         totalAmount: null,
       };
     columnSortDirections = Object.assign({}, this.columnSortDirections1);
-
+	isExpandSideBar:boolean=true;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : ReportService) {
 		this.userNameSession = userService.getUsername();
@@ -61,6 +61,9 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 				// Trick the Router into believing it's last link wasn't previously loaded
 				this.router.navigated = false;
 			}
+		});
+		this.dataService.getIsExpandSideBar.subscribe(name=>{
+			this.isExpandSideBar=name;
 		});
 	}
 
