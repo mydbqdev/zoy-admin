@@ -38,16 +38,18 @@ export class SigninComponent implements OnInit {
 	doSignin() {
 		this.submitted=true;    
 		if (this.username !== '' && this.username !== null && this.password !== '' && this.password !== null) {
-			const user: User = { userEmail: this.username.toLowerCase(), password: this.password };
+			const user: User = { email: this.username.toLowerCase(), password: this.password };
             this.submitted=false;
 			this.authService.getAuthUser(user).subscribe((result) => {
-				console.log("result",result)
-				const res: ResponseStore = { userEmail: this.username.toLowerCase(), token: result.token };
+
+				const res: ResponseStore = { userEmail: result.email, token: result.token };
 				this.authService.setSessionStore(res);
-				this.authService.checkLoginUser();
+				//this.authService.checkLoginUser();
 				this.router.navigate(['/home']);
 			}, error => {
-				this.error = error;// 'Invalid credentials or something went wrong';
+				console.log("error",error)
+				console.log("error",error.message)
+				this.error = error.error.message;// 'Invalid credentials or something went wrong';
 			});
 		}// else {
 		//	this.error = 'Username or Password is required';

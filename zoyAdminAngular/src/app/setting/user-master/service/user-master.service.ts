@@ -34,8 +34,8 @@ import { MessageService } from 'src/app/message.service';
 
 
       public rolesDropdown(): Observable<any> {
-        const url1=this.basePath +'userrole/user/showRolesDropdown';
-        return this.httpclient.post<String[]>(
+        const url1=this.basePath +'zoy_admin/role_list';
+        return this.httpclient.post<any>(
             url1,
             '',
             {

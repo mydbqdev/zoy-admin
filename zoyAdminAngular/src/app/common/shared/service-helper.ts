@@ -51,4 +51,17 @@ export class ServiceHelper{
 
         return reOption;
     }
+
+    public static buildHeadersBasicAuth(): HttpHeaders {
+        const username = 'zoyadmin';  
+        const password = 'zoyadminpass';
+        const basicAuthValue = `Basic ${btoa(username + ':' + password)}`;  
+        
+        let headers: HttpHeaders = new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic em95YWRtaW46em95YWRtaW5wYXNz'  
+        });
+        return headers;
+      }
 }
