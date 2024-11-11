@@ -48,7 +48,6 @@ export class UserMasterComponent implements OnInit,AfterViewInit{
 
   private _liveAnnouncer = inject(LiveAnnouncer);
 
-
   empCodeFilter:string="";
   message:string;
   extraApplications:boolean=false;
@@ -73,7 +72,7 @@ export class UserMasterComponent implements OnInit,AfterViewInit{
   submitted=false;
 	error: string = '';
 	form: FormGroup;
-	userReg :RegisterDetails=new RegisterDetails();
+ 	userReg :RegisterDetails=new RegisterDetails();
 	roles:string[]=['Super Admin','Finance Admin','Support Admin']
 	desigRole:string="";
   
@@ -232,11 +231,62 @@ return;
 	  
 	}  
 
+  doUpdateUser(){
+    this.submitted=true;	
+		console.log(this.userReg);
+		if (this.form.invalid) {
+			return;
+		  }
+		// after getting success message;
+		this.notifyService.showSuccess("User Updated Successfully","congratulations");
+		this.resetForm();
+    this.registerCloseModal.nativeElement.click(); 
+return;
+		this.spinner.show();		     
+		this.submitted=false;
+		this.authService.signupUser(this.userReg).subscribe((data) => {
+		this.notifyService.showSuccess("your account has been succssfully created.", "Congratulations,");
+		this.spinner.hide();
+		},error =>{
+			this.spinner.hide();
+			console.log("error.error",error)
+			this.error = (error.error.error !=undefined?(error.error.error  +"."):"")
+			+ (error.error.userEmail!=undefined?(error.error.userEmail+"."):"")
+			+(error.error.password!=undefined?(error.error.password  +"."):"");
+		  if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		  }else if (error.error && error.error.message) {
+			this.errorMsg =error.error.message;
+			console.log("Error:"+this.errorMsg);
+			// this.notifyService.showError(this.errorMsg, "");
+			// this.spinner.hide();
+		  } else {
+			//this.spinner.hide();
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			//  this.spinner.hide();
+			  let str;
+				if(error.status==400){
+				str=error.error;
+				}else{
+				  str=error.message;
+				  str=str.substring(str.indexOf(":")+1);
+				}
+				console.log("Error:"+str);
+				this.errorMsg=str;
+			}
+		//	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  }
+		}
+		);
+  }
    
 ngAfterViewInit(){
   this.sidemenuComp.expandMenu(3);
   this.sidemenuComp.activeMenu(3,'user-master');
-  this.dataSource.paginator=this.paginator;
+  this.dataSource.sort = this.sort;
+		this.dataSource.paginator = this.paginator;
    setTimeout(()=>{
      this.loadInitialData(this.paginator.pageIndex +1, this.paginator.pageSize);
     },100);
@@ -557,6 +607,7 @@ getRlesListMock(){
     this.selectedRoleIds.splice(0);
    }
 
+   
 
 editRole(row:any ){
   this.checkedApplications = {};
