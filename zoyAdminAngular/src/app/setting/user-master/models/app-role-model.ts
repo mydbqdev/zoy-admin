@@ -1,6 +1,6 @@
 export class AppRole{
      id ?: number;
      roleName ?: string;
-     description ?: string;
+     desc ?: string;
      disabled ?: boolean;
 }

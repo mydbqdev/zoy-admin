@@ -12,7 +12,7 @@ export class UserService {
   public username :string;
   public dbquser:boolean;
   public userinfo:UserInfo;
-  public token :string;
+  
 
   getUsername(){
       return this.username;
@@ -28,15 +28,6 @@ export class UserService {
 
   setUserinfo(_userinfo:UserInfo){
       this.userinfo=_userinfo;
-  }
-
-  getToken(){
-    return this.username;
-  }
-
-  setToken(_token:string){
-      this.token=_token;
-  }
-  
+  }  
 
 }

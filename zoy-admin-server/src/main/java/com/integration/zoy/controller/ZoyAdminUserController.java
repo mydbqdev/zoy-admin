@@ -48,6 +48,7 @@ import com.integration.zoy.utils.AdminUserDetailPrevilage;
 import com.integration.zoy.utils.AdminUserList;
 import com.integration.zoy.utils.Email;
 import com.integration.zoy.utils.ResponseBody;
+import com.integration.zoy.utils.RoleModel;
 
 @RestController
 @RequestMapping("")
@@ -97,9 +98,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		try {
 			AdminUserLoginDetails loginDetails=adminDBImpl.findByEmail(details.getEmail());
 			if(loginDetails!=null) {
+			
 				String decryptedStoredPassword = passwordDecoder.decryptedText(details.getPassword()); 
 				String decryptedLoginPassword = passwordDecoder.decryptedText(loginDetails.getPassword()); 
+			
 				boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
+	
 				if(isPasswordMatch) {
 					authentication = authenticationManager
 							.authenticate(new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
@@ -170,12 +174,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			master.setLastName(adminUserDetails.getLastName());
 			master.setDesignation(adminUserDetails.getDesignation());
 			master.setContactNumber(adminUserDetails.getMobileNumber());
-			master.setUserEmail(adminUserDetails.getEmailId());
+			master.setUserEmail(adminUserDetails.getUserEmail());
 			master.setStatus(true);
 			adminDBImpl.saveAdminUser(master);
 
 			AdminUserLoginDetails adminUserLoginDetails=new AdminUserLoginDetails();
-			adminUserLoginDetails.setUserEmail(adminUserDetails.getEmailId());
+			adminUserLoginDetails.setUserEmail(adminUserDetails.getUserEmail());
 			adminUserLoginDetails.setPassword(adminUserDetails.getPassword());
 			adminUserLoginDetails.setIsActive(true);
 			adminUserLoginDetails.setIsLock(false);
@@ -359,7 +363,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	public ResponseEntity<String> zoyAdminUserAssign(UserRole userRole) {
 		ResponseBody response=new ResponseBody();
 		try {
-			AdminUserMaster master=adminDBImpl.findAdminUserMaster(userRole.getEmailId());
+			AdminUserMaster master=adminDBImpl.findAdminUserMaster(userRole.getUserEmail());
 			List<AdminUserTemporary> adminUserTemporary=new ArrayList<>();
 			for(Long id:userRole.getRoleId()) {
 				AppRole appRole=adminDBImpl.findAppRoleId(id);
@@ -384,34 +388,34 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		}
 	}
 
-	@Override
-	public ResponseEntity<String> zoyAdminUserList() {
-		ResponseBody response=new ResponseBody();
-		try {
-			List<String[]> master=adminDBImpl.findAllAdminUserPrevilages();
-			List<AdminUserList> adminUserTemporary=new ArrayList<>();
-			if(master.size()>0) {
-				for(String[] user:master) {
-					AdminUserList adminUserList=new AdminUserList();
-					adminUserList.setFirstName(user[0]);
-					adminUserList.setLastName(user[1]!=null?user[1]:"");
-					adminUserList.setUserEmail(user[2]);
-					adminUserList.setContactNumber(user[3]);
-					adminUserList.setStatus(user[5]);
-					adminUserList.setApprovedPrivilege(user[6]!=null?Arrays.asList(user[6].split(",")):new ArrayList<>());
-					adminUserList.setUnapprovedPrivilege(user[7]!=null?Arrays.asList(user[7].split(",")):new ArrayList<>());
-					adminUserTemporary.add(adminUserList);
-				}
-			}
-			return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-	}
+//	@Override
+//	public ResponseEntity<String> zoyAdminUserList() {
+//		ResponseBody response=new ResponseBody();
+//		try {
+//			List<String[]> master=adminDBImpl.findAllAdminUserPrevilages();
+//			List<AdminUserList> adminUserTemporary=new ArrayList<>();
+//			if(master.size()>0) {
+//				for(String[] user:master) {
+//					AdminUserList adminUserList=new AdminUserList();
+//					adminUserList.setFirstName(user[0]);
+//					adminUserList.setLastName(user[1]!=null?user[1]:"");
+//					adminUserList.setUserEmail(user[2]);
+//					adminUserList.setContactNumber(user[3]);
+//					adminUserList.setStatus(user[5]);
+//					adminUserList.setApprovedPrivilege(user[6]!=null?Arrays.asList(user[6].split(",")):new ArrayList<>());
+//					adminUserList.setUnapprovedPrivilege(user[7]!=null?Arrays.asList(user[7].split(",")):new ArrayList<>());
+//					adminUserTemporary.add(adminUserList);
+//				}
+//			}
+//			return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+//		} catch (Exception e) {
+//			log.error("Error getting ameneties details: " + e.getMessage(),e);
+//			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//			response.setError("Internal server error");
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//
+//	}
 
 	@Override
 	public ResponseEntity<String> zoyAdminUserSendLoginInfo(LoginDetails details) {
@@ -450,6 +454,43 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		}
 	}
 
+	@Override
+	public ResponseEntity<String> zoyAdminUserList() {
+		ResponseBody response=new ResponseBody();
+		try {
+			List<Object[]> master=adminDBImpl.findAllAdminUserPrevilages();
+			List<AdminUserList> adminUserTemporary=new ArrayList<>();
+			for (Object[] result : master) {
+	            AdminUserList user = new AdminUserList();
+	            user.setFirstName((String) result[0]);
+	            user.setLastName((String) result[1]);
+	            user.setUserEmail((String) result[2]);
+	            user.setContactNumber((String) result[3]);
+	            user.setDesignation((String) result[4]);
+	            user.setStatus((Boolean) result[5]);
+	            user.setApproveStatus((String) result[6]);
+	            List<RoleModel> roles = new ArrayList<>();
+	            if(null!=result[7] && !"null".equals(result[7])) {
+	            	int roleId = (Integer) result[7];
+		            String roleName = (String) result[8];
+		            RoleModel role = new RoleModel(roleId, roleName); 
+		            roles.add(role);
+	            }
+	           
+	            user.setRoleModel(roles);
+ 
+	            adminUserTemporary.add(user);
+	        }
+			
+			return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+ 
+	}
 
 
 }

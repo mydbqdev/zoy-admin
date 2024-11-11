@@ -50,11 +50,11 @@ export class AppAuthService extends AuthService{
 
     public getAuthUser(user:User) : Observable<any>{
         const url1=this.basePath +'zoy_admin/login';
-      //  let loginUser : User ={userEmail:user.userEmail,password:this.encryptDecryptHelper.encrypt(user.password)};
-        let loginUser : User ={email:user.email,password:user.password};
+        let loginUser : User ={email:user.email,password:this.encryptDecryptHelper.encrypt(user.password)};
+       // let loginUser : User ={email:user.email,password:user.password};
 
-        let encrypt=this.encryptDecryptHelper.encrypt(user.password);
-   
+        let encrypt=this.encryptDecryptHelper.encrypt("pavan1234 ");
+   console.log("pavan1234 >encrypt:",encrypt);
         return this.httpclient.post<User>(
             url1,
             loginUser,

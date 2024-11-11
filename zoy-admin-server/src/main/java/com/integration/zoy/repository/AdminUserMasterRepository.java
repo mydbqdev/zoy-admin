@@ -11,26 +11,16 @@ import com.integration.zoy.entity.AdminUserMaster;
 @Repository
 public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster, String> {
 
-	@Query(value="select um.first_name,um.last_name, "
-			+ "um.user_email, "
-			+ "um.contact_number, "
-			+ "um.designation, "
-			+ "um.status, "
-			+ "STRING_AGG( distinct case when ut.is_approve = true then case when rs.read_prv = true and rs.write_prv = true "
-			+ "then upper(rs.screen_name) || '_READ,' || upper(rs.screen_name) || '_WRITE' when rs.read_prv = true "
-			+ "then upper(rs.screen_name) || '_READ' when rs.write_prv = true then upper(rs.screen_name) || '_WRITE' "
-			+ "else upper(rs.screen_name) end else null end, ',' ) as approved_privilege, "
-			+ "STRING_AGG( distinct case when ut.is_approve = false then case when rs.read_prv = true and rs.write_prv = true "
-			+ "then upper(rs.screen_name) || '_READ,' || upper(rs.screen_name) || '_WRITE' when rs.read_prv = true "
-			+ "then upper(rs.screen_name) || '_READ' when rs.write_prv = true then upper(rs.screen_name) || '_WRITE' "
-			+ "else upper(rs.screen_name) end else null end, ',' ) as unapproved_privilege "
-			+ "from pgadmin.user_master um "
-			+ "join pgadmin.user_temprory ut on "
-			+ "um.user_email = ut.user_email "
-			+ "join pgadmin.role_screen rs on "
-			+ "rs.role_id = ut.role_id "
-			+ "group by um.user_email ",nativeQuery = true)
-	List<String[]> findAllAdminUserPrevilages();
+	@Query(value = "SELECT um.first_name, um.last_name, um.user_email, um.contact_number, "
+            + "um.designation, um.status, "
+            + "CASE WHEN ut.is_approve = true THEN 'approved' ELSE 'pending' END as approve_status, "
+            + "ar.id as role_id, ar.role_name as role_name "
+            + "FROM pgadmin.user_master um "
+            + "left JOIN pgadmin.user_temprory ut ON um.user_email = ut.user_email "
+            + "left JOIN pgadmin.user_role ur ON ur.user_email = um.user_email "
+            + "left JOIN pgadmin.app_role ar ON ur.role_id = ar.id "
+            + "GROUP BY um.user_email, ar.id, ar.role_name, ut.is_approve", nativeQuery = true)
+	List<Object[]> findAllAdminUserPrevilages();
 
 	
 	@Query(value="select um.first_name,um.last_name, "

@@ -5,17 +5,17 @@ import com.google.gson.annotations.SerializedName;
 
 public class AdminUserDetails {
 
-	@SerializedName("first_name")
+	@SerializedName("firstName")
 	String firstName;
 
-	@SerializedName("last_name")
+	@SerializedName("lastName")
 	String lastName;
 
-	@SerializedName("mobile_number")
+	@SerializedName("mobileNumber")
 	String mobileNumber;
 
-	@SerializedName("email_id")
-	String emailId;
+	@SerializedName("userEmail")
+	String userEmail;
 
 	@SerializedName("password")
 	String password;
@@ -45,11 +45,11 @@ public class AdminUserDetails {
 		return mobileNumber;
 	}
 
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
-	public String getEmailId() {
-		return emailId;
+	public String getUserEmail() {
+		return userEmail;
 	}
 
 	public void setPassword(String password) {

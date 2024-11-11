@@ -35,9 +35,8 @@ import { MessageService } from 'src/app/message.service';
 
       public rolesDropdown(): Observable<any> {
         const url1=this.basePath +'zoy_admin/role_list';
-        return this.httpclient.post<any>(
+        return this.httpclient.get<any>(
             url1,
-            '',
             {
                 headers:ServiceHelper.buildHeaders(),
                observe : 'body',
@@ -46,10 +45,10 @@ import { MessageService } from 'src/app/message.service';
         );
      }
 
-
+     
       
-     public saveData(data:any): Observable<any> {
-        const url1=this.basePath +'userrole/user/saveUser';
+     public updateRolesUser(data:any): Observable<any> {
+        const url1=this.basePath +'zoy_admin/user_assign';
         return this.httpclient.post<any[]>(
             url1,
             data,
@@ -60,11 +59,63 @@ import { MessageService } from 'src/app/message.service';
             }
         );
      }
-     public applicationNamesDropdown(): Observable<any> {
-        const url1=this.basePath +'userrole/user/showApplications';
-        return this.httpclient.post<String[]>(
+     public getUserList(): Observable<any> {
+        const url1=this.basePath +'zoy_admin/user_list';
+
+        return this.httpclient.get<any>(
             url1,
-            '',
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+     }
+
+     public createUser(data:any): Observable<any> {
+        const url1=this.basePath +'zoy_admin/user_create';
+        return this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+     }
+
+     public updateUser(data:any): Observable<any> {
+        const url1=this.basePath +'zoy_admin/user_update/'+data.userEmail;
+        return this.httpclient.put<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+     }
+
+     public userPrvAssign(data:any): Observable<any> {
+        const url1=this.basePath +'zoy_admin/user_assign';
+        return this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+     }
+
+     public updateInActiveUser(data:any): Observable<any> {
+        const url1=this.basePath +'zoy_admin/user_create';
+        return this.httpclient.post<any>(
+            url1,
+            data,
             {
                 headers:ServiceHelper.buildHeaders(),
                observe : 'body',

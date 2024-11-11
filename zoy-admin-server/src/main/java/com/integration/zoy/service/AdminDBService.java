@@ -135,7 +135,7 @@ public class AdminDBService implements AdminDBImpl {
 	}
 
 	@Override
-	public List<String[]> findAllAdminUserPrevilages() {
+	public  List<Object[]> findAllAdminUserPrevilages() {
 		return userMasterRepository.findAllAdminUserPrevilages();
 	}
 

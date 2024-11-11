@@ -6,7 +6,7 @@ import * as CryptoJS from 'crypto-js';
 })
 
 export class AESEncryptDecryptHelper {
-    secretKey = "mydbq@#$2023";
+    secretKey = "zoyAdmin@123";
     constructor() { }
 
     encrypt(value: string): string {

@@ -38,12 +38,13 @@ public interface AdminDBImpl {
 
 	List<AdminUserMaster> findAllAdminUser();
 
-	List<String[]> findAllAdminUserPrevilages();
+	List<Object[]> findAllAdminUserPrevilages();
 
 	AdminUserLoginDetails findByEmail(String email);
 
 	List<String> findUserRoles(String email);
 
 	List<String[]> findAllAdminUserDetails(String emailId);
+	
 
 }

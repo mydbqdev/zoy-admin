@@ -6,18 +6,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserRole {
 
-	@JsonProperty("email_id")
-	String emailId;
+	@JsonProperty("userEmail")
+	String userEmail;
 
-	@JsonProperty("role_id")
+	@JsonProperty("roleId")
 	List<Long> roleId;
 
-	public String getEmailId() {
-		return emailId;
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
-
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
+	public String getUserEmail() {
+		return userEmail;
 	}
 
 	public List<Long> getRoleId() {

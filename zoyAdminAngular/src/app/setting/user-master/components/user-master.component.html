@@ -119,91 +119,109 @@
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">User List</h6>
                                 <div>
-                                    <a href="javascript:void(0)" (click)="resetForm()"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm" ><i
-                                        class="fas fa-fw fa-user-plus fa-sm text-white-50"></i> Create a user</a>
+                                        <a href="javascript:void(0)" (click)="resetForm()"  data-bs-toggle="offcanvas" data-bs-target="#userModel" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm" >
+                                            <i class="fas fa-fw fa-user-plus fa-sm text-white-50"></i> Create a user</a>
                                 </div>
                             </div>
                             <!-- Card Body -->
+                
                             <div class="card-body" style="padding:0px;margin:0px;">
-                                    <div style="max-height: 300px; overflow: auto;">
+                                <div style="max-height: 300px; overflow: auto;">
                                     <div class="desc-inner" style="height: 150px;">
-                                    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"  matSort (matSortChange)="announceSortChange($event)">                   
-                                        <ng-container matColumnDef="userName" >
-                                            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by userName">
-                                             User Name 
-                                             <span style="margin-left: 2px;">
-                                                <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['userName'] }"></i>
-                                            <i class="fas" [ngClass]="{
-                                              'fa-long-arrow-alt-up': columnSortDirections['userName'] === 'asc',
-                                              'fa-long-arrow-alt-down': columnSortDirections['userName'] === 'desc' || !columnSortDirections['userName'] ,
-                                            }"></i>
-                                              </span>
-                                        </th>
-                                          <td mat-cell data-label="name"  *matCellDef="let element"> 
-                                            {{element.empName}}
-                                        </ng-container>
-                                        <ng-container matColumnDef="userMail">
-                                            <th mat-header-cell style="font-weight: 600;max-width: 150px;" *matHeaderCellDef mat-sort-header>
-                                                User Mail
-                                                <span style="margin-left: 2px;">
-                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['userMail'] }"></i>
-                                                <i class="fas" [ngClass]="{
-                                                  'fa-long-arrow-alt-up': columnSortDirections['userMail'] === 'asc',
-                                                  'fa-long-arrow-alt-down': columnSortDirections['userMail'] === 'desc' || !columnSortDirections['userMail'] ,
-                                                }"></i>
-                                                  </span>
+                                        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
+                            
+                                            <!-- User Name Column -->
+                                            <ng-container matColumnDef="firstName">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                    User Name
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['firstName'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['firstName'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['firstName'] === 'desc' || !columnSortDirections['firstName'] }"></i>
+                                                    </span>
                                                 </th>
-                                            <td mat-cell data-label="userMail"  *matCellDef="let element;"  >
-                                              {{element.empMail}}
-                                            </td>
-                                        </ng-container>
-                                        <ng-container matColumnDef="roles">
-                                          <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;">
-                                             Role 
-                                             <span style="margin-left: 2px;">
-                                                <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['roles'] }"></i>
-                                            <i class="fas" [ngClass]="{
-                                              'fa-long-arrow-alt-up': columnSortDirections['roles'] === 'asc',
-                                              'fa-long-arrow-alt-down': columnSortDirections['roles'] === 'desc' || !columnSortDirections['roles'] ,
-                                            }"></i>
-                                              </span>
-                                            </th>
-                                          <td mat-cell data-label="roles"  *matCellDef="let element;"  >
-                                            {{element.roles}}
-                                          </td>
-                                        </ng-container>
-                      
-                                          <ng-container matColumnDef="action">
-                                            <th mat-header-cell style="font-weight: 600;max-width: 80px;" *matHeaderCellDef></th>
-                                            <td mat-cell class="example-box" style="max-width: 80px;" data-label="action" *matCellDef="let element"  >
-                                            
-                                                <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                    aria-labelledby="dropdownMenuLink">
-                                                    <div class="dropdown-header">Action</div>
-                                                    <a class="dropdown-item" data-bs-toggle="offcanvas" data-bs-target="#updateUseroffcanvasRight"  (click)="editRole(element)">Edit User</a>                                                         
-                                                    <a class="dropdown-item" data-bs-toggle="offcanvas" data-bs-target="#updateoffcanvasRight" (click)="editRole(element)" >Update role</a>
-                                                    <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Another action</a>
-                                                    <a class="dropdown-item" href="javascript:void(0)" (click)="sendInfo(element)" >Send Info</a>
-                                                    <a class="dropdown-item" href="javascript:void(0)" (click)="deleteUser(element)" >Delete</a>
-                                                    <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item" href="javascript:void(0)">Something else here</a>
-                                                </div>
-                                            </td>
-                                            
-                                          </ng-container> 
-                                    
-                                        <th mat-header-row *matHeaderRowDef="displayedColumns"></th>
-                                        <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
-                                      </table>  
+                                                <td mat-cell *matCellDef="let element">
+                                                    {{element.firstName}} {{element.lastName}}
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- User Mail Column -->
+                                            <ng-container matColumnDef="userEmail">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                    User Mail
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['userEmail'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['userEmail'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['userEmail'] === 'desc' || !columnSortDirections['userEmail'] }"></i>
+                                                    </span>
+                                                </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    {{element.userEmail}}
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- Designation Column -->
+                                            <ng-container matColumnDef="designation">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                    Designation
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['designation'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['designation'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['designation'] === 'desc' || !columnSortDirections['designation'] }"></i>
+                                                    </span>
+                                                </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    {{element?.designation}}
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- Status Column -->
+                                            <ng-container matColumnDef="status">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                    Status
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['status'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['status'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['status'] === 'desc' || !columnSortDirections['status'] }"></i>
+                                                    </span>
+                                                </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    {{element.status}}
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- Action Column -->
+                                            <ng-container matColumnDef="action">
+                                                <th mat-header-cell *matHeaderCellDef></th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
+                                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                                        <div class="dropdown-header">Action</div>
+                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#userModel"  (click)="editRole(element)">Edit User</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#updateRoleModel" (click)="editRole(element)" >Update role</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" (click)="sendInfo(element)" >Send Info</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)">Delete</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)">Activate/Deactivate</a>
+                                                    </div>
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- Header and Row Definitions -->
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                        </table>
                                     </div>
-                                    </div>
-                                      <div style="text-align: center;border-bottom: 1px solid #bfbbbb;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>
-                                      <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons ></mat-paginator>
+                                </div>
+                            
+                                <div style="text-align: center;border-bottom: 1px solid #bfbbbb;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length == 0">
+                                    No records found
+                                </div>
+                                <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -221,400 +239,187 @@
 </div>
 
 
-
-  <div class="modal fade" id="updateModal" tabindex="-1" data-bs-keyboard="false"  role="dialog" data-bs-backdrop="static" aria-labelledby="updateModalLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateModalLabel">Update/Add Role</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"  #editCloseModal>
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- <div class="form-group">
-                <input  type="hidden" class="form-control" id="userId" value=""/>    
-                </div> -->
-               
-                <div class="form-group">
-                    <label for="lastName" class="col-form-label">Employee Name:</label>
-                    <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="editUserRole.empName" autocomplete="off"  disabled/>
-                </div>
-                <div class="form-group">
-                    <label for="username" class="col-form-label">User Name:</label>
-                    <input type="text" class="form-control" id="userName" name="userName"[(ngModel)]="editUserRole.empMail"  disabled autocomplete="off" />
-                
-            </div>
-
-            <div class="form-group">
-                <label for="username" class="col-form-label">Roles:</label>
- 
-                 <ng-multiselect-dropdown #multiSelect
-                    [placeholder]="'Select options'"
-                    [data]="dropdownList"
-                    [(ngModel)]="selectedItems"
-                    [settings]="settings"
-                    (onSelect)="onItemSelect($event)" 
-                    (onDeSelect)="onDeSelect($event)"
-                    (onSelectAll)="onSelectAll($event)"
-                    (onDeSelectAll)="onDeSelectAll($event)"
-                  >
-                  </ng-multiselect-dropdown>
-                       
-
-        </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                <input type="submit" class="btn btn-primary" value="Save" (click)="saveUser()" />
-            </div>
-        </div>
-    </div>
-</div>
-  </div>
- <!-- #Modal for removing users -->
- <div class="modal fade" id="removeModalCenter" tabindex="-1" role="dialog" data-bs-keyboard="false"  aria-labelledby="removeModalCenterTitle" data-bs-backdrop="static" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="removeModalCenterTitle">Alert message</h5>
-                <button type="button" class="close btn btn-danger" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p class="alert alert-warning">
-                   Are You sure You want to delete this User?
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-               <button type="button" class="btn btn-primary">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
- 
 <!-----------Create a new user----------->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasRightLabel">Create a new user</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #registerCloseModal></button>
-  </div>
-  <hr class="sidebar-divider my-0">
-  <div class="offcanvas-body">
-      <form [formGroup]="form" (ngSubmit)="doRegister()" autocomplete="off">
-          <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="exampleInputEmail1">First name</label>
-                    <input type="text" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' maxlength="20" class="form-control form-control-sm" id="firstName"  placeholder="Enter First Name"  [(ngModel)]="userReg.firstName" formControlName="firstName" autocomplete="off"
-                      [ngClass]="{'is-invalid':submitted && form.controls.firstName.errors}" required autocomplete="off" (paste)="nameValidation($event,'firstName')" />
-                          <div *ngIf="submitted && form.controls.firstName.errors" class="text-danger">
-                          <div *ngIf="submitted && form.controls.firstName.errors?.required">
-                               First Name is required
-                          </div>
-                </div>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Last name</label>
-                    <input type="text" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' maxlength="20" class="form-control form-control-sm" id="lastname"  placeholder="Enter Last Name" required autocomplete="false" formControlName="lastName" [(ngModel)]="userReg.lastName" autocomplete="off"
-                    [ngClass]="{'is-invalid':submitted && form.controls.lastName.errors}" (paste)="nameValidation($event,'lastName')" />
-                    <div *ngIf="submitted && form.controls.lastName.errors" class="text-danger">
-                      <div *ngIf="submitted && form.controls.lastName.errors?.required">
-                           Last Name is required
-                      </div>
-                </div>
-                </div>
-            </div>
-          </div>
-          
-          <div class="form-group">
-              <label for="exampleInputZipcode1" class="form-label">Designation/Role</label>
-              <select class="form-select form-select-sm"  formControlName="designation" [ngClass]="{'is-invalid':submitted && form.controls.designation.errors}"  [(ngModel)]="userReg.designation">
-                <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
-               </select>
-               <div *ngIf="submitted && form.controls.designation.errors" class="text-danger">
-                <div *ngIf="submitted && form.controls.designation.errors?.required">
-                     Designation is required
-                </div>
-                </div>
-          </div>
-          <div class="form-group">
-          <label for="email">Email address</label>
-                          <input type="email" class="form-control form-control-sm" id="email" name="email" placeholder="Enter personal Email" formControlName="email"  [(ngModel)]="userReg.email" (ngModelChange)="userReg.email = $event?.toLowerCase()" autocomplete="off"
-                          [ngClass]="{'is-invalid':submitted && form.controls.email.errors}"  maxlength="100"/>
-                          <div *ngIf="submitted && form.controls.email.errors" class="text-danger">
-                            <div *ngIf="submitted && form.controls.email.errors?.required">
-                                 Email Id is required
-                            </div>
-                            <div *ngIf="submitted && form.controls.email.errors.pattern">
-                              Email Id is invalid
-                            </div>
-                            </div>
-          </div>
-
-        <div class="row">
-         <div class="col-sm-6">
-          <div class="form-group">
-            <label for="password" style="margin-right: 10px;">Password</label>
-            <span style="cursor: pointer;">
-              <i class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="left" title=" Must be 8-16 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character."></i>
-            </span>
-              <div class="input-group">
-                <input
-                  type="{{ isPasswordVisible ? 'text' : 'password' }}"
-                  class="form-control form-control-sm"
-                  id="password"
-                  [(ngModel)]="userReg.password"
-                  name="password"
-                  placeholder="Password"
-                  [ngClass]="{'is-invalid':submitted && form.controls.password.errors}"
-                  required>
-                  <span class="input-group-text" (click)="togglePasswordVisibility()" style="cursor: pointer;">
-                  <i class="fas" [ngClass]="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
-                </span>
-              </div>
-         
-              <!-- Error message section -->
-              <div *ngIf="submitted && form.controls.password.errors" class="text-danger">
-                  <div *ngIf="form.controls.password.errors?.required">
-                    Please enter the password.
-                  </div>
-                  <div *ngIf="form.controls.password.errors?.pattern">
-                    Please enter a strong password.
-                  </div>
-              </div>
-         
-              <!-- Password requirements message -->
-              <!-- <div *ngIf="form.controls.password.errors" class="text-muted" style="color: green;">
-                  Must be 8-16 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.
-              </div> -->
-          </div>
-        </div>
-         
-         <div class="col-sm-6">  
-            <div class="form-group">
-              <label for="repeatPassword">Repeat password</label>
-              <input
-                type="password"
-                class="form-control form-control-sm"
-                id="repeatPassword"
-                [(ngModel)]="userReg.repeatPassword"
-                name="repeatPassword"
-                placeholder="Repeat password"
-                [ngClass]="{'is-invalid':submitted && (form.controls.repeatPassword.errors || userReg.password !== userReg.repeatPassword)}"
-                required>
-                <div *ngIf="submitted && form.controls.repeatPassword.errors" class="text-danger">
-                  <div *ngIf="submitted  && form.controls.repeatPassword.errors?.required">
-                Please enter the repeat password.
-              </div>
-              </div>
-              <div *ngIf="submitted && userReg.password !== userReg.repeatPassword && !form.controls.repeatPassword.errors" class="text-danger">
-                Passwords do not match.
-              </div>
-            </div>
-        </div>
-        </div>
-         
-        <div class="d-flex justify-content-center">
-            <button type="submit" class="btn btn-primary-custom">Submit</button>
-            <button type="reset" class="btn btn-dark ml-2" (click)="resetForm()">Reset</button>
-        </div>
-        </form>
-  </div>
-</div>
-
-
-<!--------Update Role--------->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="updateoffcanvasRight" aria-labelledby="offcanvasRightLabel"
-    data-bs-backdrop="static">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="userModel" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasRightLabel">Update/Add Role</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"
-            #registerCloseModal></button>
-    </div>
-    <hr class="sidebar-divider my-0">
-    <div class="modal-body">
-        <!-- <div class="form-group">
-        <input  type="hidden" class="form-control" id="userId" value=""/>    
-        </div> -->
-       
-        <div class="form-group">
-            <label for="lastName" class="col-form-label">Employee Name:</label>
-            <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="editUserRole.empName" autocomplete="off"  disabled/>
-        </div>
-        <div class="form-group">
-            <label for="username" class="col-form-label">User Name:</label>
-            <input type="text" class="form-control" id="userName" name="userName"[(ngModel)]="editUserRole.empMail"  disabled autocomplete="off" />
-        
-    </div>
-
-    <div class="form-group">
-        <label for="username" class="col-form-label">Roles:</label>
-
-         <ng-multiselect-dropdown #multiSelect
-            [placeholder]="'Select options'"
-            [data]="dropdownList"
-            [(ngModel)]="selectedItems"
-            [settings]="settings"
-            (onSelect)="onItemSelect($event)" 
-            (onDeSelect)="onDeSelect($event)"
-            (onSelectAll)="onSelectAll($event)"
-            (onDeSelectAll)="onDeSelectAll($event)"
-          >
-          </ng-multiselect-dropdown>
-               
-
-</div>
-<div class="offcanvas-footer d-flex justify-content-start mt-3" style="align-items: center;">
-    <input type="submit" class="btn btn-primary-custom me-2" (click)="saveUser()" value="Save" />
-    <button type="button" class="btn btn-danger" data-bs-dismiss="offcanvas"
-        aria-label="Close">Close</button>
-</div>
-    <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-        <input type="submit" class="btn btn-primary" value="Save" (click)="saveUser()" />
-    </div> -->
-</div>
-</div>
-
-
-<!--------Update User--------->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="updateUseroffcanvasRight" aria-labelledby="offcanvasRightLabel"
-    data-bs-backdrop="static">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasRightLabel">Update user</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"
-            #registerCloseModal></button>
+      <h5 class="offcanvas-title" id="offcanvasRightLabel">Create a new user</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #registerCloseModal></button>
     </div>
     <hr class="sidebar-divider my-0">
     <div class="offcanvas-body">
-        <form [formGroup]="form" (ngSubmit)="doUpdateUser()" autocomplete="off">
+        <form [formGroup]="form" (ngSubmit)="submittUserDetails()" autocomplete="off">
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">First name</label>
-                        <input type="text"
-                            onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
-                            maxlength="20" class="form-control form-control-sm" id="firstName"
-                            placeholder="Enter First Name" [(ngModel)]="userReg.firstName" formControlName="firstName"
-                            autocomplete="off" [ngClass]="{'is-invalid':submitted && form.controls.firstName.errors}"
-                            required autocomplete="off" (paste)="nameValidation($event,'firstName')" />
-                        <div *ngIf="submitted && form.controls.firstName.errors" class="text-danger">
+              <div class="col-sm-6">
+                  <div class="form-group">
+                      <label for="exampleInputEmail1">First name</label>
+                      <input type="text" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' maxlength="20" class="form-control form-control-sm" id="firstName"  placeholder="Enter First Name"  [(ngModel)]="userReg.firstName" formControlName="firstName" autocomplete="off"
+                        [ngClass]="{'is-invalid':submitted && form.controls.firstName.errors}" required autocomplete="off" (paste)="nameValidation($event,'firstName')" />
+                            <div *ngIf="submitted && form.controls.firstName.errors" class="text-danger">
                             <div *ngIf="submitted && form.controls.firstName.errors?.required">
-                                First Name is required
+                                 First Name is required
                             </div>
+                  </div>
+                  </div>
+              </div>
+              <div class="col-sm-6">
+                  <div class="form-group">
+                      <label for="exampleInputEmail1">Last name</label>
+                      <input type="text" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' maxlength="20" class="form-control form-control-sm" id="lastname"  placeholder="Enter Last Name" required autocomplete="false" formControlName="lastName" [(ngModel)]="userReg.lastName" autocomplete="off"
+                      [ngClass]="{'is-invalid':submitted && form.controls.lastName.errors}" (paste)="nameValidation($event,'lastName')" />
+                      <div *ngIf="submitted && form.controls.lastName.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.lastName.errors?.required">
+                             Last Name is required
                         </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Last name</label>
-                        <input type="text"
-                            onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
-                            maxlength="20" class="form-control form-control-sm" id="lastname"
-                            placeholder="Enter Last Name" required autocomplete="false" formControlName="lastName"
-                            [(ngModel)]="userReg.lastName" autocomplete="off"
-                            [ngClass]="{'is-invalid':submitted && form.controls.lastName.errors}"
-                            (paste)="nameValidation($event,'lastName')" />
-                        <div *ngIf="submitted && form.controls.lastName.errors" class="text-danger">
-                            <div *ngIf="submitted && form.controls.lastName.errors?.required">
-                                Last Name is required
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                  </div>
+                  </div>
+              </div>
             </div>
-
+            
             <div class="form-group">
                 <label for="exampleInputZipcode1" class="form-label">Designation/Role</label>
-                <select class="form-select form-select-sm" formControlName="designation"
-                    [ngClass]="{'is-invalid':submitted && form.controls.designation.errors}"
-                    [(ngModel)]="userReg.designation">
-                    <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
-                </select>
-                <div *ngIf="submitted && form.controls.designation.errors" class="text-danger">
-                    <div *ngIf="submitted && form.controls.designation.errors?.required">
-                        Designation is required
-                    </div>
-                </div>
+                <select class="form-select form-select-sm"  formControlName="designation" [ngClass]="{'is-invalid':submitted && form.controls.designation.errors}"  [(ngModel)]="userReg.designation">
+                  <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+                 </select>
+                 <div *ngIf="submitted && form.controls.designation.errors" class="text-danger">
+                  <div *ngIf="submitted && form.controls.designation.errors?.required">
+                       Designation is required
+                  </div>
+                  </div>
             </div>
             <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control form-control-sm" id="email" name="email"
-                    placeholder="Enter personal Email" formControlName="email" [(ngModel)]="userReg.email"
-                    (ngModelChange)="userReg.email = $event?.toLowerCase()" autocomplete="off"
-                    [ngClass]="{'is-invalid':submitted && form.controls.email.errors}" maxlength="100" [disabled]="true"/>
-                <div *ngIf="submitted && form.controls.email.errors" class="text-danger">
-                    <div *ngIf="submitted && form.controls.email.errors?.required">
-                        Email Id is required
+                <label for="contactNumber">Contact Number</label>
+                <input type="text" maxlength="15" class="form-control form-control-sm" id="lastname"  placeholder="Enter Contact Number" required autocomplete="false" formControlName="contactNumber" [(ngModel)]="userReg.contactNumber" autocomplete="off"
+                [ngClass]="{'is-invalid':submitted && form.controls.contactNumber.errors}" />
+                <div *ngIf="submitted && form.controls.contactNumber.errors" class="text-danger">
+                  <div *ngIf="submitted && form.controls.contactNumber.errors?.required">
+                    Contact Number is required
+                  </div>
+            </div>
+            </div>
+            
+            <div class="form-group">
+            <label for="userEmail">Email address</label>
+            <input type="userEmail" class="form-control form-control-sm" id="userEmail" name="userEmail" placeholder="Enter Email" formControlName="userEmail"  [(ngModel)]="userReg.userEmail" (ngModelChange)="userReg.userEmail = $event?.toLowerCase()" autocomplete="off"
+                            [ngClass]="{'is-invalid':submitted && form.controls.userEmail.errors}"  maxlength="100"  [disabled]="!createOrUpdate" />
+            <div *ngIf="submitted && form.controls.userEmail.errors" class="text-danger">
+            <div *ngIf="submitted && form.controls.userEmail.errors?.required">
+                    Email Id is required
+            </div>
+            <div *ngIf="submitted && form.controls.userEmail.errors.pattern">
+                  Email Id is invalid
+             </div>
+              </div>
+            </div>
+  
+          <div class="row">
+           <div class="col-sm-6">
+            <div class="form-group">
+              <label for="password" style="margin-right: 10px;">Password</label>
+              <span style="cursor: pointer;">
+                <i class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="left" title=" Must be 8-16 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character."></i>
+              </span>
+                <div class="input-group">
+                  <input
+                    type="{{ isPasswordVisible ? 'text' : 'password' }}"
+                    class="form-control form-control-sm"
+                    id="password"
+                    [(ngModel)]="userReg.password"
+                    name="password"
+                    placeholder="Password"
+                    [ngClass]="{'is-invalid':submitted && form.controls.password.errors}"
+                    required>
+                    <span class="input-group-text" (click)="togglePasswordVisibility()" style="cursor: pointer;">
+                    <i class="fas" [ngClass]="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+                  </span>
+                </div>
+           
+                <!-- Error message section -->
+                <div *ngIf="submitted && form.controls.password.errors" class="text-danger">
+                    <div *ngIf="form.controls.password.errors?.required">
+                      Please enter the password.
                     </div>
-                    <div *ngIf="submitted && form.controls.email.errors.pattern">
-                        Email Id is invalid
+                    <div *ngIf="form.controls.password.errors?.pattern">
+                      Please enter a strong password.
                     </div>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="password" style="margin-right: 10px;">Password</label>
-                        <span style="cursor: pointer;">
-                            <i class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="left"
-                                title=" Must be 8-16 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character."></i>
-                        </span>
-                        <div class="input-group">
-                            <input type="{{ isPasswordVisible ? 'text' : 'password' }}"
-                                class="form-control form-control-sm" id="password" [(ngModel)]="userReg.password"
-                                name="password" placeholder="Password"
-                                [ngClass]="{'is-invalid':submitted && form.controls.password.errors}" required>
-                            <span class="input-group-text" (click)="togglePasswordVisibility()"
-                                style="cursor: pointer;">
-                                <i class="fas" [ngClass]="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
-                            </span>
-                        </div>
-
-                        <!-- Error message section -->
-                        <div *ngIf="submitted && form.controls.password.errors" class="text-danger">
-                            <div *ngIf="form.controls.password.errors?.required">
-                                Please enter the password.
-                            </div>
-                            <div *ngIf="form.controls.password.errors?.pattern">
-                                Please enter a strong password.
-                            </div>
-                        </div>
-                    </div>
+          </div>
+           
+           <div class="col-sm-6">  
+              <div class="form-group">
+                <label for="repeatPassword">Repeat password</label>
+                <input
+                  type="password"
+                  class="form-control form-control-sm"
+                  id="repeatPassword"
+                  [(ngModel)]="userReg.repeatPassword"
+                  name="repeatPassword"
+                  placeholder="Repeat password"
+                  [ngClass]="{'is-invalid':submitted && (form.controls.repeatPassword.errors || userReg.password !== userReg.repeatPassword)}"
+                  required>
+                  <div *ngIf="submitted && form.controls.repeatPassword.errors" class="text-danger">
+                    <div *ngIf="submitted  && form.controls.repeatPassword.errors?.required">
+                  Please enter the repeat password.
                 </div>
-
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="repeatPassword">Repeat password</label>
-                        <input type="password" class="form-control form-control-sm" id="repeatPassword"
-                            [(ngModel)]="userReg.repeatPassword" name="repeatPassword" placeholder="Repeat password"
-                            [ngClass]="{'is-invalid':submitted && (form.controls.repeatPassword.errors || userReg.password !== userReg.repeatPassword)}"
-                            required>
-                        <div *ngIf="submitted && form.controls.repeatPassword.errors" class="text-danger">
-                            <div *ngIf="submitted  && form.controls.repeatPassword.errors?.required">
-                                Please enter the repeat password.
-                            </div>
-                        </div>
-                        <div *ngIf="submitted && userReg.password !== userReg.repeatPassword && !form.controls.repeatPassword.errors"
-                            class="text-danger">
-                            Passwords do not match.
-                        </div>
-                    </div>
                 </div>
-            </div>
-
-            <div class="offcanvas-footer d-flex justify-content-start mt-3" style="align-items: center;">
-                <button type="submit" class="btn btn-primary-custom me-2">Submit</button>
-                <button type="reset" class="btn btn-dark" (click)="resetForm()">Reset</button>
-            </div>
-        </form>
+                <div *ngIf="submitted && userReg.password !== userReg.repeatPassword && !form.controls.repeatPassword.errors" class="text-danger">
+                  Passwords do not match.
+                </div>
+              </div>
+          </div>
+          </div>
+           
+          <div class="d-flex justify-content-center">
+              <button type="submit" class="btn btn-primary-custom">Submit</button>
+              <button type="reset" class="btn btn-dark ml-2" (click)="resetForm()">Reset</button>
+          </div>
+          </form>
     </div>
-</div>
+  </div>
+  
+  
+  <!--------Update Role--------->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="updateRoleModel" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+      <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasRightLabel">Update/Add Role</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"
+              #editRoleCloseModal></button>
+      </div>
+      <hr class="sidebar-divider my-0">
+      <div class="modal-body">
+         
+          <div class="form-group">
+              <label for="lastName" class="col-form-label">Employee Name:</label>
+              <input type="text" class="form-control" id="lastName" name="lastName" [value]="userReg.firstName + ' ' + userReg.lastName " autocomplete="off"  disabled/>
+          </div>
+          <div class="form-group">
+              <label for="username" class="col-form-label">User Name:</label>
+              <input type="text" class="form-control" id="userName" name="userName"[(ngModel)]="userReg.userEmail"  disabled autocomplete="off" />
+          
+      </div>
+  
+      <div class="form-group">
+          <label for="username" class="col-form-label">Roles:</label>
+  
+           <ng-multiselect-dropdown #multiSelect
+              [placeholder]="'Select options'"
+              [data]="dropdownList"
+              [(ngModel)]="selectedItems"
+              [settings]="settings"
+              (onSelect)="onItemSelect($event)" 
+              (onDeSelect)="onDeSelect($event)"
+              (onSelectAll)="onSelectAll($event)"
+              (onDeSelectAll)="onDeSelectAll($event)"
+            >
+            </ng-multiselect-dropdown>
+                 
+  
+  </div>
+  <div class="offcanvas-footer d-flex justify-content-start mt-3" style="align-items: center;">
+      <input type="submit" class="btn btn-primary-custom me-2" (click)="updateRolesUser()" value="Save" />
+      <button type="button" class="btn btn-danger" data-bs-dismiss="offcanvas"
+          aria-label="Close">Close</button>
+  </div>
+
+  </div>
+  </div>

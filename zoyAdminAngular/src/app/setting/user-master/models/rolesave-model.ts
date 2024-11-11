@@ -1,7 +1,6 @@
-export class RoleSave{
-   
-    userName ?: string;
-    roles ?: number[];
-    applicationNames ?: string[];
+export class RoleUpdateModel{
+
+    userEmail ?: string ="";
+    roleId ?: number[];
 
 }
