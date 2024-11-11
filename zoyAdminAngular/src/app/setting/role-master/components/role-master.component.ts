@@ -54,8 +54,8 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public totalProduct:number=0;
-  pageSize:number=10;
-  pageSizeOptions=[10,20,50];
+  pageSize:number=5;
+  pageSizeOptions=[5,10,20,50];
   isExpandSideBar:boolean=true;
   public ELEMENT_DATA:RoleModel[];
   dataSource:MatTableDataSource<RoleModel>=new MatTableDataSource<RoleModel>();
@@ -129,6 +129,21 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
     this.dataSource.sort = this.sort;
 		this.dataSource.paginator = this.paginator;
   }
+
+  announceSortChange(sortState: Sort) {
+
+    this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+    this.columnSortDirections[sortState.active] = sortState.direction;
+
+    console.log("sortState",sortState)
+
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
+    }
+  
+    }
   
  clearArrays(){
   this.submitted = false;
@@ -140,7 +155,10 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
  
   saveRoleModel() {
    // this.authService.checkLoginUserVlidaate();
-    this.forValidations(); 
+   this.submitted = true
+   if(this.form.invalid){
+     return;
+   }
     if(this.ELEMENT_DATA.filter(d=>d.roleName == this.role)){
       this.notifyService.showInfo(this.role+' role name is already available.', "Please change role name.");  
       return;
@@ -218,12 +236,6 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
     
   }
 
-  forValidations(){
-    this.submitted = true
-      if(this.form.invalid){
-        return;
-      }
-    }
 
     saveEditedData(){  
      // this.authService.checkLoginUserVlidaate();
@@ -307,7 +319,7 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
         this.roleService.getRolesList().subscribe(res => {
           this.ELEMENT_DATA=Object.assign([],res);
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-          this.totalProduct=this.ELEMENT_DATA.length;
+    //      this.totalProduct=this.ELEMENT_DATA.length;
         this.spinner.hide();
       },error =>{
         this.spinner.hide();
@@ -339,22 +351,6 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 
 
 getEditData(data:any){
- var res= {
-    "id": 225,
-    "roleName": "ADMIN",
-    "description": "Admin role only test",
-    "roleScreenList": {
-      "OWNER_ONBOARDING_AND_REGISTRATION_WRITE": true,
-      "OWNER_EKYC_VERIFICATION_WRITE": true,
-      "OWNER_ONBOARDING_AND_REGISTRATION_READ": true,
-      "OWNER_EKYC_VERIFICATION_READ": true,
-      "MANAGING_OWNERS_READ": true,
-      "MANAGING_USERS_WRITE_READ": true,
-      "CANCELLATION_AND_REFUND_RULES_WRITE": true,
-      "CANCELLATION_AND_REFUND_RULES_READ": true,
-      "PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ": true,        
-    }
-}
 
 function convertRoleData(input: RoleModel): any {
   const output: RoleModel = new RoleModel();
@@ -374,10 +370,9 @@ function convertRoleData(input: RoleModel): any {
 
   return output;
 }
-console.log("data",data)
+
 // Apply the conversion
 const model = convertRoleData(data);
-console.log("model",model)
 this.editRoles =Object.assign(model); 
 const propertyNames = Object.keys(this.editRoles.roleScreenList).filter((propertyName) => {
   return  this.editRoles.roleScreenList[propertyName] !== false;
@@ -393,87 +388,6 @@ this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"read",this.dataSelectedRead)
 this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"write",this.dataSelectedWrite);
 }
 
-
-// getEditData1(data : any){
-
-//  // this.authService.checkLoginUserVlidaate();
-//   this.submitted=false;
-//  this.dataSelectedRead = [];
-//   this.dataSelectedWrite= [];
-//  // this.getEditMock();
-  
-//   function convertRoleData(input: RoleModel): any {
-//     const output: any = {
-//         id: input.id,
-//         roleName: input.roleName,  // Unchanged from input
-//         description: input.desc,   // Renaming 'desc' to 'description'
-//         roleScreen: {}  // Will store the mapped permissions
-//     };
-
-//     // Iterate over the roleScreen array and build the permissions structure
-//     input.roleScreen.forEach(screen => {
-//         if (screen.readPrv) {
-//             output.roleScreen[`${screen.screenName.toUpperCase()}_READ`] = true;
-//         }
-//         if (screen.writePrv) {
-//             output.roleScreen[`${screen.screenName.toUpperCase()}_WRITE`] = true;
-//         }
-//     });
-
-//     return output;
-// }
-
-// // Apply the conversion
-// const model = convertRoleData(data);
-
-  
-//   // Perform the transformation
- 
-//   return;
-//   this.spinner.show();
-//   this.roleService.editRole(model).subscribe(res => {
-//          this.editRoles = res; 
-//           const propertyNames = Object.keys(this.editRoles.roleScreenList).filter((propertyName) => {
-//             return  this.editRoles.roleScreenList[propertyName] !== false;
-//           });
-//           for(let roles of propertyNames){
-//             if(roles.includes("READ"))
-//                 this.dataSelectedRead.push(roles);
-//             else
-//               this.dataSelectedWrite.push(roles);    
-//           }
-
-//           this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"read",this.dataSelectedRead);
-//           this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"write",this.dataSelectedWrite);
-//           this.spinner.hide();
-//   },error =>{
-//     this.spinner.hide();
-//     if(error.status==403){
-//       this.router.navigate(['/forbidden']);
-//     }else if (error.error && error.error.message) {
-//       this.errorMsg =error.error.message;
-//       console.log("Error:"+this.errorMsg);
-//       this.notifyService.showError(this.errorMsg, "");
-//     } else {
-//       if(error.status==500 && error.statusText=="Internal Server Error"){
-//         this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-//       }else{
-//         let str;
-//           if(error.status==400){
-//           str=error.error;
-//           }else{
-//             str=error.message;
-//             str=str.substring(str.indexOf(":")+1);
-//           }
-//           console.log("Error:"+str);
-//           this.errorMsg=str;
-//       }
-//       if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-//     }
-//   }) ;
-  
-
-// }
 
 deleteRecord(id : number){
   this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to delete the User?')
@@ -712,19 +626,7 @@ getMenuSelectedForEDITPOPUP(menuList:string[],opt:string,menuListEdit:string[]){
   }
 }
 
-announceSortChange(sortState: Sort) {
-
-  this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
-  this.columnSortDirections[sortState.active] = sortState.direction;
-  if (sortState.direction) {
-    this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-  } else {
-    this._liveAnnouncer.announce('Sorting cleared');
-  }
-
-  }
-
-  
+ 
 
 }
 

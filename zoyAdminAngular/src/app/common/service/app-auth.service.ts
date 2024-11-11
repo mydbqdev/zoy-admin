@@ -151,7 +151,7 @@ export class AppAuthService extends AuthService{
         );
     }
     public checkLoginUserOnServer() : Observable<ApplicationSession>{
-        const url1=this.basePath +'zoy_admin/user_assign';
+        const url1=this.basePath +'zoy_admin/user_details';
         let token ={"token":""};
         if(!sessionStorage.getItem("token")){
             this.router.navigateByUrl('/signin');
@@ -175,9 +175,9 @@ export class AppAuthService extends AuthService{
         this.checkLoginUserOnServer().subscribe(
             (result)=>{
                this.sessionSnapshot = result;
-               this.sessionSnapshot.username = result.empEmail;
+               this.sessionSnapshot.username = result.userEmail;
                this.sessionSnapshot.token = result.token;
-               this.userService.setUsername(result.empEmail);
+               this.userService.setUsername(result.userEmail);
                this.userService.setUserinfo(result);
                //let resp: ResponseStore={empEmail:result.empEmail,token:result.token};
                //this.setSessionStore(resp);

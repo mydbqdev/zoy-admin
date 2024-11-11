@@ -44,7 +44,7 @@ export class SigninComponent implements OnInit {
 
 				const res: ResponseStore = { userEmail: result.email, token: result.token };
 				this.authService.setSessionStore(res);
-				//this.authService.checkLoginUser();
+				this.authService.checkLoginUser();
 				this.router.navigate(['/home']);
 			}, error => {
 				console.log("error",error)

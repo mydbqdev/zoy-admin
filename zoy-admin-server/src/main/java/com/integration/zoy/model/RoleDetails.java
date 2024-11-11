@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
    
 public class RoleDetails {
 
-   @JsonProperty("role_name")
+   @JsonProperty("roleName")
    String roleName;
 
    @JsonProperty("desc")
    String desc;
 
-   @JsonProperty("role_screen")
+   @JsonProperty("roleScreen")
    List<RoleScreen> roleScreen;
 
 
