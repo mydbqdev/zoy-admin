@@ -508,7 +508,8 @@ menuSubMenus: string[] = [
   "PERCENTAGE_AND_CHARGE_CONFIGURATIONS",
   "ROLE_AND_PERMISSION",
   "MANAGING_USERS",
-  "USER_ROLES"
+  "USER_ROLES",
+  "Permission_Approval"
 ];
 
 getCheckedMenulist(id:string,opt:string){
