@@ -1,65 +1,48 @@
-<div id="header" style="top:0;height: 100px;position: fixed;z-index: 1;width: 100%;background-color: #fff;">
-  <div class="d-flex">
-     <div style="width: 225px;border-right: 1px solid rgb(203, 203, 203);height: 100px;">
-      <div class="mt-1 ml-2 mr-2 mb-2" style="padding-left: 60px;">
-        <a href="index.html" class="logo">
-          <img src="assets/images/myne-logo-f.png" alt="logo">
-        </a>
-      </div>
-    </div>
-    <div style="height: 100px;width: calc(100vw - 450px);">
-      <div class="container-fluid form-group" style="padding: 40px 15px 5px 15px;">
-        <div class="input-group">
-          <span class="input-group-text" id="basic-addon1" style="height: 38px;border: 0px solid #fff;background: rgb(245, 243, 243) !important;"><img src="assets/images/myne-smll-logo-f.png" alt="logo" style="height: 25px;"></span>
-          <input type="text" class="form-control" style="background-color: rgb(245, 243, 243);border: 0px solid #fff;" placeholder="Search for electronics"/>
-          </div>
-      </div>
-    </div>
-    <div class="ml-auto" style="width: 220px;height: 100px;">
-      <div class="d-flex" style="margin-top: 10px;">
-        <div class="m-2"><div class="profile-top img-circle elevation-2">{{userInfo?.userFirstName?.charAt(0).toUpperCase()}}</div></div>
-        <div>
-           <div style="font-weight: 500;" class="ml-2 mt-3">{{userInfo?.userFirstName}} {{userInfo?.userLastName}}</div>
-           <div class="fw-lighter ml-2">{{userInfo?.zipCode}}</div>
+<!-- Content Wrapper. Contains page content -->
+<div id="page-top">
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+    <!-- Sidebar -->
+    <app-sidebar></app-sidebar>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+        <!-- Main Content -->
+        <div id="content">
+               <div style="display: block;margin-bottom: 5.375rem;">
+               <!-- Topbar -->
+               <app-header></app-header>
+               <!-- End of Topbar -->
+               </div>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid"> 
+                <!-- Content Row --> 
+                <div class="row">
+                    <!-- Area Chart -->
+                    <div class="col-xl-12 col-lg-12">
+                       <div class="card shadow mb-4">
+                           <!-- Card Header - Dropdown -->
+                           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                               <h6 class="m-0 font-weight-bold text-primary">Under Construction</h6>
+                           </div>
+                           <!-- Card Body -->
+                           <div class="card-body" style="margin: 0px;padding: 0px;">
+
+                           </div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+
         </div>
-        <div>
-          <a class="dropdown-toggle no-arrow" style="margin-right: -10px;" href="#" role="button" id="dropdownMenuLink"
-                                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                          <i class="fas fa-ellipsis-h ml-2 mt-5 text-gray-400"></i>
-                                          </a>
-                                          <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                              aria-labelledby="dropdownMenuLink">
-                                              <a class="dropdown-item" href="javascript:void(0)">Settings</a>
-                                              <a class="dropdown-item" href="javascript:void(0)" routerLink="/signin">Logout</a>
-                                          </div>
-        </div>
-      </div>
+        <!-- End of Main Content -->
+
     </div>
-  </div>
+    <!-- End of Content Wrapper -->
+
 </div>
-<div style="top:100px;">
-  <div class="d-flex">
-     <div style="z-index: 1;position: fixed;width: 225px;border-right: 1px solid rgb(203, 203, 203);height: calc(100vh - 100px);top:100px;">
-      <div class="ml-4 mr-4 mt-2 mb-2">
-        <nav class="nav flex-column">
-          <a class="nav-link left-menu" routerLink="/home"><i class="fas fa-home mr-2"></i>Home</a>
-          <a class="nav-link left-menu" routerLink="/under-construction"><i class="far fa-lemon mr-2"></i>Discover</a>
-          <a class="nav-link left-menu active" routerLink="/listing"><i class="fas fa-tag mr-2"></i>For Sale</a>
-          <a class="nav-link left-menu" routerLink="/listing"><i class="fas fa-yin-yang mr-2"></i>For Free</a>
-          <a class="nav-link left-menu" routerLink="/under-construction"><i class="far fa-bell mr-1"></i> Notifications</a>
-          <a class="nav-link left-menu" routerLink="/under-construction"><i class="far fa-comment mr-1"></i> Chats</a>
-          <a class="nav-link left-menu" routerLink="/under-construction"><i class="fas fa-users mr-1"></i> Groups</a>
-          <a class="nav-link left-menu" routerLink="/under-construction"><i class="fas fa-user-friends mr-2"></i>Neighbors</a>
-          </nav>
-      </div>
-      <div class="m-4" style="padding-top: 6px;padding-left: 15px;">
-        <button type="button" class="btn btn-info border-0" style="border-radius: 20px !important;background-color: #8B5805 !important;width: 145px;" data-bs-toggle="modal" data-bs-target="#newPost">Post</button>
-      </div>
-    </div>
-    <div style="border-right: 0px solid rgb(203, 203, 203);width: calc(100vw - 230px);margin-top: 100px;margin-left:225px;min-height: calc(100vh - 100px);">
-      <div >
-        <img src="assets/images/under-construction.PNG"  style="height: 466px;margin-left: 30px;" />
-      </div>
-    </div>
-  </div>
+<!-- End of Page Wrapper -->
 </div>

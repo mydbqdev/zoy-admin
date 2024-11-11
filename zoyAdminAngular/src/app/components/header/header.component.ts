@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
+import { AuthService } from 'src/app/common/service/auth.service';
 import { DataService } from 'src/app/common/service/data.service';
 import { UserService } from 'src/app/common/service/user.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
@@ -15,7 +16,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   headerName:string='';
   userInfo:UserInfo=new UserInfo();
   isExpandSideBar:boolean=true;
-  constructor( private userService: UserService, private router: Router,private dataService:DataService) {
+  constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,) {
    this.userInfo=this.userService.getUserinfo();
     this.userNameSession = userService.getUsername();
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -48,6 +49,10 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     if (this.mySubscription) {
       this.mySubscription.unsubscribe();
     }
+  }
+
+  doSignout() {
+		this.authService.checkLogout();
   }
 
 }
