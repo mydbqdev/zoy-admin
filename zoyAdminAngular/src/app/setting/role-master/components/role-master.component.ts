@@ -302,14 +302,12 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
      }
 
   getRolesData() {
-
  // this.authService.checkLoginUserVlidaate();
         this.spinner.show();
         this.roleService.getRolesList().subscribe(res => {
-          console.log("getRolesList>res",res)
           this.ELEMENT_DATA=Object.assign([],res);
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-      
+          this.totalProduct=this.ELEMENT_DATA.length;
         this.spinner.hide();
       },error =>{
         this.spinner.hide();
@@ -341,7 +339,6 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 
 
 getEditData(data:any){
-
  var res= {
     "id": 225,
     "roleName": "ADMIN",
@@ -365,7 +362,6 @@ function convertRoleData(input: RoleModel): any {
   output.roleName=input.roleName;
   output.desc=input.desc;
   output.roleScreenList=new RoleScreenModel();
-
   // Iterate over the roleScreen array and build the permissions structure
   input.roleScreen.forEach(screen => {
       if (screen.readPrv) {
@@ -382,8 +378,6 @@ console.log("data",data)
 // Apply the conversion
 const model = convertRoleData(data);
 console.log("model",model)
-
-
 this.editRoles =Object.assign(model); 
 const propertyNames = Object.keys(this.editRoles.roleScreenList).filter((propertyName) => {
   return  this.editRoles.roleScreenList[propertyName] !== false;
