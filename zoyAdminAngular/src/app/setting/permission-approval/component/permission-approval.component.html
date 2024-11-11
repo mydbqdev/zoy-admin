@@ -19,7 +19,7 @@
                   <app-header></app-header>
                   <!-- End of Topbar -->
                   </div>
-  
+
               <!-- Begin Page Content -->
               <div class="container-fluid">
                   <!-- Content Row -->
@@ -41,7 +41,6 @@
                               </div>
                           </div>
                       </div>
-  
                       <!-- Earnings (Monthly) Card Example -->
                       <div class="col-xl-3 col-md-6 mb-4">
                           <div class="card border-left-success shadow h-100 py-2">
@@ -59,7 +58,6 @@
                               </div>
                           </div>
                       </div>
-  
                       <!-- Earnings (Monthly) Card Example -->
                       <div class="col-xl-3 col-md-6 mb-4">
                           <div class="card border-left-info shadow h-100 py-2">
@@ -88,7 +86,6 @@
                               </div>
                           </div>
                       </div>
-  
                       <!-- Pending Requests Card Example -->
                       <div class="col-xl-3 col-md-6 mb-4">
                           <div class="card border-left-warning shadow h-100 py-2">
@@ -109,68 +106,39 @@
                   </div>
   
                   <!-- Content Row -->
-  
                   <div class="row">
-  
                       <!-- Area Chart -->
                       <div class="col-xl-12 col-lg-12">
                         <div class="card shadow mb-4">
-                            <!-- Card Header - Dropdown -->
-    
                             <!-- Card Body -->
                             <div class="card-body" style="padding: 0; margin: 0;">
-                                <div style="max-height: 300px; overflow: auto;">
-                                    <div class="desc-inner" style="height: 150px;">
-                                        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" matSort (matSortChange)="announceSortChange($event)">
-                                            
+                                <div>
+                                    <div class="scrollable-container-main">
+                                        <table mat-table [dataSource]="dataSource">                                          
                                             <ng-container matColumnDef="userName">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by userName" style="white-space: nowrap; padding: 8px 16px; font-weight: 600;">
+                                                <th mat-header-cell *matHeaderCellDef>
                                                     User Name
-                                                    <span style="margin-left: 2px;">
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['userName'] }"></i>
-                                                        <i class="fas" [ngClass]="{
-                                                            'fa-long-arrow-alt-up': columnSortDirections['userName'] === 'asc',
-                                                            'fa-long-arrow-alt-down': columnSortDirections['userName'] === 'desc' || !columnSortDirections['userName'],
-                                                        }"></i>
-                                                    </span>
                                                 </th>
                                                 <td mat-cell data-label="name" *matCellDef="let element">
                                                     {{element.empName}}
                                                 </td>
-                                            </ng-container>
-                    
+                                            </ng-container>                   
                                             <ng-container matColumnDef="userMail">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header style="white-space: nowrap; padding: 8px 16px; font-weight: 600; max-width: 150px;">
+                                                <th mat-header-cell *matHeaderCellDef>
                                                     User Mail
-                                                    <span style="margin-left: 2px;">
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['userMail'] }"></i>
-                                                        <i class="fas" [ngClass]="{
-                                                            'fa-long-arrow-alt-up': columnSortDirections['userMail'] === 'asc',
-                                                            'fa-long-arrow-alt-down': columnSortDirections['userMail'] === 'desc' || !columnSortDirections['userMail'],
-                                                        }"></i>
-                                                    </span>
                                                 </th>
                                                 <td mat-cell data-label="userMail" *matCellDef="let element;">
                                                     {{element.empMail}}
                                                 </td>
-                                            </ng-container>
-                    
+                                            </ng-container>        
                                             <ng-container matColumnDef="roles">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header style="white-space: nowrap; padding: 8px 16px; font-weight: 600;">
+                                                <th mat-header-cell *matHeaderCellDef>
                                                     Role
-                                                    <span style="margin-left: 2px;">
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['roles'] }"></i>
-                                                        <i class="fas" [ngClass]="{
-                                                            'fa-long-arrow-alt-up': columnSortDirections['roles'] === 'asc',
-                                                            'fa-long-arrow-alt-down': columnSortDirections['roles'] === 'desc' || !columnSortDirections['roles'],
-                                                        }"></i>
-                                                    </span>
                                                 </th>
                                                 <td mat-cell data-label="roles" *matCellDef="let element;">
                                                     {{element.roles}}
                                                 </td>
-                                            </ng-container>
-                    
+                                            </ng-container>                  
                                             <ng-container matColumnDef="action">
                                                 <th mat-header-cell *matHeaderCellDef style="padding: 8px 16px; font-weight: 600; max-width: 80px;"></th>
                                                 <td mat-cell class="example-box" style="max-width: 80px;" data-label="action" *matCellDef="let element">
@@ -178,15 +146,8 @@
                                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                                     </a>
-                                                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                         aria-labelledby="dropdownMenuLink">
-                                                        <div class="dropdown-header">Action</div>
-                                                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#updateModal" (click)="editRole(element)">Edit</a>
+                                                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                                         <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Check and Approve</a>
-                                                        <a class="dropdown-item" href="javascript:void(0)" (click)="sendInfo(element)">Send Info</a>
-                                                        <a class="dropdown-item" href="javascript:void(0)" (click)="deleteUser(element)">Delete</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item" href="javascript:void(0)">Something else here</a>
                                                     </div>
                                                 </td>
                                             </ng-container>
@@ -202,95 +163,16 @@
                                 <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
                             </div>
                         </div>
-                    </div>
-                    
+                    </div>              
                   </div>
               </div>
               <!-- /.container-fluid -->
-  
           </div>
           <!-- End of Main Content -->
-  
       </div>
       <!-- End of Content Wrapper -->
-  
   </div>
   <!-- End of Page Wrapper -->
-  </div>
-  
-  
-  
-   <div class="modal fade" id="updateModal" tabindex="-1" data-bs-keyboard="false"  role="dialog" data-bs-backdrop="static" aria-labelledby="updateModalLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateModalLabel">Update/Add Role</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"  #editCloseModal>
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- <div class="form-group">
-                <input  type="hidden" class="form-control" id="userId" value=""/>    
-                </div> -->
-               
-                <div class="form-group">
-                    <label for="lastName" class="col-form-label">Employee Name:</label>
-                    <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="editUserRole.empName" autocomplete="off"  disabled/>
-                </div>
-                <div class="form-group">
-                    <label for="username" class="col-form-label">User Name:</label>
-                    <input type="text" class="form-control" id="userName" name="userName"[(ngModel)]="editUserRole.empMail"  disabled autocomplete="off" />
-                
-            </div>
-
-            <div class="form-group">
-                <label for="username" class="col-form-label">Roles:</label>
- 
-                 <ng-multiselect-dropdown #multiSelect
-                    [placeholder]="'Select options'"
-                    [data]="dropdownList"
-                    [(ngModel)]="selectedItems"
-                    [settings]="settings"
-                    (onSelect)="onItemSelect($event)" 
-                    (onDeSelect)="onDeSelect($event)"
-                    (onSelectAll)="onSelectAll($event)"
-                    (onDeSelectAll)="onDeSelectAll($event)"
-                  >
-                  </ng-multiselect-dropdown>
-                       
-
-        </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                <input type="submit" class="btn btn-primary" value="Save" (click)="saveUser()" />
-            </div>
-        </div>
-    </div>
-</div>
-  </div>
-   <!-- #Modal for removing users -->
-   <div class="modal fade" id="removeModalCenter" tabindex="-1" role="dialog" data-bs-keyboard="false"  aria-labelledby="removeModalCenterTitle" data-bs-backdrop="static" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="removeModalCenterTitle">Alert message</h5>
-                  <button type="button" class="close btn btn-danger" data-bs-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body">
-                  <p class="alert alert-warning">
-                     Are You sure You want to delete this User?
-                  </p>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                 <button type="button" class="btn btn-primary">Delete</button>
-              </div>
-          </div>
-      </div>
   </div>
 
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
@@ -300,13 +182,11 @@
     </div>
     <hr class="sidebar-divider my-0">
     <div class="offcanvas-body">
-        <form [formGroup]="form" (ngSubmit)="doRegister()" autocomplete="off">
-
+        <form [formGroup]="form" autocomplete="off">
             <div class="modal-body">
-                <div class="font-weight-bold" style="border-bottom: 1px solid gray;">
+                <div class="font-weight-bold mb-2" style="border-bottom: 1px solid #f5f3f3;margin-top:-10px">
                     Balaji
                 </div>
-
                 <!-- Authorization Section -->
                 <div class="mb-4">
                     <div class="row text-center font-weight-bold" style="font-size: 16px;">
@@ -320,17 +200,17 @@
                         <div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-3 ml-1">
                             <div class="col-sm-8" style="font-size: 14px;">{{ permission.screenName }}</div>
                             <div class="col-sm-2 text-center">
-                                <i [class]="getReadIcon(permission.readPrv)" style="font-size: 20px;"></i>
+                                <i [class]="getReadIcon(permission.readPrv)" style="font-size: 14px;"></i>
                             </div>
                             <div class="col-sm-2 text-center">
-                                <i [class]="getWriteIcon(permission.writePrv)" style="font-size: 20px;"></i>
+                                <i [class]="getWriteIcon(permission.writePrv)" style="font-size: 14px;"></i>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="d-flex justify-content-center mt-4">
+                <div class="d-flex mt-4">
                     <button type="button" class="btn btn-primary-custom px-4 py-2" (click)="approveRole()">Approve</button>
                     <button type="button" class="btn btn-dark ml-2 px-4 py-2" (click)="rejectRole()">Reject</button>
                 </div>
