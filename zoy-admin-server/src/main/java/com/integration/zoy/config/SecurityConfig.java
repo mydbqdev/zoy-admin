@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -48,8 +49,8 @@ public class SecurityConfig {
 
 	
 	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+	public static PasswordEncoder passwordEncoder() {
+		return NoOpPasswordEncoder.getInstance();
 	}
 
 	@Bean
@@ -70,7 +71,7 @@ public class SecurityConfig {
 	            requests.antMatchers("/public").permitAll()
 	            .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**").permitAll()
 	            .antMatchers("/verify-email").permitAll()
-	            .antMatchers("/forgotPassword").permitAll().antMatchers("/forgot-password").permitAll()
+	            .antMatchers("/forgotPassword").permitAll().antMatchers("/forgot-password").permitAll().antMatchers("/zoy_admin/login").permitAll()
 	            .anyRequest().authenticated()
 	            .and()
 	            .exceptionHandling(handling -> handling

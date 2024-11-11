@@ -39,9 +39,9 @@ public class AdminUserAuthService implements UserDetailsService {
 		if (username.equals(email)) {
             return new org.springframework.security.core.userdetails.User(
                 username, 
-                new BCryptPasswordEncoder().encode(password),
+                password,
                 getUserAuthority(List.of("ADMIN"))
-            );
+            ); 
         }
 		
 		UserDetails userDetail;

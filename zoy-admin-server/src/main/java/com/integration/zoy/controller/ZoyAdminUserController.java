@@ -42,6 +42,7 @@ import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.EmailService;
+import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.utils.AdminAppRole;
 import com.integration.zoy.utils.AdminUserDetailPrevilage;
 import com.integration.zoy.utils.AdminUserList;
@@ -82,9 +83,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 	@Autowired
 	private JwtUtil jwtUtil;
-	
+
 	@Autowired
 	EmailService emailService;
+
+	@Autowired
+	PasswordDecoder passwordDecoder;
 
 	@Override
 	public ResponseEntity<String> zoyAdminUserLogin(LoginDetails details) {
@@ -93,10 +97,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		try {
 			AdminUserLoginDetails loginDetails=adminDBImpl.findByEmail(details.getEmail());
 			if(loginDetails!=null) {
-				boolean isPasswordMatch = new BCryptPasswordEncoder().matches(details.getPassword(),loginDetails.getPassword());
+				String decryptedStoredPassword = passwordDecoder.decryptedText(details.getPassword()); 
+				String decryptedLoginPassword = passwordDecoder.decryptedText(loginDetails.getPassword()); 
+				boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
 				if(isPasswordMatch) {
 					authentication = authenticationManager
-							.authenticate(new UsernamePasswordAuthenticationToken(details.getEmail(), details.getPassword()));
+							.authenticate(new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
 					response.setStatus(HttpStatus.OK.value());
 					response.setEmail(details.getEmail());
 					String token = jwtUtil.generateToken(authentication);
@@ -170,7 +176,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 			AdminUserLoginDetails adminUserLoginDetails=new AdminUserLoginDetails();
 			adminUserLoginDetails.setUserEmail(adminUserDetails.getEmailId());
-			adminUserLoginDetails.setPassword(new BCryptPasswordEncoder().encode(adminUserDetails.getPassword()));
+			adminUserLoginDetails.setPassword(adminUserDetails.getPassword());
 			adminUserLoginDetails.setIsActive(true);
 			adminUserLoginDetails.setIsLock(false);
 			adminDBImpl.saveAdminLoginDetails(adminUserLoginDetails);
@@ -420,11 +426,11 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				email.setTo(to);
 				email.setSubject("Zoy Admin Portal Signin Information");
 				String message = "<p>Hi "+master.getFirstName()+" "+master.getLastName()+",</p>"
-				+ "<p>Welcome to Zoy Admin Portal, We are excited to have you as part of our community! "
-				+ "Below are your sign-in credentials for accessing your account.</p>"
-				+ "<p>Username: "+ details.getEmail()+"</p>"
-				+ "Password: "+ details.getPassword()+"</p>"
-				+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
+						+ "<p>Welcome to Zoy Admin Portal, We are excited to have you as part of our community! "
+						+ "Below are your sign-in credentials for accessing your account.</p>"
+						+ "<p>Username: "+ details.getEmail()+"</p>"
+						+ "Password: "+ details.getPassword()+"</p>"
+						+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
 				email.setBody(message);
 				email.setContent("text/html");
 				emailService.sendEmail(email,null);
