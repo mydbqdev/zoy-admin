@@ -70,11 +70,11 @@
                                         <img src="assets/images/ZOY-logo.svg" style="height: 155px;width: auto;">
                                     </div>
                                     <div>
-                                        <h1 class="h4 text-gray-900 mt-4">Login</h1>
-                                        <div class="small mb-3">Enter your account details</div>
+                                        <h1 class="h4 text-gray-900 mt-2">Login</h1>
+                                        <div class="small mb-1">Enter your account details</div>
                                     </div>
-                                    <div style="height: 24px;color:red;">
-                                        <strong *ngIf='error'>{{error}}</strong>
+                                    <div style="height: 35px;color:red;" class="small">
+                                        <span *ngIf='error'>{{error}}</span>
                                     </div>
                                     <form class="user" (ngSubmit)="doSignin()">
                                         <div class="form-group">
