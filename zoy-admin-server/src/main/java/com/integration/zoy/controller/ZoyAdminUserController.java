@@ -83,10 +83,10 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 	@Autowired
 	private JwtUtil jwtUtil;
-	
+
 	@Autowired
 	EmailService emailService;
-	
+
 	@Autowired
 	PasswordDecoder passwordDecoder;
 
@@ -97,9 +97,8 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		try {
 			AdminUserLoginDetails loginDetails=adminDBImpl.findByEmail(details.getEmail());
 			if(loginDetails!=null) {
-				
-			String decryptedStoredPassword = passwordDecoder.decryptedText(details.getPassword()); 
-			String decryptedLoginPassword = passwordDecoder.decryptedText(loginDetails.getPassword()); 
+				String decryptedStoredPassword = passwordDecoder.decryptedText(details.getPassword()); 
+				String decryptedLoginPassword = passwordDecoder.decryptedText(loginDetails.getPassword()); 
 				boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
 				if(isPasswordMatch) {
 					authentication = authenticationManager
@@ -427,11 +426,11 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				email.setTo(to);
 				email.setSubject("Zoy Admin Portal Signin Information");
 				String message = "<p>Hi "+master.getFirstName()+" "+master.getLastName()+",</p>"
-				+ "<p>Welcome to Zoy Admin Portal, We are excited to have you as part of our community! "
-				+ "Below are your sign-in credentials for accessing your account.</p>"
-				+ "<p>Username: "+ details.getEmail()+"</p>"
-				+ "Password: "+ details.getPassword()+"</p>"
-				+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
+						+ "<p>Welcome to Zoy Admin Portal, We are excited to have you as part of our community! "
+						+ "Below are your sign-in credentials for accessing your account.</p>"
+						+ "<p>Username: "+ details.getEmail()+"</p>"
+						+ "Password: "+ details.getPassword()+"</p>"
+						+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
 				email.setBody(message);
 				email.setContent("text/html");
 				emailService.sendEmail(email,null);
