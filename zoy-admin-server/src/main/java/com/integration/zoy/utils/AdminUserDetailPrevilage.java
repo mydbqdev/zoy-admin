@@ -5,16 +5,16 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
 public class AdminUserDetailPrevilage {
-	@SerializedName("first_name")
+	@SerializedName("firstName")
 	String firstName;
 
-	@SerializedName("last_name")
+	@SerializedName("lastName")
 	String lastName;
 
-	@SerializedName("user_email")
+	@SerializedName("userEmail")
 	String userEmail;
 
-	@SerializedName("contact_number")
+	@SerializedName("contactNumber")
 	String contactNumber;
 
 	@SerializedName("designation")

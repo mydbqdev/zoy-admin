@@ -41,7 +41,7 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			+ "then upper(rs.screen_name) || '_READ,' || upper(rs.screen_name) || '_WRITE' when rs.read_prv = true "
 			+ "then upper(rs.screen_name) || '_READ' when rs.write_prv = true then upper(rs.screen_name) || '_WRITE' "
 			+ "else upper(rs.screen_name) end, ',' )  "
-			+ "as approved_privilege  from pgadmin.user_master um join pgadmin.user_role ur on um.user_email =ur.user_email  "
-			+ "join pgadmin.role_screen rs on rs.role_id =ur.role_id where um.user_email=:emailId group by um.user_email",nativeQuery = true)
+			+ "as approved_privilege  from pgadmin.user_master um left join pgadmin.user_role ur on um.user_email =ur.user_email  "
+			+ "left join pgadmin.role_screen rs on rs.role_id =ur.role_id where um.user_email=:emailId group by um.user_email",nativeQuery = true)
 	List<String[]> findAllAdminUserDetails(String emailId);
 }
