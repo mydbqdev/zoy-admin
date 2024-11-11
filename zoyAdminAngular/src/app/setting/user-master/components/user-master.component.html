@@ -126,8 +126,8 @@
                             <!-- Card Body -->
                 
                             <div class="card-body" style="padding:0px;margin:0px;">
-                                <div style="max-height: 300px; overflow: auto;">
-                                    <div class="desc-inner" style="height: 150px;">
+                                <div style="max-height: calc(100vh - 355px); overflow: auto;">
+                                    <div class="desc-inner" style="height:calc(100vh - 345px);">
                                         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
                             
                                             <!-- User Name Column -->
