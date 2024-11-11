@@ -8,7 +8,6 @@ import { AuthService } from 'src/app/common/service/auth.service';
 import { UserService } from 'src/app/common/service/user.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserRole } from 'src/app/common/models/user-role';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { MatSort, Sort } from '@angular/material/sort';
 import { DataService } from 'src/app/common/service/data.service';
@@ -17,6 +16,7 @@ import { PermissionApprovalService } from '../service/permission-approval.servic
 import { PermissionDetails } from '../model/permission-details';
 import { PermissionApproval } from '../model/permission-approval-model';
 import { AlertDialogService } from "src/app/common/shared/alert-dialog/alert-dialog.service";
+import { UserDetails } from '../../user-master/models/register-details';
 
 @Component({
   selector: 'app-permission-approval',
@@ -25,8 +25,8 @@ import { AlertDialogService } from "src/app/common/shared/alert-dialog/alert-dia
 })
 export class PermissionApprovalComponent implements OnInit,AfterViewInit{
   @ViewChild(SidebarComponent) sidemenuComp;
-  public ELEMENT_DATA:UserRole[];
-  dataSource:MatTableDataSource<UserRole>=new MatTableDataSource<UserRole>();
+  public ELEMENT_DATA:UserDetails[];
+  dataSource:MatTableDataSource<UserDetails>=new MatTableDataSource<UserDetails>();
   pageSize:number=5;
   pageSizeOptions=[5,10,20,50];
   public lastPageSize:number=0;
@@ -36,8 +36,8 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
  @ViewChild(MatSort) sort: MatSort;
  @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  getUsers : UserRole[] = [];
-  editUserRole : UserRole = new UserRole();
+  getUsers : UserDetails[] = [];
+  editUserRole : UserDetails = new UserDetails();
   rolesList: PermissionApproval[]=[];
 
    selectedItems : any[] = [];
@@ -129,7 +129,7 @@ ngAfterViewInit(){
     };
 
     this.userRolePermissions = hardcodedResponse.permissions;
-    this.editUserRole.empName = hardcodedResponse.empName;
+    this.editUserRole.userEmail = hardcodedResponse.empName;
   }
 
 
@@ -427,7 +427,7 @@ ngAfterViewInit(){
         
     };
     
-      this.getUsers  = data.listObj; 
+    //  this.getUsers  = data.listObj; 
       this.ELEMENT_DATA=Object.assign([],data.listObj);
        this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
        this.totalProduct= this.ELEMENT_DATA.length;
