@@ -70,7 +70,7 @@ public class SecurityConfig {
 	            requests.antMatchers("/public").permitAll()
 	            .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**").permitAll()
 	            .antMatchers("/verify-email").permitAll()
-	            .antMatchers("/forgotPassword").permitAll().antMatchers("/forgot-password").permitAll()
+	            .antMatchers("/forgotPassword").permitAll().antMatchers("/forgot-password").permitAll().antMatchers("/zoy_admin/login").permitAll()
 	            .anyRequest().authenticated()
 	            .and()
 	            .exceptionHandling(handling -> handling
