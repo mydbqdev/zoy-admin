@@ -10,6 +10,7 @@ import { ReportListComponent } from './reports/report-list/report-list.component
 import { RoleMasterComponent } from './setting/role-master/components/role-master.component';
 import { UserMasterComponent } from './setting/user-master/components/user-master.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { PermissionApprovalComponent } from './setting/permission-approval/component/permission-approval.component';
 
 const routes: Routes = [
 	{path:'',redirectTo:'/startup',pathMatch:'full'},
@@ -23,6 +24,7 @@ const routes: Routes = [
 	{ path: 'role-master', component: RoleMasterComponent },	
 	{ path: 'user-master', component: UserMasterComponent },
 	{ path: 'forgot-password', component: ForgotPasswordComponent },
+	{ path: 'permission-approval', component: PermissionApprovalComponent },
 ];
 
 @NgModule({
