@@ -28,7 +28,6 @@ import { ConfirmationDialogService } from "src/app/common/shared/confirm-dialog/
   styleUrls: ['./role-master.component.css']
 })
 export class RoleMasterComponent implements OnInit,AfterViewInit{
-  public defRoleMenu: DefMenu;
  @ViewChild(SidebarComponent) sidemenuComp;
   form !: FormGroup;
   roleModel: RoleModel = new RoleModel();
@@ -51,56 +50,29 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   public userNameSession:string="";
   mySubscription: any;
   public rolesArray: string[] = []; 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  public totalProduct:number=0;
-  pageSize:number=5;
-  pageSizeOptions=[5,10,20,50];
   isExpandSideBar:boolean=true;
   public ELEMENT_DATA:RoleModel[];
   dataSource:MatTableDataSource<RoleModel>=new MatTableDataSource<RoleModel>();
-  displayedColumns: string[] = [ 'role', 'description','action'];
-  columnSortDirectionsOg: { [key: string]: string | null } = {
-    role: null,
-    description: null
-  };
-  private _liveAnnouncer = inject(LiveAnnouncer);
-columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
- //
+  displayedColumns: string[] = [ 'roleName', 'desc','action'];
 //@Inject(defMenuEnable) private defMenuEnable:
   constructor( private route: ActivatedRoute,private roleService : RoleMasterService , private renderer: Renderer2, private router: Router,private confirmationDialogService:ConfirmationDialogService,
     private http: HttpClient, private userService: UserService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private authService: AuthService, private notifyService: NotificationService, private alertDialogService: AlertDialogService,private dataService:DataService) {
   // this.userNameSession=userService.getUsername();
   //  console.log("defMenuEnable",defMenuEnable);
     // this.defRoleMenu=defMenuEnable;
-     this.defRoleMenu={
-      "ownerManagement":true,
-      "ownerManagementSubMenu":{
-        "ownerOnboardingAndRegistration":true,
-        "ownerEKYCVerification":true,
-        "managingOwners":true
-      },
-      "userManagement":true,
-      "financialManagement":true,
-      "configurationSettings":true,
-      "configurationSettingsSubMenu":{
-        "cancellationAndRefundRules":true,
-        "percentageAndChargeConfigurations":true,
-        "promotionAndOffersManagement":true
-      }
-    }
+     
     // if (userService.getUserinfo() != undefined) {
 		// 	this.rolesArray = userService.getUserinfo().previlageList;
 		// }
-		// this.router.routeReuseStrategy.shouldReuseRoute = function () {
-		// 	return false;
-		//   };		  
-		//   this.mySubscription = this.router.events.subscribe((event) => {
-		// 	if (event instanceof NavigationEnd) {
-		// 	  // Trick the Router into believing it's last link wasn't previously loaded
-		// 	  this.router.navigated = false;
-		// 	}
-		//   });
+		this.router.routeReuseStrategy.shouldReuseRoute = function () {
+		 	return false;
+		   };		  
+		   this.mySubscription = this.router.events.subscribe((event) => {
+		 	if (event instanceof NavigationEnd) {
+		 	  // Trick the Router into believing it's last link wasn't previously loaded
+			  this.router.navigated = false;
+		 	}
+		   });
     this.dataService.getIsExpandSideBar.subscribe(name=>{
 			this.isExpandSideBar=name;
 		});
@@ -126,33 +98,14 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
   ngAfterViewInit(){
     this.sidemenuComp.expandMenu(4);
     this.sidemenuComp.activeMenu(4,'role-master');
-    this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
   }
 
-  announceSortChange(sortState: Sort) {
-
-    this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
-    this.columnSortDirections[sortState.active] = sortState.direction;
-
-    console.log("sortState",sortState)
-
-    if (sortState.direction) {
-      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-    } else {
-      this._liveAnnouncer.announce('Sorting cleared');
-    }
-  
-    }
-  
  clearArrays(){
   this.submitted = false;
   this.dataSelectedRead = [];
   this.dataSelectedWrite = [];
-
  }
 
- 
   saveRoleModel() {
    // this.authService.checkLoginUserVlidaate();
    this.submitted = true
@@ -192,7 +145,6 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
     
     // Get the result
     this.roleModel = convertToRoleScreen(this.dataSelectedRead, this.dataSelectedWrite);
-
     this.roleModel.id = this.id;
     this.roleModel.roleName = this.role;
     this.roleModel.desc = this.desc;
@@ -272,7 +224,6 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
       
 
       this.roleModel = convertToRoleScreen(this.dataSelectedRead, this.dataSelectedWrite);
-
       this.roleModel.id  = this.editRoles.id;
       this.roleModel.roleName = this.editRoles.roleName;
       this.roleModel.desc = this.editRoles.desc;
@@ -319,7 +270,6 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
         this.roleService.getRolesList().subscribe(res => {
           this.ELEMENT_DATA=Object.assign([],res);
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-    //      this.totalProduct=this.ELEMENT_DATA.length;
         this.spinner.hide();
       },error =>{
         this.spinner.hide();
@@ -351,7 +301,6 @@ columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 
 
 getEditData(data:any){
-
 function convertRoleData(input: RoleModel): any {
   const output: RoleModel = new RoleModel();
   output.id=input.id;
@@ -395,9 +344,6 @@ deleteRecord(id : number){
     (confirmed) =>{
      if(confirmed){
   this.deleteRoles = this.getRoles.find(r => r.id == id);
-
-  this.notifyService.showError("The Api is not read", "");
-  return
   this.authService.checkLoginUserVlidaate();
   this.spinner.show();
   this.roleService.deleteRole(this.deleteRoles.id.toString()).subscribe((result) => {
@@ -625,9 +571,4 @@ getMenuSelectedForEDITPOPUP(menuList:string[],opt:string,menuListEdit:string[]){
        
   }
 }
-
- 
-
 }
-
-
