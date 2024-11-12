@@ -41,4 +41,18 @@ public interface ZoyAdminReportImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> getUserGstReportByDateRange(@RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
             @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate);
+	
+	
+	
+	@Operation(summary = "Get Consolidated Finance Report by date range", description = "Getting  consolidateD  Finance Report Details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/consolidated_finance_report_details",
+	produces = { "application/json" })
+	ResponseEntity<String> getConsolidatedFinanceByDateRange(@RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
+            @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate);
 }

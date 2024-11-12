@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.repository.UserPaymentRepository;
+import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.UserPaymentDTO;
 @Service
 public class AdminReportService implements AdminReportImpl{
@@ -41,6 +42,26 @@ public class AdminReportService implements AdminReportImpl{
 	        userPaymentDTOs.add(dto);
 	    }
 	    return userPaymentDTOs;
+	}
+
+	@Override
+	public List<ConsilidatedFinanceDetails> getConsolidatedFinanceDetails(Timestamp fromDate, Timestamp toDate) {
+		List<Object[]> results = userPaymentRepository.findConsolidatedFinanceReportByDateRange(fromDate, toDate);
+		List<ConsilidatedFinanceDetails> consolidatedFinanceDto = new ArrayList<>();
+		  for (Object[] row : results) {
+			  ConsilidatedFinanceDetails dto = new ConsilidatedFinanceDetails();
+		        dto.setUserId((String) row[2]);
+		        dto.setUserPaymentTimestamp((Timestamp) row[0]);
+		        dto.setUserPaymentBankTransactionId((String) row[1]);
+		        dto.setUserPersonalName((String) row[3]);
+		        BigDecimal payableAmount = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;
+		        BigDecimal gst = (BigDecimal) row[5] != null ? (BigDecimal) row[5] : BigDecimal.ZERO;
+		        BigDecimal totalAmount = payableAmount.add(gst);
+		        dto.setTotalAmount(totalAmount);
+		        dto.setDebitAmount(BigDecimal.valueOf(0));
+		        consolidatedFinanceDto.add(dto);
+		  }
+		return consolidatedFinanceDto;
 	}
 
 }
