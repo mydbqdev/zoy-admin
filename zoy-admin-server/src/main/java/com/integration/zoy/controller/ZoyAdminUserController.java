@@ -317,7 +317,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					adminDBImpl.deleteAllRoleScreen(obsoleteScreenIds);
 			}
 			response.setStatus(HttpStatus.OK.value());
-			response.setMessage("App role created Successfully");
+			response.setMessage("App role Updated Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details: " + e.getMessage(),e);
