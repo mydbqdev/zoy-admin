@@ -4,9 +4,11 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
+import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.UserPaymentDTO;
 
 public interface AdminReportImpl {
 	List<UserPaymentDTO> getUserPaymentDetails( Timestamp fromDate, Timestamp toDate);
 	List<ConsilidatedFinanceDetails> getConsolidatedFinanceDetails( Timestamp fromDate, Timestamp toDate);
+	List<TenentDues> getTenentDuesDetails( Timestamp fromDate, Timestamp toDate);
 }

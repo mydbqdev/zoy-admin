@@ -1,5 +1,6 @@
 package com.integration.zoy.repository;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -47,4 +48,10 @@ public interface UserPaymentRepository extends JpaRepository<UserPayment, String
 	List<Object[]> findConsolidatedFinanceReportByDateRange(
 	    @Param("fromDate") Timestamp fromDate,
 	    @Param("toDate") Timestamp toDate);
+	
+	@Query(value = "SELECT up.user_payment_payable_amount " +
+            "FROM pgusers.user_payments up " +
+            "WHERE up.user_payment_id = :userPaymentId", nativeQuery = true)
+BigDecimal findUserPaymentPayableAmountByUserPaymentId(@Param("userPaymentId") String userPaymentId);
+
 }

@@ -8,13 +8,22 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.repository.UserDuesRepository;
+import com.integration.zoy.repository.UserPaymentDueRepository;
 import com.integration.zoy.repository.UserPaymentRepository;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
+import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.UserPaymentDTO;
 @Service
 public class AdminReportService implements AdminReportImpl{
 	@Autowired
     private UserPaymentRepository userPaymentRepository;
+	
+	@Autowired
+	private UserDuesRepository userDuesRepository;
+	
+	@Autowired
+	private UserPaymentDueRepository userPaymentDueRepository;
 	
 	@Override
 	public List<UserPaymentDTO> getUserPaymentDetails(Timestamp fromDate, Timestamp toDate) {
@@ -62,6 +71,34 @@ public class AdminReportService implements AdminReportImpl{
 		        consolidatedFinanceDto.add(dto);
 		  }
 		return consolidatedFinanceDto;
+	}
+
+	@Override
+	public List<TenentDues> getTenentDuesDetails(Timestamp fromDate, Timestamp toDate) {
+		List<Object[]> results = userDuesRepository.findUserDuesDetailsByDateRange(fromDate, toDate);
+		List<TenentDues> tenentDuesDto = new ArrayList<>();
+		 for (Object[] row : results) {
+			 TenentDues dto = new TenentDues();
+			 dto.setUserId((String) row[0]);
+			 boolean isPresent = userPaymentDueRepository.existsByUserMoneyDueId((String) row[7]);
+			 if(isPresent) {
+				 String userPaymentId = userPaymentDueRepository.findUserPaymentIdByUserMoneyDueId((String) row[7]);
+				 BigDecimal payableAmount = userPaymentRepository.findUserPaymentPayableAmountByUserPaymentId(userPaymentId);
+				    if (((BigDecimal) row[1]).subtract(payableAmount).compareTo(BigDecimal.ZERO) > 0) {
+				        dto.setPendingAmount(payableAmount.subtract((BigDecimal) row[1])); 
+				    }
+			 }else {
+				 dto.setPendingAmount((BigDecimal) row[1]);
+			 }
+			 dto.setPendingDueDate((Timestamp) row[2]);
+			 dto.setUserPersonalName((String) row[3]);
+			 dto.setUserPgPropertyName((String) row[4]);
+			 dto.setUserPgPropertyId((String) row[5]);
+			 dto.setBedNumber((String) row[6]);
+			
+			  tenentDuesDto.add(dto);
+		  }
+		return tenentDuesDto;
 	}
 
 }

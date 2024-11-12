@@ -24,6 +24,7 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.ResponseBody;
+import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.UserPaymentDTO;
 
 @RestController
@@ -65,7 +66,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromTimestamp,toTimestamp);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error getting paymentDetails : " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -83,7 +84,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromTimestamp,toTimestamp);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error getting paymentDetails: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -100,11 +101,28 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			List<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(fromTimestamp,toTimestamp);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error getting ConsilidatedFinanceDetails details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
+	}
+
+	@Override
+	public ResponseEntity<String> getTenantDuesByDateRange(LocalDateTime fromDate, LocalDateTime toDate) {
+		ResponseBody response=new ResponseBody();
+		try {
+
+			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
+			Timestamp toTimestamp = Timestamp.valueOf(toDate);
+			List<TenentDues> tenentDuesDetails =  adminReportImpl.getTenentDuesDetails(fromTimestamp,toTimestamp);
+			return new ResponseEntity<>(gson.toJson(tenentDuesDetails), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }
