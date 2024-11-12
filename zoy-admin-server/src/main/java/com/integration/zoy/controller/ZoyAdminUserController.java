@@ -461,10 +461,6 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	        List<AdminUserList> adminUserTemporary = new ArrayList<>();
 	        
 	        for (Object[] result : master) {
-	        	System.out.println("Result Array Data:");
-	            for (int i = 0; i < result.length; i++) {
-	                System.out.println("Index " + i + ": " + result[i] + " (" + (result[i] != null ? result[i].getClass().getName() : "null") + ")");
-	            }
 	            AdminUserList user = new AdminUserList();
 	            user.setFirstName((String) result[0]);
 	            user.setLastName((String) result[1]);
