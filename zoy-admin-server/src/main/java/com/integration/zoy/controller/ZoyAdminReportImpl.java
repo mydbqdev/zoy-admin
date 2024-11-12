@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 public interface ZoyAdminReportImpl {
 
 	@Operation(summary = "Get User Pyament Details", description = "Getting  User payment Transfer Details", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -31,7 +31,7 @@ public interface ZoyAdminReportImpl {
             @RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate);
 	
 	@Operation(summary = "Get User gst report by date range", description = "Getting  User gst report Details", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),

@@ -62,7 +62,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
 	        Timestamp toTimestamp = Timestamp.valueOf(toDate);
 			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromTimestamp,toTimestamp);
-			return new ResponseEntity<>(gson2.toJson(paymentDetails), HttpStatus.OK);
+			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -80,7 +80,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
 	        Timestamp toTimestamp = Timestamp.valueOf(toDate);
 			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromTimestamp,toTimestamp);
-			return new ResponseEntity<>(gson2.toJson(paymentDetails), HttpStatus.OK);
+			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
