@@ -11,16 +11,44 @@ import com.integration.zoy.entity.AdminUserMaster;
 @Repository
 public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster, String> {
 
-	@Query(value = "SELECT um.first_name, um.last_name, um.user_email, um.contact_number, "
-            + "um.designation, um.status, "
-            + "CASE WHEN ut.is_approve = true THEN 'approved' ELSE 'pending' END as approve_status, "
-            + "ar.id as role_id, ar.role_name as role_name "
-            + "FROM pgadmin.user_master um "
-            + "left JOIN pgadmin.user_temprory ut ON um.user_email = ut.user_email "
-            + "left JOIN pgadmin.user_role ur ON ur.user_email = um.user_email "
-            + "left JOIN pgadmin.app_role ar ON ur.role_id = ar.id "
-            + "GROUP BY um.user_email, ar.id, ar.role_name, ut.is_approve", nativeQuery = true)
-	List<Object[]> findAllAdminUserPrevilages();
+	@Query(value = "SELECT " +
+	        "um.first_name AS firstName, " +
+	        "um.last_name AS lastName, " +
+	        "um.user_email AS userEmail, " +
+	        "um.contact_number AS contactNumber, " +
+	        "um.designation AS designation, " +
+	        "um.status AS status, " +
+	        "ar.id AS roleId, " +
+	        "ar.role_name AS roleName, " +
+	        "CASE WHEN ut.is_approve = true THEN 'approved' ELSE 'pending' END AS approveStatus, " +
+	        "STRING_AGG(DISTINCT CASE " +
+	        "WHEN ut.is_approve = true THEN " +
+	        "CASE " +
+	        "WHEN rs.read_prv = true AND rs.write_prv = true THEN upper(rs.screen_name) || '_READ,' || upper(rs.screen_name) || '_WRITE' " +
+	        "WHEN rs.read_prv = true THEN upper(rs.screen_name) || '_READ' " +
+	        "WHEN rs.write_prv = true THEN upper(rs.screen_name) || '_WRITE' " +
+	        "ELSE upper(rs.screen_name) " +
+	        "END " +
+	        "ELSE NULL END, ',') AS approvedPrivilege, " +
+	        "STRING_AGG(DISTINCT CASE " +
+	        "WHEN ut.is_approve = false THEN " +
+	        "CASE " +
+	        "WHEN rs.read_prv = true AND rs.write_prv = true THEN upper(rs.screen_name) || '_READ,' || upper(rs.screen_name) || '_WRITE' " +
+	        "WHEN rs.read_prv = true THEN upper(rs.screen_name) || '_READ' " +
+	        "WHEN rs.write_prv = true THEN upper(rs.screen_name) || '_WRITE' " +
+	        "ELSE upper(rs.screen_name) " +
+	        "END " +
+	        "ELSE NULL END, ',') AS unapprovedPrivilege " +
+	        "FROM pgadmin.user_master um " +
+	        "LEFT JOIN pgadmin.user_temprory ut ON um.user_email = ut.user_email " +
+	        "LEFT JOIN pgadmin.user_role ur ON ur.user_email = um.user_email " +
+	        "LEFT JOIN pgadmin.app_role ar ON ur.role_id = ar.id " +
+	        "LEFT JOIN pgadmin.role_screen rs ON ar.id = rs.role_id " +
+	        "GROUP BY um.user_email, ar.id, ar.role_name, ut.is_approve", 
+	        nativeQuery = true)
+	List<Object[]> findAllAdminUserPrivileges();
+
+
 
 	
 	@Query(value="select um.first_name,um.last_name, "

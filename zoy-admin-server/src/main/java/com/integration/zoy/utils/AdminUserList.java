@@ -30,24 +30,10 @@ public class AdminUserList {
 
 	Boolean status;
 
-	@SerializedName("approveStatus")
-
-	String approveStatus;
 
 	@SerializedName("roleModel")
 
 	List<RoleModel> roleModel;
- 
-//	@SerializedName("approved_privilege")
-
-//	List<String> approvedPrivilege;
-
-//
-
-//	@SerializedName("unapproved_privilege")
-
-//	List<String> unapprovedPrivilege;
- 
  
 	public void setFirstName(String firstName) {
 
@@ -123,17 +109,6 @@ public class AdminUserList {
 
 	}
 
-	public String getApproveStatus() {
-
-		return approveStatus;
-
-	}
-
-	public void setApproveStatus(String approveStatus) {
-
-		this.approveStatus = approveStatus;
-
-	}
 
 	public List<RoleModel> getRoleModel() {
 
@@ -147,32 +122,6 @@ public class AdminUserList {
 
 	}
 
- 
-//	public void setApprovedPrivilege(List<String> approvedPrivilege) {
-
-//		this.approvedPrivilege = approvedPrivilege;
-
-//	}
-
-//	public List<String> getApprovedPrivilege() {
-
-//		return approvedPrivilege;
-
-//	}
-
-//
-
-//	public void setUnapprovedPrivilege(List<String> unapprovedPrivilege) {
-
-//		this.unapprovedPrivilege = unapprovedPrivilege;
-
-//	}
-
-//	public List<String> getUnapprovedPrivilege() {
-
-//		return unapprovedPrivilege;
-
-//	}
 
 
 

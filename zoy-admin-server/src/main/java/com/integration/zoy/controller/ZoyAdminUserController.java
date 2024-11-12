@@ -454,13 +454,17 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		}
 	}
 
-	@Override
 	public ResponseEntity<String> zoyAdminUserList() {
-		ResponseBody response=new ResponseBody();
-		try {
-			List<Object[]> master=adminDBImpl.findAllAdminUserPrevilages();
-			List<AdminUserList> adminUserTemporary=new ArrayList<>();
-			for (Object[] result : master) {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        List<Object[]> master = adminDBImpl.findAllAdminUserPrevilages();
+	        List<AdminUserList> adminUserTemporary = new ArrayList<>();
+	        
+	        for (Object[] result : master) {
+	        	System.out.println("Result Array Data:");
+	            for (int i = 0; i < result.length; i++) {
+	                System.out.println("Index " + i + ": " + result[i] + " (" + (result[i] != null ? result[i].getClass().getName() : "null") + ")");
+	            }
 	            AdminUserList user = new AdminUserList();
 	            user.setFirstName((String) result[0]);
 	            user.setLastName((String) result[1]);
@@ -468,29 +472,46 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	            user.setContactNumber((String) result[3]);
 	            user.setDesignation((String) result[4]);
 	            user.setStatus((Boolean) result[5]);
-	            user.setApproveStatus((String) result[6]);
 	            List<RoleModel> roles = new ArrayList<>();
-	            if(null!=result[7] && !"null".equals(result[7])) {
-	            	int roleId = (Integer) result[7];
-		            String roleName = (String) result[8];
-		            RoleModel role = new RoleModel(roleId, roleName); 
-		            roles.add(role);
+	            if (result[7] != null && !"null".equals(result[7])) {
+	                int roleId = (Integer) result[6];
+	                String roleName = (String) result[7];
+	                String approveStatus=(String) result[8];
+	                RoleModel role = new RoleModel(roleId, roleName,approveStatus); 
+	                
+	                String approvedPrivileges = (String) result[9];  
+	                if (approvedPrivileges != null && !approvedPrivileges.isEmpty()) {
+	                    String[] approvedPrivilegesArray = approvedPrivileges.split(",");
+	                    for (String privilege : approvedPrivilegesArray) {
+	                        role.addApprovedPrivilege(privilege); 
+	                    }
+	                }
+
+	                String unapprovedPrivileges = (String) result[10];  
+	                if (unapprovedPrivileges != null && !unapprovedPrivileges.isEmpty()) {
+	                    String[] unapprovedPrivilegesArray = unapprovedPrivileges.split(",");
+	                    for (String privilege : unapprovedPrivilegesArray) {
+	                        role.addUnapprovedPrivilege(privilege);  
+	                    }
+	                }
+
+	                roles.add(role);
 	            }
-	           
+
 	            user.setRoleModel(roles);
- 
 	            adminUserTemporary.add(user);
 	        }
-			
-			return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
- 
+
+	        return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error getting amenities details: " + e.getMessage(), e);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError("Internal server error");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
+
 
 
 }
