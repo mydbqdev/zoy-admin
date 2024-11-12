@@ -123,7 +123,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error getting user login details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -180,7 +180,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 			AdminUserLoginDetails adminUserLoginDetails=new AdminUserLoginDetails();
 			adminUserLoginDetails.setUserEmail(adminUserDetails.getUserEmail());
-			adminUserLoginDetails.setPassword(adminUserDetails.getPassword());
+			adminUserLoginDetails.setPassword(passwordDecoder.encryptedText(adminUserDetails.getPassword()));
 			adminUserLoginDetails.setIsActive(true);
 			adminUserLoginDetails.setIsLock(false);
 			adminDBImpl.saveAdminLoginDetails(adminUserLoginDetails);
@@ -433,7 +433,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 						+ "<p>Welcome to Zoy Admin Portal, We are excited to have you as part of our community! "
 						+ "Below are your sign-in credentials for accessing your account.</p>"
 						+ "<p>Username: "+ details.getEmail()+"</p>"
-						+ "Password: "+ details.getPassword()+"</p>"
+						+ "Password: "+ passwordDecoder.decryptedText(details.getPassword())+"</p>"
 						+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
 				email.setBody(message);
 				email.setContent("text/html");
