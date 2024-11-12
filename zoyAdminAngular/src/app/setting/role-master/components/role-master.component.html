@@ -55,7 +55,12 @@
                                          </ng-container>
  
                                          <ng-container matColumnDef="desc">
-                                             <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef>Description
+                                             <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef mat-sort-header>Description
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['desc'] }"></i>
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['desc'] === 'asc' }"></i>
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['desc'] === 'desc' || !columnSortDirections['desc'] }"></i>
+                                                </span>
                                              </th>
                                              <td mat-cell data-label="desc"  *matCellDef="let element;"  >
                                                {{element.desc}}
@@ -79,7 +84,7 @@
                                            </ng-container> 
                                         
                                      
-                                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                                          <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
                                        </table>  
                                        <div style="text-align: center;border-bottom: 1px solid #bfbbbb;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>                       
