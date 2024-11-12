@@ -17,6 +17,8 @@ import { PermissionDetails } from '../model/permission-details';
 import { PermissionApproval } from '../model/permission-approval-model';
 import { AlertDialogService } from "src/app/common/shared/alert-dialog/alert-dialog.service";
 import { UserDetails } from '../../user-master/models/register-details';
+import { UserMasterService } from '../../user-master/service/user-master.service';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-permission-approval',
@@ -24,15 +26,22 @@ import { UserDetails } from '../../user-master/models/register-details';
   styleUrl: './permission-approval.component.css'
 })
 export class PermissionApprovalComponent implements OnInit,AfterViewInit{
+  private _liveAnnouncer = inject(LiveAnnouncer);
   @ViewChild(SidebarComponent) sidemenuComp;
+  pageSize: number = 10; 
+  pageSizeOptions: number[] = [10, 20, 50]; 
+  totalProduct: number = 0; 
+  displayedColumns: string[] = ['firstName', 'userEmail', 'designation', 'roles', 'action'];
   public ELEMENT_DATA:UserDetails[];
   dataSource:MatTableDataSource<UserDetails>=new MatTableDataSource<UserDetails>();
-  pageSize:number=5;
-  pageSizeOptions=[5,10,20,50];
-  public lastPageSize:number=0;
-  public totalProduct:number=0;
-  displayedColumns: string[] = [ 'userName', 'userMail', 'roles', 'action'];
+  columnSortDirectionsOg: { [key: string]: string | null } = {
+    userName: null,
+    userMail: null,
+    designation: null
+  };
+  columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 
+  errorMsg:string="";
  @ViewChild(MatSort) sort: MatSort;
  @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -55,7 +64,7 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
   userRolePermissions: Array<{ screenName: string; readPrv: boolean; writePrv: boolean }> = [];
 
   isExpandSideBar:boolean=true;
-  constructor(private permissionApprovalService : PermissionApprovalService,private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private notifyService:NotificationService,
+  constructor(private userMasterService : UserMasterService,private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private notifyService:NotificationService,
     private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService,private alertDialogService: AlertDialogService,private permissionService: PermissionApprovalService){
 
       this.userNameSession=userService.getUsername();
@@ -87,6 +96,7 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
     //    this.router.navigate(['/']); 
     //    }
     // this.authService.checkLoginUserVlidaate();
+    this.getUserDetais();
     const empCode = 'EMP123';  // Replace with your hardcoded employee code
     this.loadUserPermissions(empCode);
 }
@@ -96,17 +106,55 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
 ngAfterViewInit(){
   this.sidemenuComp.expandMenu(3);
   this.sidemenuComp.activeMenu(3,'permission-approval');
-  this.dataSource.paginator=this.paginator;
-   setTimeout(()=>{
-     this.loadInitialData(this.paginator.pageIndex +1, this.paginator.pageSize);
-    },100);
 }
  
-  loadInitialData(pageIndex:number,pageSize:number){  
-    this.loadInitialMockData();
-    return;
-    }
+getUserDetais(){
+  // this.authService.checkLoginUserVlidaate();
+   this.spinner.show();
+   this.userMasterService.getUserList().subscribe(data => {
+     this.ELEMENT_DATA = Object.assign([],data);
+     this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+     this.dataSource.sort = this.sort;
+     this.dataSource.paginator = this.paginator;
+     this.spinner.hide();
+ 
+  }, error => {
+   this.spinner.hide();
+   if(error.status==403){
+     this.router.navigate(['/forbidden']);
+   }else if (error.error && error.error.message) {
+     this.errorMsg = error.error.message;
+     console.log("Error:" + this.errorMsg);
+     this.notifyService.showError(this.errorMsg, "");
+   } else {
+     if (error.status == 500 && error.statusText == "Internal Server Error") {
+       this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+     } else {
+       let str;
+       if (error.status == 400) {
+         str = error.error;
+       } else {
+         str = error.message;
+         str = str.substring(str.indexOf(":") + 1);
+       }
+       console.log("Error:" + str);
+       this.errorMsg = str;
+     }
+     if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+   }
+ });
+ 
+ }
+    announceSortChange(sortState: Sort): void {
+      this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+      this.columnSortDirections[sortState.active] = sortState.direction;
   
+        if (sortState.direction) {
+          this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+        } else {
+          this._liveAnnouncer.announce('Sorting cleared');
+        }
+    }
 
   loadUserPermissions(empCode: string): void {
     // Using hardcoded data for demonstration
@@ -168,271 +216,5 @@ ngAfterViewInit(){
     this.isPopupVisible = true;
   }
 
-  loadInitialMockData(){
-    var  data ={
-        "totalCount": 72,
-        "listObj": 
-        [
-          {
-            "empCode": "1010",
-            "empName": "Aparna Muvvala",
-            "roles": "ALL ACCESS",
-            "empMail": "aparna@mydbq.com",
-            "roleModel": [
-              {
-                "id": 230,
-                "roleName": "ALL ACCESS"
-              }
-            ],
-            "applicationNames": "HR PORTAL"
-          },
-          {
-            "empCode": "1012",
-            "empName": "Likki A",
-            "roles": "",
-            "empMail": "likki@mydbq.com",
-            "roleModel": [],
-            "applicationNames": ""
-          },
-          {
-            "empCode": "1015",
-            "empName": "Rajesh A",
-            "roles": "",
-            "empMail": "rajesh@mydbq.com",
-            "roleModel": [],
-            "applicationNames": ""
-          },
-          {
-            "empCode": "1017",
-            "empName": "John Doe",
-            "roles": "ADMIN",
-            "empMail": "john.doe@mydbq.com",
-            "roleModel": [
-              {
-                "id": 225,
-                "roleName": "ADMIN"
-              }
-            ],
-            "applicationNames": "ADMIN PORTAL"
-          },
-          {
-            "empCode": "1020",
-            "empName": "Sarah Connor",
-            "roles": "USER",
-            "empMail": "sarah.connor@mydbq.com",
-            "roleModel": [
-              {
-                "id": 227,
-                "roleName": "USER"
-              }
-            ],
-            "applicationNames": "USER DASHBOARD"
-          },
-          {
-            "empCode": "1023",
-            "empName": "Amit Verma",
-            "roles": "HR MANAGER",
-            "empMail": "amit.verma@mydbq.com",
-            "roleModel": [
-              {
-                "id": 238,
-                "roleName": "HR MANAGER"
-              }
-            ],
-            "applicationNames": "HR MANAGEMENT"
-          },
-          {
-            "empCode": "1025",
-            "empName": "Anjali Gupta",
-            "roles": "FINANCE ADMIN",
-            "empMail": "anjali.gupta@mydbq.com",
-            "roleModel": [
-              {
-                "id": 230,
-                "roleName": "FINANCE ADMIN"
-              }
-            ],
-            "applicationNames": "FINANCE PORTAL"
-          },
-          {
-            "empCode": "1030",
-            "empName": "David Clark",
-            "roles": "SALES TEAM",
-            "empMail": "david.clark@mydbq.com",
-            "roleModel": [
-              {
-                "id": 238,
-                "roleName": "SALES TEAM"
-              }
-            ],
-            "applicationNames": "SALES PORTAL"
-          },
-          {
-            "empCode": "1032",
-            "empName": "Emily Smith",
-            "roles": "SUPPORT",
-            "empMail": "emily.smith@mydbq.com",
-            "roleModel": [
-              {
-                "id": 227,
-                "roleName": "SUPPORT"
-              }
-            ],
-            "applicationNames": "SUPPORT DASHBOARD"
-          },
-          {
-            "empCode": "1035",
-            "empName": "Michael Jordan",
-            "roles": "DEVOPS",
-            "empMail": "michael.jordan@mydbq.com",
-            "roleModel": [
-              {
-                "id": 230,
-                "roleName": "DEVOPS"
-              }
-            ],
-            "applicationNames": "DEVOPS PORTAL"
-          },
-          {
-            "empCode": "1040",
-            "empName": "Olivia Brown",
-            "roles": "MARKETING",
-            "empMail": "olivia.brown@mydbq.com",
-            "roleModel": [
-              {
-                "id": 227,
-                "roleName": "MARKETING"
-              }
-            ],
-            "applicationNames": "MARKETING DASHBOARD"
-          },
-          {
-            "empCode": "1045",
-            "empName": "Carlos Lopez",
-            "roles": "QA LEAD",
-            "empMail": "carlos.lopez@mydbq.com",
-            "roleModel": [
-              {
-                "id": 238,
-                "roleName": "QA LEAD"
-              }
-            ],
-            "applicationNames": "QA MANAGEMENT"
-          },
-          {
-            "empCode": "1050",
-            "empName": "Jennifer Wilson",
-            "roles": "PROJECT MANAGER",
-            "empMail": "jennifer.wilson@mydbq.com",
-            "roleModel": [
-              {
-                "id": 225,
-                "roleName": "PROJECT MANAGER"
-              }
-            ],
-            "applicationNames": "PROJECT MANAGEMENT"
-          },
-          {
-            "empCode": "1055",
-            "empName": "Nina Patel",
-            "roles": "PRODUCT OWNER",
-            "empMail": "nina.patel@mydbq.com",
-            "roleModel": [
-              {
-                "id": 238,
-                "roleName": "PRODUCT OWNER"
-              }
-            ],
-            "applicationNames": "PRODUCT MANAGEMENT"
-          },
-          {
-            "empCode": "1060",
-            "empName": "Steven Carter",
-            "roles": "OPERATIONS",
-            "empMail": "steven.carter@mydbq.com",
-            "roleModel": [
-              {
-                "id": 230,
-                "roleName": "OPERATIONS"
-              }
-            ],
-            "applicationNames": "OPERATIONS DASHBOARD"
-          },
-          {
-            "empCode": "1065",
-            "empName": "Daniel Lee",
-            "roles": "DEV TEAM",
-            "empMail": "daniel.lee@mydbq.com",
-            "roleModel": [
-              {
-                "id": 227,
-                "roleName": "DEV TEAM"
-              }
-            ],
-            "applicationNames": "DEV TEAM PORTAL"
-          },
-          {
-            "empCode": "1070",
-            "empName": "Chris Evans",
-            "roles": "CTO",
-            "empMail": "chris.evans@mydbq.com",
-            "roleModel": [
-              {
-                "id": 230,
-                "roleName": "CTO"
-              }
-            ],
-            "applicationNames": "CTO DASHBOARD"
-          },
-          {
-            "empCode": "1075",
-            "empName": "Jessica Taylor",
-            "roles": "HR ADMIN",
-            "empMail": "jessica.taylor@mydbq.com",
-            "roleModel": [
-              {
-                "id": 225,
-                "roleName": "HR ADMIN"
-              }
-            ],
-            "applicationNames": "HR ADMIN PORTAL"
-          },
-          {
-            "empCode": "1080",
-            "empName": "Liam Williams",
-            "roles": "ADMIN",
-            "empMail": "liam.williams@mydbq.com",
-            "roleModel": [
-              {
-                "id": 230,
-                "roleName": "ADMIN"
-              }
-            ],
-            "applicationNames": "ADMIN PORTAL"
-          },
-          {
-            "empCode": "1085",
-            "empName": "Zoe Johnson",
-            "roles": "CUSTOMER SUPPORT",
-            "empMail": "zoe.johnson@mydbq.com",
-            "roleModel": [
-              {
-                "id": 238,
-                "roleName": "CUSTOMER SUPPORT"
-              }
-            ],
-            "applicationNames": "CUSTOMER SUPPORT PORTAL"
-          }
-        ]
-        
-    };
-    
-    //  this.getUsers  = data.listObj; 
-      this.ELEMENT_DATA=Object.assign([],data.listObj);
-       this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-       this.totalProduct= this.ELEMENT_DATA.length;
-      this.spinner.hide();
-    
-    }
 }
 

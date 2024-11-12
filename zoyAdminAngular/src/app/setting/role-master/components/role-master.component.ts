@@ -40,7 +40,11 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   id : number = 0;
   dataSelectedRead: string[] = [];
   dataSelectedWrite: string[] = [];
- 
+  pageSize: number = 10; 
+  pageSizeOptions: number[] = [10, 20, 50]; 
+  totalProduct: number = 0; 
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('myForm') myFormRef!: ElementRef; 
   @ViewChild('closeNewModal') closeNewModal : ElementRef;
   @ViewChild('editNewModal') editNewModal : ElementRef; 
@@ -54,6 +58,9 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   public ELEMENT_DATA:RoleModel[];
   dataSource:MatTableDataSource<RoleModel>=new MatTableDataSource<RoleModel>();
   displayedColumns: string[] = [ 'roleName', 'desc','action'];
+  columnSortDirections: { [key: string]: string | null } = {
+    roleName: null
+  };
 //@Inject(defMenuEnable) private defMenuEnable:
   constructor( private route: ActivatedRoute,private roleService : RoleMasterService , private renderer: Renderer2, private router: Router,private confirmationDialogService:ConfirmationDialogService,
     private http: HttpClient, private userService: UserService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private authService: AuthService, private notifyService: NotificationService, private alertDialogService: AlertDialogService,private dataService:DataService) {
@@ -105,6 +112,10 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   this.dataSelectedRead = [];
   this.dataSelectedWrite = [];
  }
+
+ announceSortChange(sortState: Sort): void {
+  this.columnSortDirections[sortState.active] = sortState.direction;
+}
 
   saveRoleModel() {
    // this.authService.checkLoginUserVlidaate();
@@ -270,6 +281,8 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
         this.roleService.getRolesList().subscribe(res => {
           this.ELEMENT_DATA=Object.assign([],res);
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+          this.dataSource.sort = this.sort;
+		      this.dataSource.paginator = this.paginator;
         this.spinner.hide();
       },error =>{
         this.spinner.hide();

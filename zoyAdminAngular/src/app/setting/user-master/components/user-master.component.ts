@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -15,6 +15,7 @@ import { UserMasterService } from '../service/user-master.service';
 import { UserDetails } from '../models/register-details';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import {  RoleUpdateModel } from '../models/rolesave-model';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-user-master',
@@ -22,18 +23,20 @@ import {  RoleUpdateModel } from '../models/rolesave-model';
   styleUrls: ['./user-master.component.css']
 })
 export class UserMasterComponent implements OnInit {
+  private _liveAnnouncer = inject(LiveAnnouncer);
   pageSize: number = 10; 
   pageSizeOptions: number[] = [10, 20, 50]; 
   totalProduct: number = 0; 
   displayedColumns: string[] = ['firstName', 'userEmail', 'designation', 'status', 'action'];
   public ELEMENT_DATA:UserDetails[];
   dataSource:MatTableDataSource<UserDetails>=new MatTableDataSource<UserDetails>();
-  columnSortDirections: { [key: string]: string | null } = {
+  columnSortDirectionsOg: { [key: string]: string | null } = {
     userName: null,
     userMail: null,
     designation: null,
     status: null
   };
+  columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
   isExpandSideBar:boolean=true;
 
   mySubscription: any;
@@ -130,7 +133,14 @@ export class UserMasterComponent implements OnInit {
   }
 
   announceSortChange(sortState: Sort): void {
+    this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
     this.columnSortDirections[sortState.active] = sortState.direction;
+
+      if (sortState.direction) {
+        this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+      } else {
+        this._liveAnnouncer.announce('Sorting cleared');
+      }
   }
 
 
