@@ -58,9 +58,11 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   public ELEMENT_DATA:RoleModel[];
   dataSource:MatTableDataSource<RoleModel>=new MatTableDataSource<RoleModel>();
   displayedColumns: string[] = [ 'roleName', 'desc','action'];
-  columnSortDirections: { [key: string]: string | null } = {
-    roleName: null
+  columnSortDirectionsOg: { [key: string]: string | null } = {
+    roleName: null,
+    desc: null
   };
+  columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 //@Inject(defMenuEnable) private defMenuEnable:
   constructor( private route: ActivatedRoute,private roleService : RoleMasterService , private renderer: Renderer2, private router: Router,private confirmationDialogService:ConfirmationDialogService,
     private http: HttpClient, private userService: UserService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private authService: AuthService, private notifyService: NotificationService, private alertDialogService: AlertDialogService,private dataService:DataService) {
@@ -123,7 +125,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
    if(this.form.invalid){
      return;
    }
-    if(this.ELEMENT_DATA.filter(d=>d.roleName == this.role)){
+    if(this.ELEMENT_DATA.filter(d=>d.roleName == this.role).length>0){
       this.notifyService.showInfo(this.role+' role name is already available.', "Please change role name.");  
       return;
     }
