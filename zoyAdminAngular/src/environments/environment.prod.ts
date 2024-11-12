@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  basePath:'http://localhost:8087/zoy-admin/v1/',
+  basePath:'http://admin.qa.zoypg.com/api-admin/',
   version:'@Version',
   oDataBlockSize:100,
   defMenuEnable:{
