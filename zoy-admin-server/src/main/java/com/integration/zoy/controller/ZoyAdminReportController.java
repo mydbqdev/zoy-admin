@@ -22,6 +22,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.service.AdminReportImpl;
+import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.UserPaymentDTO;
 
@@ -48,37 +49,19 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
 	private static final Gson gson2 = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-	
+
 	@Autowired
 	AdminReportImpl adminReportImpl;
-	
+
 
 	@Override
 	public ResponseEntity<String> getUserPaymentsByDateRange(LocalDateTime fromDate,
 			LocalDateTime toDate) {
 		ResponseBody response=new ResponseBody();
 		try {
-			
+
 			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
-	        Timestamp toTimestamp = Timestamp.valueOf(toDate);
-			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromTimestamp,toTimestamp);
-			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@Override
-	public ResponseEntity<String> getUserGstReportByDateRange(LocalDateTime fromDate,
-			LocalDateTime toDate) {
-		ResponseBody response=new ResponseBody();
-		try {
-			
-			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
-	        Timestamp toTimestamp = Timestamp.valueOf(toDate);
+			Timestamp toTimestamp = Timestamp.valueOf(toDate);
 			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromTimestamp,toTimestamp);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
@@ -89,5 +72,39 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		}
 	}
 
-	
+	@Override
+	public ResponseEntity<String> getUserGstReportByDateRange(LocalDateTime fromDate,
+			LocalDateTime toDate) {
+		ResponseBody response=new ResponseBody();
+		try {
+
+			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
+			Timestamp toTimestamp = Timestamp.valueOf(toDate);
+			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromTimestamp,toTimestamp);
+			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> getConsolidatedFinanceByDateRange(LocalDateTime fromDate, LocalDateTime toDate) {
+		ResponseBody response=new ResponseBody();
+		try {
+
+			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
+			Timestamp toTimestamp = Timestamp.valueOf(toDate);
+			List<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(fromTimestamp,toTimestamp);
+			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
 }

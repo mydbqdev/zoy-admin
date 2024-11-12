@@ -34,4 +34,17 @@ public interface UserPaymentRepository extends JpaRepository<UserPayment, String
 	List<Object[]> findUserPaymentDetailsByUserIdAndDateRange(
      @Param("fromDate") Timestamp fromDate, 
      @Param("toDate") Timestamp toDate);
+	
+	@Query(value = "SELECT up.user_payment_timestamp AS transaction_date, " +
+	        "up.user_payment_bank_transaction_id AS transaction_number, " +
+	        "up.user_id, " +
+	        "ud.user_personal_name, " +
+	        "up.user_payment_payable_amount, " +
+	        "up.user_payment_gst " +
+	    "FROM pgusers.user_payments up " +
+	    "JOIN pgusers.user_details ud ON up.user_id = ud.user_id " +
+	    "WHERE up.user_payment_timestamp BETWEEN :fromDate AND :toDate", nativeQuery = true)
+	List<Object[]> findConsolidatedFinanceReportByDateRange(
+	    @Param("fromDate") Timestamp fromDate,
+	    @Param("toDate") Timestamp toDate);
 }
