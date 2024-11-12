@@ -49,3 +49,11 @@
     box-sizing: border-box; /* Ensures columns don't overflow */
     padding: 0 8px; /* Optional: Prevent padding from affecting layout */
 }
+
+.btn-group .btn {
+    margin-right: 10px; /* Adds space between the buttons */
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0; /* Removes right margin from the last button */
+}

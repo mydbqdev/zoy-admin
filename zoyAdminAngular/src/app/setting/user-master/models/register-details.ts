@@ -1,4 +1,4 @@
-import { RoleModel } from "../../role-master/models/role-model";
+import { UserRoleModel } from "./user-role-model";
 
  
 export class UserDetails{
@@ -10,6 +10,6 @@ export class UserDetails{
     repeatPassword?:string="";
     designation ?:string="";
     status?:boolean=false;
-    roleModel?:RoleModel[]=[];
+    roleModel?:UserRoleModel[]=[];
  
 }
