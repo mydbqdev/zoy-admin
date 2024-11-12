@@ -46,9 +46,35 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 	        "LEFT JOIN pgadmin.role_screen rs ON ar.id = rs.role_id " +
 	        "GROUP BY um.user_email, ar.id, ar.role_name, ut.is_approve", 
 	        nativeQuery = true)
+	List<Object[]> findAllAdminUserPrivilegesOld();
+
+	@Query(value = "select distinct * from ("
+			+ "			select um.user_email, ur.role_id  ,'Approved' as is_approve,ar.role_name,\n"
+			+ "	        STRING_AGG(DISTINCT CASE  \n"
+			+ "	        WHEN rs.read_prv = true AND rs.write_prv = true THEN upper(rs.screen_name) || '_READ,' || upper(rs.screen_name) || '_WRITE'  \n"
+			+ "	        WHEN rs.read_prv = true THEN upper(rs.screen_name) || '_READ'  \n"
+			+ "	        WHEN rs.write_prv = true THEN upper(rs.screen_name) || '_WRITE'  \n"
+			+ "	        ELSE null  \n"
+			+ "	        END , ',') AS screens \n"
+			+ "	       FROM pgadmin.user_master um  \n"
+			+ "	        LEFT JOIN pgadmin.user_role ur ON ur.user_email = um.user_email  \n"
+			+ "	        LEFT JOIN pgadmin.app_role ar ON ur.role_id = ar.id  \n"
+			+ "	        LEFT JOIN pgadmin.role_screen rs ON ar.id = rs.role_id  \n"
+			+ "	         GROUP BY um.user_email ,ur.role_id,ar.role_name\n"
+			+ "	        union all\n"
+			+ "	         select um.user_email, ut.role_id ,CASE WHEN ut.is_approve THEN 'Approved' ELSE 'Pending' END AS is_approve,art.role_name,\n"
+			+ "	        STRING_AGG(DISTINCT CASE    \n"
+			+ "	        WHEN rst.read_prv = true AND rst.write_prv = true THEN upper(rst.screen_name) || '_READ,' || upper(rst.screen_name) || '_WRITE'  \n"
+			+ "	        WHEN rst.read_prv = true THEN upper(rst.screen_name) || '_READ'  \n"
+			+ "	        WHEN rst.write_prv = true THEN upper(rst.screen_name) || '_WRITE'\n"
+			+ "	        ELSE null  \n"
+			+ "	        END , ',') AS screens \n"
+			+ "	        FROM pgadmin.user_master um  \n"
+			+ "	        LEFT JOIN pgadmin.user_temprory ut ON um.user_email = ut.user_email\n"
+			+ "	        LEFT JOIN pgadmin.app_role art ON ut.role_id = art.id  \n"
+			+ "	        LEFT JOIN pgadmin.role_screen rst ON art.id = rst.role_id  \n"
+			+ "	       GROUP BY um.user_email ,ut.role_id,ut.is_approve, art.role_name)pre ", nativeQuery = true)	
 	List<Object[]> findAllAdminUserPrivileges();
-
-
 
 	
 	@Query(value="select um.first_name,um.last_name, "

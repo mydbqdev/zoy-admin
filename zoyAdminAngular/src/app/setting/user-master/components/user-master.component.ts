@@ -16,6 +16,7 @@ import { UserDetails } from '../models/register-details';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import {  RoleUpdateModel } from '../models/rolesave-model';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { RoleScreenPrv } from '../../role-master/models/role-screen-model';
 
 @Component({
   selector: 'app-user-master',
@@ -27,13 +28,14 @@ export class UserMasterComponent implements OnInit {
   pageSize: number = 10; 
   pageSizeOptions: number[] = [10, 20, 50]; 
   totalProduct: number = 0; 
-  displayedColumns: string[] = ['firstName', 'userEmail', 'designation', 'status', 'action'];
+  displayedColumns: string[] = ['firstName', 'userEmail', 'designation', 'status','roleName', 'action'];
   public ELEMENT_DATA:UserDetails[];
   dataSource:MatTableDataSource<UserDetails>=new MatTableDataSource<UserDetails>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
     userName: null,
     userMail: null,
     designation: null,
+    roleName:null,
     status: null
   };
   columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
@@ -55,6 +57,7 @@ export class UserMasterComponent implements OnInit {
   userActiveApplicationList: string[] = [];
   shouldBeChecked = [];
   checkedApplications: { [key: string]: boolean } = {};
+  createOrUpdate:boolean=true;
 
   @ViewChild(SidebarComponent) sidemenuComp;
   @ViewChild(MatSort) sort: MatSort;
@@ -131,6 +134,10 @@ export class UserMasterComponent implements OnInit {
     this.sidemenuComp.activeMenu(3,'user-master');
     
   }
+  getRoleNames(roleModel: any[]): string {
+    return roleModel.map(role => role.roleName).join(', ');
+  }
+
 
   announceSortChange(sortState: Sort): void {
     this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
@@ -142,376 +149,6 @@ export class UserMasterComponent implements OnInit {
         this._liveAnnouncer.announce('Sorting cleared');
       }
   }
-
-
-//   data():any{
-//     let data=[
-//       {
-//         "firstName": "Madhan",
-//         "lastName": "Doe",
-//         "userEmail": "madhan@mydbq.com",
-//         "contactNumber": "+1234567890",
-//         "status": "active",
-//         "designation": "Software Engineer",
-//         "approveStatus": "true",
-//         "roleModel": [
-//           { "id": 1, "roleName": "ALL ACCESS" },
-//           { "id": 2, "roleName": "ADMIN" }
-//         ]
-//       },
-//       {
-//         "firstName": "Rajesh",
-//         "lastName": "Kumar",
-//         "userEmail": "rajesh.kumar@mydbq.com",
-//         "contactNumber": "+9876543210",
-//         "status": "inactive",
-//         "designation": "Project Manager",
-//         "approveStatus": "true",
-//         "roleModel": [
-//           { "id": 3, "roleName": "ADMIN" }
-//         ]
-//       },
-//       {
-//         "firstName": "John",
-//         "lastName": "Smith",
-//         "userEmail": "john.smith@mydbq.com",
-//         "contactNumber": "+1234598765",
-//         "status": "active",
-//         "designation": "Developer",
-//         "approveStatus": "false",
-//         "roleModel": [
-//           { "id": 4, "roleName": "USER" }
-//         ]
-//       },
-//       {
-//         "firstName": "Priya",
-//         "lastName": "Sharma",
-//         "userEmail": "priya.sharma@mydbq.com",
-//         "contactNumber": "+1234567891",
-//         "status": "active",
-//         "designation": "UI/UX Designer",
-//         "approveStatus": "true",
-//         "roleModel": [
-//           { "id": 5, "roleName": "DESIGNER" }
-//         ]
-//       },
-//       {
-//         "firstName": "Vinay",
-//         "lastName": "Singh",
-//         "userEmail": "vinay.singh@mydbq.com",
-//         "contactNumber": "+1234567892",
-//         "status": "inactive",
-//         "designation": "System Administrator",
-//         "approveStatus": "false",
-//         "roleModel": [
-//           { "id": 6, "roleName": "ADMIN" }
-//         ]
-//       },
-//       {
-//         "firstName": "Anjali",
-//         "lastName": "Verma",
-//         "userEmail": "anjali.verma@mydbq.com",
-//         "contactNumber": "+1234567893",
-//         "status": "active",
-//         "designation": "QA Engineer",
-//         "approveStatus": "true",
-//         "roleModel": [
-//           { "id": 7, "roleName": "QA" }
-//         ]
-//       },
-//       {
-//         "firstName": "Ravi",
-//         "lastName": "Patel",
-//         "userEmail": "ravi.patel@mydbq.com",
-//         "contactNumber": "+1234567894",
-//         "status": "inactive",
-//         "designation": "Software Engineer",
-//         "approveStatus": "true",
-//         "roleModel": [
-//           { "id": 8, "roleName": "DEVELOPER" }
-//         ]
-//       },
-//       {
-//         "firstName": "Sneha",
-//         "lastName": "Reddy",
-//         "userEmail": "sneha.reddy@mydbq.com",
-//         "contactNumber": "+1234567895",
-//         "status": "active",
-//         "designation": "Marketing Manager",
-//         "approveStatus": "false",
-//         "roleModel": [
-//           { "id": 9, "roleName": "MARKETING" }
-//         ]
-//       },
-//       {
-//         "firstName": "Amit",
-//         "lastName": "Gupta",
-//         "userEmail": "amit.gupta@mydbq.com",
-//         "contactNumber": "+1234567896",
-//         "status": "active",
-//         "designation": "DevOps Engineer",
-//         "approveStatus": "true",
-//         "roleModel": [
-//           { "id": 10, "roleName": "DEVOPS" }
-//         ]
-//       },
-//       {
-//         "firstName": "Kavya",
-//         "lastName": "Singh",
-//         "userEmail": "kavya.singh@mydbq.com",
-//         "contactNumber": "+1234567897",
-//         "status": "inactive",
-//         "designation": "HR Manager",
-//         "approveStatus": "true",
-//         "roleModel": [
-//           { "id": 11, "roleName": "HR" }
-//         ]
-//       },
-//         {
-//           "firstName": "Madhan",
-//           "lastName": "Doe",
-//           "userEmail": "madhan@mydbq.com",
-//           "contactNumber": "+1234567890",
-//           "status": "active",
-//           "designation": "Software Engineer",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 1, "roleName": "ALL ACCESS" },
-//             { "id": 2, "roleName": "ADMIN" }
-//           ]
-//         },
-//         {
-//           "firstName": "Rajesh",
-//           "lastName": "Kumar",
-//           "userEmail": "rajesh.kumar@mydbq.com",
-//           "contactNumber": "+9876543210",
-//           "status": "inactive",
-//           "designation": "Project Manager",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 3, "roleName": "ADMIN" }
-//           ]
-//         },
-//         {
-//           "firstName": "John",
-//           "lastName": "Smith",
-//           "userEmail": "john.smith@mydbq.com",
-//           "contactNumber": "+1234598765",
-//           "status": "active",
-//           "designation": "Developer",
-//           "approveStatus": "false",
-//           "roleModel": [
-//             { "id": 4, "roleName": "USER" }
-//           ]
-//         },
-//         {
-//           "firstName": "Priya",
-//           "lastName": "Sharma",
-//           "userEmail": "priya.sharma@mydbq.com",
-//           "contactNumber": "+1234567891",
-//           "status": "active",
-//           "designation": "UI/UX Designer",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 5, "roleName": "DESIGNER" }
-//           ]
-//         },
-//         {
-//           "firstName": "Vinay",
-//           "lastName": "Singh",
-//           "userEmail": "vinay.singh@mydbq.com",
-//           "contactNumber": "+1234567892",
-//           "status": "inactive",
-//           "designation": "System Administrator",
-//           "approveStatus": "false",
-//           "roleModel": [
-//             { "id": 6, "roleName": "ADMIN" }
-//           ]
-//         },
-//         {
-//           "firstName": "Anjali",
-//           "lastName": "Verma",
-//           "userEmail": "anjali.verma@mydbq.com",
-//           "contactNumber": "+1234567893",
-//           "status": "active",
-//           "designation": "QA Engineer",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 7, "roleName": "QA" }
-//           ]
-//         },
-//         {
-//           "firstName": "Ravi",
-//           "lastName": "Patel",
-//           "userEmail": "ravi.patel@mydbq.com",
-//           "contactNumber": "+1234567894",
-//           "status": "inactive",
-//           "designation": "Software Engineer",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 8, "roleName": "DEVELOPER" }
-//           ]
-//         },
-//         {
-//           "firstName": "Sneha",
-//           "lastName": "Reddy",
-//           "userEmail": "sneha.reddy@mydbq.com",
-//           "contactNumber": "+1234567895",
-//           "status": "active",
-//           "designation": "Marketing Manager",
-//           "approveStatus": "false",
-//           "roleModel": [
-//             { "id": 9, "roleName": "MARKETING" }
-//           ]
-//         },
-//         {
-//           "firstName": "Amit",
-//           "lastName": "Gupta",
-//           "userEmail": "amit.gupta@mydbq.com",
-//           "contactNumber": "+1234567896",
-//           "status": "active",
-//           "designation": "DevOps Engineer",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 10, "roleName": "DEVOPS" }
-//           ]
-//         },
-//         {
-//           "firstName": "Kavya",
-//           "lastName": "Singh",
-//           "userEmail": "kavya.singh@mydbq.com",
-//           "contactNumber": "+1234567897",
-//           "status": "inactive",
-//           "designation": "HR Manager",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 11, "roleName": "HR" }
-//           ]
-//         },
-//         {
-//           "firstName": "Sushant",
-//           "lastName": "Shukla",
-//           "userEmail": "sushant.shukla@mydbq.com",
-//           "contactNumber": "+1234567898",
-//           "status": "active",
-//           "designation": "Security Specialist",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 12, "roleName": "SECURITY" }
-//           ]
-//         },
-//         {
-//           "firstName": "Deepika",
-//           "lastName": "Patel",
-//           "userEmail": "deepika.patel@mydbq.com",
-//           "contactNumber": "+1234567899",
-//           "status": "inactive",
-//           "designation": "Compliance Officer",
-//           "approveStatus": "false",
-//           "roleModel": [
-//             { "id": 13, "roleName": "COMPLIANCE" }
-//           ]
-//         },
-//         {
-//           "firstName": "Tariq",
-//           "lastName": "Mehmood",
-//           "userEmail": "tariq.mehmood@mydbq.com",
-//           "contactNumber": "+1234567800",
-//           "status": "active",
-//           "designation": "Data Analyst",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 14, "roleName": "ANALYST" }
-//           ]
-//         },
-//         {
-//           "firstName": "Asha",
-//           "lastName": "Gupta",
-//           "userEmail": "asha.gupta@mydbq.com",
-//           "contactNumber": "+1234567801",
-//           "status": "inactive",
-//           "designation": "Accountant",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 15, "roleName": "ACCOUNTANT" }
-//           ]
-//         },
-//         {
-//           "firstName": "Neha",
-//           "lastName": "Verma",
-//           "userEmail": "neha.verma@mydbq.com",
-//           "contactNumber": "+1234567802",
-//           "status": "active",
-//           "designation": "Business Analyst",
-//           "approveStatus": "false",
-//           "roleModel": [
-//             { "id": 16, "roleName": "ANALYST" }
-//           ]
-//         },
-//         {
-//           "firstName": "Prakash",
-//           "lastName": "Singh",
-//           "userEmail": "prakash.singh@mydbq.com",
-//           "contactNumber": "+1234567803",
-//           "status": "active",
-//           "designation": "Legal Advisor",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 17, "roleName": "LEGAL" }
-//           ]
-//         },
-//         {
-//           "firstName": "Ritika",
-//           "lastName": "Sharma",
-//           "userEmail": "ritika.sharma@mydbq.com",
-//           "contactNumber": "+1234567804",
-//           "status": "inactive",
-//           "designation": "Sales Manager",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 18, "roleName": "SALES" }
-//           ]
-//         },
-//         {
-//           "firstName": "Sandeep",
-//           "lastName": "Gupta",
-//           "userEmail": "sandeep.gupta@mydbq.com",
-//           "contactNumber": "+1234567805",
-//           "status": "active",
-//           "designation": "Frontend Developer",
-//           "approveStatus": "false",
-//           "roleModel": [
-//             { "id": 19, "roleName": "DEVELOPER" }
-//           ]
-//         },
-//         {
-//           "firstName": "Hina",
-//           "lastName": "Ali",
-//           "userEmail": "hina.ali@mydbq.com",
-//           "contactNumber": "+1234567806",
-//           "status": "inactive",
-//           "designation": "Content Writer",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 20, "roleName": "CONTENT WRITER" }
-//           ]
-//         },
-//         {
-//           "firstName": "Vikram",
-//           "lastName": "Choudhary",
-//           "userEmail": "vikram.choudhary@mydbq.com",
-//           "contactNumber": "+1234567807",
-//           "status": "active",
-//           "designation": "Product Manager",
-//           "approveStatus": "true",
-//           "roleModel": [
-//             { "id": 21, "roleName": "PRODUCT" }
-//           ]
-//         }
-//     ]
-//     ;
-//      return data;
-//  }
 
  getRlesList(): any {
 
@@ -615,7 +252,7 @@ passwordsMatch(formGroup: FormGroup) {
   this.form.reset(); 
   }
 
-  createOrUpdate:boolean=true;
+ 
   submittUserDetails(){
     this.submitted=true;	
     console.log(this.userReg);
@@ -626,7 +263,6 @@ passwordsMatch(formGroup: FormGroup) {
       return;
       }
     if(this.createOrUpdate){
-      console.log("this.createUser()>",this.userReg);
       this.createUser();
     }else{
       this.updateUserDetails();
@@ -840,8 +476,7 @@ passwordsMatch(formGroup: FormGroup) {
 
 
   deleteUser(element:any): any {
-    console.log("deleteUser>>",element)
-  
+
     this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to delete the User?')
     .then(
       (confirmed) =>{
@@ -879,5 +514,49 @@ passwordsMatch(formGroup: FormGroup) {
   ); 
 } 
 
+getReadIcon(readPrv: boolean): string {
+  return readPrv ? 'fa fa-check text-success' : 'fa fa-times text-danger';
+}
+
+getWriteIcon(writePrv: boolean): string {
+  return writePrv ? 'fa fa-check text-success' : 'fa fa-times text-danger';
+}
+
+  userRolePermissions: RoleScreenPrv[] = [];
+  viewUser(user: any): void {   
+    this.userReg = Object.assign(new UserDetails(),user) ; 
+    this.userRolePermissions = [];
+
+    if (user && user.roleModel && Array.isArray(user.roleModel)) {
+      console.log("user.roleModel",user.roleModel);
+      user.roleModel.forEach(role => {
+        if (role.screens && Array.isArray(role.screens)) {
+          role.screens.forEach(privilege => {
+            let screenBaseName = privilege.replace(/_READ|_WRITE$/, '').replace(/_/g, ' ').toUpperCase();
+            let existingPermission = this.userRolePermissions.find(
+              permission => permission.screenName === screenBaseName
+            );  
+            if (existingPermission) {
+              if (privilege.endsWith('_READ')) {
+                existingPermission.readPrv = true;
+              }
+              if (privilege.endsWith('_WRITE')) {
+                existingPermission.writePrv = true;
+              }
+              existingPermission.approveStatus = role.approveStatus === 'approved';
+            } else {
+              this.userRolePermissions.push({
+                screenName: screenBaseName,
+                readPrv: privilege.endsWith('_READ'),
+                writePrv: privilege.endsWith('_WRITE'),
+                approveStatus: role.approveStatus === 'approved'
+              });
+            }
+          });
+        }
+      });
+    }
+  
+  }
 
 }
