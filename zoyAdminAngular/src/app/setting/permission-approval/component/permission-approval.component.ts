@@ -154,41 +154,6 @@ getUserDetais(){
       return roleModel.map(role => role.roleName).join(', ');
     }
 
-    load(user: any): void {    
-      this.userRolePermissions = [];
-      this.userReg = Object.assign(new UserDetails(),user) ;
- console.log("this.userReg",this.userReg);
-      if (user && user.roleModel && Array.isArray(user.roleModel)) {
-        user.roleModel.forEach(role => {
-          if (role.screen && Array.isArray(role.screen)) {
-            role.screen.forEach(privilege => {
-              let screenBaseName = privilege.replace(/_READ|_WRITE$/, '').replace(/_/g, ' ').toUpperCase()
-              let existingPermission = this.userRolePermissions.find(
-                permission => permission.screenName === screenBaseName
-              );   
-              if (existingPermission) {
-                if (privilege.endsWith('_READ')) {
-                  existingPermission.readPrv = true;
-                }
-                if (privilege.endsWith('_WRITE')) {
-                  existingPermission.writePrv = true;
-                }
-                existingPermission.approveStatus = role.approveStatus === 'approved';
-              } else {
-                this.userRolePermissions.push({
-                  screenName: screenBaseName,
-                  readPrv: privilege.endsWith('_READ'),
-                  writePrv: privilege.endsWith('_WRITE'),
-                  approveStatus: role.approveStatus === 'approved'
-                });
-              }
-            });
-          }
-        });
-      }
-      console.log("this.userRolePermissions",this.userRolePermissions);
-  
-    }
     viewUser(user: any): void {   
       this.userReg = Object.assign(new UserDetails(),user) ; 
       this.userRolePermissions = [];
