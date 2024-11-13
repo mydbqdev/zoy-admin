@@ -2,7 +2,6 @@ package com.integration.zoy.controller;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -27,6 +26,8 @@ import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.UserPaymentDTO;
 import com.integration.zoy.utils.VendorPayments;
+import com.integration.zoy.utils.VendorPaymentsDues;
+import com.integration.zoy.utils.VendorPaymentsGst;
 
 @RestController
 @RequestMapping("")
@@ -57,14 +58,11 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 
 
 	@Override
-	public ResponseEntity<String> getUserPaymentsByDateRange(LocalDateTime fromDate,
-			LocalDateTime toDate) {
+	public ResponseEntity<String> getUserPaymentsByDateRange(Timestamp fromDate,
+			Timestamp toDate) {
 		ResponseBody response=new ResponseBody();
 		try {
-
-			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
-			Timestamp toTimestamp = Timestamp.valueOf(toDate);
-			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromTimestamp,toTimestamp);
+			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromDate,toDate);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting paymentDetails : " + e.getMessage(),e);
@@ -75,14 +73,11 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getUserGstReportByDateRange(LocalDateTime fromDate,
-			LocalDateTime toDate) {
+	public ResponseEntity<String> getUserGstReportByDateRange(Timestamp fromDate,
+			Timestamp toDate) {
 		ResponseBody response=new ResponseBody();
 		try {
-
-			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
-			Timestamp toTimestamp = Timestamp.valueOf(toDate);
-			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromTimestamp,toTimestamp);
+			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromDate,toDate);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting paymentDetails: " + e.getMessage(),e);
@@ -93,13 +88,10 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getConsolidatedFinanceByDateRange(LocalDateTime fromDate, LocalDateTime toDate) {
+	public ResponseEntity<String> getConsolidatedFinanceByDateRange(Timestamp fromDate, Timestamp toDate) {
 		ResponseBody response=new ResponseBody();
 		try {
-
-			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
-			Timestamp toTimestamp = Timestamp.valueOf(toDate);
-			List<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(fromTimestamp,toTimestamp);
+			List<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(fromDate,toDate);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ConsilidatedFinanceDetails details: " + e.getMessage(),e);
@@ -111,13 +103,10 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getTenantDuesByDateRange(LocalDateTime fromDate, LocalDateTime toDate) {
+	public ResponseEntity<String> getTenantDuesByDateRange(Timestamp fromDate, Timestamp toDate) {
 		ResponseBody response=new ResponseBody();
 		try {
-
-			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
-			Timestamp toTimestamp = Timestamp.valueOf(toDate);
-			List<TenentDues> tenentDuesDetails =  adminReportImpl.getTenentDuesDetails(fromTimestamp,toTimestamp);
+			List<TenentDues> tenentDuesDetails =  adminReportImpl.getTenentDuesDetails(fromDate,fromDate);
 			return new ResponseEntity<>(gson.toJson(tenentDuesDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
@@ -128,13 +117,11 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getVendorPaymentDetailsByDateRange(LocalDateTime fromDate, LocalDateTime toDate) {
+	public ResponseEntity<String> getVendorPaymentDetailsByDateRange(Timestamp fromDate, Timestamp toDate) {
 		ResponseBody response=new ResponseBody();
 		try {
 
-			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
-			Timestamp toTimestamp = Timestamp.valueOf(toDate);
-			List<VendorPayments> vendorPaymentsDetails =  adminReportImpl.getVendorPaymentDetails(fromTimestamp,toTimestamp);
+			List<VendorPayments> vendorPaymentsDetails =  adminReportImpl.getVendorPaymentDetails(fromDate,toDate);
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
@@ -143,6 +130,36 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-}
+
+	@Override
+	public ResponseEntity<String> getVendorPaymentDuesByDateRange(Timestamp fromDate, Timestamp toDate) {
+		ResponseBody response=new ResponseBody();
+		try {
+
+			List<VendorPaymentsDues> vendorPaymentsDuesDetails =  adminReportImpl.getVendorPaymentDuesDetails(fromDate,toDate);
+			return new ResponseEntity<>(gson.toJson(vendorPaymentsDuesDetails), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> getVendorPaymentGstReportByDateRange(Timestamp fromDate, Timestamp toDate) {
+		ResponseBody response=new ResponseBody();
+		try {
+
+			List<VendorPaymentsGst> vendorPaymentsGstDetails =  adminReportImpl.getVendorPaymentGstDetails(fromDate,toDate);
+			return new ResponseEntity<>(gson.toJson(vendorPaymentsGstDetails), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	}
 
 

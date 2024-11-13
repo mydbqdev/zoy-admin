@@ -1,5 +1,6 @@
 package com.integration.zoy.controller;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -453,7 +454,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		}
 	}
 
-	public ResponseEntity<String> zoyAdminUserList() {
+	public ResponseEntity<String> zoyAdminUserListOld() {
 	    ResponseBody response = new ResponseBody();
 	    try {
 	        List<Object[]> master = adminDBImpl.findAllAdminUserPrevilages();
@@ -508,5 +509,63 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	}
 
 
+	@Override
+    public ResponseEntity<String> zoyAdminUserList() {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	    	List<AdminUserMaster> master =adminDBImpl.findAllAdminUser();
+	        List<Object[]> userPrevilages = adminDBImpl.findAllAdminUserPrevilages();
+	        List<AdminUserList> adminUserTemporary = new ArrayList<>();
+	        
+	        for (AdminUserMaster result : master) {
+	            AdminUserList user = new AdminUserList();
+	            user.setFirstName(result.getFirstName());
+	            user.setLastName(result.getLastName());
+	            user.setUserEmail(result.getUserEmail());
+	            user.setContactNumber(result.getContactNumber());
+	            user.setDesignation(result.getDesignation());
+	            user.setStatus(result.getStatus());
+	            List<RoleModel> roles = new ArrayList<>();
+	            
+	         List<Object[]>previlages= userPrevilages.stream()
+								   	        		 .filter(p ->p[0].equals(result.getUserEmail()) && null != p[1] && !"null".equals(p[1])  )
+								   	        		 .collect(Collectors.toList());
+	         
+	            if (!previlages.isEmpty()) {
+	            	for(Object[] pre:previlages) {
+	            	 int roleId = pre[1] instanceof BigInteger ? ((BigInteger) pre[1]).intValue() : (Integer) pre[1];
+	              
+	            	//	int roleId = (Integer) pre[1];
+		                String roleName = (String) pre[3];
+		                String approveStatus=(String) pre[2];
+		         
+	                RoleModel role = new RoleModel(roleId, roleName,approveStatus); 
+	                
+	                String screens = (String) pre[4];  
+		   	          if (screens != null && !screens.isEmpty()) {
+		   	              String[] screensSet = screens.split(",");
+		   	              for (String screensNames : screensSet) {
+		   	                  role.addScreens(screensNames); 
+		   	              }
+		   	          }
+		   	       roles.add(role);
+		   	       
+	            	}
+
+	            }
+
+	            user.setRoleModel(roles);
+	            adminUserTemporary.add(user);
+	        }
+
+	        return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error getting user list details: " + e.getMessage(), e);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError("Internal server error");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
 
 }
