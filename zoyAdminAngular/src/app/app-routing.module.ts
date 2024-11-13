@@ -6,7 +6,7 @@ import { SignupComponent } from './components/signup/signup.component';
 import { UnderConstructionComponent } from './under-construction/under-construction.component';
 import { HomeComponent } from './components/home/home.component';
 import { UserListComponent } from './user-management/user-list/user-list.component';
-import { ReportListComponent } from './reports/report-list/report-list.component';
+import { ReportListComponent } from './reports/component/report-list.component';
 import { RoleMasterComponent } from './setting/role-master/components/role-master.component';
 import { UserMasterComponent } from './setting/user-master/components/user-master.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
