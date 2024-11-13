@@ -49,7 +49,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
 		//if (userService.getUserinfo() != undefined) {
-		//	this.rolesArray = userService.getUserinfo().previlageList;
+		//	this.rolesArray = userService.getUserinfo().privilege;
 		//}
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 			return false;

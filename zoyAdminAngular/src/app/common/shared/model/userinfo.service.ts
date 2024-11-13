@@ -3,5 +3,5 @@ export class UserInfo{
     firstName?:string;
     lastName?:string;
     designation?:string;
-    previlageList?:string[];
+    privilege?:string[];
 }

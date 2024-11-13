@@ -56,9 +56,7 @@ export class ForgotPasswordComponent implements OnInit {
 		private renderer: Renderer2, private confirmationDialogService: ConfirmationDialogService
 	) {
 		this.userNameSession = userService.getUsername();
-		if (userService.getUserinfo() != undefined) {
-			this.rolesArray = userService.getUserinfo().previlageList;
-		}
+		
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 			return false;
 		};

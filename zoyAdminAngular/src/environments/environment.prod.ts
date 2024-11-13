@@ -17,6 +17,10 @@ export const environment = {
       "cancellationAndRefundRules":true,
       "percentageAndChargeConfigurations":true,
       "promotionAndOffersManagement":true
+    },
+     "reports":true,
+      "reportsSubMenu":{
+         "reports":true
     }
   }
 };

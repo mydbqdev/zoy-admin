@@ -24,6 +24,10 @@ export class RoleScreenModel {
     USER_ROLES_READ : boolean = false;
     USER_ROLES_WRITE : boolean = false;
 
+    PROMOTION_AND_OFFER_MANAGEMENT_READ: boolean = false;
+    PROMOTION_AND_OFFER_MANAGEMENT_WRITE: boolean = false;
 
+    REPORTS_READ: boolean = false;
+    REPORTS_WRITE: boolean = false;
 
 }

@@ -70,9 +70,9 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   //  console.log("defMenuEnable",defMenuEnable);
     // this.defRoleMenu=defMenuEnable;
      
-    // if (userService.getUserinfo() != undefined) {
-		// 	this.rolesArray = userService.getUserinfo().previlageList;
-		// }
+    if (userService.getUserinfo() != undefined) {
+			this.rolesArray = userService.getUserinfo().privilege;
+		}
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 		 	return false;
 		   };		  
@@ -515,8 +515,8 @@ onChangeCheck(id,type,sec,page){
     }
 }
 
-menuListCrete:string[]=['ownerManagementc','userManagementc','configurationSettingsc','financialManagementc'];
-menuListEdit:string[]=['ownerManagemente','userManagemente','configurationSettingse','financialManagemente'];
+menuListCrete:string[]=['ownerManagementc','userManagementc','configurationSettingsc','financialManagementc','reportsc'];
+menuListEdit:string[]=['ownerManagemente','userManagemente','configurationSettingse','financialManagemente','reportse'];
 menuSubMenus: string[] = [
   "OWNER_ONBOARDING_AND_REGISTRATION",
   "OWNER_EKYC_VERIFICATION",
@@ -526,7 +526,9 @@ menuSubMenus: string[] = [
   "ROLE_AND_PERMISSION",
   "MANAGING_USERS",
   "USER_ROLES",
-  "Permission_Approval"
+  "PERMISSION_APPROVAL",
+  "PROMOTION_AND_OFFER_MANAGEMENT",
+  "REPORTS"
 ];
 
 getCheckedMenulist(id:string,opt:string){
