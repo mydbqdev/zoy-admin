@@ -19,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.FieldNamingPolicy;
@@ -418,22 +419,23 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 //	}
 
 	@Override
-	public ResponseEntity<String> zoyAdminUserSendLoginInfo(LoginDetails details) {
+	public ResponseEntity<String> zoyAdminUserSendLoginInfo(@RequestParam("userName")String userName) {
 		ResponseBody response=new ResponseBody();
 		try {
-			AdminUserMaster master=adminDBImpl.findAdminUserMaster(details.getEmail());
+			AdminUserMaster master=adminDBImpl.findAdminUserMaster(userName);
 			if(master!=null) {
+				AdminUserLoginDetails login=adminDBImpl.findByEmail(master.getUserEmail());
 				Email email=new Email();
 				email.setFrom("zoyAdmin@mydbq.com");
 				List<String> to=new ArrayList<>();
-				to.add(details.getEmail());
+				to.add(login.getUserEmail());
 				email.setTo(to);
 				email.setSubject("Zoy Admin Portal Signin Information");
 				String message = "<p>Hi "+master.getFirstName()+" "+master.getLastName()+",</p>"
 						+ "<p>Welcome to Zoy Admin Portal, We are excited to have you as part of our community! "
 						+ "Below are your sign-in credentials for accessing your account.</p>"
-						+ "<p>Username: "+ details.getEmail()+"</p>"
-						+ "Password: "+ details.getPassword()+"</p>"
+						+ "<p>Username: "+ login.getUserEmail()+"</p>"
+						+ "Password: "+ passwordDecoder.decryptedText(login.getPassword())+"</p>"
 						+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
 				email.setBody(message);
 				email.setContent("text/html");

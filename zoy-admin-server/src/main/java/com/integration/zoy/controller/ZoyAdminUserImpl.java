@@ -174,6 +174,6 @@ public interface ZoyAdminUserImpl {
 	@PostMapping(value = "/zoy_admin/send_login_info",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminUserSendLoginInfo(@RequestBody LoginDetails details);
+	ResponseEntity<String> zoyAdminUserSendLoginInfo(@RequestParam("userName")String userName);
 	
 }
