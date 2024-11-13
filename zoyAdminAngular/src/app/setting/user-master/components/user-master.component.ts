@@ -70,7 +70,7 @@ export class UserMasterComponent implements OnInit {
 
       this.userNameSession=userService.getUsername();
       if (userService.getUserinfo() != undefined) {
-        this.rolesArray = userService.getUserinfo().previlageList;
+        this.rolesArray = userService.getUserinfo().privilege;
       }
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 			return false;

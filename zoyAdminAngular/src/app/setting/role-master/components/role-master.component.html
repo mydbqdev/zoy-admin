@@ -217,7 +217,22 @@
                 <div class="col-sm-2"><input type="checkbox" name="configurationSettingseread"    value="PROMOTION_AND_OFFER_MANAGEMENT_READ" id="configurationSettingseReadPOM"  (click)="onChangeCheck($event,'read','configurationSettingse','POM')"/></div>
                 <div class="col-sm-2"><input type="checkbox" name="configurationSettingsewrite"   value="PROMOTION_AND_OFFER_MANAGEMENT_WRITE"  id="configurationSettingseReadPOM" (click)="onChangeCheck($event,'write','configurationSettingse','POM')"/></div>
              </div>
-            </div>           
+            </div>  
+            <div  class="row">									         
+              <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+              <span  class="collapsed" data-toggle="collapse" data-target="#collapseREPORTSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+              <span class="title"> Report Management</span>
+              </div>
+              <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="reportsereadAll"  (click)="onChangeCheckAll($event,'read','reportse')"/></div>
+              <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="reportsewriteAll" (click)="onChangeCheckAll($event,'write','reportse')" /></div>								                
+             </div>
+            <div  id="collapseREPORTSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #reportsetab>
+              <div class="row" >
+                 <div class="col-sm-8 pl-4">Reports</div>
+                 <div class="col-sm-2"><input type="checkbox" name="reportseread"    value="REPORTS_READ" id="reportseReadRT"  (click)="onChangeCheck($event,'read','reportse','RT')"/></div>
+                 <div class="col-sm-2"><input type="checkbox" name="reportsewrite"   value="REPORTS_WRITE"  id="reportseWriteRT" (click)="onChangeCheck($event,'write','reportse','RT')"/></div>
+              </div> 
+           </div>         
       </div>
           </div>
           <div class="offcanvas-footer d-flex justify-content-start mt-3" style="align-items: center;">          
@@ -341,7 +356,22 @@
                         <div class="col-sm-2"><input type="checkbox" name="configurationSettingscread"    value="PROMOTION_AND_OFFER_MANAGEMENT_READ" id="configurationSettingscReadPOM"  (click)="onChangeCheck($event,'read','configurationSettingsc','POM')"/></div>
                         <div class="col-sm-2"><input type="checkbox" name="configurationSettingscwrite"   value="PROMOTION_AND_OFFER_MANAGEMENT_WRITE"  id="configurationSettingscReadPOM" (click)="onChangeCheck($event,'write','configurationSettingsc','POM')"/></div>
                      </div>
-                   </div>              
+                   </div> 
+                   <div  class="row">									         
+                    <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                    <span  class="collapsed" data-toggle="collapse" data-target="#collapseREPORTSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                    <span class="title"> Report Management</span>
+                    </div>
+                    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="reportscreadAll"  (click)="onChangeCheckAll($event,'read','reportsc')"/></div>
+                    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="reportscwriteAll" (click)="onChangeCheckAll($event,'write','reportsc')" /></div>								                
+                   </div>
+                  <div  id="collapseREPORTSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #reportsetab>
+                    <div class="row" >
+                       <div class="col-sm-8 pl-4">Reports</div>
+                       <div class="col-sm-2"><input type="checkbox" name="reportscread"    value="REPORTS_READ" id="reportscReadRT"  (click)="onChangeCheck($event,'read','reportsc','RT')"/></div>
+                       <div class="col-sm-2"><input type="checkbox" name="reportscwrite"   value="REPORTS_WRITE"  id="reportscWriteRT" (click)="onChangeCheck($event,'write','reportsc','RT')"/></div>
+                    </div> 
+                 </div>            
              </div>
                  </div>
                  <div class="offcanvas-footer d-flex justify-content-start mt-3" style="align-items: center;">

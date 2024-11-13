@@ -20,13 +20,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	mySubscription: any;
 	isExpandSideBar:boolean=true;
 	@ViewChild(SidebarComponent) sidemenuComp;
+	public rolesArray: string[] = [];
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 		this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
-		//if (userService.getUserinfo() != undefined) {
-		//	this.rolesArray = userService.getUserinfo().previlageList;
-		//}
+		if (userService.getUserinfo() != undefined) {
+			this.rolesArray = userService.getUserinfo().privilege;
+		}
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 			return false;
 		};
@@ -48,9 +49,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		}
 	}
 	ngOnInit() {
-		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
-		//	this.router.navigate(['/']);
-		//}
+		if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
+			this.router.navigate(['/']);
+		}
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(1);

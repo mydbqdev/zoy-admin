@@ -24,7 +24,7 @@ export const environment = {
     },
      "reports":true,
       "reportsSubMenu":{
-         "reportts":true
+         "reports":true
     }
   }
 };

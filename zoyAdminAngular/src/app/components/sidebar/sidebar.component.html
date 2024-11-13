@@ -54,16 +54,16 @@
 
 
     <!-- Nav Item - User Management Collapse Menu -->
-    <li class="nav-item" [ngClass]="{'active':menu31}" id="menu3">
-        <a [ngClass]="menu3 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" *ngIf="defMenu.userManagement && rolesArray.includes('ROLE_AND_PERMISSION_READ')" (click)="expandMenu(3)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseUserManagement"
+    <li class="nav-item" [ngClass]="{'active':menu31}" id="menu3" *ngIf="defMenu.userManagement && (rolesArray.includes('MANAGING_USERS_READ') || rolesArray.includes('PERMISSION_APPROVAL_READ'))">
+        <a [ngClass]="menu3 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(3)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseUserManagement"
         [attr.aria-expanded]="!menu3" aria-controls="collapseUserManagement">
             <i class="fas fa-fw fa-users-cog"></i>
             <span>User Management</span>
         </a>
         <div id="collapseUserManagement" [ngClass]="menu3 ? 'collapse show':'collapse'" aria-labelledby="headingUserManagement" data-parent="#accordionSidebar">
             <div class="bg-white collapse-inner rounded">
-                <a class="collapse-item" routerLink="/user-master" [ngClass]="{'active':activeSubNenuName=='user-master'}" (click)="setHeaderName('Managing Users')">Managing Users</a>
-                <a class="collapse-item" routerLink="/permission-approval" [ngClass]="{'active':activeSubNenuName=='permission-approval'}" (click)="setHeaderName('Permission Approval')">Permission Approval</a>
+                <a class="collapse-item" routerLink="/user-master" [ngClass]="{'active':activeSubNenuName=='user-master'}" *ngIf="rolesArray.includes('MANAGING_USERS_READ')" (click)="setHeaderName('Managing Users')">Managing Users</a>
+                <a class="collapse-item" routerLink="/permission-approval" [ngClass]="{'active':activeSubNenuName=='permission-approval'}" *ngIf="rolesArray.includes('PERMISSION_APPROVAL_READ')" (click)="setHeaderName('Permission Approval')">Permission Approval</a>
             </div>
         </div>
     </li>
@@ -85,18 +85,18 @@
 
 
     <!-- Nav Item - Configuration Settings Collapse Menu -->
-    <li class="nav-item" [ngClass]="{'active':menu41}" id="menu4"> 
-        <a [ngClass]="menu4 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"*ngIf="defMenu.configurationSettings && rolesArray.includes('ROLE_AND_PERMISSION_READ')" (click)="expandMenu(4)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseConfigSettings"
+    <li class="nav-item" [ngClass]="{'active':menu41}" id="menu4" *ngIf="defMenu.configurationSettings && (rolesArray.includes('ROLE_AND_PERMISSION_READ') || rolesArray.includes('CANCELLATION_AND_REFUND_RULES_READ') || rolesArray.includes('PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ') || rolesArray.includes('PROMOTION_AND_OFFER_MANAGEMENT_READ'))"> 
+        <a [ngClass]="menu4 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(4)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseConfigSettings"
         [attr.aria-expanded]="!menu4" aria-controls="collapseConfigSettings">
             <i class="fas fa-fw fa-cogs"></i>
             <span>Configuration Settings</span>
         </a>
         <div id="collapseConfigSettings" [ngClass]="menu4 ? 'collapse show':'collapse'" aria-labelledby="headingConfigSettings" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" routerLink="/role-master" [ngClass]="{'active':activeSubNenuName=='role-master'}" (click)="setHeaderName('Role and Permission')" >Role and <br *ngIf="isExpandSideBar"> Permission</a>
-                <a class="collapse-item" routerLink="/cancellation-refund-rules">Cancellation and <br *ngIf="isExpandSideBar">  Refund Rules</a>
-                <a class="collapse-item" routerLink="/percentage-charge-configurations">Percentage and <br *ngIf="isExpandSideBar">  Charge</a>
-                <a class="collapse-item" routerLink="/promotion-offers-management">Promotion and <br *ngIf="isExpandSideBar">  Offers Management</a>
+                <a class="collapse-item" routerLink="/role-master" *ngIf="rolesArray.includes('ROLE_AND_PERMISSION_READ')" [ngClass]="{'active':activeSubNenuName=='role-master'}" (click)="setHeaderName('Role and Permission')" >Role and <br *ngIf="isExpandSideBar"> Permission</a>
+                <a class="collapse-item" routerLink="/cancellation-refund-rules" *ngIf="rolesArray.includes('CANCELLATION_AND_REFUND_RULES_READ')">Cancellation and <br *ngIf="isExpandSideBar">  Refund Rules</a>
+                <a class="collapse-item" routerLink="/percentage-charge-configurations" *ngIf="rolesArray.includes('PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ')">Percentage and <br *ngIf="isExpandSideBar">  Charge</a>
+                <a class="collapse-item" routerLink="/promotion-offers-management" *ngIf="rolesArray.includes('PROMOTION_AND_OFFER_MANAGEMENT_READ')">Promotion and <br *ngIf="isExpandSideBar">  Offers Management</a>
             </div>
         </div>
     </li>
@@ -119,7 +119,7 @@
 
   <!-- Nav Item - Reports Collapse Menu -->
   <li class="nav-item" [ngClass]="{'active':menu51}" id="menu5">
-    <a [ngClass]="menu5 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" *ngIf="defMenu.reports && rolesArray.includes('ROLE_AND_PERMISSION_READ')" (click)="expandMenu(5)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseReports"
+    <a [ngClass]="menu5 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" *ngIf="defMenu.reports && rolesArray.includes('REPORTS_READ')" (click)="expandMenu(5)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseReports"
     [attr.aria-expanded]="!menu5" aria-controls="collapseReports">
         <i class="fas fa-fw fa-wrench"></i>
         <span>Report Management</span>
@@ -127,7 +127,7 @@
     <div id="collapseReports" [ngClass]="menu5 ? 'collapse show':'collapse'" aria-labelledby="headingReports"
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" routerLink="/report-list" [ngClass]="{'active':activeSubNenuName=='report-list'}" (click)="setHeaderName('Reports')">Reports</a>
+            <a class="collapse-item" routerLink="/report-list" *ngIf="rolesArray.includes('REPORTS_READ')" [ngClass]="{'active':activeSubNenuName=='report-list'}" (click)="setHeaderName('Reports')">Reports</a>
             <a class="collapse-item" routerLink="/home">Report 2</a>
             <a class="collapse-item" routerLink="/home">Report 3</a>
             <a class="collapse-item" routerLink="/home">Report 4</a>

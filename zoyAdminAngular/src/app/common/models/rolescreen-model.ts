@@ -27,7 +27,7 @@ export class RoleScreenModel {
     PROMOTION_AND_OFFER_MANAGEMENT_READ: boolean = false;
     PROMOTION_AND_OFFER_MANAGEMENT_WRITE: boolean = false;
 
-    REPORTTS_READ: boolean = false;
-    REPORTTS_WRITE: boolean = false;
+    REPORTS_READ: boolean = false;
+    REPORTS_WRITE: boolean = false;
 
 }
