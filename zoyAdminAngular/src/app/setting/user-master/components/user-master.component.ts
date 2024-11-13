@@ -249,22 +249,26 @@ passwordsMatch(formGroup: FormGroup) {
   resetForm() {
   this.submitted=false;
   this.createOrUpdate=true;
+  this.userReg=new UserDetails();
   this.form.reset(); 
   }
 
  
   submittUserDetails(){
+  
+    console.log("this.userReg." ,this.userReg +'jhsjd' +"",this.form.invalid);
     this.submitted=true;	
     console.log(this.userReg);
     if (this.form.invalid) {
       return;
       }
-      if (this.userReg.password !== this.userReg.repeatPassword) {
+      if (this.createOrUpdate && this.userReg.password !== this.userReg.repeatPassword) {
       return;
       }
     if(this.createOrUpdate){
       this.createUser();
     }else{
+
       this.updateUserDetails();
     }
   }
@@ -317,6 +321,7 @@ passwordsMatch(formGroup: FormGroup) {
 
     this.spinner.show();		     
     this.submitted=false;
+    
     this.userMasterService.updateUser(this.userReg).subscribe((res) => {
       this.notifyService.showSuccess(res.message, "");
       this.getUserDetais();

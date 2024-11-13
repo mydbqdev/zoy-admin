@@ -20,6 +20,8 @@
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
   </li>
+ 
+
   <!-- Nav Item - Pages Collapse Menu -->
   <!--li class="nav-item">
       <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse" data-target="#collapseTwo"
@@ -50,8 +52,7 @@
             </div>
         </div>
     </li -->
-
-
+  
 
     <!-- Nav Item - User Management Collapse Menu -->
     <li class="nav-item" [ngClass]="{'active':menu31}" id="menu3" *ngIf="defMenu.userManagement && (rolesArray.includes('MANAGING_USERS_READ') || rolesArray.includes('PERMISSION_APPROVAL_READ'))">
@@ -128,12 +129,16 @@
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" routerLink="/report-list" *ngIf="rolesArray.includes('REPORTS_READ')" [ngClass]="{'active':activeSubNenuName=='report-list'}" (click)="setHeaderName('Reports')">Reports</a>
-            <a class="collapse-item" routerLink="/home">Report 2</a>
+            <!-- <a class="collapse-item" routerLink="/home">Report 2</a>
             <a class="collapse-item" routerLink="/home">Report 3</a>
-            <a class="collapse-item" routerLink="/home">Report 4</a>
+            <a class="collapse-item" routerLink="/home">Report 4</a> -->
         </div>
     </div>
    </li>
+
+   
+
+   
    <!--li class="nav-item">
      <a class="nav-link" routerLink="/user-list" >
          <i class="fas fa-fw fa-folder"></i>
@@ -150,7 +155,7 @@
   <li class="nav-item">
       <a class="nav-link" href="javascript:void(0)" >
           <i class="fas fa-fw fa-folder"></i>
-          <span>Page 1</span>
+          <span>Help Center</span>
       </a>
   </li>
 </ul>
