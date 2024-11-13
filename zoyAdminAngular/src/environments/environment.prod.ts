@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  basePath:'http://admin.qa.zoypg.com/api-admin/',
+  basePath:'http://45.129.87.152:8082/api-admin/',
   version:'@Version',
   oDataBlockSize:100,
   defMenuEnable:{

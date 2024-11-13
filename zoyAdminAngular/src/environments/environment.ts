@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  basePath:'http://localhost:8082/api-admin/',
+  basePath:'http://45.129.87.152:8082/api-admin/',
   version:'1.0.0-04-05-2020-11:41:00',
   oDataBlockSize:100,
   defMenuEnable:{

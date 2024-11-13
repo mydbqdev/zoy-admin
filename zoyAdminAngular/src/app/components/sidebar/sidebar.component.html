@@ -122,12 +122,12 @@
     <a [ngClass]="menu5 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(5)" data-toggle="collapse" data-target="#collapseReports"
     [attr.aria-expanded]="!menu5" aria-controls="collapseReports">
         <i class="fas fa-fw fa-wrench"></i>
-        <span>Reports</span>
+        <span>Report Management</span>
     </a>
     <div id="collapseReports" [ngClass]="menu5 ? 'collapse show':'collapse'" aria-labelledby="headingReports"
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" routerLink="/report-list" [ngClass]="{'active':activeSubNenuName=='report-list'}" (click)="setHeaderName('Report')">Report 1</a>
+            <a class="collapse-item" routerLink="/report-list" [ngClass]="{'active':activeSubNenuName=='report-list'}" (click)="setHeaderName('Reports')">Reports</a>
             <a class="collapse-item" routerLink="/home">Report 2</a>
             <a class="collapse-item" routerLink="/home">Report 3</a>
             <a class="collapse-item" routerLink="/home">Report 4</a>
