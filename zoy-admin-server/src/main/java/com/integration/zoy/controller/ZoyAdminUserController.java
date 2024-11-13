@@ -156,7 +156,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_GATEWAY);
 			}
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error getting User details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -189,7 +189,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setMessage("User created Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error creating users: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -208,7 +208,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setStatus(HttpStatus.OK.value());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error getting user availabilty details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -236,7 +236,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error updating user details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -267,7 +267,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setMessage("App role created Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error creating role: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -320,7 +320,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setMessage("App role Updated Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error updating role: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -352,7 +352,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			}
 			return new ResponseEntity<>(gson.toJson(adminAppRoles), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error getting role list: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -381,7 +381,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setMessage("User assign saved for approval successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error adding user assign: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -447,7 +447,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error sending signin info: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -501,7 +501,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	        return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
 
 	    } catch (Exception e) {
-	        log.error("Error getting amenities details: " + e.getMessage(), e);
+	        log.error("Error getting user list details: " + e.getMessage(), e);
 	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	        response.setError("Internal server error");
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
