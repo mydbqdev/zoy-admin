@@ -32,7 +32,6 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 	public menu71: boolean = false;
 
 	public activeSubNenuName: string = '';	
-	@ViewChild(SidebarComponent) sidemenuComp;
 	public defMenu: DefMenu;
 	
   constructor(@Inject(defMenuEnable) private defMenuEnable: DefMenu, private userService: UserService, private router: Router,private dataService:DataService) {
