@@ -164,7 +164,7 @@
                                                     Role
                                                 </th>
                                                 <td mat-cell data-label="roles" *matCellDef="let element;">
-                                                    {{element.roles}}
+                                                    {{ getRoleNames(element.roleModel) }}
                                                 </td>
                                             </ng-container>                  
                                             <ng-container matColumnDef="action">
@@ -175,12 +175,12 @@
                                                         <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Check and Approve</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" (click)="viewUser(element)" >Check and Approve</a>
                                                     </div>
                                                 </td>
                                             </ng-container>
                     
-                                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
                                             <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
                                         </table>
                                     </div>
@@ -203,7 +203,7 @@
   <!-- End of Page Wrapper -->
   </div>
 
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasRightLabel">Check And Approve</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #registerCloseModal></button>
@@ -213,7 +213,7 @@
         <form [formGroup]="form" autocomplete="off">
             <div class="modal-body">
                 <div class="font-weight-bold mb-2" style="border-bottom: 1px solid #f5f3f3;margin-top:-10px">
-                    Balaji
+                    {{userReg.firstName}}   {{userReg.lastName}}
                 </div>
                 <!-- Authorization Section -->
                 <div class="mb-4">
@@ -224,9 +224,10 @@
                     </div>
 
                     <!-- Scrollable container for the authorization rows -->
+                   
                     <div class="scrollable-container">
                         <div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-3 ml-1">
-                            <div class="col-sm-8" style="font-size: 14px;">{{ permission.screenName }}</div>
+                            <div class="col-sm-8" style="font-size: 14px;" [ngClass]="{'text-danger': !permission.approveStatus }" [title]="!permission.approveStatus?'waiting for approval':''" >{{ permission.screenName }}</div>
                             <div class="col-sm-2 text-center">
                                 <i [class]="getReadIcon(permission.readPrv)" style="font-size: 14px;"></i>
                             </div>
@@ -238,9 +239,9 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="d-flex mt-4">
-                    <button type="button" class="btn btn-primary-custom px-4 py-2" (click)="approveRole()">Approve</button>
-                    <button type="button" class="btn btn-dark ml-2 px-4 py-2" (click)="rejectRole()">Reject</button>
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="button" class="btn btn-primary-custom px-4 py-2 mr-3" (click)="approveRejectRole('approve')">Approve</button>
+                    <button type="button" class="btn btn-dark px-4 py-2" (click)="approveRejectRole('reject')">Reject</button>
                 </div>
             </div>
         </form>

@@ -13,12 +13,11 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { DataService } from 'src/app/common/service/data.service';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { PermissionApprovalService } from '../service/permission-approval.service';
-import { PermissionDetails } from '../model/permission-details';
-import { PermissionApproval } from '../model/permission-approval-model';
 import { AlertDialogService } from "src/app/common/shared/alert-dialog/alert-dialog.service";
 import { UserDetails } from '../../user-master/models/register-details';
 import { UserMasterService } from '../../user-master/service/user-master.service';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { RoleScreenPrv } from '../../role-master/models/role-screen-model';
 
 @Component({
   selector: 'app-permission-approval',
@@ -47,7 +46,6 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
 
   getUsers : UserDetails[] = [];
   editUserRole : UserDetails = new UserDetails();
-  rolesList: PermissionApproval[]=[];
 
    selectedItems : any[] = [];
    public rolesArray: string[] = [];
@@ -58,11 +56,10 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
   submitted=false;
 	error: string = '';
 	form: FormGroup;
-	userReg :PermissionDetails=new PermissionDetails();
+	userReg :UserDetails=new UserDetails();
   isPopupVisible: boolean = false;
   editUserRoleee = { empName: '' };
-  userRolePermissions: Array<{ screenName: string; readPrv: boolean; writePrv: boolean }> = [];
-
+  userRolePermissions: RoleScreenPrv[] = [];
   isExpandSideBar:boolean=true;
   constructor(private userMasterService : UserMasterService,private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private notifyService:NotificationService,
     private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService,private alertDialogService: AlertDialogService,private permissionService: PermissionApprovalService){
@@ -76,7 +73,6 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
 		  };
        this.mySubscription = this.router.events.subscribe((event) => {
 			if (event instanceof NavigationEnd) {
-			  // Trick the Router into believing it's last link wasn't previously loaded
 			  this.router.navigated = false;
 			}
       });
@@ -97,8 +93,7 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
     //    }
     // this.authService.checkLoginUserVlidaate();
     this.getUserDetais();
-    const empCode = 'EMP123';  // Replace with your hardcoded employee code
-    this.loadUserPermissions(empCode);
+
 }
 
 	  
@@ -113,11 +108,11 @@ getUserDetais(){
    this.spinner.show();
    this.userMasterService.getUserList().subscribe(data => {
      this.ELEMENT_DATA = Object.assign([],data);
+    //  this.ELEMENT_DATA = Object.assign([],data);
      this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
      this.dataSource.sort = this.sort;
      this.dataSource.paginator = this.paginator;
      this.spinner.hide();
- 
   }, error => {
    this.spinner.hide();
    if(error.status==403){
@@ -155,66 +150,106 @@ getUserDetais(){
           this._liveAnnouncer.announce('Sorting cleared');
         }
     }
+    getRoleNames(roleModel: any[]): string {
+      return roleModel.map(role => role.roleName).join(', ');
+    }
 
-  loadUserPermissions(empCode: string): void {
-    // Using hardcoded data for demonstration
-    const hardcodedResponse = {
-      empName: 'John Doe', // Hardcoded employee name
-      permissions: [
-        { screenName: 'Dashboard', readPrv: true, writePrv: true },
-        { screenName: 'Settings', readPrv: true, writePrv: false },
-        { screenName: 'Reports', readPrv: false, writePrv: true },
-        { screenName: 'user Management', readPrv: true, writePrv: true },
-        { screenName: 'Dashboard', readPrv: true, writePrv: true },
-        { screenName: 'Settings', readPrv: true, writePrv: false },
-        { screenName: 'Reports', readPrv: false, writePrv: true },
-        { screenName: 'user Management', readPrv: true, writePrv: true },
-        { screenName: 'Dashboard', readPrv: true, writePrv: true },
-        { screenName: 'Settings', readPrv: true, writePrv: false },
-        { screenName: 'Reports', readPrv: false, writePrv: true },
-        { screenName: 'user Management', readPrv: true, writePrv: true },
-      ]
-    };
-
-    this.userRolePermissions = hardcodedResponse.permissions;
-    this.editUserRole.userEmail = hardcodedResponse.empName;
-  }
-
+    viewUser(user: any): void {   
+      this.userReg = Object.assign(new UserDetails(),user) ; 
+      this.userRolePermissions = [];
+  
+      if (user && user.roleModel && Array.isArray(user.roleModel)) {
+        console.log("user.roleModel",user.roleModel);
+        user.roleModel.forEach(role => {
+          if (role.screens && Array.isArray(role.screens)) {
+            role.screens.forEach(privilege => {
+              let screenBaseName = privilege.replace(/_READ|_WRITE$/, '').replace(/_/g, ' ').toUpperCase();
+              let existingPermission = this.userRolePermissions.find(
+                permission => permission.screenName === screenBaseName
+              );  
+              if (existingPermission) {
+                if (privilege.endsWith('_READ')) {
+                  existingPermission.readPrv = true;
+                }
+                if (privilege.endsWith('_WRITE')) {
+                  existingPermission.writePrv = true;
+                }
+                existingPermission.approveStatus = role.approveStatus === 'approved';
+              } else {
+                this.userRolePermissions.push({
+                  screenName: screenBaseName,
+                  readPrv: privilege.endsWith('_READ'),
+                  writePrv: privilege.endsWith('_WRITE'),
+                  approveStatus: role.approveStatus === 'approved'
+                });
+              }
+            });
+          }
+        });
+      }
+    
+    }
+     
 
   getReadIcon(readPrv: boolean): string {
     return readPrv ? 'fa fa-check text-success' : 'fa fa-times text-danger';
   }
 
-  // Return icon class for write permission
   getWriteIcon(writePrv: boolean): string {
     return writePrv ? 'fa fa-check text-success' : 'fa fa-times text-danger';
   }
 
-  // Approve role with the current permissions
-  approveRole(): void {
-    const dataToSave = {
-      empCode: 'EMP123', 
-      permissions: this.userRolePermissions
-    };
 
-    this.permissionService.saveData(dataToSave).subscribe(
-      (response) => {
-        this.showPopup('Role has been approved successfully.');
-      },
-      (error) => {
-        console.error('Error approving role:', error);
+
+  approveRejectRole(status:string): void {
+    this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to '+status+' the User?')
+    .then(
+      (confirmed) =>{
+       if(confirmed){
+  this.spinner.show();
+  
+  this.permissionService.approveRejectRole(this.userReg,status).subscribe(
+    (response) => {
+      this.spinner.hide();
+      console.log('Approval response:', response);
+      this.getUserDetais();
+      this.notifyService.showSuccess('Roles have been approved successfully.', "");
+    },
+    (error) => {
+      this.spinner.hide();
+      if (error.status === 403) {
+        this.router.navigate(['/forbidden']);
+      } else if (error.error && error.error.message) {
+        this.errorMsg = error.error.message;
+        console.error('Error approving roles:', this.errorMsg);
+        this.notifyService.showError(this.errorMsg, "");
+      } else {
+        if (error.status === 500 && error.statusText === 'Internal Server Error') {
+          this.errorMsg = `${error.statusText}! Please login again or contact your Help Desk.`;
+        } else {
+          let str;
+          if (error.status === 400) {
+            str = error.error;
+          } else {
+            str = error.message;
+            str = str.substring(str.indexOf(':') + 1);
+          }
+          console.error('Error approving roles:', str);
+          this.errorMsg = str;
+        }
+        if (error.status !== 401) {
+          this.notifyService.showError(this.errorMsg, "");
+        }
       }
-    );
-  }
-
-  rejectRole(): void {
-    this.showPopup('Role has been rejected.');
-   // this.resetForm();
-  }
-
-  showPopup(message: string): void {
-    this.isPopupVisible = true;
-  }
-
+    }
+  );
+}
+}).catch(
+  () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+  ); 
 }
 
+
+
+
+}

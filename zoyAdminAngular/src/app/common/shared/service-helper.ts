@@ -4,7 +4,8 @@ export class ServiceHelper{
     public static buildHeaders(){
         let headers:HttpHeaders = new HttpHeaders({
             'Accept':'application/json',
-            'Content-Type':'application/json'
+            'Content-Type':'application/json',
+            'Access-Control-Allow-Origin': 'http://45.129.87.152:8082/'
         });
 
         return headers;
@@ -12,7 +13,8 @@ export class ServiceHelper{
     public static filesHeaders(){
         let headers:HttpHeaders = new HttpHeaders({
             'Accept':'application/json',
-            'Content-Type':'multipart/form-data'
+            'Content-Type':'multipart/form-data',
+            'Access-Control-Allow-Origin': 'http://45.129.87.152:8082/'
         });
 
         return headers;
@@ -21,7 +23,8 @@ export class ServiceHelper{
     public static buildImportHeaders(){
         let headers:HttpHeaders = new HttpHeaders({
             'Cache-Control':'no-cache',
-            'Content-Type':'application/octet-stream'
+            'Content-Type':'application/octet-stream',
+            'Access-Control-Allow-Origin': 'http://45.129.87.152:8082/'
         });
 
         return headers;
@@ -31,6 +34,7 @@ export class ServiceHelper{
         let headers:HttpHeaders = new HttpHeaders({
             'Accept':'application/json',
             'Content-Type':'application/json',
+            'Access-Control-Allow-Origin': 'http://45.129.87.152:8082/',
             'DBQ-TOKEN':pwd
         });
 
@@ -60,7 +64,8 @@ export class ServiceHelper{
         let headers: HttpHeaders = new HttpHeaders({
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': 'Basic em95YWRtaW46em95YWRtaW5wYXNz'  
+          'Authorization': 'Basic em95YWRtaW46em95YWRtaW5wYXNz',
+          'Access-Control-Allow-Origin': 'http://45.129.87.152:8082/'  
         });
         return headers;
       }

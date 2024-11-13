@@ -182,14 +182,9 @@
              </div>  
              <div class="row" >
                 <div class="col-sm-8 pl-4">Permission Approval</div>
-                <div class="col-sm-2"><input type="checkbox" name="permissionApprovalread"    value="Permission_Approval_READ" id="permissionApprovalReadMU"  (click)="onChangeCheck($event,'read','permissionApproval','MU')"/></div>
-                <div class="col-sm-2"><input type="checkbox" name="permissionApprovalwrite"   value="Permission_Approval_WRITE"  id="permissionApprovalWriteMU" (click)="onChangeCheck($event,'write','permissionApproval','MU')"/></div>
+                <div class="col-sm-2"><input type="checkbox" name="userManagementeread"    value="PERMISSION_APPROVAL_READ" id="userManagementeReadMU"  (click)="onChangeCheck($event,'read','userManagemente','PA')"/></div>
+                <div class="col-sm-2"><input type="checkbox" name="userManagementewrite"   value="PERMISSION_APPROVAL_WRITE"  id="userManagementeWriteMU" (click)="onChangeCheck($event,'write','userManagemente','PA')"/></div>
              </div>        
-             <div class="row" >
-                <div class="col-sm-8 pl-4">Owner eKYC Verification</div>
-                <div class="col-sm-2"><input type="checkbox" name="userManagementeread"    value="USER_ROLES_READ" id="userManagementeReadUR"  (click)="onChangeCheck($event,'read','userManagemente','UR')"/></div>
-                <div class="col-sm-2"><input type="checkbox" name="userManagementewrite"   value="USER_ROLES_WRITE"  id="userManagementeWriteUR" (click)="onChangeCheck($event,'write','userManagemente','UR')"/></div>
-             </div>
           </div>
  
             <div  class="row">									         
@@ -203,20 +198,25 @@
              <div  id="collapseCONFIGURATIONSETTINGSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #configurationSettingsetab>
                
                  <div class="row" >
-                     <div class="col-sm-8 pl-4">Role & Permission</div>
+                     <div class="col-sm-8 pl-4">Role and Permission</div>
                      <div class="col-sm-2"><input type="checkbox" name="configurationSettingseread"    value="ROLE_AND_PERMISSION_READ" id="configurationSettingseReadRP"  (click)="onChangeCheck($event,'read','configurationSettingse','RP')"/></div>
                      <div class="col-sm-2"><input type="checkbox" name="configurationSettingsewrite"   value="ROLE_AND_PERMISSION_WRITE"  id="configurationSettingseWriteRP" (click)="onChangeCheck($event,'write','configurationSettingse','RP')"/></div>
                   </div>   
                  <div class="row" >
-                  <div class="col-sm-8 pl-4">Cancellation & Refund Rules</div>
+                  <div class="col-sm-8 pl-4">Cancellation and Refund Rules</div>
                   <div class="col-sm-2"><input type="checkbox" name="configurationSettingseread"    value="CANCELLATION_AND_REFUND_RULES_READ" id="configurationSettingseReadCRR"  (click)="onChangeCheck($event,'read','configurationSettingse','CRR')"/></div>
                   <div class="col-sm-2"><input type="checkbox" name="configurationSettingsewrite"   value="CANCELLATION_AND_REFUND_RULES_WRITE"  id="configurationSettingseWriteCRR" (click)="onChangeCheck($event,'write','configurationSettingse','CRR')"/></div>
                </div>         
                <div class="row" >
-                  <div class="col-sm-8 pl-4">Percentage & Charge Configurations</div>
+                  <div class="col-sm-8 pl-4">Percentage and Charge</div>
                   <div class="col-sm-2"><input type="checkbox" name="configurationSettingseread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="configurationSettingseReadPCC"  (click)="onChangeCheck($event,'read','configurationSettingse','PCC')"/></div>
                   <div class="col-sm-2"><input type="checkbox" name="configurationSettingsewrite"   value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_WRITE"  id="configurationSettingseReadPCC" (click)="onChangeCheck($event,'write','configurationSettingse','PCC')"/></div>
                </div>
+              <div class="row" >
+                <div class="col-sm-8 pl-4">Promotion and Offers Management</div>
+                <div class="col-sm-2"><input type="checkbox" name="configurationSettingseread"    value="PROMOTION_AND_OFFER_MANAGEMENT_READ" id="configurationSettingseReadPOM"  (click)="onChangeCheck($event,'read','configurationSettingse','POM')"/></div>
+                <div class="col-sm-2"><input type="checkbox" name="configurationSettingsewrite"   value="PROMOTION_AND_OFFER_MANAGEMENT_WRITE"  id="configurationSettingseReadPOM" (click)="onChangeCheck($event,'write','configurationSettingse','POM')"/></div>
+             </div>
             </div>           
       </div>
           </div>
@@ -307,13 +307,8 @@
                      </div> 
                      <div class="row" >
                         <div class="col-sm-8 pl-4">Permission Approval</div>
-                        <div class="col-sm-2"><input type="checkbox" name="permissionApprovalread"    value="Permission_Approval_READ" id="permissionApprovalReadMU"  (click)="onChangeCheck($event,'read','permissionApproval','MU')"/></div>
-                        <div class="col-sm-2"><input type="checkbox" name="permissionApprovalwrite"   value="Permission_Approval_WRITE"  id="permissionApprovalWriteMU" (click)="onChangeCheck($event,'write','permissionApproval','MU')"/></div>
-                     </div>         
-                     <div class="row" >
-                        <div class="col-sm-8 pl-4">Owner eKYC Verification</div>
-                        <div class="col-sm-2"><input type="checkbox" name="userManagementcread"    value="USER_ROLES_READ" id="userManagementcReadUR"  (click)="onChangeCheck($event,'read','userManagementc','UR')"/></div>
-                        <div class="col-sm-2"><input type="checkbox" name="userManagementcwrite"   value="USER_ROLES_WRITE"  id="userManagementcWriteUR" (click)="onChangeCheck($event,'write','userManagementc','UR')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="userManagementcread"    value="PERMISSION_APPROVAL_READ" id="userManagementcReadPA"  (click)="onChangeCheck($event,'read','userManagementc','PA')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="userManagementcwrite"   value="PERMISSION_APPROVAL_WRITE"  id="userManagementcReadPA" (click)="onChangeCheck($event,'write','userManagementc','PA')"/></div>
                      </div>
                   </div>
  
@@ -327,15 +322,25 @@
                      </div>
                     <div  id="collapseCONFIGURATIONSETTINGSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #configurationSettingsctab>
                      <div class="row" >
-                         <div class="col-sm-8 pl-4">Role & Permission</div>
+                         <div class="col-sm-8 pl-4">Role and Permission</div>
                          <div class="col-sm-2"><input type="checkbox" name="configurationSettingscread"    value="ROLE_AND_PERMISSION_READ" id="configurationSettingscReadRP"  (click)="onChangeCheck($event,'read','configurationSettingsc','RP')"/></div>
                          <div class="col-sm-2"><input type="checkbox" name="configurationSettingscwrite"   value="ROLE_AND_PERMISSION_WRITE"  id="configurationSettingscWriteRP" (click)="onChangeCheck($event,'write','configurationSettingsc','RP')"/></div>
-                      </div>          
+                      </div>  
                       <div class="row" >
-                         <div class="col-sm-8 pl-4">Percentage & Charge Configurations</div>
+                        <div class="col-sm-8 pl-4">Cancellation and Refund Rules</div>
+                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscread"    value="CANCELLATION_AND_REFUND_RULES_READ" id="configurationSettingscReadCRR"  (click)="onChangeCheck($event,'read','configurationSettingsc','CRR')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscwrite"   value="CANCELLATION_AND_REFUND_RULES_WRITE"  id="configurationSettingscReadCRR" (click)="onChangeCheck($event,'write','configurationSettingsc','CRR')"/></div>
+                     </div>        
+                      <div class="row" >
+                         <div class="col-sm-8 pl-4">Percentage and Charge</div>
                          <div class="col-sm-2"><input type="checkbox" name="configurationSettingscread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="configurationSettingscReadPCC"  (click)="onChangeCheck($event,'read','configurationSettingsc','PCC')"/></div>
                          <div class="col-sm-2"><input type="checkbox" name="configurationSettingscwrite"   value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_WRITE"  id="configurationSettingscReadPCC" (click)="onChangeCheck($event,'write','configurationSettingsc','PCC')"/></div>
                       </div>
+                      <div class="row" >
+                        <div class="col-sm-8 pl-4">Promotion and Offers Management</div>
+                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscread"    value="PROMOTION_AND_OFFER_MANAGEMENT_READ" id="configurationSettingscReadPOM"  (click)="onChangeCheck($event,'read','configurationSettingsc','POM')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="configurationSettingscwrite"   value="PROMOTION_AND_OFFER_MANAGEMENT_WRITE"  id="configurationSettingscReadPOM" (click)="onChangeCheck($event,'write','configurationSettingsc','POM')"/></div>
+                     </div>
                    </div>              
              </div>
                  </div>
