@@ -20,9 +20,6 @@ import { ForgotPasswordService } from 'src/app/common/service/forgot-password.se
 	styleUrls: ['./forgot-password.component.css']
 })
 export class ForgotPasswordComponent implements OnInit {
-	nextStep(arg0: number) {
-		throw new Error('Method not implemented.');
-	}
 	username: string = '';
 	password: string = '';
 	rememberme: boolean = false;
@@ -48,6 +45,13 @@ export class ForgotPasswordComponent implements OnInit {
 	form: FormGroup;
 	userReset: ForgotPassword = new ForgotPassword();
 	otpSent: boolean = false;
+	otpSubmitted: boolean = false;
+	stepPassword: number=1;
+	submittedVerifyCode=false;
+	submittedResetPwd=false;
+	email: string = '';
+
+
 
 	constructor(
 		private route: ActivatedRoute, private router: Router, private authService: AuthService, private dataService: DataService,
@@ -56,7 +60,9 @@ export class ForgotPasswordComponent implements OnInit {
 		private renderer: Renderer2, private confirmationDialogService: ConfirmationDialogService
 	) {
 		this.userNameSession = userService.getUsername();
-		
+		if (userService.getUserinfo() != undefined) {
+			this.rolesArray = userService.getUserinfo().privilege;
+		}
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 			return false;
 		};
@@ -128,12 +134,14 @@ export class ForgotPasswordComponent implements OnInit {
 	resetForm() {
 		this.submitted = false;
 		this.form.reset();
-		this.otpSent = false; // Reset the OTP state when resetting the form
+		this.otpSent = false; 
 	}
 
 	sendOrResendOtp() {
 		this.otpSent = true;
 		this.notifyService.showSuccess("OTP sent successfully", "OTP Notification");
+		this.spinner.show;
+		this.stepPassword=2;
 		// Add logic to call the OTP sending service/API here
 	}
 
@@ -153,16 +161,58 @@ export class ForgotPasswordComponent implements OnInit {
 		this.registerCloseModal.nativeElement.click();
 	}
 
-	verifyOtp() {
-		// Concatenate the OTP values and check if they match
-		const enteredOtp = `${this.userReset.otp1}${this.userReset.otp2}${this.userReset.otp3}${this.userReset.otp4}${this.userReset.otp5}${this.userReset.otp6}`;
 
-		// You can compare this with the OTP you have sent
+	resendOtp(): void {
+	  }
+
+	verifyOtp() {
+		const enteredOtp = `${this.userReset.otp1}${this.userReset.otp2}${this.userReset.otp3}${this.userReset.otp4}${this.userReset.otp5}${this.userReset.otp6}`;
 		if (enteredOtp === this.userReset.otp) {
 			this.notifyService.showSuccess("OTP verified successfully", "Success");
-			// Proceed with the next steps (e.g., reset the password or navigate)
 		} else {
 			this.notifyService.showError("Invalid OTP", "Error");
 		}
+		this.stepPassword=3;
+
 	}
+
+
+
+
+	doSignin() {
+		this.submitted=true;    
+		if (this.email !== '' && this.email !== null) {		
+			const user: User = { email: this.email.toLowerCase()};
+            this.submitted=false;
+			
+		}
+	}
+
+	moveFocus(event: KeyboardEvent, nextInputId: string, prevInputId: string): void {
+		const input = event.target as HTMLInputElement;
+	  
+		// Check if the user pressed the 'Backspace' key
+		if (event.key === "Backspace" && input.value.length === 0) {
+		  // Move focus to the previous input box if available
+		  const prevInput = document.getElementById(prevInputId) as HTMLInputElement;
+		  if (prevInput) {
+			prevInput.focus();
+		  }
+		} else if (input.value.length === 1) {
+		  // If the user types a character, move focus to the next input box
+		  const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
+		  if (nextInput) {
+			nextInput.focus();
+		  }
+		}
+	  }
+
+	  validateNumericInput(event: any): void {
+		const inputValue = event.target.value;
+	  
+		// Allow only numeric input, remove any non-numeric characters
+		if (!/^[0-9]*$/.test(inputValue)) {
+		  event.target.value = inputValue.replace(/[^0-9]/g, '');
+		}
+	  }
 }
