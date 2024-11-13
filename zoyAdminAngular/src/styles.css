@@ -96,3 +96,6 @@
 }
 
 
+ngb-modal-backdrop.modal-backdrop {
+  z-index: 1045 !important;
+}

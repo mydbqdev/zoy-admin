@@ -249,16 +249,11 @@ passwordsMatch(formGroup: FormGroup) {
   resetForm() {
   this.submitted=false;
   this.createOrUpdate=true;
-  this.userReg=new UserDetails();
   this.form.reset(); 
   }
 
- 
   submittUserDetails(){
-  
-    console.log("this.userReg." ,this.userReg +'jhsjd' +"",this.form.invalid);
     this.submitted=true;	
-    console.log(this.userReg);
     if (this.form.invalid) {
       return;
       }
@@ -268,7 +263,6 @@ passwordsMatch(formGroup: FormGroup) {
     if(this.createOrUpdate){
       this.createUser();
     }else{
-
       this.updateUserDetails();
     }
   }
@@ -318,10 +312,8 @@ passwordsMatch(formGroup: FormGroup) {
   }  
 
   updateUserDetails() {
-
     this.spinner.show();		     
     this.submitted=false;
-    
     this.userMasterService.updateUser(this.userReg).subscribe((res) => {
       this.notifyService.showSuccess(res.message, "");
       this.getUserDetais();
@@ -391,6 +383,11 @@ passwordsMatch(formGroup: FormGroup) {
   this.selectedItems= [];
   this.selectedRoleIds.splice(0);
   this.userReg = Object.assign(new UserDetails(),row)  ;
+ 
+  // for temporary fixed added below two line
+  this.form.controls["password"].setValue("Zoyadmin$123");
+  this.form.controls["repeatPassword"].setValue("Zoyadmin$123");
+
   this.selectedItems= this.userReg.roleModel;
   for(let role of this.userReg.roleModel){
      this.selectedRoleIds.push(role.id);
