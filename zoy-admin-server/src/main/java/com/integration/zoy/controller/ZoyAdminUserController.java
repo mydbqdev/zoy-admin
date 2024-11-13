@@ -562,7 +562,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
    	        return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
 
    	    } catch (Exception e) {
-   	        log.error("Error getting amenities details: " + e.getMessage(), e);
+   	        log.error("Error getting user list details: " + e.getMessage(), e);
    	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
    	        response.setError("Internal server error");
    	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
