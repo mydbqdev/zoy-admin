@@ -1,6 +1,5 @@
 package com.integration.zoy.controller;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -124,7 +122,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
-			log.error("Error getting user login details: " + e.getMessage(),e);
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -157,7 +155,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_GATEWAY);
 			}
 		} catch (Exception e) {
-			log.error("Error getting User details: " + e.getMessage(),e);
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -181,7 +179,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 			AdminUserLoginDetails adminUserLoginDetails=new AdminUserLoginDetails();
 			adminUserLoginDetails.setUserEmail(adminUserDetails.getUserEmail());
-			adminUserLoginDetails.setPassword(passwordDecoder.encryptedText(adminUserDetails.getPassword()));
+			adminUserLoginDetails.setPassword(adminUserDetails.getPassword());
 			adminUserLoginDetails.setIsActive(true);
 			adminUserLoginDetails.setIsLock(false);
 			adminDBImpl.saveAdminLoginDetails(adminUserLoginDetails);
@@ -190,7 +188,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setMessage("User created Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error creating users: " + e.getMessage(),e);
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -209,7 +207,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setStatus(HttpStatus.OK.value());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting user availabilty details: " + e.getMessage(),e);
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -237,7 +235,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error updating user details: " + e.getMessage(),e);
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -268,7 +266,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setMessage("App role created Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error creating role: " + e.getMessage(),e);
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -321,7 +319,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setMessage("App role Updated Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error updating role: " + e.getMessage(),e);
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -353,7 +351,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			}
 			return new ResponseEntity<>(gson.toJson(adminAppRoles), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting role list: " + e.getMessage(),e);
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -382,7 +380,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setMessage("User assign saved for approval successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error adding user assign: " + e.getMessage(),e);
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -434,7 +432,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 						+ "<p>Welcome to Zoy Admin Portal, We are excited to have you as part of our community! "
 						+ "Below are your sign-in credentials for accessing your account.</p>"
 						+ "<p>Username: "+ details.getEmail()+"</p>"
-						+ "Password: "+ passwordDecoder.decryptedText(details.getPassword())+"</p>"
+						+ "Password: "+ details.getPassword()+"</p>"
 						+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
 				email.setBody(message);
 				email.setContent("text/html");
@@ -448,14 +446,14 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
-			log.error("Error sending signin info: " + e.getMessage(),e);
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	public ResponseEntity<String> zoyAdminUserListOld() {
+	public ResponseEntity<String> zoyAdminUserList() {
 	    ResponseBody response = new ResponseBody();
 	    try {
 	        List<Object[]> master = adminDBImpl.findAllAdminUserPrevilages();
@@ -502,72 +500,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	        return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
 
 	    } catch (Exception e) {
-	        log.error("Error getting user list details: " + e.getMessage(), e);
+	        log.error("Error getting amenities details: " + e.getMessage(), e);
 	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	        response.setError("Internal server error");
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
-	
-	
-	@Override
-       public ResponseEntity<String> zoyAdminUserList() {
-   	    ResponseBody response = new ResponseBody();
-   	    try {
-   	    	List<AdminUserMaster> master =adminDBImpl.findAllAdminUser();
-   	        List<Object[]> userPrevilages = adminDBImpl.findAllAdminUserPrevilages();
-   	        List<AdminUserList> adminUserTemporary = new ArrayList<>();
-   	        
-   	        for (AdminUserMaster result : master) {
-   	            AdminUserList user = new AdminUserList();
-   	            user.setFirstName(result.getFirstName());
-   	            user.setLastName(result.getLastName());
-   	            user.setUserEmail(result.getUserEmail());
-   	            user.setContactNumber(result.getContactNumber());
-   	            user.setDesignation(result.getDesignation());
-   	            user.setStatus(result.getStatus());
-   	            List<RoleModel> roles = new ArrayList<>();
-   	            
-   	         List<Object[]>previlages= userPrevilages.stream()
-								   	        		 .filter(p ->p[0].equals(result.getUserEmail()) && null != p[1] && !"null".equals(p[1])  )
-								   	        		 .collect(Collectors.toList());
-   	         
-   	            if (!previlages.isEmpty()) {
-   	            	for(Object[] pre:previlages) {
-   	            	 int roleId = pre[1] instanceof BigInteger ? ((BigInteger) pre[1]).intValue() : (Integer) pre[1];
-   	              
-   	            	//	int roleId = (Integer) pre[1];
-   		                String roleName = (String) pre[3];
-   		                String approveStatus=(String) pre[2];
-   		         
-   	                RoleModel role = new RoleModel(roleId, roleName,approveStatus); 
-   	                
-   	                String screens = (String) pre[4];  
-		   	          if (screens != null && !screens.isEmpty()) {
-		   	              String[] screensSet = screens.split(",");
-		   	              for (String screensNames : screensSet) {
-		   	                  role.addScreens(screensNames); 
-		   	              }
-		   	          }
-		   	       roles.add(role);
-		   	       
-   	            	}
-
-   	            }
-
-   	            user.setRoleModel(roles);
-   	            adminUserTemporary.add(user);
-   	        }
-
-   	        return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
-
-   	    } catch (Exception e) {
-   	        log.error("Error getting user list details: " + e.getMessage(), e);
-   	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-   	        response.setError("Internal server error");
-   	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-   	    }
-   	}
 
 
 

@@ -26,6 +26,7 @@ import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.UserPaymentDTO;
+import com.integration.zoy.utils.VendorPayments;
 
 @RestController
 @RequestMapping("")
@@ -125,4 +126,23 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	@Override
+	public ResponseEntity<String> getVendorPaymentDetailsByDateRange(LocalDateTime fromDate, LocalDateTime toDate) {
+		ResponseBody response=new ResponseBody();
+		try {
+
+			Timestamp fromTimestamp = Timestamp.valueOf(fromDate);
+			Timestamp toTimestamp = Timestamp.valueOf(toDate);
+			List<VendorPayments> vendorPaymentsDetails =  adminReportImpl.getVendorPaymentDetails(fromTimestamp,toTimestamp);
+			return new ResponseEntity<>(gson.toJson(vendorPaymentsDetails), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }
+
+
