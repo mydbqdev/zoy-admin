@@ -149,7 +149,8 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
         roleScreen.roleScreen.push({
           screenName,
           readPrv: dataread.some(screen => screen.includes(screenName + '_READ')),
-          writePrv: datawrite.some(screen => screen.includes(screenName + '_WRITE'))
+          writePrv: datawrite.some(screen => screen.includes(screenName + '_WRITE')),
+          approveStatus:false
         });
       });
     
@@ -228,7 +229,8 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
           roleScreen.roleScreen.push({
             screenName,
             readPrv: dataread.some(screen => screen.includes(screenName + '_READ')),
-            writePrv: datawrite.some(screen => screen.includes(screenName + '_WRITE'))
+            writePrv: datawrite.some(screen => screen.includes(screenName + '_WRITE')),
+            approveStatus:false
           });
         });
       
