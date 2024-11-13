@@ -55,7 +55,7 @@
 
     <!-- Nav Item - User Management Collapse Menu -->
     <li class="nav-item" [ngClass]="{'active':menu31}" id="menu3">
-        <a [ngClass]="menu3 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(3)"  data-toggle="collapse" data-target="#collapseUserManagement"
+        <a [ngClass]="menu3 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(3)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseUserManagement"
         [attr.aria-expanded]="!menu3" aria-controls="collapseUserManagement">
             <i class="fas fa-fw fa-users-cog"></i>
             <span>User Management</span>
@@ -86,7 +86,7 @@
 
     <!-- Nav Item - Configuration Settings Collapse Menu -->
     <li class="nav-item" [ngClass]="{'active':menu41}" id="menu4"> 
-        <a [ngClass]="menu4 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(4)" data-toggle="collapse" data-target="#collapseConfigSettings"
+        <a [ngClass]="menu4 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(4)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseConfigSettings"
         [attr.aria-expanded]="!menu4" aria-controls="collapseConfigSettings">
             <i class="fas fa-fw fa-cogs"></i>
             <span>Configuration Settings</span>
@@ -119,7 +119,7 @@
 
   <!-- Nav Item - Reports Collapse Menu -->
   <li class="nav-item" [ngClass]="{'active':menu51}" id="menu5">
-    <a [ngClass]="menu5 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(5)" data-toggle="collapse" data-target="#collapseReports"
+    <a [ngClass]="menu5 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(5)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseReports"
     [attr.aria-expanded]="!menu5" aria-controls="collapseReports">
         <i class="fas fa-fw fa-wrench"></i>
         <span>Report Management</span>

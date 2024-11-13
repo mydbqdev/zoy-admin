@@ -127,12 +127,11 @@
                 
                             <div class="card-body" style="padding:0px;margin:0px;">
                                 <div style="max-height: calc(100vh - 355px); overflow: auto;">
-                                    <div class="desc-inner" style="height:calc(100vh - 345px);">
-                                        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
-                            
+                                    <div class="desc-inner" style="height:calc(100vh - 355px);">
+                                        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">         
                                             <!-- User Name Column -->
                                             <ng-container matColumnDef="firstName">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                <th mat-header-cell style="width: 200px;" *matHeaderCellDef mat-sort-header>
                                                     User Name
                                                     <span style="margin-left: 2px;">
                                                         <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['firstName'] }"></i>
@@ -140,14 +139,14 @@
                                                         <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['firstName'] === 'desc' || !columnSortDirections['firstName'] }"></i>
                                                     </span>
                                                 </th>
-                                                <td mat-cell *matCellDef="let element">
+                                                <td mat-cell style="width: 200px;" *matCellDef="let element">
                                                     {{element.firstName}} {{element.lastName}}
                                                 </td>
                                             </ng-container>
                             
                                             <!-- User Mail Column -->
                                             <ng-container matColumnDef="userEmail">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                <th mat-header-cell style="width: 150px;" *matHeaderCellDef mat-sort-header>
                                                     User Mail
                                                     <span style="margin-left: 2px;">
                                                         <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['userEmail'] }"></i>
@@ -155,14 +154,14 @@
                                                         <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['userEmail'] === 'desc' || !columnSortDirections['userEmail'] }"></i>
                                                     </span>
                                                 </th>
-                                                <td mat-cell *matCellDef="let element">
+                                                <td mat-cell style="width: 150px;" *matCellDef="let element">
                                                     {{element.userEmail}}
                                                 </td>
                                             </ng-container>
                             
                                             <!-- Designation Column -->
                                             <ng-container matColumnDef="designation">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                <th mat-header-cell style="width: 150px;" *matHeaderCellDef mat-sort-header>
                                                     Designation
                                                     <span style="margin-left: 2px;">
                                                         <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['designation'] }"></i>
@@ -170,7 +169,7 @@
                                                         <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['designation'] === 'desc' || !columnSortDirections['designation'] }"></i>
                                                     </span>
                                                 </th>
-                                                <td mat-cell *matCellDef="let element">
+                                                <td mat-cell style="width: 150px;" *matCellDef="let element">
                                                     {{element?.designation}}
                                                 </td>
                                             </ng-container>
@@ -178,13 +177,8 @@
                                             
                                             <!-- roleName Column -->
                                             <ng-container matColumnDef="roleName">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                <th mat-header-cell *matHeaderCellDef >
                                                     Role's
-                                                    <!-- <span style="margin-left: 2px;">
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['roleName'] }"></i>
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['roleName'] === 'asc' }"></i>
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['roleName'] === 'desc' || !columnSortDirections['roleName'] }"></i>
-                                                    </span> -->
                                                 </th>
                                                 <td mat-cell *matCellDef="let element">
                                                     {{ getRoleNames(element.roleModel) }}
@@ -193,7 +187,7 @@
                             
                                             <!-- Status Column -->
                                             <ng-container matColumnDef="status">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                <th mat-header-cell style="width: 120px;" *matHeaderCellDef mat-sort-header>
                                                     Status
                                                     <span style="margin-left: 2px;">
                                                         <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['status'] }"></i>
@@ -201,14 +195,14 @@
                                                         <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['status'] === 'desc' || !columnSortDirections['status'] }"></i>
                                                     </span>
                                                 </th>
-                                                <td mat-cell *matCellDef="let element">
-                                                    {{userReg.status ? 'Active':'Inactive'}}
+                                                <td mat-cell style="width: 120px;" *matCellDef="let element">
+                                                    {{element.status ? 'Active':'Inactive'}}
                                                 </td>
                                             </ng-container>
                             
                                             <!-- Action Column -->
                                             <ng-container matColumnDef="action">
-                                                <th mat-header-cell *matHeaderCellDef></th>
+                                                <th mat-header-cell style="width: 50px;" *matHeaderCellDef></th>
                                                 <td mat-cell *matCellDef="let element">
                                                     <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
                                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
