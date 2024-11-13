@@ -37,8 +37,12 @@ export class SidebarComponent implements OnInit,AfterViewInit {
   constructor(@Inject(defMenuEnable) private defMenuEnable: DefMenu, private userService: UserService, private router: Router,private dataService:DataService) {
     this.userNameSession = userService.getUsername();
 	this.defMenu=defMenuEnable;
-	if (userService.getUserinfo() != undefined) {
-		this.rolesArray = userService.getUserinfo().privilege;
+	if (this.userService.getUserinfo() != undefined) {
+		this.rolesArray = this.userService.getUserinfo().privilege;
+	}else{
+		this.dataService.getUserDetails.subscribe(name=>{
+				this.rolesArray =name.privilege;
+		});
 	}
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;

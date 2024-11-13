@@ -70,15 +70,21 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	public userNameSession: string = "";
 	errorMsg: any = "";
 	mySubscription: any;
+	rolesArray:string[]=[];
 	private _liveAnnouncer = inject(LiveAnnouncer);
 	isExpandSideBar:boolean=true;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : ReportService) {
-		this.userNameSession = userService.getUsername();
+			this.authService.checkLoginUserVlidaate();
+			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
-		//if (userService.getUserinfo() != undefined) {
-		//	this.rolesArray = userService.getUserinfo().previlageList;
-		//}
+		if (userService.getUserinfo() != undefined) {
+			this.rolesArray = userService.getUserinfo().privilege;
+		}else{
+			this.dataService.getUserDetails.subscribe(name=>{
+				this.rolesArray =name.privilege;
+			  });
+		}
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 			return false;
 		};
@@ -109,12 +115,10 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(5);
 		this.sidemenuComp.activeMenu(5, 'report-list');
-		
-
+		this.dataService.setHeaderName("Reports");
 	}
 	
 	announceSortChange(sortState: Sort) {
-
 		switch (this.reportName) {
 			case 'USER TRANSACTIONS REPORT':
 				this.columnSortDirections = Object.assign({}, this.columnSortDirections1);
@@ -122,7 +126,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 				break;
 			case 'User Payments GST REPORT':
 				this.userGSTPaymentSortDirections = Object.assign({}, this.userGSTPaymentColumnSortDirections);
-        this.userGSTPaymentSortDirections[sortState.active] = sortState.direction;
+                this.userGSTPaymentSortDirections[sortState.active] = sortState.direction;
 				break;
 			default:
 				
@@ -136,7 +140,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	  }
 
 	  changeReport(){
-console.log("changeReport>>this.reportName",this.reportName);
+        console.log("changeReport>>this.reportName",this.reportName);
 		switch (this.reportName) {
 			case 'USER TRANSACTIONS REPORT':
 				this.getUserTransactionReport();
@@ -147,7 +151,6 @@ console.log("changeReport>>this.reportName",this.reportName);
 			default:
 				
 		}
-
 	  }
 	  viewReport(row:any){
 		console.log("viewReport>>this.reportName",this.reportName);
@@ -159,8 +162,7 @@ console.log("changeReport>>this.reportName",this.reportName);
 			this.userGSTPaymentReport = Object.assign(row);
 			break;
 
-			default:
-				
+			default:		
 		}
 	   }
 	   
@@ -172,7 +174,6 @@ console.log("changeReport>>this.reportName",this.reportName);
 
 	getUserTransactionReport(){
 		// this.authService.checkLoginUserVlidaate();
-
 		 this.spinner.show();
 		 this.reportService.getUserTransactionReport(this.fromDate,this.toDate).subscribe(data => {
 			if(data==null){
@@ -213,7 +214,6 @@ console.log("changeReport>>this.reportName",this.reportName);
 
 	   getUserGSTPaymentReport(){
 		// this.authService.checkLoginUserVlidaate();
-
 		 this.spinner.show();
 		 this.reportService.getUserGSTPaymentReport(this.fromDate,this.toDate).subscribe(data => {
 			if(data==null){
@@ -248,10 +248,6 @@ console.log("changeReport>>this.reportName",this.reportName);
 		   }
 		   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
 		 }
-	   });
-	   
-	   }
-
-	  
-	
+	   });	   
+	   }	
 }

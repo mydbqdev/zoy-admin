@@ -27,6 +27,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		//this.defHomeMenu=defMenuEnable;
 		if (userService.getUserinfo() != undefined) {
 			this.rolesArray = userService.getUserinfo().privilege;
+		}else{
+			this.dataService.getUserDetails.subscribe(name=>{
+				this.rolesArray =name.privilege;
+			  });
 		}
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 			return false;
@@ -56,6 +60,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(1);
 		this.sidemenuComp.activeMenu(1, 'home');
+		this.dataService.setHeaderName("Dashboard");
 	}
 
 	test(){

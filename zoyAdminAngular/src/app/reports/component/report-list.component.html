@@ -83,14 +83,12 @@
                           <div class="card shadow mb-4">
                               <!-- Card Body -->
                               <div class="card-body" style="padding: 0px;margin: 0px;">
-                                <div style="max-height: 400px;overflow: auto;">
-                                <div class="desc-inner" style="height: 360px;">
-                                
+                                <div>
+                                <div class="scrollable-container-main">                              
                                     <div *ngIf="reportName == 'USER TRANSACTIONS REPORT'" >   
-                                    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
-                                    class="mat-elevation-z8">
+                                    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
                                     <ng-container matColumnDef="customerName">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Customer Name">
+                                        <th mat-header-cell style="width: 160px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Customer Name">
                                             Customer Name
                                         <span style="margin-left: 2px;">
                                             <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['customerName'] }"></i>
@@ -100,7 +98,7 @@
                                         }"></i>
                                           </span>
                                         </th>
-                                            <td mat-cell *matCellDef="let element; let n=index;" > 
+                                            <td mat-cell style="width: 180px;" *matCellDef="let element; let n=index;" > 
                                              
                                                 {{element.customerName}} 
                                             </td>
@@ -121,7 +119,7 @@
                                     </ng-container>
                                     
                                     <ng-container matColumnDef="transactionDate">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionDate">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionDate">
                                             Transaction Date
                                         <span style="margin-left: 2px;">
                                             <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['description'] }"></i>
@@ -131,11 +129,11 @@
                                         }"></i>
                                           </span>
                                         </th>
-                                        <td mat-cell *matCellDef="let element"> {{element.transactionDate}} </td>
+                                        <td mat-cell style="width: 180px;" *matCellDef="let element"> {{element.transactionDate}} </td>
                                     </ng-container>
 
                                     <ng-container matColumnDef="transactionNumber">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionNumber">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionNumber">
                                             Transaction No.
                                         <span style="margin-left: 2px;">
                                             <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['transactionNumber'] }"></i>
@@ -145,11 +143,11 @@
                                         }"></i>
                                           </span>
                                         </th>
-                                        <td mat-cell *matCellDef="let element"> {{element.transactionNumber}} </td>
+                                        <td mat-cell style="width: 180px;" *matCellDef="let element"> {{element.transactionNumber}} </td>
                                     </ng-container>
 
                                     <ng-container matColumnDef="transactionStatus">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionStatus">
+                                        <th mat-header-cell style="width: 200px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionStatus">
                                             Transaction Status
                                         <span style="margin-left: 2px;">
                                             <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['transactionStatus'] }"></i>
@@ -159,14 +157,14 @@
                                         }"></i>
                                           </span>
                                         </th>
-                                        <td mat-cell *matCellDef="let element"> {{element.transactionStatus}} </td>
+                                        <td mat-cell style="width: 200px;" *matCellDef="let element"> {{element.transactionStatus}} </td>
                                     </ng-container>
 
                                     <ng-container matColumnDef="actions">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions">
+                                        <th mat-header-cell style="width: 90px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions">
                                         Actions
                                         </th>
-                                        <td mat-cell *matCellDef="let element">
+                                        <td mat-cell style="width: 90px;" *matCellDef="let element">
                                         <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails"  (click)="viewReport(element)">
                                             <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
                                         </span>
@@ -181,10 +179,10 @@
                                 </div>
 
                                 <div *ngIf="reportName == 'User Payments GST REPORT'" >   
-                                    <table mat-table [dataSource]="userGSTPaymentDataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
+                                    <table mat-table [dataSource]="userGSTPaymentDataSource" matSort (matSortChange)="announceSortChange($event)">
   
                                         <ng-container matColumnDef="transactionDate">
-                                            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Transaction Date">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Transaction Date">
                                                 Transaction Date
                                                 <span style="margin-left: 2px;">
                                                     <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !userGSTPaymentColumnSortDirections['transactionDate'] }"></i>
@@ -194,7 +192,7 @@
                                                     }"></i>
                                                 </span>
                                             </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.transactionDate}} </td>
+                                            <td mat-cell style="width: 180px;" *matCellDef="let element"> {{element.transactionDate}} </td>
                                         </ng-container>
                                     
                                         <ng-container matColumnDef="PgPropertyId">
@@ -301,115 +299,116 @@
     </div>
     <hr class="sidebar-divider my-0">
     <div class="offcanvas-body">
+     <div style="font-size: 13px;">   
     <div *ngIf="reportName == 'USER TRANSACTIONS REPORT'" >
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Customer ID</div>
             <div class="col-sm-7">: {{userTransactionReport.customerId}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Transaction Date</div>
             <div class="col-sm-7">: {{userTransactionReport.transactionDate}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Transaction Number</div>
             <div class="col-sm-7">: {{userTransactionReport.transactionNumber}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Transaction Status</div>
             <div class="col-sm-7">: {{userTransactionReport.transactionStatus}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Base Amount</div>
             <div class="col-sm-7">: {{userTransactionReport.baseAmount }}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">GST Amount</div>
             <div class="col-sm-7">: {{userTransactionReport.gstAmount }}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Total Amount</div>
             <div class="col-sm-7">: {{userTransactionReport.totalAmount }}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Customer Name</div>
             <div class="col-sm-7">: {{userTransactionReport.customerName}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">PG Property Name</div>
             <div class="col-sm-7">: {{userTransactionReport.PgPropertyName}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">PG Property ID</div>
             <div class="col-sm-7">: {{userTransactionReport.PgPropertyId}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Bed Number</div>
             <div class="col-sm-7">: {{userTransactionReport.bedNumber}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Category</div>
             <div class="col-sm-7">: {{userTransactionReport.category}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Payment Method</div>
             <div class="col-sm-7">: {{userTransactionReport.paymentMethod}}</div>
         </div>
         
     </div>
     <div *ngIf="reportName == 'User Payments GST REPORT'" >
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Customer ID</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.customerId}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Transaction Date</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.transactionDate}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Transaction Number</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.transactionNumber}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Transaction Status</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.transactionStatus}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Base Amount</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.baseAmount }}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">GST Amount</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.gstAmount }}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Total Amount</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.totalAmount }}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Customer Name</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.customerName}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">PG Property Name</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.PgPropertyName}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">PG Property ID</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.PgPropertyId}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Bed Number</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.bedNumber}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Category</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.category}}</div>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Payment Method</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.paymentMethod}}</div>
         </div>
     </div>
-    
+    </div>
     </div>
 </div>

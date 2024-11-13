@@ -220,6 +220,7 @@ export class AppAuthService extends AuthService{
 
                let resp: ResponseStore={userEmail:result.userEmail,token:result.token};
                this.setSessionStore(resp);
+               this.dataService.setUserDetails(this.userService.getUserinfo());
             },
             (err) =>{
                if(err.error && err.error.message){
@@ -242,9 +243,10 @@ export class AppAuthService extends AuthService{
     }
 
      public checkLoginUserVlidaate() : void{
-        var msg:string;
+        this.getUserDetails();
+        //var msg:string;
        // this.sessionSnapshot =null;
-        this.message ='';
+        /*this.message ='';
         this.getUserSignupDetails(sessionStorage.getItem('user')).subscribe((data) => {
             let user:SignupDetails = new SignupDetails() ;
             user.userId= data.id !=undefined?data.id:"";
@@ -257,7 +259,7 @@ export class AppAuthService extends AuthService{
         },error =>{
             this.checkLogout();
          }
-        );
+        );*/
     }
 
      public checkLogoutUserOnServer() : Observable<ApplicationSession>{

@@ -217,7 +217,7 @@
                 </div>
                 <!-- Authorization Section -->
                 <div class="mb-4">
-                    <div class="row text-center font-weight-bold" style="font-size: 16px;">
+                    <div class="row text-center font-weight-bold" style="font-size: 14px;">
                         <div class="col-sm-8 text-left">Authorization</div>
                         <div class="col-sm-2">Read</div>
                         <div class="col-sm-2">Write</div>
@@ -226,13 +226,13 @@
                     <!-- Scrollable container for the authorization rows -->
                    
                     <div class="scrollable-container">
-                        <div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-3 ml-1">
-                            <div class="col-sm-8" style="font-size: 14px;" [ngClass]="{'text-danger': !permission.approveStatus }" [title]="!permission.approveStatus?'waiting for approval':''" >{{ permission.screenName }}</div>
+                        <div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-1 ml-1">
+                            <div class="col-sm-8" style="font-size: 13px;" [ngClass]="{'text-danger': !permission.approveStatus }" [title]="!permission.approveStatus?'waiting for approval':''" >{{ permission.screenName }}</div>
                             <div class="col-sm-2 text-center">
-                                <i [class]="getReadIcon(permission.readPrv)" style="font-size: 14px;"></i>
+                                <i [class]="getReadIcon(permission.readPrv)" style="font-size: 13px;"></i>
                             </div>
                             <div class="col-sm-2 text-center">
-                                <i [class]="getWriteIcon(permission.writePrv)" style="font-size: 14px;"></i>
+                                <i [class]="getWriteIcon(permission.writePrv)" style="font-size: 13px;"></i>
                             </div>
                         </div>
                     </div>

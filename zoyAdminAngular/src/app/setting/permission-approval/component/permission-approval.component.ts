@@ -63,10 +63,14 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
   isExpandSideBar:boolean=true;
   constructor(private userMasterService : UserMasterService,private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private notifyService:NotificationService,
     private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService,private alertDialogService: AlertDialogService,private permissionService: PermissionApprovalService){
-
-      this.userNameSession=userService.getUsername();
-      if (userService.getUserinfo() != undefined) {
-        this.rolesArray = userService.getUserinfo().privilege;
+      this.authService.checkLoginUserVlidaate();
+      this.userNameSession=this.userService.getUsername();
+      if (this.userService.getUserinfo() != undefined) {
+        this.rolesArray = this.userService.getUserinfo().privilege;
+      }else{
+        this.dataService.getUserDetails.subscribe(name=>{
+          this.rolesArray =name.privilege;
+        });
       }
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 			return false;
@@ -101,6 +105,7 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
 ngAfterViewInit(){
   this.sidemenuComp.expandMenu(3);
   this.sidemenuComp.activeMenu(3,'permission-approval');
+  this.dataService.setHeaderName("Permission Approval");
 }
  
 getUserDetais(){

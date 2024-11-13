@@ -18,7 +18,8 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   isExpandSideBar:boolean=true;
   constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,) {
    this.userInfo=this.userService.getUserinfo();
-    this.userNameSession = userService.getUsername();
+   console.log("this.userInfo:"+this.userInfo);
+    this.userNameSession = this.userService.getUsername();
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };
@@ -35,7 +36,12 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     
     this.dataService.getIsExpandSideBar.subscribe(name=>{
 			this.isExpandSideBar=name;
-		});
+    });
+    if(this.userService.getUserinfo()==undefined){
+      this.dataService.getUserDetails.subscribe(name=>{
+				this.userInfo=name;
+			  });
+    }
   }
   ngAfterViewInit(): void {
     

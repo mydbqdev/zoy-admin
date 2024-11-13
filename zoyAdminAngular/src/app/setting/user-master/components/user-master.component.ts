@@ -67,10 +67,14 @@ export class UserMasterComponent implements OnInit {
 
   constructor(private userMasterService : UserMasterService,private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private notifyService:NotificationService,
     private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService){
-
-      this.userNameSession=userService.getUsername();
-      if (userService.getUserinfo() != undefined) {
-        this.rolesArray = userService.getUserinfo().privilege;
+      this.authService.checkLoginUserVlidaate();
+      this.userNameSession=this.userService.getUsername();
+      if (this.userService.getUserinfo() != undefined) {
+        this.rolesArray = this.userService.getUserinfo().privilege;
+      }else{
+        this.dataService.getUserDetails.subscribe(name=>{
+          this.rolesArray =name.privilege;
+        });
       }
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 			return false;
@@ -132,7 +136,7 @@ export class UserMasterComponent implements OnInit {
   ngAfterViewInit() {
     this.sidemenuComp.expandMenu(3);
     this.sidemenuComp.activeMenu(3,'user-master');
-    
+    this.dataService.setHeaderName("Managing Users");
   }
   getRoleNames(roleModel: any[]): string {
     return roleModel.map(role => role.roleName).join(', ');
@@ -436,11 +440,12 @@ passwordsMatch(formGroup: FormGroup) {
   sendInfo(data:any){
   //  this.authService.checkLoginUserVlidaate();
   
-  this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to delete the User?')
+  this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to send the login information to the user ?')
   .then(
     (confirmed) =>{
      if(confirmed){
-      this.spinner.show();
+      this.notifyService.showSuccess("", "");
+      //this.spinner.show();
   //   this.userMasterService.saveData(role).subscribe(res => {
   //    this.spinner.hide();
   //    this.notifyService.showSuccess(res.message, "");
@@ -478,14 +483,11 @@ passwordsMatch(formGroup: FormGroup) {
 
 
   deleteUser(element:any): any {
-
     this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to delete the User?')
     .then(
       (confirmed) =>{
        if(confirmed){
-    return;
-    this.userMasterService.updateInActiveUser(element).subscribe((data: any) => {
-
+    /*this.userMasterService.updateInActiveUser(element).subscribe((data: any) => {
     },error =>{
       if(error.status==403){
         this.router.navigate(['/forbidden']);
@@ -509,7 +511,7 @@ passwordsMatch(formGroup: FormGroup) {
         }
         this.notifyService.showError(this.errorMsg, "My DBQ!");
       }
-    });
+    });*/
   }
 }).catch(
   () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
@@ -558,7 +560,6 @@ getWriteIcon(writePrv: boolean): string {
         }
       });
     }
-  
   }
 
 }

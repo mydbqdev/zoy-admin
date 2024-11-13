@@ -1,14 +1,15 @@
 import { Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
+import { UserInfo } from '../shared/model/userinfo.service';
 import { SignupDetails } from '../shared/signup-details';
 @Injectable({
     providedIn:'root'
 })
 
 export class DataService{
-    public userDetails=new BehaviorSubject<SignupDetails>(null);
+    public userDetails=new BehaviorSubject<UserInfo>(null);
     getUserDetails=this.userDetails.asObservable();
-    setUserDetails(userDetails:SignupDetails){
+    setUserDetails(userDetails:UserInfo){
        this.userDetails.next(userDetails);  
     }
 

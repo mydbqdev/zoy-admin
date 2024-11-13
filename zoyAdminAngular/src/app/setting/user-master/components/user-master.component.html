@@ -213,7 +213,7 @@
                                                         <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#viewUserDetails"  (click)="viewUser(element)">View User Details</a>
                                                         <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#userModel"  (click)="editRole(element)">Edit User</a>
                                                         <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#updateRoleModel" (click)="editRole(element)" >Update role</a>
-                                                        <a class="dropdown-item" href="javascript:void(0)">Send Info</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" (click)="sendInfo(element)">Send Info</a>
                                                         <a class="dropdown-item" href="javascript:void(0)">Delete</a>
                                                         <a class="dropdown-item" href="javascript:void(0)">Activate/Deactivate</a>
                                                     </div>
@@ -443,44 +443,41 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <hr class="sidebar-divider my-0">
-    <div class="offcanvas-body">
-       
-            <!-- <div class="modal-body"> -->
-             
-                <div class="row mb-2">
+    <div class="offcanvas-body">      
+            <!-- <div class="modal-body"> -->          
+                <div class="row mb-2" style="font-size: 13px;">
                     <div class="col-sm-5 font-weight-bold">First Name</div>
                     <div class="col-sm-7">: {{userReg.firstName}}</div>
                 </div>
-                <div class="row mb-2">
+                <div class="row mb-2" style="font-size: 13px;">
                     <div class="col-sm-5 font-weight-bold">Last Name</div>
                     <div class="col-sm-7">: {{userReg.lastName}}</div>
                 </div>
-                <div class="row mb-2">
+                <div class="row mb-2" style="font-size: 13px;">
                     <div class="col-sm-5 font-weight-bold">Email</div>
                     <div class="col-sm-7">: {{userReg.userEmail}}</div>
                 </div>
-                <div class="row mb-2">
+                <div class="row mb-2" style="font-size: 13px;">
                     <div class="col-sm-5 font-weight-bold">Designation</div>
                     <div class="col-sm-7">: {{userReg.designation}}</div>
                 </div>
-                <div class="row mb-2">
+                <div class="row mb-2" style="font-size: 13px;">
                     <div class="col-sm-5 font-weight-bold">Contact Number</div>
                     <div class="col-sm-7">: {{userReg.contactNumber}}</div>
                 </div>
-                <div class="row mb-2">
+                <div class="row mb-2" style="font-size: 13px;">
                     <div class="col-sm-5 font-weight-bold">Status</div>
                     <div class="col-sm-7">: {{userReg.status ? 'Active':'Inactive'}}</div>
                 </div>
-                <div class="row mb-2">
+                <div class="row mb-2" style="font-size: 13px;">
                     <div class="col-sm-5 font-weight-bold">Roles</div>
                     <div class="col-sm-7">:  {{ getRoleNames(userReg.roleModel) }}</div>
                 </div>
-
-                <hr style="border: 1px solid gray;">
+                <div style="border-bottom: 1px solid gray;height: 3px;"></div>
                 <!-- Authorization Section -->
                  
                 <div class="mb-4">
-                    <div class="row text-center font-weight-bold" style="font-size: 16px;">
+                    <div class="row text-center font-weight-bold" style="font-size: 14px;">
                         <div class="col-sm-8 text-left">Authorization</div>
                         <div class="col-sm-2">Read</div>
                         <div class="col-sm-2">Write</div>
@@ -488,13 +485,13 @@
 
                     <!-- Scrollable container for the authorization rows -->
                     <div class="scrollable-container">
-                        <div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-3 ml-1">
-                            <div class="col-sm-8" style="font-size: 14px;" [ngClass]="{'text-danger': !permission.approveStatus }" [title]="!permission.approveStatus?'waiting for approval':''" >{{ permission.screenName }}</div>
+                        <div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-1 ml-1">
+                            <div class="col-sm-8" style="font-size: 13px;" [ngClass]="{'text-danger': !permission.approveStatus }" [title]="!permission.approveStatus?'waiting for approval':''" >{{ permission.screenName }}</div>
                             <div class="col-sm-2 text-center">
-                                <i [class]="getReadIcon(permission.readPrv)" style="font-size: 14px;"></i>
+                                <i [class]="getReadIcon(permission.readPrv)" style="font-size: 13px;"></i>
                             </div>
                             <div class="col-sm-2 text-center">
-                                <i [class]="getWriteIcon(permission.writePrv)" style="font-size: 14px;"></i>
+                                <i [class]="getWriteIcon(permission.writePrv)" style="font-size: 13px;"></i>
                             </div>
                         </div>
                     </div>

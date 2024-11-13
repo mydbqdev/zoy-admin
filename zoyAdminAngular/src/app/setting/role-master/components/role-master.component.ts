@@ -66,13 +66,18 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
 //@Inject(defMenuEnable) private defMenuEnable:
   constructor( private route: ActivatedRoute,private roleService : RoleMasterService , private renderer: Renderer2, private router: Router,private confirmationDialogService:ConfirmationDialogService,
     private http: HttpClient, private userService: UserService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService, private authService: AuthService, private notifyService: NotificationService, private alertDialogService: AlertDialogService,private dataService:DataService) {
-  // this.userNameSession=userService.getUsername();
+      this.authService.checkLoginUserVlidaate();
+      this.userNameSession=this.userService.getUsername();
   //  console.log("defMenuEnable",defMenuEnable);
     // this.defRoleMenu=defMenuEnable;
      
-    if (userService.getUserinfo() != undefined) {
-			this.rolesArray = userService.getUserinfo().privilege;
-		}
+    if (this.userService.getUserinfo() != undefined) {
+			this.rolesArray = this.userService.getUserinfo().privilege;
+		}else{
+      this.dataService.getUserDetails.subscribe(name=>{
+        this.rolesArray =name.privilege;
+      });
+    }
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
 		 	return false;
 		   };		  
@@ -107,6 +112,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   ngAfterViewInit(){
     this.sidemenuComp.expandMenu(4);
     this.sidemenuComp.activeMenu(4,'role-master');
+    this.dataService.setHeaderName("Role and Permission");
   }
 
  clearArrays(){
