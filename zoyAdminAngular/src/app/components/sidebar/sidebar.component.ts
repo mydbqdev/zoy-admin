@@ -1,7 +1,9 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { DataService } from 'src/app/common/service/data.service';
 import { UserService } from 'src/app/common/service/user.service';
+import { DefMenu } from 'src/app/common/shared/def-menu';
+import { defMenuEnable } from 'src/app/common/shared/variables';
 
 @Component({
   selector: 'app-sidebar',
@@ -28,10 +30,12 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 	public menu61: boolean = false;
 	public menu71: boolean = false;
 
-	public activeSubNenuName: string = '';
-
-  constructor( private userService: UserService, private router: Router,private dataService:DataService) {
+	public activeSubNenuName: string = '';	
+	public defMenu: DefMenu;
+	public rolesArray: string[] = [];
+  constructor(@Inject(defMenuEnable) private defMenuEnable: DefMenu, private userService: UserService, private router: Router,private dataService:DataService) {
     this.userNameSession = userService.getUsername();
+	this.defMenu=defMenuEnable;
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };

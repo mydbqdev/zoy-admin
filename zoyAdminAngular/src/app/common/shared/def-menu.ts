@@ -12,13 +12,14 @@ export class DefMenu{
     public ownerManagement:boolean;
     public ownerManagementSubMenu:OwnerManagementSubMenu;
     public userManagement:boolean;
-
+    public userManagementSubMenu:OwnerManagementSubMenu;
     public financialManagement:boolean;
-
+    public financialManagementSubMenu:OwnerManagementSubMenu;
     public configurationSettings:boolean;
     public configurationSettingsSubMenu: ConfigurationSettingsSubMenu;
 
-
+    public reports:boolean;
+    public reportsSubMenu:OwnerManagementSubMenu;
     
 
     // public personalMenu:boolean;
