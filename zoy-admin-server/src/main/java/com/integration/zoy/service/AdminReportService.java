@@ -15,6 +15,8 @@ import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.UserPaymentDTO;
 import com.integration.zoy.utils.VendorPayments;
+import com.integration.zoy.utils.VendorPaymentsDues;
+import com.integration.zoy.utils.VendorPaymentsGst;
 @Service
 public class AdminReportService implements AdminReportImpl{
 	@Autowired
@@ -122,5 +124,38 @@ public class AdminReportService implements AdminReportImpl{
 		}
 		return tenentDuesDto;
 	}
+
+	@Override
+	public List<VendorPaymentsDues> getVendorPaymentDuesDetails(Timestamp fromDate, Timestamp toDate) {
+		List<VendorPaymentsDues> vendorPaymentsDues = new ArrayList<>();
+		VendorPaymentsDues vendorPayDues = new VendorPaymentsDues();
+		vendorPayDues.setOwnerId(" ");
+		vendorPayDues.setOwnerName(" ");
+		vendorPayDues.setPendingAmount(BigDecimal.valueOf(0));
+		vendorPayDues.setPendingDueDate(null);
+		vendorPayDues.setPgId(" ");
+		vendorPayDues.setPgName(" ");
+		vendorPayDues.setTotalAmountPaid(BigDecimal.valueOf(0));
+		vendorPayDues.setTotalAmountPayable(BigDecimal.valueOf(0));
+		vendorPaymentsDues.add(vendorPayDues);
+		return vendorPaymentsDues;
+	}
+
+	@Override
+	public List<VendorPaymentsGst> getVendorPaymentGstDetails(Timestamp fromDate, Timestamp toDate) {
+		List<VendorPaymentsGst> vendorPaymentsGst = new ArrayList<>();
+		VendorPaymentsGst vendorPaysGst = new VendorPaymentsGst();
+		vendorPaysGst.setTransactionDate(null);
+		vendorPaysGst.setTransactionNo(" ");
+		vendorPaysGst.setPgId(" ");
+		vendorPaysGst.setPgName(" ");
+		vendorPaysGst.setTotalAmount(BigDecimal.valueOf(0));
+		vendorPaysGst.setGstAmount(BigDecimal.valueOf(0));
+		vendorPaysGst.setBasicAmount(BigDecimal.valueOf(0));
+		vendorPaysGst.setPaymentMethod(" ");
+		vendorPaymentsGst.add(vendorPaysGst);
+		return vendorPaymentsGst;
+	}
+
 
 }
