@@ -78,8 +78,9 @@
                               <!-- Card Body -->
                               <div class="card-body" style="padding: 0px;margin: 0px;">
                                 <div>
-                                <div class="scrollable-container-main">                              
-                                    <div *ngIf="reportName == 'USER TRANSACTIONS REPORT'" >   
+                                <div class="scrollable-container-main">    
+
+                                <div *ngIf="reportName == 'User Transactions Report'" >   
                                     <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
                                     <ng-container matColumnDef="customerName">
                                         <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Customer Name">
@@ -175,7 +176,7 @@
                                     </div> 
                                 </div>
 
-                                <div *ngIf="reportName == 'User Payments GST REPORT'" >   
+                                <div *ngIf="reportName == 'User Payments GST Report'" >   
                                     <table mat-table [dataSource]="userGSTPaymentDataSource" matSort (matSortChange)="announceSortChange($event)">
   
                                         <ng-container matColumnDef="transactionDate">
@@ -270,6 +271,336 @@
                                     </div>
                                 </div>
 
+                                <div *ngIf="reportName == 'Consolidated Finance Report'">   
+                                    <table mat-table [dataSource]="consilidatedFinanceDataSource" matSort (matSortChange)="announceSortChange($event)">
+                                    
+                                        <ng-container matColumnDef="transactionDate">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionDate">
+                                                Transaction Date
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !consilidatedFinanceColumnSortDirections['transactionDate'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': consilidatedFinanceColumnSortDirections['transactionDate'] === 'asc',
+                                                        'fa-long-arrow-alt-down': consilidatedFinanceColumnSortDirections['transactionDate'] === 'desc' || !consilidatedFinanceColumnSortDirections['transactionDate'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.transactionDate}} </td>
+                                        </ng-container>
+                                
+                                        <ng-container matColumnDef="customerId">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by customerId">
+                                                Customer ID
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !consilidatedFinanceColumnSortDirections['customerId'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': consilidatedFinanceColumnSortDirections['customerId'] === 'asc',
+                                                        'fa-long-arrow-alt-down': consilidatedFinanceColumnSortDirections['customerId'] === 'desc' || !consilidatedFinanceColumnSortDirections['customerId'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.customerId}} </td>
+                                        </ng-container>
+                                
+                                        <ng-container matColumnDef="transactionNumber">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionNumber">
+                                                Transaction No.
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !consilidatedFinanceColumnSortDirections['transactionNumber'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': consilidatedFinanceColumnSortDirections['transactionNumber'] === 'asc',
+                                                        'fa-long-arrow-alt-down': consilidatedFinanceColumnSortDirections['transactionNumber'] === 'desc' || !consilidatedFinanceColumnSortDirections['transactionNumber'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.transactionNumber}} </td>
+                                        </ng-container>
+                                
+                                        <ng-container matColumnDef="customerName">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by customerName">
+                                                Customer Name
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !consilidatedFinanceColumnSortDirections['customerName'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': consilidatedFinanceColumnSortDirections['customerName'] === 'asc',
+                                                        'fa-long-arrow-alt-down': consilidatedFinanceColumnSortDirections['customerName'] === 'desc' || !consilidatedFinanceColumnSortDirections['customerName'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.customerName}} </td>
+                                        </ng-container>
+                                
+                                        <ng-container matColumnDef="creditAmount">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by creditAmount">
+                                                Credit Amount
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !consilidatedFinanceColumnSortDirections['creditAmount'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': consilidatedFinanceColumnSortDirections['creditAmount'] === 'asc',
+                                                        'fa-long-arrow-alt-down': consilidatedFinanceColumnSortDirections['creditAmount'] === 'desc' || !consilidatedFinanceColumnSortDirections['creditAmount'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.creditAmount | currency: 'INR' : 'symbol'}} </td>
+                                        </ng-container>
+                                
+                                        <ng-container matColumnDef="debitAmount">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by debitAmount">
+                                                Debit Amount
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !consilidatedFinanceColumnSortDirections['debitAmount'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': consilidatedFinanceColumnSortDirections['debitAmount'] === 'asc',
+                                                        'fa-long-arrow-alt-down': consilidatedFinanceColumnSortDirections['debitAmount'] === 'desc' || !consilidatedFinanceColumnSortDirections['debitAmount'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.debitAmount | currency: 'INR' : 'symbol'}} </td>
+                                        </ng-container>
+                                
+                                        <ng-container matColumnDef="actions">
+                                            <th mat-header-cell style="width: 90px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions">
+                                                Actions
+                                            </th>
+                                            <td mat-cell style="width: 90px;" *matCellDef="let element">
+                                                <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails" (click)="viewReport(element)">
+                                                    <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"></i>
+                                                </span>
+                                                <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
+                                                    <i class="bi bi-upload" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="Export"></i>
+                                                </span>
+                                            </td>
+                                        </ng-container>
+                                        
+                                        <!-- Table Header Row -->
+                                        <tr mat-header-row *matHeaderRowDef="consilidatedFinanceReportColumns; sticky: true"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: consilidatedFinanceReportColumns;"></tr>
+                                    </table> 
+                                    
+                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="consilidatedFinanceDataSource.data.length == 0">
+                                        No records found
+                                    </div> 
+                                </div>
+                                
+                                <div *ngIf="reportName == 'Tenant Dues Report'">
+                                    <table mat-table [dataSource]="tenantDuesDataSource" matSort (matSortChange)="announceSortChange($event)">
+                                  
+                                      <ng-container matColumnDef="customerId">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by customerId">
+                                          Customer ID
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !tenantDuesColumnSortDirections['customerId'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': tenantDuesColumnSortDirections['customerId'] === 'asc',
+                                                'fa-long-arrow-alt-down': tenantDuesColumnSortDirections['customerId'] === 'desc' || !tenantDuesColumnSortDirections['customerId'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.customerId}} </td>
+                                      </ng-container>
+                                  
+                                      <ng-container matColumnDef="PgPropertyId">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by PgPropertyId">
+                                          Property ID
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !tenantDuesColumnSortDirections['PgPropertyId'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': tenantDuesColumnSortDirections['PgPropertyId'] === 'asc',
+                                                'fa-long-arrow-alt-down': tenantDuesColumnSortDirections['PgPropertyId'] === 'desc' || !tenantDuesColumnSortDirections['PgPropertyId'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.PgPropertyId}} </td>
+                                      </ng-container>
+                                  
+                                      <ng-container matColumnDef="bedNumber">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by bedNumber">
+                                          Bed Number
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !tenantDuesColumnSortDirections['bedNumber'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': tenantDuesColumnSortDirections['bedNumber'] === 'asc',
+                                                'fa-long-arrow-alt-down': tenantDuesColumnSortDirections['bedNumber'] === 'desc' || !tenantDuesColumnSortDirections['bedNumber'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.bedNumber}} </td>
+                                      </ng-container>
+                                  
+                                      <ng-container matColumnDef="pendingAmount">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pendingAmount">
+                                          Pending Amount
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !tenantDuesColumnSortDirections['pendingAmount'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': tenantDuesColumnSortDirections['pendingAmount'] === 'asc',
+                                                'fa-long-arrow-alt-down': tenantDuesColumnSortDirections['pendingAmount'] === 'desc' || !tenantDuesColumnSortDirections['pendingAmount'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.pendingAmount | currency: 'INR' : 'symbol'}} </td>
+                                      </ng-container>
+                                  
+                                      <ng-container matColumnDef="pendingDueDate">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pendingDueDate">
+                                          Due Date
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !tenantDuesColumnSortDirections['pendingDueDate'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': tenantDuesColumnSortDirections['pendingDueDate'] === 'asc',
+                                                'fa-long-arrow-alt-down': tenantDuesColumnSortDirections['pendingDueDate'] === 'desc' || !tenantDuesColumnSortDirections['pendingDueDate'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.pendingDueDate}} </td>
+                                      </ng-container>
+
+                                      <ng-container matColumnDef="actions">
+                                        <th mat-header-cell style="width: 90px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions">
+                                            Actions
+                                        </th>
+                                        <td mat-cell style="width: 90px;" *matCellDef="let element">
+                                            <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails" (click)="viewReport(element)">
+                                                <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"></i>
+                                            </span>
+                                            <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
+                                                <i class="bi bi-upload" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="Export"></i>
+                                            </span>
+                                        </td>
+                                    </ng-container>
+                                  
+                                      <!-- Table Header Row -->
+                                      <tr mat-header-row *matHeaderRowDef="tenantDuesReportColumns; sticky: true"></tr>
+                                      <tr mat-row *matRowDef="let row; columns: tenantDuesReportColumns;"></tr>
+                                  
+                                    </table>
+                                  
+                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="tenantDuesDataSource.data.length == 0">
+                                      No records found
+                                    </div>
+                                  </div>
+                                
+                                  <div *ngIf="reportName == 'Vendor Payments Report'">
+                                    <table mat-table [dataSource]="vendorPaymentsDataSource" matSort (matSortChange)="announceSortChange($event)">
+                                        
+                                        <!-- Owner ID Column -->
+                                        <ng-container matColumnDef="ownerId">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by ownerId">
+                                                Owner ID
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsColumnSortDirections['ownerId'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': vendorPaymentsColumnSortDirections['ownerId'] === 'asc',
+                                                        'fa-long-arrow-alt-down': vendorPaymentsColumnSortDirections['ownerId'] === 'desc' || !vendorPaymentsColumnSortDirections['ownerId'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">{{element.ownerId}}</td>
+                                        </ng-container>
+                                
+                                        <!-- PG ID Column -->
+                                        <ng-container matColumnDef="pgId">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pgId">
+                                                PG ID
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsColumnSortDirections['pgId'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': vendorPaymentsColumnSortDirections['pgId'] === 'asc',
+                                                        'fa-long-arrow-alt-down': vendorPaymentsColumnSortDirections['pgId'] === 'desc' || !vendorPaymentsColumnSortDirections['pgId'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">{{element.pgId}}</td>
+                                        </ng-container>
+                                
+                                        <!-- PG Name Column -->
+                                        <ng-container matColumnDef="pgName">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pgName">
+                                                PG Name
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsColumnSortDirections['pgName'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': vendorPaymentsColumnSortDirections['pgName'] === 'asc',
+                                                        'fa-long-arrow-alt-down': vendorPaymentsColumnSortDirections['pgName'] === 'desc' || !vendorPaymentsColumnSortDirections['pgName'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">{{element.pgName}}</td>
+                                        </ng-container>
+                                
+                                        <!-- Amount Paid to Owner Column -->
+                                        <ng-container matColumnDef="amountPaidToOwner">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by amountPaidToOwner">
+                                                Amount Paid to Owner
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsColumnSortDirections['amountPaidToOwner'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': vendorPaymentsColumnSortDirections['amountPaidToOwner'] === 'asc',
+                                                        'fa-long-arrow-alt-down': vendorPaymentsColumnSortDirections['amountPaidToOwner'] === 'desc' || !vendorPaymentsColumnSortDirections['amountPaidToOwner'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">{{element.amountPaidToOwner | currency: 'INR' : 'symbol'}}</td>
+                                        </ng-container>
+                                
+                                        <!-- Transaction Date Column -->
+                                        <ng-container matColumnDef="transactionDate">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionDate">
+                                                Transaction Date
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsColumnSortDirections['transactionDate'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': vendorPaymentsColumnSortDirections['transactionDate'] === 'asc',
+                                                        'fa-long-arrow-alt-down': vendorPaymentsColumnSortDirections['transactionDate'] === 'desc' || !vendorPaymentsColumnSortDirections['transactionDate'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">{{element.transactionDate }}</td>
+                                        </ng-container>
+                                
+                                        <!-- Payment Status Column -->
+                                        <ng-container matColumnDef="paymentStatus">
+                                            <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by paymentStatus">
+                                                Payment Status
+                                                <span style="margin-left: 2px;">
+                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsColumnSortDirections['paymentStatus'] }"></i>
+                                                    <i class="fas" [ngClass]="{
+                                                        'fa-long-arrow-alt-up': vendorPaymentsColumnSortDirections['paymentStatus'] === 'asc',
+                                                        'fa-long-arrow-alt-down': vendorPaymentsColumnSortDirections['paymentStatus'] === 'desc' || !vendorPaymentsColumnSortDirections['paymentStatus'] ,
+                                                    }"></i>
+                                                </span>
+                                            </th>
+                                            <td mat-cell *matCellDef="let element">{{element.paymentStatus}}</td>
+                                        </ng-container>
+                                
+                                        <!-- Actions Column -->
+                                        <ng-container matColumnDef="actions">
+                                            <th mat-header-cell style="width: 90px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions">
+                                                Actions
+                                            </th>
+                                            <td mat-cell style="width: 90px;" *matCellDef="let element">
+                                                <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails" (click)="viewReport(element)">
+                                                    <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"></i>
+                                                </span>
+                                                <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
+                                                    <i class="bi bi-upload" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="Export"></i>
+                                                </span>
+                                            </td>
+                                        </ng-container>
+                                
+                                        <!-- Table Header Row -->
+                                        <tr mat-header-row *matHeaderRowDef="vendorPaymentsReportColumns; sticky: true"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: vendorPaymentsReportColumns;"></tr>
+                                    </table>
+                                
+                                    <!-- No records found message -->
+                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="vendorPaymentsDataSource.data.length == 0">
+                                        No records found
+                                    </div>
+                                </div>
+                                
+                                  
+
 
 
                                     </div> 
@@ -300,7 +631,8 @@
     <hr class="sidebar-divider my-0">
     <div class="offcanvas-body">
      <div style="font-size: 13px;">   
-    <div *ngIf="reportName == 'USER TRANSACTIONS REPORT'" >
+
+    <div *ngIf="reportName == 'User Transactions Report'" >
         <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Customer ID</div>
             <div class="col-sm-7">: {{userTransactionReport.customerId}}</div>
@@ -355,7 +687,8 @@
         </div>
         
     </div>
-    <div *ngIf="reportName == 'User Payments GST REPORT'" >
+
+    <div *ngIf="reportName == 'User Payments GST Report'" >
         <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Customer ID</div>
             <div class="col-sm-7">: {{userGSTPaymentReport.customerId}}</div>
@@ -409,6 +742,109 @@
             <div class="col-sm-7">: {{userGSTPaymentReport.paymentMethod}}</div>
         </div>
     </div>
+
+    <div *ngIf="reportName == 'Consolidated Finance Report'">
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Customer ID</div>
+            <div class="col-sm-7">: {{consilidatedFinanceDetails.customerId}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Transaction Date</div>
+            <div class="col-sm-7">: {{consilidatedFinanceDetails.transactionDate}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Transaction Number</div>
+            <div class="col-sm-7">: {{consilidatedFinanceDetails.transactionNumber}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Customer Name</div>
+            <div class="col-sm-7">: {{consilidatedFinanceDetails.customerName}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Credit Amount</div>
+            <div class="col-sm-7">: {{consilidatedFinanceDetails.creditAmount | currency: 'INR' : 'symbol'}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Debit Amount</div>
+            <div class="col-sm-7">: {{consilidatedFinanceDetails.debitAmount | currency: 'INR' : 'symbol'}}</div>
+        </div>
+    </div>
+
+    <div *ngIf="reportName == 'Tenant Dues Report'">
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Customer ID</div>
+            <div class="col-sm-7">: {{tenantDuesDetails.customerId}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Customer Name</div>
+            <div class="col-sm-7">: {{tenantDuesDetails.customerName}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Property Name</div>
+            <div class="col-sm-7">: {{tenantDuesDetails.PgPropertyName}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Property ID</div>
+            <div class="col-sm-7">: {{tenantDuesDetails.PgPropertyId}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Bed Number</div>
+            <div class="col-sm-7">: {{tenantDuesDetails.bedNumber}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Pending Amount</div>
+            <div class="col-sm-7">: {{tenantDuesDetails.pendingAmount | currency: 'INR' : 'symbol'}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Pending Due Date</div>
+            <div class="col-sm-7">: {{tenantDuesDetails.pendingDueDate }}</div>
+        </div>
+    </div>
+
+    <div *ngIf="reportName == 'Vendor Payments Report'">
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Owner ID</div>
+            <div class="col-sm-7">: {{vendorPaymentsDetails.ownerId}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Owner Name</div>
+            <div class="col-sm-7">: {{vendorPaymentsDetails.ownerName}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">PG ID</div>
+            <div class="col-sm-7">: {{vendorPaymentsDetails.pgId}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">PG Name</div>
+            <div class="col-sm-7">: {{vendorPaymentsDetails.pgName}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Total Amount from Tenants</div>
+            <div class="col-sm-7">: {{vendorPaymentsDetails.totalAmountFromTenants | currency: 'INR' : 'symbol'}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Amount Paid to Owner</div>
+            <div class="col-sm-7">: {{vendorPaymentsDetails.amountPaidToOwner | currency: 'INR' : 'symbol'}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Zoy Commission</div>
+            <div class="col-sm-7">: {{vendorPaymentsDetails.zoyCommission | currency: 'INR' : 'symbol'}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Transaction Date</div>
+            <div class="col-sm-7">: {{vendorPaymentsDetails.transactionDate }}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Transaction Number</div>
+            <div class="col-sm-7">: {{vendorPaymentsDetails.transactionNumber}}</div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-sm-5 font-weight-bold">Payment Status</div>
+            <div class="col-sm-7">: {{vendorPaymentsDetails.paymentStatus}}</div>
+        </div>
+    </div>
+    
+
     </div>
     </div>
 </div>

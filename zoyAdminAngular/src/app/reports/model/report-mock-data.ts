@@ -385,4 +385,395 @@ export class ReportMockData {
           ];
          return data; 
        }
+       tenantdue():any{
+        let data = [
+            {
+              "customerId": "fec14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Vishal B Malge",
+              "PgPropertyName": "Sai Balaji",
+              "PgPropertyId": "903a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "201-B",
+              "pendingAmount": 1000.50
+            },
+            {
+              "customerId": "adf14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Ravi K Verma",
+              "PgPropertyName": "Green Park Residency",
+              "PgPropertyId": "103a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "302-A",
+              "pendingAmount": 1200.75
+            },
+            {
+              "customerId": "edf14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Sandeep S Patil",
+              "PgPropertyName": "Royal Residency",
+              "PgPropertyId": "203a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "404-C",
+              "pendingAmount": 950.00
+            },
+            {
+              "customerId": "bdf14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Anita S Sharma",
+              "PgPropertyName": "Sunshine Apartments",
+              "PgPropertyId": "303a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "105-D",
+              "pendingAmount": 1500.50
+            },
+            {
+              "customerId": "cdf14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Rohan M Joshi",
+              "PgPropertyName": "Eagle Heights",
+              "PgPropertyId": "403a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "508-A",
+              "pendingAmount": 1100.25
+            },
+            {
+              "customerId": "df14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Nisha P Bansal",
+              "PgPropertyName": "Ocean View Apartments",
+              "PgPropertyId": "503a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "307-B",
+              "pendingAmount": 1300.00
+            },
+            {
+              "customerId": "ef14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Amit G Yadav",
+              "PgPropertyName": "Silver Sands",
+              "PgPropertyId": "603a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "412-C",
+              "pendingAmount": 1400.30
+            },
+            {
+              "customerId": "ff14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Rajesh R Nair",
+              "PgPropertyName": "Lake View Residency",
+              "PgPropertyId": "703a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "506-D",
+              "pendingAmount": 950.10
+            },
+            {
+              "customerId": "0f14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Priya A Patel",
+              "PgPropertyName": "The Urban Oasis",
+              "PgPropertyId": "803a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "604-A",
+              "pendingAmount": 1100.50
+            },
+            {
+              "customerId": "1f14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Anil B Kumar",
+              "PgPropertyName": "Skyline Residency",
+              "PgPropertyId": "903a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "202-B",
+              "pendingAmount": 1200.00
+            },
+            {
+              "customerId": "2f14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Meera K Chaudhary",
+              "PgPropertyName": "The Grand View",
+              "PgPropertyId": "103a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "305-C",
+              "pendingAmount": 1450.25
+            },
+            {
+              "customerId": "3f14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Sunil M Deshmukh",
+              "PgPropertyName": "Hilltop Apartments",
+              "PgPropertyId": "203a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "411-D",
+              "pendingAmount": 800.75
+            },
+            {
+              "customerId": "4f14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Simran S Yadav",
+              "PgPropertyName": "Golden Gate Residency",
+              "PgPropertyId": "303a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "108-A",
+              "pendingAmount": 1350.90
+            },
+            {
+              "customerId": "5f14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Ishwar N Soni",
+              "PgPropertyName": "Aqua Springs",
+              "PgPropertyId": "403a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "501-B",
+              "pendingAmount": 1000.00
+            },
+            {
+              "customerId": "6f14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Neha T Choudhury",
+              "PgPropertyName": "Star View Residency",
+              "PgPropertyId": "503a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "307-D",
+              "pendingAmount": 1150.75
+            },
+            {
+              "customerId": "7f14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Karan S Singh",
+              "PgPropertyName": "Eden Park Apartments",
+              "PgPropertyId": "603a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "409-A",
+              "pendingAmount": 1220.50
+            },
+            {
+              "customerId": "8f14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Sujata P Sharma",
+              "PgPropertyName": "Emerald Heights",
+              "PgPropertyId": "703a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "210-B",
+              "pendingAmount": 1050.25
+            },
+            {
+              "customerId": "9f14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Vishal R Jain",
+              "PgPropertyName": "White Sands Apartments",
+              "PgPropertyId": "803a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "501-C",
+              "pendingAmount": 1400.00
+            },
+            {
+              "customerId": "af14082-f151-454d-bd6b-f1d36a46878d",
+              "customerName": "Sunita K Desai",
+              "PgPropertyName": "Luxury Residences",
+              "PgPropertyId": "903a9f3b-116d-4000-b261-dd5c23116de3",
+              "bedNumber": "312-D",
+              "pendingAmount": 950.90
+            }]
+          ;
+         return data; 
+       }
+       venpayre():any{
+         const mockVendorPayments = [
+            {
+              ownerId: 'O123',
+              ownerName: 'John Doe',
+              pgId: 'PG001',
+              pgName: 'Green Meadows',
+              totalAmountFromTenants: 50000,
+              amountPaidToOwner: 30000,
+              zoyCommission: 2000,
+              transactionDate: '2024-09-30',
+              transactionNumber: 'TX123456',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O124',
+              ownerName: 'Jane Smith',
+              pgId: 'PG002',
+              pgName: 'Blue Bay',
+              totalAmountFromTenants: 60000,
+              amountPaidToOwner: 35000,
+              zoyCommission: 2500,
+              transactionDate: '2024-10-01',
+              transactionNumber: 'TX123457',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O125',
+              ownerName: 'Michael Johnson',
+              pgId: 'PG003',
+              pgName: 'Sunny Acres',
+              totalAmountFromTenants: 45000,
+              amountPaidToOwner: 27000,
+              zoyCommission: 1500,
+              transactionDate: '2024-09-28',
+              transactionNumber: 'TX123458',
+              paymentStatus: 'Pending'
+            },
+            {
+              ownerId: 'O126',
+              ownerName: 'Emily Davis',
+              pgId: 'PG004',
+              pgName: 'Riverfront View',
+              totalAmountFromTenants: 75000,
+              amountPaidToOwner: 40000,
+              zoyCommission: 3500,
+              transactionDate: '2024-10-05',
+              transactionNumber: 'TX123459',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O127',
+              ownerName: 'Robert Brown',
+              pgId: 'PG005',
+              pgName: 'Mountain Peaks',
+              totalAmountFromTenants: 55000,
+              amountPaidToOwner: 32000,
+              zoyCommission: 2000,
+              transactionDate: '2024-09-25',
+              transactionNumber: 'TX123460',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O128',
+              ownerName: 'Alice Green',
+              pgId: 'PG006',
+              pgName: 'Ocean Breeze',
+              totalAmountFromTenants: 65000,
+              amountPaidToOwner: 37000,
+              zoyCommission: 3000,
+              transactionDate: '2024-10-03',
+              transactionNumber: 'TX123461',
+              paymentStatus: 'Pending'
+            },
+            {
+              ownerId: 'O129',
+              ownerName: 'David White',
+              pgId: 'PG007',
+              pgName: 'Forest Grove',
+              totalAmountFromTenants: 62000,
+              amountPaidToOwner: 36000,
+              zoyCommission: 2800,
+              transactionDate: '2024-10-07',
+              transactionNumber: 'TX123462',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O130',
+              ownerName: 'Olivia Black',
+              pgId: 'PG008',
+              pgName: 'Star Valley',
+              totalAmountFromTenants: 72000,
+              amountPaidToOwner: 41000,
+              zoyCommission: 3700,
+              transactionDate: '2024-09-20',
+              transactionNumber: 'TX123463',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O131',
+              ownerName: 'William Moore',
+              pgId: 'PG009',
+              pgName: 'Sunny Side',
+              totalAmountFromTenants: 54000,
+              amountPaidToOwner: 30000,
+              zoyCommission: 2500,
+              transactionDate: '2024-09-15',
+              transactionNumber: 'TX123464',
+              paymentStatus: 'Pending'
+            },
+            {
+              ownerId: 'O132',
+              ownerName: 'Sophia Taylor',
+              pgId: 'PG010',
+              pgName: 'Golden Heights',
+              totalAmountFromTenants: 65000,
+              amountPaidToOwner: 38000,
+              zoyCommission: 3000,
+              transactionDate: '2024-10-10',
+              transactionNumber: 'TX123465',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O133',
+              ownerName: 'Daniel Martinez',
+              pgId: 'PG011',
+              pgName: 'Desert Mirage',
+              totalAmountFromTenants: 58000,
+              amountPaidToOwner: 33000,
+              zoyCommission: 2200,
+              transactionDate: '2024-09-18',
+              transactionNumber: 'TX123466',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O134',
+              ownerName: 'Emma Lee',
+              pgId: 'PG012',
+              pgName: 'Silver Sands',
+              totalAmountFromTenants: 46000,
+              amountPaidToOwner: 25000,
+              zoyCommission: 1700,
+              transactionDate: '2024-09-10',
+              transactionNumber: 'TX123467',
+              paymentStatus: 'Pending'
+            },
+            {
+              ownerId: 'O135',
+              ownerName: 'Lucas Harris',
+              pgId: 'PG013',
+              pgName: 'Evergreen Park',
+              totalAmountFromTenants: 60000,
+              amountPaidToOwner: 34000,
+              zoyCommission: 2500,
+              transactionDate: '2024-09-22',
+              transactionNumber: 'TX123468',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O136',
+              ownerName: 'Mia Clark',
+              pgId: 'PG014',
+              pgName: 'Sunset Vista',
+              totalAmountFromTenants: 70000,
+              amountPaidToOwner: 40000,
+              zoyCommission: 3000,
+              transactionDate: '2024-09-27',
+              transactionNumber: 'TX123469',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O137',
+              ownerName: 'James Lewis',
+              pgId: 'PG015',
+              pgName: 'Brookstone Ridge',
+              totalAmountFromTenants: 62000,
+              amountPaidToOwner: 35000,
+              zoyCommission: 2700,
+              transactionDate: '2024-10-12',
+              transactionNumber: 'TX123470',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O138',
+              ownerName: 'Charlotte Walker',
+              pgId: 'PG016',
+              pgName: 'Cedar Hill',
+              totalAmountFromTenants: 59000,
+              amountPaidToOwner: 32000,
+              zoyCommission: 2200,
+              transactionDate: '2024-09-17',
+              transactionNumber: 'TX123471',
+              paymentStatus: 'Pending'
+            },
+            {
+              ownerId: 'O139',
+              ownerName: 'Benjamin Young',
+              pgId: 'PG017',
+              pgName: 'Valley View',
+              totalAmountFromTenants: 53000,
+              amountPaidToOwner: 29000,
+              zoyCommission: 2100,
+              transactionDate: '2024-10-04',
+              transactionNumber: 'TX123472',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O140',
+              ownerName: 'Amelia King',
+              pgId: 'PG018',
+              pgName: 'Lakefront Estates',
+              totalAmountFromTenants: 67000,
+              amountPaidToOwner: 40000,
+              zoyCommission: 3000,
+              transactionDate: '2024-10-06',
+              transactionNumber: 'TX123473',
+              paymentStatus: 'Completed'
+            },
+            {
+              ownerId: 'O141',
+              ownerName: 'Henry Scott',
+              pgId: 'PG019',
+              pgName: 'Crystal Cove',
+              totalAmountFromTenants: 48000,
+              amountPaidToOwner: 27000,
+              zoyCommission: 1800,
+              transactionDate: '2024-09-13',
+              transactionNumber: 'TX123474',
+              paymentStatus: 'Pending'
+            }
+          ];
+          return mockVendorPayments;
+       }
+
 }
