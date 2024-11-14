@@ -42,12 +42,6 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1" class="text-search-header">Keyword Search</label>
-                            <input type="text" class="form-control form-control-sm" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter first name">
-                        </div>
-                    </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="exampleInputEmail1" class="text-search-header">Date Range</label>
@@ -88,7 +82,7 @@
                                     <div *ngIf="reportName == 'USER TRANSACTIONS REPORT'" >   
                                     <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
                                     <ng-container matColumnDef="customerName">
-                                        <th mat-header-cell style="width: 160px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Customer Name">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Customer Name">
                                             Customer Name
                                         <span style="margin-left: 2px;">
                                             <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['customerName'] }"></i>
@@ -175,7 +169,10 @@
                                     </ng-container>                        
                                     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                                    </table>  
+                                    </table> 
+                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length == 0">
+                                        No records found
+                                    </div> 
                                 </div>
 
                                 <div *ngIf="reportName == 'User Payments GST REPORT'" >   
@@ -268,6 +265,9 @@
                                         <tr mat-header-row *matHeaderRowDef="userGSTPaymentReportColumns; sticky: true"></tr>
                                         <tr mat-row *matRowDef="let row; columns: userGSTPaymentReportColumns;"></tr>
                                     </table>
+                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length == 0">
+                                        No records found
+                                    </div>
                                 </div>
 
 
