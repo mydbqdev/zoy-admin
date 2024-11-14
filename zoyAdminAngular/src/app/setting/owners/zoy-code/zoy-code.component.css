@@ -1,0 +1,27 @@
+/* Registered status button styling - small size */
+.btn-registered {
+    background-color: #86d189;
+    color: white;
+    border: none;
+    padding: 0.25rem 0.5rem; 
+    font-size: 0.75rem; 
+    border-radius: 4px;
+}
+
+/* Pending status button styling - small size */
+.btn-pending {
+    background-color: grey; 
+    color: white;
+    border: none;
+    padding: 0.25rem 0.5rem; 
+    font-size: 0.75rem; 
+    border-radius: 4px;
+}
+.btn-bordered {
+    border: 1px solid grey;
+    background-color: transparent; 
+    color: grey;
+  }
+  .btn-outline-custom{
+    background-color: white;
+  }
