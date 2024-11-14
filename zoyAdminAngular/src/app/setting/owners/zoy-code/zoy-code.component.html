@@ -1,0 +1,135 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+    <p style="color: white;">Loading ...</p>
+  </ngx-spinner>
+  <div id="page-top">
+      <!-- Page Wrapper -->
+      <div id="wrapper">    
+        <!-- Sidebar -->
+          <app-sidebar></app-sidebar>
+        <!-- End of Sidebar -->
+  
+          <!-- Content Wrapper -->
+          <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+              <!-- Main Content -->
+              <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+  
+                  <!-- Begin Page Content -->
+                  <div class="container-fluid">
+                      <!-- Page Heading -->
+                      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <!-- Button Group -->
+                        <div class="input-group col-4 text-align-center">
+                          <button type="button" 
+                                  class="form-control"
+                                  [ngClass]="{ 'btn-primary-custom': selectedModel === 'generate', 'btn-outline-custom': selectedModel !== 'generate' }" 
+                                  (click)="selectButton('generate')">Generate Zoy code</button>
+                        
+                          <button type="button" 
+                                  class="form-control" 
+                                  [ngClass]="{ 'btn-primary-custom': selectedModel === 'generated', 'btn-outline-custom': selectedModel !== 'generated' }" 
+                                  (click)="selectButton('generated')">Generated Zoy code</button>
+                        </div>                       
+                      
+                        <!-- Search Bar (only shown if selectedModel is 'generated') -->
+                        <div *ngIf="selectedModel == 'generated'" class="d-flex align-items-center mt-5">
+                          <div class="ml-auto">
+                            <input type="text" class="form-control form-control-sm" style="width: 300px;" placeholder="search">
+                        </div>                          
+                        </div>
+                      </div>
+                      <!-- Content Row -->
+                      <div class="card shadow mb-2">
+                        <div class="card-body" style="display: contents;" >
+                            <!-- First Row of Input Fields -->
+                            <div class="container" *ngIf="selectedModel == 'generate'">
+                                <div class="row justify-content-center">
+                                  <div class="col-md-4 mb-3">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" id="firstName" class="form-control" placeholder="Enter Owner First Name">
+                                  </div>
+                                  <div class="col-md-4 mb-3">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" id="lastName" class="form-control" placeholder="Enter Owner Last Name">
+                                  </div>
+                                </div>                              
+                                <!-- Second Row of Input Fields -->
+                                <div class="row justify-content-center">
+                                  <div class="col-md-4 mb-3">
+                                    <label for="email">Owner Email</label>
+                                    <input type="email" id="email" class="form-control" placeholder="Enter Owner Email">
+                                  </div>
+                                  <div class="col-md-4 mb-3">
+                                    <label for="phone">Contact</label>
+                                    <input type="tel" id="phone" class="form-control" placeholder="Enter Owner Contact Number">
+                                  </div>
+                                 </div>
+                                 <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;">          
+                                  <input type="submit" class="btn btn-primary-custom me-2" value="Generate Zoy Code"   />
+                                 </div>
+                               </div>
+                             </div> <!-- End Card Body -->
+                             <div *ngIf="selectedModel == 'generated'">
+                              <table mat-table [dataSource]="dataSource">
+                                <!-- Zoy Code Column -->
+                                <ng-container matColumnDef="zoyCode">
+                                  <th mat-header-cell *matHeaderCellDef> Zoy Code </th>
+                                  <td mat-cell *matCellDef="let element"> {{ element.zoyCode }} </td>
+                                </ng-container>
+                              
+                                <!-- Owner Name Column -->
+                                <ng-container matColumnDef="ownerName">
+                                  <th mat-header-cell *matHeaderCellDef> Owner Name </th>
+                                  <td mat-cell *matCellDef="let element"> {{ element.ownerName }} </td>
+                                </ng-container>
+                              
+                                <!-- Email Column -->
+                                <ng-container matColumnDef="email">
+                                  <th mat-header-cell *matHeaderCellDef> Email ID </th>
+                                  <td mat-cell *matCellDef="let element"> {{ element.email }} </td>
+                                </ng-container>
+                              
+                                <!-- Contact Column -->
+                                <ng-container matColumnDef="contact">
+                                  <th mat-header-cell *matHeaderCellDef> Contact </th>
+                                  <td mat-cell *matCellDef="let element"> {{ element.contact }} </td>
+                                </ng-container>
+                              
+                                <!-- Date Column -->
+                                <ng-container matColumnDef="date">
+                                  <th mat-header-cell *matHeaderCellDef> Date </th>
+                                  <td mat-cell *matCellDef="let element"> {{ element.date }} </td>
+                                </ng-container>
+                              
+                                <!-- Status Column with Conditional Button Styling -->
+                                <ng-container matColumnDef="status">
+                                  <th mat-header-cell *matHeaderCellDef> Status </th>
+                                  <td mat-cell *matCellDef="let element" style="padding: 4px;">
+                                    <button mat-button 
+                                            [ngClass]="element.status === 'Registered' ? 'btn-registered' : 'btn-pending'">
+                                      {{ element.status }}
+                                    </button>
+                                  </td>
+                                </ng-container>                              
+                                <!-- Header Row -->
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <!-- Data Row -->
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                              </table>                              
+                               </div>
+                             <div>                            
+                          </div>
+                       </div>  <!-- End Card Body -->  
+                   </div>
+                  <!-- /.container-fluid -->
+              </div>
+              <!-- End of Main Content -->
+          </div>
+          <!-- End of Content Wrapper -->
+     </div>
+    <!-- End of Page Wrapper -->
+  </div>
