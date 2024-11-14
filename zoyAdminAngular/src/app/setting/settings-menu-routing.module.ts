@@ -3,21 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { UserMasterComponent } from './user-master/components/user-master.component';
 import { RoleMasterComponent } from './role-master/components/role-master.component';
 import { PermissionApprovalComponent } from './permission-approval/component/permission-approval.component';
-const routes: Routes = [
+import { ZoyCodeComponent } from './owners/zoy-code/zoy-code.component';
 
-  {
-	path: 'role-master', component: UserMasterComponent,
-		
-  },
-  {
-	path:'user-master',component:RoleMasterComponent  
-},
-  
-{
-	path: 'permission-approval', component: PermissionApprovalComponent,
-		
-  },
-	
+const routes: Routes = [
+  {	path: 'role-master', component: UserMasterComponent },
+  { path:'user-master',component:RoleMasterComponent  },
+  { path: 'permission-approval', component: PermissionApprovalComponent},
+  { path: 'zoy-code', component: ZoyCodeComponent},
 ];
 
 @NgModule({

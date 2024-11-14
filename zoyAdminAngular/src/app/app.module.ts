@@ -40,6 +40,8 @@ import { AppSettingMenuRoutingModule } from './setting/settings-menu-routing.mod
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { PermissionApprovalComponent } from './setting/permission-approval/component/permission-approval.component';
 import { ReportListComponent } from './reports/component/report-list.component';
+import { ZoyCodeComponent } from './setting/owners/zoy-code/zoy-code.component';
+
 
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
@@ -64,7 +66,8 @@ const appRoutes: Routes = [
     UserMasterComponent,
     RoleMasterComponent,
     ForgotPasswordComponent,
-    PermissionApprovalComponent
+    PermissionApprovalComponent,
+    ZoyCodeComponent,
 
   ],
   imports: [

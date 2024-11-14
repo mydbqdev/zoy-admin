@@ -53,6 +53,21 @@
         </div>
     </li -->
   
+ <!-- Nav Item - ZoyCode Collapse Menu -->
+ <li class="nav-item" [ngClass]="{'active':menu21}" id="menu2" >
+    <a [ngClass]="menu2 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(2)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseownerManagement"
+    [attr.aria-expanded]="!menu2" aria-controls="collapseOwnerManagement">
+        <i class="fas fa-fw fa-users-cog"></i>
+        <span>Owners</span>
+    </a>
+    <div id="collapseOwnerManagement" [ngClass]="menu2 ? 'collapse show':'collapse'" aria-labelledby="headingOwnerManagement" data-parent="#accordionSidebar">
+        <div class="bg-white collapse-inner rounded">
+            <a class="collapse-item" routerLink="/zoy-code" [ngClass]="{'active':activeSubNenuName=='zoy-code'}" (click)="setHeaderName('Zoy Code')">Zoy Code</a>
+        </div>
+    </div>
+</li>
+
+
 
     <!-- Nav Item - User Management Collapse Menu -->
     <li class="nav-item" [ngClass]="{'active':menu31}" id="menu3" *ngIf="defMenu.userManagement && (rolesArray.includes('MANAGING_USERS_READ') || rolesArray.includes('PERMISSION_APPROVAL_READ'))">
