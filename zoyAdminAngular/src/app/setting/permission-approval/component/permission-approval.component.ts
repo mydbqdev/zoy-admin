@@ -213,12 +213,12 @@ getUserDetais(){
        if(confirmed){
   this.spinner.show();
   
-  this.permissionService.approveRejectRole(this.userReg,status).subscribe(
-    (response) => {
+  this.permissionService.approveRejectRole(this.userReg.userEmail,status).subscribe((response) => 
+    {
+      this.notifyService.showSuccess(response.status, "");
+      this.registerCloseModal.nativeElement.click(); 
       this.spinner.hide();
-      console.log('Approval response:', response);
       this.getUserDetais();
-      this.notifyService.showSuccess('Roles have been approved successfully.', "");
     },
     (error) => {
       this.spinner.hide();

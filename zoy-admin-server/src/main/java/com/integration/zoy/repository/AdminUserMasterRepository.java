@@ -2,7 +2,10 @@ package com.integration.zoy.repository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -88,4 +91,22 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			+ "as approved_privilege  from pgadmin.user_master um left join pgadmin.user_role ur on um.user_email =ur.user_email  "
 			+ "left join pgadmin.role_screen rs on rs.role_id =ur.role_id where um.user_email=:emailId group by um.user_email",nativeQuery = true)
 	List<String[]> findAllAdminUserDetails(String emailId);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "INSERT INTO user_role (user_email, role_id) " +
+            "SELECT user_email, role_id FROM user_temprory " +
+            "WHERE is_approve = false AND is_rejected = false AND user_email = :user_email", nativeQuery = true)
+        void insertUserDetails(String user_email);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE user_temprory SET is_approve = TRUE WHERE user_email = :user_email", nativeQuery = true)
+	void approveUser(String user_email);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE user_temprory\r\n"
+			+ "	SET is_rejected = TRUE  WHERE user_email = :user_email", nativeQuery = true)
+	void rejectUser(String user_email);
 }

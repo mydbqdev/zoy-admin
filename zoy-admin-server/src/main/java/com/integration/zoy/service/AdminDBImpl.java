@@ -2,6 +2,11 @@ package com.integration.zoy.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+
 import com.integration.zoy.entity.AdminUserLoginDetails;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AdminUserTemporary;
@@ -46,5 +51,10 @@ public interface AdminDBImpl {
 
 	List<String[]> findAllAdminUserDetails(String emailId);
 	
+    void insertUserDetails(String user_email);
+
+	void approveUser(String user_email);
+	
+	void rejectUser(String user_email);
 
 }
