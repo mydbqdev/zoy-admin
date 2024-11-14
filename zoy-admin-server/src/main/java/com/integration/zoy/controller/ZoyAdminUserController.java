@@ -185,7 +185,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 			AdminUserLoginDetails adminUserLoginDetails=new AdminUserLoginDetails();
 			adminUserLoginDetails.setUserEmail(adminUserDetails.getUserEmail());
-			adminUserLoginDetails.setPassword(adminUserDetails.getPassword());
+			adminUserLoginDetails.setPassword(passwordDecoder.encryptedText(adminUserDetails.getPassword()));
 			adminUserLoginDetails.setIsActive(true);
 			adminUserLoginDetails.setIsLock(false);
 			adminDBImpl.saveAdminLoginDetails(adminUserLoginDetails);
