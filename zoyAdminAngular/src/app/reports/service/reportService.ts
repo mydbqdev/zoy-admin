@@ -90,10 +90,53 @@ import { MessageService } from 'src/app/message.service';
           );
   } 
 
+  
   getUserGSTPaymentReport(fromDate:string,toDate:string): Observable<any> {
     
     let pa ='fromDate='+fromDate+' 00:00:00&toDate='+toDate+' 00:00:00';
       const url1=this.basePath +"zoy_admin/user_gst_report_details?"+pa;
+          return  this.httpclient.get<any>(
+              url1,
+              {
+                  headers:ServiceHelper.buildHeaders(),
+                 observe : 'body',
+                 withCredentials:true
+              }
+          );
+  } 
+
+  getconsilidatedFinanceReport(fromDate:string,toDate:string): Observable<any> {
+    
+    let pa ='fromDate='+fromDate+' 00:00:00&toDate='+toDate+' 00:00:00';
+      const url1=this.basePath +"zoy_admin/consolidated_finance_report_details?"+pa;
+          return  this.httpclient.get<any>(
+              url1,
+              {
+                  headers:ServiceHelper.buildHeaders(),
+                 observe : 'body',
+                 withCredentials:true
+              }
+          );
+  } 
+
+  getTenantDuesDetailsReport(fromDate:string,toDate:string): Observable<any> {
+    
+    let pa ='fromDate='+fromDate+' 00:00:00&toDate='+toDate+' 00:00:00';
+      const url1=this.basePath +"zoy_admin/tenant-dues-report_details?"+pa;
+          return  this.httpclient.get<any>(
+              url1,
+              {
+                  headers:ServiceHelper.buildHeaders(),
+                 observe : 'body',
+                 withCredentials:true
+              }
+          );
+  } 
+
+  getVendorPaymentDetailsReport(fromDate:string,toDate:string): Observable<any> {
+    
+    let pa ='fromDate='+fromDate+' 00:00:00&toDate='+toDate+' 00:00:00';
+      const url1=this.basePath +"zoy_admin/vendor-payment-report_details?"+pa;
           return  this.httpclient.get<any>(
               url1,
               {
