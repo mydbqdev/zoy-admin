@@ -111,11 +111,11 @@ import { MessageService } from 'src/app/message.service';
         );
      }
 
-     public updateInActiveUser(data:any): Observable<any> {
-        const url1=this.basePath +'zoy_admin/user_create';
+     public sendLoginInfo(userEmail:any): Observable<any> {
+        const url1=this.basePath +'zoy_admin/send_login_info?userName='+userEmail;
         return this.httpclient.post<any>(
             url1,
-            data,
+            "",
             {
                 headers:ServiceHelper.buildHeaders(),
                observe : 'body',

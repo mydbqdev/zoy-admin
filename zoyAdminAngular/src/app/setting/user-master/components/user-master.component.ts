@@ -441,44 +441,43 @@ passwordsMatch(formGroup: FormGroup) {
   
   }
 
-  sendInfo(data:any){
+  sendInfo(userEmail:string){
   //  this.authService.checkLoginUserVlidaate();
   
   this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to send the login information to the user ?')
   .then(
     (confirmed) =>{
      if(confirmed){
-      this.notifyService.showSuccess("", "");
-      //this.spinner.show();
-  //   this.userMasterService.saveData(role).subscribe(res => {
-  //    this.spinner.hide();
-  //    this.notifyService.showSuccess(res.message, "");
-  //    this.editRoleCloseModal.nativeElement.click();    
-  //  }, error => {
-  //   this.spinner.hide();
-  //   if(error.status==403){
-  //     this.router.navigate(['/forbidden']);
-  //   }else if (error.error && error.error.message) {
-  //     this.errorMsg = error.error.message;
-  //     console.log("Error:" + this.errorMsg);
-  //     this.notifyService.showError(this.errorMsg, "");
-  //   } else {
-  //     if (error.status == 500 && error.statusText == "Internal Server Error") {
-  //       this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-  //     } else {
-  //       let str;
-  //       if (error.status == 400) {
-  //         str = error.error;
-  //       } else {
-  //         str = error.message;
-  //         str = str.substring(str.indexOf(":") + 1);
-  //       }
-  //       console.log("Error:" + str);
-  //       this.errorMsg = str;
-  //     }
-  //     if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-  //   }
-  // });
+      this.spinner.show();
+    this.userMasterService.sendLoginInfo(userEmail).subscribe(res => {
+     this.spinner.hide();
+     this.notifyService.showSuccess(res.message, "");
+     this.editRoleCloseModal.nativeElement.click();    
+   }, error => {
+    this.spinner.hide();
+    if(error.status==403){
+      this.router.navigate(['/forbidden']);
+    }else if (error.error && error.error.message) {
+      this.errorMsg = error.error.message;
+      console.log("Error:" + this.errorMsg);
+      this.notifyService.showError(this.errorMsg, "");
+    } else {
+      if (error.status == 500 && error.statusText == "Internal Server Error") {
+        this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+      } else {
+        let str;
+        if (error.status == 400) {
+          str = error.error;
+        } else {
+          str = error.message;
+          str = str.substring(str.indexOf(":") + 1);
+        }
+        console.log("Error:" + str);
+        this.errorMsg = str;
+      }
+      if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+    }
+  });
   }
   }).catch(
     () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
