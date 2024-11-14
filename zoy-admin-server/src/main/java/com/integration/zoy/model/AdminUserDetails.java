@@ -11,8 +11,8 @@ public class AdminUserDetails {
 	@SerializedName("lastName")
 	String lastName;
 
-	@SerializedName("mobileNumber")
-	String mobileNumber;
+	@SerializedName("contactNumber")
+	String contactNumber;
 
 	@SerializedName("userEmail")
 	String userEmail;
@@ -38,11 +38,11 @@ public class AdminUserDetails {
 		return lastName;
 	}
 
-	public void setMobileNumber(String mobileNumber) {
-		this.mobileNumber = mobileNumber;
+	public void setContactNumber(String contactNumber) {
+		this.contactNumber = contactNumber;
 	}
-	public String getMobileNumber() {
-		return mobileNumber;
+	public String getContactNumberr() {
+		return contactNumber;
 	}
 
 	public void setUserEmail(String userEmail) {

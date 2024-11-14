@@ -22,7 +22,7 @@ import com.integration.zoy.repository.AppRoleRepository;
 import com.integration.zoy.repository.RoleScreenRepository;
 
 @Service
-public class AdminDBService implements AdminDBImpl {
+public  class AdminDBService implements AdminDBImpl {
 
 	@Autowired
 	AdminUserMasterRepository userMasterRepository;
@@ -157,5 +157,24 @@ public class AdminDBService implements AdminDBImpl {
 	public List<String[]> findAllAdminUserDetails(String emailId) {
 		return userMasterRepository.findAllAdminUserDetails(emailId);
 	}
+
+	@Override
+	public void insertUserDetails(String user_email) {
+		userMasterRepository.insertUserDetails(user_email);
+		
+	}
+
+	@Override
+	public void approveUser(String user_email) {
+		userMasterRepository.approveUser(user_email);
+		
+	}
+
+	@Override
+	public void rejectUser(String user_email) {
+		userMasterRepository.rejectUser( user_email);
+		
+	}
+	
 
 }

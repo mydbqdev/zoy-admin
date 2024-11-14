@@ -41,6 +41,7 @@ import com.integration.zoy.model.LoginDetails;
 import com.integration.zoy.model.RoleDetails;
 import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
+import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
@@ -91,6 +92,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 	@Autowired
 	PasswordDecoder passwordDecoder;
+	
+	@Autowired
+	AdminUserMasterRepository adminUserMasterRepository;
 
 	@Override
 	public ResponseEntity<String> zoyAdminUserLogin(LoginDetails details) {
@@ -174,7 +178,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			master.setFirstName(adminUserDetails.getFirstName());
 			master.setLastName(adminUserDetails.getLastName());
 			master.setDesignation(adminUserDetails.getDesignation());
-			master.setContactNumber(adminUserDetails.getMobileNumber());
+			master.setContactNumber(adminUserDetails.getContactNumberr());
 			master.setUserEmail(adminUserDetails.getUserEmail());
 			master.setStatus(true);
 			adminDBImpl.saveAdminUser(master);
@@ -570,4 +574,38 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	    }
 	}
 
+	
+	 public ResponseEntity<String> approveOrRejectRole( String userEmail, String status) {
+
+	        ResponseBody response = new ResponseBody();     
+	        try {
+	        	
+	        	if (status == null || (!status.equals("approved") && !status.equals("rejected"))) {
+	                response.setStatus(HttpStatus.BAD_REQUEST.value());
+	                response.setError("Invalid status value. Status must be either 'approved' or 'rejected'.");
+	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	            }else {
+	            	
+	            	 if(status.equals("approved")) {
+	            		 adminDBImpl.insertUserDetails(userEmail);
+	            		 adminDBImpl.approveUser(userEmail);
+		            }        
+		            else {
+		            	adminDBImpl.rejectUser(userEmail);        	
+		            }
+	            	 
+	            	response.setStatus(HttpStatus.OK.value());
+	 				response.setMessage("Role assigned has been " + status + " assigned successfully.");
+	 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	            }
+	           
+	        } catch (Exception e) {
+	            log.error("Error in approveOrRejectRole API: " + e.getMessage(), e);
+	            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	            response.setError("Internal server error");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+	 
+	
 }

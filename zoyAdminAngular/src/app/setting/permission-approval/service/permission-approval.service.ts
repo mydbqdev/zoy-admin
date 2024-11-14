@@ -21,16 +21,18 @@ export class PermissionApprovalService {
   ) {}
 
 
-  public approveRejectRole(data:any,status:string): Observable<any> {
-    const url = this.basePath + 'zoy_admin/rejectPermissions/'+status;  // Replace with your actual API endpoint
-    return this.httpclient.post<any>(
-        url,
-         data,
-          {
-      headers: ServiceHelper.buildHeaders(),
-      observe: 'body',
-      withCredentials: true
-    });
+  public approveRejectRole(userEmail:any,status:string): Observable<any> {
+    
+    const url = this.basePath + 'zoy_admin/approve_or_reject_role?userEmail='+userEmail+'&status='+status; 
+    return  this.httpclient.post<any>(
+      url,
+      '',
+      {
+          headers:ServiceHelper.buildHeaders(),
+         observe : 'body',
+         withCredentials:true
+      }
+  );
   }
 
 
