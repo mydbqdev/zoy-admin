@@ -41,7 +41,7 @@
                                          <div class="desc-inner" style="height: auto;">
                                      <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">                                                     
                                          <ng-container matColumnDef="roleName">
-                                           <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef mat-sort-header>
+                                           <th mat-header-cell style="font-weight: 600;width: 300px;" *matHeaderCellDef mat-sort-header>
                                              Name 
                                              <span style="margin-left: 2px;">
                                                 <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['roleName'] }"></i>
@@ -49,18 +49,13 @@
                                                 <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['roleName'] === 'desc' || !columnSortDirections['roleName'] }"></i>
                                             </span>
                                          </th>
-                                           <td mat-cell data-label="roleName"  *matCellDef="let element"> 
+                                           <td style="width: 300px;" mat-cell data-label="roleName"  *matCellDef="let element"> 
                                              {{element.roleName}}
                                            </td>
                                          </ng-container>
  
                                          <ng-container matColumnDef="desc">
-                                             <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef mat-sort-header>Description
-                                                <span style="margin-left: 2px;">
-                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['desc'] }"></i>
-                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['desc'] === 'asc' }"></i>
-                                                    <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['desc'] === 'desc' || !columnSortDirections['desc'] }"></i>
-                                                </span>
+                                             <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef>Description
                                              </th>
                                              <td mat-cell data-label="desc"  *matCellDef="let element;"  >
                                                {{element.desc}}
@@ -68,8 +63,8 @@
                                          </ng-container>
                        
                                            <ng-container matColumnDef="action">
-                                             <th mat-header-cell style="font-weight: 600;max-width: 80px;" *matHeaderCellDef></th>
-                                             <td mat-cell class="example-box" style="max-width: 80px;" data-label="action" *matCellDef="let element"  >
+                                             <th mat-header-cell style="font-weight: 600;width: 80px;" *matHeaderCellDef></th>
+                                             <td mat-cell class="example-box" style="width: 80px;" data-label="action" *matCellDef="let element"  >
                                                  <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
                                                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>

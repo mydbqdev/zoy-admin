@@ -59,8 +59,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   dataSource:MatTableDataSource<RoleModel>=new MatTableDataSource<RoleModel>();
   displayedColumns: string[] = [ 'roleName', 'desc','action'];
   columnSortDirectionsOg: { [key: string]: string | null } = {
-    roleName: null,
-    desc: null
+    roleName: null
   };
   columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 //@Inject(defMenuEnable) private defMenuEnable:
