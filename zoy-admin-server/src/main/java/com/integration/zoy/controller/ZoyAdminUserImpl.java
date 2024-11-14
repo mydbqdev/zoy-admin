@@ -173,8 +173,7 @@ public interface ZoyAdminUserImpl {
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/send_login_info",
-	produces = { "application/json" },
-	consumes = { "application/json"})
+	produces = { "application/json" })
 	ResponseEntity<String> zoyAdminUserSendLoginInfo(@RequestParam("userName")String userName);
 	
 	@Operation(summary = "Approve or Reject Role", description = "Approve or Reject a user role request based on email and status", 
