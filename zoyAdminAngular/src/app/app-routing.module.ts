@@ -11,6 +11,7 @@ import { RoleMasterComponent } from './setting/role-master/components/role-maste
 import { UserMasterComponent } from './setting/user-master/components/user-master.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { PermissionApprovalComponent } from './setting/permission-approval/component/permission-approval.component';
+import { ZoyCodeComponent } from './setting/owners/zoy-code/zoy-code.component';
 
 const routes: Routes = [
 	{path:'',redirectTo:'/startup',pathMatch:'full'},
@@ -25,6 +26,7 @@ const routes: Routes = [
 	{ path: 'user-master', component: UserMasterComponent },
 	{ path: 'forgot-password', component: ForgotPasswordComponent },
 	{ path: 'permission-approval', component: PermissionApprovalComponent },
+	{ path: 'zoy-code', component: ZoyCodeComponent },
 ];
 
 @NgModule({
