@@ -250,9 +250,9 @@ passwordsMatch(formGroup: FormGroup) {
     this.isPasswordVisible=!this.isPasswordVisible;
   }
 
-  resetForm() {
+  resetForm(isCreate:boolean) {
   this.submitted=false;
-  this.createOrUpdate=true;
+  this.createOrUpdate=isCreate;
   this.form.reset(); 
   }
 
@@ -277,7 +277,7 @@ passwordsMatch(formGroup: FormGroup) {
     this.userMasterService.createUser(this.userReg).subscribe((res) => {
       this.notifyService.showSuccess(res.message, "");
       this.getUserDetais();
-      this.resetForm();
+      this.resetForm(true);
       this.registerCloseModal.nativeElement.click(); 
       this.spinner.hide();
     },error =>{
@@ -321,7 +321,7 @@ passwordsMatch(formGroup: FormGroup) {
     this.userMasterService.updateUser(this.userReg).subscribe((res) => {
       this.notifyService.showSuccess(res.message, "");
       this.getUserDetais();
-      this.resetForm();
+      this.resetForm(false);
       this.registerCloseModal.nativeElement.click(); 
       this.spinner.hide();
     },error =>{
@@ -381,7 +381,7 @@ passwordsMatch(formGroup: FormGroup) {
   
 
   editRole(row:any ){
-  this.resetForm();
+  this.resetForm(false);
   this.createOrUpdate=false;
   this.checkedApplications = {};
   this.selectedItems= [];
@@ -400,6 +400,10 @@ passwordsMatch(formGroup: FormGroup) {
   }
    updateRolesUser(){
    // this.authService.checkLoginUserVlidaate();
+   if(this.selectedRoleIds.length==0){
+    this.notifyService.showWarning("Atleast one role is require to assign", "");
+    return;
+   }
     let role : RoleUpdateModel  = new RoleUpdateModel();
     role.userEmail = this.userReg.userEmail;
     role.roleId = this.selectedRoleIds;

@@ -119,7 +119,7 @@
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">User List</h6>
                                 <div>
-                                        <a href="javascript:void(0)" (click)="resetForm()"  data-bs-toggle="offcanvas" data-bs-target="#userModel" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm" >
+                                        <a href="javascript:void(0)" (click)="resetForm(true)"  data-bs-toggle="offcanvas" data-bs-target="#userModel" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm" >
                                             <i class="fas fa-fw fa-user-plus fa-sm text-white-50"></i> Create a user</a>
                                 </div>
                             </div>
@@ -380,9 +380,9 @@
           </div>
           </div>
            
-          <div class="d-flex justify-content-center">
+          <div class="d-flex justify-content-start">
               <button type="submit" class="btn btn-primary-custom">Submit</button>
-              <button type="reset" class="btn btn-dark ml-2" (click)="resetForm()">Reset</button>
+              <button type="reset" class="btn btn-dark ml-2" *ngIf="createOrUpdate" (click)="resetForm(createOrUpdate)">Reset</button>
           </div>
           </form>
     </div>
