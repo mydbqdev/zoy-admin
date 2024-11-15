@@ -187,5 +187,15 @@ public interface ZoyAdminUserImpl {
 		    produces = { "application/json" })
 		ResponseEntity<String> approveOrRejectRole(  @RequestParam("userEmail") String userEmail,@RequestParam("status") String status );
 	
+	@Operation(summary = "delete Role", description = "delete a role that is not assigned to any user", 
+		    security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin User & Role" })
+	@ApiResponses(value = {
+	        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+	        @ApiResponse(responseCode = "400", description = "Bad Request"),
+	        @ApiResponse(responseCode = "404", description = "Not Found"),
+	        @ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "zoy_admin/role_delete", 
+    produces = { "application/json" })
+	ResponseEntity<String> deleteRole(  @RequestParam("roleId") int roleId );
 	
 }

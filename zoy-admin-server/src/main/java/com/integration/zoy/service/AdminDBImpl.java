@@ -56,5 +56,11 @@ public interface AdminDBImpl {
 	void approveUser(String user_email);
 	
 	void rejectUser(String user_email);
+	
+    List<Integer>  findRoleIfAssigned(int role_id);
+	
+	void deleteRolefromApp_role(int role_id);
+	
+	void deleteRolefromRoleScreen(int role_id);
 
 }
