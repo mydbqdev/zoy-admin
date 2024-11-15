@@ -39,10 +39,9 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { ReportListComponent } from './reports/component/report-list.component';
 import { AppOwnerMenuRoutingModule } from './owners/owners-menu-routing.model';
 import { AppUsersMenuRoutingModule } from './user-management/users-menu-routing.module';
-import { ZoyCodeComponent } from './owners/owners/zoy-code/zoy-code.component';
 import { PermissionApprovalComponent } from './user-management/permission-approval/component/permission-approval.component';
 import { UserMasterComponent } from './user-management/user-master/components/user-master.component';
-
+import { ZoyCodeComponent } from './owners/zoy-code/components/zoy-code.component';
 
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}

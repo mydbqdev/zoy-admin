@@ -30,4 +30,10 @@ export class RoleScreenModel {
     REPORTS_READ: boolean = false;
     REPORTS_WRITE: boolean = false;
 
+    OWNERS_READ: boolean = false;
+    OWNERS_WRITE: boolean = false;
+
+    ZOYCODES_READ: boolean =false;
+    ZOYCODES_WRITE: boolean =false;
+
 }

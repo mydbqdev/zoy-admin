@@ -55,14 +55,14 @@
   
  <!-- Nav Item - ZoyCode Collapse Menu -->
  <li class="nav-item" [ngClass]="{'active':menu21}" id="menu2" >
-    <a [ngClass]="menu2 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(2)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseownerManagement"
-    [attr.aria-expanded]="!menu2" aria-controls="collapseOwnerManagement">
+    <a [ngClass]="menu2 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" *ngIf="defMenu.owners && (rolesArray.includes('OWNERS_READ') || rolesArray.includes('ZOYCODES_READ'))" (click)="expandMenu(2)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseowners"
+    [attr.aria-expanded]="!menu2" aria-controls="collapseowners">
         <i class="fas fa-fw fa-users-cog"></i>
         <span>Owners</span>
     </a>
-    <div id="collapseOwnerManagement" [ngClass]="menu2 ? 'collapse show':'collapse'" aria-labelledby="headingOwnerManagement" data-parent="#accordionSidebar">
+    <div id="collapseowners" [ngClass]="menu2 ? 'collapse show':'collapse'" aria-labelledby="headingowners" data-parent="#accordionSidebar">
         <div class="bg-white collapse-inner rounded">
-            <a class="collapse-item" routerLink="/zoy-code" [ngClass]="{'active':activeSubNenuName=='zoy-code'}" (click)="setHeaderName('Zoy Code')">Zoy Code</a>
+            <a class="collapse-item" routerLink="/zoy-code" [ngClass]="{'active':activeSubNenuName=='zoy-code'}"*ngIf="rolesArray.includes('ZOYCODES_READ')" (click)="setHeaderName('Zoy Code')">Zoy Code</a>
         </div>
     </div>
 </li>

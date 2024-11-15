@@ -10,9 +10,9 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ZoyData } from '../models/zoy-code-model';
 import { MatTableDataSource } from '@angular/material/table';
+import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-zoy-code',
@@ -44,7 +44,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	public rolesArray: string[] = [];
 	
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
+		private confirmationDialogService:ConfirmationDialogService,private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 		this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
 	
@@ -143,6 +143,53 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 //   }
 // });
 
+}
+generateZoyCode(status:string): void {
+    this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to '+status+' the User?')
+    .then(
+      (confirmed) =>{
+       if(confirmed){
+  this.spinner.show();
+//   this.permissionService.approveRejectRole(this.userReg.userEmail,status).subscribe((response) => 
+//     {
+//       this.notifyService.showSuccess(response.status, "");
+//       this.registerCloseModal.nativeElement.click(); 
+//       this.spinner.hide();
+//       this.getUserDetais();
+//     },
+//     (error) => {
+//       this.spinner.hide();
+//       if (error.status === 403) {
+//         this.router.navigate(['/forbidden']);
+//       } else if (error.error && error.error.message) {
+//         this.errorMsg = error.error.message;
+//         console.error('Error approving roles:', this.errorMsg);
+//         this.notifyService.showError(this.errorMsg, "");
+//       } else {
+//         if (error.status === 500 && error.statusText === 'Internal Server Error') {
+//           this.errorMsg = `${error.statusText}! Please login again or contact your Help Desk.`;
+//         } else {
+//           let str;
+//           if (error.status === 400) {
+//             str = error.error;
+//           } else {
+//             str = error.message;
+//             str = str.substring(str.indexOf(':') + 1);
+//           }
+//           console.error('Error approving roles:', str);
+//           this.errorMsg = str;
+//         }
+//         if (error.status !== 401) {
+//           this.notifyService.showError(this.errorMsg, "");
+//         }
+//       }
+//     }
+//   );
+}
+this.spinner.hide();
+}).catch(
+  () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+  ); 
 }
 	
 }

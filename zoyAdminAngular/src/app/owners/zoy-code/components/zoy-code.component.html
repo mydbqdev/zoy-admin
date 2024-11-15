@@ -43,7 +43,7 @@
                         <div class="card-body" style="display: contents;" >
                             <!-- First Row of Input Fields -->
                             <div class="container" *ngIf="selectedModel == 'generate'">
-                                <div class="row justify-content-center">
+                                <div class="row justify-content-center mt-3">
                                   <div class="col-md-4 mb-3">
                                     <label for="firstName">First Name</label>
                                     <input type="text" id="firstName" class="form-control" placeholder="Enter Owner First Name">
@@ -65,7 +65,7 @@
                                   </div>
                                  </div>
                                  <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;">          
-                                  <input type="submit" class="btn btn-primary-custom me-2" value="Generate Zoy Code"   />
+                                  <input type="submit" class="btn btn-primary-custom me-2" value="Generate Zoy Code" (click)="generateZoyCode('Generate code')"  *ngIf="rolesArray.includes('ZOYCODES_READ')" />
                                  </div>
                                </div>
                              </div> <!-- End Card Body -->
