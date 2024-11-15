@@ -102,6 +102,18 @@ public interface ZoyAdminReportImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> getVendorPaymentGstReportByDateRange(@RequestParam("fromDate") Timestamp fromDate,
             @RequestParam("toDate") Timestamp toDate);
-
+	@Operation(summary = "download User Pyament Details", description = "download  User payment Transfer Details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
+	
+	
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/download_payment_transfer_details",
+	produces = { "application/json" })
+	ResponseEntity<String> downloadUserPaymentsByDateRange(@RequestParam("fromDate") Timestamp fromDate,
+            @RequestParam("toDate")Timestamp toDate);
 
 }

@@ -122,6 +122,16 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.9.1</version>
 		</dependency>
+		<dependency>
+    		<groupId>com.itextpdf</groupId>
+    		<artifactId>kernel</artifactId>
+    		<version>8.0.5</version>
+		</dependency>
+		<dependency>
+            <groupId>org.xhtmlrenderer</groupId>
+            <artifactId>flying-saucer-pdf</artifactId>
+            <version>9.1.22</version>
+        </dependency>
 
 	</dependencies>
 
