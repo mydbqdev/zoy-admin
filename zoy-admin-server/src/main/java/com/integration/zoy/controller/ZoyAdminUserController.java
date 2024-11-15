@@ -269,7 +269,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			adminDBImpl.saveAllRoleScreen(roleScreens);
 
 			response.setStatus(HttpStatus.OK.value());
-			response.setMessage("App role created Successfully");
+			response.setMessage("Role created Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details: " + e.getMessage(),e);
@@ -322,7 +322,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					adminDBImpl.deleteAllRoleScreen(obsoleteScreenIds);
 			}
 			response.setStatus(HttpStatus.OK.value());
-			response.setMessage("App role Updated Successfully");
+			response.setMessage("Role Updated Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details: " + e.getMessage(),e);
@@ -357,7 +357,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			}
 			return new ResponseEntity<>(gson.toJson(adminAppRoles), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			log.error("Error getting zoy Admin User Role List details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
