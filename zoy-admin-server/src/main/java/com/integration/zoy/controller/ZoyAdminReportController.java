@@ -160,6 +160,23 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	}
 
+	@Override
+	public ResponseEntity<String> downloadUserPaymentsByDateRange(Timestamp fromDate, Timestamp toDate) {
+		ResponseBody response=new ResponseBody();
+		try {
+			String PaymentDetailsUrl =  adminReportImpl.downloadUserPaymentDetails(fromDate,toDate);
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(PaymentDetailsUrl);
+			response.setMessage("PDF generated successfully");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting downloadUserPayments  details: " + e.getMessage(),e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+}
 
