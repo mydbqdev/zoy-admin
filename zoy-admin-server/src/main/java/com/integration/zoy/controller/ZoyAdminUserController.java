@@ -269,7 +269,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			adminDBImpl.saveAllRoleScreen(roleScreens);
 
 			response.setStatus(HttpStatus.OK.value());
-			response.setMessage("User role created Successfully");
+			response.setMessage("Role created Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details: " + e.getMessage(),e);
@@ -322,7 +322,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					adminDBImpl.deleteAllRoleScreen(obsoleteScreenIds);
 			}
 			response.setStatus(HttpStatus.OK.value());
-			response.setMessage("User role Updated Successfully");
+			response.setMessage("Role Updated Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details: " + e.getMessage(),e);
