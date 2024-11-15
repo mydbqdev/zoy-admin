@@ -176,5 +176,20 @@ public  class AdminDBService implements AdminDBImpl {
 		
 	}
 	
+	@Override
+	public  List<Integer> findRoleIfAssigned(int  role_id) {
+		return roleScreenRepository.findAssignedRole(role_id);
+	}
+	
+	@Override
+	public void deleteRolefromApp_role(int  role_id) {
+		roleScreenRepository.deleteRolefromApp_role( role_id);	
+	}
+	
+	@Override
+	public void deleteRolefromRoleScreen(int role_id) {
+		roleScreenRepository.deleteRolefromRoleScreen( role_id);	
+	}
+	
 
 }

@@ -606,6 +606,31 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 	        }
 	    }
-	 
+	 @Override
+	 public ResponseEntity<String> deleteRole(int roleId) {
+	     ResponseBody response = new ResponseBody();
+	     
+	     try {
+	         List<Integer> roleIdPresent = adminDBImpl.findRoleIfAssigned(roleId);
+	         
+	         if (roleIdPresent == null || roleIdPresent.isEmpty()|| roleIdPresent.size()==0) {
+	             adminDBImpl.deleteRolefromRoleScreen(roleId);   
+	             adminDBImpl.deleteRolefromApp_role(roleId);      
+	             
+	             response.setStatus(HttpStatus.OK.value());
+	             response.setMessage("Role with ID " + roleId + " has been deleted successfully.");
+	             return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	         } else {
+	             response.setStatus(HttpStatus.BAD_REQUEST.value());
+	             response.setError("Delete not possible. Role ID " + roleId + " is assigned.");
+	             return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	         }
+	     } catch (Exception e) {
+	         log.error("Error in deleteRole API: " + e.getMessage(), e);
+	         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	         response.setError("Internal server error");
+	         return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	     }
+	 }
 	
 }
