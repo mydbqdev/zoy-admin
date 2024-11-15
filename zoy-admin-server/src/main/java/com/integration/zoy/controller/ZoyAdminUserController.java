@@ -383,7 +383,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			}
 			adminDBImpl.saveAllUserTemporary(adminUserTemporary);
 			response.setStatus(HttpStatus.OK.value());
-			response.setMessage("User assign saved for approval successfully");
+			response.setMessage("Role Assigned & sent for approval successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details: " + e.getMessage(),e);
@@ -445,7 +445,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				email.setContent("text/html");
 				emailService.sendEmail(email,null);
 				response.setStatus(HttpStatus.OK.value());
-				response.setMessage("Signin info sent successfully");
+				response.setMessage("Signin Details sent successfully");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -595,7 +595,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		            }
 	            	 
 	            	response.setStatus(HttpStatus.OK.value());
-	 				response.setMessage("Role assigned has been " + status + " assigned successfully.");
+	 				response.setMessage("The Assigned Role has been " + status + " successfully.");
 	 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 	            }
 	           
