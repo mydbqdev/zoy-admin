@@ -12,7 +12,7 @@
           <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
               <!-- Main Content -->
               <div id="content">
-                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <div style="display: block;margin-bottom: 0px;">
                   <!-- Topbar -->
                   <app-header></app-header>
                   <!-- End of Topbar -->
@@ -21,7 +21,7 @@
                   <!-- Begin Page Content -->
                   <div class="container-fluid">
                       <!-- Page Heading -->
-                      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                      <div class="d-flex align-items-center justify-content-between mb-3"  style="margin-top: -10px;">
                         <!-- Button Group -->
                         <div class="input-group col-4 text-align-center">
                           <button type="button" 
@@ -34,12 +34,8 @@
                                   [ngClass]="{ 'btn-primary-custom': selectedModel === 'generated', 'btn-outline-custom': selectedModel !== 'generated' }" 
                                   (click)="selectButton('generated')">Generated Zoy code</button>
                         </div>                       
-                      
-                        <!-- Search Bar (only shown if selectedModel is 'generated') -->
-                        <div *ngIf="selectedModel == 'generated'" class="d-flex align-items-center mt-5">
-                          <div class="ml-auto">
-                            <input type="text" class="form-control form-control-sm" style="width: 300px;" placeholder="search">
-                        </div>                          
+                        <div *ngIf="selectedModel == 'generated'" class="ml-auto">
+                            <input type="text" class="form-control form-control-sm" style="width: 300px;" placeholder="search">                      
                         </div>
                       </div>
                       <!-- Content Row -->

@@ -17,7 +17,7 @@ import { AlertDialogService } from "src/app/common/shared/alert-dialog/alert-dia
 import { UserDetails } from '../../user-master/models/register-details';
 import { UserMasterService } from '../../user-master/service/user-master.service';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { RoleScreenPrv } from '../../role-master/models/role-screen-model';
+import { RoleScreenPrv } from 'src/app/setting/role-master/models/role-screen-model';
 
 @Component({
   selector: 'app-permission-approval',

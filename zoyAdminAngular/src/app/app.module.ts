@@ -31,16 +31,17 @@ import { UnderConstructionComponent } from './under-construction/under-construct
 import { ToastrModule } from 'ngx-toastr';
 import { HomeComponent } from './components/home/home.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { UserListComponent } from './user-management/user-list/user-list.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RoleMasterComponent } from './setting/role-master/components/role-master.component';
-import { UserMasterComponent } from './setting/user-master/components/user-master.component';
 import { AppSettingMenuRoutingModule } from './setting/settings-menu-routing.module';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
-import { PermissionApprovalComponent } from './setting/permission-approval/component/permission-approval.component';
 import { ReportListComponent } from './reports/component/report-list.component';
-import { ZoyCodeComponent } from './setting/owners/zoy-code/zoy-code.component';
+import { AppOwnerMenuRoutingModule } from './owners/owners-menu-routing.model';
+import { AppUsersMenuRoutingModule } from './user-management/users-menu-routing.module';
+import { ZoyCodeComponent } from './owners/owners/zoy-code/zoy-code.component';
+import { PermissionApprovalComponent } from './user-management/permission-approval/component/permission-approval.component';
+import { UserMasterComponent } from './user-management/user-master/components/user-master.component';
 
 
 const appRoutes: Routes = [
@@ -59,7 +60,6 @@ const appRoutes: Routes = [
     SignupComponent,
     UnderConstructionComponent,
     HomeComponent,
-    UserListComponent,
     SidebarComponent,
     HeaderComponent,
     ReportListComponent,
@@ -76,6 +76,8 @@ const appRoutes: Routes = [
       ),
     BrowserModule,
     AppRoutingModule,
+    AppOwnerMenuRoutingModule,
+    AppUsersMenuRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

@@ -16,7 +16,7 @@ import { UserDetails } from '../models/register-details';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import {  RoleUpdateModel } from '../models/rolesave-model';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { RoleScreenPrv } from '../../role-master/models/role-screen-model';
+import { RoleScreenPrv } from 'src/app/setting/role-master/models/role-screen-model';
 
 @Component({
   selector: 'app-user-master',

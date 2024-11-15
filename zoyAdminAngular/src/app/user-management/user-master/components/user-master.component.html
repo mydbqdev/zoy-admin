@@ -14,7 +14,7 @@
     <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
         <!-- Main Content -->
         <div id="content">
-                <div style="display: block;margin-bottom: 5.375rem;">
+                <div style="display: block;margin-bottom: 0px;">
                 <!-- Topbar -->
                 <app-header></app-header>
                 <!-- End of Topbar -->
@@ -119,7 +119,7 @@
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">User List</h6>
                                 <div>
-                                        <a href="javascript:void(0)" (click)="resetForm(true)"  data-bs-toggle="offcanvas" data-bs-target="#userModel" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm" >
+                                        <a href="javascript:void(0)" (click)="resetForm(true)" style="margin:-10px 0px" data-bs-toggle="offcanvas" data-bs-target="#userModel" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm" >
                                             <i class="fas fa-fw fa-user-plus fa-sm text-white-50"></i> Create a user</a>
                                 </div>
                             </div>
