@@ -21,6 +21,10 @@ export const environment = {
      "reports":true,
       "reportsSubMenu":{
          "reports":true
-    }
+    },
+    "owners":true,
+    "ownersSubMenu":{
+       "zoycode":true
+  }
   }
 };

@@ -20,6 +20,9 @@ export class DefMenu{
 
     public reports:boolean;
     public reportsSubMenu:OwnerManagementSubMenu;
+
+    public owners:boolean;
+    public ownersSubMenu:OwnerManagementSubMenu;
     
 
     // public personalMenu:boolean;
