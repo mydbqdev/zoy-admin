@@ -8,18 +8,18 @@ import { AuthService } from 'src/app/common/service/auth.service';
 import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatSort, Sort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
 import { ReportService } from '../service/reportService';
-import { ReportsModel } from '../model/report_Model';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { UserTransactionReportModel } from '../model/user-transaction-report-model';
-import { ReportMockData } from '../model/report-mock-data';
 import { UserGSTPaymentModel } from '../model/user-payment-model';
 import { ConsilidatedFinanceDetailsModel } from '../model/consilidated-finance-details-model';
 import { TenantDuesDetailsModel } from '../model/tenant-dues-details-model';
 import { VendorPaymentsModel } from '../model/vendor-payments-model';
+import { VendorPaymentsDues } from '../model/vendor-payments-dues-model';
+import { VendorPaymentsGst } from '../model/vendor-payments-gst-model';
  
 @Component({
 	selector: 'app-report-list',
@@ -28,18 +28,18 @@ import { VendorPaymentsModel } from '../model/vendor-payments-model';
 })
 
 export class ReportListComponent implements OnInit, AfterViewInit {
-	dataSource:MatTableDataSource<UserTransactionReportModel>=new MatTableDataSource<UserTransactionReportModel>();
-	ELEMENT_DATA:UserTransactionReportModel[]=[]
+	userTransactionDataSource:MatTableDataSource<UserTransactionReportModel>=new MatTableDataSource<UserTransactionReportModel>();
+	userTransactionData:UserTransactionReportModel[]=[]
 	userTransactionReport:UserTransactionReportModel=new UserTransactionReportModel();
-	displayedColumns: string[] = ['customerName', 'PgPropertyId', 'transactionDate', 'transactionNumber','transactionStatus','actions'];
-	columnSortDirections1: { [key: string]: string | null } = {
+	userTransactionDataColumns: string[] = ['customerName', 'PgPropertyId', 'transactionDate', 'transactionNumber','transactionStatus','actions'];
+	userTransactioncolumnSortDirections: { [key: string]: string | null } = {
         customerName: null,
         PgPropertyId: null,
         transactionDate: null,
         transactionStatus: null,
         transactionNumber: null,
       };
-    columnSortDirections = Object.assign({}, this.columnSortDirections1);
+	  userTransactionSortDirections = Object.assign({}, this.userTransactioncolumnSortDirections);
 
 	// User Payment Report
 	userGSTPaymentDataSource: MatTableDataSource<UserGSTPaymentModel> = new MatTableDataSource<UserGSTPaymentModel>();
@@ -98,6 +98,36 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	};
 	vendorPaymentsSortDirections = Object.assign({}, this.vendorPaymentsColumnSortDirections);
 
+	//Vendor Payments Dues
+	vendorPaymentsDuesDataSource: MatTableDataSource<VendorPaymentsDues> = new MatTableDataSource<VendorPaymentsDues>();
+	vendorPaymentsDuesData: VendorPaymentsDues[] = [];
+	vendorPaymentsDuesDetails: VendorPaymentsDues = new VendorPaymentsDues();
+	vendorPaymentsDuesReportColumns: string[] = ['ownerId', 'pgId', 'totalAmountPayable', 'totalAmountPaid', 'pendingAmount', 'pendingDueDate', 'actions'];
+	vendorPaymentsDuesColumnSortDirections: { [key: string]: string | null } = {
+	ownerId: null,
+	pgId: null,
+	totalAmountPayable: null,
+	totalAmountPaid: null,
+	pendingAmount: null,
+	pendingDueDate: null
+	};
+	vendorPaymentsDuesSortDirections = Object.assign({}, this.vendorPaymentsDuesColumnSortDirections);
+
+// Vendor Payments Gst
+	vendorPaymentsGstDataSource: MatTableDataSource<VendorPaymentsGst> = new MatTableDataSource<VendorPaymentsGst>();
+	vendorPaymentsGstData: VendorPaymentsGst[] = [];
+	vendorPaymentsGstDetails: VendorPaymentsGst = new VendorPaymentsGst();
+	vendorPaymentsGstColumns: string[] = ['transactionDate','transactionNo','pgId','totalAmount','gstAmount','actions'];
+	vendorPaymentsGstColumnSortDirections: { [key: string]: string | null } = {
+	  transactionDate: null,
+	  transactionNo: null,
+	  pgId: null,
+	  totalAmount: null,
+	  gstAmount: null
+	};
+	vendorPaymentsGstSortDirections = Object.assign({}, this.vendorPaymentsGstColumnSortDirections);
+	
+
 
 	@ViewChild(SidebarComponent) sidemenuComp;
     @ViewChild(MatSort) sort: MatSort;
@@ -106,7 +136,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	pageSize:number=10;
 	pageSizeOptions=[10,20,50];
 
-	reportNamesList:string[] = ["User Transactions Report","Vendor Dues Report","Consolidated Finance Report","Vendor Payments Report","User Payments GST Report","Tenant Dues Report"]
+	reportNamesList:string[] = ["User Transactions Report","User Payments GST Report","Vendor Payments Report","Vendor Payments Gst Report","Vendor Payments Dues Report","Consolidated Finance Report","Tenant Dues Report"]
 	cityLocation: string[] = ["Delhi", "Mumbai", "Bangalore", "Kolkata", "Chennai", "Hyderabad", "Vijayawada", "Madurai","Ooty", "Goa"];
 	fromDate:string="2023-11-01";
 	toDate:string="2025-01-01";
@@ -167,13 +197,13 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	announceSortChange(sortState: Sort) {//
 		switch (this.reportName) {
 			case 'User Transactions Report':
-				this.columnSortDirections = Object.assign({}, this.columnSortDirections1);
-        		this.columnSortDirections[sortState.active] = sortState.direction;
-				break;
+					this.userTransactionSortDirections = Object.assign({}, this.userTransactioncolumnSortDirections);
+					this.userTransactionSortDirections[sortState.active] = sortState.direction;
+					break;
 			case 'User Payments GST Report':
-				this.userGSTPaymentSortDirections = Object.assign({}, this.userGSTPaymentColumnSortDirections);
-                this.userGSTPaymentSortDirections[sortState.active] = sortState.direction;
-				break;
+					this.userGSTPaymentSortDirections = Object.assign({}, this.userGSTPaymentColumnSortDirections);
+					this.userGSTPaymentSortDirections[sortState.active] = sortState.direction;
+					break;
 			case 'Consolidated Finance Report': 
 					this.consilidatedFinanceSortDirections = Object.assign({}, this.consilidatedFinanceColumnSortDirections);
 					this.consilidatedFinanceSortDirections[sortState.active] = sortState.direction;
@@ -185,6 +215,14 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			case 'Vendor Payments Report': 
 					this.vendorPaymentsSortDirections = Object.assign({}, this.vendorPaymentsColumnSortDirections);
 					this.vendorPaymentsSortDirections[sortState.active] = sortState.direction;
+					break;
+			case 'Vendor Payments Dues Report': 
+					this.vendorPaymentsDuesSortDirections = Object.assign({}, this.vendorPaymentsDuesColumnSortDirections);
+					this.vendorPaymentsDuesSortDirections[sortState.active] = sortState.direction;
+					break;
+			case 'Vendor Payments Gst Report': 
+					this.vendorPaymentsGstSortDirections = Object.assign({}, this.vendorPaymentsGstColumnSortDirections);
+					this.vendorPaymentsGstSortDirections[sortState.active] = sortState.direction;
 					break;
 			default:
 				
@@ -198,7 +236,14 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	  }
 
 	  changeReport(){
-        console.log("changeReport>>this.reportName",this.reportName);
+
+		 this.totalProduct=0;
+
+		if(this.fromDate == "" || this.toDate == "" || this.fromDate == null || this.toDate == null || (this.fromDate >this.toDate)){
+			this.notifyService.showError("Please select a valid date range.","");
+			return;
+		}
+       
 		switch (this.reportName) {
 			case 'User Transactions Report':
 				this.getUserTransactionReport();
@@ -215,12 +260,55 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			case 'Vendor Payments Report':
 				this.getVendorPaymentDetailsReport();
 				break;
+			case 'Vendor Payments Dues Report':
+				this.getVendorPaymentDuesReport();
+				break;
+			case 'Vendor Payments Gst Report':
+					this.getVendorPaymentGSTReport();
+					break;
 			default:
 				
 		}
 	  }
+
+	  getReport(){
+
+
+		if(this.fromDate == "" || this.toDate == "" || this.fromDate == null || this.toDate == null || (this.fromDate >this.toDate)){
+	
+			this.notifyService.showError("Please select a valid date range.","");
+		return;
+		}
+       
+		switch (this.reportName) {
+			case 'User Transactions Report':
+				this.getUserTransactionReport();
+				break;
+			case 'User Payments GST Report':
+				this.getUserGSTPaymentReport();
+				break; 
+			case 'Consolidated Finance Report':
+				this.getconsilidatedFinanceReport();
+				break;
+			case 'Tenant Dues Report':
+				this.getTenantDuesDetailsReport();
+				break;
+			case 'Vendor Payments Report':
+				this.getVendorPaymentDetailsReport();
+				break;
+			case 'Vendor Payments Dues Report':
+				this.getVendorPaymentDuesReport();
+				break;
+			case 'Vendor Payments Gst Report':
+					this.getVendorPaymentGSTReport();
+					break;
+			default:
+				
+		}
+	  }
+
 	  viewReport(row:any){
-		console.log("viewReport>>this.reportName",this.reportName);
+		
 		switch (this.reportName) {
 			case 'User Transactions Report':
 				this.userTransactionReport = Object.assign(row);
@@ -237,6 +325,12 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			case 'Vendor Payments Report':
 				this.vendorPaymentsDetails = Object.assign(row);
 				break;
+			case 'Vendor Payments Dues Report':
+				this.vendorPaymentsDuesDetails = Object.assign(row);
+				break;
+			case 'Vendor Payments Gst Report':
+				this.vendorPaymentsGstDetails = Object.assign(row);
+				break;
 
 			default:		
 		}
@@ -252,13 +346,11 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			// this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
 			this.reportService.getUserTransactionReport(this.fromDate,this.toDate).subscribe(data => {
-				if(data==null){
-					data=new ReportMockData().tranData();
-				}
-			this.ELEMENT_DATA = Object.assign([],data);
-			this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-			this.dataSource.sort = this.sort;
-			this.dataSource.paginator = this.paginator;
+		
+			this.userTransactionData = Object.assign([],data);
+			this.userTransactionDataSource = new MatTableDataSource(this.userTransactionData);
+			this.userTransactionDataSource.sort = this.sort;
+			this.userTransactionDataSource.paginator = this.paginator;
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -366,11 +458,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		// this.authService.checkLoginUserVlidaate();
 		 this.spinner.show();
 		 this.reportService.getTenantDuesDetailsReport(this.fromDate,this.toDate).subscribe(data => {
-			console.log("getTenantDuesDetailsReportdata",data,data == null)
-
-			if(data == null || data?.length==0){
-				data=new ReportMockData().tenantdue();
-			}
+			
 		   this.tenantDuesData = Object.assign([],data);
 		   this.tenantDuesDataSource = new MatTableDataSource(this.tenantDuesData);
 		   this.tenantDuesDataSource.sort = this.sort;
@@ -408,9 +496,6 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		 this.spinner.show();
 		 this.reportService.getVendorPaymentDetailsReport(this.fromDate,this.toDate).subscribe(data => {
 
-			if(data == null || data?.length==0){
-				data=new ReportMockData().venpayre();
-			}
 		   this.vendorPaymentsData = Object.assign([],data);
 		   this.vendorPaymentsDataSource = new MatTableDataSource(this.vendorPaymentsData);
 		   this.vendorPaymentsDataSource.sort = this.sort;
@@ -442,4 +527,80 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		 }
 	   });	   
 	   }
+
+	   getVendorPaymentDuesReport(){
+		// this.authService.checkLoginUserVlidaate();
+		 this.spinner.show();
+		 this.reportService.getVendorPaymentDuesReport(this.fromDate,this.toDate).subscribe(data => {
+
+		   this.vendorPaymentsDuesData = Object.assign([],data);
+		   this.vendorPaymentsDuesDataSource = new MatTableDataSource(this.vendorPaymentsDuesData);
+		   this.vendorPaymentsDuesDataSource.sort = this.sort;
+		   this.vendorPaymentsDuesDataSource.paginator = this.paginator;
+		   this.spinner.hide();
+		}, error => {
+		 this.spinner.hide();
+		 if(error.status==403){
+		   this.router.navigate(['/forbidden']);
+		 }else if (error.error && error.error.message) {
+		   this.errorMsg = error.error.message;
+		   console.log("Error:" + this.errorMsg);
+		   this.notifyService.showError(this.errorMsg, "");
+		 } else {
+		   if (error.status == 500 && error.statusText == "Internal Server Error") {
+			 this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+		   } else {
+			 let str;
+			 if (error.status == 400) {
+			   str = error.error;
+			 } else {
+			   str = error.message;
+			   str = str.substring(str.indexOf(":") + 1);
+			 }
+			 console.log("Error:" + str);
+			 this.errorMsg = str;
+		   }
+		   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		 }
+	   });	   
+	   }
+
+	   getVendorPaymentGSTReport(){
+		// this.authService.checkLoginUserVlidaate();
+		 this.spinner.show();
+		 this.reportService.getVendorPaymentGSTReport(this.fromDate,this.toDate).subscribe(data => {
+
+		   this.vendorPaymentsGstData = Object.assign([],data);
+		   this.vendorPaymentsGstDataSource = new MatTableDataSource(this.vendorPaymentsGstData);
+		   this.vendorPaymentsGstDataSource.sort = this.sort;
+		   this.vendorPaymentsGstDataSource.paginator = this.paginator;
+		   this.spinner.hide();
+		}, error => {
+		 this.spinner.hide();
+		 if(error.status==403){
+		   this.router.navigate(['/forbidden']);
+		 }else if (error.error && error.error.message) {
+		   this.errorMsg = error.error.message;
+		   console.log("Error:" + this.errorMsg);
+		   this.notifyService.showError(this.errorMsg, "");
+		 } else {
+		   if (error.status == 500 && error.statusText == "Internal Server Error") {
+			 this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+		   } else {
+			 let str;
+			 if (error.status == 400) {
+			   str = error.error;
+			 } else {
+			   str = error.message;
+			   str = str.substring(str.indexOf(":") + 1);
+			 }
+			 console.log("Error:" + str);
+			 this.errorMsg = str;
+		   }
+		   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		 }
+	   });	   
+	   }
+
+
 }
