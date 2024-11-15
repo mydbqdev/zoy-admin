@@ -61,7 +61,7 @@
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group mt-4" style="padding-top:6px">
-                            <button type="button" class="btn btn-primary-custom btn-sm">Generate Report</button>
+                            <button type="button" class="btn btn-primary-custom btn-sm" (click)="getReport()" >Generate Report</button>
                         </div>
                     </div>
                     <div class="col-sm-2">
@@ -81,15 +81,15 @@
                                 <div class="scrollable-container-main">    
 
                                 <div *ngIf="reportName == 'User Transactions Report'" >   
-                                    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
+                                    <table mat-table [dataSource]="userTransactionDataSource" matSort (matSortChange)="announceSortChange($event)">
                                     <ng-container matColumnDef="customerName">
                                         <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Customer Name">
                                             Customer Name
                                         <span style="margin-left: 2px;">
-                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['customerName'] }"></i>
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !userTransactionSortDirections['customerName'] }"></i>
                                         <i class="fas" [ngClass]="{
-                                          'fa-long-arrow-alt-up': columnSortDirections['customerName'] === 'asc',
-                                          'fa-long-arrow-alt-down': columnSortDirections['customerName'] === 'desc' || !columnSortDirections['customerName'] ,
+                                          'fa-long-arrow-alt-up': userTransactionSortDirections['customerName'] === 'asc',
+                                          'fa-long-arrow-alt-down': userTransactionSortDirections['customerName'] === 'desc' || !userTransactionSortDirections['customerName'] ,
                                         }"></i>
                                           </span>
                                         </th>
@@ -103,10 +103,10 @@
                                         <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by PgPropertyId">
                                             PG ID
                                         <span style="margin-left: 2px;">
-                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['PgPropertyId'] }"></i>
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !userTransactionSortDirections['PgPropertyId'] }"></i>
                                         <i class="fas" [ngClass]="{
-                                          'fa-long-arrow-alt-up': columnSortDirections['PgPropertyId'] === 'asc',
-                                          'fa-long-arrow-alt-down': columnSortDirections['PgPropertyId'] === 'desc' || !columnSortDirections['PgPropertyId'] ,
+                                          'fa-long-arrow-alt-up': userTransactionSortDirections['PgPropertyId'] === 'asc',
+                                          'fa-long-arrow-alt-down': userTransactionSortDirections['PgPropertyId'] === 'desc' || !userTransactionSortDirections['PgPropertyId'] ,
                                         }"></i>
                                           </span>
                                         </th>
@@ -117,10 +117,10 @@
                                         <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionDate">
                                             Transaction Date
                                         <span style="margin-left: 2px;">
-                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['description'] }"></i>
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !userTransactionSortDirections['description'] }"></i>
                                         <i class="fas" [ngClass]="{
-                                          'fa-long-arrow-alt-up': columnSortDirections['description'] === 'transactionDate',
-                                          'fa-long-arrow-alt-down': columnSortDirections['description'] === 'transactionDate' || !columnSortDirections['transactionDate'] ,
+                                          'fa-long-arrow-alt-up': userTransactionSortDirections['description'] === 'transactionDate',
+                                          'fa-long-arrow-alt-down': userTransactionSortDirections['description'] === 'transactionDate' || !userTransactionSortDirections['transactionDate'] ,
                                         }"></i>
                                           </span>
                                         </th>
@@ -131,10 +131,10 @@
                                         <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionNumber">
                                             Transaction No.
                                         <span style="margin-left: 2px;">
-                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['transactionNumber'] }"></i>
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !userTransactionSortDirections['transactionNumber'] }"></i>
                                         <i class="fas" [ngClass]="{
-                                          'fa-long-arrow-alt-up': columnSortDirections['transactionNumber'] === 'asc',
-                                          'fa-long-arrow-alt-down': columnSortDirections['transactionNumber'] === 'desc' || !columnSortDirections['transactionNumber'] ,
+                                          'fa-long-arrow-alt-up': userTransactionSortDirections['transactionNumber'] === 'asc',
+                                          'fa-long-arrow-alt-down': userTransactionSortDirections['transactionNumber'] === 'desc' || !userTransactionSortDirections['transactionNumber'] ,
                                         }"></i>
                                           </span>
                                         </th>
@@ -145,10 +145,10 @@
                                         <th mat-header-cell style="width: 200px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionStatus">
                                             Transaction Status
                                         <span style="margin-left: 2px;">
-                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['transactionStatus'] }"></i>
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !userTransactionSortDirections['transactionStatus'] }"></i>
                                         <i class="fas" [ngClass]="{
-                                          'fa-long-arrow-alt-up': columnSortDirections['transactionStatus'] === 'asc',
-                                          'fa-long-arrow-alt-down': columnSortDirections['transactionStatus'] === 'desc' || !columnSortDirections['transactionStatus'] ,
+                                          'fa-long-arrow-alt-up': userTransactionSortDirections['transactionStatus'] === 'asc',
+                                          'fa-long-arrow-alt-down': userTransactionSortDirections['transactionStatus'] === 'desc' || !userTransactionSortDirections['transactionStatus'] ,
                                         }"></i>
                                           </span>
                                         </th>
@@ -168,10 +168,10 @@
                                         </span>
                                         </td>
                                     </ng-container>                        
-                                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                    <tr mat-header-row *matHeaderRowDef="userTransactionDataColumns; sticky: true"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: userTransactionDataColumns;"></tr>
                                     </table> 
-                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length == 0">
+                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="userTransactionDataSource.data.length == 0">
                                         No records found
                                     </div> 
                                 </div>
@@ -266,7 +266,7 @@
                                         <tr mat-header-row *matHeaderRowDef="userGSTPaymentReportColumns; sticky: true"></tr>
                                         <tr mat-row *matRowDef="let row; columns: userGSTPaymentReportColumns;"></tr>
                                     </table>
-                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length == 0">
+                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="userTransactionDataSource.data.length == 0">
                                         No records found
                                     </div>
                                 </div>
@@ -598,12 +598,234 @@
                                         No records found
                                     </div>
                                 </div>
-                                
+
+                                <div *ngIf="reportName == 'Vendor Payments Dues Report'">
+                                    <table mat-table [dataSource]="vendorPaymentsDuesDataSource" matSort (matSortChange)="announceSortChange($event)">
+                                      
+                                      <ng-container matColumnDef="ownerId">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by ownerId">
+                                          Owner ID
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsDuesColumnSortDirections['ownerId'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsDuesColumnSortDirections['ownerId'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsDuesColumnSortDirections['ownerId'] === 'desc' || !vendorPaymentsDuesColumnSortDirections['ownerId'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.ownerId}} </td>
+                                      </ng-container>
                                   
-
-
-
-                                    </div> 
+                                      <ng-container matColumnDef="pgId">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pgId">
+                                          PG ID
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsDuesColumnSortDirections['pgId'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsDuesColumnSortDirections['pgId'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsDuesColumnSortDirections['pgId'] === 'desc' || !vendorPaymentsDuesColumnSortDirections['pgId'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.pgId}} </td>
+                                      </ng-container>
+                                  
+                                      <ng-container matColumnDef="totalAmountPayable">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by totalAmountPayable">
+                                          Total Amount Payable
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsDuesColumnSortDirections['totalAmountPayable'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsDuesColumnSortDirections['totalAmountPayable'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsDuesColumnSortDirections['totalAmountPayable'] === 'desc' || !vendorPaymentsDuesColumnSortDirections['totalAmountPayable'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.totalAmountPayable | currency: 'INR' : 'symbol'}} </td>
+                                      </ng-container>
+                                  
+                                      <ng-container matColumnDef="totalAmountPaid">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by totalAmountPaid">
+                                          Total Amount Paid
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsDuesColumnSortDirections['totalAmountPaid'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsDuesColumnSortDirections['totalAmountPaid'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsDuesColumnSortDirections['totalAmountPaid'] === 'desc' || !vendorPaymentsDuesColumnSortDirections['totalAmountPaid'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.totalAmountPaid | currency: 'INR' : 'symbol'}} </td>
+                                      </ng-container>
+                                  
+                                      <ng-container matColumnDef="pendingAmount">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pendingAmount">
+                                          Pending Amount
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsDuesColumnSortDirections['pendingAmount'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsDuesColumnSortDirections['pendingAmount'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsDuesColumnSortDirections['pendingAmount'] === 'desc' || !vendorPaymentsDuesColumnSortDirections['pendingAmount'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.pendingAmount | currency: 'INR' : 'symbol'}} </td>
+                                      </ng-container>
+                                  
+                                      <ng-container matColumnDef="pendingDueDate">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pendingDueDate">
+                                          Pending Due Date
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsDuesColumnSortDirections['pendingDueDate'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsDuesColumnSortDirections['pendingDueDate'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsDuesColumnSortDirections['pendingDueDate'] === 'desc' || !vendorPaymentsDuesColumnSortDirections['pendingDueDate'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.pendingDueDate}} </td>
+                                      </ng-container>
+                                  
+                                      <ng-container matColumnDef="actions">
+                                        <th mat-header-cell style="width: 90px;" *matHeaderCellDef> Actions </th>
+                                        <td mat-cell style="width: 90px;" *matCellDef="let element">
+                                          <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails" (click)="viewReport(element)">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                          </span>
+                                          <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
+                                            <i class="bi bi-upload" aria-hidden="true"></i>
+                                          </span>
+                                        </td>
+                                      </ng-container>
+                                  
+                                      <tr mat-header-row *matHeaderRowDef="vendorPaymentsDuesReportColumns; sticky: true"></tr>
+                                      <tr mat-row *matRowDef="let row; columns: vendorPaymentsDuesReportColumns;"></tr>
+                                    </table>
+                                  
+                                    <div style="text-align: center;" *ngIf="vendorPaymentsDuesDataSource.data.length === 0">
+                                      No records found
+                                    </div>
+                                  </div>
+                                
+                                  <div *ngIf="reportName == 'Vendor Payments Gst Report'">
+                                    <table mat-table [dataSource]="vendorPaymentsGstDataSource" matSort (matSortChange)="announceSortChange($event)">
+                                      
+                                      <!-- Transaction Date Column -->
+                                      <ng-container matColumnDef="transactionDate">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionDate">
+                                          Transaction Date
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsGstColumnSortDirections['transactionDate'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsGstColumnSortDirections['transactionDate'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsGstColumnSortDirections['transactionDate'] === 'desc' || !vendorPaymentsGstColumnSortDirections['transactionDate'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.transactionDate | date:'yyyy-MM-dd'}} </td>
+                                      </ng-container>
+                                  
+                                      <!-- Transaction No Column -->
+                                      <ng-container matColumnDef="transactionNo">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by transactionNo">
+                                          Transaction No
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsGstColumnSortDirections['transactionNo'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsGstColumnSortDirections['transactionNo'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsGstColumnSortDirections['transactionNo'] === 'desc' || !vendorPaymentsGstColumnSortDirections['transactionNo'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.transactionNo}} </td>
+                                      </ng-container>
+                                  
+                                      <!-- PG ID Column -->
+                                      <ng-container matColumnDef="pgId">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pgId">
+                                          PG ID
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsGstColumnSortDirections['pgId'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsGstColumnSortDirections['pgId'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsGstColumnSortDirections['pgId'] === 'desc' || !vendorPaymentsGstColumnSortDirections['pgId'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.pgId}} </td>
+                                      </ng-container>
+                                  
+                                      <!-- Total Amount Column -->
+                                      <ng-container matColumnDef="totalAmount">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by totalAmount">
+                                          Total Amount
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsGstColumnSortDirections['totalAmount'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsGstColumnSortDirections['totalAmount'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsGstColumnSortDirections['totalAmount'] === 'desc' || !vendorPaymentsGstColumnSortDirections['totalAmount'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.totalAmount | currency: 'INR' : 'symbol'}} </td>
+                                      </ng-container>
+                                  
+                                      <!-- GST Amount Column -->
+                                      <ng-container matColumnDef="gstAmount">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by gstAmount">
+                                          GST Amount
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsGstColumnSortDirections['gstAmount'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsGstColumnSortDirections['gstAmount'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsGstColumnSortDirections['gstAmount'] === 'desc' || !vendorPaymentsGstColumnSortDirections['gstAmount'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.gstAmount | currency: 'INR' : 'symbol'}} </td>
+                                      </ng-container>
+                                  
+                                      <!-- Basic Amount Column -->
+                                      <ng-container matColumnDef="basicAmount">
+                                        <th mat-header-cell style="width: 180px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by basicAmount">
+                                          Basic Amount
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !vendorPaymentsGstColumnSortDirections['basicAmount'] }"></i>
+                                            <i class="fas" [ngClass]="{
+                                                'fa-long-arrow-alt-up': vendorPaymentsGstColumnSortDirections['basicAmount'] === 'asc',
+                                                'fa-long-arrow-alt-down': vendorPaymentsGstColumnSortDirections['basicAmount'] === 'desc' || !vendorPaymentsGstColumnSortDirections['basicAmount'],
+                                            }"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.basicAmount | currency: 'INR' : 'symbol'}} </td>
+                                      </ng-container>
+                                  
+                                      <!-- Actions Column -->
+                                      <ng-container matColumnDef="actions">
+                                        <th mat-header-cell style="width: 90px;" *matHeaderCellDef> Actions </th>
+                                        <td mat-cell style="width: 90px;" *matCellDef="let element">
+                                          <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails" (click)="viewReport(element)">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                          </span>
+                                          <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
+                                            <i class="bi bi-upload" aria-hidden="true"></i>
+                                          </span>
+                                        </td>
+                                      </ng-container>
+                                  
+                                      <!-- Table Rows -->
+                                      <tr mat-header-row *matHeaderRowDef="vendorPaymentsGstColumns; sticky: true"></tr>
+                                      <tr mat-row *matRowDef="let row; columns: vendorPaymentsGstColumns;"></tr>
+                                    </table>
+                                  
+                                    <!-- No records message -->
+                                    <div style="text-align: center;" *ngIf="vendorPaymentsGstDataSource.data.length === 0">
+                                      No records found
+                                    </div>
+                                  </div>
+                                  
+                                  
+                                   </div> 
                                   </div> 
                                     <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons ></mat-paginator>                        
                               </div>
@@ -797,7 +1019,7 @@
         </div>
         <div class="row mb-1">
             <div class="col-sm-5 font-weight-bold">Pending Due Date</div>
-            <div class="col-sm-7">: {{tenantDuesDetails.pendingDueDate }}</div>
+            <div class="col-sm-7">: {{tenantDuesDetails.pendingDueDate}}</div>
         </div>
     </div>
 
@@ -843,8 +1065,84 @@
             <div class="col-sm-7">: {{vendorPaymentsDetails.paymentStatus}}</div>
         </div>
     </div>
-    
 
+    <div *ngIf="reportName == 'Vendor Payments Dues Report'">
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Owner ID</div>
+          <div class="col-sm-7">: {{vendorPaymentsDuesDetails.ownerId}}</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Owner Name</div>
+          <div class="col-sm-7">: {{vendorPaymentsDuesDetails.ownerName}}</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">PG ID</div>
+          <div class="col-sm-7">: {{vendorPaymentsDuesDetails.pgId}}</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">PG Name</div>
+          <div class="col-sm-7">: {{vendorPaymentsDuesDetails.pgName}}</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Total Amount Payable</div>
+          <div class="col-sm-7">: {{vendorPaymentsDuesDetails.totalAmountPayable | currency: 'INR' : 'symbol'}}</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Total Amount Paid</div>
+          <div class="col-sm-7">: {{vendorPaymentsDuesDetails.totalAmountPaid | currency: 'INR' : 'symbol'}}</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Pending Amount</div>
+          <div class="col-sm-7">: {{vendorPaymentsDuesDetails.pendingAmount | currency: 'INR' : 'symbol'}}</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Pending Due Date</div>
+          <div class="col-sm-7">: {{vendorPaymentsDuesDetails.pendingDueDate}}</div>
+        </div>
+      </div>
+
+    <div *ngIf="reportName == 'Vendor Payments Gst Report'">
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Transaction Date</div>
+          <div class="col-sm-7">: {{vendorPaymentsGstDetails.transactionDate | date:'yyyy-MM-dd'}}</div>
+        </div>
+      
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Transaction No</div>
+          <div class="col-sm-7">: {{vendorPaymentsGstDetails.transactionNo}}</div>
+        </div>
+      
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">PG ID</div>
+          <div class="col-sm-7">: {{vendorPaymentsGstDetails.pgId}}</div>
+        </div>
+      
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">PG Name</div>
+          <div class="col-sm-7">: {{vendorPaymentsGstDetails.pgName}}</div>
+        </div>
+      
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Total Amount</div>
+          <div class="col-sm-7">: {{vendorPaymentsGstDetails.totalAmount | currency: 'INR' : 'symbol'}}</div>
+        </div>
+      
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">GST Amount</div>
+          <div class="col-sm-7">: {{vendorPaymentsGstDetails.gstAmount | currency: 'INR' : 'symbol'}}</div>
+        </div>
+      
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Basic Amount</div>
+          <div class="col-sm-7">: {{vendorPaymentsGstDetails.basicAmount | currency: 'INR' : 'symbol'}}</div>
+        </div>
+      
+        <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">Payment Method</div>
+          <div class="col-sm-7">: {{vendorPaymentsGstDetails.paymentMethod}}</div>
+        </div>
+      </div>
+      
     </div>
     </div>
 </div>
