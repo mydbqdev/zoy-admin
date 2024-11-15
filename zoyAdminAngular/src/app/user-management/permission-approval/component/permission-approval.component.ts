@@ -112,11 +112,29 @@ getUserDetais(){
   // this.authService.checkLoginUserVlidaate();
    this.spinner.show();
    this.userMasterService.getUserList().subscribe(data => {
-     this.ELEMENT_DATA = Object.assign([],data);
-    //  this.ELEMENT_DATA = Object.assign([],data);
+
+    
+  if(data !=null && data.length>0){
+
+    let users : UserDetails[] = data;
+
+    let pre = users.filter(user=>user?.roleModel.some(role => role.approveStatus == 'Pending' || role.approveStatus == 'Rejected'));
+
+    this.ELEMENT_DATA = Object.assign([],pre);
      this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
      this.dataSource.sort = this.sort;
      this.dataSource.paginator = this.paginator;
+
+  }else{
+
+    this.ELEMENT_DATA = Object.assign([]);
+     this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+     this.dataSource.sort = this.sort;
+     this.dataSource.paginator = this.paginator;
+
+  }
+
+    
      this.spinner.hide();
   }, error => {
    this.spinner.hide();
@@ -179,20 +197,19 @@ getUserDetais(){
                 if (privilege.endsWith('_WRITE')) {
                   existingPermission.writePrv = true;
                 }
-                existingPermission.approveStatus = role.approveStatus === 'approved';
+                existingPermission.approveStatus = role.approveStatus == 'Approved';
               } else {
                 this.userRolePermissions.push({
                   screenName: screenBaseName,
                   readPrv: privilege.endsWith('_READ'),
                   writePrv: privilege.endsWith('_WRITE'),
-                  approveStatus: role.approveStatus === 'approved'
+                  approveStatus: role.approveStatus == 'Approved'
                 });
               }
             });
           }
         });
       }
-    
     }
      
 
@@ -215,7 +232,7 @@ getUserDetais(){
   
   this.permissionService.approveRejectRole(this.userReg.userEmail,status).subscribe((response) => 
     {
-      this.notifyService.showSuccess(response.status, "");
+      this.notifyService.showSuccess(response.message, "");
       this.registerCloseModal.nativeElement.click(); 
       this.spinner.hide();
       this.getUserDetais();

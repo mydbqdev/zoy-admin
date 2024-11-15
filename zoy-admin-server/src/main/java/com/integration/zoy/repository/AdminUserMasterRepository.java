@@ -65,7 +65,7 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			+ "	        LEFT JOIN pgadmin.role_screen rs ON ar.id = rs.role_id  \n"
 			+ "	         GROUP BY um.user_email ,ur.role_id,ar.role_name\n"
 			+ "	        union all\n"
-			+ "	         select um.user_email, ut.role_id ,CASE WHEN ut.is_approve THEN 'Approved' ELSE 'Pending' END AS is_approve,art.role_name,\n"
+			+ "	         select um.user_email, ut.role_id ,CASE WHEN ut.is_approve THEN 'Approved' ELSE CASE WHEN ut.is_rejected THEN 'Rejected' ELSE  'Pending' END END AS is_approve ,art.role_name,\n"
 			+ "	        STRING_AGG(DISTINCT CASE    \n"
 			+ "	        WHEN rst.read_prv = true AND rst.write_prv = true THEN upper(rst.screen_name) || '_READ,' || upper(rst.screen_name) || '_WRITE'  \n"
 			+ "	        WHEN rst.read_prv = true THEN upper(rst.screen_name) || '_READ'  \n"
@@ -76,7 +76,7 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			+ "	        LEFT JOIN pgadmin.user_temprory ut ON um.user_email = ut.user_email\n"
 			+ "	        LEFT JOIN pgadmin.app_role art ON ut.role_id = art.id  \n"
 			+ "	        LEFT JOIN pgadmin.role_screen rst ON art.id = rst.role_id  \n"
-			+ "	       GROUP BY um.user_email ,ut.role_id,ut.is_approve, art.role_name)pre ", nativeQuery = true)	
+			+ "	       GROUP BY um.user_email ,ut.role_id,ut.is_approve, art.role_name,ut.is_rejected)pre ", nativeQuery = true)	
 	List<Object[]> findAllAdminUserPrivileges();
 
 	

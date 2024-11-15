@@ -1,7 +1,7 @@
 export class UserRoleModel {
     id: number;
     roleName: string;
-    approveStatus: boolean;
+    approveStatus: string;
     screen: string[];
 }
  
