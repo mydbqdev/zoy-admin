@@ -1,9 +1,13 @@
 package com.integration.zoy.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,9 @@ public class AdminReportService implements AdminReportImpl{
 
 	@Autowired
 	private UserPaymentDueRepository userPaymentDueRepository;
+	
+	@Autowired
+	private  pdfGenerateService pdfGenerateService;
 
 	@Override
 	public List<UserPaymentDTO> getUserPaymentDetails(Timestamp fromDate, Timestamp toDate) {
@@ -156,6 +163,43 @@ public class AdminReportService implements AdminReportImpl{
 		vendorPaymentsGst.add(vendorPaysGst);
 		return vendorPaymentsGst;
 	}
-
+	
+	@Override
+	public String downloadUserPaymentDetails(Timestamp fromDate, Timestamp toDate) {
+		List<Object[]> results = userPaymentRepository.findUserPaymentDetailsByUserIdAndDateRange(fromDate, toDate);
+		List<UserPaymentDTO> userPaymentList = new ArrayList<>();
+		for (Object[] row : results) {
+			UserPaymentDTO dto = new UserPaymentDTO();
+			dto.setUserId((String) row[0]);
+			dto.setUserPaymentTimestamp((Timestamp) row[1]);
+			dto.setUserPaymentBankTransactionId((String) row[2]);
+			dto.setUserPaymentResultStatus((String) row[3]);
+			BigDecimal payableAmount = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;
+			BigDecimal gst = (BigDecimal) row[5] != null ? (BigDecimal) row[5] : BigDecimal.ZERO;
+			dto.setUserPaymentPayableAmount(payableAmount);
+			dto.setUserPaymentGst(gst);
+			dto.setUserPersonalName((String) row[6]);
+			dto.setUserPgPropertyName((String) row[7]);
+			dto.setUserPgPropertyId((String) row[8]);
+			dto.setBedNumber((String) row[9]);
+			BigDecimal totalAmount = payableAmount.add(gst);
+			dto.setTotalAmount(totalAmount);
+			dto.setCategory((String) row[10]);
+			dto.setPaymentMethod((String) row[11]);
+			userPaymentList.add(dto);
+		}
+		Map<String, Object> data = new HashMap<>();
+	    data.put("reportData", userPaymentList); 
+	    data.put("startDate", fromDate); 
+	    data.put("endDate", toDate); 
+	    data.put("printDate", new Timestamp(System.currentTimeMillis()));
+	    try {
+	        String uniqueFileName = "Vendor_Dues_Report_" + UUID.randomUUID().toString() + ".pdf";
+	        String url = pdfGenerateService.generatePdfFile("userTransactionReport", data, uniqueFileName);
+	        return  url;
+	    } catch (IOException e) {
+	        throw new RuntimeException("Failed to generate PDF", e);
+	    }
+	}
 
 }
