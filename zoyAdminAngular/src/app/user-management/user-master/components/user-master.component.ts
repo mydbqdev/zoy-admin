@@ -386,13 +386,14 @@ passwordsMatch(formGroup: FormGroup) {
   this.selectedRoleIds.splice(0);
   }
   
-
+oldRoles:any=[];
   editRole(row:any ){
   this.resetForm(false);
   this.createOrUpdate=false;
   this.checkedApplications = {};
   this.selectedItems= [];
   this.selectedRoleIds.splice(0);
+  this.oldRoles.splice(0);
   this.userReg = Object.assign(new UserDetails(),row)  ;
  
   // for temporary fixed added below two line
@@ -402,15 +403,21 @@ passwordsMatch(formGroup: FormGroup) {
   this.selectedItems= this.userReg.roleModel;
   for(let role of this.userReg.roleModel){
      this.selectedRoleIds.push(role.id);
+     this.oldRoles.push(role.id);
   }
+ 
 
   }
    updateRolesUser(){
    // this.authService.checkLoginUserVlidaate();
+
+   this.selectedRoleIds = this.selectedRoleIds.filter(roleId => !this.oldRoles.includes(roleId));
+  
    if(this.selectedRoleIds.length==0){
-    this.notifyService.showWarning("Atleast one role is require to assign", "");
+    this.notifyService.showWarning("Atleast one role is require to assign/update.", "");
     return;
    }
+
     let role : RoleUpdateModel  = new RoleUpdateModel();
     role.userEmail = this.userReg.userEmail;
     role.roleId = this.selectedRoleIds;
@@ -557,13 +564,13 @@ getWriteIcon(writePrv: boolean): string {
               if (privilege.endsWith('_WRITE')) {
                 existingPermission.writePrv = true;
               }
-              existingPermission.approveStatus = role.approveStatus === 'approved';
+              existingPermission.approveStatus = role.approveStatus === 'Approved';
             } else {
               this.userRolePermissions.push({
                 screenName: screenBaseName,
                 readPrv: privilege.endsWith('_READ'),
                 writePrv: privilege.endsWith('_WRITE'),
-                approveStatus: role.approveStatus === 'approved'
+                approveStatus: role.approveStatus === 'Approved'
               });
             }
           });

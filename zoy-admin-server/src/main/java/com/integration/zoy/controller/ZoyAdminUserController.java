@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -95,6 +96,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	
 	@Autowired
 	AdminUserMasterRepository adminUserMasterRepository;
+	
+	@Value("${qa.signin.link}")
+	private String qaSigninLink;
 
 	@Override
 	public ResponseEntity<String> zoyAdminUserLogin(LoginDetails details) {
@@ -393,34 +397,6 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		}
 	}
 
-//	@Override
-//	public ResponseEntity<String> zoyAdminUserList() {
-//		ResponseBody response=new ResponseBody();
-//		try {
-//			List<String[]> master=adminDBImpl.findAllAdminUserPrevilages();
-//			List<AdminUserList> adminUserTemporary=new ArrayList<>();
-//			if(master.size()>0) {
-//				for(String[] user:master) {
-//					AdminUserList adminUserList=new AdminUserList();
-//					adminUserList.setFirstName(user[0]);
-//					adminUserList.setLastName(user[1]!=null?user[1]:"");
-//					adminUserList.setUserEmail(user[2]);
-//					adminUserList.setContactNumber(user[3]);
-//					adminUserList.setStatus(user[5]);
-//					adminUserList.setApprovedPrivilege(user[6]!=null?Arrays.asList(user[6].split(",")):new ArrayList<>());
-//					adminUserList.setUnapprovedPrivilege(user[7]!=null?Arrays.asList(user[7].split(",")):new ArrayList<>());
-//					adminUserTemporary.add(adminUserList);
-//				}
-//			}
-//			return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
-//		} catch (Exception e) {
-//			log.error("Error getting ameneties details: " + e.getMessage(),e);
-//			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//			response.setError("Internal server error");
-//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//
-//	}
 
 	@Override
 	public ResponseEntity<String> zoyAdminUserSendLoginInfo(@RequestParam("userName")String userName) {
@@ -440,6 +416,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 						+ "Below are your sign-in credentials for accessing your account.</p>"
 						+ "<p>Username: "+ login.getUserEmail()+"</p>"
 						+ "Password: "+ passwordDecoder.decryptedText(login.getPassword())+"</p>"
+						+ "Zoy Admin Portal Sign-in Link : <a href='"+ qaSigninLink +"'>"+ qaSigninLink +"</a></p>"
 						+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
 				email.setBody(message);
 				email.setContent("text/html");
