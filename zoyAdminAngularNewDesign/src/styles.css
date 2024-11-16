@@ -1,0 +1,101 @@
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+/** ----------------------------- Common css ------------------------------------------------------- **/
+
+/* Custom scrollbar for WebKit browsers */
+::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Background of the scrollbar track */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners for the thumb */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the thumb when hovered */
+  }
+  
+  /* Custom scrollbar for Firefox */
+
+  .desc-inner{
+    scrollbar-color: #f1f1f1 #888;
+    scrollbar-width: 10px;
+    scrollbar-shadow-color: grey;
+    scrollbar-width: thin;
+  }
+  
+  /* width */
+  .desc-inner::-webkit-scrollbar{
+    width: 10px;
+    height:10px;
+  }
+  /* Track */
+.desc-inner::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 5px;
+  }
+  
+  /* Handle */
+  .desc-inner::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 5px;
+  }
+  
+  
+  /* Handle on hover */
+  .desc-inner::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+  .fa-asterisk{
+    color:#dc3545;
+    font-size: 9px;
+}
+
+.text-search-header{
+  font-size: 14px;
+  font-weight: 500;
+  color:#000000;
+}
+
+.mat-mdc-table .mdc-data-table__row{
+  height:32px !important;
+}
+.mat-mdc-table .mdc-data-table__pagination{
+  min-height:32px !important;
+}
+.mat-mdc-table .mdc-data-table__header-row{
+  height:36px !important;
+}
+
+.mat-mdc-paginator-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 4px !important;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: 20px !important;
+}
+
+.profile-top{
+  width: 35px;
+  height: 35px;
+  background-color: #925fe2;
+  font-weight: 500;
+  font-size: 17px;
+  text-align: center;
+  line-height: 35px; 
+  color: #fff;
+  border-radius: 50%; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+
+ngb-modal-backdrop.modal-backdrop {
+  z-index: 1045 !important;
+}

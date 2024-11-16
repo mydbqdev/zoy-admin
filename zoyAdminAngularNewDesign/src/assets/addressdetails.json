@@ -1,0 +1,42 @@
+[  
+  {  
+    "subtype": "Current",  
+    "begindate": "20-03-2010",  
+    "enddate": "20-03-2010",  
+    "address": "chennai"  
+  },  
+   
+  {  
+    "subtype": "Permanent",  
+    "begindate": "20-03-2010",  
+    "enddate": "20-03-2010",  
+    "address": "Tirupati"  
+  },  
+ 
+  {  
+    "subtype": "Mailing",  
+    "begindate": "20-03-2010",  
+    "enddate": "20-03-2010",  
+    "address": "vijayawada"  
+  },  
+  
+  {  
+    "subtype": "Office",  
+    "begindate": "20-03-2010",  
+    "enddate": "20-03-2010",  
+    "address": "vizag"  
+  },  
+ 
+  {  
+    "subtype": "Worksite",  
+    "begindate": "20-03-2010",  
+    "enddate": "20-03-2010",  
+    "address": "hyderabad"  
+  } ,
+  {  
+    "subtype": "EmergencyContact",  
+    "begindate": "20-03-2010",  
+    "enddate": "20-03-2010",  
+    "address": "baglore"  
+  } 
+] 

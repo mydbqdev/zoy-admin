@@ -1,0 +1,129 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "zoyadminangular": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/zoyadminportal",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/firebase-messaging-sw.js", 
+              "src/manifest.json" 
+            ],
+            "styles": [
+                "src/assets/font/fonts.css" ,
+                "src/assets/fontawesome-free/css/all.min.css",
+                "node_modules/bootstrap/dist/css/bootstrap.css",
+                "src/styles.css" ,
+                "src/assets/css/fin-admin.css" ,
+                "node_modules/ngx-toastr/toastr.css"  ,
+                "node_modules/ngx-spinner/animations/ball-circus.css" ,
+                "node_modules/summernote/dist/summernote-bs4.css",
+                "bootstrap-icons/font/bootstrap-icons.css"             
+            ],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "src/assets/css/fin-admin.js" ,
+              "node_modules/summernote/dist/summernote-bs4.js",
+              "node_modules/crypto-js/crypto-js.js",
+              "src/custom.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "40mb",
+                  "maximumError": "50mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "10mb",
+                  "maximumError": "20mb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          } 
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "zoyadminangular:build",
+            "host":"0.0.0.0",
+            "port":4200
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "zoyadminangular:build:production"
+            },
+            "development": {
+              "browserTarget": "zoyadminangular:build:development"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "zoyadminangular:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.json",
+              "src/firebase-messaging-sw.js"
+            ],
+            "styles": [
+             
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": "59f10633-43d2-4a5c-851e-e4eaf6b5df92"
+  },
+  "defaultProject": "zoyadminangular"
+}

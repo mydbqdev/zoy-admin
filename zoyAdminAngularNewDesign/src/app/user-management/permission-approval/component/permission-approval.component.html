@@ -1,0 +1,250 @@
+
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+    <p style="color: white;">Loading ...</p>
+  </ngx-spinner>
+  <!-- Content Wrapper. Contains page content -->
+  <div id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <app-sidebar></app-sidebar>
+      <!-- End of Sidebar -->
+  
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+          <!-- Main Content -->
+          <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+
+              <!-- Begin Page Content -->
+              <div class="container-fluid">
+                  <!-- Content Row -->
+                  <div class="row">
+                      <!-- Earnings (Monthly) Card Example -->
+                      <div class="col-xl-3 col-md-6 mb-2">
+                          <div class="card border-left-primary shadow h-100 py-2">
+                              <div class="card-body">
+                                  <div class="row no-gutters align-items-center">
+                                      <div class="col mr-2">
+                                          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                              Total Users</div>
+                                          <div class="h5 mb-0 font-weight-bold text-gray-800">500</div>
+                                      </div>
+                                      <div class="col-auto">
+                                          <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Earnings (Monthly) Card Example -->
+                      <div class="col-xl-3 col-md-6 mb-2">
+                          <div class="card border-left-success shadow h-100 py-2">
+                              <div class="card-body">
+                                  <div class="row no-gutters align-items-center">
+                                      <div class="col mr-2">
+                                          <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                              Newly Request</div>
+                                          <div class="h5 mb-0 font-weight-bold text-gray-800">215,000</div>
+                                      </div>
+                                      <!-- <div class="col-auto">
+                                          <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                      </div> -->
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Earnings (Monthly) Card Example -->
+                      <div class="col-xl-3 col-md-6 mb-2">
+                          <div class="card border-left-info shadow h-100 py-2">
+                              <div class="card-body">
+                                  <div class="row no-gutters align-items-center">
+                                      <div class="col mr-2">
+                                          <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                                          </div>
+                                          <div class="row no-gutters align-items-center">
+                                              <div class="col-auto">
+                                                  <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                              </div>
+                                              <div class="col">
+                                                  <div class="progress progress-sm mr-2">
+                                                      <div class="progress-bar bg-info" role="progressbar"
+                                                          style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                          aria-valuemax="100"></div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-auto">
+                                          <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Pending Requests Card Example -->
+                      <div class="col-xl-3 col-md-6 mb-2">
+                          <div class="card border-left-warning shadow h-100 py-2">
+                              <div class="card-body">
+                                  <div class="row no-gutters align-items-center">
+                                      <div class="col mr-2">
+                                          <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                              Pending Requests</div>
+                                          <div class="h5 mb-0 font-weight-bold text-gray-800">4</div>
+                                      </div>
+                                      <div class="col-auto">
+                                          <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+  
+                  <!-- Content Row -->
+                  <div class="row">
+                      <!-- Area Chart -->
+                      <div class="col-xl-12 col-lg-12">
+                        <div class="card shadow mb-3">
+                            <!-- Card Body -->
+                            <div class="card-body" style="padding: 0; margin: 0;">
+                                <div>
+                                    <div class="scrollable-container-main">
+                                        <table mat-table [dataSource]="dataSource"  matSort (matSortChange)="announceSortChange($event)">                                          
+                                            <!-- User Name Column -->
+                                            <ng-container matColumnDef="firstName">
+                                                <th mat-header-cell style="width: 200px;" *matHeaderCellDef mat-sort-header>
+                                                    Name
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['firstName'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['firstName'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['firstName'] === 'desc' || !columnSortDirections['firstName'] }"></i>
+                                                    </span>
+                                                </th>
+                                                <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                                    {{element.firstName}} {{element.lastName}}
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- User Mail Column -->
+                                            <ng-container matColumnDef="userEmail">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 150px;">
+                                                    Email
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['userEmail'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['userEmail'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['userEmail'] === 'desc' || !columnSortDirections['userEmail'] }"></i>
+                                                    </span>
+                                                </th>
+                                                <td mat-cell *matCellDef="let element" style="width: 150px;">
+                                                    {{element.userEmail}}
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- Designation Column -->
+                                            <ng-container matColumnDef="designation">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 150px;">
+                                                    Designation
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['designation'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['designation'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['designation'] === 'desc' || !columnSortDirections['designation'] }"></i>
+                                                    </span>
+                                                </th>
+                                                <td mat-cell *matCellDef="let element" style="width: 150px;">
+                                                    {{element?.designation}}
+                                                </td>
+                                            </ng-container>       
+                                            <ng-container matColumnDef="roles">
+                                                <th mat-header-cell *matHeaderCellDef>
+                                                    Role
+                                                </th>
+                                                <td mat-cell data-label="roles" *matCellDef="let element;">
+                                                    {{ getRoleNames(element.roleModel) }}
+                                                </td>
+                                            </ng-container>                  
+                                            <ng-container matColumnDef="action">
+                                                <th mat-header-cell *matHeaderCellDef style="padding: 8px 16px; font-weight: 600; max-width: 80px;"></th>
+                                                <td mat-cell class="example-box" style="max-width: 80px;" data-label="action" *matCellDef="let element">
+                                                    <a class="dropdown no-arrow dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" (click)="viewUser(element)" >Check and Approve</a>
+                                                    </div>
+                                                </td>
+                                            </ng-container>
+                    
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                                            <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length == 0">
+                                    No records found
+                                </div>
+                                <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+                            </div>
+                        </div>
+                    </div>              
+                  </div>
+              </div>
+              <!-- /.container-fluid -->
+          </div>
+          <!-- End of Main Content -->
+      </div>
+      <!-- End of Content Wrapper -->
+  </div>
+  <!-- End of Page Wrapper -->
+  </div>
+
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Check And Approve</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #registerCloseModal></button>
+    </div>
+    <hr class="sidebar-divider my-0">
+    <div class="offcanvas-body">
+        <form [formGroup]="form" autocomplete="off">
+            <div class="modal-body">
+                <div class="font-weight-bold mb-2" style="border-bottom: 1px solid #f5f3f3;margin-top:-10px">
+                    {{userReg.firstName}}   {{userReg.lastName}}
+                </div>
+                <!-- Authorization Section -->
+                <div class="mb-4">
+                    <div class="row text-center font-weight-bold" style="font-size: 14px;">
+                        <div class="col-sm-8 text-left">Authorization</div>
+                        <div class="col-sm-2">Read</div>
+                        <div class="col-sm-2">Write</div>
+                    </div>
+
+                    <!-- Scrollable container for the authorization rows -->
+                   
+                    <div class="scrollable-container">
+                        <div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-1 ml-1">
+                            <div class="col-sm-8" style="font-size: 13px;" [ngClass]="{'text-danger': !permission.approveStatus }" [title]="!permission.approveStatus?'waiting for approval':''" >{{ permission.screenName }}</div>
+                            <div class="col-sm-2 text-center">
+                                <i [class]="getReadIcon(permission.readPrv)" style="font-size: 13px;"></i>
+                            </div>
+                            <div class="col-sm-2 text-center">
+                                <i [class]="getWriteIcon(permission.writePrv)" style="font-size: 13px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-center mt-4" *ngIf="rolesArray.includes('PERMISSION_APPROVAL_WRITE')">
+                    <button type="button" class="btn btn-primary-custom px-4 py-2 mr-3" (click)="approveRejectRole('approved')">Approve</button>
+                    <button type="button" class="btn btn-dark px-4 py-2" (click)="approveRejectRole('rejected')">Reject</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

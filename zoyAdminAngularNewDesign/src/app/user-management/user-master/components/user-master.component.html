@@ -1,0 +1,503 @@
+
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+  <p style="color: white;">Loading ...</p>
+</ngx-spinner>
+<!-- Content Wrapper. Contains page content -->
+<div id="page-top">
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+    <!-- Sidebar -->
+    <app-sidebar></app-sidebar>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+        <!-- Main Content -->
+        <div id="content">
+                <div style="display: block;margin-bottom: 5.375rem;">
+                <!-- Topbar -->
+                <app-header></app-header>
+                <!-- End of Topbar -->
+                </div>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Content Row -->
+                <div class="row">
+                    <!-- Earnings (Monthly) Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-2">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                           Active Users</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">10/5</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings (Monthly) Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-2">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            New User</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">5</div>
+                                    </div>
+                                    <!-- <div class="col-auto">
+                                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings (Monthly) Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-2">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                                        </div>
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-auto">
+                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="progress progress-sm mr-2">
+                                                    <div class="progress-bar bg-info" role="progressbar"
+                                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                        aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Requests Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-2">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                            Pending Requests</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Row -->
+
+                <div class="row">
+
+                    <!-- Area Chart -->
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card shadow mb-3">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">User List</h6>
+                                <div>
+                                        <a href="javascript:void(0)" (click)="resetForm(true)" style="margin:-10px 0px" data-bs-toggle="offcanvas" data-bs-target="#userModel" aria-controls="offcanvasRight" class="d-none d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm" >
+                                            <i class="fas fa-fw fa-user-plus fa-sm text-white-50"></i> Create a user</a>
+                                </div>
+                            </div>
+                            <!-- Card Body -->
+                
+                            <div class="card-body" style="padding:0px;margin:0px;">
+                                <div style="max-height: calc(100vh - 305px); overflow: auto;">
+                                    <div class="desc-inner" style="height:calc(100vh - 305px);">
+                                        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">         
+                                            <!-- User Name Column -->
+                                            <ng-container matColumnDef="firstName">
+                                                <th mat-header-cell style="width: 200px;" *matHeaderCellDef mat-sort-header>
+                                                    User Name
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['firstName'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['firstName'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['firstName'] === 'desc' || !columnSortDirections['firstName'] }"></i>
+                                                    </span>
+                                                </th>
+                                                <td mat-cell style="width: 200px;" *matCellDef="let element">
+                                                    {{element.firstName}} {{element.lastName}}
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- User Mail Column -->
+                                            <ng-container matColumnDef="userEmail">
+                                                <th mat-header-cell style="width: 150px;" *matHeaderCellDef mat-sort-header>
+                                                    User Mail
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['userEmail'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['userEmail'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['userEmail'] === 'desc' || !columnSortDirections['userEmail'] }"></i>
+                                                    </span>
+                                                </th>
+                                                <td mat-cell style="width: 150px;" *matCellDef="let element">
+                                                    {{element.userEmail}}
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- Designation Column -->
+                                            <ng-container matColumnDef="designation">
+                                                <th mat-header-cell style="width: 150px;" *matHeaderCellDef mat-sort-header>
+                                                    Designation
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['designation'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['designation'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['designation'] === 'desc' || !columnSortDirections['designation'] }"></i>
+                                                    </span>
+                                                </th>
+                                                <td mat-cell style="width: 150px;" *matCellDef="let element">
+                                                    {{element?.designation}}
+                                                </td>
+                                            </ng-container>
+
+                                            
+                                            <!-- roleName Column -->
+                                            <ng-container matColumnDef="roleName">
+                                                <th mat-header-cell *matHeaderCellDef >
+                                                    Role's
+                                                </th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    {{ getRoleNames(element.roleModel) }}
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- Status Column -->
+                                            <ng-container matColumnDef="status">
+                                                <th mat-header-cell style="width: 120px;" *matHeaderCellDef mat-sort-header>
+                                                    Status
+                                                    <span style="margin-left: 2px;">
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['status'] }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['status'] === 'asc' }"></i>
+                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['status'] === 'desc' || !columnSortDirections['status'] }"></i>
+                                                    </span>
+                                                </th>
+                                                <td mat-cell style="width: 120px;" *matCellDef="let element">
+                                                    {{element.status ? 'Active':'Inactive'}}
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- Action Column -->
+                                            <ng-container matColumnDef="action">
+                                                <th mat-header-cell style="width: 50px;" *matHeaderCellDef></th>
+                                                <td mat-cell *matCellDef="let element">
+                                                    <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
+                                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                                        <div class="dropdown-header">Action</div>
+                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#viewUserDetails"  (click)="viewUser(element)">View User Details</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#userModel"  (click)="editRole(element)">Edit User</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#updateRoleModel" (click)="editRole(element)" >Update role</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" (click)="sendInfo(element.userEmail)">Send Info</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)">Delete</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)">Activate/Deactivate</a>
+                                                    </div>
+                                                </td>
+                                            </ng-container>
+                            
+                                            <!-- Header and Row Definitions -->
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            
+                                <div style="text-align: center;border-bottom: 1px solid #bfbbbb;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length == 0">
+                                    No records found
+                                </div>
+                                <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+</div>
+
+
+<!-----------Create a new user----------->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="userModel" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasRightLabel"><span *ngIf="createOrUpdate" > Create a new user</span> <span *ngIf="!createOrUpdate" > Update user</span> </h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #registerCloseModal></button>
+    </div>
+    <hr class="sidebar-divider my-0">
+    <div class="offcanvas-body">
+        <form [formGroup]="form" (ngSubmit)="submittUserDetails()" autocomplete="off">
+            <div class="row">
+              <div class="col-sm-6">
+                  <div class="form-group">
+                      <label for="exampleInputEmail1">First name</label>
+                      <input type="text" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' maxlength="20" class="form-control form-control-sm" id="firstName"  placeholder="Enter First Name"  [(ngModel)]="userReg.firstName" formControlName="firstName" autocomplete="off"
+                        [ngClass]="{'is-invalid':submitted && form.controls.firstName.errors}" required autocomplete="off" (paste)="nameValidation($event,'firstName')" />
+                            <div *ngIf="submitted && form.controls.firstName.errors" class="text-danger">
+                            <div *ngIf="submitted && form.controls.firstName.errors?.required">
+                                 First Name is required
+                            </div>
+                  </div>
+                  </div>
+              </div>
+              <div class="col-sm-6">
+                  <div class="form-group">
+                      <label for="exampleInputEmail1">Last name</label>
+                      <input type="text" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' maxlength="20" class="form-control form-control-sm" id="lastname"  placeholder="Enter Last Name" required autocomplete="false" formControlName="lastName" [(ngModel)]="userReg.lastName" autocomplete="off"
+                      [ngClass]="{'is-invalid':submitted && form.controls.lastName.errors}" (paste)="nameValidation($event,'lastName')" />
+                      <div *ngIf="submitted && form.controls.lastName.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.lastName.errors?.required">
+                             Last Name is required
+                        </div>
+                  </div>
+                  </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="exampleInputZipcode1" class="form-label">Designation</label>
+                <select class="form-select form-select-sm"  formControlName="designation" [ngClass]="{'is-invalid':submitted && form.controls.designation.errors}"  [(ngModel)]="userReg.designation">
+                  <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+                 </select>
+                 <div *ngIf="submitted && form.controls.designation.errors" class="text-danger">
+                  <div *ngIf="submitted && form.controls.designation.errors?.required">
+                       Designation is required
+                  </div>
+                  </div>
+            </div>
+            <div class="form-group">
+                <label for="contactNumber">Contact Number</label>
+                <input type="text" maxlength="15" class="form-control form-control-sm" id="lastname"  placeholder="Enter Contact Number" required autocomplete="false" formControlName="contactNumber" [(ngModel)]="userReg.contactNumber" autocomplete="off"
+                [ngClass]="{'is-invalid':submitted && form.controls.contactNumber.errors}" />
+                <div *ngIf="submitted && form.controls.contactNumber.errors" class="text-danger">
+                  <div *ngIf="submitted && form.controls.contactNumber.errors?.required">
+                    Contact Number is required
+                  </div>
+            </div>
+            </div>
+            
+            <div class="form-group">
+            <label for="userEmail">Email address</label>
+            <input type="userEmail" class="form-control form-control-sm" id="userEmail" name="userEmail" placeholder="Enter Email" formControlName="userEmail"  [(ngModel)]="userReg.userEmail" (ngModelChange)="userReg.userEmail = $event?.toLowerCase()" autocomplete="off"
+                            [ngClass]="{'is-invalid':submitted && form.controls.userEmail.errors}"  maxlength="100"   [readonly]="!createOrUpdate" />
+            <div *ngIf="submitted && form.controls.userEmail.errors" class="text-danger">
+            <div *ngIf="submitted && form.controls.userEmail.errors?.required">
+                    Email Id is required
+            </div>
+            <div *ngIf="submitted && form.controls.userEmail.errors.pattern">
+                  Email Id is invalid
+             </div>
+              </div>
+            </div>
+  
+          <div class="row" [hidden]="!createOrUpdate">
+           <div class="col-sm-6">
+            <div class="form-group">
+              <label for="password" style="margin-right: 10px;">Password</label>
+              <span style="cursor: pointer;">
+                <i class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="left" title=" Must be 8-16 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character."></i>
+              </span>
+                <div class="input-group">
+                  <input
+                    type="{{ isPasswordVisible ? 'text' : 'password' }}"
+                    class="form-control form-control-sm"
+                    id="password"
+                    [(ngModel)]="userReg.password"
+                    name="password"
+                    placeholder="Password"
+                    [ngClass]="{'is-invalid':submitted && form.controls.password.errors}"
+                    required>
+                    <span class="input-group-text" (click)="togglePasswordVisibility()" style="cursor: pointer;">
+                    <i class="fas" [ngClass]="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+                  </span>
+                </div>
+           
+                <!-- Error message section -->
+                <div *ngIf="submitted && form.controls.password.errors" class="text-danger">
+                    <div *ngIf="form.controls.password.errors?.required">
+                      Please enter the password.
+                    </div>
+                    <div *ngIf="form.controls.password.errors?.pattern">
+                      Please enter a strong password.
+                    </div>
+                </div>
+            </div>
+          </div>
+           
+           <div class="col-sm-6">  
+              <div class="form-group">
+                <label for="repeatPassword">Repeat password</label>
+                <input
+                  type="password"
+                  class="form-control form-control-sm"
+                  id="repeatPassword"
+                  [(ngModel)]="userReg.repeatPassword"
+                  name="repeatPassword"
+                  placeholder="Repeat password"
+                  [ngClass]="{'is-invalid':submitted && (form.controls.repeatPassword.errors || userReg.password !== userReg.repeatPassword)}"
+                  required>
+                  <div *ngIf="submitted && form.controls.repeatPassword.errors" class="text-danger">
+                    <div *ngIf="submitted  && form.controls.repeatPassword.errors?.required">
+                  Please enter the repeat password.
+                </div>
+                </div>
+                <div *ngIf="submitted && userReg.password !== userReg.repeatPassword && !form.controls.repeatPassword.errors" class="text-danger">
+                  Passwords do not match.
+                </div>
+              </div>
+          </div>
+          </div>
+           
+          <div class="d-flex justify-content-start">
+              <button type="submit" class="btn btn-primary-custom">Submit</button>
+              <button type="reset" class="btn btn-dark ml-2" *ngIf="createOrUpdate" (click)="resetForm(createOrUpdate)">Reset</button>
+          </div>
+          </form>
+    </div>
+  </div>
+  
+  
+  <!--------Update Role--------->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="updateRoleModel" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+      <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasRightLabel">Update/Add Role</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"
+              #editRoleCloseModal></button>
+      </div>
+      <hr class="sidebar-divider my-0">
+      <div class="modal-body">
+         
+          <div class="form-group">
+              <label for="lastName" class="col-form-label">Employee Name:</label>
+              <input type="text" class="form-control" id="lastName" name="lastName" [value]="userReg.firstName + ' ' + userReg.lastName " autocomplete="off"  disabled/>
+          </div>
+          <div class="form-group">
+              <label for="username" class="col-form-label">User Name:</label>
+              <input type="text" class="form-control" id="userName" name="userName"[(ngModel)]="userReg.userEmail"  disabled autocomplete="off" />
+          
+      </div>
+  
+      <div class="form-group">
+          <label for="username" class="col-form-label">Roles:</label>
+  
+           <ng-multiselect-dropdown #multiSelect
+              [placeholder]="'Select options'"
+              [data]="dropdownList"
+              [(ngModel)]="selectedItems"
+              [settings]="settings"
+              (onSelect)="onItemSelect($event)" 
+              (onDeSelect)="onDeSelect($event)"
+              (onSelectAll)="onSelectAll($event)"
+              (onDeSelectAll)="onDeSelectAll($event)"
+            >
+            </ng-multiselect-dropdown>
+                 
+  
+  </div>
+  <div class="offcanvas-footer d-flex justify-content-start mt-3" style="align-items: center;">
+      <input type="submit" class="btn btn-primary-custom me-2" (click)="updateRolesUser()" value="Save" />
+      <button type="button" class="btn btn-danger" data-bs-dismiss="offcanvas"
+          aria-label="Close">Close</button>
+  </div>
+
+  </div>
+  </div>
+
+
+<!-- view user Details -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="viewUserDetails" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">View User Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <hr class="sidebar-divider my-0">
+    <div class="offcanvas-body">      
+            <!-- <div class="modal-body"> -->          
+                <div class="row mb-2" style="font-size: 13px;">
+                    <div class="col-sm-5 font-weight-bold">First Name</div>
+                    <div class="col-sm-7">: {{userReg.firstName}}</div>
+                </div>
+                <div class="row mb-2" style="font-size: 13px;">
+                    <div class="col-sm-5 font-weight-bold">Last Name</div>
+                    <div class="col-sm-7">: {{userReg.lastName}}</div>
+                </div>
+                <div class="row mb-2" style="font-size: 13px;">
+                    <div class="col-sm-5 font-weight-bold">Email</div>
+                    <div class="col-sm-7">: {{userReg.userEmail}}</div>
+                </div>
+                <div class="row mb-2" style="font-size: 13px;">
+                    <div class="col-sm-5 font-weight-bold">Designation</div>
+                    <div class="col-sm-7">: {{userReg.designation}}</div>
+                </div>
+                <div class="row mb-2" style="font-size: 13px;">
+                    <div class="col-sm-5 font-weight-bold">Contact Number</div>
+                    <div class="col-sm-7">: {{userReg.contactNumber}}</div>
+                </div>
+                <div class="row mb-2" style="font-size: 13px;">
+                    <div class="col-sm-5 font-weight-bold">Status</div>
+                    <div class="col-sm-7">: {{userReg.status ? 'Active':'Inactive'}}</div>
+                </div>
+                <div class="row mb-2" style="font-size: 13px;">
+                    <div class="col-sm-5 font-weight-bold">Roles</div>
+                    <div class="col-sm-7">:  {{ getRoleNames(userReg.roleModel) }}</div>
+                </div>
+                <div style="border-bottom: 1px solid gray;height: 3px;"></div>
+                <!-- Authorization Section -->
+                 
+                <div class="mb-4">
+                    <div class="row text-center font-weight-bold" style="font-size: 14px;">
+                        <div class="col-sm-8 text-left">Authorization</div>
+                        <div class="col-sm-2">Read</div>
+                        <div class="col-sm-2">Write</div>
+                    </div>
+
+                    <!-- Scrollable container for the authorization rows -->
+                    <div class="scrollable-container">
+                        <div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-1 ml-1">
+                            <div class="col-sm-8" style="font-size: 13px;" [ngClass]="{'text-danger': !permission.approveStatus }" [title]="!permission.approveStatus?'waiting for approval':''" >{{ permission.screenName }}</div>
+                            <div class="col-sm-2 text-center">
+                                <i [class]="getReadIcon(permission.readPrv)" style="font-size: 13px;"></i>
+                            </div>
+                            <div class="col-sm-2 text-center">
+                                <i [class]="getWriteIcon(permission.writePrv)" style="font-size: 13px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+             
+            <!-- </div> -->
+    </div>
+</div>
