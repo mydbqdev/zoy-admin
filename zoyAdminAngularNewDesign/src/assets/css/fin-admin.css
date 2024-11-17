@@ -10728,9 +10728,10 @@ a:focus {
 }
 
 .sidebar-light .nav-item.active .nav-link {
-  color: #6e707e;
+  color: #000000;
   background-color: rgb(199, 199, 247);
   border-radius: 5px;
+  border-left: 3px solid #7908e1;
 }
 
 .sidebar-light .nav-item.active .nav-link i {
@@ -11353,4 +11354,25 @@ footer.sticky-footer .copyright {
 
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
+}
+
+.text-header-800 {
+  color: #78177e !important;
+  font-size: 25px;
+}
+
+.text-header-border {
+  border-left: 4px solid #78177e;
+  padding-left: 5px;
+}
+.text-header-800-blue {
+  color: #3c08db !important;
+  font-size: 25px;
+  padding-left:5px ;
+}
+.sorting-normal-color{
+  color: rgb(211, 211, 211) !important;
+}
+.sorting-selected-color{
+  color: rgb(49, 49, 49) !important;
 }

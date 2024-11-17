@@ -64,6 +64,8 @@
     <div id="collapseOwnerManagement" [ngClass]="menu2 ? 'collapse show':'collapse'" aria-labelledby="headingOwnerManagement" data-parent="#accordionSidebar">
         <div class="bg-white collapse-inner rounded">
             <a class="collapse-item" routerLink="/zoy-code" [ngClass]="{'active':activeSubNenuName=='zoy-code'}" (click)="setHeaderName('Zoy Code')">Zoy Code</a>
+            <div class="p-1"></div>
+            <a class="collapse-item" routerLink="/manage-owner" [ngClass]="{'active':activeSubNenuName=='manage-owner'}" >Manage Owners</a>
         </div>
     </div>
 </li>

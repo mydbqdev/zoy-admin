@@ -38,9 +38,10 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { ReportListComponent } from './reports/component/report-list.component';
 import { AppOwnerMenuRoutingModule } from './owners/owners-menu-routing.model';
 import { AppUsersMenuRoutingModule } from './user-management/users-menu-routing.module';
-import { ZoyCodeComponent } from './owners/owners/zoy-code/zoy-code.component';
 import { PermissionApprovalComponent } from './user-management/permission-approval/component/permission-approval.component';
 import { UserMasterComponent } from './user-management/user-master/components/user-master.component';
+import { ManageOwnerComponent } from './owners/managing-owner/components/managing-owner.component';
+import { ZoyCodeComponent } from './owners/zoy-code/components/zoy-code.component';
 
 
 const appRoutes: Routes = [
@@ -66,7 +67,7 @@ const appRoutes: Routes = [
     ForgotPasswordComponent,
     PermissionApprovalComponent,
     ZoyCodeComponent,
-
+    ManageOwnerComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
