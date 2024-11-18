@@ -8,7 +8,9 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -162,21 +164,17 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> downloadUserPaymentsByDateRange(Timestamp fromDate, Timestamp toDate) {
-		ResponseBody response=new ResponseBody();
-		try {
-			String PaymentDetailsUrl =  adminReportImpl.downloadUserPaymentDetails(fromDate,toDate);
-			response.setStatus(HttpStatus.OK.value());
-			response.setData(PaymentDetailsUrl);
-			response.setMessage("PDF generated successfully");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error getting downloadUserPayments  details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<byte[]> downloadUserPaymentsByDateRange(Timestamp fromDate, Timestamp toDate) {	
+		byte[] pdfData = adminReportImpl.downloadUserPaymentDetails(fromDate,toDate);
+
+		if (pdfData.length == 0) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
+
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Vendor_Dues_Report.pdf")
+				.contentType(MediaType.APPLICATION_PDF)
+				.body(pdfData);
 
 	}
 }
-
