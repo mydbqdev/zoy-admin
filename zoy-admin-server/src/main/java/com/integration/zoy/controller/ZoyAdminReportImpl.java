@@ -113,7 +113,6 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@GetMapping(value = "/zoy_admin/download_payment_transfer_details",
 	produces = { "application/json" })
-	ResponseEntity<String> downloadUserPaymentsByDateRange(@RequestParam("fromDate") Timestamp fromDate,
+	ResponseEntity<byte[]> downloadUserPaymentsByDateRange(@RequestParam("fromDate") Timestamp fromDate,
             @RequestParam("toDate")Timestamp toDate);
-
 }

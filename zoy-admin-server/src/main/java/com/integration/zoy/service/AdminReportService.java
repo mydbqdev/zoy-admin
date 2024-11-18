@@ -165,7 +165,7 @@ public class AdminReportService implements AdminReportImpl{
 	}
 	
 	@Override
-	public String downloadUserPaymentDetails(Timestamp fromDate, Timestamp toDate) {
+	public byte[] downloadUserPaymentDetails(Timestamp fromDate, Timestamp toDate) {
 		List<Object[]> results = userPaymentRepository.findUserPaymentDetailsByUserIdAndDateRange(fromDate, toDate);
 		List<UserPaymentDTO> userPaymentList = new ArrayList<>();
 		for (Object[] row : results) {
@@ -193,13 +193,7 @@ public class AdminReportService implements AdminReportImpl{
 	    data.put("startDate", fromDate); 
 	    data.put("endDate", toDate); 
 	    data.put("printDate", new Timestamp(System.currentTimeMillis()));
-	    try {
-	        String uniqueFileName = "Vendor_Dues_Report_" + UUID.randomUUID().toString() + ".pdf";
-	        String url = pdfGenerateService.generatePdfFile("userTransactionReport", data, uniqueFileName);
-	        return  url;
-	    } catch (IOException e) {
-	        throw new RuntimeException("Failed to generate PDF", e);
-	    }
+	    return pdfGenerateService.generatePdfFile("userTransactionReport", data);
 	}
 
 }
