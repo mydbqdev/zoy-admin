@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.Iterables;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -609,5 +611,72 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	         return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 	     }
 	 }
+
+
+	 @Override
+	 public ResponseEntity<String> zoyAdminNotApprovedRoles() {
+		 ResponseBody response = new ResponseBody();
+		    try {
+		    	
+		        List<Object[]> userPrevilages = adminDBImpl.findAllAdminUserPrivileges1();
+		        
+		        
+		       Iterable<String> empMails = userPrevilages.stream().map(e -> String.valueOf(e[0])).collect(Collectors.toSet());
+		        
+		        List<AdminUserMaster> master = adminDBImpl.userdata(Iterables.toArray(empMails,String.class));
+      
+		        List<AdminUserList> adminUserTemporary = new ArrayList<>();
+		        
+		        for (AdminUserMaster result : master) {
+		            AdminUserList user = new AdminUserList();
+		            user.setFirstName(result.getFirstName());
+		            user.setLastName(result.getLastName());
+		            user.setUserEmail(result.getUserEmail());
+		            user.setContactNumber(result.getContactNumber());
+		            user.setDesignation(result.getDesignation());
+		            user.setStatus(result.getStatus());
+		            List<RoleModel> roles = new ArrayList<>();
+		            
+		         List<Object[]>previlages= userPrevilages.stream()
+									   	        		 .filter(p ->p[0].equals(result.getUserEmail()) && null != p[1] && !"null".equals(p[1])  )
+									   	        		 .collect(Collectors.toList());
+		         
+		            if (!previlages.isEmpty()) {
+		            	for(Object[] pre:previlages) {
+		            	 int roleId = pre[1] instanceof BigInteger ? ((BigInteger) pre[1]).intValue() : (Integer) pre[1];
+		              
+		            	//	int roleId = (Integer) pre[1];
+			                String roleName = (String) pre[3];
+			                String approveStatus=(String) pre[2];
+			         
+		                RoleModel role = new RoleModel(roleId, roleName,approveStatus); 
+		                
+		                String screens = (String) pre[4];  
+			   	          if (screens != null && !screens.isEmpty()) {
+			   	              String[] screensSet = screens.split(",");
+			   	              for (String screensNames : screensSet) {
+			   	                  role.addScreens(screensNames); 
+			   	              }
+			   	          }
+			   	       roles.add(role);
+			   	       
+		            	}
+
+		            }
+
+		            user.setRoleModel(roles);
+		            adminUserTemporary.add(user);
+		        }
+
+		        return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+
+		    } catch (Exception e) {
+		        log.error("Error getting user list details: " + e.getMessage(), e);
+		        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		        response.setError("Internal server error");
+		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		    }
+		}
+
 	
 }

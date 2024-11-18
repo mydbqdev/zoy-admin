@@ -109,4 +109,51 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 	@Query(value = "UPDATE user_temprory\r\n"
 			+ "	SET is_rejected = TRUE  WHERE user_email = :user_email", nativeQuery = true)
 	void rejectUser(String user_email);
+	
+	
+	@Query(value="select * from user_master where user_email in (:userMails)",nativeQuery = true)
+	List<AdminUserMaster> userdata(String[] userMails);
+	
+	
+	
+	@Query(value = "SELECT \r\n"
+			+ "        um.user_email,\r\n"
+			+ "        ut.role_id,\r\n"
+			+ "        CASE \r\n"
+			+ "            WHEN ut.is_approve THEN 'Approved' \r\n"
+			+ "            ELSE \r\n"
+			+ "                CASE \r\n"
+			+ "                    WHEN ut.is_rejected THEN 'Rejected' \r\n"
+			+ "                    ELSE 'Pending' \r\n"
+			+ "                END \r\n"
+			+ "        END AS is_approve,\r\n"
+			+ "        art.role_name,\r\n"
+			+ "        STRING_AGG(\r\n"
+			+ "            DISTINCT CASE \r\n"
+			+ "                WHEN rst.read_prv = TRUE AND rst.write_prv = TRUE THEN \r\n"
+			+ "                    UPPER(rst.screen_name) || '_READ,' || UPPER(rst.screen_name) || '_WRITE'\r\n"
+			+ "                WHEN rst.read_prv = TRUE THEN UPPER(rst.screen_name) || '_READ'\r\n"
+			+ "                WHEN rst.write_prv = TRUE THEN UPPER(rst.screen_name) || '_WRITE'\r\n"
+			+ "                ELSE NULL\r\n"
+			+ "            END, \r\n"
+			+ "            ','\r\n"
+			+ "        ) AS screens\r\n"
+			+ "    FROM \r\n"
+			+ "        pgadmin.user_master um\r\n"
+			+ "    JOIN \r\n"
+			+ "        pgadmin.user_temprory ut ON um.user_email = ut.user_email\r\n"
+			+ "    LEFT JOIN \r\n"
+			+ "        pgadmin.app_role art ON ut.role_id = art.id\r\n"
+			+ "    LEFT JOIN \r\n"
+			+ "        pgadmin.role_screen rst ON art.id = rst.role_id\r\n"
+			+ "     where ut.is_approve = false and ut.is_rejected =false \r\n"
+			+ "    GROUP BY \r\n"
+			+ "        um.user_email, ut.role_id, ut.is_approve, art.role_name, ut.is_rejected;\r\n"
+			+ "\r\n"
+			+ "", nativeQuery = true)	
+	List<Object[]> findAllAdminUserPrivileges1();
+	
+	
+	
+	
 }

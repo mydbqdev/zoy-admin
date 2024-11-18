@@ -62,5 +62,9 @@ public interface AdminDBImpl {
 	void deleteRolefromApp_role(int role_id);
 	
 	void deleteRolefromRoleScreen(int role_id);
+	
+	List<AdminUserMaster> userdata(String[] userMails);
+
+	List<Object[]> findAllAdminUserPrivileges1();
 
 }
