@@ -196,7 +196,7 @@ public interface ZoyAdminUserImpl {
 	        @ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "zoy_admin/role_delete", 
     produces = { "application/json" })
-	ResponseEntity<String> deleteRole(  @RequestParam("roleId") int roleId );
+	ResponseEntity<String> deleteRole(  @RequestParam("roleId") int roleId ,@RequestParam("roleName") String roleName);
 	
 	
 	@Operation(summary = "Get Admin User's not approved roles", description = "Getting Admin User roles List", security = {

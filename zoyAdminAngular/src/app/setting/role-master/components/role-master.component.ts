@@ -48,7 +48,6 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
   @ViewChild('myForm') myFormRef!: ElementRef; 
   @ViewChild('closeNewModal') closeNewModal : ElementRef;
   @ViewChild('editNewModal') editNewModal : ElementRef; 
-  @ViewChild('deleteNewModal') deleteNewModal : ElementRef;
   errorMsg: any;
   submitted: boolean;
   public userNameSession:string="";
@@ -168,6 +167,11 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
     this.roleModel.roleName = this.role;
     this.roleModel.desc = this.desc;
 
+    if(this.roleModel.roleScreen.length==0){
+      this.notifyService.showWarning("Atleast one screen is require to create.", "");
+      return;
+    }
+
     // this.roleModel.dataread = this.dataSelectedRead;
     // this.roleModel.datawrite = this.dataSelectedWrite;
     if(!this.form.invalid){
@@ -248,6 +252,10 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
       this.roleModel.roleName = this.editRoles.roleName;
       this.roleModel.desc = this.editRoles.desc;
 
+      if(this.roleModel.roleScreen.length==0){
+        this.notifyService.showWarning("Atleast one screen is require to update.", "");
+        return;
+      }
       // this.roleModel.dataread = this.dataSelectedRead;
       // this.roleModel.datawrite = this.dataSelectedWrite;
       this.spinner.show();
@@ -360,26 +368,16 @@ this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"write",this.dataSelectedWrit
 }
 
 
-deleteRecord(id : number){
+deleteRecord(row : RoleModel){
   this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to delete the User?')
   .then(
     (confirmed) =>{
      if(confirmed){
-  this.deleteRoles = this.getRoles.find(r => r.id == id);
-  this.authService.checkLoginUserVlidaate();
+ // this.authService.checkLoginUserVlidaate();
   this.spinner.show();
-  this.roleService.deleteRole(this.deleteRoles.id.toString()).subscribe((result) => {
-    if(result.status=='1'){
-    this.notifyService.showSuccess("Role has been deleted successfully", "");
-    }else if(result.status=='2'){
-      this.notifyService.showWarning(" This is a Default role can't be Deleted ", "");
-    }
-    else{        
-      this.notifyService.showError(result.status, "");
-    }
-    this.reloadCurrentPage(); 
+  this.roleService.deleteRole(row.id,row.roleName).subscribe((result) => {
+    this.notifyService.showSuccess(result.message, "");
     this.getRolesData();
-    this.deleteNewModal.nativeElement.click();
     this.spinner.hide();
   },error =>{
     this.spinner.hide();
@@ -395,7 +393,7 @@ deleteRecord(id : number){
       }else{
         let str;
           if(error.status==400){
-          str=error.error;
+          str=error.error.error;
           }else{
             str=error.message;
             str=str.substring(str.indexOf(":")+1);
