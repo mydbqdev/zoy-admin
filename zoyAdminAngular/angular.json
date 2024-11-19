@@ -26,6 +26,7 @@
               "src/manifest.json" 
             ],
             "styles": [
+                "src/assets/font/fonts.css" ,
                 "src/assets/fontawesome-free/css/all.min.css",
                 "node_modules/bootstrap/dist/css/bootstrap.css",
                 "src/styles.css" ,

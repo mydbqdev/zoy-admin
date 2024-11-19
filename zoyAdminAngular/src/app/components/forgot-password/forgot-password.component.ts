@@ -50,7 +50,9 @@ export class ForgotPasswordComponent implements OnInit {
 	submittedVerifyCode=false;
 	submittedResetPwd=false;
 	email: string = '';
-
+	isPasswordVisible: boolean = false;
+	showNewPassword: boolean = false;
+	showConfirmPassword: boolean = false;
 
 
 	constructor(
@@ -125,10 +127,14 @@ export class ForgotPasswordComponent implements OnInit {
 		}
 	}
 
-	isPasswordVisible: boolean = false;
 
-	togglePasswordVisibility() {
-		this.isPasswordVisible = !this.isPasswordVisible;
+
+	togglePasswordVisibility(field: 'new' | 'confirm'): void {
+	  if (field === 'new') {
+	    this.showNewPassword = !this.showNewPassword;
+	  } else if (field === 'confirm') {
+	    this.showConfirmPassword = !this.showConfirmPassword;
+	  }
 	}
 
 	resetForm() {
@@ -173,12 +179,7 @@ export class ForgotPasswordComponent implements OnInit {
 			this.notifyService.showError("Invalid OTP", "Error");
 		}
 		this.stepPassword=3;
-
 	}
-
-
-
-
 	doSignin() {
 		this.submitted=true;    
 		if (this.email !== '' && this.email !== null) {		
@@ -209,8 +210,6 @@ export class ForgotPasswordComponent implements OnInit {
 
 	  validateNumericInput(event: any): void {
 		const inputValue = event.target.value;
-	  
-		// Allow only numeric input, remove any non-numeric characters
 		if (!/^[0-9]*$/.test(inputValue)) {
 		  event.target.value = inputValue.replace(/[^0-9]/g, '');
 		}

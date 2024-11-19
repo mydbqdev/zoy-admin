@@ -21,20 +21,17 @@
                   <!-- Begin Page Content -->
                   <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between mb-3">
-                      <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Zoy</span><span class="text-header-800-blue">Code</span></h3> 
-                      <div class="input-group ml-4 w-50" >
-                        <button type="button" 
-                                class="form-control"
-                                [ngClass]="{ 'btn-primary-custom': selectedModel === 'generate', 'btn-outline-custom': selectedModel !== 'generate' }" 
-                                (click)="selectButton('generate')">Generate</button>
-                      
-                        <button type="button" 
-                                class="form-control" 
-                                [ngClass]="{ 'btn-primary-custom': selectedModel === 'generated', 'btn-outline-custom': selectedModel !== 'generated' }" 
-                                (click)="selectButton('generated')">Generated</button>
+                      <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Manage</span><span class="text-header-800-blue">Owners</span></h3> 
+                      <div class="input-group ml-4 w-75" >
+                        <div class="btn-group" role="group" aria-label="Basic outlined example">
+                          <button type="button" class="btn btn-outline-secondary" style="font-size: 14px;"><i class="fas fa-filter"></i></button>
+                          <button type="button" class="btn btn-outline-secondary" style="color:rgb(56, 56, 56);font-size: 14px;">Filter By</button>
+                          <button type="button" class="btn btn-outline-secondary" style="color:rgb(56, 56, 56);font-size: 14px;">Status<i class="fas fa-chevron-down ml-2"></i></button>
+                          <button type="button" class="btn btn-outline-secondary" style="color:rgb(252, 93, 93);font-size: 14px;"><i class="fas fa-redo mr-2"></i>Reset Filter</button>
+                        </div>
                       </div>
                       <div class="ml-auto">  
-                        <div class="input-group" *ngIf="selectedModel == 'generated'">
+                        <div class="input-group">
                           <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i> 
                           <input type="text" class="form-control form-control-sm  border-1" style="border-radius: 20px;padding-left: 29px;width: 300px;" placeholder="Search"
                                 aria-label="Search" aria-describedby="basic-addon2">         
@@ -46,43 +43,17 @@
                       <div class="card shadow mb-3">
                         <div class="card-body" style="display: block;margin: 0px;padding: 2px;" >
                             <div class="scrollable-container-main">
-                               <div class="container" *ngIf="selectedModel == 'generate'">
-                                <div class="row justify-content-center">
-                                  <div class="col-md-4 mb-3">
-                                    <label for="firstName">First Name</label>
-                                    <input type="text" id="firstName" class="form-control" placeholder="Enter Owner First Name">
-                                  </div>
-                                  <div class="col-md-4 mb-3">
-                                    <label for="lastName">Last Name</label>
-                                    <input type="text" id="lastName" class="form-control" placeholder="Enter Owner Last Name">
-                                  </div>
-                                </div>                              
-                                <!-- Second Row of Input Fields -->
-                                <div class="row justify-content-center">
-                                  <div class="col-md-4 mb-3">
-                                    <label for="email">Owner Email</label>
-                                    <input type="email" id="email" class="form-control" placeholder="Enter Owner Email">
-                                  </div>
-                                  <div class="col-md-4 mb-3">
-                                    <label for="phone">Contact</label>
-                                    <input type="tel" id="phone" class="form-control" placeholder="Enter Owner Contact Number">
-                                  </div>
-                                 </div>
-                                 <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;">          
-                                  <input type="submit" class="btn btn-primary-custom me-2" value="Generate Zoy Code"   />
-                                 </div>
-                               </div>
-                               <div *ngIf="selectedModel == 'generated'">
+                               <div>
                                 <table mat-table [dataSource]="dataSource">
                                   <!-- Zoy Code Column -->
                                   <ng-container matColumnDef="zoyCode">
-                                    <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> ZOY CODE</th>
+                                    <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> ZOY CODE </th>
                                     <td mat-cell *matCellDef="let element"> {{ element.zoyCode }} </td>
                                   </ng-container>
                                 
                                   <!-- Owner Name Column -->
                                   <ng-container matColumnDef="ownerName">
-                                    <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> OWNER NAME </th>
+                                    <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> OWNER NAME</th>
                                     <td mat-cell *matCellDef="let element"> {{ element.ownerName }} </td>
                                   </ng-container>
                                 
@@ -100,7 +71,7 @@
                                 
                                   <!-- Date Column -->
                                   <ng-container matColumnDef="date">
-                                    <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> DATE </th>
+                                    <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> NO OF PROPERTIES </th>
                                     <td mat-cell *matCellDef="let element"> {{ element.date }} </td>
                                   </ng-container>
                                 
@@ -113,7 +84,13 @@
                                         {{ element.status }}
                                       </button>
                                     </td>
-                                  </ng-container>                              
+                                  </ng-container>            
+                                  <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef> </th>
+                                    <td mat-cell *matCellDef="let element" >
+                                      <i class="far fa-eye"></i>
+                                    </td>
+                                  </ng-container>                   
                                   <!-- Header Row -->
                                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                   <!-- Data Row -->

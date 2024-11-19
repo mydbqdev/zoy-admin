@@ -1,16 +1,12 @@
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow" [ngClass]=" isExpandSideBar ? 'fixed-top-expand':'fixed-top-collaspe'">
-  <h1 class="h3 mb-0 text-gray-800">{{headerName}}</h1>
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 fixed-top-expand">
+  <h1 class="h3 mb-0 text-gray-800" style="width: 200px;">Admin Portal</h1>
 
   <!-- Topbar Search -->
   <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
   <div class="input-group">
-      <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-          aria-label="Search" aria-describedby="basic-addon2">
-      <div class="input-group-append">
-          <button class="btn btn-primary" type="button">
-              <i class="fas fa-search fa-sm"></i>
-          </button>
-      </div>
+    <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i> 
+    <input type="text" class="form-control bg-light border-1 small" style="border-radius: 20px;padding-left: 29px;" placeholder="Search"
+          aria-label="Search" aria-describedby="basic-addon2">         
   </div>
   </form>
   <!-- Topbar Navbar -->
@@ -73,14 +69,16 @@
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <div class="profile-top"> 
                 {{userInfo?.firstName?.charAt(0).toUpperCase()}}
-              </div>
+            </div>
               <!-- <img class="img-profile rounded-circle"
                   src="assets/images/undraw_profile.svg"> -->
-            <span class="ml-2 d-none d-lg-inline text-gray-600 small">{{userInfo?.firstName}} {{userInfo?.lastName}}</span>
+            <span class="ml-2 d-none d-lg-inline text-gray-600 small text-truncate" style="width: 100px;">{{userInfo?.firstName}} {{userInfo?.lastName}}</span>
+            <i class="fas fa-chevron-circle-down text-gray-500"></i>
           </a>
           <!-- Dropdown - User Information -->
           <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
               aria-labelledby="userDropdown">
+              <h6 class="dropdown-header align-items-center" style="border-bottom: 1px solid rgb(207, 206, 206);">{{userInfo?.firstName}} {{userInfo?.lastName}}</h6>
               <a class="dropdown-item" href="javascript:void(0)">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
