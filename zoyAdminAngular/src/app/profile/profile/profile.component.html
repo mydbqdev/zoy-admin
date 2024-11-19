@@ -50,14 +50,79 @@
                             </div>
                             <div class="col-xl-4 col-md-6 mb-2">
                                 <div class="card">
-                                    <div class="card-body" style="padding: 5px ;margin: 0px;">
+                                    <div class="card-body"  style="padding: 5px ;margin: 0px;">
                                         <div class="no-gutters align-items-center">
-                                               <div class="text-sub-header text-sub-header-border mb-1"> Change Password</div>                                          
-
-                                                <!-- Image -->
-                                                <div class="justify-content-between align-items-center">
-                                                <img src="assets/images/pie.PNG" class="img-fluid">
+                                            <div class="text-sub-header text-sub-header-border mb-3"> Change Password</div> 
+                                           <div class="pl-3 pr-3 ">
+                                            <form [formGroup]="form" >
+                                                <div class="mb-3">
+                                                    <div class="input-group">
+                                                      <input  type="text"  class="form-control custom-underline" id="oldPassword" placeholder="Old password"  formControlName="oldPassword"
+                                                        style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;" 
+                                                        [(ngModel)]="changePasswordDetails.oldPassword" [ngClass]="{'is-invalid':submitted && form.controls.oldPassword.errors}" 
+                                                        title="Old password" autocomplete="off" required>
+                                                    </div>
+                                                    <div *ngIf="submitted && form.controls.oldPassword.errors" class="text-danger">
+                                                        <div *ngIf="form.controls.oldPassword.errors?.required">
+                                                          Please enter the old password.
+                                                        </div>
+                                                    </div>
+                                                  </div>
+                                                 <div class="mb-3">
+                                                  <div class="input-group">
+                                                    <input  [type]="viewPassword ? 'text' : 'password'"  class="form-control custom-underline" id="newPassword"  formControlName="newPassword"
+                                                      style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;" 
+                                                      [(ngModel)]="changePasswordDetails.newPassword" [ngClass]="{'is-invalid':submitted && form.controls.newPassword.errors}" 
+                                                      placeholder="New password"  title="New password" autocomplete="off"  required>
+                                                     
+                                                      <span 
+                                                      class="input-group-text" 
+                                                      style="border: 0px solid #d1d3e2;background-color: #fff !important;cursor: pointer;border-bottom: 1px solid #d1d3e2;border-radius: 0px;"
+                                                      (click)="viewPassword=!viewPassword">
+                                                      <i class="fas" [ngClass]="viewPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                                    </span>
+                                                    
+                                                  </div>
+                                                  <div *ngIf="submitted && form.controls.newPassword.errors" class="text-danger">
+                                                    <div *ngIf="form.controls.newPassword.errors?.required">
+                                                      Please enter the new password.
+                                                    </div>
+                                                    <div *ngIf="form.controls.newPassword.errors?.pattern">
+                                                      Please enter a strong new password.
+                                                    </div>
                                                 </div>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                  <div class="input-group">
+                                                    <input type="password"  class="form-control custom-underline" id="confirmPassword" placeholder="Confirm password"  formControlName="confirmPassword"
+                                                    [(ngModel)]="changePasswordDetails.confirmPassword" [ngClass]="{'is-invalid':submitted && form.controls.confirmPassword.errors}" 
+                                                      style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;" autocomplete="off" required>
+                                                  </div>
+                                                  <div *ngIf="submitted && form.controls.confirmPassword.errors" class="text-danger">
+                                                    <div *ngIf="submitted  && form.controls.confirmPassword.errors?.required">
+                                                            Please enter the confirm password.
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="submitted && changePasswordDetails.newPassword !== changePasswordDetails.confirmPassword && !form.controls.confirmPassword.errors" class="text-danger">
+                                                    New Passwords do not match.
+                                                  </div>
+                                                </div>
+                                              </form>
+                                            </div>
+                                            <div class="pl-3 pr-3 mb-2" style="font-size: 14px; color: gray;" >
+                                                <i class="fa fa-info-circle"></i>
+                                                <span class="ml-2" >
+                                                  Must be 8-16 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.
+                                                </span>
+
+                                            </div>
+                                              <div class="d-flex justify-content-center ">
+                                                <button type="submit" class="btn btn-primary-custom" (click)="changePassword()">Change Password</button>
+                                                <button type="reset" class="btn btn-dark ml-2" (click)="form.reset();submitted=false;">Reset</button>
+                                            </div>
+
+                                               
                                         </div>
                                     </div>
                                 </div>
