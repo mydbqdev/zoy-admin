@@ -111,30 +111,20 @@ ngAfterViewInit(){
 getUserDetais(){
   // this.authService.checkLoginUserVlidaate();
    this.spinner.show();
-   this.userMasterService.getUserList().subscribe(data => {
-
+   this.permissionService.zoyAdminNotApprovedRoles().subscribe(data => {
     
   if(data !=null && data.length>0){
 
-    let users : UserDetails[] = data;
-
-    let pre = users.filter(user=>user?.roleModel.some(role => role.approveStatus == 'Pending' || role.approveStatus == 'Rejected'));
-
-    this.ELEMENT_DATA = Object.assign([],pre);
+    this.ELEMENT_DATA = Object.assign([],data);
      this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
      this.dataSource.sort = this.sort;
      this.dataSource.paginator = this.paginator;
-
   }else{
-
     this.ELEMENT_DATA = Object.assign([]);
      this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
      this.dataSource.sort = this.sort;
      this.dataSource.paginator = this.paginator;
-
   }
-
-    
      this.spinner.hide();
   }, error => {
    this.spinner.hide();
@@ -182,7 +172,6 @@ getUserDetais(){
       this.userRolePermissions = [];
   
       if (user && user.roleModel && Array.isArray(user.roleModel)) {
-        console.log("user.roleModel",user.roleModel);
         user.roleModel.forEach(role => {
           if (role.screens && Array.isArray(role.screens)) {
             role.screens.forEach(privilege => {
