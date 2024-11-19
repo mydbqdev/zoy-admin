@@ -6,6 +6,7 @@ import { UnderConstructionComponent } from './under-construction/under-construct
 import { HomeComponent } from './components/home/home.component';
 import { ReportListComponent } from './reports/component/report-list.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ProfileComponent } from './profile/profile/profile.component';
 
 const routes: Routes = [
 	{path:'',redirectTo:'/startup',pathMatch:'full'},
@@ -15,6 +16,7 @@ const routes: Routes = [
 	{ path: 'home', component: HomeComponent },
 	{ path: 'report-list', component: ReportListComponent },
 	{ path: 'forgot-password', component: ForgotPasswordComponent },
+	{ path: 'profile', component: ProfileComponent },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
