@@ -520,20 +520,25 @@ onChangeCheck(id,type,sec,page){
     }
 }
 
-menuListCrete:string[]=['ownerManagementc','userManagementc','configurationSettingsc','financialManagementc','reportsc'];
-menuListEdit:string[]=['ownerManagemente','userManagemente','configurationSettingse','financialManagemente','reportse'];
+menuListCrete:string[]=['ownersc','usersc','tenantsc','financesc','supportsc','settingsc'];
+menuListEdit:string[]=['ownerse','userse','tenantse','financese','supportse','settingse'];
 menuSubMenus: string[] = [
-  "OWNER_ONBOARDING_AND_REGISTRATION",
-  "OWNER_EKYC_VERIFICATION",
+ " ZOYCODES",
   "MANAGING_OWNERS",
+
+  "MANAGING_USERS",
+  "PERMISSION_APPROVAL",
+
+  "TENANTSZOY",
+  "REPORTS",
+
+  "TICKETS",
+
+  "ROLE_AND_PERMISSION",
   "CANCELLATION_AND_REFUND_RULES",
   "PERCENTAGE_AND_CHARGE_CONFIGURATIONS",
-  "ROLE_AND_PERMISSION",
-  "MANAGING_USERS",
-  "USER_ROLES",
-  "PERMISSION_APPROVAL",
   "PROMOTION_AND_OFFER_MANAGEMENT",
-  "REPORTS"
+
 ];
 
 getCheckedMenulist(id:string,opt:string){
