@@ -1,7 +1,7 @@
 /* Make sure offcanvas body has enough height */
 .offcanvas-body {
     height: 100%; /* Full height of the offcanvas */
-    padding: 0 10px; /* Optional: Padding to avoid content touching edges */
+    padding: 0px; /* Optional: Padding to avoid content touching edges */
     overflow-y: auto; /* Ensure content scrolls if necessary */
 }
 
@@ -31,7 +31,7 @@
 
 /* Set styles for the scrollable container */
 .scrollable-container-main {
-    height: calc(100vh - 295px);  /* Set a max height to enable vertical scrolling */
+    height: calc(100vh - 301px);  /* Set a max height to enable vertical scrolling */
     overflow-y: auto;   /* Enable vertical scrolling */
     overflow-x: auto;   /* Enable horizontal scrolling */
     padding-right: 10px; /* Optional: prevent scrollbar overlap */

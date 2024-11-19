@@ -520,8 +520,8 @@ onChangeCheck(id,type,sec,page){
     }
 }
 
-menuListCrete:string[]=['ownerManagementc','userManagementc','configurationSettingsc','financialManagementc','reportsc','ownersc'];
-menuListEdit:string[]=['ownerManagemente','userManagemente','configurationSettingse','financialManagemente','reportse','ownerse'];
+menuListCrete:string[]=['ownerManagementc','userManagementc','configurationSettingsc','financialManagementc','reportsc'];
+menuListEdit:string[]=['ownerManagemente','userManagemente','configurationSettingse','financialManagemente','reportse'];
 menuSubMenus: string[] = [
   "OWNER_ONBOARDING_AND_REGISTRATION",
   "OWNER_EKYC_VERIFICATION",
@@ -533,8 +533,7 @@ menuSubMenus: string[] = [
   "USER_ROLES",
   "PERMISSION_APPROVAL",
   "PROMOTION_AND_OFFER_MANAGEMENT",
-  "REPORTS",
-  "ZOYCODES"
+  "REPORTS"
 ];
 
 getCheckedMenulist(id:string,opt:string){

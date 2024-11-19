@@ -26,7 +26,6 @@ import { PageNotFoundComponent } from './components/pagenotfound/pagenotfound.co
 import { SigninComponent } from './components/signin/signin.component';
 import { MainPipe } from './main-pipe.module';
 import { Routes, RouterModule } from '@angular/router';
-import { SignupComponent } from './components/signup/signup.component';
 import { UnderConstructionComponent } from './under-construction/under-construction.component';
 import { ToastrModule } from 'ngx-toastr';
 import { HomeComponent } from './components/home/home.component';
@@ -41,7 +40,9 @@ import { AppOwnerMenuRoutingModule } from './owners/owners-menu-routing.model';
 import { AppUsersMenuRoutingModule } from './user-management/users-menu-routing.module';
 import { PermissionApprovalComponent } from './user-management/permission-approval/component/permission-approval.component';
 import { UserMasterComponent } from './user-management/user-master/components/user-master.component';
+import { ManageOwnerComponent } from './owners/managing-owner/components/managing-owner.component';
 import { ZoyCodeComponent } from './owners/zoy-code/components/zoy-code.component';
+
 
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
@@ -56,7 +57,6 @@ const appRoutes: Routes = [
     ForbiddenComponent,
     MaskInputDirective,
     SigninComponent,
-    SignupComponent,
     UnderConstructionComponent,
     HomeComponent,
     SidebarComponent,
@@ -67,7 +67,7 @@ const appRoutes: Routes = [
     ForgotPasswordComponent,
     PermissionApprovalComponent,
     ZoyCodeComponent,
-
+    ManageOwnerComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
