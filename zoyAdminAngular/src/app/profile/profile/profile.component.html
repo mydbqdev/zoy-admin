@@ -1,0 +1,90 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+  <p style="color: white;">Loading ...</p>
+</ngx-spinner>
+<div id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">    
+      <!-- Sidebar -->
+        <app-sidebar></app-sidebar>
+      <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+            <!-- Main Content -->
+            <div id="content">
+                <div style="display: block;margin-bottom: 5.375rem;">
+                <!-- Topbar -->
+                <app-header></app-header>
+                <!-- End of Topbar -->
+                </div>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                        <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Profile</span></h3> 
+                        <div>
+                         </div>
+                    </div>
+
+                    <!-- Content Row -->
+                    <div class="card shadow mb-2">
+                    <div class="card-body">
+                        <div class="row mb-1">
+                            <!-- Card with 8 columns width -->
+                            <div class="col-xl-8 col-md-6 mb-2">                               
+                                <div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div style="height: calc(100vh - 240px);overflow: auto;">
+                                                        <div class="desc-inner" style="height: auto;">
+                                                        </div>
+                                                    </div>    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-md-6 mb-2">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="no-gutters align-items-center">
+                                                <!-- Row with Title and Dropdown -->
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <!-- Title -->
+                                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1"> Pie Chart</div>
+                                                    <!-- Dropdown -->
+                                                        <div class="ml-auto" style="width: 150px;">
+                                                            <select class="form-select form-select-sm" aria-label="Default select example">
+                                                                <option selected>Last 15 days</option>
+                                                                <option value="1">Last 30 days</option>
+                                                                <option value="2">Last 6 months</option>
+                                                                <option value="3">Last 1 year</option>
+                                                            </select>
+                                                        </div>
+                                                </div>
+
+                                                <!-- Image -->
+                                                <div class="justify-content-between align-items-center">
+                                                <img src="assets/images/pie.PNG" class="img-fluid">
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>    
+                         </div>   
+                    </div> <!-- End Card Body -->
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+        </div>
+        <!-- End of Content Wrapper -->
+  </div>
+  <!-- End of Page Wrapper -->
+</div>

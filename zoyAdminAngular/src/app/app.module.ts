@@ -42,6 +42,7 @@ import { PermissionApprovalComponent } from './user-management/permission-approv
 import { UserMasterComponent } from './user-management/user-master/components/user-master.component';
 import { ManageOwnerComponent } from './owners/managing-owner/components/managing-owner.component';
 import { ZoyCodeComponent } from './owners/zoy-code/components/zoy-code.component';
+import { ProfileComponent } from './profile/profile/profile.component';
 
 
 const appRoutes: Routes = [
@@ -67,7 +68,8 @@ const appRoutes: Routes = [
     ForgotPasswordComponent,
     PermissionApprovalComponent,
     ZoyCodeComponent,
-    ManageOwnerComponent
+    ManageOwnerComponent,
+    ProfileComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
