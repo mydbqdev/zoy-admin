@@ -26,7 +26,7 @@
                         City / Location
                     </div>
                     <div style="width: 200px;">
-                        <select class="form-select form-select-sm" aria-label="Default select example">
+                        <select class="form-select form-select-sm" aria-label="Default select example"   [(ngModel)]="cityLocationName" >
                             <option *ngFor="let city of cityLocation"  [value]="city" >{{city}}</option>
                         </select>
                     </div>  
@@ -38,11 +38,10 @@
                             <option *ngFor="let report of reportNamesList"  [value]="report" >{{report}}</option>
                         </select>
                     </div>
-                    <div></div>
                     <div class="ml-auto" style="width: 200px;">
                         <div class="input-group">
                             <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i> 
-                            <input type="text" class="form-control form-control-sm  border-1" style="border-radius: 20px;padding-left: 29px;" placeholder="Search"
+                            <input type="text" class="form-control form-control-sm  border-1" style="border-radius: 20px;padding-left: 29px;" placeholder="Search" [(ngModel)]="searchText" (click)="search()"
                                   aria-label="Search" aria-describedby="basic-addon2">         
                         </div>
                     </div>
@@ -73,8 +72,11 @@
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group mt-4" style="padding-top:6px">
-                            <select class="form-select form-select-sm">
-                                <option>Download</option>
+                            <select class="form-select form-select-sm" [(ngModel)]="downloadType" (ngModelChange)="downloadPdf()">
+                                <option value="" disabled > Download </option>
+                                <option value=".pdf" > Pdf</option>
+                                <option value=".xlsx" > Excel</option>
+                                <option value=".csv" > CSV</option>
                             </select>
                         </div>
                     </div>
@@ -84,7 +86,7 @@
                       <div class="col-xl-12 col-lg-12">
                           <div class="card shadow mb-3">
                               <!-- Card Body -->
-                              <div class="card-body" style="padding: 2px;margin: 0px;">
+                              <div class="card-body" style="padding: 2px;margin: 0px;" hidden >
                                 <div>
                                 <div class="scrollable-container-main">    
 
@@ -256,20 +258,20 @@
                                             </th>
                                             <td mat-cell *matCellDef="let element"> {{element.gstAmount }} </td>
                                         </ng-container>
-                                    
+                                        
                                         <ng-container matColumnDef="actions">
-                                            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Actions">
-                                                Actions
+                                            <th mat-header-cell style="width: 90px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions">
+                                            Actions
                                             </th>
-                                            <td mat-cell *matCellDef="let element">
-                                                <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails" (click)="viewReport(element)">
-                                                    <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"></i>
-                                                </span>
-                                                <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
-                                                    <i class="bi bi-upload" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="Export"></i>
-                                                </span>
+                                            <td mat-cell style="width: 90px;" *matCellDef="let element">
+                                            <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails"  (click)="viewReport(element)">
+                                                <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
+                                            </span>
+                                            <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
+                                                <i class="bi bi-upload" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="Export"></i>
+                                            </span>
                                             </td>
-                                        </ng-container>
+                                        </ng-container>  
                                     
                                         <tr mat-header-row *matHeaderRowDef="userGSTPaymentReportColumns; sticky: true"></tr>
                                         <tr mat-row *matRowDef="let row; columns: userGSTPaymentReportColumns;"></tr>
@@ -837,6 +839,123 @@
                                   </div> 
                                     <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons ></mat-paginator>                        
                               </div>
+
+                              <div class="chart-area">
+                                <table mat-table [dataSource]="userTransactionsDataSource" matSort class="mat-elevation-z8" 
+                                           (matSortChange)="onSortData($event)" matSortActive="name" matSortDirection="asc" 
+                                           matSortDisableClear multiTemplateDataRows>
+                              
+                                  <!-- Column for Customer Name -->
+                                  <ng-container matColumnDef="customerName">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;">
+                                      <i class="fas fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i>
+                                      <i class="fas fa-sort-up" *ngIf="sortActive === 'customerName' && sortDirection === 'desc'" 
+                                         style="margin-right: 3px;margin-left: -12px;"></i>
+                                      <i class="fas fa-sort-down" *ngIf="sortActive === 'customerName' && sortDirection === 'asc'" 
+                                         style="margin-right: 3px;margin-left: -12px;"></i>
+                                      Customer Name
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                      {{ element.customerName }}
+                                    </td>
+                                  </ng-container>
+                              
+                                  <!-- Column for PgPropertyId -->
+                                  <ng-container matColumnDef="PgPropertyId">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;">
+                                      <i class="fas fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i>
+                                      <i class="fas fa-sort-up" *ngIf="sortActive === 'PgPropertyId' && sortDirection === 'desc'" 
+                                         style="margin-right: 3px;margin-left: -12px;"></i>
+                                      <i class="fas fa-sort-down" *ngIf="sortActive === 'PgPropertyId' && sortDirection === 'asc'" 
+                                         style="margin-right: 3px;margin-left: -12px;"></i>
+                                      Pg Property ID
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                      {{ element.PgPropertyId }}
+                                    </td>
+                                  </ng-container>
+                              
+                                  <!-- Column for Transaction Date -->
+                                  <ng-container matColumnDef="transactionDate">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;">
+                                      <i class="fas fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i>
+                                      <i class="fas fa-sort-up" *ngIf="sortActive === 'transactionDate' && sortDirection === 'desc'" 
+                                         style="margin-right: 3px;margin-left: -12px;"></i>
+                                      <i class="fas fa-sort-down" *ngIf="sortActive === 'transactionDate' && sortDirection === 'asc'" 
+                                         style="margin-right: 3px;margin-left: -12px;"></i>
+                                      Transaction Date
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                      {{ element.transactionDate }}
+                                    </td>
+                                  </ng-container>
+                              
+                                  <!-- Column for Transaction Number -->
+                                  <ng-container matColumnDef="transactionNumber">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;">
+                                      <i class="fas fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i>
+                                      <i class="fas fa-sort-up" *ngIf="sortActive === 'transactionNumber' && sortDirection === 'desc'" 
+                                         style="margin-right: 3px;margin-left: -12px;"></i>
+                                      <i class="fas fa-sort-down" *ngIf="sortActive === 'transactionNumber' && sortDirection === 'asc'" 
+                                         style="margin-right: 3px;margin-left: -12px;"></i>
+                                      Transaction Number
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                      {{ element.transactionNumber }}
+                                    </td>
+                                  </ng-container>
+                              
+                                  <!-- Column for Transaction Status -->
+                                  <ng-container matColumnDef="transactionStatus">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;">
+                                      <i class="fas fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i>
+                                      <i class="fas fa-sort-up" *ngIf="sortActive === 'transactionStatus' && sortDirection === 'desc'" 
+                                         style="margin-right: 3px;margin-left: -12px;"></i>
+                                      <i class="fas fa-sort-down" *ngIf="sortActive === 'transactionStatus' && sortDirection === 'asc'" 
+                                         style="margin-right: 3px;margin-left: -12px;"></i>
+                                      Transaction Status
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                      {{ element.transactionStatus }}
+                                    </td>
+                                  </ng-container>
+                              
+                                  <!-- Column for Actions --> 
+                                  <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef style="font-weight: 600;">Actions</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails"  (click)="viewReport(element)">
+                                            <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
+                                        </span>
+                                        <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
+                                            <i class="bi bi-upload" aria-hidden="true"></i>
+                                          </span>
+                                        </td>
+                                </ng-container>
+                              
+                                  <!-- Display the Rows -->
+                                  <tr mat-header-row *matHeaderRowDef="UserTransactionsDisplayedColumns"></tr>
+                                  <tr mat-row *matRowDef="let element; columns: UserTransactionsDisplayedColumns;"></tr>
+                              
+                                </table>
+                              
+                                <!-- No records found message -->
+                                <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" 
+                                     *ngIf="userTransactionsDataSource.data.length === 0">
+                                  No records found
+                                </div>
+                              
+                                <!-- Pagination Controls -->
+                                <mat-paginator #paginator [length]="userTransactionsDataSource.data.length" [pageSize]="lastPageSize" 
+                                               [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons 
+                                               (page)="pageChanged($event)">
+                                </mat-paginator>
+                              
+                              </div>
+                              
+                              
+                              
+
                           </div>
                       </div>
                   </div>

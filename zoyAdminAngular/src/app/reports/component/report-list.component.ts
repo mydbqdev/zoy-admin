@@ -20,6 +20,7 @@ import { TenantDuesDetailsModel } from '../model/tenant-dues-details-model';
 import { VendorPaymentsModel } from '../model/vendor-payments-model';
 import { VendorPaymentsDues } from '../model/vendor-payments-dues-model';
 import { VendorPaymentsGst } from '../model/vendor-payments-gst-model';
+import { FiltersRequestModel } from '../model/report-filters-model';
  
 @Component({
 	selector: 'app-report-list',
@@ -138,11 +139,14 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 
 	reportNamesList:string[] = ["User Transactions Report","User Payments GST Report","Vendor Payments Report","Vendor Payments Gst Report","Vendor Payments Dues Report","Consolidated Finance Report","Tenant Dues Report"]
 	cityLocation: string[] = ["Delhi", "Mumbai", "Bangalore", "Kolkata", "Chennai", "Hyderabad", "Vijayawada", "Madurai","Ooty", "Goa"];
+	cityLocationName:string='Bangalore';
 	fromDate:string="2023-11-01";
 	toDate:string="2025-01-01";
 	reportName:string ='User Transactions Report';
+	downloadType :string='';
+	searchText:string='';
 
-
+	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
 	public userNameSession: string = "";
 	errorMsg: any = "";
 	mySubscription: any;
@@ -602,5 +606,355 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	   });	   
 	   }
 
+	   downloadPdf(){
 
+		console.log("this.reportName",this.reportName);
+				if(this.fromDate == "" || this.toDate == "" || this.fromDate == null || this.toDate == null || (this.fromDate >this.toDate)){
+			
+					this.notifyService.showError("Please select a valid date range.","");
+				return;
+				}
+			   
+				switch (this.reportName) {
+					case 'User Transactions Report':
+						this.getUserTransactionReport();
+						break;
+					case 'User Payments GST Report':
+						this.getUserGSTPaymentReport();
+						break; 
+					case 'Consolidated Finance Report':
+						this.getconsilidatedFinanceReport();
+						break;
+					case 'Tenant Dues Report':
+						this.getTenantDuesDetailsReport();
+						break;
+					case 'Vendor Payments Report':
+						this.downloadPaymentTransferDetailsPdf();
+						break;
+					case 'Vendor Payments Dues Report':
+						this.getVendorPaymentDuesReport();
+						break;
+					case 'Vendor Payments Gst Report':
+							this.getVendorPaymentGSTReport();
+							break;
+					default:
+						
+				}
+			  }
+		
+		
+			  downloadPaymentTransferDetailsPdf(){   
+				//	this.authService.checkLoginUserVlidaate();
+			
+				const dateTime = new Date().toISOString().replace(/[-T:.Z]/g, '').slice(0, 14);
+					this.reportService.downloadPaymentTransferDetailsPdf(this.fromDate,this.toDate).subscribe((data) => { 
+		
+						if(data!=null && data!=undefined && data!='' && data.size!=0){ 
+						var blob = new Blob([data], {type : 'application/pdf'});
+						var fileURL=URL.createObjectURL(blob);
+						//window.open(fileURL);
+						const link = document.createElement("a");
+						link.href = fileURL;
+						link.target = '_blank';
+						link.download = this.reportName+'_'+dateTime+'.pdf';
+						document.body.appendChild(link);
+						link.click();
+						document.body.removeChild(link); 
+						  
+					  }else{
+						this.notifyService.showWarning(this.reportName+" is not available", "");
+					  }
+					}, error => {
+						this.spinner.hide();
+						if(error.status==403){
+						  this.router.navigate(['/forbidden']);
+						}else if (error.error && error.error.message) {
+						  this.errorMsg = error.error.message;
+						  console.log("Error:" + this.errorMsg);
+						  this.notifyService.showError(this.errorMsg, "");
+						} else {
+						  if (error.status == 500 && error.statusText == "Internal Server Error") {
+							this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+						  } else {
+							let str;
+							if (error.status == 400) {
+							  str = error.error;
+							} else {
+							  str = error.message;
+							  str = str.substring(str.indexOf(":") + 1);
+							}
+							console.log("Error:" + str);
+							this.errorMsg = str;
+						  }
+						  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+						}
+					  });
+				  }
+		
+	  
+
+		  userTransactionsDataSource:MatTableDataSource<UserTransactionReportModel>=new MatTableDataSource<UserTransactionReportModel>();
+		  userTransactionsData:UserTransactionReportModel[]=[]
+		  userTransactionsDetails:UserTransactionReportModel=new UserTransactionReportModel();
+		  UserTransactionsDisplayedColumns: string[] = ['customerName', 'PgPropertyId', 'transactionDate', 'transactionNumber','transactionStatus','actions'];
+		  sortActive:string="name";
+		  sortDirection:string="asc";
+		  public lastPageSize:number=0;
+
+		  pageChanged(event:any){
+			this.userTransactionsDataSource=new MatTableDataSource<UserTransactionReportModel>();
+			if(this.lastPageSize!=event.pageSize){
+				this.paginator.pageIndex=0;
+				event.pageIndex=0;
+			   }
+			 this.pageSize=event.pageSize;
+			 this.loadInitialData(this.paginator.pageIndex +1, event.pageSize,this.sortActive,this.sortDirection);
+		   }
+		   onSortData(sort: Sort) {
+			this.sortActive=sort.active;
+			this.sortDirection=sort.direction;
+			this.paginator.pageIndex=0;
+			 this.loadInitialData(this.paginator.pageIndex +1, this.pageSize,this.sortActive,this.sortDirection);
+		   }
+
+		   searchEnter(event: { which: any; keyCode: any;}) {
+			if(event.which=='13'){
+			  this.search();
+			}
+		}
+		   search(){
+			this.paginator.pageIndex=0;
+			this.loadInitialData(this.paginator.pageIndex +1, this.pageSize,this.sortActive,this.sortDirection);
+		  }
+
+
+
+		  loadInitialData(pageIndex:number,pageSize:number,sortActive:string,sortDirection:string){
+		//	this.authService.checkLoginUserVlidaate();
+			this.lastPageSize=pageSize;
+			this.filtersRequest.pageIndex=pageIndex;
+			this.filtersRequest.pageSize=pageSize;
+			this.filtersRequest.sortActive=sortActive;
+			this.filtersRequest.sortDirection=sortDirection;
+
+			this.filtersRequest.fromDate=this.fromDate;
+			this.filtersRequest.toDate=this.toDate;
+			this.filtersRequest.cityLocation = this.cityLocationName;
+			this.filtersRequest.reportType=this.reportName;
+
+			this.filtersRequest.searchText = this.searchText;
+
+			console.log("this.filtersRequest",this.filtersRequest);
+
+			this.totalProduct=this.mockData.length;
+					  this.userTransactionsData=Object.assign([],this.mockData);
+					this.userTransactionsDataSource = new MatTableDataSource(this.userTransactionsData);
+			return;
+			
+			this.spinner.show();
+			this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+			  if(data?.listObj?.length >0){
+					this.totalProduct=data.totalCount;
+					  this.userTransactionsData=Object.assign([],data.listObj);
+					this.userTransactionsDataSource = new MatTableDataSource(this.userTransactionsData);
+				}else{
+				  this.totalProduct=data.totalCount;
+				  this.userTransactionsData=Object.assign([],[]);
+				  this.userTransactionsDataSource =  new MatTableDataSource(this.userTransactionsData);
+				}
+				this.spinner.hide();
+			},error =>{
+			  this.spinner.hide();
+			  if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			  }else if (error.error && error.error.message) {
+				this.errorMsg =error.error.message;
+				console.log("Error:"+this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+				this.spinner.hide();
+			  } else {
+				this.spinner.hide();
+				if(error.status==500 && error.statusText=="Internal Server Error"){
+				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+				}else{
+				  let str;
+					if(error.status==400){
+					str=error.error;
+					}else{
+					  str=error.message;
+					  str=str.substring(str.indexOf(":")+1);
+					}
+					console.log("Error:"+str);
+					this.errorMsg=str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			  }
+			}); 
+		  }
+
+		  downloadReportPdf(){   
+			//	this.authService.checkLoginUserVlidaate();
+			this.filtersRequest.fromDate=this.fromDate;
+			this.filtersRequest.toDate=this.toDate;
+			this.filtersRequest.cityLocation = this.cityLocationName;
+			this.filtersRequest.reportType=this.reportName;
+			this.filtersRequest.downloadType=this.downloadType;
+
+			this.filtersRequest.searchText = this.searchText;
+			console.log("this.filtersRequest",this.filtersRequest);
+
+
+			this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
+				if(data!=null && data!=undefined && data!='' && data.size!=0){ 
+				  var blob = new Blob([data], {type : 'application/pdf'});
+				  var fileURL=URL.createObjectURL(blob);
+				  
+				  const link = document.createElement("a");
+				  link.href = fileURL;
+				  link.target = '_blank';
+				  link.download = this.reportName+'.pdf';
+				  document.body.appendChild(link);
+				  link.click();
+				}else{
+				  this.notifyService.showWarning(this.reportName+" is not available", "");
+				}
+			  }, error => {
+				  this.spinner.hide();
+				  if(error.status==403){
+					this.router.navigate(['/forbidden']);
+				  }else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+				  } else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					  this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					  let str;
+					  if (error.status == 400) {
+						str = error.error;
+					  } else {
+						str = error.message;
+						str = str.substring(str.indexOf(":") + 1);
+					  }
+					  console.log("Error:" + str);
+					  this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				  }
+				});	
+			  }
+
+
+
+
+
+		   mockData: UserTransactionReportModel[] = [
+			{
+			  customerId: 'CUST001',
+			  transactionDate: '2024-11-01',
+			  transactionNumber: 'TXN123456',
+			  transactionStatus: 'Completed',
+			  baseAmount: 1000,
+			  gstAmount: 180,
+			  totalAmount: 1180,
+			  customerName: 'John Doe',
+			  PgPropertyName: 'Pg Property A',
+			  PgPropertyId: 'PG001',
+			  bedNumber: '101',
+			  category: 'Deluxe',
+			  paymentMethod: 'Credit Card'
+			},
+			{
+			  customerId: 'CUST008',
+			  transactionDate: '2024-11-08',
+			  transactionNumber: 'TXN123463',
+			  transactionStatus: 'Completed',
+			  baseAmount: 1250,
+			  gstAmount: 225,
+			  totalAmount: 1475,
+			  customerName: 'Frank Black',
+			  PgPropertyName: 'Pg Property D',
+			  PgPropertyId: 'PG004',
+			  bedNumber: '108',
+			  category: 'Suite',
+			  paymentMethod: 'Cash'
+			},
+			{
+			  customerId: 'CUST009',
+			  transactionDate: '2024-11-09',
+			  transactionNumber: 'TXN123464',
+			  transactionStatus: 'Pending',
+			  baseAmount: 900,
+			  gstAmount: 162,
+			  totalAmount: 1062,
+			  customerName: 'Grace Lee',
+			  PgPropertyName: 'Pg Property A',
+			  PgPropertyId: 'PG001',
+			  bedNumber: '109',
+			  category: 'Economy',
+			  paymentMethod: 'Credit Card'
+			},
+			{
+			  customerId: 'CUST010',
+			  transactionDate: '2024-11-10',
+			  transactionNumber: 'TXN123465',
+			  transactionStatus: 'Cancelled',
+			  baseAmount: 600,
+			  gstAmount: 108,
+			  totalAmount: 708,
+			  customerName: 'Henry Brown',
+			  PgPropertyName: 'Pg Property B',
+			  PgPropertyId: 'PG002',
+			  bedNumber: '110',
+			  category: 'Standard',
+			  paymentMethod: 'Debit Card'
+			},
+			{
+			  customerId: 'CUST011',
+			  transactionDate: '2024-11-11',
+			  transactionNumber: 'TXN123466',
+			  transactionStatus: 'Completed',
+			  baseAmount: 1450,
+			  gstAmount: 261,
+			  totalAmount: 1711,
+			  customerName: 'Isla Green',
+			  PgPropertyName: 'Pg Property C',
+			  PgPropertyId: 'PG003',
+			  bedNumber: '111',
+			  category: 'Deluxe',
+			  paymentMethod: 'Net Banking'
+			},
+			{
+			  customerId: 'CUST012',
+			  transactionDate: '2024-11-12',
+			  transactionNumber: 'TXN123467',
+			  transactionStatus: 'Completed',
+			  baseAmount: 950,
+			  gstAmount: 171,
+			  totalAmount: 1121,
+			  customerName: 'Jake Blue',
+			  PgPropertyName: 'Pg Property D',
+			  PgPropertyId: 'PG004',
+			  bedNumber: '112',
+			  category: 'Economy',
+			  paymentMethod: 'UPI'
+			},
+			{
+			  customerId: 'CUST013',
+			  transactionDate: '2024-11-13',
+			  transactionNumber: 'TXN123468',
+			  transactionStatus: 'Pending',
+			  baseAmount: 1100,
+			  gstAmount: 198,
+			  totalAmount: 1298,
+			  customerName: 'Liam Yellow',
+			  PgPropertyName: 'Pg Property A',
+			  PgPropertyId: 'PG001',
+			  bedNumber: '113',
+			  category: 'Luxury',
+			  paymentMethod: 'Cash'
+			}
+		  ];
+		  
 }
