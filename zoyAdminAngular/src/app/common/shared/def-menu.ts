@@ -1,39 +1,25 @@
-import { AccountSubMenu } from './account-sub-menu';
-import { AdminReportSubMenu } from './admin-reports-sub-menu';
-import { AdminSubMenu } from './admin-sub-menu';
-import { ApprovalSubMenu } from './approvals-sub-menu';
-import { ConfigurationSettingsSubMenu } from './configuration-settings-sub-menu';
-import { OwnerManagementSubMenu } from './owner-management-sub-menu';
-import { PersonalSubMenu } from './personal-sub-menu';
-
+import { FinancesSubMenu } from "./finances-sub-menu";
+import { OwnersSubMenu } from "./owners-sub-menu";
+import { SettingsSubMenu } from "./settings-sub-menu";
+import { SupportsSubMenu } from "./supports-sub-menu";
+import { TenantsSubMenu } from "./tenants-sub-menu";
+import { UsersSubMenu } from "./users-sub-menu";
 
 export class DefMenu{
+    public owners : boolean;
+    public ownersSubMenu : OwnersSubMenu;
+    public users : boolean ;
+    public usersSubmenu : UsersSubMenu;
+    public tenants : boolean;
+    public tenantsSubMenu : TenantsSubMenu;
+    public finances : boolean;
+    public financesSubMenu : FinancesSubMenu;
+    public supports : boolean;
+    public supportsSubMenu : SupportsSubMenu;
+    public settings : boolean;
+    public settingsSubMenu : SettingsSubMenu;
+ 
 
-    public ownerManagement:boolean;
-    public ownerManagementSubMenu:OwnerManagementSubMenu;
-    public userManagement:boolean;
-    public userManagementSubMenu:OwnerManagementSubMenu;
-    public financialManagement:boolean;
-    public financialManagementSubMenu:OwnerManagementSubMenu;
-    public configurationSettings:boolean;
-    public configurationSettingsSubMenu: ConfigurationSettingsSubMenu;
-
-    public reports:boolean;
-    public reportsSubMenu:OwnerManagementSubMenu;
-
-    public owners:boolean;
-    public ownersSubMenu:OwnerManagementSubMenu;
-    
-
-    // public personalMenu:boolean;
-    // public personalSubMenu:PersonalSubMenu;
-    // public accountMenu:boolean;
-    // public accountSubMenu:AccountSubMenu;
-    // public adminMenu:boolean;
-    // public adminSubMenu:AdminSubMenu;
-    // public adminreportMenu:boolean;
-    // public adminReportSubMenu:AdminReportSubMenu;
-    // public approvalMenu:boolean;
-    // public approvalSubMenu:ApprovalSubMenu;
-    // public settingsMenu:boolean;
     } 
+
+
