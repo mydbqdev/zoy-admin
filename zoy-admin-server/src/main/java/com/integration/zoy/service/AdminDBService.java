@@ -190,6 +190,18 @@ public  class AdminDBService implements AdminDBImpl {
 	public void deleteRolefromRoleScreen(int role_id) {
 		roleScreenRepository.deleteRolefromRoleScreen( role_id);	
 	}
-	
 
+
+
+	@Override
+	public List<Object[]> findAllAdminUserPrivileges1() {
+		return userMasterRepository.findAllAdminUserPrivileges1();
+	}
+
+	@Override
+	public List<AdminUserMaster> userdata(String[] userMails) {
+		return	userMasterRepository.userdata(userMails);
+		
+	}
+	
 }
