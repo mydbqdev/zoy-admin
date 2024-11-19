@@ -22,7 +22,8 @@
               <div class="container-fluid" style="margin-top: -5px;">
                   <div style="padding:10px 10px 0px;border:1px solid#dbdbdb;border-radius: 5px;">
                   <div class="d-flex mb-1">
-                    <div class="text-search-header pr-2 mt-1">
+                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Reports</span></h3> 
+                    <div class="text-search-header pr-2 mt-1 ml-5">
                         City / Location
                     </div>
                     <div style="width: 200px;">
@@ -840,8 +841,9 @@
                                     <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons ></mat-paginator>                        
                               </div>
 
-                              <div class="chart-area">
-                                <table mat-table [dataSource]="userTransactionsDataSource" matSort class="mat-elevation-z8" 
+                              <div class="card-body" style="padding: 2px;margin: 0px;">
+                                <div class="scrollable-container-main">
+                                <table mat-table [dataSource]="userTransactionsDataSource" matSort  
                                            (matSortChange)="onSortData($event)" matSortActive="name" matSortDirection="asc" 
                                            matSortDisableClear multiTemplateDataRows>
                               
@@ -944,7 +946,7 @@
                                      *ngIf="userTransactionsDataSource.data.length === 0">
                                   No records found
                                 </div>
-                              
+                              </div>
                                 <!-- Pagination Controls -->
                                 <mat-paginator #paginator [length]="userTransactionsDataSource.data.length" [pageSize]="lastPageSize" 
                                                [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons 
@@ -953,9 +955,6 @@
                               
                               </div>
                               
-                              
-                              
-
                           </div>
                       </div>
                   </div>
