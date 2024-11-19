@@ -129,13 +129,13 @@ export class ForgotPasswordComponent implements OnInit {
 
 
 
-	togglePasswordVisibility(field: 'new' | 'confirm'): void {
-	  if (field === 'new') {
-	    this.showNewPassword = !this.showNewPassword;
-	  } else if (field === 'confirm') {
-	    this.showConfirmPassword = !this.showConfirmPassword;
-	  }
-	}
+	// togglePasswordVisibility(field: 'new' | 'confirm'): void {
+	//   if (field === 'new') {
+	//     this.showNewPassword = !this.showNewPassword;
+	//   } else if (field === 'confirm') {
+	//     this.showConfirmPassword = !this.showConfirmPassword;
+	//   }
+	// }
 
 	resetForm() {
 		this.submitted = false;
@@ -150,6 +150,26 @@ export class ForgotPasswordComponent implements OnInit {
 		this.stepPassword=2;
 		// Add logic to call the OTP sending service/API here
 	}
+
+	// showNewPassword: boolean = false;
+    passwordResetSuccess: boolean = false;
+
+  // Dummy form for validation (optional, replace with your actual form group)
+  
+
+  togglePasswordVisibility(type: string): void {
+    if (type === 'new') {
+      this.showNewPassword = !this.showNewPassword;
+    }
+  }
+
+  resetPassword(event: Event): void {
+    event.preventDefault();
+    
+    // Add form validation or API call logic here
+    // If the reset is successful:
+    this.passwordResetSuccess = true;
+  }
 
 	doRegister() {
 		this.submitted = true;
