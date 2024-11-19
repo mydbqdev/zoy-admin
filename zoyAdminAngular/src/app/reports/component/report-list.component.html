@@ -19,7 +19,8 @@
                 </div>
 
               <!-- Begin Page Content -->
-              <div class="container-fluid">
+              <div class="container-fluid" style="margin-top: -5px;">
+                  <div style="padding:10px 10px 0px;border:1px solid#dbdbdb;border-radius: 5px;">
                   <div class="d-flex mb-1">
                     <div class="text-search-header pr-2 mt-1">
                         City / Location
@@ -37,11 +38,17 @@
                             <option *ngFor="let report of reportNamesList"  [value]="report" >{{report}}</option>
                         </select>
                     </div>
-                    <div class="ml-auto">
-                        <input type="text" class="form-control form-control-sm" style="width: 300px;" placeholder="search">
+                    <div></div>
+                    <div class="ml-auto" style="width: 200px;">
+                        <div class="input-group">
+                            <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i> 
+                            <input type="text" class="form-control form-control-sm  border-1" style="border-radius: 20px;padding-left: 29px;" placeholder="Search"
+                                  aria-label="Search" aria-describedby="basic-addon2">         
+                        </div>
                     </div>
                   </div>
-                  <div class="row">
+                  <div style="height: 8px;border-bottom: 1px solid #fff;"></div>
+                  <div class="row mt-2 mb-0">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="exampleInputEmail1" class="text-search-header">Date Range</label>
@@ -61,7 +68,7 @@
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group mt-4" style="padding-top:6px">
-                            <button type="button" class="btn btn-primary-custom btn-sm" (click)="getReport()" >Generate Report</button>
+                            <button type="button" class="btn btn-primary-custom btn-sm">Generate Report</button>
                         </div>
                     </div>
                     <div class="col-sm-2">
@@ -72,11 +79,12 @@
                         </div>
                     </div>
                   </div>
-                  <div class="row">
+                  </div>
+                  <div class="row mt-2">
                       <div class="col-xl-12 col-lg-12">
-                          <div class="card shadow mb-4">
+                          <div class="card shadow mb-3">
                               <!-- Card Body -->
-                              <div class="card-body" style="padding: 0px;margin: 0px;">
+                              <div class="card-body" style="padding: 2px;margin: 0px;">
                                 <div>
                                 <div class="scrollable-container-main">    
 

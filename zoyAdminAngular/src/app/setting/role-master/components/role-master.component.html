@@ -20,33 +20,32 @@
                  </div>
   
               <!-- Begin Page Content -->
-              <div class="container-fluid"> 
+              <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                  <h3 class="h3 mb-0 text-gray-800"><span class="text-header-800 text-header-border">Role</span><span class="text-header-800-blue">and Permission</span></h3> 
+                  <div>
+                    <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"  (click)="clearArrays(); myForm.reset();" aria-controls="createRole" class="btn btn-sm btn-primary-custom shadow-sm" ><i
+                      class="fas fa-user-shield text-white-50"></i> New Role</a>
+                  </div>
+                </div> 
                   <!-- Content Row --> 
                   <div class="row">
                       <!-- Area Chart -->
                       <div class="col-xl-12 col-lg-12">
-                         <div class="card shadow mb-4">
-                             <!-- Card Header - Dropdown -->
-                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                 <h6 class="m-0 font-weight-bold text-primary">Role List</h6>
-                                 <div>
-                                     <a href="javascript:void(0)" style="margin:-10px 0px;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"  (click)="clearArrays(); myForm.reset();" aria-controls="createRole" class="d-none d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm" ><i
-                                         class="fas fa-fw fa-user-shield fa-sm text-white-50"></i> New Role</a>
-                                 </div>
-                             </div>
+                         <div class="card shadow mb-3">
                              <!-- Card Body -->
-                             <div class="card-body" style="margin: 0px;padding: 0px;">
+                             <div class="card-body" style="margin: 0px;padding: 2px;">
                                  <div>
-                                     <div style="height: calc(100vh - 229px);overflow: auto;">
+                                     <div style="height: calc(100vh - 211px);overflow: auto;">
                                          <div class="desc-inner" style="height: auto;">
                                      <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">                                                     
                                          <ng-container matColumnDef="roleName">
                                            <th mat-header-cell style="font-weight: 600;width: 300px;" *matHeaderCellDef mat-sort-header>
-                                             Name 
+                                             NAME 
                                              <span style="margin-left: 2px;">
-                                                <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['roleName'] }"></i>
-                                                <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['roleName'] === 'asc' }"></i>
-                                                <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['roleName'] === 'desc' || !columnSortDirections['roleName'] }"></i>
+                                                <!--i class="fas fa-lg fa-sort-up" [ngClass]="{'sorting-normal-color': !columnSortDirections['roleName'] }"></i-->
+                                                <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['roleName'] === 'asc' }"></i>
+                                                <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['roleName'] === 'desc'}"></i>
                                             </span>
                                          </th>
                                            <td style="width: 300px;" mat-cell data-label="roleName"  *matCellDef="let element"> 
@@ -55,8 +54,7 @@
                                          </ng-container>
  
                                          <ng-container matColumnDef="desc">
-                                             <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef>Description
-                                             </th>
+                                             <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef>DESCRIPTION</th>
                                              <td mat-cell data-label="desc"  *matCellDef="let element;"  >
                                                {{element.desc}}
                                              </td>

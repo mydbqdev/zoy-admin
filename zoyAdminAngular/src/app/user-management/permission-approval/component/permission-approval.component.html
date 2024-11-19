@@ -22,12 +22,15 @@
 
               <!-- Begin Page Content -->
               <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Permission</span><span class="text-header-800-blue">Approval</span></h3> 
+                </div>
                   <!-- Content Row -->
-                  <div class="row">
+                  <div class="row" style="margin-right: 0px;">
                       <!-- Earnings (Monthly) Card Example -->
-                      <div class="col-xl-3 col-md-6 mb-4">
-                          <div class="card border-left-primary shadow h-100 py-2">
-                              <div class="card-body">
+                      <div class="col-xl-3 col-md-6  mb-2">
+                          <div class="card border-left-primary shadow h-100 py-1">
+                              <div class="card-body" style="padding: 15px;">
                                   <div class="row no-gutters align-items-center">
                                       <div class="col mr-2">
                                           <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
@@ -42,9 +45,9 @@
                           </div>
                       </div>
                       <!-- Earnings (Monthly) Card Example -->
-                      <div class="col-xl-3 col-md-6 mb-4">
-                          <div class="card border-left-success shadow h-100 py-2">
-                              <div class="card-body">
+                      <div class="col-xl-3 col-md-6 mb-2">
+                          <div class="card border-left-success shadow h-100 py-1">
+                              <div class="card-body" style="padding: 15px;">
                                   <div class="row no-gutters align-items-center">
                                       <div class="col mr-2">
                                           <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
@@ -59,9 +62,9 @@
                           </div>
                       </div>
                       <!-- Earnings (Monthly) Card Example -->
-                      <div class="col-xl-3 col-md-6 mb-4">
-                          <div class="card border-left-info shadow h-100 py-2">
-                              <div class="card-body">
+                      <div class="col-xl-3 col-md-6 mb-2">
+                          <div class="card border-left-info shadow h-100 py-1">
+                              <div class="card-body" style="padding: 15px;">
                                   <div class="row no-gutters align-items-center">
                                       <div class="col mr-2">
                                           <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
@@ -87,9 +90,9 @@
                           </div>
                       </div>
                       <!-- Pending Requests Card Example -->
-                      <div class="col-xl-3 col-md-6 mb-4">
-                          <div class="card border-left-warning shadow h-100 py-2">
-                              <div class="card-body">
+                      <div class="col-xl-3 col-md-6 mb-2">
+                          <div class="card border-left-warning shadow h-100 py-1">
+                              <div class="card-body" style="padding: 15px;">
                                   <div class="row no-gutters align-items-center">
                                       <div class="col mr-2">
                                           <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
@@ -106,23 +109,20 @@
                   </div>
   
                   <!-- Content Row -->
-                  <div class="row">
-                      <!-- Area Chart -->
-                      <div class="col-xl-12 col-lg-12">
-                        <div class="card shadow mb-4">
+                  <div>
+                        <div class="card shadow mb-3">
                             <!-- Card Body -->
-                            <div class="card-body" style="padding: 0; margin: 0;">
+                            <div class="card-body" style="padding: 2px; margin: 0;">
                                 <div>
                                     <div class="scrollable-container-main">
                                         <table mat-table [dataSource]="dataSource"  matSort (matSortChange)="announceSortChange($event)">                                          
                                             <!-- User Name Column -->
                                             <ng-container matColumnDef="firstName">
-                                                <th mat-header-cell style="width: 200px;" *matHeaderCellDef mat-sort-header>
-                                                    Name
+                                                <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef mat-sort-header>
+                                                    NAME
                                                     <span style="margin-left: 2px;">
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['firstName'] }"></i>
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['firstName'] === 'asc' }"></i>
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['firstName'] === 'desc' || !columnSortDirections['firstName'] }"></i>
+                                                        <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['firstName'] === 'asc' }"></i>
+                                                        <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['firstName'] === 'desc'}"></i>
                                                     </span>
                                                 </th>
                                                 <td mat-cell *matCellDef="let element" style="width: 200px;">
@@ -132,12 +132,11 @@
                             
                                             <!-- User Mail Column -->
                                             <ng-container matColumnDef="userEmail">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 150px;">
-                                                    Email
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 150px;font-weight: 600;">
+                                                    EMAIL
                                                     <span style="margin-left: 2px;">
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['userEmail'] }"></i>
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['userEmail'] === 'asc' }"></i>
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['userEmail'] === 'desc' || !columnSortDirections['userEmail'] }"></i>
+                                                        <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['userEmail'] === 'asc' }"></i>
+                                                        <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['userEmail'] === 'desc'}"></i>
                                                     </span>
                                                 </th>
                                                 <td mat-cell *matCellDef="let element" style="width: 150px;">
@@ -147,21 +146,20 @@
                             
                                             <!-- Designation Column -->
                                             <ng-container matColumnDef="designation">
-                                                <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 150px;">
-                                                    Designation
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 170px;font-weight: 600;">
+                                                    DESIGNATION
                                                     <span style="margin-left: 2px;">
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': !columnSortDirections['designation'] }"></i>
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-up': columnSortDirections['designation'] === 'asc' }"></i>
-                                                        <i class="fas" [ngClass]="{'fa-long-arrow-alt-down': columnSortDirections['designation'] === 'desc' || !columnSortDirections['designation'] }"></i>
+                                                        <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['designation'] === 'asc' }"></i>
+                                                        <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['designation'] === 'desc'}"></i>
                                                     </span>
                                                 </th>
-                                                <td mat-cell *matCellDef="let element" style="width: 150px;">
+                                                <td mat-cell *matCellDef="let element" style="width: 170px;">
                                                     {{element?.designation}}
                                                 </td>
                                             </ng-container>       
                                             <ng-container matColumnDef="roles">
-                                                <th mat-header-cell *matHeaderCellDef>
-                                                    Role
+                                                <th mat-header-cell *matHeaderCellDef style="font-weight: 600;">
+                                                    ROLE'S
                                                 </th>
                                                 <td mat-cell data-label="roles" *matCellDef="let element;">
                                                     {{ getRoleNames(element.roleModel) }}
@@ -183,15 +181,14 @@
                                             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
                                             <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
                                         </table>
+                                        <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length == 0">
+                                            No records found
+                                        </div>
                                     </div>
-                                </div>
-                                <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length == 0">
-                                    No records found
                                 </div>
                                 <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
                             </div>
-                        </div>
-                    </div>              
+                        </div>             
                   </div>
               </div>
               <!-- /.container-fluid -->
@@ -239,7 +236,7 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="d-flex justify-content-center mt-4" *ngIf="rolesArray.includes('PERMISSION_APPROVAL_WRITE')">
+                <div class="d-flex justify-content-start mt-4" *ngIf="rolesArray.includes('PERMISSION_APPROVAL_WRITE')">
                     <button type="button" class="btn btn-primary-custom px-4 py-2 mr-3" (click)="approveRejectRole('approved')">Approve</button>
                     <button type="button" class="btn btn-dark px-4 py-2" (click)="approveRejectRole('rejected')">Reject</button>
                 </div>

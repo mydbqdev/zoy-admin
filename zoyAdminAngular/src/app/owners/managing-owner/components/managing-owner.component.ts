@@ -15,15 +15,15 @@ import { ZoyData } from '../models/zoy-code-model';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
-  selector: 'app-zoy-code',
-  templateUrl: './zoy-code.component.html',
-  styleUrl: './zoy-code.component.css'
+  selector: 'app-managing-owner',
+  templateUrl: './managing-owner.component.html',
+  styleUrl: './managing-owner.component.css'
 })
-export class ZoyCodeComponent implements OnInit, AfterViewInit {
+export class ManageOwnerComponent implements OnInit, AfterViewInit {
   pageSize: number = 10; 
   pageSizeOptions: number[] = [10, 20, 50]; 
   totalProduct: number = 0; 
-  displayedColumns: string[] = ['zoyCode', 'ownerName', 'email', 'contact','date', 'status'];
+  displayedColumns: string[] = ['zoyCode', 'ownerName', 'email', 'contact','date', 'status','action'];
   public ELEMENT_DATA:ZoyData[];
   dataSource:MatTableDataSource<ZoyData>=new MatTableDataSource<ZoyData>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
@@ -70,19 +70,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			this.isExpandSideBar=name;
 		});
 	}
-	selectedModel: string = 'generate';
 
-	// Method to update the selected button
-	selectButton(button: string): void {
-	  this.selectedModel = button;
-
-	  if(this.selectedModel =='generated'){
-     this.getZoyCodeDetails();
-	  }else{
-		
-	  }
-
-	}
 	ngOnDestroy() {
 		if (this.mySubscription) {
 			this.mySubscription.unsubscribe();
@@ -92,15 +80,12 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		//	this.router.navigate(['/']);
 		//}
+		this.getZoyCodeDetails();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(2);
-		this.sidemenuComp.activeMenu(2, 'zoy-code');
-		this.dataService.setHeaderName("Zoy Code");
-	}
-
-	test(){
-		this.notifyService.showNotification("Success","");
+		this.sidemenuComp.activeMenu(2, 'manage-owner');
+		this.dataService.setHeaderName("Manage Owner");
 	}
 
 	getZoyCodeDetails(){
@@ -109,41 +94,6 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
     this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
     this.dataSource.sort = this.sort;
 	this.dataSource.paginator = this.paginator;
-
-//   this.spinner.show();
-//   this.userMasterService.getUserList().subscribe(data => {
-//     this.ELEMENT_DATA = Object.assign([],data);
-//     this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-//     this.dataSource.sort = this.sort;
-// 		this.dataSource.paginator = this.paginator;
-//     this.spinner.hide();
-
-//  }, error => {
-//   this.spinner.hide();
-//   if(error.status==403){
-//     this.router.navigate(['/forbidden']);
-//   }else if (error.error && error.error.message) {
-//     this.errorMsg = error.error.message;
-//     console.log("Error:" + this.errorMsg);
-//     this.notifyService.showError(this.errorMsg, "");
-//   } else {
-//     if (error.status == 500 && error.statusText == "Internal Server Error") {
-//       this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-//     } else {
-//       let str;
-//       if (error.status == 400) {
-//         str = error.error;
-//       } else {
-//         str = error.message;
-//         str = str.substring(str.indexOf(":") + 1);
-//       }
-//       console.log("Error:" + str);
-//       this.errorMsg = str;
-//     }
-//     if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-//   }
-// });
-
 }
 	
 }
@@ -155,7 +105,7 @@ export const mockData = [
 	  ownerName: 'John Doe',
 	  email: 'john.doe@example.com',
 	  contact: '123-456-7890',
-	  date: '2023-11-01',
+	  date: '02',
 	  status: 'Registered'
 	},
 	{
@@ -163,7 +113,7 @@ export const mockData = [
 	  ownerName: 'Jane Smith',
 	  email: 'jane.smith@example.com',
 	  contact: '098-765-4321',
-	  date: '2023-11-02',
+	  date: '01',
 	  status: 'Pending'
 	},
 	{
@@ -171,7 +121,7 @@ export const mockData = [
 	  ownerName: 'Michael Johnson',
 	  email: 'michael.j@example.com',
 	  contact: '456-123-7890',
-	  date: '2023-11-03',
+	  date: '03',
 	  status: 'Registered'
 	},
 	{
@@ -179,7 +129,7 @@ export const mockData = [
 	  ownerName: 'Emily Davis',
 	  email: 'emily.davis@example.com',
 	  contact: '321-654-0987',
-	  date: '2023-11-04',
+	  date: '01',
 	  status: 'Pending'
 	},
 	{
@@ -187,7 +137,7 @@ export const mockData = [
 	  ownerName: 'William Brown',
 	  email: 'william.brown@example.com',
 	  contact: '213-546-8790',
-	  date: '2023-11-05',
+	  date: '02',
 	  status: 'Registered'
 	},
 	{
@@ -195,7 +145,7 @@ export const mockData = [
 	  ownerName: 'Olivia Taylor',
 	  email: 'olivia.t@example.com',
 	  contact: '765-432-1098',
-	  date: '2023-11-06',
+	  date: '02',
 	  status: 'Pending'
 	},
 	{
@@ -203,7 +153,7 @@ export const mockData = [
 	  ownerName: 'James Wilson',
 	  email: 'james.wilson@example.com',
 	  contact: '876-543-2109',
-	  date: '2023-11-07',
+	  date: '03',
 	  status: 'Registered'
 	},
 	{
@@ -211,7 +161,7 @@ export const mockData = [
 	  ownerName: 'Sophia Martinez',
 	  email: 'sophia.m@example.com',
 	  contact: '234-567-8901',
-	  date: '2023-11-08',
+	  date: '08',
 	  status: 'Pending'
 	},
 	{
@@ -219,7 +169,7 @@ export const mockData = [
 	  ownerName: 'Benjamin Garcia',
 	  email: 'benjamin.g@example.com',
 	  contact: '345-678-9012',
-	  date: '2023-11-09',
+	  date: '09',
 	  status: 'Registered'
 	},
 	{
@@ -227,7 +177,7 @@ export const mockData = [
 	  ownerName: 'Emma Anderson',
 	  email: 'emma.anderson@example.com',
 	  contact: '456-789-0123',
-	  date: '2023-11-10',
+	  date: '10',
 	  status: 'Pending'
 	}
   ];
