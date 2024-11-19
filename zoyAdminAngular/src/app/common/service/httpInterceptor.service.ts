@@ -13,7 +13,8 @@ export class HttpInterceptorService implements HttpInterceptor {
         if (this.isUserSignedin() && this.getToken()) {
             const request = req.clone({
                 headers: new HttpHeaders({
-                    'Authorization': this.getToken()
+					'Authorization': this.getToken(),
+					'Access-Control-Allow-Origin': '*'
                 })
             });
             return next.handle(request).pipe(
