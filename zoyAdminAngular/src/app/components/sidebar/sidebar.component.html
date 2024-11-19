@@ -73,15 +73,15 @@
     </li>
 
 <!-- Nav Item - Tenants Collapse Menu -->
-<li class="nav-item"  id="menu7"> 
+<li class="nav-item"  [ngClass]="{'active':menu71}" id="menu7"> 
     <a [ngClass]="menu7 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(7)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseTenants"
-    aria-expanded="false" aria-controls="collapseTenants">
+    [attr.aria-expanded]="!menu7" aria-controls="collapseTenants">
         <i class="fas fa-fw fa-cogs"></i>
         <span>Tenants</span>
     </a>
     <div id="collapseTenants" [ngClass]="menu7 ? 'collapse show':'collapse'" aria-labelledby="headingTenants" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" >Tenant 1</a>
+            <a class="collapse-item" routerLink="/tenants" [ngClass]="{'active':activeSubNenuName=='tenants'}">Tenant 1</a>
         </div>
     </div>
    </li>
@@ -104,15 +104,15 @@
    </li>
 
    <!-- Nav Item - Support Collapse Menu -->
-   <li class="nav-item"  id="menu6"> 
+   <li class="nav-item"  [ngClass]="{'active':menu61}" id="menu6"> 
     <a [ngClass]="menu6 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(6)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseSupport"
-    aria-expanded="false" aria-controls="collapseSupport">
+    [attr.aria-expanded]="!menu6" aria-controls="collapseSupport">
         <i class="fas fa-fw fa-cogs"></i>
         <span>Support</span>
     </a>
     <div id="collapseSupport" [ngClass]="menu6 ? 'collapse show':'collapse'" aria-labelledby="headingSupport" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" >Tickets</a>
+            <a class="collapse-item" routerLink="/tickets" [ngClass]="{'active':activeSubNenuName=='tickets'}" >Tickets</a>
         </div>
     </div>
    </li>

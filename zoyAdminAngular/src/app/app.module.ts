@@ -43,6 +43,10 @@ import { UserMasterComponent } from './user-management/user-master/components/us
 import { ManageOwnerComponent } from './owners/managing-owner/components/managing-owner.component';
 import { ZoyCodeComponent } from './owners/zoy-code/components/zoy-code.component';
 import { ProfileComponent } from './profile/profile/profile.component';
+import { ActivityLogComponent } from './profile/activity-log/activity-log.component';
+import { SettingsComponent } from './profile/settings/settings.component';
+import { TicketsComponent } from './supports/tickets/tickets.component';
+import { TenantsComponent } from './tenants/tenants/tenants.component';
 
 
 const appRoutes: Routes = [
@@ -69,7 +73,11 @@ const appRoutes: Routes = [
     PermissionApprovalComponent,
     ZoyCodeComponent,
     ManageOwnerComponent,
-    ProfileComponent
+    ProfileComponent,
+    ActivityLogComponent,
+    SettingsComponent,
+    TicketsComponent,
+    TenantsComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,

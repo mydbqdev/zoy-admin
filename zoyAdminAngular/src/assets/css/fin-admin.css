@@ -11376,3 +11376,16 @@ body.sidebar-toggled footer.sticky-footer {
 .sorting-selected-color{
   color: rgb(49, 49, 49) !important;
 }
+
+
+.text-sub-header {
+  color: #363536 !important;
+  font-size: 23px;
+  background-image: linear-gradient(-90deg, white, #eda1f1);
+}
+
+.text-sub-header-border {
+  border-left: 4px solid #118295;
+  padding-left: 5px;
+  border-radius: 5px;
+}
