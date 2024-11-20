@@ -37,7 +37,7 @@
               <div class="input-group" *ngIf="selectedModel == 'generated'">
                 <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i>
                 <input type="text" class="form-control form-control-sm  border-1"
-                  style="border-radius: 20px;padding-left: 29px;width: 300px;" placeholder="Search" aria-label="Search"
+                  style="border-radius: 20px;padding-left: 29px;width: 300px;" [(ngModel)]="searchText" (input)="filterData()" placeholder="Search" aria-label="Search"
                   aria-describedby="basic-addon2">
               </div>
             </div>
@@ -110,6 +110,7 @@
                 </form>
                 </div>              
                 <div *ngIf="selectedModel == 'generated'">
+                  <div class="scrollable-container-main">
                   <table mat-table [dataSource]="dataSource">
                     <!-- Zoy Code Column -->
                     <ng-container matColumnDef="zoyCode">
@@ -160,6 +161,7 @@
                     <!-- Data Row -->
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                   </table>
+                  </div>
                 </div>
               </div>
             </div> <!-- End Card Body -->
