@@ -164,17 +164,38 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<byte[]> downloadUserPaymentsByDateRange(Timestamp fromDate, Timestamp toDate) {	
-		byte[] pdfData = adminReportImpl.downloadUserPaymentDetails(fromDate,toDate);
+	public ResponseEntity<byte[]> downloadDynamicReportByDateRange(String templateName, String fileType, Timestamp fromDate, Timestamp toDate) {
+	    byte[] fileData = adminReportImpl.generateDynamicReport(templateName, fileType, fromDate, toDate);
 
-		if (pdfData.length == 0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
+	    if (fileData.length == 0) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	    }
 
-		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Vendor_Dues_Report.pdf")
-				.contentType(MediaType.APPLICATION_PDF)
-				.body(pdfData);
+	    MediaType contentType;
+	    String fileExtension;
 
+	    switch (fileType.toLowerCase()) {
+	        case "excel":
+	            contentType = MediaType.APPLICATION_OCTET_STREAM; 
+	            fileExtension = ".xlsx";
+	            break;
+	        case "csv":
+	            contentType = MediaType.TEXT_PLAIN; 
+	            fileExtension = ".csv";
+	            break;
+	        case "pdf":
+	        default:
+	            contentType = MediaType.APPLICATION_PDF;
+	            fileExtension = ".pdf";
+	            break;
+	    }
+
+	    String fileName = templateName + fileExtension;
+
+	    return ResponseEntity.ok()
+	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+	            .contentType(contentType)
+	            .body(fileData);
 	}
+
 }

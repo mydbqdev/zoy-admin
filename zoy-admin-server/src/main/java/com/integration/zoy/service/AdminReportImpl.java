@@ -17,5 +17,5 @@ public interface AdminReportImpl {
 	List<VendorPayments> getVendorPaymentDetails( Timestamp fromDate, Timestamp toDate);
 	List<VendorPaymentsDues> getVendorPaymentDuesDetails( Timestamp fromDate, Timestamp toDate);
 	List<VendorPaymentsGst> getVendorPaymentGstDetails( Timestamp fromDate, Timestamp toDate);
-	byte[] downloadUserPaymentDetails( Timestamp fromDate, Timestamp toDate);
+	byte[] generateDynamicReport(String templateName,String fileType, Timestamp fromDate, Timestamp toDate);
 }

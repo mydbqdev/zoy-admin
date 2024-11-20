@@ -111,8 +111,8 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/download_payment_transfer_details",
+	@GetMapping(value = "/zoy_admin/download_report",
 	produces = { "application/json" })
-	ResponseEntity<byte[]> downloadUserPaymentsByDateRange(@RequestParam("fromDate") Timestamp fromDate,
+	ResponseEntity<byte[]> downloadDynamicReportByDateRange(@RequestParam("templateName") String templateName,@RequestParam("fileType") String fileType,@RequestParam("fromDate") Timestamp fromDate,
             @RequestParam("toDate")Timestamp toDate);
 }
