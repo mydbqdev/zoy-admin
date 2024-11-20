@@ -38,6 +38,15 @@ export class SigninComponent implements OnInit {
 	doSignin() {
 		this.submitted=true;    
 		if (this.username !== '' && this.username !== null && this.password !== '' && this.password !== null) {
+			localStorage.removeItem('username');
+			localStorage.removeItem('userpwd');
+			localStorage.removeItem('rememberme');
+
+			if(this.rememberme){
+				localStorage.setItem('username', this.username);
+				localStorage.setItem('userpwd', this.password);
+				localStorage.setItem('rememberme', JSON.stringify(this.rememberme));
+			}
 			const user: User = { email: this.username.toLowerCase(), password: this.password };
             this.submitted=false;
 			this.authService.getAuthUser(user).subscribe((result) => {
