@@ -145,7 +145,7 @@ export class ForgotPasswordComponent implements OnInit {
 
 	sendOrResendOtp() {
 		this.otpSent = true;
-		this.notifyService.showSuccess("OTP sent successfully", "OTP Notification");
+		this.notifyService.showSuccess("OTP sent successfully", "");
 		this.spinner.show;
 		this.stepPassword=2;
 		// Add logic to call the OTP sending service/API here
@@ -180,11 +180,7 @@ export class ForgotPasswordComponent implements OnInit {
 		if (this.userReset.newPassword !== this.userReset.repeatPassword) {
 			return;
 		}
-
-		// Proceed with registration logic
-		this.notifyService.showSuccess("Account created Successfully", "Congratulations");
 		this.resetForm();
-		this.registerCloseModal.nativeElement.click();
 	}
 
 
@@ -194,9 +190,9 @@ export class ForgotPasswordComponent implements OnInit {
 	verifyOtp() {
 		const enteredOtp = `${this.userReset.otp1}${this.userReset.otp2}${this.userReset.otp3}${this.userReset.otp4}${this.userReset.otp5}${this.userReset.otp6}`;
 		if (enteredOtp === this.userReset.otp) {
-			this.notifyService.showSuccess("OTP verified successfully", "Success");
+			this.notifyService.showSuccess("OTP verified successfully", "");
 		} else {
-			this.notifyService.showError("Invalid OTP", "Error");
+			this.notifyService.showError("Invalid OTP", "");
 		}
 		this.stepPassword=3;
 	}

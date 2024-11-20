@@ -32,14 +32,27 @@
                     <div class="card-body">
                         <div class="row mb-1">
                             <!-- Card with 8 columns width -->
-                            <div class="col-xl-8 col-md-6 mb-2">                               
+                            <div class="col-xl-8 col-md-6 mb-3">                               
                                 <div>
                                     <div class="card">
-                                        <div class="card-body">
+                                        <div class="card-body" style="padding: 5px ;margin: 0px;">
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col mr-2">
-                                                    <div style="height: calc(100vh - 240px);overflow: auto;">
-                                                        <div class="desc-inner" style="height: auto;">
+                                                    <div style="height: calc(100vh - 220px);">
+                                                        <div>
+                                                          <div class="text-sub-header text-sub-header-border mb-3"> Information</div>
+                                                          <div class="d-flex mb-2 ml-2">
+                                                              <div style="font-weight: 600;margin-right: 20px;">Name :</div>
+                                                              <div>{{userInfo.firstName}} {{userInfo.lastName}}</div>
+                                                          </div>
+                                                          <div class="d-flex mb-2 ml-2">
+                                                            <div style="font-weight: 600;margin-right: 20px;">Email :</div>
+                                                            <div>{{userInfo.userEmail}}</div>
+                                                          </div>
+                                                        <div class="d-flex mb-2 ml-2">
+                                                          <div style="font-weight: 600;margin-right: 20px;">Designation :</div>
+                                                          <div>{{userInfo.designation}}</div>
+                                                        </div>
                                                         </div>
                                                     </div>    
                                                 </div>
@@ -48,9 +61,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-4 col-md-6 mb-2">
+                            <div class="col-xl-4 col-md-6 mb-3">
                                 <div class="card">
                                     <div class="card-body"  style="padding: 5px ;margin: 0px;">
+                                      <div style="height: calc(100vh - 220px);">
                                         <div class="no-gutters align-items-center">
                                             <div class="text-sub-header text-sub-header-border mb-3"> Change Password</div> 
                                            <div class="pl-3 pr-3 ">
@@ -123,6 +137,7 @@
                                             </div>
 
                                                
+                                        </div>
                                         </div>
                                     </div>
                                 </div>
