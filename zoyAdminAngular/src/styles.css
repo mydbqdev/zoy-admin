@@ -99,3 +99,12 @@
 ngb-modal-backdrop.modal-backdrop {
   z-index: 1045 !important;
 }
+
+.profile-picture{
+  width: 160px;
+  height: 160px;
+  background-color: #925fe2;
+  text-align: center;
+  border-radius: 50%; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}

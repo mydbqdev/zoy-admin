@@ -586,7 +586,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	        }
 	    }
 	 @Override
-	 public ResponseEntity<String> deleteRole(int roleId) {
+	 public ResponseEntity<String> deleteRole(int roleId ,String roleName) {
 	     ResponseBody response = new ResponseBody();
 	     
 	     try {
@@ -597,11 +597,11 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	             adminDBImpl.deleteRolefromApp_role(roleId);      
 	             
 	             response.setStatus(HttpStatus.OK.value());
-	             response.setMessage("Role with ID " + roleId + " has been deleted successfully.");
+	             response.setMessage( roleName + " role has been deleted successfully.");
 	             return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 	         } else {
 	             response.setStatus(HttpStatus.BAD_REQUEST.value());
-	             response.setError("Delete not possible. Role ID " + roleId + " is assigned.");
+	             response.setMessage("Deletion is not possible as the role " + roleName + " is currently assigned.");
 	             return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	         }
 	     } catch (Exception e) {

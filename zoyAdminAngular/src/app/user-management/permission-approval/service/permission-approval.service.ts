@@ -31,8 +31,18 @@ export class PermissionApprovalService {
           headers:ServiceHelper.buildHeaders(),
          observe : 'body',
          withCredentials:true
-      }
-  );
+      });
+  }
+
+  public zoyAdminNotApprovedRoles(): Observable<any> {
+    const url = this.basePath + 'zoy_admin/userListNotApprove'; 
+    return  this.httpclient.get<any>(
+      url,
+      {
+          headers:ServiceHelper.buildHeaders(),
+         observe : 'body',
+         withCredentials:true
+      });
   }
 
 

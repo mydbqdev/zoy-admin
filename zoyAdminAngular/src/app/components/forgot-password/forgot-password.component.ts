@@ -13,6 +13,7 @@ import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ForgotPassword } from 'src/app/common/models/forgot-password.model';
 import { ForgotPasswordService } from 'src/app/common/service/forgot-password.service';
+import { ChangePasswordModel } from 'src/app/profile/model/change-password-model';
 
 @Component({
 	selector: 'app-forgot-password',
@@ -43,6 +44,8 @@ export class ForgotPasswordComponent implements OnInit {
 	shouldBeChecked = [];
 	checkedApplications: { [key: string]: boolean } = {};
 	form: FormGroup;
+	formOtp: FormGroup;
+	formReset: FormGroup;
 	userReset: ForgotPassword = new ForgotPassword();
 	otpSent: boolean = false;
 	otpSubmitted: boolean = false;
@@ -53,7 +56,7 @@ export class ForgotPasswordComponent implements OnInit {
 	isPasswordVisible: boolean = false;
 	showNewPassword: boolean = false;
 	showConfirmPassword: boolean = false;
-
+	viewPassword:boolean=false;
 
 	constructor(
 		private route: ActivatedRoute, private router: Router, private authService: AuthService, private dataService: DataService,
@@ -74,7 +77,6 @@ export class ForgotPasswordComponent implements OnInit {
 			}
 		});
 	}
-
 	ngOnDestroy() {
 		if (this.mySubscription) {
 			this.mySubscription.unsubscribe();
@@ -83,60 +85,86 @@ export class ForgotPasswordComponent implements OnInit {
 
 	ngOnInit() {
 		this.form = this.formBuilder.group({
-			firstName: ['', [Validators.required]],
-			lastName: ['', [Validators.required]],
-			designation: ['', [Validators.required]],
-			email: ['', [
-				Validators.required,
-				Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
-			]],
-			password: ['', [
+			newPassword: ['', [
 				Validators.required,
 				Validators.minLength(8),
 				Validators.maxLength(16),
 				Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-			]],
-			repeatPassword: ['', Validators.required],
+			  ]],
+			  confirmPassword: ['', Validators.required]
+			}, 
+			{ validator: this.passwordsMatch });
+		
+		this.formOtp = this.formBuilder.group({
 			otp1: ['', Validators.required],
 			otp2: ['', Validators.required],
 			otp3: ['', Validators.required],
 			otp4: ['', Validators.required],
 			otp5: ['', Validators.required],
 			otp6: ['', Validators.required]// Added OTP field to form
-		}, { validator: this.passwordsMatch });
+		});
 	}
-
-	passwordsMatch(formGroup: FormGroup) {
+	   passwordsMatch(formGroup: FormGroup) {
 		const password = formGroup.get('password')?.value;
 		const repeatPassword = formGroup.get('repeatPassword')?.value;
 		return password === repeatPassword ? null : { passwordsMismatch: true };
-	}
+	}	
+	changePasswordDetails : ChangePasswordModel=new ChangePasswordModel();
+		changePassword() {
+			this.submitted=true;	
+			this.changePasswordDetails.userEmail=this.userService.getUsername();
+			if(this.form.invalid){
+				return;
+			}
+			this.spinner.show();	
+			this.forgotPasswordService.savePassword(this.changePasswordDetails).subscribe((res) => {
+			  this.notifyService.showSuccess(res.message, "");
+			  this.form.reset();
+			  this.submitted=false;
+			  this.spinner.hide();
+			},error =>{
+			  this.spinner.hide();
+			  console.log("error.error",error)
+			  this.errorMsg = (error.error.error !=undefined?(error.error.error  +"."):"")
+			  + (error.error.userEmail!=undefined?(error.error.userEmail+"."):"")
+			  +(error.error.password!=undefined?(error.error.password  +"."):"");
+			  if(error.status==403){
+			  this.router.navigate(['/forbidden']);
+			  }else if (error.error && error.error.message) {
+			  this.errorMsg =error.error.message;
+			  console.log("Error:"+this.errorMsg);
+			  this.notifyService.showError(this.errorMsg, "");
+			  this.spinner.hide();
+			  } else {
+			  this.spinner.hide();
+			  if(error.status==500 && error.statusText=="Internal Server Error"){
+				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			  }else{
+			   this.spinner.hide();
+				let str;
+				if(error.status==400){
+				str=error.error;
+				}else{
+				  str=error.message;
+				  str=str.substring(str.indexOf(":")+1);
+				}
+				console.log("Error:"+str);
+				this.errorMsg=str;
+			  }
+			//	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			  }
+			}
+			);  
+		  }  
 
-	nameValidation(event: any, inputId: string) {
-		const clipboardData = event.clipboardData || (window as any).clipboardData;
-		const pastedText = clipboardData.getData('text/plain');
-		const clString = pastedText.replace(/[^a-zA-Z\s.]/g, '');
-		event.preventDefault();
-		switch (inputId) {
-			case 'firstName':
-				this.userReset.firstName = clString;
-				break;
-			case 'lastName':
-				this.userReset.lastName = clString;
-				break;
-		}
-	}
-
-
-
-	togglePasswordVisibility(field: 'new' | 'confirm'): void {
-	  if (field === 'new') {
-	    this.showNewPassword = !this.showNewPassword;
-	  } else if (field === 'confirm') {
-	    this.showConfirmPassword = !this.showConfirmPassword;
-	  }
-	}
-
+	// togglePasswordVisibility(field: 'new' | 'confirm'): void {
+	//   if (field === 'new') {
+	//     this.showNewPassword = !this.showNewPassword;
+	//   } else if (field === 'confirm') {
+	//     this.showConfirmPassword = !this.showConfirmPassword;
+	//   }
+	// }
+	
 	resetForm() {
 		this.submitted = false;
 		this.form.reset();
@@ -145,11 +173,106 @@ export class ForgotPasswordComponent implements OnInit {
 
 	sendOrResendOtp() {
 		this.otpSent = true;
-		this.notifyService.showSuccess("OTP sent successfully", "OTP Notification");
-		this.spinner.show;
 		this.stepPassword=2;
-		// Add logic to call the OTP sending service/API here
+		return;
+		this.spinner.show;
+		this.forgotPasswordService.sendOTP(this.email).subscribe(data => {
+			this.stepPassword=2;
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status==403){
+			this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+			this.errorMsg = error.error.message;
+			console.log("Error:" + this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+			} else {
+			if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+			} else {
+				let str;
+				if (error.status == 400) {
+				str = error.error;
+				} else {
+				str = error.message;
+				str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" + str);
+				this.errorMsg = str;
+			}
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+		});
 	}
+
+	submitOtp() {
+		this.submitted=true;	
+		this.changePasswordDetails.userEmail=this.userService.getUsername();
+		if(this.form.invalid){
+			return;
+		}
+		this.spinner.show();	
+		this.forgotPasswordService.submitOtp(this.changePasswordDetails).subscribe((res) => {
+		  this.notifyService.showSuccess(res.message, "");
+		  this.form.reset();
+		  this.submitted=false;
+		  this.spinner.hide();
+		},error =>{
+		  this.spinner.hide();
+		  console.log("error.error",error)
+		  this.errorMsg = (error.error.error !=undefined?(error.error.error  +"."):"")
+		  + (error.error.userEmail!=undefined?(error.error.userEmail+"."):"")
+		  +(error.error.password!=undefined?(error.error.password  +"."):"");
+		  if(error.status==403){
+		  this.router.navigate(['/forbidden']);
+		  }else if (error.error && error.error.message) {
+		  this.errorMsg =error.error.message;
+		  console.log("Error:"+this.errorMsg);
+		  this.notifyService.showError(this.errorMsg, "");
+		  this.spinner.hide();
+		  } else {
+		  this.spinner.hide();
+		  if(error.status==500 && error.statusText=="Internal Server Error"){
+			this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+		  }else{
+		   this.spinner.hide();
+			let str;
+			if(error.status==400){
+			str=error.error;
+			}else{
+			  str=error.message;
+			  str=str.substring(str.indexOf(":")+1);
+			}
+			console.log("Error:"+str);
+			this.errorMsg=str;
+		  }
+		//	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  }
+		}
+		);  
+	  }  
+
+
+
+	// showNewPassword: boolean = false;
+    passwordResetSuccess: boolean = false;
+    togglePasswordVisibility(type: string): void {
+ 	this.isPasswordVisible=!this.isPasswordVisible;
+    if (type === 'new') {
+      this.showNewPassword = !this.showNewPassword;
+    }
+  }
+
+  resetPassword(event: Event): void {
+  //  event.preventDefault();
+  if(this.formReset.invalid){
+	return;
+	}
+    // Add form validation or API call logic here
+    // If the reset is successful:
+    this.passwordResetSuccess = true;
+  }
 
 	doRegister() {
 		this.submitted = true;
@@ -160,11 +283,7 @@ export class ForgotPasswordComponent implements OnInit {
 		if (this.userReset.newPassword !== this.userReset.repeatPassword) {
 			return;
 		}
-
-		// Proceed with registration logic
-		this.notifyService.showSuccess("Account created Successfully", "Congratulations");
 		this.resetForm();
-		this.registerCloseModal.nativeElement.click();
 	}
 
 
@@ -174,9 +293,9 @@ export class ForgotPasswordComponent implements OnInit {
 	verifyOtp() {
 		const enteredOtp = `${this.userReset.otp1}${this.userReset.otp2}${this.userReset.otp3}${this.userReset.otp4}${this.userReset.otp5}${this.userReset.otp6}`;
 		if (enteredOtp === this.userReset.otp) {
-			this.notifyService.showSuccess("OTP verified successfully", "Success");
+			this.notifyService.showSuccess("OTP verified successfully", "");
 		} else {
-			this.notifyService.showError("Invalid OTP", "Error");
+			this.notifyService.showError("Invalid OTP", "");
 		}
 		this.stepPassword=3;
 	}

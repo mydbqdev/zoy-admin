@@ -59,8 +59,8 @@ editRole(data : any){
         );
 }
 
-deleteRole(id : string){
-  let url1=this.basePath +'rolescreenmaster/user/roleScreenMaster/delete?code='+ id ;
+deleteRole(roleId : number ,roleName :string){
+  let url1=this.basePath +'zoy_admin/role_delete?roleId='+ roleId+'&roleName='+roleName ;
         return this.httpclient.post<any>(
             url1,
             '',

@@ -7,6 +7,10 @@ import { HomeComponent } from './components/home/home.component';
 import { ReportListComponent } from './reports/component/report-list.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ProfileComponent } from './profile/profile/profile.component';
+import { ActivityLogComponent } from './profile/activity-log/activity-log.component';
+import { SettingsComponent } from './profile/settings/settings.component';
+import { TenantsComponent } from './tenants/tenants/tenants.component';
+import { TicketsComponent } from './supports/tickets/tickets.component';
 
 const routes: Routes = [
 	{path:'',redirectTo:'/startup',pathMatch:'full'},
@@ -17,6 +21,10 @@ const routes: Routes = [
 	{ path: 'report-list', component: ReportListComponent },
 	{ path: 'forgot-password', component: ForgotPasswordComponent },
 	{ path: 'profile', component: ProfileComponent },
+	{ path: 'activity-log', component: ActivityLogComponent },
+	{ path: 'settings', component: SettingsComponent },
+	{ path: 'tenants', component: TenantsComponent },
+	{ path: 'tickets', component: TicketsComponent },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
