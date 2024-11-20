@@ -28,9 +28,6 @@ export class SigninComponent implements OnInit {
 			this.username=localStorage.getItem('username');
 			this.password=localStorage.getItem('userpwd');
 			this.rememberme=JSON.parse(localStorage.getItem('rememberme'));
-			console.info("this.username remember:"+this.username);
-			console.info("this.password remember:"+this.password);
-			console.info("this.rememberme remember:"+this.rememberme);
 		}
 	}
 	isPasswordVisible:boolean=false;
