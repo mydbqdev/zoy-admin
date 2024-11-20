@@ -17,20 +17,20 @@ import { MessageService } from 'src/app/message.service';
     constructor(private httpclient:HttpClient,@Inject(BASE_PATH) private basePath:string, private messageService:MessageService){
 
     }
-    public find(empCode:string,pageIndex:number,pageSize:number): Observable<any> {
-        const url1=this.basePath +'userrole/user/showListOfUsers';
-        let param={"empCode":empCode,"pageIndex":pageIndex,"pageSize":pageSize};
-              return this.httpclient.post<any[]>(
-                  url1,
-                  param
-                  ,
-                  {
-                      headers:ServiceHelper.buildHeaders(),
-                     observe : 'body',
-                     withCredentials:true
-                  }
-              );
-      } 
+    // public find(empCode:string,pageIndex:number,pageSize:number): Observable<any> {
+    //     const url1=this.basePath +'userrole/user/showListOfUsers';
+    //     let param={"empCode":empCode,"pageIndex":pageIndex,"pageSize":pageSize};
+    //           return this.httpclient.post<any[]>(
+    //               url1,
+    //               param
+    //               ,
+    //               {
+    //                   headers:ServiceHelper.buildHeaders(),
+    //                  observe : 'body',
+    //                  withCredentials:true
+    //               }
+    //           );
+    //   } 
 
 
       public rolesDropdown(): Observable<any> {
@@ -48,17 +48,43 @@ import { MessageService } from 'src/app/message.service';
 
 
       
-     public saveData(data:any): Observable<any> {
-        const url1=this.basePath +'userrole/user/saveUser';
-        return this.httpclient.post<any[]>(
-            url1,
-            data,
-            {
-                headers:ServiceHelper.buildHeaders(),
-               observe : 'body',
-               withCredentials:true
-            }
-        );
+     public sendOTP(userEmail:string): Observable<any> {
+        const url1=this.basePath +"zoy_admin/send_otp?userEmail"+userEmail ;
+          return  this.httpclient.post<any>(
+              url1,
+              '',
+              {
+                  headers:ServiceHelper.buildHeaders(),
+                 observe : 'body',
+                 withCredentials:true
+              }
+          );
+     }
+
+     public savePassword(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/savePassword" ;
+          return  this.httpclient.post<any>(
+              url1,
+              data,
+              {
+                  headers:ServiceHelper.buildHeaders(),
+                 observe : 'body',
+                 withCredentials:true
+              }
+          );
+     }
+
+     public submitOtp(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/submitOtp" ;
+          return  this.httpclient.post<any>(
+              url1,
+              data,
+              {
+                  headers:ServiceHelper.buildHeaders(),
+                 observe : 'body',
+                 withCredentials:true
+              }
+          );
      }
     
 
