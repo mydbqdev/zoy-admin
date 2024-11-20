@@ -23,11 +23,9 @@ import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/
   styleUrl: './zoy-code.component.css'
 })
 export class ZoyCodeComponent implements OnInit, AfterViewInit {
-  pageSize: number = 10; 
-  pageSizeOptions: number[] = [10, 20, 50]; 
-  totalProduct: number = 0; 
   displayedColumns: string[] = ['zoyCode', 'ownerName', 'email', 'contact','date', 'status'];
   public ELEMENT_DATA:ZoyData[];
+  searchText:string='';
   dataSource:MatTableDataSource<ZoyData>=new MatTableDataSource<ZoyData>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
     zoyCode: null,
@@ -38,7 +36,6 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	status: null
   };
   generateZCode : ZoyData=new ZoyData();
-
   public userNameSession: string = "";
 	errorMsg: any = "";
 	mySubscription: any;
@@ -81,11 +78,13 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	// Method to update the selected button
 	selectButton(button: string): void {
 	  this.selectedModel = button;
-
 	  if(this.selectedModel =='generated'){
-     this.getZoyCodeDetails();
+		 this.getZoyCodeDetails();
+		 this.submitted=false;
+		 this.form.reset();
 	  }else{
-		
+		this.searchText='';
+		this.filterData();
 	  }
 
 	}
@@ -218,13 +217,23 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			  }
 			  );  
 			}  
-	
+			filterData(){
+				console.info("searchText:"+this.searchText);
+				if(this.searchText==''){
+					this.ELEMENT_DATA = Object.assign([],mockData);
+    				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+				}else{
+					const pagedData = Object.assign([],mockData.filter(data =>
+						data.ownerName.toLowerCase().includes(this.searchText.toLowerCase()) || data.email.toLowerCase().includes(this.searchText.toLowerCase()) || data.contact.toLowerCase().includes(this.searchText.toLowerCase())
+						));
+					this.ELEMENT_DATA = Object.assign([],pagedData);
+    				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+				}
+			}
 	getZoyCodeDetails(){
     // this.authService.checkLoginUserVlidaate();
     this.ELEMENT_DATA = Object.assign([],mockData);
     this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-    this.dataSource.sort = this.sort;
-	this.dataSource.paginator = this.paginator;
 
 //   this.spinner.show();
 //   this.generateZoyCodeService.getUserList().subscribe(data => {
@@ -266,14 +275,6 @@ nameValidation(event: any, inputId: string) {
   const pastedText = clipboardData.getData('text/plain');
   const clString = pastedText.replace(/[^a-zA-Z\s.]/g, '');
    event.preventDefault();
-//   switch (inputId) {
-//     case 'firstName':
-//     this.userReg.firstName=clString;
-//     break;
-//     case 'lastName':
-//     this.userReg.lastName=clString;
-//     break;
-//   }
   }
 	
 }

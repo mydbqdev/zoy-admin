@@ -3,21 +3,18 @@
   width: 100px;
   display: inline-block;
   text-align: center;
+  border-radius: 5px;
+  padding: 5px;
 }
 
 .btn-registered {
-  background-color:  #86d189;
-  color: white;
-  border-radius: 2px;
-  height: 20px;
+  background-color:  #cefbf5;
+  color:  #246359;
 }
 
 .btn-pending {
-  background-color:grey; 
-    color: white;
-  border-radius: 2px;
-  height: 20px;
-
+  background-color:#e6dff7; 
+    color: #470ecf;
 }
 
   /* Style the scrollbar for vertical and horizontal scrollbars */
