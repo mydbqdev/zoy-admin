@@ -28,6 +28,9 @@ export class SigninComponent implements OnInit {
 			this.username=localStorage.getItem('username');
 			this.password=localStorage.getItem('userpwd');
 			this.rememberme=JSON.parse(localStorage.getItem('rememberme'));
+			console.info("this.username remember:"+this.username);
+			console.info("this.password remember:"+this.password);
+			console.info("this.rememberme remember:"+this.rememberme);
 		}
 	}
 	isPasswordVisible:boolean=false;
@@ -38,6 +41,15 @@ export class SigninComponent implements OnInit {
 	doSignin() {
 		this.submitted=true;    
 		if (this.username !== '' && this.username !== null && this.password !== '' && this.password !== null) {
+			localStorage.removeItem('username');
+			localStorage.removeItem('userpwd');
+			localStorage.removeItem('rememberme');
+
+			if(this.rememberme){
+				localStorage.setItem('username', this.username);
+				localStorage.setItem('userpwd', this.password);
+				localStorage.setItem('rememberme', JSON.stringify(this.rememberme));
+			}
 			const user: User = { email: this.username.toLowerCase(), password: this.password };
             this.submitted=false;
 			this.authService.getAuthUser(user).subscribe((result) => {

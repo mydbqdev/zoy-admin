@@ -16,15 +16,15 @@
                                     </div>
                                     <div>
                                         <h1 class="h4 text-gray-900 mt-2">Login</h1>
-                                        <div class="small mb-1">Enter your account details</div>
+                                        <div class="small mb-1">Enter your account details{{username}}</div>
                                     </div>
                                     <div style="height: 35px;color:red;" class="small">
                                         <span *ngIf='error'>{{error}}</span>
                                     </div>
-                                    <form class="user" (ngSubmit)="doSignin()">
+                                    <form name='signinForm' (ngSubmit)="doSignin()">
                                         <div class="form-group">
-                                            <input type="email" class="form-control" style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;"
-                                            id="exampleInputEmail" aria-describedby="emailHelp" [(ngModel)]="username" (ngModelChange)="username = $event.toLowerCase()"
+                                            <input type="text" class="form-control" style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;"
+                                            id="username" name="username" [(ngModel)]="username" (ngModelChange)="username = $event.toLowerCase()"
                                             placeholder="Email">
                                             <div *ngIf="submitted && username==''" class="text-danger">
                                                 Please enter your email
@@ -34,7 +34,7 @@
                                         <div class="form-group">
                                             <div class="input-group">
                                             <input  type="{{ isPasswordVisible ? 'text' : 'password' }}" class="form-control" style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;"
-                                                id="exampleInputPassword" placeholder="Password" [(ngModel)]="password"  >
+                                                id="password" name="password" placeholder="Password" [(ngModel)]="password" autocomplete="off" >
                                                 <span class="input-group-text" style="border: 0px solid #d1d3e2;background-color: #fff !important;cursor: pointer;border-bottom: 1px solid #d1d3e2;border-radius: 0px;" (click)="togglePasswordVisibility()">
                                                     <i class="fas" [ngClass]="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
                                                 </span>
@@ -49,8 +49,8 @@
                                         </div>
                                         <div style="margin-bottom: 2px;margin-top:-2px">
                                             <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
-                                                <label class="custom-control-label" for="customCheck">Remember me</label>
+                                                <input type="checkbox" class="custom-control-input" id="rememberme" [(ngModel)]="rememberme">
+                                                <label class="custom-control-label" for="rememberme">Remember me</label>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary-custom btn-block">
