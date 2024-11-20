@@ -47,6 +47,8 @@ import { ActivityLogComponent } from './profile/activity-log/activity-log.compon
 import { SettingsComponent } from './profile/settings/settings.component';
 import { TicketsComponent } from './supports/tickets/tickets.component';
 import { TenantsComponent } from './tenants/tenants/tenants.component';
+import { TenantMenuRoutingModule } from './tenants/tenents-menu-routing.module';
+import { BulkUploadComponent } from './tenants/bulk-upload/component/bulk-upload.component';
 
 
 const appRoutes: Routes = [
@@ -77,7 +79,8 @@ const appRoutes: Routes = [
     ActivityLogComponent,
     SettingsComponent,
     TicketsComponent,
-    TenantsComponent
+    TenantsComponent,
+    BulkUploadComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -97,7 +100,8 @@ const appRoutes: Routes = [
     ToastrModule.forRoot(),
     NgMultiSelectDropDownModule.forRoot(),
     DragDropModule,
-    AppSettingMenuRoutingModule
+    AppSettingMenuRoutingModule,
+    TenantMenuRoutingModule
   ],
   providers: [
     {

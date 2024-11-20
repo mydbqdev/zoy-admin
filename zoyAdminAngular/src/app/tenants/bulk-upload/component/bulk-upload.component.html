@@ -1,0 +1,157 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+    <p style="color: white;">Loading ...</p>
+  </ngx-spinner>
+  <div id="page-top">
+      <!-- Page Wrapper -->
+      <div id="wrapper">
+        <!-- Sidebar -->
+        <app-sidebar></app-sidebar>
+        <!-- End of Sidebar -->
+  
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+            <!-- Main Content -->
+            <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+  
+                <!-- Begin Page Content -->
+                <div class="container-fluid" style="margin-top: -5px;">
+                    <div style="padding:10px 10px 0px;border:1px solid#dbdbdb;border-radius: 5px;">
+                    <div class="d-flex mb-1">
+                      <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Bulk Upload</span></h3> 
+                      <div class="ml-auto" >
+                        <div class="input-group">
+                          <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
+                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <span>Sample Files</span>
+                      </a>
+                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                          
+                          <a class="dropdown-item" href="javascript:void(0)" (click)="getTenentSampleFile()" >Tenent</a>
+                          <a class="dropdown-item" href="javascript:void(0)" (click)="getPgPropertysSampleFile()">PG Propertys</a>
+                      </div>      
+                        </div>
+                    </div>
+                    </div>
+                    <div class="row mt-2 mb-0">
+                      <form [formGroup]="form">                 
+                        <div class="pl-3 row">
+                          <div class="col-sm-3">
+                            <div class="form-group">
+                              <label for="fileName" class="col-form-label">File Name</label>
+                              <input type="text" class="form-control" id="fileName" name="fileName" [ngClass]="{'is-invalid':submitted && form.controls.fileName.errors}" [(ngModel)]="bulkUpload.fileName" autocomplete="off" />
+                              <div *ngIf="submitted && form.controls.fileName.errors" class="text-danger">
+                                <div *ngIf="submitted && form.controls.fileName.errors.required">
+                                    File Name is required
+                                </div>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-3">
+                            <div class="form-group">
+                              <label for="file">Category</label>
+                              <select class="custom-select" [(ngModel)]="bulkUpload.category" formControlName="category" 
+                              [ngClass]="{'is-invalid':submitted && form.controls.category.errors}">                                             
+                                <option value="Tenent">Tenent</option>
+                                <option value="PG Property">PG Property</option>
+                              </select> 
+                              <div *ngIf="submitted && form.controls.category.errors "
+                              class="text-danger">
+                              <div *ngIf="submitted && form.controls.category.errors.required">
+                                Category is required
+                              </div>
+                              </div>
+                             </div>
+                            </div>                                      
+                            <div class="col-sm-4">
+                              <div class="form-group">                                             
+                                <div class="input-group">                                             
+                                  <input class="form-control" id="formFile" type="file" (change)="onFileChange($event)"
+                                  formControlName="reqDocument" 
+                                      [ngClass]="{'is-invalid':submitted && (form.controls.reqDocument.errors || filevali)}">
+                                  <label for="formFile"class="btn btn-secondary">Browse</label>
+                                </div>  
+                                <div *ngIf="submitted && (form.controls.reqDocument.errors!=null && form.controls.reqDocument.errors!=undefined && form.controls.reqDocument.errors.required) " class="text-danger">
+                                  File is required
+                              </div>                                             
+                                <p style="color: red;font-size: 12px;">(Allows only csv/excel file)</p>
+                              </div>
+                             </div>                                      
+                               <div class="col-sm-2">                                            
+                                <button type="submit" class="btn btn-primary-custom" (click)="submitUploadFile()"  *ngIf="rolesArray.includes('BULK_UPLOAD_WRITE')">Submit</button>
+                                </div>
+                           
+                          </div>
+                   </form>
+                    </div>
+              
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card shadow mb-3">
+   
+                              <div>
+                                  <div style="max-height: calc(100vh - 309px); overflow: auto;">
+                                    <div class="desc-inner" style="height:calc(100vh - 309px);">
+                                    <table mat-table [dataSource]="dataSource" >
+
+                                      <!-- File Name Column -->
+                                      <ng-container matColumnDef="fileName">
+                                        <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">FILE NAME</th>
+                                        <td mat-cell *matCellDef="let element">{{ element.fileName }}</td>
+                                      </ng-container>
+                                    
+                                      <!-- Category Column -->
+                                      <ng-container matColumnDef="category">
+                                        <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">CATEGORY</th>
+                                        <td mat-cell *matCellDef="let element">{{ element.category }}</td>
+                                      </ng-container>
+                              
+                                      <!-- Status Column -->
+                                      <ng-container matColumnDef="status">
+                                        <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">STATUS</th>
+                                        <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+                                      </ng-container>
+                              
+                                      <!-- createdAt Column -->
+                                      <ng-container matColumnDef="createdAt">
+                                        <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">CREATE DATE</th>
+                                        <td mat-cell *matCellDef="let element">{{ element.createdAt  }}</td>
+                                      </ng-container>
+                              
+                              
+                                      <!-- Header and Row Definitions -->
+                                      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                      <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
+                                    </table>
+                                    
+                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length === 0">
+                                      No records found
+                                    </div>
+                                  </div>
+                                </div>
+                              
+                                <!-- Pagination -->
+                                <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+                              </div>
+                              
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+  
+            </div>
+            <!-- End of Main Content -->
+  
+        </div>
+        <!-- End of Content Wrapper -->
+  
+    </div>
+    <!-- End of Page Wrapper -->
+  </div>

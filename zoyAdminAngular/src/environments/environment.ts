@@ -21,6 +21,7 @@ export const environment = {
     "tenants":true,
     "tenantsSubMenu":{
       "tenantzoy": true,
+      "bulkUpload": true
     },
     "finances":true,
     "financesSubMenu":{

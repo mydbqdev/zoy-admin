@@ -73,7 +73,7 @@
     </li>
 
 <!-- Nav Item - Tenants Collapse Menu -->
-<li class="nav-item"  [ngClass]="{'active':menu71}" id="menu7" *ngIf="defMenu.tenants && rolesArray.includes('TENANTSZOY_READ')"> 
+<li class="nav-item"  [ngClass]="{'active':menu71}" id="menu7" *ngIf="defMenu.tenants && (rolesArray.includes('TENANTSZOY_READ') ||rolesArray.includes('BULK_UPLOAD'))"> 
     <a [ngClass]="menu7 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(7)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseTenants"
     aria-expanded="false" aria-controls="collapseTenants">
         <i class="fas fa-fw fa-cogs"></i>
@@ -82,6 +82,9 @@
     <div id="collapseTenants" [ngClass]="menu7 ? 'collapse show':'collapse'" *ngIf="rolesArray.includes('TENANTSZOY_READ')"  aria-labelledby="headingTenants" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item">Tenant </a>
+            <div class="p-1"></div>
+            <a class="collapse-item" routerLink="/bulk-upload" *ngIf="defMenu.tenantsSubMenu.bulkUpload && rolesArray.includes('BULK_UPLOAD_READ')" [ngClass]="{'active':activeSubNenuName=='bulk-upload'}" (click)="setHeaderName('Bulk Upload')" >Bulk Upload</a>
+            <div class="p-1"></div>
         </div>
     </div>
    </li>
