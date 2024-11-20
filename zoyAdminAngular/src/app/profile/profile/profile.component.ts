@@ -11,6 +11,7 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { ChangePasswordModel } from '../model/change-password-model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProfileService } from '../service/profile-service';
+import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 
 
 @Component({
@@ -30,9 +31,11 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	isExpandSideBar:boolean=true;
 	@ViewChild(SidebarComponent) sidemenuComp;
 	public rolesArray: string[] = [];
+	userInfo:UserInfo=new UserInfo();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private profileService:ProfileService,
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
+			this.userInfo=this.userService.getUserinfo();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
 		if (userService.getUserinfo() != undefined) {
@@ -55,6 +58,12 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 		this.dataService.getIsExpandSideBar.subscribe(name=>{
 			this.isExpandSideBar=name;
 		});
+
+		if(this.userService.getUserinfo()==undefined){
+			this.dataService.getUserDetails.subscribe(name=>{
+					  this.userInfo=name;
+					});
+		  }
 	}
 
 	ngOnDestroy() {
