@@ -148,6 +148,40 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		  this._liveAnnouncer.announce('Sorting cleared');
 		}
 	}
+	statuses = [
+		{ id: 1, name: 'Active', selected: false },
+		{ id: 2, name: 'Inactive', selected: false },
+		{ id: 3, name: 'Blocked', selected: false }
+	  ];
+
+	  statusesOgn = [
+		{ id: 1, name: 'Active', selected: false },
+		{ id: 2, name: 'Inactive', selected: false },
+		{ id: 3, name: 'Blocked', selected: false }
+	  ];
+
+
+
+	
+	  // Toggle the selected status for a button
+	  toggleStatus(status: any): void {
+		status.selected = !status.selected;
+	  }
+	
+	  // Apply and process the selected statuses
+	  applyStatuses(): void {
+		const selectedStatuses = this.statuses
+		  .filter(status => status.selected)
+		  .map(status => status.name);
+	
+		console.log('Selected Statuses:', selectedStatuses);
+
+		this.searchText='';
+		this.filterData();
+	  }
+	  resetfilter(){
+		this.statuses= Object.assign([], this.statusesOgn);
+	  }
 
 	filterData(){
 		console.info("searchText:"+this.searchText);
@@ -165,9 +199,6 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		this.dataSource.sort = this.sort;
 		this.dataSource.paginator = this.paginator;
 	}
-	resetFilter(){
-		this.searchText='';
-		this.filterData();
-	}
+
 	  
   }  
