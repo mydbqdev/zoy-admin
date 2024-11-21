@@ -13,6 +13,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ZoyData } from '../models/zoy-code-model';
 import { MatTableDataSource } from '@angular/material/table';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GenerateZoyCodeService } from '../../service/zoy-code.service';
+import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-zoy-code',
@@ -20,11 +23,9 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrl: './zoy-code.component.css'
 })
 export class ZoyCodeComponent implements OnInit, AfterViewInit {
-  pageSize: number = 10; 
-  pageSizeOptions: number[] = [10, 20, 50]; 
-  totalProduct: number = 0; 
   displayedColumns: string[] = ['zoyCode', 'ownerName', 'email', 'contact','date', 'status'];
   public ELEMENT_DATA:ZoyData[];
+  searchText:string='';
   dataSource:MatTableDataSource<ZoyData>=new MatTableDataSource<ZoyData>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
     zoyCode: null,
@@ -34,6 +35,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
     date: null,
 	status: null
   };
+  generateZCode : ZoyData=new ZoyData();
   public userNameSession: string = "";
 	errorMsg: any = "";
 	mySubscription: any;
@@ -42,9 +44,10 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	@ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 	public rolesArray: string[] = [];
-	
-	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
+	form: FormGroup;
+	submitted=false;
+	constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -75,11 +78,13 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	// Method to update the selected button
 	selectButton(button: string): void {
 	  this.selectedModel = button;
-
 	  if(this.selectedModel =='generated'){
-     this.getZoyCodeDetails();
+		 this.getZoyCodeDetails();
+		 this.submitted=false;
+		 this.form.reset();
 	  }else{
-		
+		this.searchText='';
+		this.filterData();
 	  }
 
 	}
@@ -92,6 +97,15 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		//	this.router.navigate(['/']);
 		//}
+		this.form = this.formBuilder.group({
+			firstName: ['', [Validators.required]],
+			lastName: ['', [Validators.required]],
+		    contactNumber: ['', [Validators.required]],
+			userEmail: ['', [
+			  Validators.required,
+			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+			]],
+		  });
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(2);
@@ -103,15 +117,126 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		this.notifyService.showNotification("Success","");
 	}
 
+	numberOnly(event): boolean {
+		const charCode = (event.which) ? event.which : event.keyCode;
+		if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+		  return false;
+		}
+		return true;
+	   }
+
+	   generateZoyCode() {
+		this.submitted=true;	
+		if (this.form.invalid) {
+		return;
+		}
+		this.spinner.show();		     
+		this.submitted=false;
+		this.generateZoyCodeService.generateOwnerCode(this.generateZCode).subscribe((res) => {
+			this.notifyService.showSuccess(res.message, "");
+
+			this.confirmationDialogService.confirm('Confirmation!!', 'A Zoycode has already been generated for this email Id'+ +' Would you like to resend the code?')
+			.then(
+			  (confirmed) =>{
+			   if(confirmed){
+				this.resendZoyCode()
+			   }
+			}).catch(
+				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				); 
+			this.spinner.hide();
+		  },error =>{
+			this.spinner.hide();
+			console.log("error.error",error)
+			if(error.status==403){
+			this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+			this.errorMsg =error.error.message;
+			console.log("Error:"+this.errorMsg);
+			// this.notifyService.showError(this.errorMsg, "");
+			// this.spinner.hide();
+	  
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			//  this.spinner.hide();
+			  let str;
+			  if(error.status==400){
+			  str=error.error;
+			  }else{
+				str=error.message;
+				str=str.substring(str.indexOf(":")+1);
+			  }
+			  console.log("Error:"+str);
+			  this.errorMsg=str;
+			}
+		  //	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+		  }
+		  );  
+		}  
+
+		resendZoyCode() {
+			this.submitted=true;	
+			if (this.form.invalid) {
+			return;
+			}
+			this.spinner.show();		     
+			this.submitted=false;
+			this.generateZoyCodeService.resendOwnerCode(this.generateZCode).subscribe((res) => {
+				this.notifyService.showSuccess(res.message, "");
+	
+				this.spinner.hide();
+			  },error =>{
+				this.spinner.hide();
+				console.log("error.error",error)
+				if(error.status==403){
+				this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+				this.errorMsg =error.error.message;
+				console.log("Error:"+this.errorMsg);
+				// this.notifyService.showError(this.errorMsg, "");
+				// this.spinner.hide();
+		  
+				if(error.status==500 && error.statusText=="Internal Server Error"){
+				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+				}else{
+				//  this.spinner.hide();
+				  let str;
+				  if(error.status==400){
+				  str=error.error;
+				  }else{
+					str=error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:"+str);
+				  this.errorMsg=str;
+				}
+			  //	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				}
+			  }
+			  );  
+			}  
+			filterData(){
+				console.info("searchText:"+this.searchText);
+				if(this.searchText==''){
+					this.ELEMENT_DATA = Object.assign([],mockData);
+    				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+				}else{
+					const pagedData = Object.assign([],mockData.filter(data =>
+						data.ownerName.toLowerCase().includes(this.searchText.toLowerCase()) || data.email.toLowerCase().includes(this.searchText.toLowerCase()) || data.contact.toLowerCase().includes(this.searchText.toLowerCase())
+						));
+					this.ELEMENT_DATA = Object.assign([],pagedData);
+    				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+				}
+			}
 	getZoyCodeDetails(){
     // this.authService.checkLoginUserVlidaate();
     this.ELEMENT_DATA = Object.assign([],mockData);
     this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-    this.dataSource.sort = this.sort;
-	this.dataSource.paginator = this.paginator;
 
 //   this.spinner.show();
-//   this.userMasterService.getUserList().subscribe(data => {
+//   this.generateZoyCodeService.getUserList().subscribe(data => {
 //     this.ELEMENT_DATA = Object.assign([],data);
 //     this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 //     this.dataSource.sort = this.sort;
@@ -145,6 +270,12 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 // });
 
 }
+nameValidation(event: any, inputId: string) {
+  const clipboardData = event.clipboardData || (window as any).clipboardData;
+  const pastedText = clipboardData.getData('text/plain');
+  const clString = pastedText.replace(/[^a-zA-Z\s.]/g, '');
+   event.preventDefault();
+  }
 	
 }
 

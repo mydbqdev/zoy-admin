@@ -51,5 +51,8 @@ export class RoleScreenModel {
     OWNERS_READ: boolean = false;
     OWNERS_WRITE: boolean = false;
 
+    BULK_UPLOAD_READ: boolean = false;
+    BULK_UPLOAD_WRITE: boolean = false;
+
 
 }

@@ -9,8 +9,9 @@ import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { ChangePasswordModel } from '../model/change-password-model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProfileService } from '../service/profile-service';
+import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 
 
 @Component({
@@ -20,6 +21,7 @@ import { ProfileService } from '../service/profile-service';
 })
 export class ProfileComponent implements OnInit, AfterViewInit {
 	submitted=false;
+	submittedPicture:boolean=false;
 	viewPassword:boolean=false;
 	form: FormGroup;
   	changePasswordDetails : ChangePasswordModel=new ChangePasswordModel();
@@ -30,9 +32,11 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	isExpandSideBar:boolean=true;
 	@ViewChild(SidebarComponent) sidemenuComp;
 	public rolesArray: string[] = [];
+	userInfo:UserInfo=new UserInfo();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private profileService:ProfileService,
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
+			this.userInfo=this.userService.getUserinfo();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
 		if (userService.getUserinfo() != undefined) {
@@ -55,6 +59,12 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 		this.dataService.getIsExpandSideBar.subscribe(name=>{
 			this.isExpandSideBar=name;
 		});
+
+		if(this.userService.getUserinfo()==undefined){
+			this.dataService.getUserDetails.subscribe(name=>{
+					  this.userInfo=name;
+					});
+		  }
 	}
 
 	ngOnDestroy() {
@@ -139,4 +149,77 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 			}
 			);  
 		  }  
+
+
+		  formPicture = new FormGroup({
+			ImageInput : new FormControl('', [Validators.required]),
+			fileSource : new FormControl('', [Validators.required])
+		  });
+ 
+		  get f(){
+			 return this.formPicture.controls;
+		   }
+ 
+		  fileData: File = null;
+		  previewUrl:any = null;
+		  fileUploadProgress: string = null;
+		  uploadStatus:boolean=true;
+		  fileUploadSize:any;
+		  fileUploadSizeStatus:boolean=false;
+		  fileWidth:number;
+		  fileHeight:number;
+ 
+	 onFileChanged(event) {
+		 this.previewUrl=false;
+		 if(event.target.files.length>0){
+		   const file=event.target.files[0];
+		   this.formPicture.patchValue({
+			 fileSource:file
+		   });
+		   this.fileData = <File>event.target.files[0];
+		   this.fileUploadSize=file.size/1024;
+		   if(this.fileUploadSize <=100){
+			 this.fileUploadSizeStatus=false;
+		   this.preview();
+		   }else{
+			   this.fileUploadSizeStatus=true;
+		   }
+		 }
+	 
+	 }
+	 resetChange(){
+		 this.previewUrl=false;
+		 this.formPicture.reset();
+	 }
+	 preview() {
+		 // Show preview 
+		 var mimeType = this.fileData.type;
+		 if (mimeType.match(/image\/*/) == null) {
+		   return;
+		 }
+		 this.uploadStatus=false;
+		 var reader = new FileReader();      
+		 reader.readAsDataURL(this.fileData); 
+		 reader.onload = (_event) => { 
+		   this.previewUrl = reader.result; 
+		   var img=new Image();
+		   img.onload=()=>{
+			   this.fileHeight=img.height;
+			   this.fileWidth=img.width;
+		   }
+		 }
+		 } 
+ 
+	 submit(){
+		 this.submittedPicture=true;
+		 var form_data = new FormData();
+	   }
+	    
+	   forValidations(){
+		 if(this.formPicture.invalid){
+		   return;
+		 }
+	   }
+ 
+	   imgeURL2:any="assets/images/NotAvailable.jpg";
 }

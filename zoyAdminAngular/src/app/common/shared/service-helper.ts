@@ -69,4 +69,18 @@ export class ServiceHelper{
         });
         return headers;
       }
+
+      public static buildHeadersSampleFile(): HttpHeaders {
+        const username = 'zoyapp';  
+        const password = 'zoypass';
+        const basicAuthValue = `Basic ${btoa(username + ':' + password)}`;  
+        
+        let headers: HttpHeaders = new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': basicAuthValue,
+          'Access-Control-Allow-Origin': '*'  
+        });
+        return headers;
+      }
 }

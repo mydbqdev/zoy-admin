@@ -32,14 +32,66 @@
                     <div class="card-body">
                         <div class="row mb-1">
                             <!-- Card with 8 columns width -->
-                            <div class="col-xl-8 col-md-6 mb-2">                               
+                            <div class="col-xl-8 col-md-6 mb-1">                               
                                 <div>
                                     <div class="card">
-                                        <div class="card-body">
+                                        <div class="card-body" style="padding: 5px ;margin: 0px;">
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col mr-2">
-                                                    <div style="height: calc(100vh - 240px);overflow: auto;">
-                                                        <div class="desc-inner" style="height: auto;">
+                                                    <div style="height: calc(100vh - 210px);">
+                                                        <div>
+                                                          <div class="text-sub-header text-sub-header-border mb-3"> Information</div>
+                                                          <div class="d-flex mb-2 ml-2">
+                                                              <div style="font-weight: 600;margin-right: 20px;">Name :</div>
+                                                              <div>{{userInfo.firstName}} {{userInfo.lastName}}</div>
+                                                              <div class="ml-5" style="font-weight: 600;margin-right: 20px;">Designation :</div>
+                                                              <div>{{userInfo.designation}}</div>
+                                                          </div>
+                                                          <div class="d-flex mb-2 ml-2">
+                                                            <div style="font-weight: 600;margin-right: 20px;">Email :</div>
+                                                            <div>{{userInfo.userEmail}}</div>
+                                                          </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                          <div class="col-sm-6">
+                                                            <img src="assets/images/NotAvailable.jpg" width="160px" *ngIf="!(imgeURL2!=null && imgeURL2!=undefined && imgeURL2!='data:')" class="profile-picture" alt="User Image">
+                                                            <img [src]="imgeURL2" *ngIf="(imgeURL2!=null && imgeURL2!=undefined && imgeURL2!='data:')" width="160px" height="160px" class="profile-picture" alt="User Image">
+                                                  
+                                                            <div style="color:gray;padding: 5px 0px;font-size: 14px;"><i class="fa fa-info-circle"></i>
+                                                              <span class="ml-2" > While upload the picture should not be more than 100KB. It's size should not be greater than 180 X 200.</span> </div>
+                                                          </div>
+                                                          <div class="col-sm-6">
+                                                            <form [formGroup]="formPicture" (ngSubmit)="submit()">
+                                                               <div class="form-group">
+                                                                  <label for="uploadfile"> Upload Picture  <i class="fa fa-asterisk"></i></label> 
+                                                                  <input type="file" class="file-upload form-control" name="ImageInput"  id="ImageInput" formControlName="ImageInput"  accept="image/png, image/jpeg"  (change)="onFileChanged($event)" required />
+                                                                  <div *ngIf="f.ImageInput.errors && submittedPicture" class="text-danger">
+                                                                    <div *ngIf="f.ImageInput.errors.required">
+                                                                      Picture is Required 
+                                                                    </div>
+                                                                  </div>
+                                                               </div>
+                                      
+                                                                <div *ngIf="fileUploadSizeStatus" style="color: red;">
+                                                                Uploaded Size: {{ fileUploadSize }}KB , File should be maximum 100KB.
+                                                              </div>
+                                      
+                                                               <div *ngIf="fileUploadProgress" style="color: green;">
+                                                                 Upload progress: {{ fileUploadProgress }}
+                                                               </div>
+                                      
+                                                                <div class="image-preview mb-1" style="width: 220px;overflow: auto;" *ngIf="previewUrl">
+                                                                 <img [src]="previewUrl" height="160px" width="160px"  class="profile-picture"/>                 
+                                                                </div>
+                                                               <div *ngIf="previewUrl">
+                                                                <button type="submit" class="btn btn-primary-custom" [disabled]="uploadStatus">Change Picture</button>
+                                                                &nbsp;
+                                                                <button type="reset" class="btn btn-dark" (click)="resetChange()">Reset</button>
+                                                               </div>
+                                                            </form>
+                                                          </div>
+                                                          
                                                         </div>
                                                     </div>    
                                                 </div>
@@ -48,9 +100,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-4 col-md-6 mb-2">
-                                <div class="card">
+                            <div class="col-xl-4 col-md-6 mb-1">
+                                <div class="card" style="padding: 0px ;margin: 0px;">
                                     <div class="card-body"  style="padding: 5px ;margin: 0px;">
+                                      <div style="height: calc(100vh - 210px);">
                                         <div class="no-gutters align-items-center">
                                             <div class="text-sub-header text-sub-header-border mb-3"> Change Password</div> 
                                            <div class="pl-3 pr-3 ">
@@ -123,6 +176,7 @@
                                             </div>
 
                                                
+                                        </div>
                                         </div>
                                     </div>
                                 </div>

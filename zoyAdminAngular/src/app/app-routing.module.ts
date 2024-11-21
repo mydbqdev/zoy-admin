@@ -23,7 +23,6 @@ const routes: Routes = [
 	{ path: 'profile', component: ProfileComponent },
 	{ path: 'activity-log', component: ActivityLogComponent },
 	{ path: 'settings', component: SettingsComponent },
-	{ path: 'tenants', component: TenantsComponent },
 	{ path: 'tickets', component: TicketsComponent },
 ];
 @NgModule({

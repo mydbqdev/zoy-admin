@@ -1,39 +1,30 @@
 /* Registered status button styling - small size */
-.btn-registered {
-    background-color: #86d189;
-    color: white;
-    border: none;
-    padding: 0.25rem 0.5rem; 
-    font-size: 0.75rem; 
-    border-radius: 4px;
+.common-status {
+  width: 100px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
 }
 
-/* Pending status button styling - small size */
-.btn-pending {
-    background-color: grey; 
-    color: white;
-    border: none;
-    padding: 0.25rem 0.5rem; 
-    font-size: 0.75rem; 
-    border-radius: 4px;
+.btn-registered {
+  background-color:  #cefbf5;
+  color:  #246359;
 }
-.btn-bordered {
-    border: 1px solid grey;
-    background-color: transparent; 
-    color: grey;
-  }
-  .btn-outline-custom{
-    background-color: white;
-  }
+
+.btn-pending {
+  background-color:#e6dff7; 
+    color: #470ecf;
+}
 
   /* Style the scrollbar for vertical and horizontal scrollbars */
 .scrollable-container::-webkit-scrollbar,.scrollable-container-main::-webkit-scrollbar {
-  width: 8px;  /* Width of the vertical scrollbar */
-  height: 8px; /* Height of the horizontal scrollbar */
+  width: 8px; 
+  height: 8px;
 }
 
 .scrollable-container::-webkit-scrollbar-thumb ,.scrollable-container-main::-webkit-scrollbar-thumb {
-  background-color: #888;  /* Color of the scrollbar */
+  background-color: #888;  
   border-radius: 10px;     /* Rounded corners */
 }
 
