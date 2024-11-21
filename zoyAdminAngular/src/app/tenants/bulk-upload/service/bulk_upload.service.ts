@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import { Observable, of } from 'rxjs';
+import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { ServiceHelper } from 'src/app/common/shared/service-helper';
 import { BASE_PATH } from 'src/app/common/shared/variables';
 import { MessageService } from 'src/app/message.service';
@@ -33,24 +33,64 @@ export class BulkUploadService {
   }
   public getTenentSampleFile(): Observable<any> {
     const url = 'https://api-qa.zoypg.com/zoy_partner/download_template_tenants'; 
-    return  this.httpclient.get<any>(
+    sessionStorage.setItem('zoyadminapi','no');
+
+    const returnObj =  this.httpclient.get<any>(
       url,
       {
           headers:ServiceHelper.buildHeadersSampleFile(),
-         observe : 'body',
-         withCredentials:true
+          observe : 'body',
+          withCredentials:false
       });
+      return returnObj;
   }
-  public getPgPropertysSampleFile(): Observable<any> {
+
+  public getPgPropertysSampleFile1(): Observable<any> {
     const url = 'https://api-qa.zoypg.com/zoy_partner/download_template'; 
-    return  this.httpclient.get<any>(
+     sessionStorage.setItem('zoyadminapi','no');
+    
+    const returnObj =  this.httpclient.get<any>(
       url,
       {
           headers:ServiceHelper.buildHeadersSampleFile(),
-         observe : 'body',
-         withCredentials:true
+          observe : 'body',
+          withCredentials:false
       });
+      return returnObj;
   }
+
+  getPgPropertysSampleFile(): Observable<any> {
+    const url = 'https://api-qa.zoypg.com/zoy_partner/download_template'; 
+    sessionStorage.setItem('zoyadminapi','no');
+    const headers = ServiceHelper.buildHeadersSampleFile();
+    return this.httpclient.get(url,  {
+      headers,
+      responseType: 'blob'
+    }).pipe(
+      
+      tap((data: Blob) => {
+        console.log("data",data)
+        this.downloadCsvFile(data, 'PG_Propertys_Sample_File_tenants.xlsx');
+      }),
+      catchError((error) => {
+        
+        return throwError(error);
+      })
+    );
+  }
+
+  private downloadCsvFile(data: Blob, filename: string) {
+    const downloadLink = document.createElement('a');
+    const url = window.URL.createObjectURL(data);
+  
+    downloadLink.href = url;
+    downloadLink.download = filename;
+    downloadLink.click();
+  
+    window.URL.revokeObjectURL(url);
+    downloadLink.remove();
+  }
+
 
   public uploadFileDetails(data:any): Observable<any> {
     const url = this.basePath + 'zoy_admin/userListNotApprove'; 
