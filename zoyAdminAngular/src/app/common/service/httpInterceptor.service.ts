@@ -11,9 +11,10 @@ export class HttpInterceptorService implements HttpInterceptor {
  
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (this.isUserSignedin() && this.getToken()) {
+			const tokenString=this.getZoyadminApi()=='yes'? this.getToken():this.getExternalApi();
             const request = req.clone({
                 headers: new HttpHeaders({
-					'Authorization': this.getToken(),
+					'Authorization': tokenString,
 					'Access-Control-Allow-Origin': '*'
                 })
             });
@@ -25,8 +26,8 @@ export class HttpInterceptorService implements HttpInterceptor {
 					return throwError(err);
 				})
 			);
-        }
-       
+		}
+		  
 		return next.handle(req); 
     }
 
@@ -46,6 +47,13 @@ export class HttpInterceptorService implements HttpInterceptor {
 
 	getToken() {
 		return sessionStorage.getItem('token') as string;
+	}
+	
+	getZoyadminApi(){
+		return sessionStorage.getItem('zoyadminapi') as string;
+	}
+	getExternalApi(){
+		return sessionStorage.getItem('exterApiToken') as string;
 	}
 
 }
