@@ -22,28 +22,30 @@
                 <div class="container-fluid" style="margin-top: -5px;">
                     <div style="padding:10px 10px 0px;border:1px solid#dbdbdb;border-radius: 5px;">
                     <div class="d-flex mb-1">
-                      <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Bulk Upload</span></h3> 
+                      <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Bulk</span><span class="text-header-800-blue">Upload</span></h3> 
                       <div class="ml-auto" >
                         <div class="input-group">
-                          <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
+                          <a class="dropdown no-arrow dropdown-toggle btn btn-secondary" href="javascript:void(0)" role="button" id="dropdownMenuLink"
                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <span>Sample Files</span>
-                      </a>
-                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                          
-                          <a class="dropdown-item" href="javascript:void(0)" (click)="getTenentSampleFile()" >Tenent</a>
-                          <a class="dropdown-item" href="javascript:void(0)" (click)="getPgPropertysSampleFile()">PG Propertys</a>
-                      </div>      
+                          <i class="fas fa-angle-down ml-2 mt-1"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="javascript:void(0)" (click)="getTenentSampleFile()" >Tenent</a>
+                            <a class="dropdown-item" href="javascript:void(0)" (click)="getPgPropertysSampleFile()">PG Properties</a>
+                        </div>      
                         </div>
-                    </div>
+                      </div>
                     </div>
                     <div class="row mt-2 mb-0">
                       <form [formGroup]="form">                 
                         <div class="pl-3 row">
-                          <div class="col-sm-3">
+                          <div class="col-sm-2">
                             <div class="form-group">
-                              <label for="fileName" class="col-form-label">File Name</label>
+                              <label for="fileName" class="col-form-label">ZOY Code</label>
                               <input type="text" class="form-control" id="fileName" name="fileName" [ngClass]="{'is-invalid':submitted && form.controls.fileName.errors}" [(ngModel)]="bulkUpload.fileName" autocomplete="off" />
+                            </div>
+                            <div style="height: 30px;margin-top:-15px;"> 
                               <div *ngIf="submitted && form.controls.fileName.errors" class="text-danger">
                                 <div *ngIf="submitted && form.controls.fileName.errors.required">
                                     File Name is required
@@ -51,39 +53,55 @@
                                 </div>
                             </div>
                           </div>
-                          <div class="col-sm-3">
+                          <div class="col-sm-2">
                             <div class="form-group">
-                              <label for="file">Category</label>
-                              <select class="custom-select" [(ngModel)]="bulkUpload.category" formControlName="category" 
-                              [ngClass]="{'is-invalid':submitted && form.controls.category.errors}">                                             
-                                <option value="Tenent">Tenent</option>
-                                <option value="PG Property">PG Property</option>
-                              </select> 
-                              <div *ngIf="submitted && form.controls.category.errors "
-                              class="text-danger">
-                              <div *ngIf="submitted && form.controls.category.errors.required">
-                                Category is required
+                              <label for="fileName" class="col-form-label">Property Name</label>
+                              <input type="text" class="form-control" id="fileName" name="fileName" [ngClass]="{'is-invalid':submitted && form.controls.fileName.errors}" [(ngModel)]="bulkUpload.fileName" autocomplete="off" />
+                            </div>
+                            <div style="height: 30px;margin-top:-15px;"> 
+                              <div *ngIf="submitted && form.controls.fileName.errors" class="text-danger">
+                                <div *ngIf="submitted && form.controls.fileName.errors.required">
+                                    File Name is required
+                                </div>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-2">
+                                <div class="form-group">
+                                  <label for="category" class="col-form-label">Category</label>
+                                  <select class="custom-select" [(ngModel)]="bulkUpload.category" id="category" formControlName="category" 
+                                  [ngClass]="{'is-invalid':submitted && form.controls.category.errors}">                                             
+                                    <option value="Tenent">Tenent</option>
+                                    <option value="PG Property">PG Property</option>
+                                  </select> 
+                                </div>
+                               <div style="height: 30px;margin-top:-15px;"> 
+                                <div *ngIf="submitted && form.controls.category.errors" class="text-danger">
+                                <div *ngIf="submitted && form.controls.category.errors.required">
+                                  Category is required
+                                </div>
+                                </div>
                               </div>
-                              </div>
-                             </div>
-                            </div>                                      
+                          </div>                            
                             <div class="col-sm-4">
                               <div class="form-group">                                             
-                                <div class="input-group">                                             
+                                <div class="input-group"  style="padding-top:37px ;">                                    
                                   <input class="form-control" id="formFile" type="file" (change)="onFileChange($event)"
                                   formControlName="reqDocument" 
                                       [ngClass]="{'is-invalid':submitted && (form.controls.reqDocument.errors || filevali)}">
                                   <label for="formFile"class="btn btn-secondary">Browse</label>
-                                </div>  
-                                <div *ngIf="submitted && (form.controls.reqDocument.errors!=null && form.controls.reqDocument.errors!=undefined && form.controls.reqDocument.errors.required) " class="text-danger">
+                                </div>
+                              </div>
+                              <div style="height: 30px;margin-top:-15px;">  
+                                <p style="color: rgb(194, 5, 178);font-size: 12px;">(Allows only csv/excel file)</p> 
+                                <div *ngIf="submitted && (form.controls.reqDocument.errors!=null || filevali) " class="text-danger">
                                   File is required
-                              </div>                                             
-                                <p style="color: red;font-size: 12px;">(Allows only csv/excel file)</p>
+                                </div>                                             
                               </div>
                              </div>                                      
-                               <div class="col-sm-2">                                            
+                              <div class="col-sm-1" style="padding-top: 37px;">                                            
                                 <button type="submit" class="btn btn-primary-custom" (click)="submitUploadFile()"  *ngIf="rolesArray.includes('BULK_UPLOAD_WRITE')">Submit</button>
-                                </div>
+                              </div>
                            
                           </div>
                    </form>
@@ -92,13 +110,11 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-xl-12 col-lg-12">
-                            <div class="card shadow mb-3">
-   
-                              <div>
-                                  <div style="max-height: calc(100vh - 309px); overflow: auto;">
-                                    <div class="desc-inner" style="height:calc(100vh - 309px);">
+                            <div class="card shadow mb-3"> 
+                              <div class="card-body" style="display: block;margin: 0px;padding: 2px;">
+                                  <div class="scrollable-container-main">
+                                    <div>
                                     <table mat-table [dataSource]="dataSource" >
-
                                       <!-- File Name Column -->
                                       <ng-container matColumnDef="fileName">
                                         <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">FILE NAME</th>
