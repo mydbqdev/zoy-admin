@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,11 +23,13 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.integration.zoy.model.FilterData;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.UserPaymentDTO;
+import com.integration.zoy.utils.UserPaymentFilterRequest;
 import com.integration.zoy.utils.VendorPayments;
 import com.integration.zoy.utils.VendorPaymentsDues;
 import com.integration.zoy.utils.VendorPaymentsGst;
@@ -60,11 +63,11 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 
 
 	@Override
-	public ResponseEntity<String> getUserPaymentsByDateRange(Timestamp fromDate,
-			Timestamp toDate) {
+	public ResponseEntity<String> getUserPaymentsByDateRange(@RequestBody UserPaymentFilterRequest filterRequest) {
 		ResponseBody response=new ResponseBody();
 		try {
-			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromDate,toDate);
+			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting paymentDetails : " + e.getMessage(),e);
@@ -75,14 +78,14 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getUserGstReportByDateRange(Timestamp fromDate,
-			Timestamp toDate) {
+	public ResponseEntity<String> getUserGstReportByDateRange(@RequestBody UserPaymentFilterRequest filterRequest) {
 		ResponseBody response=new ResponseBody();
 		try {
-			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(fromDate,toDate);
+			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting paymentDetails: " + e.getMessage(),e);
+			log.error("Error getting paymentDetails : " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -90,10 +93,11 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getConsolidatedFinanceByDateRange(Timestamp fromDate, Timestamp toDate) {
+	public ResponseEntity<String> getConsolidatedFinanceByDateRange(@RequestBody UserPaymentFilterRequest filterRequest) {
 		ResponseBody response=new ResponseBody();
 		try {
-			List<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(fromDate,toDate);
+			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+			List<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ConsilidatedFinanceDetails details: " + e.getMessage(),e);
@@ -105,10 +109,11 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getTenantDuesByDateRange(Timestamp fromDate, Timestamp toDate) {
+	public ResponseEntity<String> getTenantDuesByDateRange(@RequestBody UserPaymentFilterRequest filterRequest) {
 		ResponseBody response=new ResponseBody();
 		try {
-			List<TenentDues> tenentDuesDetails =  adminReportImpl.getTenentDuesDetails(fromDate,fromDate);
+			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+			List<TenentDues> tenentDuesDetails =  adminReportImpl.getTenentDuesDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(tenentDuesDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
@@ -119,11 +124,11 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getVendorPaymentDetailsByDateRange(Timestamp fromDate, Timestamp toDate) {
+	public ResponseEntity<String> getVendorPaymentDetailsByDateRange(@RequestBody UserPaymentFilterRequest filterRequest) {
 		ResponseBody response=new ResponseBody();
 		try {
-
-			List<VendorPayments> vendorPaymentsDetails =  adminReportImpl.getVendorPaymentDetails(fromDate,toDate);
+			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+			List<VendorPayments> vendorPaymentsDetails =  adminReportImpl.getVendorPaymentDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
@@ -164,8 +169,9 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<byte[]> downloadDynamicReportByDateRange(String templateName, String fileType, Timestamp fromDate, Timestamp toDate) {
-	    byte[] fileData = adminReportImpl.generateDynamicReport(templateName, fileType, fromDate, toDate);
+	public ResponseEntity<byte[]> downloadDynamicReportByDateRange(@RequestBody UserPaymentFilterRequest filterRequest) {
+		FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+		byte[] fileData = adminReportImpl.generateDynamicReport(filterRequest,filterData);
 
 	    if (fileData.length == 0) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -174,7 +180,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	    MediaType contentType;
 	    String fileExtension;
 
-	    switch (fileType.toLowerCase()) {
+	    switch (filterRequest.getType().toLowerCase()) {
 	        case "excel":
 	            contentType = MediaType.APPLICATION_OCTET_STREAM; 
 	            fileExtension = ".xlsx";
@@ -190,7 +196,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	            break;
 	    }
 
-	    String fileName = templateName + fileExtension;
+	    String fileName = filterRequest.getTemplateName() + fileExtension;
 
 	    return ResponseEntity.ok()
 	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
