@@ -79,9 +79,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
             String existingCode = pgOwnerMaterRepository.findPgOwnerDetails(model.getEmailId());
             
             if (existingCode != null && !existingCode.isEmpty()) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setStatus(HttpStatus.CONFLICT.value());
                 response.setMessage("Zoy code " + existingCode + " already exists with this email ID.");
-                return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
             }
 
             PgOwnerMaster ownerData = new PgOwnerMaster();
@@ -124,7 +124,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
             emailService.sendEmail(email, null);
             
             response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Registration details sent successfully.");
+            response.setMessage("ZOY code has been generated & sent successfully.");
             return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
         } catch (Exception e) {
@@ -175,7 +175,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
             emailService.sendEmail(email, null);
             
             response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Registration details sent successfully");
+            response.setMessage("ZOY code has been sent successfully");
             return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
         } catch (Exception e) {
