@@ -26,7 +26,24 @@
                         <div class="btn-group" role="group" aria-label="Basic outlined example">
                           <button type="button" class="btn btn-outline-secondary" style="font-size: 14px;"><i class="fas fa-filter"></i></button>
                           <button type="button" class="btn btn-outline-secondary" style="color:rgb(56, 56, 56);font-size: 14px;">Filter By</button>
-                          <button type="button" class="btn btn-outline-secondary" style="color:rgb(56, 56, 56);font-size: 14px;">Status<i class="fas fa-chevron-down ml-2"></i></button>
+                          <button type="button" class="btn btn-outline-secondary" style="color:rgb(56, 56, 56);font-size: 14px;" id="menuLink"
+                                data-toggle="dropdown">Status<i class="fas fa-chevron-down ml-2"></i></button>
+                            <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width" aria-labelledby="menuLink" data-bs-auto-close="false" (click)="stopPropagation($event)">
+                            <div class="dropdown-header" style="margin-left: -21px;">Select Status</div>
+                            <!-- Buttons in one row -->
+                            <div class="d-flex justify-content-between mb-2 mt-2">
+                                <a class="btn btn-primary-custom btn-sm flex-grow-1 me-2">Active</a>
+                                <a class="btn btn-primary-custom btn-sm flex-grow-1 me-2">Inactive</a>
+                                <a class="btn btn-light btn-sm flex-grow-1">Blocked</a>
+                          </div>
+                            <!-- Divider -->
+                            <hr class="my-2 mt-2">
+                            <p class="text-start small text-muted">* You can choose multiple Status.</p>
+                            <!-- Apply Now button -->
+                            <div class="d-flex justify-content-center align-items-center mt-2">
+                                <a class="btn btn-primary-custom btn-sm">Apply Now</a>
+                            </div>
+                         </div>                 
                           <button type="button" class="btn btn-outline-secondary" style="color:rgb(252, 93, 93);font-size: 14px;" (click)="resetFilter()"><i class="fas fa-redo mr-2"></i>Reset Filter</button>
                         </div>
                       </div>
@@ -38,7 +55,6 @@
                        </div>                    
                       </div> 
                     </div>
-
                       <!-- Content Row -->
                       <div class="card shadow mb-3">
                         <div class="card-body" style="display: block;margin: 0px;padding: 2px;" >
