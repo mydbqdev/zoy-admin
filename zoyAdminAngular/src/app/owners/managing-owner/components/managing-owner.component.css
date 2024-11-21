@@ -52,9 +52,27 @@
 
 /* Set styles for the scrollable container */
 .scrollable-container-main {
-  height: calc(100vh - 164px);  /* Set a max height to enable vertical scrolling */
+  height: calc(100vh - 215px);  /* Set a max height to enable vertical scrolling */
   overflow-y: auto;   /* Enable vertical scrolling */
   overflow-x: auto;   /* Enable horizontal scrolling */
   padding-right: 5px; /* Optional: prevent scrollbar overlap */
   box-sizing: border-box; /* Prevents padding from affecting width */
+}
+
+.common-status {
+  width: 100px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.btn-registered {
+  background-color:  #cefbf5;
+  color:  #246359;
+}
+
+.btn-pending {
+  background-color:#e6dff7; 
+    color: #470ecf;
 }
