@@ -32,16 +32,22 @@
                             <div class="dropdown-header" style="margin-left: -21px;">Select Status</div>
                             <!-- Buttons in one row -->
                             <div class="d-flex justify-content-between mb-2 mt-2">
-                                <a class="btn btn-primary-custom btn-sm flex-grow-1 me-2">Active</a>
-                                <a class="btn btn-primary-custom btn-sm flex-grow-1 me-2">Inactive</a>
-                                <a class="btn btn-light btn-sm flex-grow-1">Blocked</a>
+                                <a  class="btn btn-sm flex-grow-1 me-2"
+                                [ngClass]="{
+                                  'btn-primary-custom': status.selected,
+                                  'btn-light': !status.selected
+                                }"
+                                *ngFor="let status of statuses"
+                                (click)="toggleStatus(status)"
+                              >
+                                {{ status.name }}</a>
                           </div>
                             <!-- Divider -->
                             <hr class="my-2 mt-2">
                             <p class="text-start small text-muted">* You can choose multiple Status.</p>
                             <!-- Apply Now button -->
                             <div class="d-flex justify-content-center align-items-center mt-2">
-                                <a class="btn btn-primary-custom btn-sm">Apply Now</a>
+                                <a class="btn btn-primary-custom btn-sm" (click)="applyStatuses()">Apply Now</a>
                             </div>
                          </div>                 
                           <button type="button" class="btn btn-outline-secondary" style="color:rgb(252, 93, 93);font-size: 14px;" (click)="resetFilter()"><i class="fas fa-redo mr-2"></i>Reset Filter</button>

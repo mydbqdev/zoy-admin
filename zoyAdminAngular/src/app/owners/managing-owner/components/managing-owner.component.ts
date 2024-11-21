@@ -168,6 +168,26 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	resetFilter(){
 		this.searchText='';
 		this.filterData();
+		this.statuses.filter(data=>data.selected=false);
 	}
+
+	statuses = [
+		{ id: 1, name: 'Active', selected: false },
+		{ id: 2, name: 'Inactive', selected: false },
+		{ id: 3, name: 'Blocked', selected: false }
+	  ];
+
+	   // Toggle the selected status for a button
+	   toggleStatus(status: any): void {
+		status.selected = !status.selected;
+	  }
+
+	  // Apply and process the selected statuses
+	  applyStatuses(): void {
+		const selectedStatuses = this.statuses
+		  .filter(status => status.selected)
+		  .map(status => status.name);
+		console.log('Selected Statuses:', selectedStatuses);
+	  }
 	  
   }  
