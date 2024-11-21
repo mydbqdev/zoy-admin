@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/common/service/auth.service';
 import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ZoyData } from '../models/zoy-code-model';
@@ -23,16 +23,16 @@ import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/
   styleUrl: './zoy-code.component.css'
 })
 export class ZoyCodeComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['zoyCode', 'ownerName', 'email', 'contact','date', 'status'];
-  public ELEMENT_DATA:ZoyData[];
+  displayedColumns: string[] = ['zoy_code', 'owner_name', 'email_id', 'mobile_no','created_date', 'status'];
+  public ELEMENT_DATA:ZoyData[]=[];
+  orginalFetchData:ZoyData[]=[];
   searchText:string='';
   dataSource:MatTableDataSource<ZoyData>=new MatTableDataSource<ZoyData>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
-    zoyCode: null,
-    ownerName: null,
-    email: null,
-    contact:null,
-    date: null,
+    zoy_code: null,
+    owner_name: null,
+    email_id: null,
+    created_date: null,
 	status: null
   };
   generateZCode : ZoyData=new ZoyData();
@@ -46,6 +46,8 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	public rolesArray: string[] = [];
 	form: FormGroup;
 	submitted=false;
+	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+	private _liveAnnouncer = inject(LiveAnnouncer);
 	constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			this.authService.checkLoginUserVlidaate();
@@ -113,10 +115,6 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		this.dataService.setHeaderName("Zoy Code");
 	}
 
-	test(){
-		this.notifyService.showNotification("Success","");
-	}
-
 	numberOnly(event): boolean {
 		const charCode = (event.which) ? event.which : event.keyCode;
 		if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -133,33 +131,30 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		this.spinner.show();		     
 		this.submitted=false;
 		this.generateZoyCodeService.generateOwnerCode(this.generateZCode).subscribe((res) => {
-			this.notifyService.showSuccess(res.message, "");
-
-			this.confirmationDialogService.confirm('Confirmation!!', 'A Zoycode has already been generated for this email Id'+ +' Would you like to resend the code?')
-			.then(
-			  (confirmed) =>{
-			   if(confirmed){
-				this.resendZoyCode()
-			   }
-			}).catch(
-				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-				); 
+			this.notifyService.showSuccess(res.message, "");			
 			this.spinner.hide();
+			this.form.reset();
 		  },error =>{
 			this.spinner.hide();
 			console.log("error.error",error)
-			if(error.status==403){
+			if(error.status==409){
+				this.confirmationDialogService.confirm('Confirmation!!', 'A Zoycode has already been generated for this email Id, Would you like to resend the code?')
+				.then(
+				  (confirmed) =>{
+				   if(confirmed){
+					this.resendZoyCode()
+				   }
+				}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				); 
+			}else if(error.status==403){
 			this.router.navigate(['/forbidden']);
 			}else if (error.error && error.error.message) {
 			this.errorMsg =error.error.message;
 			console.log("Error:"+this.errorMsg);
-			// this.notifyService.showError(this.errorMsg, "");
-			// this.spinner.hide();
-	  
 			if(error.status==500 && error.statusText=="Internal Server Error"){
 			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
 			}else{
-			//  this.spinner.hide();
 			  let str;
 			  if(error.status==400){
 			  str=error.error;
@@ -171,6 +166,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			  this.errorMsg=str;
 			}
 		  //	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  	this.notifyService.showError(this.errorMsg, "");
 			}
 		  }
 		  );  
@@ -184,8 +180,8 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			this.spinner.show();		     
 			this.submitted=false;
 			this.generateZoyCodeService.resendOwnerCode(this.generateZCode).subscribe((res) => {
-				this.notifyService.showSuccess(res.message, "");
-	
+				this.notifyService.showSuccess(res.message, "");	
+				this.form.reset();
 				this.spinner.hide();
 			  },error =>{
 				this.spinner.hide();
@@ -195,8 +191,6 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 				}else if (error.error && error.error.message) {
 				this.errorMsg =error.error.message;
 				console.log("Error:"+this.errorMsg);
-				// this.notifyService.showError(this.errorMsg, "");
-				// this.spinner.hide();
 		  
 				if(error.status==500 && error.statusText=="Internal Server Error"){
 				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
@@ -213,153 +207,75 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 				  this.errorMsg=str;
 				}
 			  //	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			    this.notifyService.showError(this.errorMsg, "");
 				}
-			  }
-			  );  
-			}  
+			  });  
+	    }  
 			filterData(){
 				console.info("searchText:"+this.searchText);
 				if(this.searchText==''){
-					this.ELEMENT_DATA = Object.assign([],mockData);
+					this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
     				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 				}else{
-					const pagedData = Object.assign([],mockData.filter(data =>
-						data.ownerName.toLowerCase().includes(this.searchText.toLowerCase()) || data.email.toLowerCase().includes(this.searchText.toLowerCase()) || data.contact.toLowerCase().includes(this.searchText.toLowerCase())
-						));
+					const pagedData = Object.assign([],this.orginalFetchData.filter(data =>
+						data.owner_name.toLowerCase().includes(this.searchText.toLowerCase()) || data.email_id.toLowerCase().includes(this.searchText.toLowerCase()) || data.mobile_no.toLowerCase().includes(this.searchText.toLowerCase()) || data.created_date.toLowerCase().includes(this.searchText.toLowerCase()) || data.zoy_code.toLowerCase().includes(this.searchText.toLowerCase())
+					));
 					this.ELEMENT_DATA = Object.assign([],pagedData);
     				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 				}
 			}
 	getZoyCodeDetails(){
-    // this.authService.checkLoginUserVlidaate();
-    this.ELEMENT_DATA = Object.assign([],mockData);
-    this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-
-//   this.spinner.show();
-//   this.generateZoyCodeService.getUserList().subscribe(data => {
-//     this.ELEMENT_DATA = Object.assign([],data);
-//     this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-//     this.dataSource.sort = this.sort;
-// 		this.dataSource.paginator = this.paginator;
-//     this.spinner.hide();
-
-//  }, error => {
-//   this.spinner.hide();
-//   if(error.status==403){
-//     this.router.navigate(['/forbidden']);
-//   }else if (error.error && error.error.message) {
-//     this.errorMsg = error.error.message;
-//     console.log("Error:" + this.errorMsg);
-//     this.notifyService.showError(this.errorMsg, "");
-//   } else {
-//     if (error.status == 500 && error.statusText == "Internal Server Error") {
-//       this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-//     } else {
-//       let str;
-//       if (error.status == 400) {
-//         str = error.error;
-//       } else {
-//         str = error.message;
-//         str = str.substring(str.indexOf(":") + 1);
-//       }
-//       console.log("Error:" + str);
-//       this.errorMsg = str;
-//     }
-//     if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-//   }
-// });
-
-}
+		this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
+		this.generateZoyCodeService.getGeneratedZoyCodeDetails().subscribe(data => {
+			this.orginalFetchData=  Object.assign([],data);
+			this.ELEMENT_DATA = Object.assign([],data);
+			this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+			this.dataSource.sort = this.sort;
+			this.spinner.hide();
+		}, error => {
+		this.spinner.hide();
+		if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+			this.errorMsg = error.error.message;
+			console.log("Error:" + this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+		} else {
+			if (error.status == 500 && error.statusText == "Internal Server Error") {
+			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+			} else {
+			let str;
+			if (error.status == 400) {
+				str = error.error;
+			} else {
+				str = error.message;
+				str = str.substring(str.indexOf(":") + 1);
+			}
+			console.log("Error:" + str);
+			this.errorMsg = str;
+			}
+			//if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			this.notifyService.showError(this.errorMsg, "");
+		}
+		});
+    }
 nameValidation(event: any, inputId: string) {
   const clipboardData = event.clipboardData || (window as any).clipboardData;
   const pastedText = clipboardData.getData('text/plain');
   const clString = pastedText.replace(/[^a-zA-Z\s.]/g, '');
    event.preventDefault();
   }
+  
+  announceSortChange(sortState: Sort): void {
+	this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+	this.columnSortDirections[sortState.active] = sortState.direction;
+
+	  if (sortState.direction) {
+		this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+	  } else {
+		this._liveAnnouncer.announce('Sorting cleared');
+	  }
+  }
 	
 }
-
-
-export const mockData = [
-	{
-	  zoyCode: 'ZC001',
-	  ownerName: 'John Doe',
-	  email: 'john.doe@example.com',
-	  contact: '123-456-7890',
-	  date: '2023-11-01',
-	  status: 'Registered'
-	},
-	{
-	  zoyCode: 'ZC002',
-	  ownerName: 'Jane Smith',
-	  email: 'jane.smith@example.com',
-	  contact: '098-765-4321',
-	  date: '2023-11-02',
-	  status: 'Pending'
-	},
-	{
-	  zoyCode: 'ZC003',
-	  ownerName: 'Michael Johnson',
-	  email: 'michael.j@example.com',
-	  contact: '456-123-7890',
-	  date: '2023-11-03',
-	  status: 'Registered'
-	},
-	{
-	  zoyCode: 'ZC004',
-	  ownerName: 'Emily Davis',
-	  email: 'emily.davis@example.com',
-	  contact: '321-654-0987',
-	  date: '2023-11-04',
-	  status: 'Pending'
-	},
-	{
-	  zoyCode: 'ZC005',
-	  ownerName: 'William Brown',
-	  email: 'william.brown@example.com',
-	  contact: '213-546-8790',
-	  date: '2023-11-05',
-	  status: 'Registered'
-	},
-	{
-	  zoyCode: 'ZC006',
-	  ownerName: 'Olivia Taylor',
-	  email: 'olivia.t@example.com',
-	  contact: '765-432-1098',
-	  date: '2023-11-06',
-	  status: 'Pending'
-	},
-	{
-	  zoyCode: 'ZC007',
-	  ownerName: 'James Wilson',
-	  email: 'james.wilson@example.com',
-	  contact: '876-543-2109',
-	  date: '2023-11-07',
-	  status: 'Registered'
-	},
-	{
-	  zoyCode: 'ZC008',
-	  ownerName: 'Sophia Martinez',
-	  email: 'sophia.m@example.com',
-	  contact: '234-567-8901',
-	  date: '2023-11-08',
-	  status: 'Pending'
-	},
-	{
-	  zoyCode: 'ZC009',
-	  ownerName: 'Benjamin Garcia',
-	  email: 'benjamin.g@example.com',
-	  contact: '345-678-9012',
-	  date: '2023-11-09',
-	  status: 'Registered'
-	},
-	{
-	  zoyCode: 'ZC010',
-	  ownerName: 'Emma Anderson',
-	  email: 'emma.anderson@example.com',
-	  contact: '456-789-0123',
-	  date: '2023-11-10',
-	  status: 'Pending'
-	}
-  ];
-  
