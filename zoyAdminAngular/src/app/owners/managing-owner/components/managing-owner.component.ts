@@ -35,6 +35,9 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	  noof_properties: null,
 	  status: null
 	};
+	stopPropagation(event: MouseEvent): void {
+		event.stopPropagation();
+	  }
 	generateZCode : ZoyOwner=new ZoyOwner();
 	public userNameSession: string = "";
 	  errorMsg: any = "";

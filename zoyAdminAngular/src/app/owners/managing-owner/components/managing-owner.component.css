@@ -76,3 +76,20 @@
   background-color:#e6dff7; 
     color: #470ecf;
 }
+.custom-dropdown-width {
+  width: 326px;               
+  margin-left: -119px;        
+  background-color: white;    
+  border: 1px solid #ddd;     
+  padding: 10px;              
+  border-radius: 4px;         
+  transform: translate3d(-283px, 35px, 0px);
+  opacity: 1 !important;      
+  background: white !important;  
+  height: 200px;
+}
+
+.btn-sm{
+  border-radius: 8px;
+}
+
