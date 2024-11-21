@@ -528,6 +528,7 @@ menuSubMenus: string[] = [
   "PERMISSION_APPROVAL",
 
   "TENANTSZOY",
+  "BULK_UPLOAD",
   "REPORTS",
 
   "TICKETS",
