@@ -36,6 +36,7 @@ export class AppAuthService extends AuthService{
     setSessionStore(res: ResponseStore):void{
         sessionStorage.setItem('user', res.userEmail);
         sessionStorage.setItem('token', 'Bearer ' + res.token);
+        sessionStorage.setItem('zoyadminapi', 'yes');
     }
 
     public isLoggedIn(redirectUrl?:string):Observable<boolean>{
