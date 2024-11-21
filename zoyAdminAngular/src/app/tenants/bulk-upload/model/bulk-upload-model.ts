@@ -3,6 +3,6 @@ export class BulkUploadModel{
 	public category?:string;
 	public status?:string;
 	public fileName?:string;
-	public timeStamp?:number;
+	public createdAt?:number;
 	
 }

@@ -11,12 +11,25 @@ export class HttpInterceptorService implements HttpInterceptor {
  
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (this.isUserSignedin() && this.getToken()) {
-			const tokenString=this.getZoyadminApi()=='yes'? this.getToken():this.getExternalApi();
-            const request = req.clone({
-                headers: new HttpHeaders({
-					'Authorization': tokenString,
-					'Access-Control-Allow-Origin': '*'
-                })
+		//	const tokenString=this.getZoyadminApi()=='yes'? this.getToken():this.getExternalApi();
+			let headers = new HttpHeaders();
+			console.log(this.getZoyadminApi()," this.getExternalApi()", this.getExternalApi());
+           if(this.getZoyadminApi()=='no'){
+			headers = new HttpHeaders({
+				'Content-Type': 'application/json',
+				//'Content-Type':'text/csv',
+				'Authorization': this.getExternalApi(),
+				'Access-Control-Allow-Origin': '*'
+			})
+		   }else{
+			headers = new HttpHeaders({
+				'Authorization': this.getToken(),
+				'Access-Control-Allow-Origin': '*'
+			})
+		   }
+			
+			const request = req.clone({
+                headers: headers
             });
             return next.handle(request).pipe(
 				catchError(err => {
