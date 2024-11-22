@@ -27,6 +27,8 @@ export class PaymentApprovalComponent {
 	displayedColumns: string[] = [ 'zoy_code','owner_name', 'total_amount',  'transaction_date','transaction_no','transaction_approval']; 
 	pageSizeOptions: number[] = [10, 25, 50];
 	pageSize = 10;
+	fromDate:string="";
+	toDate:string="";
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
 	columnSortDirectionsOg: { [key: string]: string | null } = {
