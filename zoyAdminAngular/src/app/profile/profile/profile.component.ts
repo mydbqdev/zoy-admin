@@ -12,6 +12,8 @@ import { ChangePasswordModel } from '../model/change-password-model';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProfileService } from '../service/profile-service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
+import { AESEncryptDecryptHelper } from 'src/app/common/shared/AESEncryptDecryptHelper';
+
 
 
 @Component({
@@ -19,13 +21,14 @@ import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 	templateUrl: './profile.component.html',
 	styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit, AfterViewInit {
+
+
+export class ProfileComponent implements OnInit, AfterViewInit {    
 	submitted=false;
 	submittedPicture:boolean=false;
 	viewPassword:boolean=false;
 	form: FormGroup;
   	changePasswordDetails : ChangePasswordModel=new ChangePasswordModel();
-
 	public userNameSession: string = "";
 	errorMsg: any = "";
 	mySubscription: any;
@@ -33,7 +36,11 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	@ViewChild(SidebarComponent) sidemenuComp;
 	public rolesArray: string[] = [];
 	userInfo:UserInfo=new UserInfo();
-	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private profileService:ProfileService,
+
+	resetPassword: { 'email': string,'oldPassWord': string,'newPassword': string,
+	}={ 'email': '', 'oldPassWord': '', 'newPassword': '', };
+
+	constructor(private encryptDecryptHelper:AESEncryptDecryptHelper,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private profileService:ProfileService,
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userInfo=this.userService.getUserinfo();
@@ -103,14 +110,15 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 
 		changePassword() {
 			this.submitted=true;		
-			this.changePasswordDetails.userEmail=this.userService.getUsername()
-			if(this.form.invalid){
+			this.changePasswordDetails.userEmail=this.userService.getUsername();
+		    	if(this.form.invalid){
 				return;
-			}
-			console.log("this.changePasswordDetails",this.changePasswordDetails)
-			return;
+	     		}
+			this.resetPassword.email= this.changePasswordDetails.userEmail;
+			this.resetPassword.oldPassWord= this.encryptDecryptHelper.encrypt(this.changePasswordDetails.oldPassword);
+			this.resetPassword.newPassword= this.encryptDecryptHelper.encrypt(this.changePasswordDetails.newPassword);
 			this.spinner.show();	
-			this.profileService.changePassword(this.changePasswordDetails).subscribe((res) => {
+			this.profileService.changePassword(this.resetPassword).subscribe((res) => {
 			  this.notifyService.showSuccess(res.message, "");
 			  this.form.reset();
 			  this.submitted=false;
