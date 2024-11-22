@@ -126,13 +126,13 @@
 
                     <!-- Owner Name Column -->
                     <ng-container matColumnDef="owner_name">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> OWNER NAME 
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 180px;"> OWNER NAME 
                         <span style="margin-left: 2px;">
                           <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'asc' }"></i>
                           <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'desc'}"></i>
                         </span>
                       </th>
-                      <td mat-cell *matCellDef="let element"> {{ element.owner_name }} </td>
+                      <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.owner_name }} </td>
                     </ng-container>
 
                     <!-- Email Column -->
@@ -179,6 +179,14 @@
                           <span *ngIf="element.status === 'pending'">Pending</span>
                           <span *ngIf="element.status !== 'pending'">Registered</span>
                         </span>
+                      </td>
+                      
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                      <th mat-header-cell *matHeaderCellDef style="width: 40px;"></th>
+                      <td mat-cell *matCellDef="let element" style="padding: 4px;">
+                        <button class="btn btn-primary-custom btn-sm" title="Resend Zoycode" (click)="resend(element)"><i class="fas fa-redo mr-2" ></i></button>
                       </td>
                       
                     </ng-container>

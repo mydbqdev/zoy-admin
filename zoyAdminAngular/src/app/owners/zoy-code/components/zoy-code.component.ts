@@ -23,7 +23,7 @@ import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/
   styleUrl: './zoy-code.component.css'
 })
 export class ZoyCodeComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['zoy_code', 'owner_name', 'email_id', 'mobile_no','created_date', 'status'];
+  displayedColumns: string[] = ['zoy_code', 'owner_name', 'email_id', 'mobile_no','created_date', 'status','action'];
   public ELEMENT_DATA:ZoyData[]=[];
   orginalFetchData:ZoyData[]=[];
   searchText:string='';
@@ -179,7 +179,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			}
 			this.spinner.show();		     
 			this.submitted=false;
-			this.generateZoyCodeService.resendOwnerCode(this.generateZCode).subscribe((res) => {
+			this.generateZoyCodeService.resendOwnerCode(this.generateZCode.userEmail).subscribe((res) => {
 				this.notifyService.showSuccess(res.message, "");	
 				this.form.reset();
 				this.spinner.hide();
@@ -277,5 +277,46 @@ nameValidation(event: any, inputId: string) {
 		this._liveAnnouncer.announce('Sorting cleared');
 	  }
   }
-	
+
+  resend(element:any){
+	this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to resend the code for '+element.owner_name+' ?')
+				.then(
+				  (confirmed) =>{
+				   if(confirmed){
+					this.spinner.show();		     
+			    this.generateZoyCodeService.resendOwnerCode(element.email_id).subscribe((res) => {
+				this.notifyService.showSuccess(res.message, "");
+				this.spinner.hide();
+			  },error =>{
+				this.spinner.hide();
+				console.log("error.error",error)
+				if(error.status==403){
+				this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+				this.errorMsg =error.error.message;
+				console.log("Error:"+this.errorMsg);
+		  
+				if(error.status==500 && error.statusText=="Internal Server Error"){
+				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+				}else{
+				//  this.spinner.hide();
+				  let str;
+				  if(error.status==400){
+				  str=error.error;
+				  }else{
+					str=error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:"+str);
+				  this.errorMsg=str;
+				}
+			  //	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			    this.notifyService.showError(this.errorMsg, "");
+				}
+			  });  
+				   }
+				}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				); 
+  }
 }

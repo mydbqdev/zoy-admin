@@ -169,6 +169,7 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		this.searchText='';
 		this.filterData();
 		this.statuses.filter(data=>data.selected=false);
+		this. selectedFilterStatus();
 	}
 
 	statuses = [
@@ -176,18 +177,20 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		{ id: 2, name: 'Inactive', selected: false },
 		{ id: 3, name: 'Blocked', selected: false }
 	  ];
-
+	  selectedStatuses:string[]=[]; 
 	   // Toggle the selected status for a button
 	   toggleStatus(status: any): void {
 		status.selected = !status.selected;
+		this.selectedFilterStatus();
 	  }
-
+      selectedFilterStatus(){
+		this.selectedStatuses = this.statuses
+		.filter(status => status.selected)
+		.map(status => status.name);
+	  }
 	  // Apply and process the selected statuses
 	  applyStatuses(): void {
-		const selectedStatuses = this.statuses
-		  .filter(status => status.selected)
-		  .map(status => status.name);
-		console.log('Selected Statuses:', selectedStatuses);
+		console.log('Selected Statuses:', this.selectedStatuses);
 	  }
 	  
   }  
