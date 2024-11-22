@@ -47,7 +47,7 @@
                             <p class="text-start small text-muted">* You can choose multiple Status.</p>
                             <!-- Apply Now button -->
                             <div class="d-flex justify-content-center align-items-center mt-2">
-                                <a class="btn btn-primary-custom btn-sm" (click)="applyStatuses()">Apply Now</a>
+                                <button class="btn btn-sm" [ngClass]="selectedStatuses.length==0 ?'btn-light':'btn-primary-custom'" (click)="applyStatuses()" [disabled]="selectedStatuses.length==0">Apply Now</button>
                             </div>
                          </div>                 
                           <button type="button" class="btn btn-outline-secondary" style="color:rgb(252, 93, 93);font-size: 14px;" (click)="resetFilter()"><i class="fas fa-redo mr-2"></i>Reset Filter</button>
