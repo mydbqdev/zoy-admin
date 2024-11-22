@@ -1,6 +1,10 @@
 package com.integration.zoy.entity;
 
+import java.sql.Timestamp;
 import javax.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+
 
 @Entity
 @Table(name = "user_password_history", schema = "pgadmin")
@@ -16,8 +20,12 @@ public class AdminUserPasswordHistory {
 
 	@Column(name = "password", nullable = false)
 	private String password;
+	
+	@Column(name = "create_at", nullable = false)
+	@CreationTimestamp
+	private Timestamp ts;
 
-	// Getters and Setters
+	
 
 	public Long getId() {
 		return id;
@@ -42,5 +50,14 @@ public class AdminUserPasswordHistory {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	public Timestamp getTs() {
+		return ts;
+	}
+
+	public void setTs(Timestamp ts) {
+		this.ts = ts;
+	}
+	
 }
 

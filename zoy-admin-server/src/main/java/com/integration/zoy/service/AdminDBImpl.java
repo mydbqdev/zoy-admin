@@ -1,6 +1,7 @@
 package com.integration.zoy.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -66,5 +67,7 @@ public interface AdminDBImpl {
 	List<AdminUserMaster> userdata(String[] userMails);
 
 	List<Object[]> findAllAdminUserPrivileges1();
+	
+	AdminUserLoginDetails findAdminRegisterEmail(String Usermail);
 
 }

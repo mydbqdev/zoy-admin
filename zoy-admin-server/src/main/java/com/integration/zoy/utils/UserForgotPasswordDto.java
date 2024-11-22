@@ -4,7 +4,7 @@ public class UserForgotPasswordDto {
 	private String newPassword;
 	private String confirmPassword;
 	private String otp;
-	private String token;
+	private String email;
 	public String getNewPassword() {
 		return newPassword;
 	}
@@ -23,12 +23,13 @@ public class UserForgotPasswordDto {
 	public void setOtp(String otp) {
 		this.otp = otp;
 	}
-	public String getToken() {
-		return token;
+	public String getEmail() {
+		return email;
 	}
-	public void setToken(String token) {
-		this.token = token;
+	public void setEmail(String email) {
+		this.email = email;
 	}
+	
 	
 
 

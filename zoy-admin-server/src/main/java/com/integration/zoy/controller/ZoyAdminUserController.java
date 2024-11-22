@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
@@ -35,23 +35,31 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.config.JwtUtil;
 import com.integration.zoy.entity.AdminUserLoginDetails;
 import com.integration.zoy.entity.AdminUserMaster;
+import com.integration.zoy.entity.AdminUserPasswordHistory;
 import com.integration.zoy.entity.AdminUserTemporary;
 import com.integration.zoy.entity.AppRole;
 import com.integration.zoy.entity.RoleScreen;
 import com.integration.zoy.model.AdminUserDetails;
 import com.integration.zoy.model.AdminUserUpdateDetails;
+import com.integration.zoy.model.ForgotPassword;
 import com.integration.zoy.model.LoginDetails;
 import com.integration.zoy.model.RoleDetails;
 import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
 import com.integration.zoy.repository.AdminUserMasterRepository;
+import com.integration.zoy.repository.AdminUserPasswordHistoryRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
+import com.integration.zoy.service.ZoyAdminService;
+import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.utils.AdminAppRole;
 import com.integration.zoy.utils.AdminUserDetailPrevilage;
 import com.integration.zoy.utils.AdminUserList;
+import com.integration.zoy.utils.ChangePassWord;
 import com.integration.zoy.utils.Email;
+import com.integration.zoy.utils.OtpVerification;
+import com.integration.zoy.utils.ResetPassWord;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.RoleModel;
 
@@ -80,7 +88,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
 	private static final Gson gson2 = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-
+	private final Random random = new Random();
 	@Autowired
 	AdminDBImpl adminDBImpl;
 
@@ -94,11 +102,21 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	EmailService emailService;
 
 	@Autowired
+	ZoyEmailService zoyEmailService;
+
+	@Autowired
 	PasswordDecoder passwordDecoder;
-	
+
 	@Autowired
 	AdminUserMasterRepository adminUserMasterRepository;
-	
+
+	@Autowired
+	ZoyAdminService zoyAdminService;
+
+	@Autowired
+	AdminUserPasswordHistoryRepository passwordHistoryRepository;
+
+
 	@Value("${qa.signin.link}")
 	private String qaSigninLink;
 
@@ -109,12 +127,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		try {
 			AdminUserLoginDetails loginDetails=adminDBImpl.findByEmail(details.getEmail());
 			if(loginDetails!=null) {
-			
+
 				String decryptedStoredPassword = passwordDecoder.decryptedText(details.getPassword()); 
 				String decryptedLoginPassword = passwordDecoder.decryptedText(loginDetails.getPassword()); 
-			
+
 				boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
-	
+
 				if(isPasswordMatch) {
 					authentication = authenticationManager
 							.authenticate(new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
@@ -195,6 +213,11 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			adminUserLoginDetails.setIsActive(true);
 			adminUserLoginDetails.setIsLock(false);
 			adminDBImpl.saveAdminLoginDetails(adminUserLoginDetails);
+
+			AdminUserPasswordHistory newPasswordHistory = new AdminUserPasswordHistory();
+			newPasswordHistory.setUserEmail(adminUserDetails.getUserEmail());
+			newPasswordHistory.setPassword(adminUserLoginDetails.getPassword());
+			passwordHistoryRepository.save(newPasswordHistory);
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("User created Successfully");
@@ -440,243 +463,384 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	}
 
 	public ResponseEntity<String> zoyAdminUserListOld() {
-	    ResponseBody response = new ResponseBody();
-	    try {
-	        List<Object[]> master = adminDBImpl.findAllAdminUserPrevilages();
-	        List<AdminUserList> adminUserTemporary = new ArrayList<>();
-	        
-	        for (Object[] result : master) {
-	            AdminUserList user = new AdminUserList();
-	            user.setFirstName((String) result[0]);
-	            user.setLastName((String) result[1]);
-	            user.setUserEmail((String) result[2]);
-	            user.setContactNumber((String) result[3]);
-	            user.setDesignation((String) result[4]);
-	            user.setStatus((Boolean) result[5]);
-	            List<RoleModel> roles = new ArrayList<>();
-	            if (result[7] != null && !"null".equals(result[7])) {
-	                int roleId = (Integer) result[6];
-	                String roleName = (String) result[7];
-	                String approveStatus=(String) result[8];
-	                RoleModel role = new RoleModel(roleId, roleName,approveStatus); 
-	                
-	                String approvedPrivileges = (String) result[9];  
-	                if (approvedPrivileges != null && !approvedPrivileges.isEmpty()) {
-	                    String[] approvedPrivilegesArray = approvedPrivileges.split(",");
-	                    for (String privilege : approvedPrivilegesArray) {
-	                        role.addApprovedPrivilege(privilege); 
-	                    }
-	                }
+		ResponseBody response = new ResponseBody();
+		try {
+			List<Object[]> master = adminDBImpl.findAllAdminUserPrevilages();
+			List<AdminUserList> adminUserTemporary = new ArrayList<>();
 
-	                String unapprovedPrivileges = (String) result[10];  
-	                if (unapprovedPrivileges != null && !unapprovedPrivileges.isEmpty()) {
-	                    String[] unapprovedPrivilegesArray = unapprovedPrivileges.split(",");
-	                    for (String privilege : unapprovedPrivilegesArray) {
-	                        role.addUnapprovedPrivilege(privilege);  
-	                    }
-	                }
+			for (Object[] result : master) {
+				AdminUserList user = new AdminUserList();
+				user.setFirstName((String) result[0]);
+				user.setLastName((String) result[1]);
+				user.setUserEmail((String) result[2]);
+				user.setContactNumber((String) result[3]);
+				user.setDesignation((String) result[4]);
+				user.setStatus((Boolean) result[5]);
+				List<RoleModel> roles = new ArrayList<>();
+				if (result[7] != null && !"null".equals(result[7])) {
+					int roleId = (Integer) result[6];
+					String roleName = (String) result[7];
+					String approveStatus=(String) result[8];
+					RoleModel role = new RoleModel(roleId, roleName,approveStatus); 
 
-	                roles.add(role);
-	            }
+					String approvedPrivileges = (String) result[9];  
+					if (approvedPrivileges != null && !approvedPrivileges.isEmpty()) {
+						String[] approvedPrivilegesArray = approvedPrivileges.split(",");
+						for (String privilege : approvedPrivilegesArray) {
+							role.addApprovedPrivilege(privilege); 
+						}
+					}
 
-	            user.setRoleModel(roles);
-	            adminUserTemporary.add(user);
-	        }
+					String unapprovedPrivileges = (String) result[10];  
+					if (unapprovedPrivileges != null && !unapprovedPrivileges.isEmpty()) {
+						String[] unapprovedPrivilegesArray = unapprovedPrivileges.split(",");
+						for (String privilege : unapprovedPrivilegesArray) {
+							role.addUnapprovedPrivilege(privilege);  
+						}
+					}
 
-	        return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+					roles.add(role);
+				}
 
-	    } catch (Exception e) {
-	        log.error("Error getting amenities details: " + e.getMessage(), e);
-	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setError("Internal server error");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+				user.setRoleModel(roles);
+				adminUserTemporary.add(user);
+			}
+
+			return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error getting amenities details: " + e.getMessage(), e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 
 	@Override
-    public ResponseEntity<String> zoyAdminUserList() {
-	    ResponseBody response = new ResponseBody();
-	    try {
-	    	List<AdminUserMaster> master =adminDBImpl.findAllAdminUser();
-	        List<Object[]> userPrevilages = adminDBImpl.findAllAdminUserPrevilages();
-	        List<AdminUserList> adminUserTemporary = new ArrayList<>();
-	        
-	        for (AdminUserMaster result : master) {
-	            AdminUserList user = new AdminUserList();
-	            user.setFirstName(result.getFirstName());
-	            user.setLastName(result.getLastName());
-	            user.setUserEmail(result.getUserEmail());
-	            user.setContactNumber(result.getContactNumber());
-	            user.setDesignation(result.getDesignation());
-	            user.setStatus(result.getStatus());
-	            List<RoleModel> roles = new ArrayList<>();
-	            
-	         List<Object[]>previlages= userPrevilages.stream()
-								   	        		 .filter(p ->p[0].equals(result.getUserEmail()) && null != p[1] && !"null".equals(p[1])  )
-								   	        		 .collect(Collectors.toList());
-	         
-	            if (!previlages.isEmpty()) {
-	            	for(Object[] pre:previlages) {
-	            	 int roleId = pre[1] instanceof BigInteger ? ((BigInteger) pre[1]).intValue() : (Integer) pre[1];
-	              
-	            	//	int roleId = (Integer) pre[1];
-		                String roleName = (String) pre[3];
-		                String approveStatus=(String) pre[2];
-		         
-	                RoleModel role = new RoleModel(roleId, roleName,approveStatus); 
-	                
-	                String screens = (String) pre[4];  
-		   	          if (screens != null && !screens.isEmpty()) {
-		   	              String[] screensSet = screens.split(",");
-		   	              for (String screensNames : screensSet) {
-		   	                  role.addScreens(screensNames); 
-		   	              }
-		   	          }
-		   	       roles.add(role);
-		   	       
-	            	}
+	public ResponseEntity<String> zoyAdminUserList() {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<AdminUserMaster> master =adminDBImpl.findAllAdminUser();
+			List<Object[]> userPrevilages = adminDBImpl.findAllAdminUserPrevilages();
+			List<AdminUserList> adminUserTemporary = new ArrayList<>();
 
-	            }
+			for (AdminUserMaster result : master) {
+				AdminUserList user = new AdminUserList();
+				user.setFirstName(result.getFirstName());
+				user.setLastName(result.getLastName());
+				user.setUserEmail(result.getUserEmail());
+				user.setContactNumber(result.getContactNumber());
+				user.setDesignation(result.getDesignation());
+				user.setStatus(result.getStatus());
+				List<RoleModel> roles = new ArrayList<>();
 
-	            user.setRoleModel(roles);
-	            adminUserTemporary.add(user);
-	        }
+				List<Object[]>previlages= userPrevilages.stream()
+						.filter(p ->p[0].equals(result.getUserEmail()) && null != p[1] && !"null".equals(p[1])  )
+						.collect(Collectors.toList());
 
-	        return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+				if (!previlages.isEmpty()) {
+					for(Object[] pre:previlages) {
+						int roleId = pre[1] instanceof BigInteger ? ((BigInteger) pre[1]).intValue() : (Integer) pre[1];
 
-	    } catch (Exception e) {
-	        log.error("Error getting user list details: " + e.getMessage(), e);
-	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setError("Internal server error");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+						//	int roleId = (Integer) pre[1];
+						String roleName = (String) pre[3];
+						String approveStatus=(String) pre[2];
+
+						RoleModel role = new RoleModel(roleId, roleName,approveStatus); 
+
+						String screens = (String) pre[4];  
+						if (screens != null && !screens.isEmpty()) {
+							String[] screensSet = screens.split(",");
+							for (String screensNames : screensSet) {
+								role.addScreens(screensNames); 
+							}
+						}
+						roles.add(role);
+
+					}
+
+				}
+
+				user.setRoleModel(roles);
+				adminUserTemporary.add(user);
+			}
+
+			return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error getting user list details: " + e.getMessage(), e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
-	
-	 public ResponseEntity<String> approveOrRejectRole( String userEmail, String status) {
 
-	        ResponseBody response = new ResponseBody();     
-	        try {
-	        	
-	        	if (status == null || (!status.equals("approved") && !status.equals("rejected"))) {
-	                response.setStatus(HttpStatus.BAD_REQUEST.value());
-	                response.setError("Invalid status value. Status must be either 'approved' or 'rejected'.");
-	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	            }else {
-	            	
-	            	 if(status.equals("approved")) {
-	            		 adminDBImpl.insertUserDetails(userEmail);
-	            		 adminDBImpl.approveUser(userEmail);
-		            }        
-		            else {
-		            	adminDBImpl.rejectUser(userEmail);        	
-		            }
-	            	 
-	            	response.setStatus(HttpStatus.OK.value());
-	 				response.setMessage("The Assigned Role has been " + status + " successfully.");
-	 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-	            }
-	           
-	        } catch (Exception e) {
-	            log.error("Error in approveOrRejectRole API: " + e.getMessage(), e);
-	            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	            response.setError("Internal server error");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-	        }
-	    }
-	 @Override
-	 public ResponseEntity<String> deleteRole(int roleId ,String roleName) {
-	     ResponseBody response = new ResponseBody();
-	     
-	     try {
-	         List<Integer> roleIdPresent = adminDBImpl.findRoleIfAssigned(roleId);
-	         
-	         if (roleIdPresent == null || roleIdPresent.isEmpty()|| roleIdPresent.size()==0) {
-	             adminDBImpl.deleteRolefromRoleScreen(roleId);   
-	             adminDBImpl.deleteRolefromApp_role(roleId);      
-	             
-	             response.setStatus(HttpStatus.OK.value());
-	             response.setMessage( roleName + " role has been deleted successfully.");
-	             return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-	         } else {
-	             response.setStatus(HttpStatus.BAD_REQUEST.value());
-	             response.setMessage("Deletion is not possible as the role " + roleName + " is currently assigned.");
-	             return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	         }
-	     } catch (Exception e) {
-	         log.error("Error in deleteRole API: " + e.getMessage(), e);
-	         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	         response.setError("Internal server error");
-	         return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-	     }
-	 }
+	public ResponseEntity<String> approveOrRejectRole( String userEmail, String status) {
+
+		ResponseBody response = new ResponseBody();     
+		try {
+
+			if (status == null || (!status.equals("approved") && !status.equals("rejected"))) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Invalid status value. Status must be either 'approved' or 'rejected'.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}else {
+
+				if(status.equals("approved")) {
+					adminDBImpl.insertUserDetails(userEmail);
+					adminDBImpl.approveUser(userEmail);
+				}        
+				else {
+					adminDBImpl.rejectUser(userEmail);        	
+				}
+
+				response.setStatus(HttpStatus.OK.value());
+				response.setMessage("The Assigned Role has been " + status + " successfully.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
+
+		} catch (Exception e) {
+			log.error("Error in approveOrRejectRole API: " + e.getMessage(), e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	@Override
+	public ResponseEntity<String> deleteRole(int roleId ,String roleName) {
+		ResponseBody response = new ResponseBody();
+
+		try {
+			List<Integer> roleIdPresent = adminDBImpl.findRoleIfAssigned(roleId);
+
+			if (roleIdPresent == null || roleIdPresent.isEmpty()|| roleIdPresent.size()==0) {
+				adminDBImpl.deleteRolefromRoleScreen(roleId);   
+				adminDBImpl.deleteRolefromApp_role(roleId);      
+
+				response.setStatus(HttpStatus.OK.value());
+				response.setMessage( roleName + " role has been deleted successfully.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setMessage("Deletion is not possible as the role " + roleName + " is currently assigned.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			log.error("Error in deleteRole API: " + e.getMessage(), e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
-	 @Override
-	 public ResponseEntity<String> zoyAdminNotApprovedRoles() {
-		 ResponseBody response = new ResponseBody();
-		    try {
-		    	
-		        List<Object[]> userPrevilages = adminDBImpl.findAllAdminUserPrivileges1();
-		        
-		        
-		       Iterable<String> empMails = userPrevilages.stream().map(e -> String.valueOf(e[0])).collect(Collectors.toSet());
-		        
-		        List<AdminUserMaster> master = adminDBImpl.userdata(Iterables.toArray(empMails,String.class));
-      
-		        List<AdminUserList> adminUserTemporary = new ArrayList<>();
-		        
-		        for (AdminUserMaster result : master) {
-		            AdminUserList user = new AdminUserList();
-		            user.setFirstName(result.getFirstName());
-		            user.setLastName(result.getLastName());
-		            user.setUserEmail(result.getUserEmail());
-		            user.setContactNumber(result.getContactNumber());
-		            user.setDesignation(result.getDesignation());
-		            user.setStatus(result.getStatus());
-		            List<RoleModel> roles = new ArrayList<>();
-		            
-		         List<Object[]>previlages= userPrevilages.stream()
-									   	        		 .filter(p ->p[0].equals(result.getUserEmail()) && null != p[1] && !"null".equals(p[1])  )
-									   	        		 .collect(Collectors.toList());
-		         
-		            if (!previlages.isEmpty()) {
-		            	for(Object[] pre:previlages) {
-		            	 int roleId = pre[1] instanceof BigInteger ? ((BigInteger) pre[1]).intValue() : (Integer) pre[1];
-		              
-		            	//	int roleId = (Integer) pre[1];
-			                String roleName = (String) pre[3];
-			                String approveStatus=(String) pre[2];
-			         
-		                RoleModel role = new RoleModel(roleId, roleName,approveStatus); 
-		                
-		                String screens = (String) pre[4];  
-			   	          if (screens != null && !screens.isEmpty()) {
-			   	              String[] screensSet = screens.split(",");
-			   	              for (String screensNames : screensSet) {
-			   	                  role.addScreens(screensNames); 
-			   	              }
-			   	          }
-			   	       roles.add(role);
-			   	       
-		            	}
+	@Override
+	public ResponseEntity<String> zoyAdminNotApprovedRoles() {
+		ResponseBody response = new ResponseBody();
+		try {
 
-		            }
+			List<Object[]> userPrevilages = adminDBImpl.findAllAdminUserPrivileges1();
 
-		            user.setRoleModel(roles);
-		            adminUserTemporary.add(user);
-		        }
 
-		        return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+			Iterable<String> empMails = userPrevilages.stream().map(e -> String.valueOf(e[0])).collect(Collectors.toSet());
 
-		    } catch (Exception e) {
-		        log.error("Error getting user list details: " + e.getMessage(), e);
-		        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		        response.setError("Internal server error");
-		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		    }
+			List<AdminUserMaster> master = adminDBImpl.userdata(Iterables.toArray(empMails,String.class));
+
+			List<AdminUserList> adminUserTemporary = new ArrayList<>();
+
+			for (AdminUserMaster result : master) {
+				AdminUserList user = new AdminUserList();
+				user.setFirstName(result.getFirstName());
+				user.setLastName(result.getLastName());
+				user.setUserEmail(result.getUserEmail());
+				user.setContactNumber(result.getContactNumber());
+				user.setDesignation(result.getDesignation());
+				user.setStatus(result.getStatus());
+				List<RoleModel> roles = new ArrayList<>();
+
+				List<Object[]>previlages= userPrevilages.stream()
+						.filter(p ->p[0].equals(result.getUserEmail()) && null != p[1] && !"null".equals(p[1])  )
+						.collect(Collectors.toList());
+
+				if (!previlages.isEmpty()) {
+					for(Object[] pre:previlages) {
+						int roleId = pre[1] instanceof BigInteger ? ((BigInteger) pre[1]).intValue() : (Integer) pre[1];
+
+						//	int roleId = (Integer) pre[1];
+						String roleName = (String) pre[3];
+						String approveStatus=(String) pre[2];
+
+						RoleModel role = new RoleModel(roleId, roleName,approveStatus); 
+
+						String screens = (String) pre[4];  
+						if (screens != null && !screens.isEmpty()) {
+							String[] screensSet = screens.split(",");
+							for (String screensNames : screensSet) {
+								role.addScreens(screensNames); 
+							}
+						}
+						roles.add(role);
+
+					}
+
+				}
+
+				user.setRoleModel(roles);
+				adminUserTemporary.add(user);
+			}
+
+			return new ResponseEntity<>(gson.toJson(adminUserTemporary), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error getting user list details: " + e.getMessage(), e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@Override
+	public ResponseEntity<String> zoyAdminUserForgotpasswordPost(ForgotPassword forgotPassword) {
+		ResponseBody response = new ResponseBody();
+		try {
+			if(forgotPassword!=null && forgotPassword.getEmail()!=null) {
+				AdminUserLoginDetails user = adminDBImpl.findByEmail(forgotPassword.getEmail().toLowerCase());
+				if(user==null) {
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
+					response.setMessage("User doesnot exists");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+				}
+				String otp = String.valueOf(100000 + random.nextInt(900000));
+				zoyAdminService.getForgotPasswordOtp().put(user.getUserEmail(), otp);
+				zoyEmailService.sendForgotEmail(user,otp);
+
+				response.setStatus(HttpStatus.OK.value());
+				response.setMessage("password Reset OTP has been sent successfully");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+			} else {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("All fields are required");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			log.error("Error occurred during registration: ", e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setMessage("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-	
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminUserOtpValidation(OtpVerification verifiOtp) {
+		ResponseBody response = new ResponseBody();
+
+		String otpResponse = zoyAdminService.validateOtp(verifiOtp);
+
+		if (otpResponse.equals("OTP validated successfully")) {
+			response.setStatus(HttpStatus.OK.value()); 
+			response.setMessage(otpResponse);          
+			return ResponseEntity.ok(response.getMessage());  
+		} else if (otpResponse.equals("Invalid OTP")) {
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setMessage(otpResponse);          
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.getMessage());
+		} else if (otpResponse.equals("Expired OTP")) {
+			response.setStatus(HttpStatus.GONE.value());
+			response.setMessage(otpResponse);           
+			return ResponseEntity.status(HttpStatus.GONE).body(response.getMessage());
+		} else {
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setMessage("Something went wrong");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminUserPasswordSave(ChangePassWord verifiOtp) {
+		ResponseBody response = new ResponseBody();
+		try {
+			AdminUserLoginDetails loginDetails = adminDBImpl.findByEmail(verifiOtp.getEmail());
+			if (loginDetails == null) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("User not found.");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
+			}
+			List<AdminUserPasswordHistory> passwordHistoryList = passwordHistoryRepository.findTop3ByUserEmailOrderByTsDesc(verifiOtp.getEmail());
+
+			String password = verifiOtp.getPassword();
+
+			boolean passwordExistsInHistory = passwordHistoryList.stream()
+					.anyMatch(history -> history.getPassword().equals(password));
+
+			if (passwordExistsInHistory) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setMessage("Please use a different password. This password has already been used.");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.getMessage());
+			}
+
+			AdminUserPasswordHistory newPasswordHistory = new AdminUserPasswordHistory();
+			newPasswordHistory.setUserEmail(verifiOtp.getEmail());
+			newPasswordHistory.setPassword(password);
+			passwordHistoryRepository.save(newPasswordHistory);
+
+			if (passwordHistoryList.size() > 2) {
+				AdminUserPasswordHistory oldestPasswordHistory = passwordHistoryList.get(passwordHistoryList.size() - 1);
+				passwordHistoryRepository.delete(oldestPasswordHistory);
+			}
+
+			loginDetails.setPassword(password);
+			adminDBImpl.saveAdminLoginDetails(loginDetails);
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Password updated successfully.");
+			return ResponseEntity.ok(response.getMessage());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setMessage("An error occurred while updating the password.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
+		}
+	}
+
+
+
+	@Override
+	public ResponseEntity<String> zoyAdminResetPasswordSave(ResetPassWord resetPassword) {
+		AdminUserLoginDetails loginDetails = adminDBImpl.findByEmail(resetPassword.getEmail());
+
+		if (loginDetails != null) {
+			try {
+				String decryptedOldPassword = passwordDecoder.decryptedText(resetPassword.getOldPassWord()); 
+				String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword()); 
+
+				if (!decryptedOldPassword.equals(decryptedStoredPassword)) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Old password is incorrect");
+				}
+
+				ChangePassWord changePassWord = new ChangePassWord();
+				changePassWord.setEmail(resetPassword.getEmail());
+				changePassWord.setPassword(resetPassword.getNewPassword());
+
+				return zoyAdminUserPasswordSave(changePassWord);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while resetting the password");
+			}
+		}
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+	}
+
+
 }
+
+
+
+
