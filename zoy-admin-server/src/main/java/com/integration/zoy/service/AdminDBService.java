@@ -29,16 +29,18 @@ public  class AdminDBService implements AdminDBImpl {
 
 	@Autowired
 	AdminUserLoginDetailsRepository userLoginDetailsRepository;
-	
+
 	@Autowired
 	AppRoleRepository roleRepository;
-	
+
 	@Autowired
 	RoleScreenRepository roleScreenRepository;
 
 	@Autowired
 	AdminUserTemporaryRepository userTemporaryRepository;
-	
+
+
+
 	@Override
 	public AdminUserMaster saveAdminUser(AdminUserMaster master) {
 		return userMasterRepository.save(master);
@@ -161,31 +163,31 @@ public  class AdminDBService implements AdminDBImpl {
 	@Override
 	public void insertUserDetails(String user_email) {
 		userMasterRepository.insertUserDetails(user_email);
-		
+
 	}
 
 	@Override
 	public void approveUser(String user_email) {
 		userMasterRepository.approveUser(user_email);
-		
+
 	}
 
 	@Override
 	public void rejectUser(String user_email) {
 		userMasterRepository.rejectUser( user_email);
-		
+
 	}
-	
+
 	@Override
 	public  List<Integer> findRoleIfAssigned(int  role_id) {
 		return roleScreenRepository.findAssignedRole(role_id);
 	}
-	
+
 	@Override
 	public void deleteRolefromApp_role(int  role_id) {
 		roleScreenRepository.deleteRolefromApp_role( role_id);	
 	}
-	
+
 	@Override
 	public void deleteRolefromRoleScreen(int role_id) {
 		roleScreenRepository.deleteRolefromRoleScreen( role_id);	
@@ -201,7 +203,11 @@ public  class AdminDBService implements AdminDBImpl {
 	@Override
 	public List<AdminUserMaster> userdata(String[] userMails) {
 		return	userMasterRepository.userdata(userMails);
-		
+
 	}
-	
+
+	@Override
+	public AdminUserLoginDetails findAdminRegisterEmail(String Usermail) {
+		return userLoginDetailsRepository.findRegisterEmail(Usermail).orElse(null);
+	}
 }

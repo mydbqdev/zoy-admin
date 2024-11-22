@@ -31,6 +31,7 @@ import com.integration.zoy.repository.PgOwnerMaterRepository;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.ZoyCodeGenerationService;
+import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.utils.Email;
 import com.integration.zoy.utils.ResponseBody;
 
@@ -47,6 +48,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 	@Autowired
 	PasswordDecoder passwordDecoder;
+	
+	@Autowired
+	ZoyEmailService emailBodyService;
 	
 	@Value("${qa.signin.link}")
 	private String qaRegistrationLink;
@@ -79,9 +83,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
             String existingCode = pgOwnerMaterRepository.findPgOwnerDetails(model.getEmailId());
             
             if (existingCode != null && !existingCode.isEmpty()) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
+            	 response.setStatus(HttpStatus.CONFLICT.value());
                 response.setMessage("Zoy code " + existingCode + " already exists with this email ID.");
-                return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
             }
 
             PgOwnerMaster ownerData = new PgOwnerMaster();
@@ -94,37 +98,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
             pgOwnerMaterRepository.save(ownerData);
 
-            Email email = new Email();
-            email.setFrom("zoyAdmin@mydbq.com");
-            List<String> to = new ArrayList<>();
-            to.add(model.getEmailId());
-            email.setTo(to);
-
-            email.setSubject("Welcome to ZOY! Unlock Your Journey – Verify & Register Today!");
-            
-            String message = "<p>Dear " + model.getFirstName() + " " + model.getLastName() + ",</p>" 
-                    + "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we’ve made it quick and simple for you!</p>"
-                    + "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
-                    + "<p>Please use this code to verify your account and complete your registration in the app.</p>"
-                    + "<h4>Steps to Register:</h4>"
-                    + "<ul>"
-                    + "<li>Download ZOY Owner App from <a href='[App Link]'>[App Link]</a>.</li>"
-                    + "<li>Open the app and select “Register.”</li>"
-                    + "<li>Enter the invitation code provided above and your PG details.</li>"
-                    + "</ul>"
-                    + "<p>Start exploring amazing functions tailored just for you!</p>"
-                    + "<p>This verification ensures you receive the latest updates, offers, and a secure experience.</p>"
-                    + "<p>If you have any questions or need assistance, feel free to reach out to our support team at [support email/phone].</p>"
-                    + "<p>Welcome aboard, and we can’t wait to make your experience amazing!</p>"
-                    + "<p>Best regards,</p>"
-                    + "<p>ZOY Administrator</p>";
-            
-            email.setBody(message);
-            email.setContent("text/html");
-            emailService.sendEmail(email, null);
+            emailBodyService.sendZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode);
             
             response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Registration details sent successfully.");
+            response.setMessage("ZOY code has been generated & sent successfully.");
             return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
         } catch (Exception e) {
@@ -143,39 +120,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
             
             String zoycode = (String) allPgOwnerDetails.get(0)[0]; 
             
-            Email email = new Email();
-            email.setFrom("zoyAdmin@mydbq.com");
-            
-            List<String> to = new ArrayList<>();
-            to.add(model.getEmailId());
-            email.setTo(to);
-            
-            email.setSubject("Welcome to ZOY! Unlock Your Journey – Verify & Register Today!");
-            
-            String message = "<p>Dear " + model.getFirstName() + " " + model.getLastName() + ",</p>" 
-                    + "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we’ve made it quick and simple for you!</p>"
-                    + "<p><strong>Your Invitation Code: </strong>" + zoycode + "</p>"
-                    + "<p>Please use this code to verify your account and complete your registration in the app.</p>"
-                    + "<h4>Steps to Register:</h4>"
-                    + "<ul>"
-                    + "<li>Download ZOY Owner App from <a href='[App Link]'>[App Link]</a>.</li>"
-                    + "<li>Open the app and select “Register.”</li>"
-                    + "<li>Enter the invitation code provided above and your PG details.</li>"
-                    + "</ul>"
-                    + "<p>Start exploring amazing functions tailored just for you!</p>"
-                    + "<p>This verification ensures you receive the latest updates, offers, and a secure experience.</p>"
-                    + "<p>If you have any questions or need assistance, feel free to reach out to our support team at [support email/phone].</p>"
-                    + "<p>Welcome aboard, and we can’t wait to make your experience amazing!</p>"
-                    + "<p>Best regards,</p>"
-                    + "<p>ZOY Administrator</p>";
-            
-            email.setBody(message);
-            email.setContent("text/html");
-            
-            emailService.sendEmail(email, null);
+            emailBodyService.resendPgOwnerDetails(model.getEmailId(),model.getFirstName(),model.getLastName(),zoycode);
             
             response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Registration details sent successfully");
+            response.setMessage("ZOY code has been sent successfully");
             return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
         } catch (Exception e) {

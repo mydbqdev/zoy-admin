@@ -26,6 +26,7 @@ import com.integration.zoy.model.DueType;
 import com.integration.zoy.model.DueTypeId;
 import com.integration.zoy.model.EkycType;
 import com.integration.zoy.model.EkycTypeId;
+import com.integration.zoy.model.ForgotPassword;
 import com.integration.zoy.model.LoginDetails;
 import com.integration.zoy.model.NotificationMode;
 import com.integration.zoy.model.NotificationModeId;
@@ -40,6 +41,9 @@ import com.integration.zoy.model.ShareType;
 import com.integration.zoy.model.ShareTypeId;
 import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
+import com.integration.zoy.utils.ChangePassWord;
+import com.integration.zoy.utils.OtpVerification;
+import com.integration.zoy.utils.ResetPassWord;
 
 
 
@@ -210,4 +214,51 @@ public interface ZoyAdminUserImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> zoyAdminNotApprovedRoles();
 	
+	@Operation(summary = "Admin User forgotpassword ", description = "Admin User forgotpassword", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/admin_forgot_password",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminUserForgotpasswordPost(@RequestBody ForgotPassword forgotPassword);
+	
+	@Operation(summary = "Admin User otp validation ", description = "Admin User otp vcalidation", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/admin_otp_verify",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminUserOtpValidation(@RequestBody OtpVerification verifiOtp);
+	
+	@Operation(summary = "Admin forgot password save  ", description = "Admin forgotpassword saving", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/admin_password_save",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminUserPasswordSave(@RequestBody ChangePassWord verifiOtp);
+	
+	@Operation(summary = "Admin Reset password  ", description = "Admin Reset Password", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/admin_reset_password",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminResetPasswordSave(@RequestBody ResetPassWord resetPassword);
 }

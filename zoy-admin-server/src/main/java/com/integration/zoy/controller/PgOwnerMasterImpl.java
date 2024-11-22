@@ -27,6 +27,7 @@ public interface PgOwnerMasterImpl {
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "409", description = "Already exist as zoy code against email id"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/savePgOwnerData",
 	produces = { "application/json" },
@@ -41,7 +42,7 @@ public interface PgOwnerMasterImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/resendPgOwnerData",
+	@PostMapping(value = "/zoy_admin/resendPgOwnerData",
 	produces = { "application/json" },
 	consumes = { "application/json"})
 	ResponseEntity<String> pgOwnerDetalaisresend(@RequestBody PgOwnerMasterModel model);
