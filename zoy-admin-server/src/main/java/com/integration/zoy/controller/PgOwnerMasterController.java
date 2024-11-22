@@ -83,7 +83,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
             String existingCode = pgOwnerMaterRepository.findPgOwnerDetails(model.getEmailId());
             
             if (existingCode != null && !existingCode.isEmpty()) {
-            	 response.setStatus(HttpStatus.CONFLICT.value());
+            	  response.setStatus(HttpStatus.CONFLICT.value());
                 response.setMessage("Zoy code " + existingCode + " already exists with this email ID.");
                 return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
             }

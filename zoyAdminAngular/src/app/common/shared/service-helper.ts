@@ -74,13 +74,15 @@ export class ServiceHelper{
         const username = 'zoyapp';  
         const password = 'zoypass';
         const basicAuthValue = `Basic ${btoa(username + ':' + password)}`;  
-        
+        sessionStorage.setItem('exterApiToken', basicAuthValue);
+      
         let headers: HttpHeaders = new HttpHeaders({
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': basicAuthValue,
           'Access-Control-Allow-Origin': '*'  
         });
+       
         return headers;
       }
 }

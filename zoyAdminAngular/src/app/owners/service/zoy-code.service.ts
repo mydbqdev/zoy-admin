@@ -19,10 +19,11 @@ import { MessageService } from 'src/app/message.service';
     }
     
      public generateOwnerCode(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/send_otp" ;
+        const url1=this.basePath +"zoy_admin/savePgOwnerData" ;
+        let param={"firstName":data.firstName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail};
           return  this.httpclient.post<any>(
               url1,
-              data,
+              param,
               {
                   headers:ServiceHelper.buildHeaders(),
                  observe : 'body',
@@ -31,20 +32,21 @@ import { MessageService } from 'src/app/message.service';
           );
      }
 
-     public resendOwnerCode(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/send_otp" ;
+     public resendOwnerCode(data:string): Observable<any> {
+        const url1=this.basePath +"zoy_admin/resendPgOwnerData" ;
+        let param={"emailId":data};
           return  this.httpclient.post<any>(
               url1,
-              data,
+              param,
               {
-                  headers:ServiceHelper.buildHeaders(),
-                 observe : 'body',
-                 withCredentials:true
-              }
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+             }
           );
      }
      public getGeneratedZoyCodeDetails(): Observable<any> {
-          const url1=this.basePath +"zoy_admin/getGeneratedZoyCodeDetails?";
+          const url1=this.basePath +"zoy_admin/getAllPgOwnerData?";
             return  this.httpclient.get<any>(
                 url1,
                 {
@@ -55,12 +57,8 @@ import { MessageService } from 'src/app/message.service';
             );
     } 
 
- 
-    
-
       private errorHandler(error:HttpErrorResponse){
-        return of(error.message || "server error");
-        
+        return of(error.message || "server error");    
     }
   
     private log(message:string){
@@ -71,7 +69,6 @@ import { MessageService } from 'src/app/message.service';
         return (error:any):Observable<T> => {
             console.error(error);
             this.log(`${operation} failed: ${error.message}`);
-  
             return of(result as T);
         };
     }

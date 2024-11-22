@@ -1,10 +1,10 @@
 export class ZoyData {
-    zoyCode: string;
-    ownerName: string;
-    email: string;
-    contact: string;
-    date: string;
-    status: 'Registered' | 'Pending'; 
+    zoy_code: string;
+    owner_name: string;
+    email_id: string;
+    mobile_no: string;
+    created_date: string;
+    status: 'registered' | 'pending'; 
 
     firstName: string;
     lastName: string;

@@ -223,12 +223,20 @@ export class BulkUploadComponent {
 			
 		}
 
+		downloadSampleFile(fileName:string){
+		const filePath = `assets/sample_files/${fileName+'.csv'}`;
+		const link = document.createElement('a');
+		link.href = filePath;
+		link.download = fileName+'.csv';
+		link.click();
+		}
 
 		getTenentSampleFile(){
 			this.spinner.show();
 			this.bulkUploadService.getTenentSampleFile().subscribe(data => {
+				console.log("getTenentSampleFile data",data);
 				if(data!=null && data!=undefined && data!='' && data.size!=0){ 
-					var blob = new Blob([data], {type : 'application/pdf'});
+					var blob = new Blob([data], {type: 'text/csv'});
 					var fileURL=URL.createObjectURL(blob);				  
 					const link = document.createElement("a");
 					link.href = fileURL;
@@ -236,9 +244,13 @@ export class BulkUploadComponent {
 					link.download = 'Tenent_sample_File.csv';
 					document.body.appendChild(link);
 					link.click();
+					document.body.removeChild(link);
 				}
 			this.spinner.hide();
+			sessionStorage.setItem('zoyadminapi','yes');
 		  },error =>{
+			console.log("error>>",error)
+			sessionStorage.setItem('zoyadminapi','yes');
 			this.spinner.hide();
 			if(error.status==403){
 			  this.router.navigate(['/forbidden']);
@@ -269,18 +281,23 @@ export class BulkUploadComponent {
 		getPgPropertysSampleFile(){
 			this.spinner.show();
 			this.bulkUploadService.getPgPropertysSampleFile().subscribe(data => {
+				
 				if(data!=null && data!=undefined && data!='' && data.size!=0){ 
-					var blob = new Blob([data], {type : 'application/pdf'});
+					var blob = new Blob([data], {type: 'application/vnd.ms-excel'});
 					var fileURL=URL.createObjectURL(blob);				  
 					const link = document.createElement("a");
 					link.href = fileURL;
 					link.target = '_blank';
-					link.download = 'Tenent_sample_File.csv';
+					link.download = 'PG_Propertys_sample_File.csv';
 					document.body.appendChild(link);
 					link.click();
+					document.body.removeChild(link);
 				}
 			this.spinner.hide();
+			sessionStorage.setItem('zoyadminapi','yes');
 		  },error =>{
+			console.log("error>>",error)
+			sessionStorage.setItem('zoyadminapi','yes');
 			this.spinner.hide();
 			if(error.status==403){
 			  this.router.navigate(['/forbidden']);
