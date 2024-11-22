@@ -32,10 +32,28 @@
   }
 
   .form-control {
-    min-width: 130px; /* Ensures a compact but readable width */
+    min-width: 100px; /* Ensures a compact but readable width */
   }
   
   button {
     white-space: nowrap; /* Prevents text wrapping inside buttons */
   }
-  
+
+
+.common-status {
+  width: 100px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.btn-registered {
+  background-color:  #cefbf5;
+  color:  #246359;
+}
+
+.btn-pending {
+  background-color:#e6dff7; 
+    color: #470ecf;
+}

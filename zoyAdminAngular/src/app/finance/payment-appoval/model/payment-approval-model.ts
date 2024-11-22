@@ -4,5 +4,5 @@ export class PaymentApprovalModel{
   total_amount: string;
   transaction_date: string;
   transaction_no: string;
-  transaction_approval: string;	
+  transaction_approval: 'Received' |' Not Received';	
 }

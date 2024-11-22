@@ -27,64 +27,64 @@
                         
                       </div>
                     </div>
-                    <div class="row mt-2 mb-0 mb-5" style="padding:10px 10px 10px;">
-                      <div style="border:1px solid#dbdbdb;border-radius: 5px;">
-                      <form >                 
-                        <div class="pl-1 row g-2 align-items-center">
-                          <!-- City -->
-                          <div class="col-auto">
-                            <label for="city" class="col-form-label">City</label>
-                            <select class="form-control" id="city">
-                              <option value="Bangalore">Bangalore</option>
-                              <option value="Vijaywada">Vijaywada</option>
-                              <option value="Pune">Pune</option>
-                              <option value="Mumbai">Mumbai</option>
-                            </select>
-                          </div>
-                        
-                          <!-- OWNER ID/Name -->
-                          <div class="col-auto">
-                            <label for="fileName" class="col-form-label">OWNER ID/Name</label>
-                            <input type="text" class="form-control" id="fileName" name="fileName" autocomplete="off" />
-                            
-                          </div>
-                        
-                          <!-- Date Range -->
-                          <div class="col-auto">
-                            <label for="dateRange" class="col-form-label">Date Range</label>
-                            <div class="d-flex">
-                              <input type="date" class="form-control" id="fromDate" />
-                              <input type="date" class="form-control ml-2" id="toDate" />
+                    <div class="mt-4">
+                      <div class="border rounded p-3">
+                        <form style="margin-left: -10px;">
+                          <div class="row g-0 align-items-center">
+                            <!-- City -->
+                            <div class="col-md-2">
+                              <label for="city" class="form-label">City</label>
+                              <select class="form-control" id="city">
+                                <option value="Bangalore">Bangalore</option>
+                                <option value="Vijaywada">Vijaywada</option>
+                                <option value="Pune">Pune</option>
+                                <option value="Mumbai">Mumbai</option>
+                              </select>
+                            </div>
+                    
+                            <!-- OWNER ID/Name -->
+                            <div class="col-md-2">
+                              <label for="fileName" class="form-label">OWNER ID/Name</label>
+                              <input type="text" class="form-control" id="fileName" name="fileName" autocomplete="off" />
+                            </div>
+                    
+                            <!-- Date Range -->
+                            <div class="col-md-3">
+                              <label for="dateRange" class="form-label">Date Range</label>
+                              <div class="d-flex gap-2">
+                                <input type="date" class="form-control" id="fromDate" />
+                                <input type="date" class="form-control" id="toDate" />
+                              </div>
+                            </div>
+                    
+                            <!-- Transaction No -->
+                            <div class="col-md-2">
+                              <label for="transactionNo" class="form-label">Transaction No.</label>
+                              <select class="form-control" id="transactionNo">
+                                <option value="TXN12351">TXN12351</option>
+                                <option value="TXN12351">TXN12352</option>
+                              </select>
+                            </div>
+                    
+                            <!-- Transfer Approval -->
+                            <div class="col-md-2" style="margin-left:-16px">
+                              <label for="transferApproval" class="form-label">Transfer Approval</label>
+                              <select class="form-control" id="transferApproval">
+                                <option value="Tenant">Tenant</option>
+                                <option value="PG Property">PG Property</option>
+                              </select>
+                            </div>
+                    
+                            <!-- Show Results Button -->
+                            <div class="col-md-1 d-flex align-items-end" style="margin-left:-14px;margin-top:28px">
+                              <button type="submit" class="btn btn-primary ">Show Results</button>
                             </div>
                           </div>
-                        
-                          <!-- Transaction No -->
-                          <div class="col-auto">
-                            <label for="transactionNo" class="col-form-label">Transaction No.</label>
-                            <select class="form-control" id="transactionNo">
-                              <option value="Tenant">Tenant</option>
-                              <option value="PG Property">PG Property</option>
-                            </select>
-                          </div>
-                        
-                          <!-- Transfer Approval -->
-                          <div class="col-auto">
-                            <label for="transferApproval" class="col-form-label">Transfer Approval</label>
-                            <select class="form-control" id="transferApproval">
-                              <option value="Tenant">Tenant</option>
-                              <option value="PG Property">PG Property</option>
-                            </select>
-                          </div>
-                        
-                          <!-- Show Results Button -->
-                          <div class="col-auto">
-                            <button type="submit" class="btn btn-primary mt-3">Show Results</button>
-                          </div>
-                        </div>
-                        
-                      </form>
+                        </form>
                       </div>
                     </div>
+                    
+                    
               
                     </div>
                     <div class="row mt-2">
@@ -155,10 +155,10 @@
                                           <td mat-cell *matCellDef="let element" style="padding: 4px;width: 200px;">
                                             <span
                                               class="common-status"
-                                              [ngClass]="element.transaction_approval === 'pending' ? 'btn-pending' : 'btn-registered'"
+                                              [ngClass]="element.status === 'pending' ? 'btn-pending' : 'btn-registered'"
                                             >
                                               <span *ngIf="element.transaction_approval === 'pending'">Inactive</span>
-                                              <span *ngIf="element.transaction_approval !== 'pending'">Active</span>
+                                              <span *ngIf="element.transaction_approval !== 'btn-registered'">Active</span>
                                             </span>
                                           </td>
                                           
