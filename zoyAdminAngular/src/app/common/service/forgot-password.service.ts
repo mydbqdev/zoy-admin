@@ -17,62 +17,51 @@ import { MessageService } from 'src/app/message.service';
     constructor(private httpclient:HttpClient,@Inject(BASE_PATH) private basePath:string, private messageService:MessageService){
 
     }
-       public rolesDropdown(): Observable<any> {
-        const url1=this.basePath +'userrole/user/showRolesDropdown';
-        return this.httpclient.post<String[]>(
-            url1,
-            '',
-            {
-                headers:ServiceHelper.buildHeaders(),
-               observe : 'body',
-               withCredentials:true
-            }
-        );
-     }
-
 
       
-     public sendOTP(userEmail:string): Observable<any> {
-        const url1=this.basePath +"zoy_admin/send_otp?userEmail"+userEmail ;
+     public sendOTP(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/admin_forgot_password" ;
           return  this.httpclient.post<any>(
               url1,
-              '',
+              data,
               {
-                  headers:ServiceHelper.buildHeaders(),
+                  headers:ServiceHelper.buildHeadersBasicAuth(),
                  observe : 'body',
                  withCredentials:true
               }
           );
      }
+
+     public verifyOtp(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/admin_otp_verify" ;
+          return  this.httpclient.post<any>(
+              url1,
+              data,
+              {
+                  headers:ServiceHelper.buildHeadersBasicAuth(),
+                 observe : 'body',
+                 withCredentials:true
+              }
+          );
+     }
+
+     
 
      public savePassword(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/savePassword" ;
+        const url1=this.basePath +"zoy_admin/admin_password_save" ;
           return  this.httpclient.post<any>(
               url1,
               data,
               {
-                  headers:ServiceHelper.buildHeaders(),
+                  headers:ServiceHelper.buildHeadersBasicAuth(),
                  observe : 'body',
                  withCredentials:true
               }
           );
      }
 
-     public submitOtp(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/submitOtp" ;
-          return  this.httpclient.post<any>(
-              url1,
-              data,
-              {
-                  headers:ServiceHelper.buildHeaders(),
-                 observe : 'body',
-                 withCredentials:true
-              }
-          );
-     }
-    
 
-      private errorHandler(error:HttpErrorResponse){
+     private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");
         
     }
