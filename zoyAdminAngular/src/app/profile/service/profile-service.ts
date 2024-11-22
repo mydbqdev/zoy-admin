@@ -22,8 +22,7 @@ export class ProfileService {
 
 
   public changePassword(data:any): Observable<any> {
-    
-    const url = this.basePath + 'zoy_admin/change_password'; 
+    const url = this.basePath + 'zoy_admin/admin_reset_password'; 
     return  this.httpclient.post<any>(
       url,
       data,

@@ -1,6 +1,9 @@
 package com.integration.zoy.controller;
 
 import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +13,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -711,7 +718,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				AdminUserLoginDetails user = adminDBImpl.findByEmail(forgotPassword.getEmail().toLowerCase());
 				if(user==null) {
 					response.setStatus(HttpStatus.BAD_REQUEST.value());
-					response.setMessage("User doesnot exists");
+					response.setMessage("User does not exists");
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 				}
 				String otp = String.valueOf(100000 + random.nextInt(900000));
@@ -719,7 +726,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				zoyEmailService.sendForgotEmail(user,otp);
 
 				response.setStatus(HttpStatus.OK.value());
-				response.setMessage("password Reset OTP has been sent successfully");
+				response.setMessage("Password Reset OTP has been sent successfully");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 			} else {
@@ -744,21 +751,23 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 		if (otpResponse.equals("OTP validated successfully")) {
 			response.setStatus(HttpStatus.OK.value()); 
-			response.setMessage(otpResponse);          
-			return ResponseEntity.ok(response.getMessage());  
+			response.setMessage(otpResponse);      
+			return  new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} else if (otpResponse.equals("Invalid OTP")) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setMessage(otpResponse);          
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.getMessage());
+			response.setMessage(otpResponse);  
+			return  new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		} else if (otpResponse.equals("Expired OTP")) {
 			response.setStatus(HttpStatus.GONE.value());
-			response.setMessage(otpResponse);           
-			return ResponseEntity.status(HttpStatus.GONE).body(response.getMessage());
+			response.setMessage(otpResponse);       
+			return  new ResponseEntity<>(gson.toJson(response), HttpStatus.GONE);
 		} else {
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setMessage("Something went wrong");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
+			return  new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		
+		
 	}
 
 	@Override
@@ -769,19 +778,24 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			if (loginDetails == null) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 				response.setMessage("User not found.");
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
+			
+				return  new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+				
 			}
 			List<AdminUserPasswordHistory> passwordHistoryList = passwordHistoryRepository.findTop3ByUserEmailOrderByTsDesc(verifiOtp.getEmail());
 
 			String password = verifiOtp.getPassword();
 
+			
+
 			boolean passwordExistsInHistory = passwordHistoryList.stream()
-					.anyMatch(history -> history.getPassword().equals(password));
+			        .anyMatch(history -> isPasswordInHistory(history.getPassword(), password));
+
 
 			if (passwordExistsInHistory) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 				response.setMessage("Please use a different password. This password has already been used.");
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.getMessage());
+				return  new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
 
 			AdminUserPasswordHistory newPasswordHistory = new AdminUserPasswordHistory();
@@ -799,14 +813,27 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("Password updated successfully.");
-			return ResponseEntity.ok(response.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setMessage("An error occurred while updating the password.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
+			return  new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+
 		}
+	}
+	
+	private boolean isPasswordInHistory(String historyPassword, String password) {
+	    try {
+	        return passwordDecoder.decryptedText(historyPassword)
+	                .equals(passwordDecoder.decryptedText(password));
+	    } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
+	            | InvalidAlgorithmParameterException | IllegalBlockSizeException
+	            | BadPaddingException e) {
+	        e.printStackTrace();
+	        return false; 
+	    }
 	}
 
 
@@ -814,6 +841,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	@Override
 	public ResponseEntity<String> zoyAdminResetPasswordSave(ResetPassWord resetPassword) {
 		AdminUserLoginDetails loginDetails = adminDBImpl.findByEmail(resetPassword.getEmail());
+		ResponseBody response = new ResponseBody();
 
 		if (loginDetails != null) {
 			try {
@@ -821,7 +849,10 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword()); 
 
 				if (!decryptedOldPassword.equals(decryptedStoredPassword)) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Old password is incorrect");
+
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
+					response.setMessage("Old password is incorrect.");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 				}
 
 				ChangePassWord changePassWord = new ChangePassWord();
@@ -831,11 +862,16 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				return zoyAdminUserPasswordSave(changePassWord);
 			} catch (Exception e) {
 				e.printStackTrace();
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while resetting the password");
+				response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+				response.setMessage("An error occurred while resetting the password");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
+		
+		response.setStatus(HttpStatus.NOT_FOUND.value());
+		response.setMessage("User not found.");
+		return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 	}
 
 

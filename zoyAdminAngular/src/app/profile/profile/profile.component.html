@@ -110,10 +110,10 @@
                                             <form [formGroup]="form" >
                                                 <div class="mb-3">
                                                     <div class="input-group">
-                                                      <input  type="text"  class="form-control custom-underline" id="oldPassword" placeholder="Old password"  formControlName="oldPassword"
+                                                      <input  type="text"  class="form-control custom-underline" id="oldPassword" placeholder="Old password" formControlName="oldPassword"
                                                         style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;" 
                                                         [(ngModel)]="changePasswordDetails.oldPassword" [ngClass]="{'is-invalid':submitted && form.controls.oldPassword.errors}" 
-                                                        title="Old password" autocomplete="off" required>
+                                                        autocomplete="off">
                                                     </div>
                                                     <div *ngIf="submitted && form.controls.oldPassword.errors" class="text-danger">
                                                         <div *ngIf="form.controls.oldPassword.errors?.required">
@@ -126,7 +126,7 @@
                                                     <input  [type]="viewPassword ? 'text' : 'password'"  class="form-control custom-underline" id="newPassword"  formControlName="newPassword"
                                                       style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;" 
                                                       [(ngModel)]="changePasswordDetails.newPassword" [ngClass]="{'is-invalid':submitted && form.controls.newPassword.errors}" 
-                                                      placeholder="New password"  title="New password" autocomplete="off"  required>
+                                                      placeholder="New password" autocomplete="off">
                                                      
                                                       <span 
                                                       class="input-group-text" 
@@ -150,7 +150,7 @@
                                                   <div class="input-group">
                                                     <input type="password"  class="form-control custom-underline" id="confirmPassword" placeholder="Confirm password"  formControlName="confirmPassword"
                                                     [(ngModel)]="changePasswordDetails.confirmPassword" [ngClass]="{'is-invalid':submitted && form.controls.confirmPassword.errors}" 
-                                                      style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;" autocomplete="off" required>
+                                                      style="border: 0px solid #d1d3e2;border-bottom: 1px solid #d1d3e2;border-radius: 0px;" autocomplete="off">
                                                   </div>
                                                   <div *ngIf="submitted && form.controls.confirmPassword.errors" class="text-danger">
                                                     <div *ngIf="submitted  && form.controls.confirmPassword.errors?.required">
