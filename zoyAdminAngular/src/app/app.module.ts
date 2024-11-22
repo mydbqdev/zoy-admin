@@ -35,7 +35,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { RoleMasterComponent } from './setting/role-master/components/role-master.component';
 import { AppSettingMenuRoutingModule } from './setting/settings-menu-routing.module';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
-import { ReportListComponent } from './reports/component/report-list.component';
+import { ReportListComponent } from './finance/reports/component/report-list.component';
 import { AppOwnerMenuRoutingModule } from './owners/owners-menu-routing.model';
 import { AppUsersMenuRoutingModule } from './user-management/users-menu-routing.module';
 import { PermissionApprovalComponent } from './user-management/permission-approval/component/permission-approval.component';
@@ -49,6 +49,7 @@ import { TicketsComponent } from './supports/tickets/tickets.component';
 import { TenantsComponent } from './tenants/tenants/tenants.component';
 import { TenantMenuRoutingModule } from './tenants/tenents-menu-routing.module';
 import { BulkUploadComponent } from './tenants/bulk-upload/component/bulk-upload.component';
+import { PaymentApprovalComponent } from './finance/payment-appoval/component/payment-approval.component';
 
 
 const appRoutes: Routes = [
@@ -80,7 +81,8 @@ const appRoutes: Routes = [
     SettingsComponent,
     TicketsComponent,
     TenantsComponent,
-    BulkUploadComponent
+    BulkUploadComponent,
+    PaymentApprovalComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,

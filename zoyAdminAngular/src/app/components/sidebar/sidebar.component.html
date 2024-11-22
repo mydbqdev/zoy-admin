@@ -84,7 +84,6 @@
             <a class="collapse-item">Tenant </a>
             <div class="p-1"></div>
             <a class="collapse-item" routerLink="/bulk-upload" *ngIf="defMenu.tenantsSubMenu.bulkUpload && rolesArray.includes('BULK_UPLOAD_READ')" [ngClass]="{'active':activeSubNenuName=='bulk-upload'}" (click)="setHeaderName('Bulk Upload')" >Bulk Upload</a>
-            <div class="p-1"></div>
         </div>
     </div>
    </li>
@@ -99,8 +98,9 @@
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" routerLink="/report-list" *ngIf="rolesArray.includes('REPORTS_READ')" [ngClass]="{'active':activeSubNenuName=='report-list'}" (click)="setHeaderName('Reports')">Reports</a>
-            <!-- <a class="collapse-item" routerLink="/home">Report 2</a>
-            <a class="collapse-item" routerLink="/home">Report 3</a>
+            <div class="p-1"></div>
+            <a class="collapse-item" routerLink="/payment-approval" [ngClass]="{'active':activeSubNenuName=='payment-approval'}">Payment Approval</a>
+            <!--a class="collapse-item" routerLink="/home">Report 3</a>
             <a class="collapse-item" routerLink="/home">Report 4</a> -->
         </div>
     </div>
