@@ -5,32 +5,81 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserPaymentFilterRequest {
-
+	
+	@JsonProperty("pageIndex")
+	private int pageIndex = 0;
+	
+	@JsonProperty("pageSize")
+	private int pageSize = 10; 
+	
+	@JsonProperty("sortActive")
+	private String sortActive;
+	
+	@JsonProperty("sortDirection")
+	private String sortDirection;
+	
+	@JsonProperty("cityLocation")
+	private String cityLocation;
+	
+	
 	@JsonProperty("fromDate")
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Timestamp fromDate;
 	
 	@JsonProperty("toDate")
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Timestamp toDate;
 	
-	@JsonProperty("page")
-	private int page = 0;
 	
-	@JsonProperty("size")
-	private int size = 10; 
+	@JsonProperty("reportType")
+	private String reportType;
+	
+	
+	@JsonProperty("downloadType")
+	private String downloadType;
 	
 	@JsonProperty("filterData")
 	private String filterData;
-	
-	@JsonProperty("templateName")
-	private String templateName;
-	
-	@JsonProperty("type")
-	private String type;
-	
-	@JsonProperty("sort")
-	private String sort;
+
+	public int getPageIndex() {
+		return pageIndex;
+	}
+
+	public void setPageIndex(int pageIndex) {
+		this.pageIndex = pageIndex;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public String getSortActive() {
+		return sortActive;
+	}
+
+	public void setSortActive(String sortActive) {
+		this.sortActive = sortActive;
+	}
+
+	public String getSortDirection() {
+		return sortDirection;
+	}
+
+	public void setSortDirection(String sortDirection) {
+		this.sortDirection = sortDirection;
+	}
+
+	public String getCityLocation() {
+		return cityLocation;
+	}
+
+	public void setCityLocation(String cityLocation) {
+		this.cityLocation = cityLocation;
+	}
 
 	public Timestamp getFromDate() {
 		return fromDate;
@@ -48,20 +97,20 @@ public class UserPaymentFilterRequest {
 		this.toDate = toDate;
 	}
 
-	public int getPage() {
-		return page;
+	public String getReportType() {
+		return reportType;
 	}
 
-	public void setPage(int page) {
-		this.page = page;
+	public void setReportType(String reportType) {
+		this.reportType = reportType;
 	}
 
-	public int getSize() {
-		return size;
+	public String getDownloadType() {
+		return downloadType;
 	}
 
-	public void setSize(int size) {
-		this.size = size;
+	public void setDownloadType(String downloadType) {
+		this.downloadType = downloadType;
 	}
 
 	public String getFilterData() {
@@ -70,30 +119,6 @@ public class UserPaymentFilterRequest {
 
 	public void setFilterData(String filterData) {
 		this.filterData = filterData;
-	}
-
-	public String getTemplateName() {
-		return templateName;
-	}
-
-	public void setTemplateName(String templateName) {
-		this.templateName = templateName;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getSort() {
-		return sort;
-	}
-
-	public void setSort(String sort) {
-		this.sort = sort;
 	}
 	
 	

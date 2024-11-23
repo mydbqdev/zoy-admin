@@ -14,5 +14,8 @@ import com.integration.zoy.entity.ZoyPgPropertyDetails;
 
 @Repository
 public interface ZoyPgPropertyDetailsRepository extends JpaRepository<ZoyPgPropertyDetails, String> {
+	@Query(value ="SELECT DISTINCT zppd.property_city FROM pgowners.zoy_pg_property_details zppd", nativeQuery = true)
+	String[] findDistinctCities();
+
 	
 }

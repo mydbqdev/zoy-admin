@@ -2,6 +2,7 @@ package com.integration.zoy.service;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -18,14 +19,16 @@ public class CsvGenerateService {
 
     public byte[] generateCsvFile(String templateName, Map<String, Object> data) {
         List<?> reportData = (List<?>) data.get("reportData");
-
+        
+        if (reportData == null || reportData.isEmpty()) {
+            throw new IllegalArgumentException("Report data is empty");
+        }
+        
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream))) {
+             PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
 
-            // Write Header
             createCsvHeaderRow(writer, reportData.get(0));
 
-            // Write Data Rows
             for (Object dto : reportData) {
                 createCsvDataRow(writer, dto);
             }

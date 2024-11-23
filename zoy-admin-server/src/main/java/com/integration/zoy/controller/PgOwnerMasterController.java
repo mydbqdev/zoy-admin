@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.FieldNamingPolicy;
@@ -113,14 +114,12 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
     }
         
     @Override
-    public ResponseEntity<String> pgOwnerDetalaisresend(PgOwnerMasterModel model) {
+    public ResponseEntity<String> pgOwnerDetalaisresend(String email) {
         ResponseBody response = new ResponseBody();
         try {
-            List<Object[]> allPgOwnerDetails = pgOwnerMaterRepository.getOwnerDetails(model.getEmailId());
+        	PgOwnerMaster pgOwnerDetails = pgOwnerMaterRepository.getOwnerDetails(email);
             
-            String zoycode = (String) allPgOwnerDetails.get(0)[0]; 
-            
-            emailBodyService.resendPgOwnerDetails(model.getEmailId(),model.getFirstName(),model.getLastName(),zoycode);
+            emailBodyService.resendPgOwnerDetails(pgOwnerDetails.getEmailId(),pgOwnerDetails.getFirstName(),pgOwnerDetails.getLastName(),pgOwnerDetails.getZoyCode());
             
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("ZOY code has been sent successfully");
