@@ -1,23 +1,34 @@
-	package com.integration.zoy.service;
+package com.integration.zoy.service;
 
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.integration.zoy.entity.NotificationModeMaster;
 import com.integration.zoy.entity.UserBillingMaster;
 import com.integration.zoy.entity.UserCurrencyMaster;
 import com.integration.zoy.entity.UserDueMaster;
 import com.integration.zoy.entity.UserEkycTypeMaster;
+import com.integration.zoy.model.OwnerPropertyDTO;
 import com.integration.zoy.repository.NotificationModeMasterRepository;
 import com.integration.zoy.repository.UserBillingMasterRepository;
 import com.integration.zoy.repository.UserCurrencyMasterRepository;
 import com.integration.zoy.repository.UserDueMasterRepository;
 import com.integration.zoy.repository.UserEkycTypeMasterRepository;
+import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
+import com.integration.zoy.utils.OwnerLeadPaginationRequest;
 
 @Service
 public class UserDBService implements UserDBImpl{
@@ -37,6 +48,8 @@ public class UserDBService implements UserDBImpl{
 	@Autowired
 	private UserCurrencyMasterRepository userCurrencyMasterRepository;
 
+	@Autowired
+	private ZoyPgOwnerDetailsRepository zoyPgOwnerDetailsRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -204,4 +217,31 @@ public class UserDBService implements UserDBImpl{
 		return userCurrencyMasterRepository.findById(currencyId).orElse(null);
 	}
 
+	@Override
+	public Page<OwnerPropertyDTO> findAllOwnerWithPropertyCount(OwnerLeadPaginationRequest paginationRequest) {
+		Map<String, String> sortFieldMapping = new HashMap<>();
+		sortFieldMapping.put("owner_name", "pg_owner_name");
+		sortFieldMapping.put("owner_email", "pg_owner_email");
+		sortFieldMapping.put("owner_contact", "pg_owner_mobile");
+		sortFieldMapping.put("number_of_properties", "numberOfProperties");
+		String sortColumn = sortFieldMapping.getOrDefault(paginationRequest.getSortActive(), "pg_owner_name");
+		Sort sort = Sort.by(Sort.Order.by(sortColumn)
+				.with(Sort.Direction.fromString(paginationRequest.getSortDirection())));
+
+		Pageable pageable = PageRequest.of(paginationRequest.getPageIndex(), paginationRequest.getPageSize(), sort);
+
+		Page<Object[]> results = zoyPgOwnerDetailsRepository.findAllOwnerWithPropertyCountRaw(
+				pageable, 
+				paginationRequest.getFilter().getSearchText()
+				);
+
+		return results.map(result -> new OwnerPropertyDTO(
+				(String) result[0], 
+				(String) result[1], 
+				(String) result[2],  
+				(String) result[3],  
+				((BigInteger) result[4]).longValue(), 
+				"active"  
+				));
+	}
 }
