@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -14,23 +12,23 @@ import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { PaymentApprovalModel } from '../model/payment-approval-model';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort, Sort } from "@angular/material/sort";
+import { LiveAnnouncer } from "@angular/cdk/a11y";
 
 @Component({
   selector: 'app-payment-approval',
   templateUrl: './payment-approval.component.html',
   styleUrl: './payment-approval.component.css'
 })
-export class PaymentApprovalComponent {
-	public ELEMENT_DATA:PaymentApprovalModel[];
+export class PaymentApprovalComponent  implements OnInit,AfterViewInit{
+	public ELEMENT_DATA:PaymentApprovalModel[]=[];
 	dataSource:MatTableDataSource<PaymentApprovalModel>=new MatTableDataSource<PaymentApprovalModel>();
 	displayedColumns: string[] = [ 'zoy_code','owner_name', 'total_amount',  'transaction_date','transaction_no','transaction_approval']; 
 	pageSizeOptions: number[] = [10, 25, 50];
 	pageSize = 10;
-	fromDate:string="";
-	toDate:string="";
-	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
+	@ViewChild(MatPaginator) paginator: MatPaginator;
 	columnSortDirectionsOg: { [key: string]: string | null } = {
 		zoy_code: null,
 		owner_name: null,
@@ -100,6 +98,7 @@ export class PaymentApprovalComponent {
     this.dataService.setHeaderName("Owner Transaction Approval");
   }
   announceSortChange(sortState: Sort): void {
+	  console.info("sortState::"+sortState);
 	this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	this.columnSortDirections[sortState.active] = sortState.direction;
 
@@ -111,47 +110,12 @@ export class PaymentApprovalComponent {
   }
 
   getPaymentApproval(){
-	// this.authService.checkLoginUserVlidaate();
-   
-	 this.spinner.show();
-	//  this.userMasterService.getUserList().subscribe(data => {
-	   this.ELEMENT_DATA = Object.assign([],mockData);
-	   this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-	   this.dataSource.sort = this.sort;
-	   this.dataSource.paginator = this.paginator;
-	   this.spinner.hide();
-   
-// 	}, error => {
-// 	 this.spinner.hide();
-// 	 if(error.status==403){
-// 	   this.router.navigate(['/forbidden']);
-// 	 }else if (error.error && error.error.message) {
-// 	   this.errorMsg = error.error.message;
-// 	   console.log("Error:" + this.errorMsg);
-// 	   this.notifyService.showError(this.errorMsg, "");
-// 	 } else {
-// 	   if (error.status == 500 && error.statusText == "Internal Server Error") {
-// 		 this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-// 	   } else {
-// 		 let str;
-// 		 if (error.status == 400) {
-// 		   str = error.error;
-// 		 } else {
-// 		   str = error.message;
-// 		   str = str.substring(str.indexOf(":") + 1);
-// 		 }
-// 		 console.log("Error:" + str);
-// 		 this.errorMsg = str;
-// 	   }
-// 	   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-// 	 }
-//    });
-   
-   }
-	
-
+	this.ELEMENT_DATA = Object.assign([],mockData);
+	this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+	this.dataSource.sort = this.sort;
+	this.dataSource.paginator = this.paginator;
+  }
 }
-
 
 const mockData = [
 	{
@@ -168,7 +132,7 @@ const mockData = [
 	  total_amount: "850.00",
 	  transaction_date: "2024-11-10",
 	  transaction_no: "TXN12346",
-	  transaction_approval: "Not Received",
+	  transaction_approval: "Not Receive",
 	},
 	{
 	  zoy_code: "ZC003",
@@ -184,7 +148,7 @@ const mockData = [
 	  total_amount: "960.20",
 	  transaction_date: "2024-11-12",
 	  transaction_no: "TXN12348",
-	  transaction_approval: "Not Received",
+	  transaction_approval: "Not Receive",
 	},
 	{
 	  zoy_code: "ZC005",
@@ -200,7 +164,7 @@ const mockData = [
 	  total_amount: "700.50",
 	  transaction_date: "2024-11-08",
 	  transaction_no: "TXN12350",
-	  transaction_approval: "Not Received",
+	  transaction_approval: "Not Receive",
 	},
 	{
 	  zoy_code: "ZC007",
@@ -216,7 +180,7 @@ const mockData = [
 	  total_amount: "1250.75",
 	  transaction_date: "2024-11-16",
 	  transaction_no: "TXN12352",
-	  transaction_approval: "Not Received",
+	  transaction_approval: "Not Receive",
 	},
 	{
 	  zoy_code: "ZC009",
@@ -232,8 +196,6 @@ const mockData = [
 	  total_amount: "950.25",
 	  transaction_date: "2024-11-20",
 	  transaction_no: "TXN12354",
-	  transaction_approval: "Not Received",
+	  transaction_approval: "Not Receive",
 	},
   ];
-  
-  
