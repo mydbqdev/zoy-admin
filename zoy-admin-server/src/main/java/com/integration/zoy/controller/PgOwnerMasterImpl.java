@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.integration.zoy.model.PgOwnerFilter;
 import com.integration.zoy.model.PgOwnerMasterModel;
@@ -43,9 +44,8 @@ public interface PgOwnerMasterImpl {
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/resendPgOwnerData",
-	produces = { "application/json" },
-	consumes = { "application/json"})
-	ResponseEntity<String> pgOwnerDetalaisresend(@RequestBody PgOwnerMasterModel model);
+	produces = { "application/json" })
+	ResponseEntity<String> pgOwnerDetalaisresend(@RequestParam("email")String email);
 		
 	
 	@Operation(summary = "Get all owner details", description = "To retrieve the details", security = {

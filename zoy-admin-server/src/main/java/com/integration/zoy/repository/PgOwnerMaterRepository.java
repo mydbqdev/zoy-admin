@@ -37,6 +37,6 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	                                                         @Param("pageSize") int pageSize, 
 	                                                         @Param("offset") int offset);
 	
-	@Query(value="select * from pg_owner_master where email_id = :email_id",nativeQuery = true)
-	List<Object[]> getOwnerDetails(String email_id);
+	@Query(value="select * from pg_owner_master po where po.email_id = :email_id",nativeQuery = true)
+	PgOwnerMaster getOwnerDetails(String email_id);
 }

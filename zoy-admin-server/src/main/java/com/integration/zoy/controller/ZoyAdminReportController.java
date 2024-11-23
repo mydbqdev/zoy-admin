@@ -25,6 +25,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.service.AdminReportImpl;
+import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.TenentDues;
@@ -67,7 +68,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData);
+			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting paymentDetails : " + e.getMessage(),e);
@@ -82,7 +83,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			List<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData);
+			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting paymentDetails : " + e.getMessage(),e);
@@ -97,7 +98,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			List<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(filterRequest,filterData);
+			CommonResponseDTO<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ConsilidatedFinanceDetails details: " + e.getMessage(),e);
@@ -113,7 +114,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			List<TenentDues> tenentDuesDetails =  adminReportImpl.getTenentDuesDetails(filterRequest,filterData);
+			CommonResponseDTO<TenentDues> tenentDuesDetails =  adminReportImpl.getTenentDuesDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(tenentDuesDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
@@ -128,7 +129,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			List<VendorPayments> vendorPaymentsDetails =  adminReportImpl.getVendorPaymentDetails(filterRequest,filterData);
+			CommonResponseDTO<VendorPayments> vendorPaymentsDetails =  adminReportImpl.getVendorPaymentDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
@@ -143,7 +144,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 
-			List<VendorPaymentsDues> vendorPaymentsDuesDetails =  adminReportImpl.getVendorPaymentDuesDetails(fromDate,toDate);
+			CommonResponseDTO<VendorPaymentsDues> vendorPaymentsDuesDetails =  adminReportImpl.getVendorPaymentDuesDetails(fromDate,toDate);
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsDuesDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
@@ -158,7 +159,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 
-			List<VendorPaymentsGst> vendorPaymentsGstDetails =  adminReportImpl.getVendorPaymentGstDetails(fromDate,toDate);
+			CommonResponseDTO<VendorPaymentsGst> vendorPaymentsGstDetails =  adminReportImpl.getVendorPaymentGstDetails(fromDate,toDate);
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsGstDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
@@ -173,35 +174,50 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
 		byte[] fileData = adminReportImpl.generateDynamicReport(filterRequest,filterData);
 
-	    if (fileData.length == 0) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-	    }
+		if (fileData.length == 0) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
 
-	    MediaType contentType;
-	    String fileExtension;
+		MediaType contentType;
+		String fileExtension;
 
-	    switch (filterRequest.getType().toLowerCase()) {
-	        case "excel":
-	            contentType = MediaType.APPLICATION_OCTET_STREAM; 
-	            fileExtension = ".xlsx";
-	            break;
-	        case "csv":
-	            contentType = MediaType.TEXT_PLAIN; 
-	            fileExtension = ".csv";
-	            break;
-	        case "pdf":
-	        default:
-	            contentType = MediaType.APPLICATION_PDF;
-	            fileExtension = ".pdf";
-	            break;
-	    }
+		switch (filterRequest.getDownloadType().toLowerCase()) {
+		case "excel":
+			contentType = MediaType.APPLICATION_OCTET_STREAM; 
+			fileExtension = ".xlsx";
+			break;
+		case "csv":
+			contentType = MediaType.TEXT_PLAIN; 
+			fileExtension = ".csv";
+			break;
+		case "pdf":
+		default:
+			contentType = MediaType.APPLICATION_PDF;
+			fileExtension = ".pdf";
+			break;
+		}
 
-	    String fileName = filterRequest.getTemplateName() + fileExtension;
+		String fileName = filterRequest.getReportType() + fileExtension;
 
-	    return ResponseEntity.ok()
-	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
-	            .contentType(contentType)
-	            .body(fileData);
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+				.contentType(contentType)
+				.body(fileData);
 	}
+
+	@Override
+	public ResponseEntity<String[]> zoyCityList() {
+		try {
+			String[] cities = adminReportImpl.getDistinctCities();
+			if (cities == null || cities.length == 0) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			return new ResponseEntity<>(cities, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 
 }

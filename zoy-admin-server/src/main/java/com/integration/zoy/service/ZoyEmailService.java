@@ -25,6 +25,9 @@ public class ZoyEmailService {
 	@Value("${qa.signin.link}")
 	private String qaSigninLink;
 	
+	@Value("${zoy.owner.app}")
+	private String ownerAppLink;
+	
 	@Value("${zoy.admin.toMail}")
 	private String zoyAdminMail;
 
@@ -60,7 +63,7 @@ public class ZoyEmailService {
 				+ "<p>Please use this code to verify your account and complete your registration in the app.</p>"
 				+ "<h4>Steps to Register:</h4>"
 				+ "<ul>"
-				+ "<li>Download ZOY Owner App from <a href='" + qaSigninLink + "'>" + qaSigninLink + "</a>.</li>"
+				+ "<li>Download ZOY Owner App from <a href='" + ownerAppLink + "'>" + ownerAppLink + "</a>.</li>"
 				+ "<li>Open the app and select “Register.”</li>"
 				+ "<li>Enter the invitation code provided above and your PG details.</li>"
 				+ "</ul>"
@@ -93,7 +96,7 @@ public class ZoyEmailService {
 				+ "<p>Please use this code to verify your account and complete your registration in the app.</p>"
 				+ "<h4>Steps to Register:</h4>"
 				+ "<ul>"
-				+"<li>Download ZOY Owner App from <a href='" + qaSigninLink + "'>" + qaSigninLink + "</a>.</li>"
+				+"<li>Download ZOY Owner App from <a href='" + ownerAppLink + "'>" + ownerAppLink + "</a>.</li>"
 				+ "<li>Open the app and select “Register.”</li>"
 				+ "<li>Enter the invitation code provided above and your PG details.</li>"
 				+ "</ul>"
