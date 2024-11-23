@@ -1,6 +1,10 @@
 package com.integration.zoy.entity;
 
+import java.sql.Timestamp;
+
 import javax.persistence.*;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "app_role", schema = "pgadmin")
@@ -16,6 +20,10 @@ public class AppRole {
 
     @Column(name = "role_description", nullable = false)
     private String roleDescription;
+    
+    @Column(name = "create_at", nullable = false)
+	@CreationTimestamp
+	private Timestamp ts;
 
     // Getters and Setters
 
@@ -42,5 +50,14 @@ public class AppRole {
     public void setRoleDescription(String roleDescription) {
         this.roleDescription = roleDescription;
     }
+
+	public Timestamp getTs() {
+		return ts;
+	}
+
+	public void setTs(Timestamp ts) {
+		this.ts = ts;
+	}
+    
 }
 
