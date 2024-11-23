@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -26,7 +27,7 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/payment_transfer_details",
+	@PostMapping(value = "/zoy_admin/payment_transfer_details",
 	produces = { "application/json" })
 	ResponseEntity<String> getUserPaymentsByDateRange(@RequestBody UserPaymentFilterRequest filterRequest);
 	
@@ -37,7 +38,7 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/user_gst_report_details",
+	@PostMapping(value = "/zoy_admin/user_gst_report_details",
 	produces = { "application/json" })
 	ResponseEntity<String> getUserGstReportByDateRange(@RequestBody UserPaymentFilterRequest filterRequest);
 	
@@ -50,7 +51,7 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/consolidated_finance_report_details",
+	@PostMapping(value = "/zoy_admin/consolidated_finance_report_details",
 	produces = { "application/json" })
 	ResponseEntity<String> getConsolidatedFinanceByDateRange(@RequestBody UserPaymentFilterRequest filterRequest);
 	
@@ -61,7 +62,7 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/tenant-dues-report_details",
+	@PostMapping(value = "/zoy_admin/tenant-dues-report_details",
 	produces = { "application/json" })
 	ResponseEntity<String> getTenantDuesByDateRange(@RequestBody UserPaymentFilterRequest filterRequest);
 
@@ -72,7 +73,7 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/vendor-payment-report_details",
+	@PostMapping(value = "/zoy_admin/vendor-payment-report_details",
 	produces = { "application/json" })
 	ResponseEntity<String> getVendorPaymentDetailsByDateRange(@RequestBody UserPaymentFilterRequest filterRequest);
 	
@@ -108,7 +109,7 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/download_report",
+	@PostMapping(value = "/zoy_admin/download_report",
 	produces = { "application/json" })
 	ResponseEntity<byte[]> downloadDynamicReportByDateRange(UserPaymentFilterRequest filterRequest);
 	
