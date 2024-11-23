@@ -118,7 +118,7 @@ public  class AdminDBService implements AdminDBImpl {
 
 	@Override
 	public List<AppRole> findAllAppRole() {
-		return roleRepository.findAll();
+		return roleRepository.findAllRolesOrderedByCreateAtDesc();
 	}
 
 	@Override

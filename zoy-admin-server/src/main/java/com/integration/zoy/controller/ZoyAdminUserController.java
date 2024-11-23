@@ -6,6 +6,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -323,6 +324,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			if(appRole!=null) {
 				appRole.setRoleDescription(roleDetails.getDesc());
 				appRole.setRoleName(roleDetails.getRoleName());
+				appRole.setTs(Timestamp.valueOf(LocalDateTime.now()));
 				adminDBImpl.updateAppRole(appRole);
 
 				List<RoleScreen> appRoleScreens=adminDBImpl.findRoleScreen(appRole.getId());
