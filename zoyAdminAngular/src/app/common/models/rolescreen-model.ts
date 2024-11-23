@@ -33,7 +33,8 @@ export class RoleScreenModel {
     PROMOTION_AND_OFFER_MANAGEMENT_READ: boolean = false;
     PROMOTION_AND_OFFER_MANAGEMENT_WRITE: boolean = false;
 
-    
+    PAYMENT_APPROVAL_READ:boolean = false;
+    PAYMENT_APPROVAL_WRITE:boolean = false;
 
     
 

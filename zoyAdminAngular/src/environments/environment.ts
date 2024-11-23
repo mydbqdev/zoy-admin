@@ -26,6 +26,7 @@ export const environment = {
     "finances":true,
     "financesSubMenu":{
       "reports":true,
+      "paymentApproval":true,
     },
     "supports":true,
     "supportsSubMenu":{

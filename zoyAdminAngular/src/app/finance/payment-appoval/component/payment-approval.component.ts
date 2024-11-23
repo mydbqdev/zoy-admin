@@ -27,6 +27,8 @@ export class PaymentApprovalComponent {
 	displayedColumns: string[] = [ 'zoy_code','owner_name', 'total_amount',  'transaction_date','transaction_no','transaction_approval']; 
 	pageSizeOptions: number[] = [10, 25, 50];
 	pageSize = 10;
+	fromDate:string="";
+	toDate:string="";
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
 	columnSortDirectionsOg: { [key: string]: string | null } = {
@@ -89,6 +91,7 @@ export class PaymentApprovalComponent {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		///	this.router.navigate(['/']);
 		//}
+		this.getPaymentApproval();
   }
 
   ngAfterViewInit(){
@@ -107,5 +110,130 @@ export class PaymentApprovalComponent {
 	  }
   }
 
+  getPaymentApproval(){
+	// this.authService.checkLoginUserVlidaate();
+   
+	 this.spinner.show();
+	//  this.userMasterService.getUserList().subscribe(data => {
+	   this.ELEMENT_DATA = Object.assign([],mockData);
+	   this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+	   this.dataSource.sort = this.sort;
+	   this.dataSource.paginator = this.paginator;
+	   this.spinner.hide();
+   
+// 	}, error => {
+// 	 this.spinner.hide();
+// 	 if(error.status==403){
+// 	   this.router.navigate(['/forbidden']);
+// 	 }else if (error.error && error.error.message) {
+// 	   this.errorMsg = error.error.message;
+// 	   console.log("Error:" + this.errorMsg);
+// 	   this.notifyService.showError(this.errorMsg, "");
+// 	 } else {
+// 	   if (error.status == 500 && error.statusText == "Internal Server Error") {
+// 		 this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+// 	   } else {
+// 		 let str;
+// 		 if (error.status == 400) {
+// 		   str = error.error;
+// 		 } else {
+// 		   str = error.message;
+// 		   str = str.substring(str.indexOf(":") + 1);
+// 		 }
+// 		 console.log("Error:" + str);
+// 		 this.errorMsg = str;
+// 	   }
+// 	   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+// 	 }
+//    });
+   
+   }
+	
 
 }
+
+
+const mockData = [
+	{
+	  zoy_code: "ZC001",
+	  owner_name: "John Doe",
+	  total_amount: "1200.50",
+	  transaction_date: "2024-11-15",
+	  transaction_no: "TXN12345",
+	  transaction_approval: "Received",
+	},
+	{
+	  zoy_code: "ZC002",
+	  owner_name: "Jane Smith",
+	  total_amount: "850.00",
+	  transaction_date: "2024-11-10",
+	  transaction_no: "TXN12346",
+	  transaction_approval: "Not Received",
+	},
+	{
+	  zoy_code: "ZC003",
+	  owner_name: "Emily Davis",
+	  total_amount: "450.75",
+	  transaction_date: "2024-11-18",
+	  transaction_no: "TXN12347",
+	  transaction_approval: "Received",
+	},
+	{
+	  zoy_code: "ZC004",
+	  owner_name: "Michael Brown",
+	  total_amount: "960.20",
+	  transaction_date: "2024-11-12",
+	  transaction_no: "TXN12348",
+	  transaction_approval: "Not Received",
+	},
+	{
+	  zoy_code: "ZC005",
+	  owner_name: "Sarah Wilson",
+	  total_amount: "1500.00",
+	  transaction_date: "2024-11-20",
+	  transaction_no: "TXN12349",
+	  transaction_approval: "Received",
+	},
+	{
+	  zoy_code: "ZC006",
+	  owner_name: "David Johnson",
+	  total_amount: "700.50",
+	  transaction_date: "2024-11-08",
+	  transaction_no: "TXN12350",
+	  transaction_approval: "Not Received",
+	},
+	{
+	  zoy_code: "ZC007",
+	  owner_name: "Sophia Martinez",
+	  total_amount: "2300.00",
+	  transaction_date: "2024-11-05",
+	  transaction_no: "TXN12351",
+	  transaction_approval: "Received",
+	},
+	{
+	  zoy_code: "ZC008",
+	  owner_name: "James Taylor",
+	  total_amount: "1250.75",
+	  transaction_date: "2024-11-16",
+	  transaction_no: "TXN12352",
+	  transaction_approval: "Not Received",
+	},
+	{
+	  zoy_code: "ZC009",
+	  owner_name: "Olivia Harris",
+	  total_amount: "1450.00",
+	  transaction_date: "2024-11-18",
+	  transaction_no: "TXN12353",
+	  transaction_approval: "Received",
+	},
+	{
+	  zoy_code: "ZC010",
+	  owner_name: "Liam Scott",
+	  total_amount: "950.25",
+	  transaction_date: "2024-11-20",
+	  transaction_no: "TXN12354",
+	  transaction_approval: "Not Received",
+	},
+  ];
+  
+  

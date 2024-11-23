@@ -27,71 +27,64 @@
                         
                       </div>
                     </div>
-                    <div class="row mt-2 mb-0" style="padding:10px 10px 0px;">
-                      <div style="border:1px solid#dbdbdb;border-radius: 5px;">
-                      <form >                 
-                        <div class="pl-3 row">
-                          <div class="col-sm-2">
-                            <div class="form-group">
-                              <label for="category" class="col-form-label">City</label>
-                              <select class="custom-select" id="category">                                             
-                                <option value="Tenent">Tenent</option>
+                    <div class="mt-4">
+                      <div class="border rounded p-3">
+                        <form style="margin-left: -10px;">
+                          <div class="row g-0 align-items-center">
+                            <!-- City -->
+                            <div class="col-md-2">
+                              <label for="city" class="form-label">City</label>
+                              <select class="form-control" id="city">
+                                <option value="Bangalore">Bangalore</option>
+                                <option value="Vijaywada">Vijaywada</option>
+                                <option value="Pune">Pune</option>
+                                <option value="Mumbai">Mumbai</option>
+                              </select>
+                            </div>
+                    
+                            <!-- OWNER ID/Name -->
+                            <div class="col-md-2">
+                              <label for="fileName" class="form-label">OWNER ID/Name</label>
+                              <input type="text" class="form-control" id="fileName" name="fileName" autocomplete="off" />
+                            </div>
+                    
+                            <!-- Date Range -->
+                            <div class="col-md-3">
+                              <label for="dateRange" class="form-label">Date Range</label>
+                              <div class="d-flex gap-2">
+                                <input type="date" class="form-control" id="fromDate" />
+                                <input type="date" class="form-control" id="toDate" />
+                              </div>
+                            </div>
+                    
+                            <!-- Transaction No -->
+                            <div class="col-md-2">
+                              <label for="transactionNo" class="form-label">Transaction No.</label>
+                              <select class="form-control" id="transactionNo">
+                                <option value="TXN12351">TXN12351</option>
+                                <option value="TXN12351">TXN12352</option>
+                              </select>
+                            </div>
+                    
+                            <!-- Transfer Approval -->
+                            <div class="col-md-2" style="margin-left:-16px">
+                              <label for="transferApproval" class="form-label">Transfer Approval</label>
+                              <select class="form-control" id="transferApproval">
+                                <option value="Tenant">Tenant</option>
                                 <option value="PG Property">PG Property</option>
                               </select>
                             </div>
-                            <div style="height: 30px;margin-top:-15px;"> 
-                              
+                    
+                            <!-- Show Results Button -->
+                            <div class="col-md-1 d-flex align-items-end" style="margin-left:-14px;margin-top:28px">
+                              <button type="submit" class="btn btn-primary ">Show Results</button>
                             </div>
                           </div>
-                          <div class="col-sm-2">
-                            <div class="form-group">
-                              <label for="fileName" class="col-form-label">OWNER ID/Name</label>
-                              <input type="text" class="form-control" id="fileName" name="fileName"  autocomplete="off" />
-                            </div>
-                            <div style="height: 30px;margin-top:-15px;"> 
-                              
-                            </div>
-                          </div>
-                          <div class="col-sm-3">
-                            <div class="form-group">                                             
-                              <div class="input-group"  style="padding-top:37px ;">                                    
-                                
-                              </div>
-                            </div>
-                            <div style="height: 30px;margin-top:-15px;">  
-                                                                          
-                            </div>
-                           </div>
-                           <div class="col-sm-1">
-                            <div class="form-group">                                             
-                              <div class="input-group"  style="padding-top:37px ;">                                    
-                                
-                              </div>
-                            </div>
-                            <div style="height: 30px;margin-top:-15px;">  
-                                                                          
-                            </div>
-                           </div>
-                          <div class="col-sm-2">
-                                <div class="form-group">
-                                  <label for="category" class="col-form-label">Transfer Approval</label>
-                                  <select class="custom-select" id="category">                                             
-                                    <option value="Tenent">Tenent</option>
-                                    <option value="PG Property">PG Property</option>
-                                  </select> 
-                                </div>
-                               <div style="height: 30px;margin-top:-15px;"> 
-                                
-                              </div>
-                          </div>                                                                
-                              <div class="col-sm-2" style="padding-top: 37px;">                                            
-                                <button type="submit" class="btn btn-primary-custom">Show Results</button>
-                              </div>
-                           
-                          </div>
-                      </form>
+                        </form>
                       </div>
                     </div>
+                    
+                    
               
                     </div>
                     <div class="row mt-2">
@@ -126,17 +119,17 @@
     
                                         <!-- Email Column -->
                                         <ng-container matColumnDef="total_amount">
-                                          <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> TOTAL AMOUNT
+                                          <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 180px;"> TOTAL AMOUNT
                                             <span style="margin-left: 2px;">
                                               <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['total_amount'] === 'asc' }"></i>
                                               <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['total_amount'] === 'desc'}"></i>
                                             </span>
                                           </th>
-                                          <td mat-cell *matCellDef="let element"> {{ element.total_amount }} </td>
+                                          <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.total_amount }} </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="transaction_date">
-                                          <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> TRANSACTION DATE
+                                          <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> DATE
                                             <span style="margin-left: 2px;">
                                               <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['transaction_date'] === 'asc' }"></i>
                                               <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['transaction_date'] === 'desc'}"></i>
@@ -153,19 +146,19 @@
     
                                         <!-- Status Column with Conditional Button Styling -->
                                         <ng-container matColumnDef="transaction_approval">
-                                          <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 130px;"> Transfer Approval 
+                                          <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 200px;"> Transfer Approval 
                                             <span style="margin-left: 2px;">
                                               <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['transaction_approval'] === 'asc' }"></i>
                                               <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['transaction_approval'] === 'desc'}"></i>
                                             </span>
                                           </th>
-                                          <td mat-cell *matCellDef="let element" style="padding: 4px;width: 130px;">
+                                          <td mat-cell *matCellDef="let element" style="padding: 4px;width: 200px;">
                                             <span
                                               class="common-status"
-                                              [ngClass]="element.transaction_approval === 'pending' ? 'btn-pending' : 'btn-registered'"
+                                              [ngClass]="element.status === 'pending' ? 'btn-pending' : 'btn-registered'"
                                             >
                                               <span *ngIf="element.transaction_approval === 'pending'">Inactive</span>
-                                              <span *ngIf="element.transaction_approval !== 'pending'">Active</span>
+                                              <span *ngIf="element.transaction_approval !== 'btn-registered'">Active</span>
                                             </span>
                                           </td>
                                           
