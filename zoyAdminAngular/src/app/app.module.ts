@@ -50,6 +50,7 @@ import { TenantsComponent } from './tenants/tenants/tenants.component';
 import { TenantMenuRoutingModule } from './tenants/tenents-menu-routing.module';
 import { BulkUploadComponent } from './tenants/bulk-upload/component/bulk-upload.component';
 import { PaymentApprovalComponent } from './finance/payment-appoval/component/payment-approval.component';
+import { OwnerDetailsComponent } from './owners/owner-details/components/managing-owner-details.component';
 
 
 const appRoutes: Routes = [
@@ -82,7 +83,8 @@ const appRoutes: Routes = [
     TicketsComponent,
     TenantsComponent,
     BulkUploadComponent,
-    PaymentApprovalComponent
+    PaymentApprovalComponent,
+    OwnerDetailsComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,

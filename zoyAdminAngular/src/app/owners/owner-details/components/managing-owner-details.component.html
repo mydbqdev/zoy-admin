@@ -1,0 +1,153 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+    <p style="color: white;">Loading ...</p>
+  </ngx-spinner>
+  <div id="page-top">
+      <!-- Page Wrapper -->
+      <div id="wrapper">    
+        <!-- Sidebar -->
+          <app-sidebar></app-sidebar>
+        <!-- End of Sidebar -->
+  
+          <!-- Content Wrapper -->
+          <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+              <!-- Main Content -->
+              <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+  
+                  <!-- Begin Page Content -->
+                  <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                      <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Manage</span><span class="text-header-800-blue">Owners</span></h3> 
+                      <div class="input-group ml-4 w-75" >
+                       
+                      </div>
+                      <div class="ml-auto">  
+                                           
+                      </div> 
+                    </div>
+                      <!-- Content Row -->
+                      <div class="row">
+                        <div class="col-sm-5">
+                          <div class="card mb-3">
+                            <div class="card-body" style="display: block;margin: 0px;padding: 2px;" >
+                                <div class="container-main">
+                                  <div class="p-3">
+                                   <div class="d-flex">
+                                     <div>
+                                      <div class="owner-profile-top"> 
+                                        R
+                                      </div>
+                                     </div>
+                                    <div class="ml-2"> 
+                                      <div style="font-size: 18px;">R T Nagaraju</div>
+                                      <div style="font-size: 14px;">Owner ID : Zoy001</div>
+                                      <div style="font-size: 14px;color: gray;">Status : Active</div>
+                                    </div>
+                                    <div class="ml-auto">
+                                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                    </div>
+                                   </div>
+                                  </div>
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2">
+                                    <i class="far mr-2 ml-2" [ngClass]="collaspeList[0].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" (click)="collaspeExpandPanel(collaspeList[0],'left1')"></i> Basic Property Information
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeList[0].selected ? 'show':''" id="collapseExample">
+                                    <div class="card card-body ml-2 mr-2 mb-2">
+                                      <div style="height: 240px;">
+                                      Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2">
+                                    <i class="far mr-2 ml-2" class="far mr-2 ml-2" [ngClass]="collaspeList[1].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2" (click)="collaspeExpandPanel(collaspeList[1],'left2')"></i> Basic Property Information
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeList[1].selected ? 'show':''" id="collapseExample2">
+                                    <div class="card card-body ml-2 mr-2">
+                                      <div style="height: 240px;">
+                                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                                       </div>
+                                    </div>
+                                  </div>
+                                </div>
+                           </div>  <!-- End Card Body -->  
+                          </div>
+                        </div>
+                        <div class="col-sm-7">
+                          <div class="card mb-3" style="border-radius: 0px;">
+                            <div class="card-body" style="display: block;margin: 0px;padding: 2px;" >
+                                <div class="container-main">
+                                  <div class="p-3">
+                                    <div style="font-size: 18px;">Property Information</div>
+                                    <div class="row mt-2">
+                                      <div class="col-sm-7">
+                                        <div class="form-group row">
+                                          <label for="category" class="col-sm-5 col-form-label">Property Name</label>
+                                          <div class="col-sm-7">
+                                            <select class="custom-select custom-select-sm" id="category">                                             
+                                            <option value="Received">Received</option>
+                                            <option value="Not Receive">Not Receive</option>
+                                            </select> 
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-5">
+                                        <div class="form-group row">
+                                          <label for="category" class="col-sm-4 col-form-label">Status</label>
+                                          <div class="col-sm-8">
+                                            <select class="custom-select custom-select-sm" id="category">                                             
+                                            <option value="Received">Received</option>
+                                            <option value="Not Receive">Not Receive</option>
+                                            </select> 
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div style="background-color: #c1a1f3;padding: 5px;margin-top:-20px;" class="mb-2">
+                                    <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[0].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight0" aria-expanded="false" aria-controls="collapseExampleRight0" (click)="collaspeExpandPanelRight(collaspeListRight[0],'right1')"></i>  Basic Property Information
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeListRight[0].selected ? 'show':''" id="collapseExampleRight0">
+                                    <div class="card card-body ml-2 mr-2 mb-2">
+                                      <div style="height: 210px;">
+                                      Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2">
+                                    <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[1].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight1" aria-expanded="false" aria-controls="collapseExampleRight1" (click)="collaspeExpandPanelRight(collaspeListRight[1],'right2')"></i>  Floor Information
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeListRight[1].selected ? 'show':''" id="collapseExampleRight1">
+                                    <div class="card card-body ml-2 mr-2 mb-2">
+                                      <div style="height: 210px;">
+                                      Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2">
+                                    <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[2].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight2" aria-expanded="false" aria-controls="collapseExampleRight2" (click)="collaspeExpandPanelRight(collaspeListRight[2],'right3')"></i>  Additional Information
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeListRight[2].selected ? 'show':''" id="collapseExampleRight2">
+                                    <div class="card card-body ml-2 mr-2">
+                                      <div style="height: 210px;">
+                                      Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                           </div>  <!-- End Card Body -->  
+                          </div>
+                        </div>
+                      </div>
+                  <!-- /.container-fluid -->
+              </div>
+              <!-- End of Main Content -->
+          </div>
+          <!-- End of Content Wrapper -->
+     </div>
+    <!-- End of Page Wrapper -->
+  </div>

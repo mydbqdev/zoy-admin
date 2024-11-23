@@ -108,3 +108,17 @@ ngb-modal-backdrop.modal-backdrop {
   border-radius: 50%; 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
+
+.owner-profile-top{
+  width: 55px;
+  height: 55px;
+  background-color: #925fe2;
+  font-weight: 500;
+  font-size: 20px;
+  text-align: center;
+  padding-top:10px;
+  line-height: 35px; 
+  color: #fff;
+  border-radius: 50%; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
