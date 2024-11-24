@@ -43,27 +43,48 @@
                         <div class="pl-3 row">
                           <div class="col-sm-2">
                             <div class="form-group">
-                              <label for="fileName" class="col-form-label">ZOY Code</label>
-                              <input type="text" class="form-control" id="fileName" name="fileName" [ngClass]="{'is-invalid':submitted && form.controls.fileName.errors}" [(ngModel)]="bulkUpload.fileName" autocomplete="off" />
-                            </div>
+                              <label for="fileName" class="col-form-label">Owner Name</label>
+                           
+                                <input 
+                                  class="form-control form-control-navbar" 
+                                  type="search" 
+                                  placeholder="Search Owner" 
+                                  [formControl]="ownerSearchControl" 
+                                  aria-label="Search Owner" 
+                                  matInput 
+                                  [matAutocomplete]="ownerAuto"
+                                  formControlName="ownerName"
+                                  [ngClass]="{'is-invalid':submitted && selectedOwner == null}" />
+                            
+                              <mat-autocomplete #ownerAuto="matAutocomplete">
+                                <mat-option *ngFor="let owner of filteredOwners | async" [value]="owner.ownerName" (click)="selectOwner(owner)">
+                                  {{ owner.ownerName }}
+                                </mat-option>
+                              </mat-autocomplete>
+
+                               </div>
                             <div style="height: 30px;margin-top:-15px;"> 
-                              <div *ngIf="submitted && form.controls.fileName.errors" class="text-danger">
-                                <div *ngIf="submitted && form.controls.fileName.errors.required">
-                                    File Name is required
-                                </div>
+                              <div *ngIf="submitted && selectedOwner == null" class="text-danger">
+                                  Owner Name is required
                                 </div>
                             </div>
                           </div>
                           <div class="col-sm-2">
                             <div class="form-group">
                               <label for="fileName" class="col-form-label">Property Name</label>
-                              <input type="text" class="form-control" id="fileName" name="fileName" [ngClass]="{'is-invalid':submitted && form.controls.fileName.errors}" [(ngModel)]="bulkUpload.fileName" autocomplete="off" />
-                            </div>
-                            <div style="height: 30px;margin-top:-15px;"> 
-                              <div *ngIf="submitted && form.controls.fileName.errors" class="text-danger">
-                                <div *ngIf="submitted && form.controls.fileName.errors.required">
-                                    File Name is required
+                            
+                                <select class="custom-select" (change)="selectProperty($event)" [disabled] ="!selectedOwner" 
+                                formControlName="propertyname" [ngClass]="{'is-invalid':submitted && selectedProperty == null}">
+                                  <option value="" disabled selected>Select Property</option>
+                                  <option *ngFor="let property of selectedOwner?.property_details" [value]="property.propertyId">
+                                    {{ property.propertyname }}
+                                  </option>
+                                </select>
+                          
                                 </div>
+                            <div style="height: 30px;margin-top:-15px;"> 
+                              <div *ngIf="submitted && selectedProperty == null" class="text-danger">
+                                  Property Name is required
                                 </div>
                             </div>
                           </div>
