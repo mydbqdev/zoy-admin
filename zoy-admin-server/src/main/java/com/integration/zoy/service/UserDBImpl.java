@@ -1,11 +1,16 @@
 package com.integration.zoy.service;
 
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+
 import com.integration.zoy.entity.NotificationModeMaster;
 import com.integration.zoy.entity.UserBillingMaster;
 import com.integration.zoy.entity.UserCurrencyMaster;
 import com.integration.zoy.entity.UserDueMaster;
 import com.integration.zoy.entity.UserEkycTypeMaster;
+import com.integration.zoy.model.OwnerPropertyDTO;
+import com.integration.zoy.utils.OwnerLeadPaginationRequest;
 
 public interface UserDBImpl {
 
@@ -44,6 +49,7 @@ public interface UserDBImpl {
 	UserCurrencyMaster updateUserCurrency(UserCurrencyMaster currency);
 	List<UserCurrencyMaster> findAllUserCurrency();
 	UserCurrencyMaster findCurrency(String currencyId);
+	Page<OwnerPropertyDTO> findAllOwnerWithPropertyCount(OwnerLeadPaginationRequest paginationRequest);
 	
 	
 

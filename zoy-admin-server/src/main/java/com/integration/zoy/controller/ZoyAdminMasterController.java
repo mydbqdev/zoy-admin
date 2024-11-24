@@ -8,11 +8,14 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -45,6 +48,7 @@ import com.integration.zoy.model.EkycType;
 import com.integration.zoy.model.EkycTypeId;
 import com.integration.zoy.model.NotificationMode;
 import com.integration.zoy.model.NotificationModeId;
+import com.integration.zoy.model.OwnerPropertyDTO;
 import com.integration.zoy.model.PgType;
 import com.integration.zoy.model.PgTypeId;
 import com.integration.zoy.model.RentCycle;
@@ -56,6 +60,7 @@ import com.integration.zoy.model.ShareTypeId;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.UserDBImpl;
+import com.integration.zoy.utils.OwnerLeadPaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
 
 @RestController
@@ -676,6 +681,32 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@Override
+	public ResponseEntity<String> zoyPgOwnerDetails(OwnerLeadPaginationRequest paginationRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+			Page<OwnerPropertyDTO> ownerPropertyList = userDBImpl.findAllOwnerWithPropertyCount( paginationRequest);
+			if (ownerPropertyList != null && !ownerPropertyList.isEmpty()) {
+	            return new ResponseEntity<>(gson2.toJson(ownerPropertyList), HttpStatus.OK);
+	        } else {
+	            response.setStatus(HttpStatus.NO_CONTENT.value());
+	            response.setError("No owner details found");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NO_CONTENT);
+	        }
+		}catch (DataAccessException dae) {
+	        log.error("Database error occurred while fetching owner details: " + dae.getMessage(), dae);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError("Database error: Unable to fetch owner details");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	        
+	    }catch (Exception e) {
+	        log.error("Unexpected error occurred: " + e.getMessage(), e);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError("An unexpected error occurred while fetching owner details");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
 }
