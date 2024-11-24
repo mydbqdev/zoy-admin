@@ -56,7 +56,7 @@
                       <div class="ml-auto">  
                         <div class="input-group">
                           <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i> 
-                          <input type="text" class="form-control form-control-sm  border-1"  [(ngModel)]="searchText" (input)="filterData()" style="border-radius: 20px;padding-left: 29px;width: 300px;" placeholder="Search"
+                          <input type="text" class="form-control form-control-sm  border-1"  [(ngModel)]="searchText" (input)="filterData()" style="border-radius: 20px;padding-left: 29px;width: 300px;" placeholder="Search by owner name"
                                 aria-label="Search" aria-describedby="basic-addon2">         
                        </div>                    
                       </div> 
@@ -67,16 +67,16 @@
                             <div class="scrollable-container-main">
                                <div>
                                 <table mat-table [dataSource]="dataSource" matSort  
-                                  (matSortChange)="announceSortChange($event)" matSortActive="created_date" matSortDirection="desc"  >
+                                  (matSortChange)="announceSortChange($event)" matSortActive="owner_name" matSortDirection="asc"  >
                                     <!-- Zoy Code Column -->
-                                    <ng-container matColumnDef="zoy_code">
+                                    <ng-container matColumnDef="owner_id">
                                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> OWNER ID
                                         <span style="margin-left: 2px;">
-                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['zoy_code'] === 'asc' }"></i>
-                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['zoy_code'] === 'desc'}"></i>
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_id'] === 'asc' }"></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_id'] === 'desc'}"></i>
                                         </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element"> {{ element.zoy_code }} </td>
+                                      <td mat-cell *matCellDef="let element"> {{ element.owner_id }} </td>
                                     </ng-container>
 
                                     <!-- Owner Name Column -->
@@ -91,31 +91,31 @@
                                     </ng-container>
 
                                     <!-- Email Column -->
-                                    <ng-container matColumnDef="email_id">
+                                    <ng-container matColumnDef="owner_email">
                                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> EMAIL ID 
                                         <span style="margin-left: 2px;">
-                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['email_id'] === 'asc' }"></i>
-                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['email_id'] === 'desc'}"></i>
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_email'] === 'asc' }"></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_email'] === 'desc'}"></i>
                                         </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element"> {{ element.email_id }} </td>
+                                      <td mat-cell *matCellDef="let element"> {{ element.owner_email }} </td>
                                     </ng-container>
 
                                     <!-- Contact Column -->
-                                    <ng-container matColumnDef="mobile_no">
+                                    <ng-container matColumnDef="owner_contact">
                                       <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> CONTACT </th>
-                                      <td mat-cell *matCellDef="let element"> {{ element.mobile_no }} </td>
+                                      <td mat-cell *matCellDef="let element"> {{ element.owner_contact }} </td>
                                     </ng-container>
 
                                     <!-- Date Column -->
-                                    <ng-container matColumnDef="noof_properties">
+                                    <ng-container matColumnDef="number_of_properties">
                                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 180px;" title="NO OF PROPERTIES">PROPERTIES 
                                         <span style="margin-left: 2px;">
-                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['noof_properties'] === 'asc' }"></i>
-                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['noof_properties'] === 'desc'}"></i>
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['number_of_properties'] === 'asc' }"></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['number_of_properties'] === 'desc'}"></i>
                                         </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.noof_properties}} </td>
+                                      <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.number_of_properties}} </td>
                                     </ng-container>
 
                                     <!-- Status Column with Conditional Button Styling -->
@@ -151,7 +151,7 @@
                                   <div style="text-align: center;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>                                
                                </div>
                             </div>
-                            <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+                            <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
                        </div>  <!-- End Card Body -->  
                       </div>
                   <!-- /.container-fluid -->
