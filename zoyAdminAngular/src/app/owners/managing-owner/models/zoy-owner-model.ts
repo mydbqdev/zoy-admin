@@ -1,8 +1,8 @@
 export class ZoyOwner {
-  zoy_code: string;
+  owner_id: string;
   owner_name: string;
-  email_id: string;
-  mobile_no: string;
-  noof_properties: string;
-  status: 'registered' | 'pending'; 
+  owner_email: string;
+  owner_contact: string;
+  number_of_properties: number;
+  status: string; 
   }

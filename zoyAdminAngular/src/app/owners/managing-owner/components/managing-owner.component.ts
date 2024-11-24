@@ -15,7 +15,8 @@ import { ZoyOwner } from '../models/zoy-owner-model';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
-import { GenerateZoyCodeService } from '../../service/zoy-code.service';
+import { ZoyOwnerService } from '../../service/zoy-owner.service';
+import { Filter, OwnerRequestParam } from '../models/owner-details-request-model';
 
 @Component({
   selector: 'app-managing-owner',
@@ -23,16 +24,16 @@ import { GenerateZoyCodeService } from '../../service/zoy-code.service';
   styleUrl: './managing-owner.component.css'
 })
 export class ManageOwnerComponent implements OnInit, AfterViewInit {
-	displayedColumns: string[] = ['zoy_code', 'owner_name', 'email_id', 'mobile_no','noof_properties', 'status','action'];
+	displayedColumns: string[] = ['owner_id', 'owner_name', 'owner_email', 'owner_contact','number_of_properties', 'status','action'];
 	public ELEMENT_DATA:ZoyOwner[]=[];
 	orginalFetchData:ZoyOwner[]=[];
 	searchText:string='';
 	dataSource:MatTableDataSource<ZoyOwner>=new MatTableDataSource<ZoyOwner>();
 	columnSortDirectionsOg: { [key: string]: string | null } = {
-	  zoy_code: null,
+		owner_id: null,
 	  owner_name: null,
-	  email_id: null,
-	  noof_properties: null,
+	  owner_email: null,
+	  number_of_properties: null,
 	  status: null
 	};
 	stopPropagation(event: MouseEvent): void {
@@ -54,8 +55,8 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	  pageSize: number = 10; 
 	  pageSizeOptions: number[] = [10, 20, 50]; 
 	  totalProduct: number = 0;
-
-	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
+	  public lastPageSize:number=0;
+	  constructor(private zoyOwnerService : ZoyOwnerService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			  this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
@@ -92,23 +93,40 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		  //if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		  //	this.router.navigate(['/']);
 		  //}
-		  this.getZoyOwnerList()
+		  
+		  //this.getZoyOwnerList()
 	  }
 	  ngAfterViewInit() {
 		  this.sidemenuComp.expandMenu(2);
 		  this.sidemenuComp.activeMenu(2, 'manage-owner');
 		  this.dataService.setHeaderName("Manage Owner");
+		  this.dataSource.sort = this.sort;
+		  this.dataSource.paginator = this.paginator;
+		  this.param.pageIndex=this.paginator.pageIndex;
+		  this.param.pageSize= this.paginator.pageSize;
+		  this.param.sortDirection="asc";
+		  this.param.sortActive="owner_name";
+		  this.paramFilter.searchText=null;
+		  this.paramFilter.status=null;
+		  this.param.filter=this.paramFilter;
+		  setTimeout(()=>{
+			this.getZoyOwnerList();
+		   },100);
+		   this.columnSortDirections["owner_name"] = "asc";
 	  }
-   
+	  param:OwnerRequestParam=new OwnerRequestParam();
+	  paramFilter:Filter=new Filter();
 	  getZoyOwnerList(){
 		  this.authService.checkLoginUserVlidaate();
 		  this.spinner.show();
-		  this.generateZoyCodeService.getGeneratedZoyCodeDetails().subscribe(data => {
-			  this.orginalFetchData=  Object.assign([],data);
-			  this.ELEMENT_DATA = Object.assign([],data);
+		  this.lastPageSize=this.param.pageSize;
+		  this.zoyOwnerService.getZoyOwnerList(this.param).subscribe(data => {
+			  this.orginalFetchData=  Object.assign([],data.content);
+			  this.ELEMENT_DATA = Object.assign([],data.content);
 			  this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-			  this.dataSource.sort = this.sort;
-			  this.dataSource.paginator = this.paginator;
+			  //this.dataSource.sort = this.sort;
+			  //this.dataSource.paginator = this.paginator;
+			  this.totalProduct=data.total;
 			  this.spinner.hide();
 		  }, error => {
 		  this.spinner.hide();
@@ -141,29 +159,42 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	announceSortChange(sortState: Sort): void {
 	  this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	  this.columnSortDirections[sortState.active] = sortState.direction;
-  
+		console.info("sortState.direction:"+sortState.direction);
+		console.info("sortState.active:"+sortState.active);
 		if (sortState.direction) {
 		  this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
 		} else {
 		  this._liveAnnouncer.announce('Sorting cleared');
 		}
+		this.param.sortActive=sortState.active;
+		this.param.sortDirection=sortState.direction!="" ? sortState.direction:"asc";
+		this.param.pageIndex=0
+		this.paginator.pageIndex=0;
+		this.getZoyOwnerList();
 	}
 
 	filterData(){
 		console.info("searchText:"+this.searchText);
 		if(this.searchText==''){
-			this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
-			this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+			//this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
+			//this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+			this.paramFilter.searchText=null;
+			this.paramFilter.status=null;
 		}else{
-			const pagedData = Object.assign([],this.orginalFetchData.filter(data =>
-				data.owner_name.toLowerCase().includes(this.searchText.toLowerCase()) || data.email_id.toLowerCase().includes(this.searchText.toLowerCase()) || data.mobile_no?.toLowerCase().includes(this.searchText.toLowerCase()) || data.noof_properties?.toLowerCase().includes(this.searchText.toLowerCase()) || data.zoy_code?.toLowerCase().includes(this.searchText.toLowerCase())
-			));
-			this.ELEMENT_DATA = Object.assign([],pagedData);
-			this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+			//const pagedData = Object.assign([],this.orginalFetchData.filter(data =>
+			//	data.owner_name.toLowerCase().includes(this.searchText.toLowerCase()) || data.email_id.toLowerCase().includes(this.searchText.toLowerCase()) || data.mobile_no?.toLowerCase().includes(this.searchText.toLowerCase()) || data.noof_properties?.toLowerCase().includes(this.searchText.toLowerCase()) || data.zoy_code?.toLowerCase().includes(this.searchText.toLowerCase())
+			//));
+			//this.ELEMENT_DATA = Object.assign([],pagedData);
+			//this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+			this.paramFilter.searchText=this.searchText;
+			this.paramFilter.status=null;
 		}
-
-		this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
+		this.param.pageIndex=0
+		this.paginator.pageIndex=0;
+		this.param.filter=this.paramFilter;
+		this.getZoyOwnerList();
+		//this.dataSource.sort = this.sort;
+		//this.dataSource.paginator = this.paginator;
 	}
 	resetFilter(){
 		this.searchText='';
@@ -192,5 +223,17 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	  applyStatuses(): void {
 		console.log('Selected Statuses:', this.selectedStatuses);
 	  }
+
+	  pageChanged(event:any){
+		this.dataSource=new MatTableDataSource<ZoyOwner>();
+		if(this.lastPageSize!=event.pageSize){
+		this.paginator.pageIndex=0;
+		event.pageIndex=0;
+		}
+		console.info("this.paginator.pageIndex :"+this.paginator.pageIndex );
+		this.param.pageIndex=this.paginator.pageIndex;
+		this.param.pageSize= event.pageSize;
+		this.getZoyOwnerList();
+		}
 	  
   }  

@@ -9,7 +9,7 @@ import { MessageService } from 'src/app/message.service';
     providedIn: 'root'
   })
 
-  export class GenerateZoyCodeService{
+  export class ZoyOwnerService{
     message : string;
     httpOptions ={
         headers :new HttpHeaders({'Content-Type':'application/json'})
@@ -18,37 +18,11 @@ import { MessageService } from 'src/app/message.service';
 
     }
     
-     public generateOwnerCode(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/savePgOwnerData" ;
-        let param={"firstName":data.firstName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail};
-          return  this.httpclient.post<any>(
-              url1,
-              param,
-              {
-                  headers:ServiceHelper.buildHeaders(),
-                 observe : 'body',
-                 withCredentials:true
-              }
-          );
-     }
-
-     public resendOwnerCode(data:string): Observable<any> {
-        const url1=this.basePath +"zoy_admin/resendPgOwnerData" ;
-        let param={"emailId":data};
-          return  this.httpclient.post<any>(
-              url1,
-              param,
-              {
-                headers:ServiceHelper.buildHeaders(),
-                observe : 'body',
-                withCredentials:true
-             }
-          );
-     }
-     public getGeneratedZoyCodeDetails(): Observable<any> {
-          const url1=this.basePath +"zoy_admin/getAllPgOwnerData";
-            return  this.httpclient.get<any>(
+     public getZoyOwnerList(data:any): Observable<any> {
+          const url1=this.basePath +"zoy_admin/manage-owners";
+            return  this.httpclient.post<any>(
                 url1,
+                data,
                 {
                    headers:ServiceHelper.buildHeaders(),
                    observe : 'body',
