@@ -12,6 +12,7 @@ import com.integration.zoy.entity.AdminUserLoginDetails;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AdminUserTemporary;
 import com.integration.zoy.entity.AppRole;
+import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.entity.RoleScreen;
 
 public interface AdminDBImpl {
@@ -69,5 +70,9 @@ public interface AdminDBImpl {
 	List<Object[]> findAllAdminUserPrivileges1();
 	
 	AdminUserLoginDetails findAdminRegisterEmail(String Usermail);
+
+	BulkUploadDetails saveBulkUpload(BulkUploadDetails bulkUploadDetails);
+
+	List<BulkUploadDetails> findAllBulkUpload();
 
 }
