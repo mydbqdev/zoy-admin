@@ -31,6 +31,17 @@ export class BulkUploadService {
          withCredentials:true
       });
   }
+
+  public getOwnerPropertyDetailsList(): Observable<any> {
+    const url = this.basePath + 'zoy_admin/getOwnerPropertyDetailsList'; 
+    return  this.httpclient.get<any>(
+      url,
+      {
+          headers:ServiceHelper.buildHeaders(),
+         observe : 'body',
+         withCredentials:true
+      });
+  }
   public getTenentSampleFile(): Observable<any> {
     const url = 'https://api-qa.zoypg.com/zoy_partner/download_template_tenants'; 
     sessionStorage.setItem('zoyadminapi','no');
@@ -90,7 +101,7 @@ export class BulkUploadService {
     window.URL.revokeObjectURL(url);
     downloadLink.remove();
   }
-
+  
 
   public uploadFileDetails(data:any): Observable<any> {
     const url = this.basePath + 'zoy_admin/userListNotApprove'; 
