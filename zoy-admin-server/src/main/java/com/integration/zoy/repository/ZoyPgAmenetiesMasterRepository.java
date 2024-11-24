@@ -12,7 +12,7 @@ import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 @Repository
 public interface ZoyPgAmenetiesMasterRepository extends JpaRepository<ZoyPgAmenetiesMaster, String> {
 
-	@Query(value = "SELECT ameneties_id FROM pgowners.zoy_pg_ameneties_master WHERE ameneties_name IN (:amenities)", nativeQuery = true)
+	@Query(value = "SELECT ameneties_name FROM pgowners.zoy_pg_ameneties_master WHERE ameneties_name IN (:amenities)", nativeQuery = true)
 	List<String> getAmenityIdsByNames(@Param("amenities") List<String> amenities);
 
 }
