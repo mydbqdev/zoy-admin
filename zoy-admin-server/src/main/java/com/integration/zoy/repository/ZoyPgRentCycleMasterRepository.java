@@ -22,4 +22,10 @@ public interface ZoyPgRentCycleMasterRepository extends JpaRepository<ZoyPgRentC
 	@Query(value = "SELECT cycle_id FROM pgowners.zoy_pg_rent_cycle_master WHERE cycle_name IN (:cycleNames)", nativeQuery = true)
 	List<String> findCycleIdsByCycleNames(@Param("cycleNames") List<String> cycleNames);
 
+	@Query(value ="select zprcm.* from pgowners.zoy_pg_property_details zppd "
+			+ "join pgowners.zoy_pg_propety_rent_cycle zpprc on zpprc.property_id =zppd.property_id "
+			+ "join pgowners.zoy_pg_rent_cycle_master zprcm on zprcm.cycle_id =zpprc.cycle_id "
+			+ "where zppd.property_id =:propertyId and zprcm.cycle_name =:rentCycle" ,nativeQuery = true)
+	ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle);
+
 }

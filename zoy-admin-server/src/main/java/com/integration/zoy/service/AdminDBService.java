@@ -14,11 +14,13 @@ import com.integration.zoy.entity.AdminUserLoginDetails;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AdminUserTemporary;
 import com.integration.zoy.entity.AppRole;
+import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.entity.RoleScreen;
 import com.integration.zoy.repository.AdminUserLoginDetailsRepository;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AdminUserTemporaryRepository;
 import com.integration.zoy.repository.AppRoleRepository;
+import com.integration.zoy.repository.BulkUploadDetailsRepository;
 import com.integration.zoy.repository.RoleScreenRepository;
 
 @Service
@@ -38,6 +40,9 @@ public  class AdminDBService implements AdminDBImpl {
 
 	@Autowired
 	AdminUserTemporaryRepository userTemporaryRepository;
+
+	@Autowired
+	BulkUploadDetailsRepository bulkUploadDetailsRepository;
 
 
 
@@ -209,5 +214,15 @@ public  class AdminDBService implements AdminDBImpl {
 	@Override
 	public AdminUserLoginDetails findAdminRegisterEmail(String Usermail) {
 		return userLoginDetailsRepository.findRegisterEmail(Usermail).orElse(null);
+	}
+
+	@Override
+	public BulkUploadDetails saveBulkUpload(BulkUploadDetails bulkUploadDetails) {
+		return bulkUploadDetailsRepository.save(bulkUploadDetails);
+	}
+
+	@Override
+	public List<BulkUploadDetails> findAllBulkUpload() {
+		return bulkUploadDetailsRepository.findAll();
 	}
 }

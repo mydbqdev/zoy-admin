@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
+import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
+import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
+import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
@@ -72,6 +75,12 @@ public interface OwnerDBImpl {
 	void deleteTime(String timeId);
 	ZoyPgTimeMaster updateTime(ZoyPgTimeMaster time);
 	List<ZoyPgTimeMaster> getAllTime();
+	List<String[]> getOwnerPropertyDetails();
+	ZoyPgPropertyFloorDetails findFloorDetails(String propertyId, String floorName);
+	ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName);
+	List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName);
+	ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle);
+	
 	
 
 }

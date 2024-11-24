@@ -11,18 +11,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
+import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
+import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
+import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.repository.ZoyPgAmenetiesMasterRepository;
+import com.integration.zoy.repository.ZoyPgBedDetailsRepository;
 import com.integration.zoy.repository.ZoyPgDueFactorMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueTypeMasterRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
+import com.integration.zoy.repository.ZoyPgPropertyDetailsRepository;
+import com.integration.zoy.repository.ZoyPgPropertyFloorDetailsRepository;
 import com.integration.zoy.repository.ZoyPgRentCycleMasterRepository;
+import com.integration.zoy.repository.ZoyPgRoomDetailsRepository;
 import com.integration.zoy.repository.ZoyPgRoomTypeMasterRepository;
 import com.integration.zoy.repository.ZoyPgShareMasterRepository;
 import com.integration.zoy.repository.ZoyPgTimeMasterRepository;
@@ -57,6 +64,18 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Autowired
 	private ZoyPgTimeMasterRepository zoyPgTimeMasterRepository;
+	
+	@Autowired
+	private ZoyPgPropertyDetailsRepository zoyPgPropertyDetailsRepository;
+	
+	@Autowired
+	private ZoyPgPropertyFloorDetailsRepository zoyPgPropertyFloorDetailsRepository;
+
+	@Autowired
+	private ZoyPgRoomDetailsRepository zoyPgRoomDetailsRepository;
+	
+	@Autowired
+	private ZoyPgBedDetailsRepository zoyPgBedDetailsRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -358,6 +377,31 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public List<ZoyPgTimeMaster> getAllTime() {
 		return zoyPgTimeMasterRepository.findAll();
+	}
+
+	@Override
+	public List<String[]> getOwnerPropertyDetails() {
+		return zoyPgPropertyDetailsRepository.getOwnerPropertyDetails();
+	}
+
+	@Override
+	public ZoyPgPropertyFloorDetails findFloorDetails(String propertyId, String floorName) {
+		return zoyPgPropertyFloorDetailsRepository.findFloorDetails(propertyId, floorName);
+	}
+
+	@Override
+	public ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName) {
+		return zoyPgRoomDetailsRepository.findRoomDetails(propertyId, roomName);
+	}
+
+	@Override
+	public List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName) {
+		return zoyPgBedDetailsRepository.findBedDetails(propertyId, bedName);
+	}
+
+	@Override
+	public ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle) {
+		return zoyPgRentCycleMasterRepository.findRentCycleName(propertyId,rentCycle);
 	}
 
 
