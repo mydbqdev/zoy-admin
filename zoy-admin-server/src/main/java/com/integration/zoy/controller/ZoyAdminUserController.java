@@ -206,6 +206,11 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	public ResponseEntity<String> zoyAdminCreateUser(AdminUserDetails adminUserDetails) {
 		ResponseBody response=new ResponseBody();
 		try {
+			if (adminDBImpl.existsByUserEmail(adminUserDetails.getUserEmail())) {
+	            response.setStatus(HttpStatus.CONFLICT.value());
+	            response.setError("User already exists with this email");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+	        }
 			AdminUserMaster master=new AdminUserMaster();
 			master.setFirstName(adminUserDetails.getFirstName());
 			master.setLastName(adminUserDetails.getLastName());

@@ -2,6 +2,7 @@ package com.integration.zoy.controller;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -688,14 +689,8 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		ResponseBody response = new ResponseBody();
 		try {
 			Page<OwnerPropertyDTO> ownerPropertyList = userDBImpl.findAllOwnerWithPropertyCount( paginationRequest);
-			if (ownerPropertyList != null && !ownerPropertyList.isEmpty()) {
 	            return new ResponseEntity<>(gson2.toJson(ownerPropertyList), HttpStatus.OK);
-	        } else {
-	            response.setStatus(HttpStatus.NO_CONTENT.value());
-	            response.setError("No owner details found");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NO_CONTENT);
-	        }
-		}catch (DataAccessException dae) {
+ 		}catch (DataAccessException dae) {
 	        log.error("Database error occurred while fetching owner details: " + dae.getMessage(), dae);
 	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	        response.setError("Database error: Unable to fetch owner details");

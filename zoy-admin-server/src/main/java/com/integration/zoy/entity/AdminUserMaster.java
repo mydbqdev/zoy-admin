@@ -1,9 +1,13 @@
 package com.integration.zoy.entity;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "user_master", schema = "pgadmin")
@@ -27,6 +31,10 @@ public class AdminUserMaster {
 
 	@Column(name = "status", nullable = false)
 	private Boolean status;
+	
+	@Column(name = "create_at", nullable = false)
+	@CreationTimestamp
+	private Timestamp ts;
 
 	public String getFirstName() {
 		return firstName;
@@ -75,5 +83,14 @@ public class AdminUserMaster {
 	public void setStatus(Boolean status) {
 		this.status = status;
 	}
+
+	public Timestamp getTs() {
+		return ts;
+	}
+
+	public void setTs(Timestamp ts) {
+		this.ts = ts;
+	}
+	
 	
 }
