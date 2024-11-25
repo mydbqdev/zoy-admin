@@ -81,13 +81,19 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
     public ResponseEntity<String> pgOwnerDetalaisSave(PgOwnerMasterModel model) {
         ResponseBody response = new ResponseBody();
         try {
-            String existingCode = pgOwnerMaterRepository.findPgOwnerDetails(model.getEmailId());
-            
-            if (existingCode != null && !existingCode.isEmpty()) {
-            	  response.setStatus(HttpStatus.CONFLICT.value());
-                response.setMessage("Zoy code " + existingCode + " already exists with this email ID.");
-                return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
-            }
+        	 List<Object[]> result = pgOwnerMaterRepository.findEmailAndZoyCodeByEmailId(model.getEmailId());
+
+             if (result != null && !result.isEmpty()) {
+                 Object[] row = result.get(0);
+                 String existingEmailId = (String) row[0];
+                 String existingZoyCode = (String) row[1];
+
+                 if (existingEmailId != null && !existingEmailId.isEmpty()) {
+                     response.setStatus(HttpStatus.CONFLICT.value());
+                     response.setMessage("Email ID " + existingEmailId + " already exists with Zoy code " + existingZoyCode);
+                     return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+                 }
+             }
 
             PgOwnerMaster ownerData = new PgOwnerMaster();
             String zoyCode = zoyCodeGenerationService.generateZoyCode(model.getEmailId());
