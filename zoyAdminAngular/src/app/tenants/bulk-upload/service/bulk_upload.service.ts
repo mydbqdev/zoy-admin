@@ -46,7 +46,7 @@ export class BulkUploadService {
   }
   public getTenentSampleFile(): Observable<any> {
    // const url = 'https://api-qa.zoypg.com/zoy_partner/download_template_tenants'; 
-   const url = this.basePathExternalServer+'/zoy_partner/download_template_tenants'; 
+   const url = this.basePathExternalServer+'zoy_partner/download_template_tenants'; 
     sessionStorage.setItem('zoyadminapi','no');
 
     const returnObj =  this.httpclient.get<any>(
@@ -60,7 +60,7 @@ export class BulkUploadService {
   }
 
   public getPgPropertysSampleFile1(): Observable<any> {
-    const url = this.basePathExternalServer +'/zoy_partner/download_template'; 
+    const url = this.basePathExternalServer +'zoy_partner/download_template'; 
      sessionStorage.setItem('zoyadminapi','no');
     
     const returnObj =  this.httpclient.get<any>(
@@ -74,7 +74,7 @@ export class BulkUploadService {
   }
 
   getPgPropertysSampleFile(): Observable<any> {
-    const url = this.basePathExternalServer +'/zoy_partner/download_template'; 
+    const url = this.basePathExternalServer +'zoy_partner/download_template'; 
     sessionStorage.setItem('zoyadminapi','no');
     const headers = ServiceHelper.buildHeadersSampleFile();
     return this.httpclient.get(url,  {
