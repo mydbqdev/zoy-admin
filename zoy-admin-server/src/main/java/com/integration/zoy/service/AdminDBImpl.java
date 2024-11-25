@@ -44,6 +44,8 @@ public interface AdminDBImpl {
 	List<AdminUserTemporary> saveAllUserTemporary(List<AdminUserTemporary> adminUserTemporary);
 
 	List<AdminUserMaster> findAllAdminUser();
+	
+	boolean existsByUserEmail(String userEmail);
 
 	List<Object[]> findAllAdminUserPrevilages();
 

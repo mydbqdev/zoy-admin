@@ -50,6 +50,8 @@ public  class AdminDBService implements AdminDBImpl {
 	public AdminUserMaster saveAdminUser(AdminUserMaster master) {
 		return userMasterRepository.save(master);
 	}
+	
+	
 
 	@Override
 	public AdminUserLoginDetails saveAdminLoginDetails(AdminUserLoginDetails adminUserLoginDetails) {
@@ -224,5 +226,12 @@ public  class AdminDBService implements AdminDBImpl {
 	@Override
 	public List<BulkUploadDetails> findAllBulkUpload() {
 		return bulkUploadDetailsRepository.findAll();
+	}
+
+
+
+	@Override
+	public boolean existsByUserEmail(String userEmail) {
+		return userMasterRepository.existsByUserEmail(userEmail);
 	}
 }
