@@ -31,7 +31,7 @@
                           <i class="fas fa-angle-down ml-2 mt-1"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSampleFile('Tenent_sample_File')" >Tenent</a>
+                            <a class="dropdown-item" href="javascript:void(0)" (click)="getTenentSampleFile()" >Tenent</a>
                             <a class="dropdown-item" href="javascript:void(0)" (click)="getPgPropertysSampleFile()">PG Properties</a>
                         </div>      
                         </div>
@@ -46,7 +46,7 @@
                               <label for="fileName" class="col-form-label">Owner Name</label>
                            
                                 <input 
-                                  class="form-control form-control-navbar" 
+                                  class="form-control custom-select" 
                                   type="search" 
                                   placeholder="Search Owner" 
                                   [formControl]="ownerSearchControl" 
