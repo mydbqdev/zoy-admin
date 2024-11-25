@@ -24,7 +24,7 @@ export class BulkUploadService {
 
 
   public getUploadFileDetails(): Observable<any> {
-    const url = this.basePath + 'zoy_admin/userListNotApprove'; 
+    const url = this.basePath + 'zoy_admin/getBulkUpload';
     return  this.httpclient.get<any>(
       url,
       {
@@ -35,7 +35,7 @@ export class BulkUploadService {
   }
 
   public getOwnerPropertyDetailsList(): Observable<any> {
-    const url = this.basePath + 'zoy_admin/getOwnerPropertyDetailsList'; 
+    const url = this.basePath + 'zoy_admin/owner_property_details';
     return  this.httpclient.get<any>(
       url,
       {
@@ -44,25 +44,12 @@ export class BulkUploadService {
          withCredentials:true
       });
   }
+
   public getTenentSampleFile(): Observable<any> {
    // const url = 'https://api-qa.zoypg.com/zoy_partner/download_template_tenants'; 
    const url = this.basePathExternalServer+'zoy_partner/download_template_tenants'; 
     sessionStorage.setItem('zoyadminapi','no');
 
-    const returnObj =  this.httpclient.get<any>(
-      url,
-      {
-          headers:ServiceHelper.buildHeadersSampleFile(),
-          observe : 'body',
-          withCredentials:false
-      });
-      return returnObj;
-  }
-
-  public getPgPropertysSampleFile1(): Observable<any> {
-    const url = this.basePathExternalServer +'zoy_partner/download_template'; 
-     sessionStorage.setItem('zoyadminapi','no');
-    
     const returnObj =  this.httpclient.get<any>(
       url,
       {
@@ -106,18 +93,31 @@ export class BulkUploadService {
   }
   
 
-  public uploadFileDetails(data:any): Observable<any> {
-    const url = this.basePath + 'zoy_admin/userListNotApprove'; 
+  public upload_tenant_file(data:any): Observable<any> {
+     const url = this.basePath + 'zoy_admin/upload_tenant_file';
     return  this.httpclient.post<any>(
       url,
       data,
       {
-          headers:ServiceHelper.buildHeaders(),
+          headers:ServiceHelper.filesHeaders(),
          observe : 'body',
          withCredentials:true
       });
   }
 
+  public upload_property_file(data:any): Observable<any> {
+    const url = this.basePath + 'zoy_admin/upload_property_file';
+    return  this.httpclient.post<any>(
+      url,
+      data,
+      {
+          headers:ServiceHelper.filesHeaders(),
+         observe : 'body',
+         withCredentials:true
+      });
+  }
+
+  
 
   private errorHandler(error: HttpErrorResponse) {
     return of(error.message || "server error");
