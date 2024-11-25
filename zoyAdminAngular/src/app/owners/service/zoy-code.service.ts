@@ -34,7 +34,7 @@ import { MessageService } from 'src/app/message.service';
 
      public resendOwnerCode(data:string): Observable<any> {
         const url1=this.basePath +"zoy_admin/resendPgOwnerData" ;
-        let param={"emailId":data};
+        let param={"email":data};
           return  this.httpclient.post<any>(
               url1,
               param,

@@ -62,34 +62,41 @@ import { MessageService } from 'src/app/message.service';
       'basicAmount': 'BASIC AMOUNT'
   };
   
-	  reportColumnsList: { 'reportName': string, 'columns': string[] }[] = [
+	  reportColumnsList: { 'reportName': string, 'columns': string[] ,'object': any }[] = [
 		{
 		  'reportName': 'User Transactions Report',
-		  'columns': ['customerName', 'PgPropertyId', 'transactionDate', 'transactionNumber', 'transactionStatus', 'actions']
-		},
+		  'columns': ['customerName', 'PgPropertyId', 'transactionDate', 'transactionNumber', 'transactionStatus', 'actions'],
+      'object':'new UserTransactionReportModel()'
+    },
 		{
 		  'reportName': 'User Payments GST Report',
-		  'columns': ['transactionDate', 'PgPropertyId', 'transactionNumber', 'totalAmount', 'gstAmount', 'actions']
+		  'columns': ['transactionDate', 'PgPropertyId', 'transactionNumber', 'totalAmount', 'gstAmount', 'actions'],
+      'object':'new UserGSTPaymentModel()'
 		},
 		{
 		  'reportName': 'Consolidated Finance Report',
-		  'columns': ['transactionDate', 'customerId', 'transactionNumber', 'customerName', 'creditAmount', 'debitAmount', 'actions']
+		  'columns': ['transactionDate', 'customerId', 'transactionNumber', 'customerName', 'creditAmount', 'debitAmount', 'actions'],
+      'object':'new ConsilidatedFinanceDetailsModel()'
 		},
     {
 		  'reportName': 'Tenant Dues Report',
-		  'columns': ['customerId', 'PgPropertyId', 'bedNumber', 'pendingAmount', 'pendingDueDate', 'actions']
+		  'columns': ['customerId', 'PgPropertyId', 'bedNumber', 'pendingAmount', 'pendingDueDate', 'actions'],
+      'object':'new TenantDuesDetailsModel()'
 		},
     {
 		  'reportName': 'Vendor Payments Report',
-		  'columns': ['ownerId', 'pgId', 'pgName', 'amountPaidToOwner',  'transactionDate', 'paymentStatus', 'actions']
+		  'columns': ['ownerId', 'pgId', 'pgName', 'amountPaidToOwner',  'transactionDate', 'paymentStatus', 'actions'],
+     'object':'new VendorPaymentsModel()'
 		},
     {
 		  'reportName': 'Vendor Payments Dues Report',
-		  'columns': ['ownerId', 'pgId', 'totalAmountPayable', 'totalAmountPaid', 'pendingAmount', 'pendingDueDate', 'actions']
+		  'columns': ['ownerId', 'pgId', 'totalAmountPayable', 'totalAmountPaid', 'pendingAmount', 'pendingDueDate', 'actions'],
+      'object':'new VendorPaymentsDues()'
 		},
     {
 		  'reportName': 'Vendor Payments Gst Report',
-		  'columns': ['transactionDate','transactionNo','pgId','totalAmount','gstAmount','actions']
+		  'columns': ['transactionDate','transactionNo','pgId','totalAmount','gstAmount','actions'],
+      'object':'new VendorPaymentsGst()'
 		}
 	  ];
 
