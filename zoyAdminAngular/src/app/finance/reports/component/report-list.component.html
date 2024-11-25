@@ -20,59 +20,45 @@
 
               <!-- Begin Page Content -->
               <div class="container-fluid" style="margin-top: -5px;">
-                  <div style="padding:10px 10px 0px;border:1px solid#dbdbdb;border-radius: 5px;">
-                  <div class="d-flex mb-1">
+                  <div class="d-flex mb-3">
                     <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Reports</span></h3> 
-                    <div class="text-search-header pr-2 mt-1 ml-5">
-                        City / Location
-                    </div>
-                    <div style="width: 200px;">
-                        <select class="form-select form-select-sm" aria-label="Default select example"   [(ngModel)]="cityLocationName" >
+                  </div>  
+                  <div style="padding:10px 10px 0px;border:1px solid#dbdbdb;border-radius: 5px;">
+                    <div class="d-flex mb-1">
+                    <div style="width: 150px;">
+                      <label for="email">City / Location</label>
+                        <select class="custom-select custom-select-sm" aria-label="Default select example"   [(ngModel)]="cityLocationName" >
                             <option *ngFor="let city of cityLocation"  [value]="city" >{{city}}</option>
                         </select>
-                    </div>  
-                    <div class="text-search-header pr-2 mt-1 ml-3">
-                        Report Type
-                    </div>
-                    <div style="width: 200px;">
-                        <select class="form-select form-select-sm" aria-label="Default select example" [(ngModel)]="reportName" (ngModelChange)="changeReport()" > 
+                    </div> 
+                    <div class="ml-2" style="width: 220px;">
+                        <label for="email">Report Type</label>
+                        <select class="custom-select custom-select-sm" aria-label="Default select example" [(ngModel)]="reportName" (ngModelChange)="changeReport()" > 
                             <option *ngFor="let report of reportNamesList"  [value]="report.name" >{{report.name}}</option>
                         </select>
                     </div>
-
-                    <div class="text-search-header pr-2 mt-1 ml-3">
-                      Date Range
-                     </div>
-                    <div style="width: 111px;">
-                      <input type="date" class="form-control form-control-sm" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter from date" [(ngModel)]="fromDate" >
+                    <div class="ml-2" style="width: 270px;">
+                           <label for="category">Date Range</label>
+                            <div class="d-flex gap-2">
+                              <input type="date" class="form-control form-control-sm" style="width: 120px;" id="fromDate" [(ngModel)]="fromDate" /> - 
+                              <input type="date" class="form-control form-control-sm" style="width: 120px;" id="toDate"  [(ngModel)]="toDate"/>
+                            </div>
                     </div>
-                    <div class="pr-1 mt-1 ml-1">
-                      to
-                     </div>
-                    <div style="width: 111px;">
-                    <input type="date" class="form-control form-control-sm " id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter to date"  [(ngModel)]="toDate">
-                  </div>
-                  </div>
-                  <div style="height: 8px;border-bottom: 1px solid #fff;"></div>
-                  <div class="row mt-2 mb-0">
-                      <div  class="col-sm-2">
-                        <div class="form-group mt-4" style="padding-top:6px">
-                            <button type="button" class="btn btn-primary-custom btn-sm" (click)="generateReport()" >Generate Report</button>
-                        </div>
-                    </div >
-                    <div class="col-sm-3">
-                        <div class="form-group mt-4" style="padding-top:6px">
-                            <select class="form-select form-select-sm" [(ngModel)]="downloadType" (ngModelChange)="downloadPdf()">
-                                <option value="" disabled > Download </option>
-                                <option value="pdf" > Pdf</option>
-                                <option value="excel" > Excel</option>
-                                <option value="csv" > CSV</option>
-                            </select>
-                        </div>
+                    <div class="ml-2">
+                      <div style="padding-top:32px;">
+                        <button type="button" class="btn btn-primary-custom btn-sm" (click)="generateReport()" >Generate Report</button>
+                      </div>
                     </div>
-                    
+                    <div class="ml-3" style="padding-top:32px;">
+                      <select class="form-select form-select-sm" [(ngModel)]="downloadType" (ngModelChange)="downloadPdf()">
+                        <option value="" disabled > Download </option>
+                        <option value="pdf" > Pdf</option>
+                        <option value="excel" > Excel</option>
+                        <option value="csv" > CSV</option>
+                      </select>
+                    </div>
                   </div>
-                  <div class="row mt-2 mb-0">
+                  <div class="row mt-2 mb-0" style="height: 80px;">
                     <div class="col-sm-2" *ngIf="reportName == 'Tenant Dues Report'">
                       <div class="form-group">
                         <label for="tenantId" class="text-search-header">Tenant ID</label>
@@ -171,35 +157,32 @@
                                            matSortDisableClear multiTemplateDataRows>
                                     <ng-container *ngFor="let column of selectedReportColumns">
                                       <ng-container [matColumnDef]="column">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> 
-                                          <i class="fas fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i>
-                                          <i class="fas fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> 
+                                          {{ columnHeaders[column] || ' ' }}
+                                          <i class="fas fa-lg fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i>
+                                          <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
                                              style="margin-right: 3px;margin-left: -12px;"></i>
-                                          <i class="fas fa-sort-down" *ngIf="sortActive === column && sortDirection === 'desc'" 
-                                             style="margin-right: 3px;margin-left: -12px;"></i>
-                                          
-                                             {{ columnHeaders[column] || ' ' }} </th>
+                                          <i class="fas fa-lg  fa-sort-down" *ngIf="sortActive === column && sortDirection === 'desc'" 
+                                             style="margin-right: 3px;margin-left: -12px;"></i></th>
                                         <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
                                       </ng-container>
                                     </ng-container>
                                     <ng-container matColumnDef="actions">
-                                      <th mat-header-cell style="width: 90px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions">
-                                      Actions
-                                      </th>
-                                      <td mat-cell style="width: 90px;" *matCellDef="let element">
+                                      <th mat-header-cell style="width: 50px;" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions"></th>
+                                      <td mat-cell style="width: 50px;" *matCellDef="let element">
                                       <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails"  (click)="viewReport(element)">
                                           <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
                                       </span>
-                                      <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
+                                      <!--span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
                                           <i class="bi bi-upload" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="Export"></i>
-                                      </span>
+                                      </span-->
                                       </td>
                                   </ng-container>  
                                   
                                     <tr mat-header-row *matHeaderRowDef="selectedReportColumns; msticky:true"></tr>
                                     <tr mat-row *matRowDef="let row; columns: selectedReportColumns;"></tr>
                                   </table>
-                                  <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" 
+                                  <div style="text-align: center; min-height: 45px; padding-top: 10px;" 
                                   *ngIf="reportDataSource.data.length === 0">
                                     No records found
                                   </div>

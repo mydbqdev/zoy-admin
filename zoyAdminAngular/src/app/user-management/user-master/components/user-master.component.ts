@@ -388,8 +388,9 @@ passwordsMatch(formGroup: FormGroup) {
   
 oldRoles:any=[];
   editRole(row:any ){
-  this.resetForm(false);
+  //this.resetForm(false);
   this.createOrUpdate=false;
+  this.submitted=false;
   this.checkedApplications = {};
   this.selectedItems= [];
   this.selectedRoleIds.splice(0);
