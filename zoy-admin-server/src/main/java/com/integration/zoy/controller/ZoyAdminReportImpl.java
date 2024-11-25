@@ -84,7 +84,7 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/vendor-payment-dues-report",
+	@PostMapping(value = "/zoy_admin/vendor-payment-dues-report",
 	produces = { "application/json" })
 	ResponseEntity<String> getVendorPaymentDuesByDateRange(@RequestParam("fromDate") Timestamp fromDate,
             @RequestParam("toDate") Timestamp toDate);
@@ -96,7 +96,7 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/vendor-payment-gst-report",
+	@PostMapping(value = "/zoy_admin/vendor-payment-gst-report",
 	produces = { "application/json" })
 	ResponseEntity<String> getVendorPaymentGstReportByDateRange(@RequestParam("fromDate") Timestamp fromDate,
             @RequestParam("toDate") Timestamp toDate);
