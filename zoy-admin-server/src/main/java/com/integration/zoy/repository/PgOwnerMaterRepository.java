@@ -10,8 +10,8 @@ import com.integration.zoy.entity.PgOwnerMaster;
 
 public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, String> {
 	
-	@Query(value="select zoy_code from pg_owner_master where email_id =:emailId",nativeQuery = true)
-	String findPgOwnerDetails(String emailId);
+	@Query(value = "select email_id, zoy_code from pg_owner_master where email_id = :emailId", nativeQuery = true)
+    List<Object[]> findEmailAndZoyCodeByEmailId(String emailId);
 	
 	@Query(value="  SELECT \r\n"
 			+ "    pom.zoy_code, \r\n"
