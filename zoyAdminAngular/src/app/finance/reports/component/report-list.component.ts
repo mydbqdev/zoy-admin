@@ -95,10 +95,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		//	this.router.navigate(['/']);
 		//}
 		this.getCityList();
-		console.log("this.paginator",this.paginator);
-		
-
-		
+			
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(5);
@@ -205,15 +202,13 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 				this.filtersRequest.pageSize=pageSize;
 				this.filtersRequest.sortActive=sortActive;
 				this.filtersRequest.sortDirection=sortDirection.toUpperCase();
-	//if(this.reportName ==)
+
 				this.filtersRequest.fromDate=this.fromDate+'';
 				this.filtersRequest.toDate=this.toDate;
 				this.filtersRequest.cityLocation = this.cityLocationName;
 				this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 				this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
-			//	"{\"tenantId\":\"\",\"tenantName\":\"\",\"transactionStatus\":\"\",\"modeOfPayment\":\"\",\"zoyCode\":\"\",\"ownerName\":\"\",\"pgId\":\"\",\"pgName\":\"Reshma begum\",\"payeeId\":\"\",\"payeeName\":\"\",\"payerId\":\"\",\"payerName\":\"\"}"
-	
-				console.log("this.filtersRequest",this.filtersRequest);
+			
 				if( this.reportName =='Vendor Payments Dues Report' || this.reportName =='Vendor Payments Gst Report'){
 					this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
 					const data =this.reportName=='Vendor Payments Dues Report'?this.reportService.vendorPaymentsDuesReportMockData:this.reportService.vendorPaymentsGstMockData;
@@ -228,11 +223,11 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 				this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
 
 				  if(data?.data?.length >0){
-						this.totalProduct=34//data.count;
+						this.totalProduct=data.count;
 						this.reportDataList=Object.assign([],data.data);
 						this.reportDataSource = new MatTableDataSource(this.reportDataList);
 					}else{
-					  this.totalProduct=data.count;
+					  this.totalProduct=0;
 					  this.reportDataList=Object.assign([]);
 					  this.reportDataSource =  new MatTableDataSource(this.reportDataList);
 					}
@@ -268,7 +263,9 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	 	}
 
 	 viewReport(row:any){
-		this.reportData = Object.assign(row);
+		let data = this.reportService.reportColumnsList.find(n => n.reportName == this.reportName).object;
+		data = Object.assign(row); 
+		this.reportData = Object.assign(data);
 			
 	 }		 
 	
@@ -287,13 +284,8 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 		this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
 		this.filtersRequest.downloadType = this.downloadType;
-
-		console.log("this.filtersRequest",this.filtersRequest);
-
-
 		this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
-		
-		console.log("data>>",data)
+	
 			if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 				let extension= 'application/pdf';
 				switch (this.downloadType) {

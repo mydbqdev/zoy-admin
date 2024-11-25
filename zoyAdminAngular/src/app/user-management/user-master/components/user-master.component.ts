@@ -405,7 +405,8 @@ oldRoles:any=[];
      this.selectedRoleIds.push(role.id);
      this.oldRoles.push(role.id);
   }
- 
+  console.log("this.row",row)
+ console.log("this.userReg",this.userReg)
 
   }
    updateRolesUser(){
