@@ -31,7 +31,7 @@
                           <i class="fas fa-angle-down ml-2 mt-1"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSampleFile('Tenent_sample_File')" >Tenent</a>
+                            <a class="dropdown-item" href="javascript:void(0)" (click)="getTenentSampleFile()" >Tenent</a>
                             <a class="dropdown-item" href="javascript:void(0)" (click)="getPgPropertysSampleFile()">PG Properties</a>
                         </div>      
                         </div>
@@ -46,7 +46,7 @@
                               <label for="fileName" class="col-form-label">Owner Name</label>
                            
                                 <input 
-                                  class="form-control form-control-navbar" 
+                                  class="form-control custom-select" 
                                   type="search" 
                                   placeholder="Search Owner" 
                                   [formControl]="ownerSearchControl" 
@@ -111,7 +111,7 @@
                                   <input class="form-control" id="formFile" type="file" (change)="onFileChange($event)"
                                   formControlName="reqDocument" 
                                       [ngClass]="{'is-invalid':submitted && (form.controls.reqDocument.errors || filevali)}">
-                                  <label for="formFile"class="btn btn-secondary">Browse</label>
+                                  <!-- <label for="formFile"class="btn btn-secondary">Browse</label> -->
                                 </div>
                               </div>
                               <div style="height: 30px;margin-top:-15px;">  
@@ -141,7 +141,7 @@
                                       <!-- File Name Column -->
                                       <ng-container matColumnDef="fileName">
                                         <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">FILE NAME</th>
-                                        <td mat-cell *matCellDef="let element">{{ element.fileName }}</td>
+                                        <td mat-cell *matCellDef="let element">{{ element.file_name }}</td>
                                       </ng-container>
                                     
                                       <!-- Category Column -->
@@ -182,7 +182,45 @@
                             </div>
                         </div>
                     </div>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" #openModel hidden>
+                      Open modal
+                    </button>
+                    
+                    <div class="modal fade" id="exampleModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-lg modal-dialog-scrollable" >
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel" >Upload File Error</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Room Number</th>
+                                  <th scope="col">Field</th>
+                                  <th scope="col">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let error of uploadErrorModalList">
+                                  <td>{{ error.row }}</td>
+                                  <td>{{ error.field }}</td>
+                                  <td>{{ error.error_description }}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
                 </div>
+
                 <!-- /.container-fluid -->
   
             </div>
@@ -194,3 +232,5 @@
     </div>
     <!-- End of Page Wrapper -->
   </div>
+
+  
