@@ -690,7 +690,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		try {
 			Page<OwnerPropertyDTO> ownerPropertyList = userDBImpl.findAllOwnerWithPropertyCount( paginationRequest);
 	            return new ResponseEntity<>(gson2.toJson(ownerPropertyList), HttpStatus.OK);
-		}catch (DataAccessException dae) {
+ 		}catch (DataAccessException dae) {
 	        log.error("Database error occurred while fetching owner details: " + dae.getMessage(), dae);
 	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	        response.setError("Database error: Unable to fetch owner details");

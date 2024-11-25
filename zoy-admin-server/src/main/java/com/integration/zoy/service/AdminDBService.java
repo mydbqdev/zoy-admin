@@ -140,7 +140,7 @@ public  class AdminDBService implements AdminDBImpl {
 
 	@Override
 	public List<AdminUserMaster> findAllAdminUser() {
-		return userMasterRepository.findAll();
+		return userMasterRepository.findAllAdminUsersOrderedByCreationDateDesc();
 	}
 
 	@Override

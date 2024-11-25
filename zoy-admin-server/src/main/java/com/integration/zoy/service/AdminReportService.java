@@ -84,7 +84,7 @@ public class AdminReportService implements AdminReportImpl{
 			parameters.put("userId", filterData.getTenantId());
 		}
 		if (filterData.getTransactionStatus() != null && !filterData.getTransactionStatus().isEmpty()) {
-			queryBuilder.append(" AND up.user_payment_result_status = :resultStatus");
+			queryBuilder.append(" AND LOWER(up.user_payment_result_status) LIKE LOWER(:resultStatus)");
 			parameters.put("resultStatus", filterData.getTransactionStatus());
 		}
 		if (filterData.getModeOfPayment() != null && !filterData.getModeOfPayment().isEmpty()) {
@@ -97,15 +97,15 @@ public class AdminReportService implements AdminReportImpl{
 		}
 
 		if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-			queryBuilder.append(" AND pgt.property_name = :pgPropertyName");
+			queryBuilder.append(" AND LOWER(pgt.property_name) LIKE LOWER('%' || :pgPropertyName || '%')");
 			parameters.put("pgPropertyName", filterData.getPgName());
 		}
 		if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
-			queryBuilder.append(" AND ud.user_personal_name LIKE :userPersonalName");
+			queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:userPersonalName)");
 			parameters.put("userPersonalName", "%" + filterData.getTenantName() + "%");
 		}
 		if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-			queryBuilder.append(" AND pgt.property_city ILIKE '%' || :cityLocation || '%'");
+			queryBuilder.append(" AND LOWER(pgt.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
 			parameters.put("cityLocation", filterRequest.getCityLocation());
 		}
 		if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
@@ -155,6 +155,8 @@ public class AdminReportService implements AdminReportImpl{
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		parameters.forEach(query::setParameter);
 
+		int filterCount=query.getResultList().size();
+		
 		query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
 		query.setMaxResults(filterRequest.getPageSize());
 
@@ -178,8 +180,7 @@ public class AdminReportService implements AdminReportImpl{
 			dto.setPaymentMethod((String) row[11]);
 			return dto;
 		}).collect(Collectors.toList());
-		int resultCount = userPaymentDTOs.size();
-		return new CommonResponseDTO<>(userPaymentDTOs, resultCount);
+		return new CommonResponseDTO<>(userPaymentDTOs, filterCount);
 	}
 
 	@Override
@@ -211,13 +212,13 @@ public class AdminReportService implements AdminReportImpl{
 		}
 
 		if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
-			queryBuilder.append(" AND ud.user_personal_name LIKE :userPersonalName");
+			queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:userPersonalName)");
 			parameters.put("userPersonalName", "%" + filterData.getTenantName() + "%");
 		}
 
 		if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-			queryBuilder.append(" AND pgt.property_city ILIKE '%' || :cityLocation || '%'");
-			parameters.put("cityLocation", filterRequest.getCityLocation());
+			 queryBuilder.append(" AND LOWER(pgt.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
+			parameters.put("cityLocation", filterRequest.getCityLocation() + "%");
 		}
 		String sort = "up.user_payment_timestamp";  
 
@@ -247,6 +248,7 @@ public class AdminReportService implements AdminReportImpl{
 
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		parameters.forEach(query::setParameter);
+		int filterCount=query.getResultList().size();
 		query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
 		query.setMaxResults(filterRequest.getPageSize());
 		List<Object[]> result= query.getResultList();
@@ -264,8 +266,7 @@ public class AdminReportService implements AdminReportImpl{
 			return dto;
 		}).collect(Collectors.toList());
 
-		int resultCount = consolidatedFinanceDTOs.size();
-		return new CommonResponseDTO<>(consolidatedFinanceDTOs, resultCount);
+		return new CommonResponseDTO<>(consolidatedFinanceDTOs, filterCount);
 	}
 
 	@Override
@@ -301,7 +302,7 @@ public class AdminReportService implements AdminReportImpl{
 		}
 
 		if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
-			queryBuilder.append(" AND ud.user_personal_name LIKE :tenantName");
+			queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:tenantName)");
 			parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
 		}
 
@@ -311,12 +312,12 @@ public class AdminReportService implements AdminReportImpl{
 		}
 
 		if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-			queryBuilder.append(" AND pgd.user_pg_propertyname = :pgPropertyName");
+			queryBuilder.append(" AND LOWER(pgd.user_pg_propertyname) LIKE LOWER(:pgPropertyName)");
 			parameters.put("pgPropertyName", filterData.getPgName());
 		}
 
 		if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-			queryBuilder.append(" AND pgt.property_city ILIKE '%' || :cityLocation || '%'");
+			queryBuilder.append(" AND LOWER(pgt.property_city) LIKE LOWER(:cityLocation)");
 			parameters.put("cityLocation", filterRequest.getCityLocation());
 		}
 
@@ -351,7 +352,7 @@ public class AdminReportService implements AdminReportImpl{
 
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		parameters.forEach(query::setParameter);
-
+		int filterCount=query.getResultList().size();
 		query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
 		query.setMaxResults(filterRequest.getPageSize());
 
@@ -380,8 +381,7 @@ public class AdminReportService implements AdminReportImpl{
 			return dto;
 		}).collect(Collectors.toList());
 
-		int resultCount = tenentDuesDto.size();
-		return new CommonResponseDTO<>(tenentDuesDto, resultCount);
+		return new CommonResponseDTO<>(tenentDuesDto, filterCount);
 	}
 
 
@@ -417,7 +417,7 @@ public class AdminReportService implements AdminReportImpl{
 		}
 
 		if (filterData.getOwnerName() != null && !filterData.getOwnerName().isEmpty()) {
-			queryBuilder.append(" AND o.pg_owner_name LIKE :ownerName");
+			queryBuilder.append(" AND LOWER(o.pg_owner_name) LIKE LOWER(:ownerName)");
 			parameters.put("ownerName", "%" + filterData.getOwnerName() + "%");
 		}
 
@@ -427,7 +427,7 @@ public class AdminReportService implements AdminReportImpl{
 		}
 
 		if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-			queryBuilder.append(" AND pd.property_name LIKE :pgName");
+			queryBuilder.append(" AND LOWER(pd.property_name) LIKE LOWER(:pgName)");
 			parameters.put("pgName", "%" + filterData.getPgName() + "%");
 		}
 
@@ -437,7 +437,7 @@ public class AdminReportService implements AdminReportImpl{
 		}
 
 		if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-			queryBuilder.append(" AND pd.property_city ILIKE '%' || :cityLocation || '%'");
+			queryBuilder.append(" AND LOWER(pd.property_city) LIKE LOWER('%' || :cityLocation || '%')");
 			parameters.put("cityLocation", filterRequest.getCityLocation());
 		}
 
@@ -473,7 +473,7 @@ public class AdminReportService implements AdminReportImpl{
 
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		parameters.forEach(query::setParameter);
-
+		int filterCount=query.getResultList().size();
 		query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
 		query.setMaxResults(filterRequest.getPageSize());
 
@@ -493,8 +493,7 @@ public class AdminReportService implements AdminReportImpl{
 			return dto;
 		}).collect(Collectors.toList());
 
-		int resultCount = vendorPaymentsDto.size();
-		return new CommonResponseDTO<>(vendorPaymentsDto, resultCount);
+		return new CommonResponseDTO<>(vendorPaymentsDto, filterCount);
 	}
 
 

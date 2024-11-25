@@ -154,6 +154,9 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 	List<Object[]> findAllAdminUserPrivileges1();
 	
 	 boolean existsByUserEmail(String userEmail);
-	
+	 
+	 @Query(value = "SELECT * FROM pgadmin.user_master ORDER BY create_at DESC", nativeQuery = true)
+	 List<AdminUserMaster> findAllAdminUsersOrderedByCreationDateDesc();
+
 	
 }
