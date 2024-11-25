@@ -28,7 +28,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class BulkUploadComponent {
 	public ELEMENT_DATA:BulkUploadModel[];
 	dataSource:MatTableDataSource<BulkUploadModel>=new MatTableDataSource<BulkUploadModel>();
-	displayedColumns: string[] = [ 'fileName','category', 'status',  'createdAt']; 
+	displayedColumns: string[] = [ 'ownerName','propertyName','fileName','category', 'status',  'createdAt']; 
 	pageSizeOptions: number[] = [5, 10, 25, 50];
 	pageSize = 10;
 	bulkUpload :BulkUploadModel=new BulkUploadModel();
@@ -113,7 +113,7 @@ export class BulkUploadComponent {
 		if (fileType !== 'text/csv' && fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && fileType !== 'application/vnd.ms-excel') {
 		  this.filevali=true;
 	   	}    
-		}
+	}
   
 	getUploadFileDetails() {
 		 this.spinner.show();
@@ -145,17 +145,15 @@ export class BulkUploadComponent {
 			 		 }
 					 console.log("Error:"+str);
 					 this.errorMsg=str;
-					 }
+					 this.notifyService.showError(this.errorMsg, "");
+			       }
 					 if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
 				   }
 				});
 		   }
-		   submitUploadFile(){
+		submitUploadFile(){
 			//	this.authService.checkLoginUserVlidaate();
 			this.submitted = true;
-			console.log("Selected Owner:", this.selectedOwner);
-	     	console.log("Selected Property:", this.selectedProperty);
-
 			if (this.form.invalid || this.filevali) {
 			  return;
 			}
@@ -178,17 +176,19 @@ export class BulkUploadComponent {
 				form_data.append("file",this.upfile);
 				this.submitUploadPGFile(form_data);
 		    	}
-		    }
+		}
 
-		   submitUploadTenentFile(form_data:any){ 
+		submitUploadTenentFile(form_data:any){ 
 			this.confirmationDialogService.confirm('Confirmation!!', "Are you sure to upload the Data?")
 			.then(
 			  (confirmed) =>{ 
 				if(confirmed){
 			 this.spinner.show();
-			 console.log("submitUploadTenentFile" ,this.bulkUpload.category );
+		   //console.log("submitUploadTenentFile" ,this.bulkUpload.category );
 		   this.bulkUploadService.upload_tenant_file(form_data).subscribe((response) => {
 			console.log("response",response);
+			this.notifyService.showSuccess("File has been uploaded sucessfully", "");
+			this.getUploadFileDetails();
 		   this.spinner.hide();		 
 		   }, error => {
 			this.spinner.hide();		
@@ -218,6 +218,7 @@ export class BulkUploadComponent {
 				 }
 				 console.log("Error:" + str);
 				 this.errorMsg = str;
+				 this.notifyService.showError(this.errorMsg, "");
 			   }
 			   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
 			 }
@@ -225,55 +226,55 @@ export class BulkUploadComponent {
 		  }
 		  }).catch(
 			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-		  );
-			
+		  );	
 		}
-		submitUploadPGFile(form_data:any){ 
-			this.confirmationDialogService.confirm('Confirmation!!', "Are you sure to upload the Data?")
+	submitUploadPGFile(form_data:any){ 
+		this.confirmationDialogService.confirm('Confirmation!!', "Are you sure to upload the Data?")
 			.then(
 			  (confirmed) =>{ 
 				if(confirmed){
-			 this.spinner.show();
-		   this.bulkUploadService.upload_property_file(form_data).subscribe((response) => {
-		   this.spinner.hide();
-		   }, error => {
-			this.spinner.hide();
-			if(error?.status==409){
-            if(error?.error?.data){
-				this.uploadErrorModalList=error.error.data;
-				this.openModel.nativeElement.click();    
-			}
-
-			}else if(error.status==403){
-			   this.router.navigate(['/forbidden']);
-			 }else if (error.error && error.error.message) {
-			   this.errorMsg = error.error.message;
-			   console.log("Error:" + this.errorMsg);
-			   this.notifyService.showError(this.errorMsg, "");
-			   this.spinner.hide();
-			 } else {
-			   this.spinner.hide();
-			   if (error.status == 500 && error.statusText == "Internal Server Error") {
-				 this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-			   } else {
-				 let str;
-				 if (error.status == 400) {
-				   str = error.error;
-				 } else {
-				   str = error.message;
-				   str = str.substring(str.indexOf(":") + 1);
-				 }
-				 console.log("Error:" + str);
-				 this.errorMsg = str;
-			   }
-			   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			 }
-		   });
-		  }
-		  }).catch(
-			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-		  );
-			
+			 		this.spinner.show();
+		   			this.bulkUploadService.upload_property_file(form_data).subscribe((response) => {
+						this.notifyService.showSuccess("File has been uploaded sucessfully", "");
+						this.getUploadFileDetails();
+		   				this.spinner.hide();
+		   			}, error => {
+					this.spinner.hide();
+						if(error?.status==409){
+            				if(error?.error?.data){
+								this.uploadErrorModalList=error.error.data;
+								this.openModel.nativeElement.click();    
+							}
+						}else if(error.status==403){
+			   				this.router.navigate(['/forbidden']);
+						}else if (error.error && error.error.message) {
+						this.errorMsg = error.error.message;
+						console.log("Error:" + this.errorMsg);
+						this.notifyService.showError(this.errorMsg, "");
+						this.spinner.hide();
+						} else {
+			   					this.spinner.hide();
+							if (error.status == 500 && error.statusText == "Internal Server Error") {
+								this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+							} else {
+				 				let str;
+								if (error.status == 400) {
+								str = error.error;
+								} else {
+								str = error.message;
+								str = str.substring(str.indexOf(":") + 1);
+								}
+				 				console.log("Error:" + str);
+								 this.errorMsg = str;
+			   				}
+			   				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			 		}
+		   			});
+		   			this.getUploadFileDetails();
+		  		}
+		  		}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+		  		);	
 		}
 		downloadSampleFile(fileName:string){
 		const filePath = `assets/sample_files/${fileName+'.csv'}`;
@@ -309,8 +310,7 @@ export class BulkUploadComponent {
 			}else if (error.error && error.error.message) {
 			  this.errorMsg =error.error.message;
 			  console.log("Error:"+this.errorMsg);
-			  this.notifyService.showError(this.errorMsg, "");
-			  
+			  this.notifyService.showError(this.errorMsg, "");		  
 			} else {
 			  if(error.status==500 && error.statusText=="Internal Server Error"){
 				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
@@ -357,8 +357,7 @@ export class BulkUploadComponent {
 			}else if (error.error && error.error.message) {
 			  this.errorMsg =error.error.message;
 			  console.log("Error:"+this.errorMsg);
-			  this.notifyService.showError(this.errorMsg, "");
-			  
+			  this.notifyService.showError(this.errorMsg, "");			  
 			} else {
 			  if(error.status==500 && error.statusText=="Internal Server Error"){
 				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
@@ -399,8 +398,8 @@ export class BulkUploadComponent {
 				startWith(''),
 				map(value => this.filterOwners(value))
 			  );
-		this.spinner.hide();
-	  },error =>{
+		  this.spinner.hide();
+	    },error =>{
 		console.log("error>>",error)
 		this.spinner.hide();
 		if(error.status==403){
@@ -429,14 +428,14 @@ export class BulkUploadComponent {
 	  });
 	}	
 
-	filterOwners(value: string): OwnerPropertyDetails[] {
+	  filterOwners(value: string): OwnerPropertyDetails[] {
 		const filterValue = value.toLowerCase();
 		const obj = this.ownerPropertyDetailsList.filter(owner => 
 			owner.ownerName.toLowerCase().includes(filterValue)
 		  );
 		if(obj.length==0){
 			this.selectedOwner = null;
-		}
+		 }
 		return obj
 	  }
 
@@ -451,7 +450,6 @@ export class BulkUploadComponent {
 		  const list = this.selectedOwner.property_details.find(property => property.propertyId === selectedPropertyId);
 		  this.selectedProperty = list;
 		}
-
 }
 
 

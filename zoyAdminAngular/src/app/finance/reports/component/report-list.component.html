@@ -161,9 +161,9 @@
                                           {{ columnHeaders[column] || ' ' }}
                                           <i class="fas fa-lg fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i>
                                           <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
-                                             style="margin-right: 3px;margin-left: -12px;"></i>
+                                             style="margin-right: 3px;margin-left: -14px;"></i>
                                           <i class="fas fa-lg  fa-sort-down" *ngIf="sortActive === column && sortDirection === 'desc'" 
-                                             style="margin-right: 3px;margin-left: -12px;"></i></th>
+                                             style="margin-right: 3px;margin-left: -14px;"></i></th>
                                         <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
                                       </ng-container>
                                     </ng-container>

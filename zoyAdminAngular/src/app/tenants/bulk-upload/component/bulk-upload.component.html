@@ -64,7 +64,7 @@
 
                                </div>
                             <div style="height: 30px;margin-top:-15px;"> 
-                              <div *ngIf="submitted && selectedOwner == null" class="text-danger">
+                              <div style="font-size: 13px;" *ngIf="submitted && selectedOwner == null" class="text-danger">
                                   Owner Name is required
                                 </div>
                             </div>
@@ -83,7 +83,7 @@
                           
                                 </div>
                             <div style="height: 30px;margin-top:-15px;"> 
-                              <div *ngIf="submitted && selectedProperty == null" class="text-danger">
+                              <div style="font-size: 13px;" *ngIf="submitted && selectedProperty == null" class="text-danger">
                                   Property Name is required
                                 </div>
                             </div>
@@ -99,7 +99,7 @@
                                 </div>
                                <div style="height: 30px;margin-top:-15px;"> 
                                 <div *ngIf="submitted && form.controls.category.errors" class="text-danger">
-                                <div *ngIf="submitted && form.controls.category.errors.required">
+                                <div style="font-size: 13px;" *ngIf="submitted && form.controls.category.errors.required">
                                   Category is required
                                 </div>
                                 </div>
@@ -116,7 +116,7 @@
                               </div>
                               <div style="height: 30px;margin-top:-15px;">  
                                 <p style="color: rgb(194, 5, 178);font-size: 12px;">(Allows only csv/excel file)</p> 
-                                <div *ngIf="submitted && (form.controls.reqDocument.errors!=null || filevali) " class="text-danger">
+                                <div  style="font-size: 13px;" *ngIf="submitted && (form.controls.reqDocument.errors!=null || filevali) " class="text-danger">
                                   File is required
                                 </div>                                             
                               </div>
@@ -139,6 +139,14 @@
                                     <div>
                                     <table mat-table [dataSource]="dataSource" >
                                       <!-- File Name Column -->
+                                      <ng-container matColumnDef="ownerName">
+                                        <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">OWNER</th>
+                                        <td mat-cell *matCellDef="let element">{{ element.owner_name }}</td>
+                                      </ng-container>
+                                      <ng-container matColumnDef="propertyName">
+                                        <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">Property</th>
+                                        <td mat-cell *matCellDef="let element">{{ element.property_name }}</td>
+                                      </ng-container>
                                       <ng-container matColumnDef="fileName">
                                         <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">FILE NAME</th>
                                         <td mat-cell *matCellDef="let element">{{ element.file_name }}</td>
@@ -159,7 +167,7 @@
                                       <!-- createdAt Column -->
                                       <ng-container matColumnDef="createdAt">
                                         <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">CREATE DATE</th>
-                                        <td mat-cell *matCellDef="let element">{{ element.createdAt  }}</td>
+                                        <td mat-cell *matCellDef="let element">{{ element.created_at  }}</td>
                                       </ng-container>
                               
                               
@@ -168,7 +176,7 @@
                                       <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
                                     </table>
                                     
-                                    <div style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length === 0">
+                                    <div style="text-align: center; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length === 0">
                                       No records found
                                     </div>
                                   </div>
@@ -191,7 +199,7 @@
                         <div class="modal-content">
                           <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel" >Upload File Error</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="getUploadFileDetails()"></button>
                           </div>
                           <div class="modal-body">
                             <table class="table">
@@ -213,7 +221,7 @@
                           </div>
                           
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="getUploadFileDetails()">Close</button>
                           </div>
                         </div>
                       </div>
