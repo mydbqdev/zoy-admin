@@ -3,6 +3,7 @@ import { Inject, Injectable } from "@angular/core";
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { ServiceHelper } from 'src/app/common/shared/service-helper';
 import { BASE_PATH } from 'src/app/common/shared/variables';
+import {BASE_PATH_EXTERNAL_SERVER} from 'src/app/common/shared/variables';
 import { MessageService } from 'src/app/message.service';
 
 @Injectable({
@@ -17,6 +18,7 @@ export class BulkUploadService {
   constructor(
     private httpclient: HttpClient,
     @Inject(BASE_PATH) private basePath: string,
+    @Inject(BASE_PATH_EXTERNAL_SERVER) private basePathExternalServer: string,
     private messageService: MessageService
   ) {}
 
@@ -43,7 +45,8 @@ export class BulkUploadService {
       });
   }
   public getTenentSampleFile(): Observable<any> {
-    const url = 'https://api-qa.zoypg.com/zoy_partner/download_template_tenants'; 
+   // const url = 'https://api-qa.zoypg.com/zoy_partner/download_template_tenants'; 
+   const url = this.basePathExternalServer+'zoy_partner/download_template_tenants'; 
     sessionStorage.setItem('zoyadminapi','no');
 
     const returnObj =  this.httpclient.get<any>(
@@ -57,7 +60,7 @@ export class BulkUploadService {
   }
 
   public getPgPropertysSampleFile1(): Observable<any> {
-    const url = 'https://api-qa.zoypg.com/zoy_partner/download_template'; 
+    const url = this.basePathExternalServer +'zoy_partner/download_template'; 
      sessionStorage.setItem('zoyadminapi','no');
     
     const returnObj =  this.httpclient.get<any>(
@@ -71,7 +74,7 @@ export class BulkUploadService {
   }
 
   getPgPropertysSampleFile(): Observable<any> {
-    const url = 'https://api-qa.zoypg.com/zoy_partner/download_template'; 
+    const url = this.basePathExternalServer +'zoy_partner/download_template'; 
     sessionStorage.setItem('zoyadminapi','no');
     const headers = ServiceHelper.buildHeadersSampleFile();
     return this.httpclient.get(url,  {
