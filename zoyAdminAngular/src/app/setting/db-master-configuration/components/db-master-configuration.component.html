@@ -26,12 +26,9 @@
             <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">DB Master </span><span
                 class="text-header-800-blue">Configuration</span></h3>
             <div>
-              <select class="form-select form-select-sm" style="min-width: 150px;">
-                <option value="" disabled selected>Select Option</option>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-              </select>
+              <select class="custom-select custom-select-sm"  style="min-width: 150px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
+                <option *ngFor="let type of settingTypeObjClmApiDetailsList"  [value]="type.type" >{{type.type}}</option>
+            </select>
             </div>
           </div>
 
@@ -40,15 +37,16 @@
             <div class="card-body">
               <div class="col-xl-12 col-md-6 mb-2">
                 <div class="d-sm-flex align-items-center justify-content-between mb-3">
-                  <h3 class="mb-2">Option 1</h3>
+                  <h3 class="mb-2">{{settingType}}</h3>
                   <div class="col-auto">
-                    <button class="btn btn-primary-custom">create</button>
+                    <button class="btn btn-primary-custom" (click)="createSetting()" >create</button>
                   </div>
                 </div>
               
                     <!-- Card Body -->
+                     <!-- <div hidden>
                     <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
-                      <!-- User Name Column -->
+                    
                       <ng-container matColumnDef="firstName">
                         <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef mat-sort-header>
                           NAME
@@ -78,7 +76,7 @@
                         </td>
                       </ng-container>
 
-                      <!-- User Mail Column -->
+                     
                       <ng-container matColumnDef="userEmail">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 150px;font-weight: 600;">
                           EMAIL
@@ -94,7 +92,6 @@
                         </td>
                       </ng-container>
 
-                      <!-- Designation Column -->
                       <ng-container matColumnDef="designation">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 200px;font-weight: 600;">
                           DESIGNATION
@@ -125,7 +122,35 @@
                       No records found
                     </div>
                     <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
-                  
+                  </div> -->
+
+                  <div class="card-body" style="padding: 2px;margin: 0px;" >
+                    <div class="scrollable-container-main">    
+                      <table mat-table [dataSource]="dbSettingDataSource" multiTemplateDataRows>
+                        <ng-container *ngFor="let column of selectedsettingColumns">
+                          <ng-container [matColumnDef]="column">
+                            <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;"> 
+                              {{ columnHeaders[column] || ' ' }}{{column}}
+                            <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
+                          </ng-container>
+                        </ng-container>
+                        <ng-container matColumnDef="actions">
+                          <th mat-header-cell style="width: 50px;" *matHeaderCellDef ></th>
+                          <td mat-cell style="width: 50px;" *matCellDef="let element">
+                          <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails"  (click)="getElement(element)">
+                              <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
+                          </span>
+                          </td>
+                      </ng-container>  
+                      
+                        <tr mat-header-row *matHeaderRowDef="selectedsettingColumns; msticky:true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: selectedsettingColumns;"></tr>
+                      </table>
+                      <div style="text-align: center; min-height: 45px; padding-top: 10px;" *ngIf="dbSettingDataSource.data.length === 0">
+                        No records found
+                      </div>
+                       </div> 
+                  </div>
                 </div>
             </div> <!-- End Card Body -->
         </div>
@@ -136,4 +161,26 @@
     <!-- End of Content Wrapper -->
   </div>
   <!-- End of Page Wrapper -->
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="viewDetails" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+  <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasRightLabel">{{settingType}} Details</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <hr class="sidebar-divider my-0">
+  <div class="offcanvas-body">
+   <div style="font-size: 13px;">  
+
+    <div *ngFor="let key of objectKeys(dbSettingDataObj)">
+      <div class="row mb-1">
+          <div class="col-sm-5 font-weight-bold">
+              {{ columnHeaders[key] || key }}
+          </div>
+          <div class="col-sm-7">: {{ dbSettingDataObj[key] }}</div>
+      </div>
+    </div>
+ 
+  </div>
+  </div>
 </div>
