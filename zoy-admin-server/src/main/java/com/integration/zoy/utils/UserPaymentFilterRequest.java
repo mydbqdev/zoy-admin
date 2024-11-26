@@ -7,10 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class UserPaymentFilterRequest {
 	
 	@JsonProperty("pageIndex")
-	private int pageIndex = 0;
+	private int pageIndex;
 	
 	@JsonProperty("pageSize")
-	private int pageSize = 10; 
+	private int pageSize; 
 	
 	@JsonProperty("sortActive")
 	private String sortActive;
