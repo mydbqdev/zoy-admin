@@ -36,6 +36,7 @@ export const environment = {
     "settings":true,
     "settingsSubMenu":{
       "roleAndPermission":true,
+      "dbMasterConfiguration":true,
       "cancellationAndRefundRules":true,
       "percentageAndChargeConfigurations":true,
       "promotionAndOffersManagement":true

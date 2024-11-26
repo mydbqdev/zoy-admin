@@ -51,6 +51,7 @@ import { TenantMenuRoutingModule } from './tenants/tenents-menu-routing.module';
 import { BulkUploadComponent } from './tenants/bulk-upload/component/bulk-upload.component';
 import { PaymentApprovalComponent } from './finance/payment-appoval/component/payment-approval.component';
 import { OwnerDetailsComponent } from './owners/owner-details/components/managing-owner-details.component';
+import { DbMasterConfigurationComponent } from './setting/db-master-configuration/components/db-master-configuration.component';
 
 
 const appRoutes: Routes = [
@@ -84,7 +85,8 @@ const appRoutes: Routes = [
     TenantsComponent,
     BulkUploadComponent,
     PaymentApprovalComponent,
-    OwnerDetailsComponent
+    OwnerDetailsComponent,
+    DbMasterConfigurationComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
