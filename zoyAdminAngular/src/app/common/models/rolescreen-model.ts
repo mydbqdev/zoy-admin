@@ -36,9 +36,6 @@ export class RoleScreenModel {
     PAYMENT_APPROVAL_READ:boolean = false;
     PAYMENT_APPROVAL_WRITE:boolean = false;
 
-    
-
-    
     OWNER_ONBOARDING_AND_REGISTRATION_READ : boolean = false;
     OWNER_ONBOARDING_AND_REGISTRATION_WRITE : boolean = false;
 
@@ -54,6 +51,9 @@ export class RoleScreenModel {
 
     BULK_UPLOAD_READ: boolean = false;
     BULK_UPLOAD_WRITE: boolean = false;
+    
+    DB_MASTER_CONFIGURATION_READ: boolean = false;
+    DB_MASTER_CONFIGURATION_WRITE: boolean = false;
 
 
 }
