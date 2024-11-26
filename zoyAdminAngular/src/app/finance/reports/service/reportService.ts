@@ -64,19 +64,14 @@ import { MessageService } from 'src/app/message.service';
   
 	  reportColumnsList: { 'reportName': string, 'columns': string[] ,'object': any }[] = [
 		{
-		  'reportName': 'User Transactions Report',
+		  'reportName': 'Tenant Transactions Report', //== User Transactions Report
 		  'columns': ['customerName', 'PgPropertyId', 'transactionDate', 'transactionNumber', 'transactionStatus', 'actions'],
       'object':'new UserTransactionReportModel()'
     },
 		{
-		  'reportName': 'User Payments GST Report',
+		  'reportName': 'Tenant Payments GST Report', //==User Payments GST Report
 		  'columns': ['transactionDate', 'PgPropertyId', 'transactionNumber', 'totalAmount', 'gstAmount', 'actions'],
       'object':'new UserGSTPaymentModel()'
-		},
-		{
-		  'reportName': 'Consolidated Finance Report',
-		  'columns': ['transactionDate', 'customerId', 'transactionNumber', 'customerName', 'creditAmount', 'debitAmount', 'actions'],
-      'object':'new ConsilidatedFinanceDetailsModel()'
 		},
     {
 		  'reportName': 'Tenant Dues Report',
@@ -84,30 +79,36 @@ import { MessageService } from 'src/app/message.service';
       'object':'new TenantDuesDetailsModel()'
 		},
     {
-		  'reportName': 'Vendor Payments Report',
+		  'reportName': 'Owner Payments Report', //==Vendor Payments Report
 		  'columns': ['ownerId', 'pgId', 'pgName', 'amountPaidToOwner',  'transactionDate', 'paymentStatus', 'actions'],
      'object':'new VendorPaymentsModel()'
 		},
     {
-		  'reportName': 'Vendor Payments Dues Report',
+		  'reportName': 'Owner Payments Dues Report', //==Vendor Payments Dues Report
 		  'columns': ['ownerId', 'pgId', 'totalAmountPayable', 'totalAmountPaid', 'pendingAmount', 'pendingDueDate', 'actions'],
       'object':'new VendorPaymentsDues()'
 		},
     {
-		  'reportName': 'Vendor Payments Gst Report',
+		  'reportName': 'Owner Payments Gst Report',// == Vendor Payments Gst Report
 		  'columns': ['transactionDate','transactionNo','pgId','totalAmount','gstAmount','actions'],
       'object':'new VendorPaymentsGst()'
+		},
+    {
+		  'reportName': 'Consolidated Finance Report',
+		  'columns': ['transactionDate', 'customerId', 'transactionNumber', 'customerName', 'creditAmount', 'debitAmount', 'actions'],
+      'object':'new ConsilidatedFinanceDetailsModel()'
 		}
 	  ];
 
     reportNamesList:{'name':string,'key':string}[] = [
-      { name: "User Transactions Report", key: "userTransactionReport" },
-      { name: "User Payments GST Report", key: "userPaymentGstReport" },
-      { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
+      { name: "Tenant Transactions Report", key: "userTransactionReport" },
+      { name: "Tenant Payments GST Report", key: "userPaymentGstReport" },
       { name: "Tenant Dues Report", key: "tenantDuesReport" },
-      { name: "Vendor Payments Report", key: "vendorPaymentsReport" },
-      { name: "Vendor Payments Dues Report", key: "vendorPaymentsDuesReport" },
-      { name: "Vendor Payments Gst Report", key: "vendorPaymentsGstReport" }
+      { name: "Owner Payments Report", key: "vendorPaymentsReport" },
+      { name: "Owner Payments Dues Report", key: "vendorPaymentsDuesReport" },
+      { name: "Owner Payments Gst Report", key: "vendorPaymentsGstReport" },
+      { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
+  
       ];
 
       getCityList(): Observable<any> {
@@ -202,150 +203,6 @@ import { MessageService } from 'src/app/message.service';
     };
   }
 
-  vendorPaymentsGstMockData = [
-    {
-      transactionDate: '2024-11-01',
-      transactionNo: 'T12345',
-      pgId: 'PG001',
-      pgName: 'PG Name 1',
-      totalAmount: 5000,
-      gstAmount: 500,
-      basicAmount: 4500,
-      paymentMethod: 'Credit Card'
-    },
-    {
-      transactionDate: '2024-11-02',
-      transactionNo: 'T12346',
-      pgId: 'PG002',
-      pgName: 'PG Name 2',
-      totalAmount: 6000,
-      gstAmount: 600,
-      basicAmount: 5400,
-      paymentMethod: 'Debit Card'
-    },
-    {
-      transactionDate: '2024-11-03',
-      transactionNo: 'T12347',
-      pgId: 'PG003',
-      pgName: 'PG Name 3',
-      totalAmount: 7000,
-      gstAmount: 700,
-      basicAmount: 6300,
-      paymentMethod: 'Bank Transfer'
-    },
-    {
-      transactionDate: '2024-11-04',
-      transactionNo: 'T12348',
-      pgId: 'PG004',
-      pgName: 'PG Name 4',
-      totalAmount: 8000,
-      gstAmount: 800,
-      basicAmount: 7200,
-      paymentMethod: 'Cash'
-    },
-    {
-      transactionDate: '2024-11-05',
-      transactionNo: 'T12349',
-      pgId: 'PG005',
-      pgName: 'PG Name 5',
-      totalAmount: 5500,
-      gstAmount: 550,
-      basicAmount: 4950,
-      paymentMethod: 'Online Payment'
-    },
-    {
-      transactionDate: '2024-11-06',
-      transactionNo: 'T12350',
-      pgId: 'PG006',
-      pgName: 'PG Name 6',
-      totalAmount: 9000,
-      gstAmount: 900,
-      basicAmount: 8100,
-      paymentMethod: 'Cheque'
-    },
-    {
-      transactionDate: '2024-11-07',
-      transactionNo: 'T12351',
-      pgId: 'PG007',
-      pgName: 'PG Name 7',
-      totalAmount: 6500,
-      gstAmount: 650,
-      basicAmount: 5850,
-      paymentMethod: 'PayPal'
-    }
-  ];
- vendorPaymentsDuesReportMockData = [
-    {
-      ownerId: 'O001',
-      ownerName: 'John Doe',
-      pgId: 'PG001',
-      pgName: 'PG Name 1',
-      totalAmountPayable: 15000,
-      totalAmountPaid: 10000,
-      pendingAmount: 5000,
-      pendingDueDate: '2024-12-01'
-    },
-    {
-      ownerId: 'O002',
-      ownerName: 'Jane Smith',
-      pgId: 'PG002',
-      pgName: 'PG Name 2',
-      totalAmountPayable: 20000,
-      totalAmountPaid: 18000,
-      pendingAmount: 2000,
-      pendingDueDate: '2024-12-05'
-    },
-    {
-      ownerId: 'O003',
-      ownerName: 'Robert Brown',
-      pgId: 'PG003',
-      pgName: 'PG Name 3',
-      totalAmountPayable: 12000,
-      totalAmountPaid: 10000,
-      pendingAmount: 2000,
-      pendingDueDate: '2024-12-10'
-    },
-    {
-      ownerId: 'O004',
-      ownerName: 'Alice Johnson',
-      pgId: 'PG004',
-      pgName: 'PG Name 4',
-      totalAmountPayable: 25000,
-      totalAmountPaid: 22000,
-      pendingAmount: 3000,
-      pendingDueDate: '2024-12-15'
-    },
-    {
-      ownerId: 'O005',
-      ownerName: 'Charlie Williams',
-      pgId: 'PG005',
-      pgName: 'PG Name 5',
-      totalAmountPayable: 17000,
-      totalAmountPaid: 15000,
-      pendingAmount: 2000,
-      pendingDueDate: '2024-12-20'
-    },
-    {
-      ownerId: 'O006',
-      ownerName: 'David Miller',
-      pgId: 'PG006',
-      pgName: 'PG Name 6',
-      totalAmountPayable: 30000,
-      totalAmountPaid: 29000,
-      pendingAmount: 1000,
-      pendingDueDate: '2024-12-25'
-    },
-    {
-      ownerId: 'O007',
-      ownerName: 'Emily Davis',
-      pgId: 'PG007',
-      pgName: 'PG Name 7',
-      totalAmountPayable: 22000,
-      totalAmountPaid: 20000,
-      pendingAmount: 2000,
-      pendingDueDate: '2024-12-30'
-    }
-  ];
   
   }
   

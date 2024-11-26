@@ -37,14 +37,14 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	public totalProduct:number=0;
 	pageSize:number=10;
 	pageSizeOptions=[10,20,50];
-	selectedReportColumns: any[] = this.getColumnsForSelectedReport('User Transactions Report');
+	selectedReportColumns: any[] = this.getColumnsForSelectedReport('Tenant Transactions Report');
 	filterData :FilterData=new FilterData();
 	cityLocation: string[] = [];
 	reportNamesList = this.reportService.reportNamesList;
 	cityLocationName:string='';
 	fromDate:string='';
 	toDate:string='';
-	reportName:string ='User Transactions Report';
+	reportName:string ='Tenant Transactions Report';
 	downloadType :string='';
 	searchText:string='';
 
@@ -164,7 +164,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 
 	generateReport(){
 		this.reportDataSource.paginator = this.paginator;
-		this.getReportDetails(this.paginator.pageIndex +1, this.paginator.pageSize,this.sortActive,this.sortDirection);
+		this.getReportDetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
 		
 	}
 
@@ -179,14 +179,14 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			event.pageIndex=0;
 		   }
 		 this.pageSize=event.pageSize;
-		 this.getReportDetails(this.paginator.pageIndex +1, event.pageSize,this.sortActive,this.sortDirection);
+		 this.getReportDetails(this.paginator.pageIndex , event.pageSize,this.sortActive,this.sortDirection);
 	   }
 
  	 onSortData(sort: Sort) {
 		this.sortActive=sort.active;
 		this.sortDirection=sort.direction;
 		this.paginator.pageIndex=0;
-		 this.getReportDetails(this.paginator.pageIndex +1, this.pageSize,this.sortActive,this.sortDirection);
+		 this.getReportDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
 	   }
 
 
@@ -209,17 +209,15 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 				this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 				this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
 			
-				if( this.reportName =='Vendor Payments Dues Report' || this.reportName =='Vendor Payments Gst Report'){
+				if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Owner Payments Gst Report'){
 					this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
-					const data =this.reportName=='Vendor Payments Dues Report'?this.reportService.vendorPaymentsDuesReportMockData:this.reportService.vendorPaymentsGstMockData;
-					this.totalProduct=data.length;
-					this.reportDataList=Object.assign([],data);
+					this.totalProduct=0;
+					this.reportDataList=Object.assign([]);
 					this.reportDataSource = new MatTableDataSource(this.reportDataList);
 
 				}else{
 				this.spinner.show();
 				this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
-					console.log("data",data);
 				this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
 
 				  if(data?.data?.length >0){

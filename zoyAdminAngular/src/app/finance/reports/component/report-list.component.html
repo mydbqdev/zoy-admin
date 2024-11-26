@@ -50,56 +50,54 @@
                       <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width p-2 shadow" style="width: 500px;margin-right: 150px;" aria-labelledby="advanceSearch" data-bs-auto-close="false">
                         <div>
                           <div class="row mt-2 mb-0">
-                            <div class="col-sm-6" *ngIf="reportName == 'Tenant Dues Report'">
+                            <div class="col-sm-6" *ngIf="reportName == 'Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report'">
                               <div class="form-group">
                                 <label for="tenantId" class="text-search-header">Tenant ID</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantId" name="tenantId" />
                               </div>
                             </div>
-                          
-                            <div class="col-sm-6" *ngIf=" reportName =='User Transactions Report' || reportName =='User Payments GST Report'">
+                            <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report'">
                               <div class="form-group">
                                 <label for="tenantName" class="text-search-header">Tenant Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantName" name="tenantName" />
                               </div>
                             </div>
-                          
-                            <div class="col-sm-6" *ngIf="reportName == 'User Transactions Report'">
+                            <div class="col-sm-6" *ngIf="reportName == 'Tenant Transactions Report' || reportName == 'Owner Payments Report'">
                               <div class="form-group">
                                 <label for="transactionStatus" class="text-search-header">Transaction Status</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.transactionStatus" name="transactionStatus" />
                               </div>
                             </div>
                           
-                            <div class="col-sm-6" *ngIf="reportName == 'User Transactions Report' || reportName =='User Payments GST Report'">
+                            <div class="col-sm-6" *ngIf="reportName == 'Tenant Transactions Report' || reportName =='Tenant Payments GST Report' || reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report'">
                               <div class="form-group">
                                 <label for="modeOfPayment" class="text-search-header">Mode of Payment</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.modeOfPayment" name="modeOfPayment" />
                               </div>
                             </div>
                           
-                            <div class="col-sm-6" *ngIf="reportName == ''">
+                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Report' || reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report'">
                               <div class="form-group">
                                 <label for="zoyCode" class="text-search-header">ZOY Code</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.zoyCode" name="zoyCode" />
                               </div>
                             </div>
                           
-                            <div class="col-sm-6" *ngIf="reportName == 'Vendor Payments Report'|| reportName == 'Vendor Payments Dues Report'" >
+                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Report'|| reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report'" >
                               <div class="form-group">
                                 <label for="ownerName" class="text-search-header">Owner Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.ownerName" name="ownerName" />
                               </div>
                             </div>
                           
-                            <div class="col-sm-6" *ngIf="reportName == 'User Transactions Report' || reportName =='User Payments GST Report' " >
+                            <div class="col-sm-6" *ngIf="reportName == 'Tenant Transactions Report' || reportName == 'Tenant Dues Report'  || reportName =='Tenant Payments GST Report' || reportName == 'Owner Payments Report' || reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report'" >
                               <div class="form-group">
                                 <label for="pgId" class="text-search-header">PG ID</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgId" name="pgId" />
                               </div>
                             </div>
                           
-                            <div class="col-sm-6" *ngIf="reportName == ''">
+                            <div class="col-sm-6" *ngIf="reportName == 'Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName == 'Owner Payments Report' || reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report'">
                               <div class="form-group">
                                 <label for="pgName" class="text-search-header">PG Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgName" name="pgName" />
