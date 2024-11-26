@@ -1,7 +1,7 @@
 export class FiltersRequestModel{
 
     public searchText :string='';
-    public pageIndex :number =1 ;
+    public pageIndex :number =0 ;
     public pageSize :number  ;
     public sortActive:string="";
     public sortDirection:string="asc";
