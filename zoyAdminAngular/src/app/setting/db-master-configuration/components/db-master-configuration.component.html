@@ -130,7 +130,7 @@
                         <ng-container *ngFor="let column of selectedsettingColumns">
                           <ng-container [matColumnDef]="column">
                             <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;"> 
-                              {{ columnHeaders[column] || ' ' }}{{column}}
+                              {{ columnHeaders[column] || ' ' }}
                             <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
                           </ng-container>
                         </ng-container>
