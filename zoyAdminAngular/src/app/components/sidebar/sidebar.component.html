@@ -42,7 +42,7 @@
  <li class="nav-item" [ngClass]="{'active':menu21}" id="menu2" *ngIf="defMenu.owners && (rolesArray.includes('ZOYCODES_READ') || rolesArray.includes('MANAGING_OWNERS_READ'))" >
     <a [ngClass]="menu2 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(2)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseOwners"
     aria-expanded="false" aria-controls="collapseOwners">
-        <i class="fas fa-fw fa-users-cog"></i>
+        <i class="fas fa-fw fa-users"></i>
         <span>Owners</span>
     </a>
     <div id="collapseOwners" [ngClass]="menu2 ? 'collapse show':'collapse'" aria-labelledby="headingOwners" data-parent="#accordionSidebar">
@@ -76,7 +76,7 @@
 <li class="nav-item"  [ngClass]="{'active':menu71}" id="menu7" *ngIf="defMenu.tenants && (rolesArray.includes('TENANTSZOY_READ') ||rolesArray.includes('BULK_UPLOAD'))"> 
     <a [ngClass]="menu7 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(7)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseTenants"
     aria-expanded="false" aria-controls="collapseTenants">
-        <i class="fas fa-fw fa-cogs"></i>
+        <i class="fas fa-fw fa-door-open"></i>
         <span>Tenants</span>
     </a>
     <div id="collapseTenants" [ngClass]="menu7 ? 'collapse show':'collapse'" *ngIf="rolesArray.includes('TENANTSZOY_READ')"  aria-labelledby="headingTenants" data-parent="#accordionSidebar">
@@ -91,7 +91,7 @@
   <li class="nav-item" [ngClass]="{'active':menu51}" id="menu5" *ngIf="defMenu.finances && rolesArray.includes('REPORTS_READ')">
     <a [ngClass]="menu5 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" *ngIf="defMenu.finances && rolesArray.includes('REPORTS_READ')" (click)="expandMenu(5)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseFinances"
    [attr.aria-expanded]="!menu5" aria-controls="collapseFinances">
-        <i class="fas fa-fw fa-wrench"></i>
+        <i class="fas fa-fw fa-money-check"></i>
         <span>Finance</span>
     </a>
     <div id="collapseFinances" [ngClass]="menu5 ? 'collapse show':'collapse'" aria-labelledby="headingFinances"
@@ -110,7 +110,7 @@
    <li class="nav-item"  [ngClass]="{'active':menu61}" id="menu6" *ngIf="defMenu.supports && rolesArray.includes('TICKETS_READ')"> 
     <a [ngClass]="menu6 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(6)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseSupports"
     aria-expanded="false" aria-controls="collapseSupports">
-        <i class="fas fa-fw fa-cogs"></i>
+        <i class="fas fa-fw fa-headset"></i>
         <span>Support</span>
     </a>
     <div id="collapseSupports" [ngClass]="menu6 ? 'collapse show':'collapse'" *ngIf="rolesArray.includes('TICKETS_READ')"  aria-labelledby="headingSupport" data-parent="#accordionSidebar">

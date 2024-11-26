@@ -24,7 +24,7 @@
                     <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Reports</span></h3> 
                   </div>  
                   <div style="padding:10px 10px 0px;border:1px solid#dbdbdb;border-radius: 5px;">
-                    <div class="d-flex mb-1">
+                    <div class="d-flex mb-2">
                     <div style="width: 150px;">
                       <label for="email">City / Location</label>
                         <select class="custom-select custom-select-sm" aria-label="Default select example"   [(ngModel)]="cityLocationName" >
@@ -44,6 +44,104 @@
                               <input type="date" class="form-control form-control-sm" style="width: 120px;" id="toDate"  [(ngModel)]="toDate"/>
                             </div>
                     </div>
+                    <div class="ml-2" style="padding-top:32px;" *ngIf="reportName!='Vendor Payments Gst Report'">
+                      <a class="btn btn-dark btn-sm" title="Advance Search" id="advanceSearch"
+                      data-toggle="dropdown"><i class="fas fa-angle-double-down"></i></a>
+                      <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width p-2 shadow" style="width: 500px;margin-right: 150px;" aria-labelledby="advanceSearch" data-bs-auto-close="false">
+                        <div>
+                          <div class="row mt-2 mb-0">
+                            <div class="col-sm-6" *ngIf="reportName == 'Tenant Dues Report'">
+                              <div class="form-group">
+                                <label for="tenantId" class="text-search-header">Tenant ID</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantId" name="tenantId" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf=" reportName =='User Transactions Report' || reportName =='User Payments GST Report'">
+                              <div class="form-group">
+                                <label for="tenantName" class="text-search-header">Tenant Name</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantName" name="tenantName" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'User Transactions Report'">
+                              <div class="form-group">
+                                <label for="transactionStatus" class="text-search-header">Transaction Status</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.transactionStatus" name="transactionStatus" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'User Transactions Report' || reportName =='User Payments GST Report'">
+                              <div class="form-group">
+                                <label for="modeOfPayment" class="text-search-header">Mode of Payment</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.modeOfPayment" name="modeOfPayment" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == ''">
+                              <div class="form-group">
+                                <label for="zoyCode" class="text-search-header">ZOY Code</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.zoyCode" name="zoyCode" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'Vendor Payments Report'|| reportName == 'Vendor Payments Dues Report'" >
+                              <div class="form-group">
+                                <label for="ownerName" class="text-search-header">Owner Name</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.ownerName" name="ownerName" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'User Transactions Report' || reportName =='User Payments GST Report' " >
+                              <div class="form-group">
+                                <label for="pgId" class="text-search-header">PG ID</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgId" name="pgId" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == ''">
+                              <div class="form-group">
+                                <label for="pgName" class="text-search-header">PG Name</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgName" name="pgName" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'Consolidated Finance Report'">
+                              <div class="form-group">
+                                <label for="payeeId" class="text-search-header">Payee ID</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.payeeId" name="payeeId" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'Consolidated Finance Report'">
+                              <div class="form-group">
+                                <label for="payeeName" class="text-search-header">Payee Name</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.payeeName" name="payeeName" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'Consolidated Finance Report'">
+                              <div class="form-group">
+                                <label for="payerId" class="text-search-header">Payer ID</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.payerId" name="payerId" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'Consolidated Finance Report'" >
+                              <div class="form-group">
+                                <label for="payerName" class="text-search-header">Payer Name</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.payerName" name="payerName" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                       
+                        <!-- Apply Now button -->
+                        <div class="d-flex justify-content-center align-items-center mt-2">
+                          <button type="button" class="btn btn-primary-custom btn-sm" (click)="generateReport()" >Search / Generate Report</button>
+                        </div>
+                     </div>
+                    </div>
                     <div class="ml-2">
                       <div style="padding-top:32px;">
                         <button type="button" class="btn btn-primary-custom btn-sm" (click)="generateReport()" >Generate Report</button>
@@ -58,7 +156,7 @@
                       </select>
                     </div>
                   </div>
-                  <div class="row mt-2 mb-0" style="height: 80px;">
+                  <div class="row mt-2 mb-0" style="height: 80px;" [hidden]="true">
                     <div class="col-sm-2" *ngIf="reportName == 'Tenant Dues Report'">
                       <div class="form-group">
                         <label for="tenantId" class="text-search-header">Tenant ID</label>
