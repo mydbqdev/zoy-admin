@@ -24,29 +24,25 @@
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-3">
             <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">DB Master </span><span
-                class="text-header-800-blue">Configuration</span></h3>
-            <div>
-              <select class="custom-select custom-select-sm"  style="min-width: 150px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
-                <option *ngFor="let type of settingTypeObjClmApiDetailsList"  [value]="type.type" >{{type.type}}</option>
-            </select>
+                class="text-header-800-blue">Configuration</span> <i class="fas fa-angle-double-right" style="color:#97cded;margin-left:10px;"></i> 
+                <span class="text-header-800 ml-2">{{settingType}}</span>
+              </h3>
+            <div class="ml-auto">
+              <div class="d-flex">
+                <div><button class="btn btn-primary-custom  btn-sm  mr-2" (click)="createSetting()" >create</button></div>
+                <div><select class="custom-select custom-select-sm"  style="min-width: 150px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
+                  <option *ngFor="let type of settingTypeObjClmApiDetailsList"  [value]="type.type" >{{type.type}}</option>
+              </select>
+              </div>
+              </div>
             </div>
           </div>
 
           <!-- Content Row -->
           <div class="card shadow mb-2">
-            <div class="card-body">
-              <div class="col-xl-12 col-md-6 mb-2">
-                <div class="d-sm-flex align-items-center justify-content-between mb-3">
-                  <h3 class="mb-2">{{settingType}}</h3>
-                  <div class="col-auto">
-                    <button class="btn btn-primary-custom" (click)="createSetting()" >create</button>
-                  </div>
-                </div>
-              
                     <!-- Card Body -->
                      <!-- <div hidden>
-                    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
-                    
+                    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">                  
                       <ng-container matColumnDef="firstName">
                         <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef mat-sort-header>
                           NAME
@@ -151,8 +147,6 @@
                       </div>
                        </div> 
                   </div>
-                </div>
-            </div> <!-- End Card Body -->
         </div>
         <!-- /.container-fluid -->
       </div>

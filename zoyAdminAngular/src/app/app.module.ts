@@ -52,8 +52,9 @@ import { BulkUploadComponent } from './tenants/bulk-upload/component/bulk-upload
 import { PaymentApprovalComponent } from './finance/payment-appoval/component/payment-approval.component';
 import { OwnerDetailsComponent } from './owners/owner-details/components/managing-owner-details.component';
 import { DbMasterConfigurationComponent } from './setting/db-master-configuration/components/db-master-configuration.component';
-
-
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { DoughnutNgxChartComponent } from './chart/doughnut-ngx';
+import { BarNgxChartComponent } from './chart/barchart-ngx';
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
 ];
@@ -86,7 +87,9 @@ const appRoutes: Routes = [
     BulkUploadComponent,
     PaymentApprovalComponent,
     OwnerDetailsComponent,
-    DbMasterConfigurationComponent
+    DbMasterConfigurationComponent,
+    DoughnutNgxChartComponent,
+    BarNgxChartComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -107,7 +110,8 @@ const appRoutes: Routes = [
     NgMultiSelectDropDownModule.forRoot(),
     DragDropModule,
     AppSettingMenuRoutingModule,
-    TenantMenuRoutingModule
+    TenantMenuRoutingModule,
+    NgxChartsModule
   ],
   providers: [
     {
