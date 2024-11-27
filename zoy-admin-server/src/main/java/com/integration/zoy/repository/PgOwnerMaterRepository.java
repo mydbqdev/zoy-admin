@@ -13,11 +13,10 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	@Query(value = "select email_id, zoy_code from pg_owner_master where email_id = :emailId", nativeQuery = true)
     List<Object[]> findEmailAndZoyCodeByEmailId(String emailId);
 	
-	@Query(value="  SELECT \r\n"
-			+ "    pom.zoy_code, \r\n"
-			+ "    CONCAT(pom.first_name, ' ', pom.last_name) AS username,pom.email_id, pom.mobile_no, pom.created_at, \r\n"
-			+ "    CASE WHEN up.zoy_code IS NOT NULL THEN 'registered' ELSE 'pending' END AS status\r\n"
-			+ "    FROM pg_owner_master pom LEFT JOIN pgcommon.user_profile up ON pom.zoy_code = up.zoy_code",nativeQuery = true)
+	@Query(value = "  SELECT pom.zoy_code, \r\n" + "    CONCAT(pom.first_name, ' ', pom.last_name) AS username,\r\n"
+			+ "    pom.email_id,pom.mobile_no,pom.created_at, \r\n" + "    'pending' AS status\r\n"
+			+ "FROM pg_owner_master pom\r\n" + "LEFT JOIN pgcommon.user_profile up ON pom.zoy_code = up.zoy_code\r\n"
+			+ "WHERE up.zoy_code IS NULL;", nativeQuery = true)
 	List<Object[]> getAllPgOwnerDetails();
 
 @Query(value = "SELECT * " +

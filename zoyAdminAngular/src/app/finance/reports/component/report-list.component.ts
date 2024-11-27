@@ -79,8 +79,8 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		this.dataService.getIsExpandSideBar.subscribe(name=>{
 			this.isExpandSideBar=name;
 		});
-		this.fromDate=this.getCurrentDate();
-		this.toDate=this.getLastMonthDate();
+		this.fromDate=this.getLastMonthDate();
+		this.toDate=this.getCurrentDate();
 		this.reportColumnsList=reportService.reportColumnsList;
 		this.columnHeaders = reportService.columnHeaders;
 	}
