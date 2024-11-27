@@ -25,7 +25,7 @@
     max-height: calc(100vh - 220px);  /* Set a max height to enable vertical scrolling */
     overflow-y: auto;   /* Enable vertical scrolling */
     overflow-x: auto;   /* Enable horizontal scrolling */
-    padding-right: 10px; /* Optional: prevent scrollbar overlap */
+    padding-right: 0px; /* Optional: prevent scrollbar overlap */
     box-sizing: border-box; /* Prevents padding from affecting width */
 }
 
@@ -34,7 +34,7 @@
     height: calc(100vh - 301px);  /* Set a max height to enable vertical scrolling */
     overflow-y: auto;   /* Enable vertical scrolling */
     overflow-x: auto;   /* Enable horizontal scrolling */
-    padding-right: 10px; /* Optional: prevent scrollbar overlap */
+    padding-right: 0px; /* Optional: prevent scrollbar overlap */
     box-sizing: border-box; /* Prevents padding from affecting width */
 }
 

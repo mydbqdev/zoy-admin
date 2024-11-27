@@ -122,3 +122,25 @@ ngb-modal-backdrop.modal-backdrop {
   border-radius: 50%; 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
+
+
+.mat-mdc-header-row {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  height: 36px !important;
+  color: var(--mat-table-header-headline-color, var(--mat-app-on-surface, rgba(0, 0, 0, 0.87)));
+  font-family: 'CircularStd-Bold' !important;
+  line-height: var(--mat-table-header-headline-line-height, var(--mat-app-title-small-line-height));
+  font-size: 13px !important;
+  font-weight: 600px;
+  background-color: #f7f7f7 !important;
+}
+
+.mat-mdc-row, .mdc-data-table__content {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-family: 'NunitoSans-Regular' !important;
+  line-height: var(--mat-table-row-item-label-text-line-height, var(--mat-app-body-medium-line-height));
+  font-size: 13px !important;
+  font-weight: var(--mat-table-row-item-label-text-weight, var(--mat-app-body-medium-weight));
+}
