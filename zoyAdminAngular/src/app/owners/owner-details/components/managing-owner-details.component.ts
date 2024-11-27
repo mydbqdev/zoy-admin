@@ -139,4 +139,11 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			this.collaspeListRight[1].selected=false;
 		 }
 	  }
+
+	  pdfSource: string = "";
+	  readViewFileForApproval() {
+		this.spinner.show();
+		  this.pdfSource = '/assets/sample_files/sample.pdf';
+		  this.spinner.hide();
+	  }
   }  
