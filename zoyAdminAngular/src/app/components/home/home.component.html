@@ -24,8 +24,8 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-3">
                         <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Dashboard</span></h3> 
                         <div>
-                        <a href="javascript:void(0)"  class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm mr-3"><i class="far fa-eye"></i> View Transactions</a>
-                        <a href="javascript:void(0)" class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm"><i class="fas fa-plus-circle"></i> Add PG Owners</a>
+                        <a href="javascript:void(0)"  class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm mr-3"> View Tenants Transactions</a>
+                        <a href="javascript:void(0)" routerLink="/zoy-code" class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm"> Generate Zoy Code</a>
                          </div>
                     </div>
 
@@ -33,7 +33,7 @@
                 <div class="row">
                     <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-3 col-md-6 mb-3">
-                        <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card border-left-primary shadow h-100 py-1">
                             <div class="card-body" style="padding: 15px;">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
@@ -45,7 +45,7 @@
                                         <div style="border-radius: 15px;background-color: rgb(232, 242, 247);"><i class="fas fa-user-friends text-primary" style="margin: 10px;font-size: 22px;"></i></div>
                                     </div>
                                 </div>
-                                <div><i class="fas fa-arrow-trend-up"></i></div>
+                                <div class="mt-2"><span class="mr-1"><img src="assets/images/trending_up.svg"/></span> <span class="text-info" style="font-size: 13px;">8.3%</span> <span class="text-gray-800 ml-1" style="font-size: 13px;">Up from past week</span></div>
                             </div>
                         </div>
                     </div>
@@ -64,6 +64,7 @@
                                         <div style="border-radius: 15px;background-color: rgb(247, 204, 184);"><i class="fas fa-house-user text-danger" style="margin: 10px;font-size: 22px;"></i></div>
                                     </div>
                                 </div>
+                                <div class="mt-2"><span class="mr-1"><img src="assets/images/trending_up.svg"/></span> <span class="text-info" style="font-size: 13px;">4.3%</span> <span class="text-gray-800 ml-1" style="font-size: 13px;">Up from past week</span></div>
                             </div>
                         </div>
                     </div>
@@ -82,6 +83,7 @@
                                         <div style="border-radius: 15px;background-color: rgb(245, 236, 202);"><i class="far fa-building text-warning" style="margin: 10px;font-size: 22px;"></i></div>
                                     </div>
                                 </div>
+                                <div class="mt-2"><span class="mr-1"><img src="assets/images/trending_down.svg"/></span> <span class="text-danger" style="font-size: 13px;">0.3%</span> <span class="text-gray-800 ml-1" style="font-size: 13px;">Up from past week</span></div>
                             </div>
                         </div>
                     </div>
@@ -100,6 +102,7 @@
                                         <div style="border-radius: 15px;background-color: rgb(220, 234, 248);"><i class="fas fa-chart-line text-info" style="margin: 10px;font-size: 22px;"></i></div>
                                     </div>
                                 </div>
+                                <div class="mt-2"><span class="mr-1"><img src="assets/images/trending_up.svg"/></span> <span class="text-info" style="font-size: 13px;">2.3%</span> <span class="text-gray-800 ml-1" style="font-size: 13px;">Up from past week</span></div>
                             </div>
                         </div>
                     </div>
@@ -131,7 +134,7 @@
                                                         <i class="fas fa-circle mr-1" style="color:rgb(202, 6, 170);"></i><span style="color:rgb(202, 6, 170);">ZOY Share</span> <i class="fas fa-circle ml-2 mr-1" style="color:rgb(0, 183, 255);"></i><span style="color:rgb(0, 183, 255);">User Payments</span>
                                                     </div>
                                                 </div>
-                                                <div><!--barchart-ngx></barchart-ngx --></div>
+                                                <div><barchart-ngx></barchart-ngx></div>
                                               </div>
                                         </div>
                                     </div>        
@@ -139,7 +142,7 @@
                                 <div class="col-sm-5">
                                     <div class="card mb-2">
                                         <div class="card-body">
-                                              <div>
+                                              <div style="height: 478px;">
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                                     <!-- Title -->
                                                     <div class="text-xs font-weight-bold mb-1" style="font-size: 20px;"> Total Bookings</div>
@@ -155,10 +158,10 @@
                                                 </div>
                                                 <div>   
                                                     <doughnut-ngx></doughnut-ngx>
-                                                    <div class="d-flex justify-content-around">
-                                                        <div><div style="font-size: 16px;">7,000</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:rgb(42, 204, 245);"></i>Checked-in</div></div>
-                                                        <div><div style="font-size: 16px;">2,000</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:rgb(202, 6, 170);"></i>Booked</div></div>
-                                                        <div><div style="font-size: 16px;">1,000</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:rgb(245, 173, 233);"></i>Vacancy</div></div>
+                                                    <div class="d-flex justify-content-around mt-2">
+                                                        <div><div style="font-size: 16px;">7,000</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:#448EFC;"></i>Checked-in</div></div>
+                                                        <div><div style="font-size: 16px;">2,000</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:#FF8743;"></i>Booked</div></div>
+                                                        <div><div style="font-size: 16px;">1,000</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:#E1E4E8;"></i>Vacancy</div></div>
                                                     </div>      
                                                 </div>
                                               </div>
@@ -168,9 +171,9 @@
                             </div>        
                         </div>
                         <div class="col-sm-3">
-                            <div class="card mb-2">
+                            <div class="card mb-2" style="height: fit-content;">
                                 <div class="card-body">
-                                    <div class="no-gutters align-items-center">
+                                    <div class="no-gutters align-items-center" style="height: 478px;">
                                         <!-- Row with Title and Dropdown -->
                                             <div class="text-xs font-weight-bold mb-3" style="font-size: 20px;"> Total Issues</div>
                                             <div class="mr-3 mb-3 pb-2">

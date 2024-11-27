@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
   selector: 'doughnut-ngx',
   template: `<ngx-charts-pie-chart
   [view]="[250, 250]"
+  [customColors]="colorScheme"
   [results]="series"
   [legend]="false"
   [labels]="false"
@@ -30,6 +31,17 @@ export class DoughnutNgxChartComponent {
           "label": "10%"
         }
       ];
+      // your color scheme
+  colorScheme = [
+      {"name": "Vacancy",
+          "value":'#E1E4E8'}, 
+          {
+            "name": "Checked-in",
+            "value":'#448EFC'},
+            {
+              "name": "Booked",
+              "value":'#FF8743'}
+    ];
     
       pieChartLabel(series: any[], name: string): string {
           const item = series.filter(data => data.name === name);
