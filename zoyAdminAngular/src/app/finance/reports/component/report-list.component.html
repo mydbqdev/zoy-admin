@@ -253,7 +253,7 @@
                                            matSortDisableClear multiTemplateDataRows>
                                     <ng-container *ngFor="let column of selectedReportColumns">
                                       <ng-container [matColumnDef]="column">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> 
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;" [matTooltip]="columnHeaders[column] "> 
                                           {{ columnHeaders[column] || ' ' }}
                                           <i class="fas fa-lg fa-sort" style="color:#d1cfcf;margin-right: 3px;"></i>
                                           <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 

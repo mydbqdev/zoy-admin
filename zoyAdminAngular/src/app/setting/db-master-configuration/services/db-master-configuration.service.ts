@@ -23,32 +23,70 @@ export class DbMasterConfigurationService {
 
 
   settingTypeObjClmApiDetails: settingTypeObjClmApiDetailsModel[]=[
-  //{ 'type': string,'obj':string, 'columns': string[] ,'api': string  }[] = [
 		{
 		  'type': 'Share Type',
-      'obj' : 'new shareTypeModel()',
 		  'columns': ['share_type', 'share_occupancy_count', 'actions'],
       'api':'zoy_admin/shareType'
     },
     {
 		  'type': 'Room Type',
-      'obj' : 'new roomTypeModel()',
 		  'columns': ['room_type_name', 'actions'],
       'api':'zoy_admin/roomType'
     },
     {
 		  'type': 'Rent Cycle',
-      'obj' : 'new rentCycleModel()',
 		  'columns': ['cycle_name', 'actions'],
       'api':'zoy_admin/rentCycle'
     },
+    {
+		  'type': 'PG Type',
+		  'columns': ['pg_type_name', 'actions'],
+      'api':'zoy_admin/pgType'
+    },
+    {
+		  'type': 'Notification Mode',
+		  'columns': ['notification_mod_name', 'actions'],
+      'api':'zoy_admin/notification_mode'
+    },
+    {
+		  'type': 'Factor',
+		  'columns': ['factor_name', 'actions'],
+      'api':'zoy_admin/factor'
+    },
+    {
+		  'type': 'Due Type',
+		  'columns': ['due_type_name', 'actions'],
+      'api':'zoy_admin/dueType'
+    },
+    {
+      'type': 'Currency Type',
+      'columns': ['currency_name', 'actions'],
+      'api': 'zoy_admin/currencyType'
+    },
+    {
+        'type': 'Billing Type',
+        'columns': ['billing_type_name', 'actions'],
+        'api': 'zoy_admin/billingType'
+    },
+    {
+        'type': 'Ameneties',
+        'columns': ['ameneties_name', 'actions'],
+        'api': 'zoy_admin/ameneties'
+    }
   ]
 
   columnHeaders = {
     'share_type': 'SHARE TYPE',                 
     'share_occupancy_count': 'SHARE OCCUPANCY COUNT',
     'room_type_name': 'ROOM TYPE NAME',
-    'cycle_name': 'CYCLE NAME'
+    'cycle_name': 'Rent CYCLE',
+    'pg_type_name': 'PG TYPE NAME',
+    'notification_mod_name':'NOTIFICATION MOD NAME',
+    'factor_name':'FACTOR NAME',
+    'due_type_name':'DUE TYPE',
+    'currency_name': 'CURRENCY NAME',
+    'billing_type_name': 'BILLING TYPE NAME',
+    'ameneties_name': 'AMENETIES NAME'
   }
 
   getDbSettingDetails(api:string): Observable<any> {
@@ -63,17 +101,30 @@ export class DbMasterConfigurationService {
         );
   } 
 
-
-    public getDbMasterConfigurationList(): Observable<any> {
-    const url = this.basePath + 'zoy_admin/getDbMasterConfigurationList'; 
-    return  this.httpclient.get<any>(
-      url,
-      {
-          headers:ServiceHelper.buildHeaders(),
-         observe : 'body',
-         withCredentials:true
-      });
-  }
+  submitData(data:any,isCreate:boolean,api:string): Observable<any> {
+    const url1=this.basePath +api;
+    if(isCreate){
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+              observe : 'body',
+              withCredentials:true
+            }
+        );
+    }else{
+        return  this.httpclient.put<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+      }
+  } 
 
 
 
@@ -92,4 +143,6 @@ export class DbMasterConfigurationService {
       return of(result as T);
     };
   }
+
+
 }

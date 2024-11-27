@@ -29,103 +29,28 @@
               </h3>
             <div class="ml-auto">
               <div class="d-flex">
-                <div><button class="btn btn-primary-custom  btn-sm  mr-2" (click)="createSetting()" >create</button></div>
-                <div><select class="custom-select custom-select-sm"  style="min-width: 150px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
+                <div>
+                  <button class="btn btn-primary-custom  btn-sm  mr-2" (click)="createSetting()" 
+                  data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails">create</button></div>
+                  <select class="custom-select custom-select-sm"  style="min-width: 150px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
                   <option *ngFor="let type of settingTypeObjClmApiDetailsList"  [value]="type.type" >{{type.type}}</option>
               </select>
-              </div>
               </div>
             </div>
           </div>
 
           <!-- Content Row -->
           <div class="card shadow mb-2">
-                    <!-- Card Body -->
-                     <!-- <div hidden>
-                    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">                  
-                      <ng-container matColumnDef="firstName">
-                        <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef mat-sort-header>
-                          NAME
-                          <span style="margin-left: 2px;">
-                            <i class="fas fa-lg fa-sort-up sorting-normal-color"
-                              [ngClass]="{'sorting-selected-color': columnSortDirections['firstName'] === 'asc' }"></i>
-                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px"
-                              [ngClass]="{'sorting-selected-color': columnSortDirections['firstName'] === 'desc'}"></i>
-                          </span>
-                        </th>
-                        <td mat-cell *matCellDef="let element" style="width: 200px;">
-                          {{element.firstName}}
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="lastName">
-                        <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef mat-sort-header>
-                          LAST NAME
-                          <span style="margin-left: 2px;">
-                            <i class="fas fa-lg fa-sort-up sorting-normal-color"
-                              [ngClass]="{'sorting-selected-color': columnSortDirections['lastName'] === 'asc' }"></i>
-                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px"
-                              [ngClass]="{'sorting-selected-color': columnSortDirections['lastName'] === 'desc'}"></i>
-                          </span>
-                        </th>
-                        <td mat-cell *matCellDef="let element" style="width: 200px;">
-                          {{element.lastName}}
-                        </td>
-                      </ng-container>
-
-                     
-                      <ng-container matColumnDef="userEmail">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 150px;font-weight: 600;">
-                          EMAIL
-                          <span style="margin-left: 2px;">
-                            <i class="fas fa-lg fa-sort-up sorting-normal-color"
-                              [ngClass]="{'sorting-selected-color': columnSortDirections['userEmail'] === 'asc' }"></i>
-                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px"
-                              [ngClass]="{'sorting-selected-color': columnSortDirections['userEmail'] === 'desc'}"></i>
-                          </span>
-                        </th>
-                        <td mat-cell *matCellDef="let element" style="width: 150px;">
-                          {{element.userEmail}}
-                        </td>
-                      </ng-container>
-
-                      <ng-container matColumnDef="designation">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 200px;font-weight: 600;">
-                          DESIGNATION
-                          <span style="margin-left: 2px;">
-                            <i class="fas fa-lg fa-sort-up sorting-normal-color"
-                              [ngClass]="{'sorting-selected-color': columnSortDirections['designation'] === 'asc' }"></i>
-                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px"
-                              [ngClass]="{'sorting-selected-color': columnSortDirections['designation'] === 'desc'}"></i>
-                          </span>
-                        </th>
-                        <td mat-cell *matCellDef="let element" style="width: 200px;">
-                          {{element?.designation}}
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="action">
-                        <th mat-header-cell *matHeaderCellDef style="width: 30px;"> Action</th>
-                        <td mat-cell *matCellDef="let element" style="width: 30px;padding: 5px;">
-                          <a href="javascript:void(0)"><i class="far fa-edit"></i></a> 
-                        </td>
-                      </ng-container>
-                      
-                      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
-                      <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
-                    </table>
-                    <div
-                      style="text-align: center; border-bottom: 1px solid #bfbbbb; min-height: 45px; padding-top: 10px;"
-                      *ngIf="dataSource.data.length == 0">
-                      No records found
-                    </div>
-                    <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
-                  </div> -->
-
                   <div class="card-body" style="padding: 2px;margin: 0px;" >
                     <div class="scrollable-container-main">    
+
+                      <div class="card-body" style="padding:2px;margin:0px;">
+                        <div style="max-height: calc(100vh - 170px); overflow: auto;">
+                            <div class="desc-inner" style="height:calc(100vh - 170px);">
                       <table mat-table [dataSource]="dbSettingDataSource" multiTemplateDataRows>
-                        <ng-container *ngFor="let column of selectedsettingColumns">
+                        <ng-container *ngFor="let column of selectedsettingColumns ">
                           <ng-container [matColumnDef]="column">
-                            <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;"> 
+                            <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;" [matTooltip]="columnHeaders[column] "> 
                               {{ columnHeaders[column] || ' ' }}
                             <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
                           </ng-container>
@@ -133,17 +58,20 @@
                         <ng-container matColumnDef="actions">
                           <th mat-header-cell style="width: 50px;" *matHeaderCellDef ></th>
                           <td mat-cell style="width: 50px;" *matCellDef="let element">
-                          <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails"  (click)="getElement(element)">
-                              <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
+                          <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails"  (click)="getElement(element)">
+                              <i class="bi bi-pencil-square" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
                           </span>
                           </td>
                       </ng-container>  
                       
-                        <tr mat-header-row *matHeaderRowDef="selectedsettingColumns; msticky:true"></tr>
+                        <tr mat-header-row *matHeaderRowDef="selectedsettingColumns; sticky: true"></tr>
                         <tr mat-row *matRowDef="let row; columns: selectedsettingColumns;"></tr>
                       </table>
                       <div style="text-align: center; min-height: 45px; padding-top: 10px;" *ngIf="dbSettingDataSource.data.length === 0">
                         No records found
+                      </div>
+                            </div>
+                        </div>
                       </div>
                        </div> 
                   </div>
@@ -157,24 +85,190 @@
   <!-- End of Page Wrapper -->
 </div>
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="viewDetails" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="createUpdateDetails" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
   <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasRightLabel">{{settingType}} Details</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <h5 class="offcanvas-title" id="offcanvasRightLabel"> <span>{{isCreated?'Create ':'Update '}}</span> {{settingType}} Details</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #closeModel ></button>
   </div>
   <hr class="sidebar-divider my-0">
   <div class="offcanvas-body">
    <div style="font-size: 13px;">  
 
-    <div *ngFor="let key of objectKeys(dbSettingDataObj)">
-      <div class="row mb-1">
-          <div class="col-sm-5 font-weight-bold">
-              {{ columnHeaders[key] || key }}
+  <div *ngIf="settingType == 'Share Type' ">
+    <div class="mb-3 row">
+
+      <div class="form-group">
+        <label for="share_type" >Share type :</label>
+        <input type="text" class="form-control" id="share_type" [(ngModel)]="dbSettingDataModel.share_type" 
+        [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.share_type == null || this.dbSettingDataModel.share_type == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.share_type == null || this.dbSettingDataModel.share_type == '' )" class="text-danger">
+          Share type is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="share_type" >Share occupancy count :</label>
+        <input type="text" class="form-control" id="share_occupancy_count" [(ngModel)]="dbSettingDataModel.share_occupancy_count" (keypress)="numberOnly($event)"  autocomplete="false" required
+        [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.share_occupancy_count == null || this.dbSettingDataModel.share_occupancy_count == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.share_occupancy_count == null || this.dbSettingDataModel.share_occupancy_count == '' )" class="text-danger">
+          Share occupancy count is required.
+        </div>
+      </div>
+
+  </div>
+  </div>
+
+  <div *ngIf="settingType == 'Room Type' ">
+
+  <div class="form-group">
+    <label for="contactNumber">Room Type Name :</label>
+    <input type="text" class="form-control" 
+    id="lastname"  placeholder="Room Type Name " required autocomplete="false" [(ngModel)]="this.dbSettingDataModel.room_type_name" autocomplete="off"
+    [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.room_type_name == null || this.dbSettingDataModel.room_type_name == '' )}" >
+    <div *ngIf="submitted && (this.dbSettingDataModel.room_type_name == null || this.dbSettingDataModel.room_type_name == '' )" class="text-danger">
+      Room type name is required.
+    </div>
+  </div>
+
+  </div>
+
+    <div *ngIf="settingType == 'Rent Cycle'">
+      <div class="form-group">
+        <div class="row mb-1">
+          <div class="col-sm-3 mt-2">
+             <label for="cycleName">Rent Cycle:</label>
           </div>
-          <div class="col-sm-7">: {{ dbSettingDataObj[key] }}</div>
+          <div class="col-sm-3">
+            <input type="number" class="form-control"
+            id="cycle_first"  required autocomplete="off"
+            [(ngModel)]="this.dbSettingDataModel.cycle_first" [min]="1" [max]="30"
+            [ngClass]="{'is-invalid': submitted && (this.dbSettingDataModel.cycle_first == null || this.dbSettingDataModel.cycle_first < 1 || this.dbSettingDataModel.cycle_first > 31)}">
+          </div>
+          <div class="col-sm-1">
+            <h2>-</h2>
+          </div>
+          <div class="col-sm-3">
+            <input type="number" class="form-control" [min]="1" [max]="30"
+          id="cycle_second"  required autocomplete="off"
+          [(ngModel)]="this.dbSettingDataModel.cycle_second"
+          [ngClass]="{'is-invalid': submitted && (this.dbSettingDataModel.cycle_second == null || this.dbSettingDataModel.cycle_second < 1 || this.dbSettingDataModel.cycle_second > 31)}">
+    
+          </div>
+      </div>
+      <div *ngIf="submitted && (this.dbSettingDataModel.cycle_first == null || this.dbSettingDataModel.cycle_second == null )" class="text-danger">
+        Rent Cycle is required.
+      </div>
+
+        <div *ngIf="submitted && this.dbSettingDataModel.cycle_first != null && this.dbSettingDataModel.cycle_second != null && (this.dbSettingDataModel.cycle_first < 1 || this.dbSettingDataModel.cycle_first > 31 ||  this.dbSettingDataModel.cycle_second < 1 || this.dbSettingDataModel.cycle_second > 31)" class="text-danger">
+          Rent Cycle is invalid.
+        </div>
+       
       </div>
     </div>
- 
+    
+
+  <div *ngIf="settingType == 'PG Type' ">
+
+      <div class="form-group">
+        <label for="contactNumber">PG Type :</label>
+        <input type="text" class="form-control" 
+        id="pg_type_name"  placeholder="PG Type " required autocomplete="false" [(ngModel)]="this.dbSettingDataModel.pg_type_name"
+        [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.pg_type_name == null || this.dbSettingDataModel.pg_type_name == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.pg_type_name == null || this.dbSettingDataModel.pg_type_name == '' )" class="text-danger">
+          PG Type is required.
+        </div>
+      </div>
+    
+     </div>
+
+     <div *ngIf="settingType == 'Notification Mode' ">
+
+      <div class="form-group">
+        <label for="contactNumber">Notification Mode :</label>
+        <input type="text" class="form-control" 
+        id="pg_type_name"  placeholder="Notification Mode " required autocomplete="false" [(ngModel)]="this.dbSettingDataModel.notification_mod_name" autocomplete="off"
+        [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.notification_mod_name == null || this.dbSettingDataModel.notification_mod_name == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.notification_mod_name == null || this.dbSettingDataModel.notification_mod_name == '' )" class="text-danger">
+          Notification Mode is required.
+        </div>
+      </div>
+    
+     </div>
+
+     <div *ngIf="settingType == 'Factor' ">
+
+      <div class="form-group">
+        <label for="factor_name">Factor Name:</label>
+        <input type="text" class="form-control" 
+        id="factor_name"  placeholder="Factor Name " required autocomplete="false" [(ngModel)]="this.dbSettingDataModel.factor_name" autocomplete="off"
+        [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.factor_name == null || this.dbSettingDataModel.factor_name == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.factor_name == null || this.dbSettingDataModel.factor_name == '' )" class="text-danger">
+          Factor Name is required.
+        </div>
+      </div>
+    
+     </div>
+
+     <div *ngIf="settingType == 'Due Type' ">
+
+      <div class="form-group">
+        <label for="due_type_name">Due Type Name:</label>
+        <input type="text" class="form-control" 
+               id="due_type_name" placeholder="Due Type Name" required autocomplete="false" 
+               [(ngModel)]="this.dbSettingDataModel.due_type_name" autocomplete="off"
+               [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.due_type_name == null || this.dbSettingDataModel.due_type_name == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.due_type_name == null || this.dbSettingDataModel.due_type_name == '' )" class="text-danger">
+          Due Type Name is required.
+        </div>
+      </div>
+    
+    </div>
+
+    <div *ngIf="settingType == 'Currency Type' ">
+      <div class="form-group">
+        <label for="currency_name">Currency Name:</label>
+        <input type="text" class="form-control" 
+               id="currency_name" placeholder="Currency Name" required autocomplete="false" 
+               [(ngModel)]="this.dbSettingDataModel.currency_name" autocomplete="off"
+               [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.currency_name == null || this.dbSettingDataModel.currency_name == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.currency_name == null || this.dbSettingDataModel.currency_name == '' )" class="text-danger">
+          Currency Name is required.
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="settingType == 'Billing Type' ">
+      <div class="form-group">
+        <label for="billing_type_name">Billing Type Name:</label>
+        <input type="text" class="form-control" 
+               id="billing_type_name" placeholder="Billing Type Name" required autocomplete="false" 
+               [(ngModel)]="this.dbSettingDataModel.billing_type_name" autocomplete="off"
+               [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.billing_type_name == null || this.dbSettingDataModel.billing_type_name == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.billing_type_name == null || this.dbSettingDataModel.billing_type_name == '' )" class="text-danger">
+          Billing Type Name is required.
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="settingType == 'Ameneties' ">
+      <div class="form-group">
+        <label for="ameneties_name">Ameneties Name:</label>
+        <input type="text" class="form-control" 
+               id="ameneties_name" placeholder="Ameneties Name" required autocomplete="false" 
+               [(ngModel)]="this.dbSettingDataModel.ameneties_name" autocomplete="off"
+               [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '' )" class="text-danger">
+          Ameneties Name is required.
+        </div>
+      </div>
+    </div>
+    
+    
+  <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;">
+    <button type="submit" class="btn btn-primary-custom me-2" (click)="submitData()" >Submit
+     </button>
+  </div>
+
   </div>
   </div>
 </div>
