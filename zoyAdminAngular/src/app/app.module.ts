@@ -55,6 +55,8 @@ import { DbMasterConfigurationComponent } from './setting/db-master-configuratio
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DoughnutNgxChartComponent } from './chart/doughnut-ngx';
 import { BarNgxChartComponent } from './chart/barchart-ngx';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
 ];
@@ -111,7 +113,8 @@ const appRoutes: Routes = [
     DragDropModule,
     AppSettingMenuRoutingModule,
     TenantMenuRoutingModule,
-    NgxChartsModule
+    NgxChartsModule,
+    PdfViewerModule
   ],
   providers: [
     {
