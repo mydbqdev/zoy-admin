@@ -99,9 +99,9 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 		}
 	}
 	ngOnInit() {
-		if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
-			this.router.navigate(['/']);
-		}
+		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
+		//	this.router.navigate(['/']);
+		//}
         // this.dataSource = new MatTableDataSource(mockData);
         // this.getMasterConfigurationList();
 	}
