@@ -131,8 +131,9 @@ ngb-modal-backdrop.modal-backdrop {
   color: var(--mat-table-header-headline-color, var(--mat-app-on-surface, rgba(0, 0, 0, 0.87)));
   font-family: 'CircularStd-Bold' !important;
   line-height: var(--mat-table-header-headline-line-height, var(--mat-app-title-small-line-height));
-  font-size: var(--mat-table-header-headline-size, var(--mat-app-title-small-size, 14px));
+  font-size: 13px !important;
   font-weight: 600px;
+  background-color: #f7f7f7 !important;
 }
 
 .mat-mdc-row, .mdc-data-table__content {
@@ -140,6 +141,6 @@ ngb-modal-backdrop.modal-backdrop {
   -webkit-font-smoothing: antialiased;
   font-family: 'NunitoSans-Regular' !important;
   line-height: var(--mat-table-row-item-label-text-line-height, var(--mat-app-body-medium-line-height));
-  font-size: var(--mat-table-row-item-label-text-size, var(--mat-app-body-medium-size, 14px));
+  font-size: 13px !important;
   font-weight: var(--mat-table-row-item-label-text-weight, var(--mat-app-body-medium-weight));
 }
