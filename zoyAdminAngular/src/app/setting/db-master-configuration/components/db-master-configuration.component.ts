@@ -13,6 +13,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { DbMasterConfigurationService } from '../services/db-master-configuration.service';
+import { settingTypeObjClmApiDetailsModel } from '../models/db-setting-models';
 
 @Component({
 	selector: 'app-db-master-configuration',
@@ -43,9 +45,21 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       action: null
     };
     columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+
+
+    settingType :string ='';
+    settingTypeDetails:settingTypeObjClmApiDetailsModel=new settingTypeObjClmApiDetailsModel();
+    settingTypeObjClmApiDetailsList:settingTypeObjClmApiDetailsModel[]=[];
+    selectedsettingColumns :string[]=[];
+    dbSettingDataList :any[]=[];
+    dbSettingDataSource: MatTableDataSource<any>=new MatTableDataSource(this.dbSettingDataList);;
+    dbSettingDataObj={};
+    columnHeaders = {} ;
+    
   
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,
+    private dbMasterConfigurationService:DbMasterConfigurationService) {
 		this.userNameSession = userService.getUsername();
         
 		//this.defHomeMenu=defMenuEnable;
@@ -69,6 +83,14 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 		this.dataService.getIsExpandSideBar.subscribe(name=>{
 			this.isExpandSideBar=name;
 		});
+    this.columnHeaders = dbMasterConfigurationService.columnHeaders;
+    this.settingTypeObjClmApiDetailsList = dbMasterConfigurationService.settingTypeObjClmApiDetails;
+    this.settingTypeDetails = this.settingTypeObjClmApiDetailsList[0];
+    this.selectedsettingColumns = this.settingTypeDetails.columns ;
+    this.settingType = this.settingTypeDetails.type ;
+    this.getDbSettingDetails() ;
+    console.log("createSetting>this.selectedsettingColumns",this.selectedsettingColumns);
+    console.log("createSetting>this.settingTypeObjClmApiDetailsList",this.settingTypeObjClmApiDetailsList);
 	}
 
 	ngOnDestroy() {
@@ -80,15 +102,15 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 		if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 			this.router.navigate(['/']);
 		}
-        this.dataSource = new MatTableDataSource(mockData);
-        this.getMasterConfigurationList();
+        // this.dataSource = new MatTableDataSource(mockData);
+        // this.getMasterConfigurationList();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(4);
 		this.sidemenuComp.activeMenu(4,'db-master-configuration');
 		this.dataService.setHeaderName("DB Master Configuration");
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        // this.dataSource.paginator = this.paginator;
+        // this.dataSource.sort = this.sort;
 	}
 
     getMasterConfigurationList(){
@@ -134,7 +156,66 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     //      }
     //    });
        
-       }
+      
+    }
+
+    changeSettingType(){
+      this.settingTypeDetails = this.settingTypeObjClmApiDetailsList.find(t=>t.type == this.settingType);
+      this.selectedsettingColumns = this.settingTypeDetails.columns ;
+      this.getDbSettingDetails() ;
+    }
+    createSetting(){
+      let data = this.settingTypeDetails.obj;
+      this.dbSettingDataObj = Object.assign(data);
+      console.log("createSetting>this.dbSettingDataObj",this.dbSettingDataObj);
+    }
+    getElement(row:any){
+      let data = this.settingTypeDetails.obj;
+      data = Object.assign(row); 
+      this.dbSettingDataObj = Object.assign(data);
+      console.log("getElement>this.dbSettingDataObj",this.dbSettingDataObj);
+    }  
+    objectKeys(obj: any) {
+      return Object.keys(obj);
+      }
+    
+    getDbSettingDetails(){
+        // this.authService.checkLoginUserVlidaate();
+        this.spinner.show();
+        this.dbMasterConfigurationService.getDbSettingDetails(this.settingTypeDetails.api).subscribe(data => {
+          this.dbSettingDataList=Object.assign([],data);
+					this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
+          console.log("getDbSettingDetails>>this.dbSettingDataList",this.dbSettingDataList);
+        this.spinner.hide();
+        }, error => {
+        this.spinner.hide();
+        if(error.status==403){
+        this.router.navigate(['/forbidden']);
+        }else if (error.error && error.error.message) {
+        this.errorMsg = error.error.message;
+        console.log("Error:" + this.errorMsg);
+        this.notifyService.showError(this.errorMsg, "");
+        } else {
+        if (error.status == 500 && error.statusText == "Internal Server Error") {
+          this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+        } else {
+          let str;
+          if (error.status == 400) {
+          str = error.error;
+          } else {
+          str = error.message;
+          str = str.substring(str.indexOf(":") + 1);
+          }
+          console.log("Error:" + str);
+          this.errorMsg = str;
+        }
+        if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+        }
+      });
+      
+      }
+       
+
        announceSortChange(sortState: Sort): void {
         this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
         this.columnSortDirections[sortState.active] = sortState.direction;
