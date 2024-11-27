@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';
@@ -8,13 +8,9 @@ import { AuthService } from 'src/app/common/service/auth.service';
 import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
-import { DbMasterConfiguration } from '../models/dbmaster-confuguration-model';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, Sort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { DbMasterConfigurationService } from '../services/db-master-configuration.service';
-import { settingTypeObjClmApiDetailsModel } from '../models/db-setting-models';
+import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetailsModel } from '../models/db-setting-models';
 
 @Component({
 	selector: 'app-db-master-configuration',
@@ -22,41 +18,27 @@ import { settingTypeObjClmApiDetailsModel } from '../models/db-setting-models';
 	styleUrls: ['./db-master-configuration.component.css']
 })
 export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
-    private _liveAnnouncer = inject(LiveAnnouncer);
-	public userNameSession: string = "";
-    pageSize: number = 10; 
-    pageSizeOptions: number[] = [10, 20, 50]; 
-    totalProduct: number = 0; 
+
+	public userNameSession: string = ""; 
 	errorMsg: any = "";
 	mySubscription: any;
 	isExpandSideBar:boolean=true;
 	@ViewChild(SidebarComponent) sidemenuComp;
 	public rolesArray: string[] = [];
-    public ELEMENT_DATA:DbMasterConfiguration[];
-    @ViewChild(MatSort) sort: MatSort;
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    displayedColumns: string[] = ['firstName', 'lastName', 'userEmail', 'designation', 'action'];
-    dataSource:MatTableDataSource<DbMasterConfiguration>=new MatTableDataSource<DbMasterConfiguration>();
-    columnSortDirectionsOg: { [key: string]: string | null } = { 
-      firstName:null,
-      lastName: null,
-      userEmail: null,
-      designation: null,
-      action: null
-    };
-    columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 
+  settingType :string ='';
+  settingTypeDetails:settingTypeObjClmApiDetailsModel=new settingTypeObjClmApiDetailsModel();
+  settingTypeObjClmApiDetailsList: settingTypeObjClmApiDetailsModel[]=[];
 
-    settingType :string ='';
-    settingTypeDetails:settingTypeObjClmApiDetailsModel=new settingTypeObjClmApiDetailsModel();
-    settingTypeObjClmApiDetailsList:settingTypeObjClmApiDetailsModel[]=[];
-    selectedsettingColumns :string[]=[];
-    dbSettingDataList :any[]=[];
-    dbSettingDataSource: MatTableDataSource<any>=new MatTableDataSource(this.dbSettingDataList);;
-    dbSettingDataObj={};
-    columnHeaders = {} ;
+  selectedsettingColumns :string[]=[];
+  dbSettingDataList :any[]=[];
+  dbSettingDataSource: MatTableDataSource<any>=new MatTableDataSource(this.dbSettingDataList);;
+  dbSettingDataModel :DbSettingDataModel =new DbSettingDataModel();
+  columnHeaders = {} ;
+  submitDataModel:DbSettingSubmitDataModel=new DbSettingSubmitDataModel();
     
-  
+    
+  @ViewChild('closeModel') closeModel: ElementRef;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,
     private dbMasterConfigurationService:DbMasterConfigurationService) {
@@ -85,13 +67,14 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 		});
     this.columnHeaders = dbMasterConfigurationService.columnHeaders;
     this.settingTypeObjClmApiDetailsList = dbMasterConfigurationService.settingTypeObjClmApiDetails;
+
     this.settingTypeDetails = this.settingTypeObjClmApiDetailsList[0];
     this.selectedsettingColumns = this.settingTypeDetails.columns ;
     this.settingType = this.settingTypeDetails.type ;
     this.getDbSettingDetails() ;
-    console.log("createSetting>this.selectedsettingColumns",this.selectedsettingColumns);
-    console.log("createSetting>this.settingTypeObjClmApiDetailsList",this.settingTypeObjClmApiDetailsList);
-	}
+  	}
+
+  
 
 	ngOnDestroy() {
 		if (this.mySubscription) {
@@ -102,209 +85,230 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		//	this.router.navigate(['/']);
 		//}
-        // this.dataSource = new MatTableDataSource(mockData);
-        // this.getMasterConfigurationList();
+      
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(4);
 		this.sidemenuComp.activeMenu(4,'db-master-configuration');
 		this.dataService.setHeaderName("DB Master Configuration");
-        // this.dataSource.paginator = this.paginator;
-        // this.dataSource.sort = this.sort;
+
 	}
 
-    getMasterConfigurationList(){
-        // this.authService.checkLoginUserVlidaate();
-         this.spinner.show();
-        //  this.DbMasterConfigurationService.getDbMasterConfigurationList().subscribe(data => {
-          this.ELEMENT_DATA = Object.assign([],mockData);
-          console.log("this.ELEMENT_DATA",this.ELEMENT_DATA);
-           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-           this.dataSource.sort = this.sort;
-           this.dataSource.paginator = this.paginator;
-           this.spinner.hide();
-    //     }else{
-    //       this.ELEMENT_DATA = Object.assign([]);
-    //        this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-    //        this.dataSource.sort = this.sort;
-    //        this.dataSource.paginator = this.paginator;
-    //     }
-    //        this.spinner.hide();
-    //     }, error => {
-    //      this.spinner.hide();
-    //      if(error.status==403){
-    //        this.router.navigate(['/forbidden']);
-    //      }else if (error.error && error.error.message) {
-    //        this.errorMsg = error.error.message;
-    //        console.log("Error:" + this.errorMsg);
-    //        this.notifyService.showError(this.errorMsg, "");
-    //      } else {
-    //        if (error.status == 500 && error.statusText == "Internal Server Error") {
-    //          this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-    //        } else {
-    //          let str;
-    //          if (error.status == 400) {
-    //            str = error.error;
-    //          } else {
-    //            str = error.message;
-    //            str = str.substring(str.indexOf(":") + 1);
-    //          }
-    //          console.log("Error:" + str);
-    //          this.errorMsg = str;
-    //        }
-    //        if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-    //      }
-    //    });
-       
-      
+  submitted:boolean= false ;
+
+  changeSettingType(){
+    this.settingTypeDetails = this.settingTypeObjClmApiDetailsList.find(t=>t.type == this.settingType);
+    this.selectedsettingColumns = this.settingTypeDetails.columns ;
+    this.getDbSettingDetails() ;
+  }
+
+ 
+    isCreated :boolean=true;
+    getDbSettingDetails(){
+      // this.authService.checkLoginUserVlidaate();
+      this.spinner.show();
+      this.dbMasterConfigurationService.getDbSettingDetails(this.settingTypeDetails.api).subscribe(data => {
+        this.dbSettingDataList=Object.assign([],data);
+        this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
+      this.spinner.hide();
+      }, error => {
+      this.spinner.hide();
+      if(error.status==403){
+      this.router.navigate(['/forbidden']);
+      }else if (error.error && error.error.message) {
+      this.errorMsg = error.error.message;
+      console.log("Error:" + this.errorMsg);
+      this.notifyService.showError(this.errorMsg, "");
+      } else {
+      if (error.status == 500 && error.statusText == "Internal Server Error") {
+        this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+      } else {
+        let str;
+        if (error.status == 400) {
+        str = error.error;
+        } else {
+        str = error.message;
+        str = str.substring(str.indexOf(":") + 1);
+        }
+        console.log("Error:" + str);
+        this.errorMsg = str;
+      }
+      if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+      }
+    });
+    
     }
 
-    changeSettingType(){
-      this.settingTypeDetails = this.settingTypeObjClmApiDetailsList.find(t=>t.type == this.settingType);
-      this.selectedsettingColumns = this.settingTypeDetails.columns ;
-      this.getDbSettingDetails() ;
-    }
+   
     createSetting(){
-      let data = this.settingTypeDetails.obj;
-      this.dbSettingDataObj = Object.assign(data);
-      console.log("createSetting>this.dbSettingDataObj",this.dbSettingDataObj);
+      this.submitted = false;
+      this.isCreated = true;
+      this.dbSettingDataModel = new DbSettingDataModel();
     }
     getElement(row:any){
-      let data = this.settingTypeDetails.obj;
-      data = Object.assign(row); 
-      this.dbSettingDataObj = Object.assign(data);
-      console.log("getElement>this.dbSettingDataObj",this.dbSettingDataObj);
+      this.submitted = false;
+      this.isCreated = false;
+      const data =  JSON.parse(JSON.stringify(row));
+      this.dbSettingDataModel = Object.assign(new DbSettingDataModel(),data);
+  
+      if (this.settingType === 'Rent Cycle' && this.dbSettingDataModel.cycle_name) {
+        const cycleParts = this.dbSettingDataModel.cycle_name.split('-');
+    
+        if (cycleParts.length === 2) {
+            this.dbSettingDataModel.cycle_first = cycleParts[0];
+            this.dbSettingDataModel.cycle_second = cycleParts[1];
+        }
+      } 
     }  
-    objectKeys(obj: any) {
-      return Object.keys(obj);
-      }
-    
-    getDbSettingDetails(){
-        // this.authService.checkLoginUserVlidaate();
-        this.spinner.show();
-        this.dbMasterConfigurationService.getDbSettingDetails(this.settingTypeDetails.api).subscribe(data => {
-          this.dbSettingDataList=Object.assign([],data);
-					this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
-          console.log("getDbSettingDetails>>this.dbSettingDataList",this.dbSettingDataList);
-        this.spinner.hide();
-        }, error => {
-        this.spinner.hide();
-        if(error.status==403){
-        this.router.navigate(['/forbidden']);
-        }else if (error.error && error.error.message) {
-        this.errorMsg = error.error.message;
-        console.log("Error:" + this.errorMsg);
-        this.notifyService.showError(this.errorMsg, "");
-        } else {
-        if (error.status == 500 && error.statusText == "Internal Server Error") {
-          this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-        } else {
-          let str;
-          if (error.status == 400) {
-          str = error.error;
-          } else {
-          str = error.message;
-          str = str.substring(str.indexOf(":") + 1);
-          }
-          console.log("Error:" + str);
-          this.errorMsg = str;
-        }
-        if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-        }
-      });
+    submitData(){
+      this.submitted = true;
+
+     if(this.validation()){      
       
+      this.spinner.show();
+      this.dbMasterConfigurationService.submitData(this.submitDataModel,this.isCreated,this.settingTypeDetails.api).subscribe(data => {
+      this.closeModel.nativeElement.click(); 
+      this.getDbSettingDetails() 
+      this.spinner.hide();
+      }, error => {
+      this.spinner.hide();
+      if(error.status==403){
+      this.router.navigate(['/forbidden']);
+      }else if (error.error && error.error.message) {
+      this.errorMsg = error.error.message;
+      console.log("Error:" + this.errorMsg);
+      this.notifyService.showError(this.errorMsg, "");
+      } else {
+      if (error.status == 500 && error.statusText == "Internal Server Error") {
+        this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+      } else {
+        let str;
+        if (error.status == 400) {
+        str = error.error;
+        } else {
+        str = error.message;
+        str = str.substring(str.indexOf(":") + 1);
+        }
+        console.log("Error:" + str);
+        this.errorMsg = str;
       }
-       
-
-       announceSortChange(sortState: Sort): void {
-        this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
-        this.columnSortDirections[sortState.active] = sortState.direction;
+      if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+      }
+    });
+  }
+}
     
-          if (sortState.direction) {
-            this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-          } else {
-            this._liveAnnouncer.announce('Sorting cleared');
-          }
+
+  numberOnly(event): boolean {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    return true;
+  }
+      
+      validation():boolean{
+        switch (this.settingType) {
+          case 'Share Type':
+                  if(this.dbSettingDataModel.share_type == null || this.dbSettingDataModel.share_type == '' || this.dbSettingDataModel.share_occupancy_count == null || this.dbSettingDataModel.share_occupancy_count == '' ){
+                    return false;
+                  }else{
+                    this.submitDataModel.id=this.dbSettingDataModel?.share_id ;
+                    this.submitDataModel.shareType=this.dbSettingDataModel.share_type ;
+                    this.submitDataModel.shareOccupancyCount=this.dbSettingDataModel.share_occupancy_count ;
+                  }
+            break;
+          case 'Room Type':
+              if(this.dbSettingDataModel.room_type_name == null || this.dbSettingDataModel.room_type_name == '' ){
+                return false;
+              }else{
+                this.submitDataModel.id=this.dbSettingDataModel?.room_type_id ;
+                this.submitDataModel.roomTypeName=this.dbSettingDataModel.room_type_name ;
+              }
+          break;
+          case 'Rent Cycle':
+          
+              if (this.dbSettingDataModel.cycle_first == null || this.dbSettingDataModel.cycle_first == '' || 
+                  this.dbSettingDataModel.cycle_second == null || this.dbSettingDataModel.cycle_second == '') {
+                  
+                  return false;
+              } else {
+                  this.dbSettingDataModel.cycle_first = Number(this.dbSettingDataModel.cycle_first) < 10 ? ('0'+this.dbSettingDataModel.cycle_first) :this.dbSettingDataModel.cycle_first ;
+                  this.dbSettingDataModel.cycle_second = Number(this.dbSettingDataModel.cycle_second) < 10 ? ('0'+this.dbSettingDataModel.cycle_second ):this.dbSettingDataModel.cycle_second;
+
+                  this.dbSettingDataModel.cycle_name = `${this.dbSettingDataModel.cycle_first}-${this.dbSettingDataModel.cycle_second}`;
+                  
+                  this.submitDataModel.id = this.dbSettingDataModel?.cycle_id;
+                  this.submitDataModel.rentCycleName = this.dbSettingDataModel.cycle_name;
+              }
+              break;
+
+          case 'PG Type':
+                if ( this.dbSettingDataModel.pg_type_name == null || this.dbSettingDataModel.pg_type_name == '') {
+                    return false;
+                } else {
+                    this.submitDataModel.id = this.dbSettingDataModel?.pg_type_id;
+                    this.submitDataModel.pgTypeName = this.dbSettingDataModel.pg_type_name;
+                }
+          break;
+          case 'Notification Mode':
+                if ( this.dbSettingDataModel.notification_mod_name == null || this.dbSettingDataModel.notification_mod_name == '') {
+                    return false;
+                } else {
+                    this.submitDataModel.id = this.dbSettingDataModel?.notification_mode_id;
+                    this.submitDataModel.notificationModeName = this.dbSettingDataModel.notification_mod_name;
+                }
+          break;
+          case 'Factor':
+                if ( this.dbSettingDataModel.factor_name == null || this.dbSettingDataModel.factor_name == '') {
+                    return false;
+                } else {
+                    this.submitDataModel.id = this.dbSettingDataModel?.factor_id;
+                    this.submitDataModel.factorName = this.dbSettingDataModel.factor_name;
+                }
+          break;
+          case 'Due Type':
+            if (this.dbSettingDataModel.due_type_name == null || this.dbSettingDataModel.due_type_name == '') {
+                return false;
+            } else {
+                this.submitDataModel.id = this.dbSettingDataModel?.due_type_id;
+                this.submitDataModel.dueTypeName = this.dbSettingDataModel.due_type_name;
+            }
+            break;
+            case 'Currency Type':
+              if (this.dbSettingDataModel.currency_name == null || this.dbSettingDataModel.currency_name == '') {
+                  return false;
+              } else {
+                  this.submitDataModel.id = this.dbSettingDataModel?.currency_id;
+                  this.submitDataModel.currencyName = this.dbSettingDataModel.currency_name;
+              }
+              break;
+          case 'Billing Type':
+              if (this.dbSettingDataModel.billing_type_name == null || this.dbSettingDataModel.billing_type_name == '') {
+                  return false;
+              } else {
+                  this.submitDataModel.id = this.dbSettingDataModel?.billing_type_id;
+                  this.submitDataModel.billingTypeName = this.dbSettingDataModel.billing_type_name;
+              }
+              break;
+          case 'Ameneties':
+              if (this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '') {
+                  return false;
+              } else {
+                  this.submitDataModel.id = this.dbSettingDataModel?.ameneties_id;
+                  this.submitDataModel.ameneties = this.dbSettingDataModel.ameneties_name;
+              }
+              break;
+          default:
+            return false;
+        }
+      
+        return true;
       }
 
-	test(){
-		this.notifyService.showNotification("Success","");
-	}
+
     
 	
 }
-const mockData = [
-    {
-      firstName: "John",
-      lastName: "Doe",
-      userEmail: "john.doe@example.com",
-      designation: "Software Engineer",
-    },
-    {
-      firstName: "Jane",
-      lastName: "Smith",
-      userEmail: "jane.smith@example.com",
-      designation: "Project Manager",
-    },
-    {
-      firstName: "Michael",
-      lastName: "Brown",
-      userEmail: "michael.brown@example.com",
-      designation: "UI/UX Designer",
-    },
-    {
-      firstName: "Emily",
-      lastName: "Johnson",
-      userEmail: "emily.johnson@example.com",
-      designation: "Business Analyst",
-    },
-    {
-      firstName: "Chris",
-      lastName: "Lee",
-      userEmail: "chris.lee@example.com",
-      designation: "QA Engineer",
-    },
-    {
-      firstName: "Sarah",
-      lastName: "Miller",
-      userEmail: "sarah.miller@example.com",
-      designation: "Scrum Master",
-    },
-    {
-      firstName: "David",
-      lastName: "Wilson",
-      userEmail: "david.wilson@example.com",
-      designation: "DevOps Engineer",
-    },
-    {
-      firstName: "Sophia",
-      lastName: "Moore",
-      userEmail: "sophia.moore@example.com",
-      designation: "Full-Stack Developer",
-    },
-    {
-      firstName: "Liam",
-      lastName: "Taylor",
-      userEmail: "liam.taylor@example.com",
-      designation: "Database Administrator",
-    },
-    {
-      firstName: "Olivia",
-      lastName: "Anderson",
-      userEmail: "olivia.anderson@example.com",
-      designation: "Data Scientist",
-    },
-    {
-        firstName: "Liam",
-        lastName: "Taylor",
-        userEmail: "liam.taylor@example.com",
-        designation: "Database Administrator",
-      },
-      {
-        firstName: "Olivia",
-        lastName: "Anderson",
-        userEmail: "olivia.anderson@example.com",
-        designation: "Data Scientist",
-      },
-  ];
+
   

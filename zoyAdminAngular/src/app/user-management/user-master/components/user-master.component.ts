@@ -288,12 +288,13 @@ passwordsMatch(formGroup: FormGroup) {
       this.registerCloseModal.nativeElement.click(); 
       this.spinner.hide();
     },error =>{
+
       this.spinner.hide();
-      console.log("error.error",error)
-      this.errorMsg = (error.error.error !=undefined?(error.error.error  +"."):"")
-      + (error.error.userEmail!=undefined?(error.error.userEmail+"."):"")
-      +(error.error.password!=undefined?(error.error.password  +"."):"");
-      if(error.status==403){
+     if(error?.status==409){
+				if(error?.error?.error){
+          this.notifyService.showError(error.error.error, ""); 
+				}
+			 }else if(error.status==403){
       this.router.navigate(['/forbidden']);
       }else if (error.error && error.error.message) {
       this.errorMsg =error.error.message;
