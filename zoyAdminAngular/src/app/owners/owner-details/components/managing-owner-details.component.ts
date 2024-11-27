@@ -17,6 +17,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { GenerateZoyCodeService } from '../../service/zoy-code.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
+import { ViewPdfService } from '../../service/view-pdf.service';
 
 @Component({
   selector: 'app-managing-owner-details',
@@ -36,6 +37,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  noof_properties: null,
 	  status: null
 	};
+	
 	stopPropagation(event: MouseEvent): void {
 		event.stopPropagation();
 	  }
@@ -56,7 +58,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  pageSizeOptions: number[] = [10, 20, 50]; 
 	  totalProduct: number = 0;
 	  userInfo:UserInfo=new UserInfo();
-	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
+	  constructor(  private viewPdfService: ViewPdfService,private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			  this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
@@ -139,4 +141,50 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			this.collaspeListRight[1].selected=false;
 		 }
 	  }
+
+	  pdfSource: string = "";
+
+	  tenantHistory() {
+		this.spinner.show();
+		  this.pdfSource = '/assets/pdf/sample.pdf';
+		  this.spinner.hide();
+		  console.log('Tenant Payment History Loaded');
+	  }
+	  
+	  ownerHistory() {
+		  this.pdfSource = '/assets/pdf/sample1.pdf';
+		  console.log('Owner Payment History Loaded');
+	  }
+
+	  getPdfFile() {
+		this.spinner.show();
+		this.viewPdfService.getPdfFile().subscribe({
+		  next: (data) => {
+			const fileURL = URL.createObjectURL(data);
+			this.pdfSource = fileURL; 
+			this.spinner.hide();
+		  },
+		  error: (error) => {
+			this.spinner.hide();
+			if (error.status === 403) {
+			  this.router.navigate(['/forbidden']);
+			} else if (error.error && error.error.message) {
+			  this.errorMsg = error.error.message;
+			  console.log('Error:', this.errorMsg);
+			  this.notifyService.showError(this.errorMsg, '');
+			} else if (error.status === 500) {
+				this.errorMsg = 'Internal Server Error! Please login again or contact Help Desk.';
+			  } else if (error.status === 400) {
+				this.errorMsg = error.error;
+			  } else {
+				this.errorMsg = error.message || 'An unexpected error occurred';
+			  }
+			  console.log('Error:', this.errorMsg);
+			  this.notifyService.showError(this.errorMsg, '');
+			}
+		  }
+		);
+	  }
+	 
+	
   }  

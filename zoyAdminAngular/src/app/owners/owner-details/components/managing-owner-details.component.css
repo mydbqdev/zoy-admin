@@ -106,3 +106,27 @@
   border:1px solid #4b5553;
   color:#6c4fb1;
 }
+.modal-dialog {
+  max-width: 70%;
+  margin: 1.75rem auto;
+}
+
+.modal-body {
+  overflow-y: auto;
+  height: 500px;
+}
+
+.pdfViewer {
+  width: 100%;
+  height: 100%;
+}
+
+
+.primary-box {
+  text-align: start;
+  width: 100%;
+  border-radius: 5px;
+  padding: 1px;
+  border:1px solid #4b5553;
+  
+}
