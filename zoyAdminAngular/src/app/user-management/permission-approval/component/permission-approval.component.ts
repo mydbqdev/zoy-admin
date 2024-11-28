@@ -128,7 +128,9 @@ getUserDetais(){
      this.spinner.hide();
   }, error => {
    this.spinner.hide();
-   if(error.status==403){
+   if(error.status == 0) {
+    this.notifyService.showError("Internal Server Error/Connection not established", "")
+   }else if(error.status==403){
      this.router.navigate(['/forbidden']);
    }else if (error.error && error.error.message) {
      this.errorMsg = error.error.message;

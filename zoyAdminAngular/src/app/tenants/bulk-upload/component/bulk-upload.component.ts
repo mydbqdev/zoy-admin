@@ -47,6 +47,13 @@ export class BulkUploadComponent {
 	public rolesArray: string[] = [];
 	userInfo:UserInfo=new UserInfo();
 	uploadErrorModalList : UploadErrorModal[]=[];
+	ownerPropertyDetailsList: OwnerPropertyDetails[] = [];
+	ownerSearchControl = new FormControl();
+	propertySearchControl = new FormControl();
+	filteredOwners: Observable<OwnerPropertyDetails[]>;
+	filteredProperties: Observable<PropertyDetail[]>;
+	selectedOwner: OwnerPropertyDetails ;
+	selectedProperty: PropertyDetail  ;
    constructor(public dialog: MatDialog,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private  bulkUploadService:BulkUploadService,private confirmationDialogService :ConfirmationDialogService,
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
@@ -178,21 +185,31 @@ export class BulkUploadComponent {
 		    	}
 		}
 
+		resetModel(){
+			this.submitted = false;
+			this.ownerSearchControl = new FormControl();
+			this.propertySearchControl = new FormControl();
+			this.form.reset();
+			this.selectedOwner = null ;
+			this.selectedProperty = null;
+			this.getUploadFileDetails();
+		}
+
 		submitUploadTenentFile(form_data:any){ 
 			this.confirmationDialogService.confirm('Confirmation!!', "Are you sure to upload the Data?")
 			.then(
 			  (confirmed) =>{ 
 				if(confirmed){
 			 this.spinner.show();
-		   //console.log("submitUploadTenentFile" ,this.bulkUpload.category );
-		   this.bulkUploadService.upload_tenant_file(form_data).subscribe((response) => {
-			console.log("response",response);
-			this.notifyService.showSuccess("File has been uploaded sucessfully", "");
-			this.getUploadFileDetails();
+		   this.bulkUploadService.upload_tenant_file(form_data).subscribe((res) => {
+			this.notifyService.showSuccess(res.message, "");
+			this.resetModel();
 		   this.spinner.hide();		 
 		   }, error => {
 			this.spinner.hide();		
-			if(error?.status==409){
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error?.status==409){
 				if(error?.error?.data){
 					this.uploadErrorModalList=error.error.data;
 					this.openModel.nativeElement.click();   
@@ -216,7 +233,8 @@ export class BulkUploadComponent {
 				   str = error.message;
 				   str = str.substring(str.indexOf(":") + 1);
 				 }
-				 console.log("Error:" + str);
+				 console.log("Error:Madhan>>" + error);
+				 console.log("str:Madhan>>" + str);
 				 this.errorMsg = str;
 				 this.notifyService.showError(this.errorMsg, "");
 			   }
@@ -234,13 +252,15 @@ export class BulkUploadComponent {
 			  (confirmed) =>{ 
 				if(confirmed){
 			 		this.spinner.show();
-		   			this.bulkUploadService.upload_property_file(form_data).subscribe((response) => {
-						this.notifyService.showSuccess("File has been uploaded sucessfully", "");
-						this.getUploadFileDetails();
+		   			this.bulkUploadService.upload_property_file(form_data).subscribe((res) => {
+						this.resetModel();
+						this.notifyService.showSuccess(res.message, "");
 		   				this.spinner.hide();
 		   			}, error => {
 					this.spinner.hide();
-						if(error?.status==409){
+					if(error.status == 0) {
+						this.notifyService.showError("Internal Server Error/Connection not established", "")
+					 }else if(error?.status==409){
             				if(error?.error?.data){
 								this.uploadErrorModalList=error.error.data;
 								this.openModel.nativeElement.click();    
@@ -276,18 +296,11 @@ export class BulkUploadComponent {
 					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 		  		);	
 		}
-		downloadSampleFile(fileName:string){
-		const filePath = `assets/sample_files/${fileName+'.csv'}`;
-		const link = document.createElement('a');
-		link.href = filePath;
-		link.download = fileName+'.csv';
-		link.click();
-		}
 
 		getTenentSampleFile(){
 			this.spinner.show();
 			this.bulkUploadService.getTenentSampleFile().subscribe(data => {
-				console.log("getTenentSampleFile data",data);
+				
 				if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 					var blob = new Blob([data], {type: 'text/csv'});
 					var fileURL=URL.createObjectURL(blob);				  
@@ -377,13 +390,7 @@ export class BulkUploadComponent {
 		  });
 		}
 				
-		    ownerPropertyDetailsList: OwnerPropertyDetails[] = [];
-			ownerSearchControl = new FormControl();
-			propertySearchControl = new FormControl();
-			filteredOwners: Observable<OwnerPropertyDetails[]>;
-			filteredProperties: Observable<PropertyDetail[]>;
-			selectedOwner: OwnerPropertyDetails ;
-			selectedProperty: PropertyDetail  ;
+		    
 
 
 	getOwnerPropertyDetailsList(){

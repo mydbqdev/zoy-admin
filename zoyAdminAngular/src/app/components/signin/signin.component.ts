@@ -56,13 +56,30 @@ export class SigninComponent implements OnInit {
 				this.authService.checkLoginUser();
 				this.router.navigate(['/home']);
 			}, error => {
-				console.log("error",error)
-				console.log("error",error.message)
-				this.error = error.error.message;// 'Invalid credentials or something went wrong';
-			});
-		}// else {
-		//	this.error = 'Username or Password is required';
-		//}
+				console.log("error>>>",error)
+				if(error.status == 0) {
+					this.error = "Internal Server Error/Connection not established";
+				 }else if(error.status==403){
+				   this.router.navigate(['/forbidden']);
+				 }else if (error.error && error.error.message) {
+				   this.error = error.error.message;
+				   console.log("Error:" + this.errorMsg);
+				 } else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					 this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				   	} else {
+					 let str;
+					 if (error.status == 400) {
+					   str = error.error;
+					 } else{
+					   str = error.message;
+					   str = str.substring(str.indexOf(":") + 1);
+					 }
+					 this.error = str;
+				   }
+				 }
+			   });
+		}
 	}
 
 }
