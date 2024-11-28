@@ -86,12 +86,12 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	
 	@Query(value = "   \r\n"
 			+ "   SELECT\r\n"
-			+ "    pd.property_name AS property_name,\r\n "//0
+			+ "    pd.property_name AS property_name,\r\n "
 			+ "    CASE \r\n"
 			+ "        WHEN pd.property_charge_status THEN 'Active' \r\n"
 			+ "        ELSE 'Inactive' \r\n"
-			+ "    END AS status,\r\n"  //2
-			+ "    NULL AS pgtype,\r\n"//3
+			+ "    END AS status,\r\n" 
+			+ "    zpm.pg_type_name AS pgtype,\r\n"
 			+ "    CONCAT(pd.property_locality, ', ', pd.property_city, ', ', pd.property_state, ' - ', pd.property_pincode) AS pgaddress,\r\n"
 			+ "    pd.property_manager_name AS managername,\r\n"
 			+ "    pd.property_contact_number AS managercontact,\r\n"
@@ -141,6 +141,8 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 			+ "    pgowners.zoy_pg_property_terms_conditions ptc ON pd.property_id = ptc.property_id\r\n"
 			+ "LEFT JOIN \r\n"
 			+ "    pgowners.zoy_pg_terms_master tm ON ptc.term_id = tm.term_id\r\n"
+			+ "LEFT JOIN\r\n"
+			+ "    pgowners.zoy_pg_type_master zpm ON pd.pg_type_id = zpm.pg_type_id "
 			+ "WHERE \r\n"
 			+ "    o.pg_owner_id = :pgownerid\r\n"
 			+ "GROUP BY \r\n"
@@ -149,7 +151,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 			+ "    pd.property_pg_email, pd.property_gst_number, pd.property_cin_numer, rd.room_id, \r\n"
 			+ "    tm.security_deposit, tm.notice_period, tm.agreement_duration, tm.late_payment_fee, \r\n"
 			+ "    tm.grace_period, pd.cancellation_fixed_charges, pd.property_agreement_charges, \r\n"
-			+ "    pd.property_ekyc_charges, pd.property_description,pd.property_id", nativeQuery = true)
+			+ "    pd.property_ekyc_charges, pd.property_description,pd.property_id,zpm.pg_type_name", nativeQuery = true)
     List<Object[]> getPropertyDetailsByOwnerId(String pgownerid);
     
     
