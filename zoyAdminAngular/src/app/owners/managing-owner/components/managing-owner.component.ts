@@ -100,20 +100,25 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		  this.sidemenuComp.expandMenu(2);
 		  this.sidemenuComp.activeMenu(2, 'manage-owner');
 		  this.dataService.setHeaderName("Manage Owner");
-		  this.dataSource.sort = this.sort;
-		  this.dataSource.paginator = this.paginator;
-		  this.param.pageIndex=this.paginator.pageIndex;
-		  this.param.pageSize= this.paginator.pageSize;
-		  this.param.sortDirection="asc";
-		  this.param.sortActive="owner_name";
-		  this.paramFilter.searchText=null;
-		  this.paramFilter.status=null;
-		  this.param.filter=this.paramFilter;
-		  setTimeout(()=>{
-			this.getZoyOwnerList();
-		   },100);
-		   this.columnSortDirections["owner_name"] = "asc";
+		  this.getRetrieveData();
 	  }
+	  
+	  getRetrieveData(){
+		this.dataSource.sort = this.sort;
+		this.dataSource.paginator = this.paginator;
+		this.param.pageIndex=this.paginator.pageIndex;
+		this.param.pageSize= this.paginator.pageSize;
+		this.param.sortDirection="asc";
+		this.param.sortActive="owner_name";
+		this.paramFilter.searchText=null;
+		this.paramFilter.status=null;
+		this.param.filter=this.paramFilter;
+		setTimeout(()=>{
+		  this.getZoyOwnerList();
+		 },100);
+		 this.columnSortDirections["owner_name"] = "asc";
+	  }
+
 	  param:OwnerRequestParam=new OwnerRequestParam();
 	  paramFilter:Filter=new Filter();
 	  getZoyOwnerList(){
