@@ -29,16 +29,51 @@ public class CSVValidationService {
 	public List<ErrorDetail> validateCSV(InputStream inputStream,String propertyId) {
 		this.propertyId=propertyId;
 		List<ErrorDetail> errorDetails = new ArrayList<>();
+		Map<String, List<Integer>> emailTracker = new HashMap<>();
+		Map<String, List<Integer>> phoneTracker = new HashMap<>();
+
 		try (CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream))) {
 			List<String[]> records = csvReader.readAll();
 			if (records.isEmpty()) {
 				return Collections.singletonList(new ErrorDetail(0, 0, "file", "CSV file is empty"));
 			}
 			String[] headers = records.get(0);
+			int emailIndex = Arrays.asList(headers).indexOf("eMail");
+			int phoneIndex = Arrays.asList(headers).indexOf("Phone Number");
 			for (int i = 2; i < records.size(); i++) {
 				String[] record = records.get(i);
 				validateRow(record, headers, i + 1, errorDetails);
+
+				if (emailIndex >= 0 && emailIndex < record.length) {
+					String email = record[emailIndex].trim();
+					if (!email.isEmpty()) {
+						emailTracker.computeIfAbsent(email, k -> new ArrayList<>()).add(i + 1);
+					}
+				}
+				if (phoneIndex >= 0 && phoneIndex < record.length) {
+					String phone = record[phoneIndex].trim();
+					if (!phone.isEmpty()) {
+						phoneTracker.computeIfAbsent(phone, k -> new ArrayList<>()).add(i + 1);
+					}
+				}
 			}
+			for (Map.Entry<String, List<Integer>> entry : phoneTracker.entrySet()) {
+				List<Integer> rows = entry.getValue();
+				if (rows.size() > 1) {
+					for (int row : rows) {
+						errorDetails.add(new ErrorDetail(row, phoneIndex + 1, "Phone Number","Duplicate Phone Number found: " + entry.getKey() + " in rows " + rows));
+					}
+				}
+			}
+			for (Map.Entry<String, List<Integer>> entry : emailTracker.entrySet()) {
+				List<Integer> rows = entry.getValue();
+				if (rows.size() > 1) {
+					for (int row : rows) {
+						errorDetails.add(new ErrorDetail(row, emailIndex + 1, "eMail","Duplicate email found: " + entry.getKey() + " in rows " + rows));
+					}
+				}
+			}
+
 		} catch (IOException | CsvException e) {
 			e.printStackTrace();
 		}
