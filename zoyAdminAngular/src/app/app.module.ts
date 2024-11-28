@@ -56,6 +56,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DoughnutNgxChartComponent } from './chart/doughnut-ngx';
 import { BarNgxChartComponent } from './chart/barchart-ngx';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { DocumentUploadComponent } from './external/components/document-upload.component';
+import { AppDocumentUploadRoutingModule } from './external/document-upload-routing.model';
 
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
@@ -91,7 +93,8 @@ const appRoutes: Routes = [
     OwnerDetailsComponent,
     DbMasterConfigurationComponent,
     DoughnutNgxChartComponent,
-    BarNgxChartComponent
+    BarNgxChartComponent,
+    DocumentUploadComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -114,8 +117,9 @@ const appRoutes: Routes = [
     AppSettingMenuRoutingModule,
     TenantMenuRoutingModule,
     NgxChartsModule,
-    PdfViewerModule
-  ],
+    PdfViewerModule,
+    AppDocumentUploadRoutingModule,
+    ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
