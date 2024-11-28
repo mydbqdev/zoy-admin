@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,10 +27,12 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.entity.PgOwnerMaster;
+import com.integration.zoy.entity.UserProfile;
 import com.integration.zoy.model.PgOwnerDetails;
 import com.integration.zoy.model.PgOwnerFilter;
 import com.integration.zoy.model.PgOwnerMasterModel;
 import com.integration.zoy.repository.PgOwnerMaterRepository;
+import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.ZoyCodeGenerationService;
@@ -52,6 +56,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	
 	@Autowired
 	ZoyEmailService emailBodyService;
+	
+	@Autowired
+	CommonDBImpl commonDBImpl;
 	
 	@Value("${qa.signin.link}")
 	private String qaRegistrationLink;
@@ -102,10 +109,20 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
             ownerData.setFirstName(model.getFirstName());
             ownerData.setLastName(model.getLastName());
             ownerData.setMobileNo(model.getMobileNo());
-
             pgOwnerMaterRepository.save(ownerData);
-
-            emailBodyService.sendZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode);
+            
+            String token = UUID.randomUUID().toString();
+            UserProfile user = new UserProfile();
+			user.setEmailId(model.getEmailId());
+			user.setMobileNo(model.getMobileNo());
+			user.setPropertyOwnerName(model.getFirstName() +" "+ model.getLastName());
+			user.setZoyCode(zoyCode);
+			user.setEnabled(false);
+			user.setUserApplicationName("O");
+			user.setVerifyToken(token);
+			commonDBImpl.registerNewUserAccount(user);
+			
+            emailBodyService.sendZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,token);
             
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("ZOY code has been generated & sent successfully.");
