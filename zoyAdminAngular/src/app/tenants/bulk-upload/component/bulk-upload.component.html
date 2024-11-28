@@ -46,7 +46,7 @@
                               <label for="fileName" class="col-form-label">Owner Name</label>
                            
                                 <input 
-                                  class="form-control custom-select" 
+                                  class="form-control form-select" 
                                   type="search" 
                                   placeholder="Search Owner" 
                                   [formControl]="ownerSearchControl" 
@@ -73,7 +73,7 @@
                             <div class="form-group">
                               <label for="fileName" class="col-form-label">Property Name</label>
                             
-                                <select class="custom-select" (change)="selectProperty($event)" [disabled] ="!selectedOwner" 
+                                <select class="form-select" (change)="selectProperty($event)" [disabled] ="!selectedOwner" 
                                 formControlName="propertyname" [ngClass]="{'is-invalid':submitted && selectedProperty == null}">
                                   <option value="" disabled selected>Select Property</option>
                                   <option *ngFor="let property of selectedOwner?.property_details" [value]="property.propertyId">
@@ -91,7 +91,7 @@
                           <div class="col-sm-2">
                                 <div class="form-group">
                                   <label for="category" class="col-form-label">Category</label>
-                                  <select class="custom-select" [(ngModel)]="bulkUpload.category" id="category" formControlName="category" 
+                                  <select class="form-select" [(ngModel)]="bulkUpload.category" id="category" formControlName="category" 
                                   [ngClass]="{'is-invalid':submitted && form.controls.category.errors}">                                             
                                     <option value="Tenent">Tenent</option>
                                     <option value="PG Property">PG Property</option>
@@ -116,9 +116,9 @@
                               </div>
                               <div style="height: 30px;margin-top:-15px;">  
                                 <p style="color: rgb(194, 5, 178);font-size: 12px;">(Allows only csv/excel file)</p> 
-                                <div  style="font-size: 13px;" *ngIf="submitted && (form.controls.reqDocument.errors!=null || filevali) " class="text-danger">
+                                <!-- <div  style="font-size: 13px;" *ngIf="submitted && (form.controls.reqDocument.errors!=null || filevali) " class="text-danger">
                                   File is required
-                                </div>                                             
+                                </div>  -->
                               </div>
                              </div>                                      
                               <div class="col-sm-1" style="padding-top: 37px;">                                            
