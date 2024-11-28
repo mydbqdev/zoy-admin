@@ -20,8 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.integration.zoy.constants.ZoyConstant;
+import com.integration.zoy.entity.UserProfile;
+import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.utils.NotificationRequest;
 import com.integration.zoy.utils.OtpVerification;
+import com.integration.zoy.utils.Whatsapp;
 
 import kotlin.Pair;
 
@@ -33,6 +37,9 @@ public class ZoyAdminService {
 
 	@Autowired
 	CommonDBImpl commonDBImpl;
+	
+	@Autowired
+	OwnerDBImpl ownerDBImpl;
 
 	@Autowired
 	WhatsAppService whatsAppService;
@@ -128,5 +135,34 @@ public class ZoyAdminService {
 		} catch (Exception e) {
 			return new Pair<Boolean,String>(false, e.getMessage());
 		}
+	}
+
+	public String validateVerificationToken(String token) {
+		UserProfile user = commonDBImpl.findByVerifyToken(token);
+		if (user == null) {
+			return "invalid";
+		}
+
+		user.setEnabled(true);
+		commonDBImpl.registerNewUserAccount(user);
+		ZoyPgOwnerDetails zoyPgOwnerDetails=new ZoyPgOwnerDetails();
+		zoyPgOwnerDetails.setPgOwnerEmail(user.getEmailId());
+		zoyPgOwnerDetails.setPgOwnerMobile(user.getMobileNo());
+		zoyPgOwnerDetails.setPgOwnerName(user.getPropertyOwnerName());
+		zoyPgOwnerDetails.setZoyCode(user.getZoyCode());
+		zoyPgOwnerDetails.setPgOwnerEncryptedAadhar(user.getEncryptedAadhar());
+		ownerDBImpl.savePgOwner(zoyPgOwnerDetails);
+
+		Whatsapp whatsapp = new Whatsapp();
+		whatsapp.tonumber("+91" + user.getMobileNo());
+		whatsapp.templateid(ZoyConstant.ZOY_OWNER_REG_WELCOME_MSG);
+		Map<Integer, String> params = new HashMap<>();
+		params.put(1, user.getPropertyOwnerName());
+		whatsapp.setParams(params);
+		whatsAppService.sendWhatsappMessage(whatsapp);
+
+		zoyEmailService.sendRegistrationMail(user);
+
+		return "valid";
 	}
 }

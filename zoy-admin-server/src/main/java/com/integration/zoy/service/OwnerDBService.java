@@ -14,6 +14,7 @@ import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
+import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
@@ -402,6 +403,11 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle) {
 		return zoyPgRentCycleMasterRepository.findRentCycleName(propertyId,rentCycle);
+	}
+
+	@Override
+	public ZoyPgOwnerDetails savePgOwner(ZoyPgOwnerDetails zoyPgOwnerDetails) {
+		return repository.save(zoyPgOwnerDetails);
 	}
 
 

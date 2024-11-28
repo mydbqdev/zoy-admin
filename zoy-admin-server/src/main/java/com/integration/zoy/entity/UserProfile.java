@@ -27,7 +27,7 @@ public class UserProfile implements Serializable {
 	    @Column(name = "mobile_no", nullable = false, length = 50)
 	    private String mobileNo;
 
-	    @Column(name = "pwd", nullable = false, length = 100)
+	    @Column(name = "pwd", length = 100)
 	    private String password;
 
 	    @Column(name = "enabled", nullable = false)

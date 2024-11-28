@@ -8,6 +8,7 @@ import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
+import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
@@ -80,6 +81,7 @@ public interface OwnerDBImpl {
 	ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName);
 	List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName);
 	ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle);
+	ZoyPgOwnerDetails savePgOwner(ZoyPgOwnerDetails zoyPgOwnerDetails);
 	
 	
 
