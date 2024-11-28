@@ -1,10 +1,11 @@
 package com.integration.zoy.controller;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -14,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.FieldNamingPolicy;
@@ -28,16 +27,24 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.entity.PgOwnerMaster;
 import com.integration.zoy.entity.UserProfile;
+import com.integration.zoy.model.BasicPropertyInformation;
+import com.integration.zoy.model.FloorInformation;
+import com.integration.zoy.model.PgOwnerAdditionalInfo;
+import com.integration.zoy.model.PgOwnerBusinessInfo;
 import com.integration.zoy.model.PgOwnerDetails;
 import com.integration.zoy.model.PgOwnerFilter;
 import com.integration.zoy.model.PgOwnerMasterModel;
+import com.integration.zoy.model.PgOwnerProfile;
+import com.integration.zoy.model.PgOwnerPropertyInformation;
+import com.integration.zoy.model.PgOwnerbasicInformation;
+import com.integration.zoy.model.PgOwnerdetailPortfolio;
+import com.integration.zoy.model.Room;
 import com.integration.zoy.repository.PgOwnerMaterRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.ZoyCodeGenerationService;
 import com.integration.zoy.service.ZoyEmailService;
-import com.integration.zoy.utils.Email;
 import com.integration.zoy.utils.ResponseBody;
 
 @RestController
@@ -220,6 +227,149 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
             log.error("Error fetching details: {}", e.getMessage(), e);
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setError("Internal server error: " + e.getMessage());
+            return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    
+    public ResponseEntity<String> pgOwnerDetailsPortfolio(String ownerId) {
+        ResponseBody response = new ResponseBody();
+
+        try {
+            List<Object[]> pgOwnerProfileDetails = pgOwnerMaterRepository.getPgOwnerProfileDetails(ownerId);
+            if (pgOwnerProfileDetails == null || pgOwnerProfileDetails.isEmpty()) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setError("Owner details not found.");
+                return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+            }
+
+            PgOwnerProfile profile = new PgOwnerProfile();
+            for (Object[] details : pgOwnerProfileDetails) {
+                profile.setOwnerID(details[0] != null ? details[0].toString() : null);
+                profile.setOwnerName(details[1] != null ? details[1].toString() : null);
+                profile.setStatus(details[2] != null ? details[2].toString() : null);
+                profile.setProfilePhoto( details[3] != null ? details[2].toString() : null);
+            }
+
+            List<Object[]> pgOwnerBasicDetails = pgOwnerMaterRepository.getPgOwnerBasicInfo(ownerId);
+            PgOwnerbasicInformation basicInformation = new PgOwnerbasicInformation();
+            for (Object[] details : pgOwnerBasicDetails) {
+                basicInformation.setFirstName(details[0] != null ? details[0].toString() : null);
+                basicInformation.setLastName(details[1] != null ? details[1].toString() : null);
+                basicInformation.setEmail(details[2] != null ? details[2].toString() : null);
+                basicInformation.setContact(details[3] != null ? details[3].toString() : null);
+                basicInformation.setAadhar(details[4] != null ? details[4].toString() : null);
+                basicInformation.setAddress(details[5] != null ? details[5].toString() : null);
+            }
+
+            List<Object[]> pgOwnerBusinessDetails = pgOwnerMaterRepository.getPgOwnerBusinessInfo(ownerId);
+            List<PgOwnerBusinessInfo> businessInfoList = new ArrayList<>();
+            for (Object[] details : pgOwnerBusinessDetails) {
+                PgOwnerBusinessInfo businessInfo = new PgOwnerBusinessInfo();
+                businessInfo.setAccountNumber(details[0] != null ? details[0].toString() : null);
+                businessInfo.setBankName(details[1] != null ? details[1].toString() : null);
+                businessInfo.setBankBranch(details[2] != null ? details[2].toString() : null);
+                businessInfo.setIfscCode(details[3] != null ? details[3].toString() : null);
+                businessInfo.setAccountType(details[4] != null ? details[4].toString() : null);
+                businessInfoList.add(businessInfo);
+            }
+
+            List<Object[]> propertyDetailsList = pgOwnerMaterRepository.getPropertyDetailsByOwnerId(ownerId);
+            Map<String, PgOwnerPropertyInformation> propertyMap = new HashMap<>();
+
+            for (Object[] property : propertyDetailsList) {
+                String propertyId = property[29] != null ? property[29].toString() : null;
+                if (propertyId == null) continue;
+
+                PgOwnerPropertyInformation propertyInfo = propertyMap.computeIfAbsent(propertyId, key -> {
+                    PgOwnerPropertyInformation newProperty = new PgOwnerPropertyInformation();
+                    newProperty.setPropertyName(property[0] != null ? property[0].toString() : null);
+                    newProperty.setStatus(property[1] != null ? property[1].toString() : null);
+
+                    BasicPropertyInformation basicPropertyInfo = new BasicPropertyInformation();
+                    basicPropertyInfo.setPgType(property[2] != null ? property[2].toString() : null);
+                    basicPropertyInfo.setPgAddress(property[3] != null ? property[3].toString() : null);
+                    basicPropertyInfo.setManagerName(property[4] != null ? property[4].toString() : null);
+                    basicPropertyInfo.setManagerContact(property[5] != null ? property[5].toString() : null);
+                    basicPropertyInfo.setManagerEmailid(property[6] != null ? property[6].toString() : null);
+                    basicPropertyInfo.setNumberOfFloors(property[7] != null ? property[7].toString() : "0");
+                    basicPropertyInfo.setTotalOccupancy(property[8] != null ? property[8].toString() : "0");
+                    basicPropertyInfo.setGstNumber(property[9] != null ? property[9].toString() : null);
+                    basicPropertyInfo.setCin(property[10] != null ? property[10].toString() : null);
+                    basicPropertyInfo.setGstOwnershiProofNumber(property[11] != null ? property[11].toString() : null);
+                    
+                    PgOwnerAdditionalInfo additionalInfo = new PgOwnerAdditionalInfo();
+                    additionalInfo.setSecurityDeposit(property[20] != null ? property[20].toString() : null);
+                    additionalInfo.setNoticePeriod(property[21] != null ? property[21].toString() : null);
+                    additionalInfo.setRentCycle(property[22] != null ? property[22].toString() : null);
+                    additionalInfo.setLatePaymentFee(property[23] != null ? property[23].toString() : null);
+                    additionalInfo.setGracePeriod(property[24] != null ? property[24].toString() : null);
+                    additionalInfo.setAdditionalCharges(property[25] != null ? property[25].toString() : null);
+                    additionalInfo.setAgreementCharges(property[26] != null ? property[26].toString() : null);
+                    additionalInfo.setEkycCharges(property[27] != null ? property[27].toString() : null);
+                    additionalInfo.setPropertyDescription(property[28] != null ? property[28].toString() : null);
+                    
+                    newProperty.setPgOwnerAdditionalInfo(additionalInfo);
+                    newProperty.setBasicPropertyInformation(basicPropertyInfo);
+                    newProperty.setFloorInformation(new ArrayList<>());
+                    
+                    return newProperty;
+                });
+
+                String floorNumber = property[12] != null ? property[12].toString() : null;
+                if (floorNumber != null) {
+                    FloorInformation floorInfo = propertyInfo.getFloorInformation().stream()
+                            .filter(floor -> floor.getFloorNumber().equals(floorNumber))
+                            .findFirst()
+                            .orElseGet(() -> {
+                                FloorInformation newFloor = new FloorInformation();
+                                newFloor.setFloorNumber(floorNumber);
+                                newFloor.setTotalRooms(property[13] != null ? property[13].toString() : "0");
+                                newFloor.setTotalOccupancy(property[14] != null ? property[14].toString() : "0");
+                                newFloor.setVacant(property[15] != null ? property[15].toString() : "0");
+                                newFloor.setOccupied(property[16] != null ? property[16].toString() : "0");
+                                newFloor.setRooms(new ArrayList<>());
+                                propertyInfo.getFloorInformation().add(newFloor);
+                                return newFloor;
+                            });
+
+                    String roomNo = property[17] != null ? property[17].toString() : null;
+                    if (roomNo != null) {
+                        Room room = new Room();
+                        room.setRoomNo(roomNo);
+                        room.setNumberOfBeds(property[18] != null ? property[18].toString() : "0");
+                        room.setBedsAvailable(property[19] != null ? property[19].toString() : "0");
+                        floorInfo.getRooms().add(room);
+                    }
+                }
+
+                PgOwnerAdditionalInfo additionalInfo = new PgOwnerAdditionalInfo();
+                additionalInfo.setSecurityDeposit(property[20] != null ? property[20].toString() : null);
+                additionalInfo.setNoticePeriod(property[21] != null ? property[21].toString() : null);
+                additionalInfo.setRentCycle(property[22] != null ? property[22].toString() : null);
+                additionalInfo.setLatePaymentFee(property[23] != null ? property[23].toString() : null);
+                additionalInfo.setGracePeriod(property[24] != null ? property[24].toString() : null);
+                additionalInfo.setAdditionalCharges(property[25] != null ? property[25].toString() : null);
+                additionalInfo.setAgreementCharges(property[26] != null ? property[26].toString() : null);
+                additionalInfo.setEkycCharges(property[27] != null ? property[27].toString() : null);
+                additionalInfo.setPropertyDescription(property[28] != null ? property[28].toString() : null);
+                propertyInfo.setPgOwnerAdditionalInfo(additionalInfo);
+            }
+
+            PgOwnerdetailPortfolio root = new PgOwnerdetailPortfolio();
+            root.setProfile(profile);
+            root.setPgOwnerbasicInformation(basicInformation);
+            root.setPgOwnerBusinessInfo(businessInfoList);
+            root.setPgOwnerPropertyInformation(new ArrayList<>(propertyMap.values()));
+
+            response.setStatus(HttpStatus.OK.value());
+            response.setData(root);
+            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("Error fetching PG Owner details portfolio: {}", e.getMessage(), e);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setError("Internal server error");
             return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
