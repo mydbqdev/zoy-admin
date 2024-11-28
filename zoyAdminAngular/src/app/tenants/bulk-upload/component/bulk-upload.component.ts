@@ -202,7 +202,7 @@ export class BulkUploadComponent {
 				if(confirmed){
 			 this.spinner.show();
 		   this.bulkUploadService.upload_tenant_file(form_data).subscribe((res) => {
-			this.notifyService.showSuccess(res.message, "");
+			this.notifyService.showSuccess("File has been uploaded sucessfully", "");
 			this.resetModel();
 		   this.spinner.hide();		 
 		   }, error => {
@@ -254,7 +254,7 @@ export class BulkUploadComponent {
 			 		this.spinner.show();
 		   			this.bulkUploadService.upload_property_file(form_data).subscribe((res) => {
 						this.resetModel();
-						this.notifyService.showSuccess(res.message, "");
+						this.notifyService.showSuccess("File has been uploaded sucessfully", "");
 		   				this.spinner.hide();
 		   			}, error => {
 					this.spinner.hide();
