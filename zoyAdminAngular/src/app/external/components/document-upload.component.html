@@ -28,36 +28,36 @@
                                             <div class="upload-container"
                                                 #uploadzone
                                                 dropzone
-                                                (click)="onClick()">
+                                                (click)="onClick()"
+                                                (drop)="onDrop($event.dataTransfer.files)"
+                                                (dragover)="$event.preventDefault()">
                                             <p class="icon"><i class="bi bi-cloud-arrow-up-fill text-blue-500"></i></p>
                                             <p class="title" style="font-size: 14px;"><a class="text-blue-500">Click to upload</a> or drag and drop</p>
                                             <p class="desc" >Supported formats : PDF only  (Max file size: 5MB)</p>
                                             </div>
-
-                                            <input
+                                            <input 
                                             type="file"
                                             id="fileUpload"
                                             name="fileUpload"
                                             multiple="multiple"
-                                            accept="{{accept}}"
                                             style="display:none;"/>
                                         </div>
                                             <div class="text-left pt-1" style="max-height: 140px;" *ngIf="files?.length!=0">
                                              <div style="font-size: 15px;"><strong>Uploaded</strong></div>
                                             <div style="max-height: 110px;overflow: auto;">
                                              <div class="desc-inner">
-                                              <div *ngFor="let x of files" class="mb-1 d-flex" style="font-size: 13px;padding: 2px 10px;border:1px solid gray;border-radius: 3px;">
-                                                 <div style="color:5b5b5b;">documents.pdf</div><div class="ml-auto"><i class="far fa-times-circle text-danger"></i></div>
+                                              <div *ngFor="let file of files" class="mb-1 d-flex" style="font-size: 13px;padding: 2px 10px;border:1px solid gray;border-radius: 3px;">
+                                                 <div style="color:5b5b5b;"> {{file.data.name}}</div><div class="ml-auto"><i class="far fa-times-circle text-danger"></i></div>
                                               </div>                                           
                                              </div>
                                              </div>
                                             </div>
-                                            <button type="submit" (click)="getDocumentUpload()" class="btn btn-primary-custom btn-block mt-2">
+                                            <button type="submit"  class="btn btn-primary-custom btn-block mt-2">
                                                Submit
                                             </button>
 
                                             </div>
-                                            <div class="mt-4" *ngIf="uploaded" style="text-align: center;">
+                                            <div class="mt-4 p-5" *ngIf="uploaded" style="text-align: center;">
                                                 <strong class="h4">Thanks for Uploading the Documents!<a class="text-blue-500 ml-2"><i class="bi bi-check-circle-fill"></i></a></strong>
                                                 <P class="small mt-2">We shall verify your documents and update you the status soon.If you have any questions please feel free to reach out to us at[Support Email/Contact Infomation] </P>
                                               </div>

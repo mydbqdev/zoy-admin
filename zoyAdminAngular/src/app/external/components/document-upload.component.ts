@@ -5,6 +5,7 @@ import { last, map, tap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DocumentUploadService } from '../services/document-upload.service';
+import { NotificationService } from 'src/app/common/shared/message/notification.service';
 
 
 @Component({
@@ -15,50 +16,136 @@ import { DocumentUploadService } from '../services/document-upload.service';
 export class DocumentUploadComponent implements OnInit, AfterViewInit {
 		@Input() text = "Upload";
 		@Input() param = "file";
-		@Input() target = "https://file.io";
-		@Input() accept = "image/*";
 		@Output() complete = new EventEmitter<string>();
         files: Array<FileUploadModel> = [];
 		token: string = '';
+		uploaded = false;
+		verify = false;
+		fileToUpload: File | null = null;
+	    target: string;
 
-	constructor(private route: ActivatedRoute, private http: HttpClient,private documentUploadService: DocumentUploadService, private spinner:NgxSpinnerService) {}
+	constructor(private route: ActivatedRoute, private http: HttpClient,private documentUploadService: DocumentUploadService, 
+		private spinner:NgxSpinnerService,private notifyService:NotificationService,) {}
 
-	  ngOnDestroy() {
-	  }
-	  ngOnInit() {
-		this.route.paramMap.subscribe(params => {
-			this.token = params.get('name') || ''; 
-		  });
-	  }
-	  ngAfterViewInit() {
+	 
+	ngOnDestroy() {
+	}
+	ngOnInit() {
+	  this.getVerify();
+	}
+	ngAfterViewInit() {
+	}
+   
+	submit() {
+	  this.uploaded = true;
 	  }
 	 
-	  uploaded = false;
-	  onDrop(files: FileList) {
+	  handleFileInput(files: FileList) {
+		this.fileToUpload = files.item(0);
+		console.log("handleFileInput" ,this.handleFileInput);
+	}
+	uploadFileToActivity() {
+		this.documentUploadService.uploadDocumentUpload(this.fileToUpload).subscribe(data => {
+		  // do something, if upload success
+		  }, error => {
+			console.log(error);
+		  });
+	  }
+	  onDrop(files: FileList): void {
 		for (let index = 0; index < files.length; index++) {
 		  const file = files[index];
-		  this.uploadFiles();
+		  const fileExtension = file.name.split('.').pop()?.toLowerCase();
+		  if (fileExtension !== "pdf") {
+			console.error(`Invalid file extension (${file.name}): Only .pdf files are allowed.`);
+			this.notifyService.showError(`Invalid file extension (${file.name}): Only .pdf files are allowed.`, "");
+			continue;
+		  }
+		  if (file.type !== "application/pdf") {
+			console.error(`Invalid file type (${file.name}): Only PDFs are allowed.`);
+			this.notifyService.showError(`Invalid file type (${file.name}): Only PDFs are allowed.`, "");
+			continue;
+		  }
+		  if (file.size > 5 * 1024 * 1024) {
+			console.error(`File too large (${file.name}): Maximum size is 5MB.`);
+			this.notifyService.showError(`File too large (${file.name}): Maximum size is 5MB.`, "");
+			continue;
+		  }
+		  this.files.push({
+			data: file,
+			state: "in",
+			inProgress: false,
+			progress: 0,
+			canRetry: false,
+			canCancel: true,
+			sub: undefined
+		  });
+		  console.log(`File accepted: ${file.name}`);
+		  this.notifyService.showSuccess(`File "${file.name}" added successfully`, "");
+		}
+		this.uploadFiles();
+	  }
+	  
+	  onClick(): void {
+		const fileUpload = document.getElementById("fileUpload") as HTMLInputElement;
+		if (fileUpload) {
+		  fileUpload.onchange = () => {
+			const files = fileUpload.files;
+			if (files) {
+			  for (let index = 0; index < files.length; index++) {
+				const file = files[index];
+				
+				const fileExtension = file.name.split('.').pop()?.toLowerCase();
+				if (fileExtension !== "pdf") {
+				  console.error(`Invalid file extension (${file.name}): Only .pdf files are allowed.`);
+				  this.notifyService.showError(`Invalid file format : Only .pdf files are allowed.`, "");
+				  continue;
+				}
+				if (file.type !== "application/pdf") {
+				  console.error(`Invalid file type (${file.name}): Only PDFs are allowed.`);
+				  this.notifyService.showError(`Invalid file type : Only PDFs are allowed.`, "");
+				  continue;
+				}
+	  
+				if (file.size > 5 * 1024 * 1024) {
+				  console.error(`File too large (${file.name}): Maximum size is 5MB.`);
+				  this.notifyService.showError(`File too large, Choose filesize is  below 5MB.`, "");
+				  continue;
+				}
+				this.files.push({
+				  data: file,
+				  state: "in",
+				  inProgress: false,
+				  progress: 0,
+				  canRetry: false,
+				  canCancel: true,
+				  sub: undefined
+				});
+				const reader = new FileReader();
+				reader.onload = (event: any) => {
+				  console.log(`File Content (${file.name}):`, event.target.result);
+				  this.notifyService.showSuccess("File Uploaded Successfully (${file.data.name})", "");
+				};
+				reader.onerror = (error) => {
+				  console.error(`Error reading file (${file.name}):`, error);
+				  this.notifyService.showError("Error reading file", "");
+				};
+				reader.readAsText(file);
+			  }
+			}
+			this.uploadFiles();
+			console.log("Uploaded Files:", this.files);
+		  };
+		  fileUpload.click();
+		} else {
+		  console.error("File upload element not found!");
 		}
 	  }
-
-	  onClick() {
-		const fileUpload = document.getElementById(
-		  "fileUpload"
-		) as HTMLInputElement;
-		fileUpload.onchange = () => {
-		  for (let index = 0; index < fileUpload.files.length; index++) {
-			const file = fileUpload.files[index];
-		  }
-		  this.uploadFiles();
-		};
-		fileUpload.click();
-	  }
-
+	  
 	  private uploadFile(file: FileUploadModel) {
-		const fd = new FormData();
-		fd.append(this.param, file.data);
+		const fileFormat= new FormData();
+		fileFormat.append(this.param, file.data);
 	
-		const req = new HttpRequest("POST", this.target, fd, {
+		const req = new HttpRequest("POST", this.target, fileFormat, {
 		  reportProgress: true
 		});
 		file.inProgress = true;
@@ -103,11 +190,13 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 		}
 	  }
 
-	  getDocumentUpload(){
+	  uploadDocumentUpload(fileToUpload:any){
+		this.submit();
 		 this.spinner.show();
-		 this.documentUploadService.getDocumentUpload().subscribe(data => {
+		 this.documentUploadService.uploadDocumentUpload(this.fileToUpload).subscribe(data => {
+		  
 	// 	if(data !=null && data.length>0){
-
+	  
 	// 	  this.ELEMENT_DATA = Object.assign([],data);
 	// 	   this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 	// 	   this.dataSource.sort = this.sort;
@@ -146,6 +235,22 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 	// 	   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
 	// 	 }
 		});
+	   
+	   }
 
+	   getVerify(){
+		this.route.paramMap.subscribe(params => {
+			this.token = params.get('name') || ''; 
+			console.log(this.token); 
+		  });
+		 this.spinner.show();
+		 this.documentUploadService.getVerify(this.token).subscribe(data => {
+		
+		   this.spinner.hide();
+		}, error => {
+			this.verify=false;
+			console.log("error",error); 
+		});
+	   
 	   }
   }  
