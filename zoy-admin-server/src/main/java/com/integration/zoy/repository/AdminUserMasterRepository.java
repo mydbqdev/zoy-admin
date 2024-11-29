@@ -158,5 +158,12 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 	 @Query(value = "SELECT * FROM pgadmin.user_master ORDER BY create_at DESC", nativeQuery = true)
 	 List<AdminUserMaster> findAllAdminUsersOrderedByCreationDateDesc();
 
+	 @Query(value = "SELECT " +
+	            "(SELECT COUNT(*) FROM pgusers.user_master WHERE user_pin IS NOT NULL) AS activeTenants, " +
+	            "(SELECT COUNT(DISTINCT pg_owner_id) FROM pgcommon.pg_owner_property_status WHERE status = true) AS activeOwnersCount, " +
+	            "(SELECT COUNT(*) FROM pgcommon.pg_owner_property_status WHERE status = true) AS activePropertiesCount",
+	            nativeQuery = true)
+		List<Object[]> getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
+
 	
 }
