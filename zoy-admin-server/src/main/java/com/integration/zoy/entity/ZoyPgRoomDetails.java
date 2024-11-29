@@ -45,6 +45,9 @@ public class ZoyPgRoomDetails {
 
     @Column(name = "room_remarks")
     private String roomRemarks;
+    
+    @Column(name = "room_status")
+    private Boolean roomStatus;
 
     public String getRoomId() {
         return roomId;
@@ -125,4 +128,12 @@ public class ZoyPgRoomDetails {
     public void setRoomRemarks(String roomRemarks) {
         this.roomRemarks = roomRemarks;
     }
+
+	public Boolean getRoomStatus() {
+		return roomStatus;
+	}
+
+	public void setRoomStatus(Boolean roomStatus) {
+		this.roomStatus = roomStatus;
+	}
 }

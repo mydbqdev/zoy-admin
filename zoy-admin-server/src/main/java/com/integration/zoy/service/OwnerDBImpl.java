@@ -4,16 +4,20 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import com.integration.zoy.entity.UserMaster;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
+import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
+import com.integration.zoy.entity.ZoyPgPropertyDetails;
 import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
+import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 
@@ -82,7 +86,13 @@ public interface OwnerDBImpl {
 	List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName);
 	ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle);
 	ZoyPgOwnerDetails savePgOwner(ZoyPgOwnerDetails zoyPgOwnerDetails);
-	
+	List<String> getNameOfByAmenitiesList(List<String> excelAmeneties);
+	ZoyPgPropertyDetails getPropertyById(String propertyId);
+	ZoyPgOwnerDetails findPgOwnerById(String ownerId);
+	ZoyPgOwnerBookingDetails getBookingDetails(String userBookingsId);
+	ZoyPgBedDetails getBedsId(String selectedBed);
+	List<String> findPropertyAmenetiesName(String propertyId);
+	ZoyPgTermsMaster findTermMaster(String propertyId);
 	
 
 }

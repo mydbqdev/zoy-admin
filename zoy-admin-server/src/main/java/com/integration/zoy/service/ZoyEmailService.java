@@ -1,19 +1,28 @@
 package com.integration.zoy.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hc.core5.http.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserLoginDetails;
+import com.integration.zoy.entity.UserMaster;
 import com.integration.zoy.entity.UserProfile;
+import com.integration.zoy.entity.ZoyPgBedDetails;
+import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
+import com.integration.zoy.entity.ZoyPgOwnerDetails;
+import com.integration.zoy.entity.ZoyPgPropertyDetails;
+import com.integration.zoy.model.RegisterUser;
 import com.integration.zoy.utils.Email;
 
 @Service
@@ -36,6 +45,9 @@ public class ZoyEmailService {
 	
 	@Value("${app.zoy.banner.30}")
 	private String zoyBanner30Path;
+	
+	@Value("${app.zoy.term.doc}")
+	private String zoyTermDoc;
 
 	public void sendForgotEmail(AdminUserLoginDetails user,String otp) {
 		Email email = new Email();
@@ -154,5 +166,101 @@ public class ZoyEmailService {
 		}
 	}
 	
+	public void sendUserWelcomeMail(RegisterUser registerUser) {
+		Email email=new Email();
+		email.setFrom("zoyPg@mydbq.com");
+		List<String> sendTo=new ArrayList<>();
+		sendTo.add(registerUser.getEmail());
+		email.setTo(sendTo);
+		email.setSubject("Welcome to ZOY - Your happy stay Starts Here!");
+		String body="<h1>Dear "+ registerUser.getFirstName()+",</h1>"
+				+ "<p>We are delighted to welcome you to ZOY!</p>"
+				+ "<p>Thank you for choosing us to manage your bookings and enhance your stay experience...</p>"
+				+ "<p>Regards,<br>Team ZOY</p>";
+		email.setBody(body);
+		email.setContent("text/html");
+		//ClassPathResource imageResource = new ClassPathResource("static/images/30.png");
+		Path path =Paths.get(zoyBanner30Path);
+		try {
+			byte[] content = Files.readAllBytes(path);
+			MultipartFile multipartFile = new CustomMultipartFile(content, path.getFileName().toString(), path.getFileName().toString(), Files.probeContentType(path.toFile().toPath()));
+			emailService.sendEmail(email,multipartFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sendBookingEmail(String toEmail, ZoyPgOwnerBookingDetails saveMyBookings, ZoyPgPropertyDetails propertyDetail,
+			ZoyPgOwnerDetails zoyPgOwnerDetails,ZoyPgBedDetails bedName,String shareType) {
+		Email email=new Email();
+		email.setFrom("zoyPg@mydbq.com");
+		List<String> sendTo=new ArrayList<>();
+		sendTo.add(toEmail);
+		email.setTo(sendTo);
+		email.setSubject("Booking Confirmation - "+propertyDetail.getPropertyName());
+		String body="<h1>Dear "+saveMyBookings.getName()+",</h1>"
+				+ "<p>We are delighted to confirm your reservation at "+propertyDetail.getPropertyName()+". We look forward to hosting you and ensuring your stay is comfortable and enjoyable.</p>"
+				+ "<p><strong>Booking Details:</strong></p>"
+				+ "<ul>"
+				+ "<li><strong>Guest Name:</strong> "+saveMyBookings.getName()+"</li>"
+				+ "<li><strong>Check-in Date:</strong> "+saveMyBookings.getInDate()+"</li>"
+				+ "<li><strong>Check-out Date:</strong> "+saveMyBookings.getOutDate()+"</li>"
+				+ "<li><strong>Room Type:</strong> "+shareType+"</li>"
+				+ "<li><strong>Room / Bed Number:</strong> "+bedName.getBedName()+"</li>"
+				+ "<li><strong>Booking Reference:</strong> "+saveMyBookings.getBookingId()+"</li>"
+				+ "<li><strong>Token Amount Paid:</strong> "+saveMyBookings.getPaidDeposit()+"</li>"
+				+ "</ul>"
+				+ "<p><strong>PG Address:</strong></p>"
+				+ "<p>"
+				+ ""+propertyDetail.getPropertyName()+"<br>"+propertyDetail.getPropertyHouseArea()+"</p>"
+				+ "<p><strong>Contact Information:</strong></p>"
+				+ "<ul>"
+				+ "<li><strong>Phone:</strong> "+zoyPgOwnerDetails.getPgOwnerMobile()+"</li>"
+				+ "<li><strong>Email:</strong> <a href=\"mailto:"+zoyPgOwnerDetails.getPgOwnerEmail()+"\">"+zoyPgOwnerDetails.getPgOwnerEmail()+"</a></li>"
+				+ "</ul>"
+				+ "<p><strong>Check-in/Check-out Policy:</strong></p>"
+				+ "<ul>"
+				+ "<li><strong>Check-in time:</strong> 24 Hrs</li>"
+				+ "<li><strong>Check-out time:</strong> 24 Hrs</li>"
+				+ "</ul>"
+				+ "<p>If you need any assistance before your arrival or have any special requests, please do not hesitate to contact us. We are here to make your stay as pleasant as possible.</p>"
+				+ "<p>Thank you for choosing ZOY. We look forward to welcoming you soon.</p>"
+				+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
+		email.setBody(body);
+		email.setContent("text/html");
+		//ClassPathResource imageResource = new ClassPathResource("static/images/30.png");
+		Path path =Paths.get(zoyTermDoc);
+		try {
+			byte[] content = Files.readAllBytes(path);
+			MultipartFile multipartFile = new CustomMultipartFile(content, path.getFileName().toString(), path.getFileName().toString(), Files.probeContentType(path.toFile().toPath()));
+			emailService.sendEmail(email,multipartFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void sendRentalAgreementToTenant(UserMaster master, String pgName, InputStream is) {
+		Email email = new Email();
+		email.setFrom("zoyPg@mydbq.com");
+		List<String> sendTo = new ArrayList<>();
+		sendTo.add(master.getUserEmail());
+		email.setTo(sendTo);
+		email.setSubject("Web Check-In for " + pgName);
+		String body = "<p>Hey " + master.getUserFirstName() +" "+master.getUserLastName() +"</p>"
+				+ "<p>Welcome to " + pgName + ".</p>"
+				+ "<p>We are delighted to welcome you to "+pgName+". Your check-in has been confirmed, and we are excited to host you for your upcoming stay.</p>"
+				+ "<p>Should you have any special requests or require any assistance prior to your arrival, don’t hesitate to reach out to us.</p>"
+				+ "<p>Best regards,<br>Team ZOY</p>";
+		email.setBody(body);
+		email.setContent("text/html");
+		MultipartFile file = null;
+		try {
+			file= new CustomMultipartFile(is.readAllBytes(), ZoyConstant.RENTAL_AGGREMENT_PDF_NAME, ZoyConstant.RENTAL_AGGREMENT_PDF_NAME, ContentType.APPLICATION_PDF.getMimeType());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		emailService.sendEmail(email, file);
+	}
 
 }

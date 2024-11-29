@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "bulk_upload_details")
+@Table(name = "bulk_upload_details", schema = "pgadmin")
 public class BulkUploadDetails {
 
 	@Id
@@ -40,6 +40,9 @@ public class BulkUploadDetails {
 
 	@Column(name = "property_name")
 	private String propertyName;
+	
+	@Column(name = "job_execution_id")
+	private String jobExeId;
 
 	public Long getId() {
 		return id;
@@ -111,6 +114,14 @@ public class BulkUploadDetails {
 
 	public void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
+	}
+
+	public String getJobExeId() {
+		return jobExeId;
+	}
+
+	public void setJobExeId(String jobExeId) {
+		this.jobExeId = jobExeId;
 	}
 
 

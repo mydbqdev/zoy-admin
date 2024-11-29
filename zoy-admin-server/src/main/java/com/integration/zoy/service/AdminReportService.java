@@ -35,7 +35,7 @@ public class AdminReportService implements AdminReportImpl{
 	private UserPaymentDueRepository userPaymentDueRepository;
 
 	@Autowired
-	private  pdfGenerateService pdfGenerateService;
+	private  PdfGenerateService pdfGenerateService;
 
 	@Autowired
 	private ExcelGenerateService excelGenerateService;

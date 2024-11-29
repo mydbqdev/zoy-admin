@@ -23,6 +23,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -31,6 +32,7 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.SslProvider;
 
 @SpringBootApplication
+@EnableAsync
 @ComponentScan(basePackages = { "com.integration.zoy", "com.integration.zoy.controller" , "com.integration.zoy.config","com.integration.zoy.service"})
 public class ZoyAdminServerApplication {
 

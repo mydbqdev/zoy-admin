@@ -1,5 +1,6 @@
 package com.integration.zoy.service;
 
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,10 +9,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -37,7 +44,7 @@ public class ZoyAdminService {
 
 	@Autowired
 	CommonDBImpl commonDBImpl;
-	
+
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
 
@@ -48,7 +55,25 @@ public class ZoyAdminService {
 	ZoyEmailService zoyEmailService;
 
 	@Autowired
+	UploadService uploadService;
+
+	@Autowired
 	WebClient webClient;
+
+	@Autowired
+	private JobLauncher jobLauncher;
+
+	@Autowired
+	private Job tenantProcessJob;
+
+	@Autowired
+	private Job propertyProcessJob;
+
+	@Autowired
+	private TenantProcessTasklet tenantProcessTasklet;
+
+	@Autowired
+	private PropertyProcessTasklet propertyProcessTasklet;
 
 	@Value("${app.zoy.server.username}")
 	String zoyServerUserName;
@@ -86,54 +111,41 @@ public class ZoyAdminService {
 		}
 	}
 
-	public Pair<Boolean,String> processTenant(String ownerId, String propertyId, MultipartFile file) {
-
+	@Async
+	public void processTenant(String ownerId, String propertyId, MultipartFile file,String jobExeId) {
 		try {
-			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-			if (file != null && !file.isEmpty()) {
-				body.add("file", file.getResource());
-			}
-			byte[] credEncoded = Base64.getEncoder().encode((zoyServerUserName+":"+zoyServerPassword).getBytes());
-			String authStringEnc = new String(credEncoded);
-			ResponseEntity<String> responses = webClient.post()
-					.uri(zoyServerUrl+ownerId+"/"+propertyId+"/writeData")
-					.header("Authorization", "Basic " + authStringEnc) 
-					.contentType(MediaType.MULTIPART_FORM_DATA)
-					.body(BodyInserters.fromMultipartData(body))
-					.retrieve()
-					.toEntity(String.class).block();
-			if(responses.getStatusCodeValue()==200) {
-				return new Pair<Boolean,String>(true, responses.getBody());
-			} else {
-				return new Pair<Boolean,String>(false, responses.getBody());
-			}
+			InputStream inputStream = file.getInputStream();
+			byte[] fileBytes = inputStream.readAllBytes();
+			tenantProcessTasklet.setParameters(ownerId, propertyId, fileBytes);
+			JobParameters jobParameters = new JobParametersBuilder()
+					.addString("ownerId", ownerId)
+					.addString("propertyId", propertyId)
+					.addString("fileName", file.getOriginalFilename())
+					.addString("jobExecutionId", jobExeId) 
+					.toJobParameters();
+			jobLauncher.run(tenantProcessJob, jobParameters);
 		} catch (Exception e) {
-			return new Pair<Boolean,String>(false, e.getMessage());
+
 		}
+
 	}
 
-	public Pair<Boolean, String> processProperty(String ownerId, String propertyId, MultipartFile file) {
+	@Async
+	public void processProperty(String ownerId, String propertyId, MultipartFile file,String jobExecutionId) {
 		try {
-			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-			if (file != null && !file.isEmpty()) {
-				body.add("file", file.getResource());
-			}
-			byte[] credEncoded = Base64.getEncoder().encode((zoyServerUserName+":"+zoyServerPassword).getBytes());
-			String authStringEnc = new String(credEncoded);
-			ResponseEntity<String> responses = webClient.post()
-					.uri(zoyServerUrl+ownerId+"/"+propertyId+"/upload_xlsx")
-					.header("Authorization", "Basic " + authStringEnc) 
-					.contentType(MediaType.MULTIPART_FORM_DATA)
-					.body(BodyInserters.fromMultipartData(body))
-					.retrieve()
-					.toEntity(String.class).block();
-			if(responses.getStatusCodeValue()==200) {
-				return new Pair<Boolean,String>(true, responses.getBody());
-			} else {
-				return new Pair<Boolean,String>(false, responses.getBody());
-			}
+			InputStream inputStream = file.getInputStream();
+			byte[] fileBytes = inputStream.readAllBytes();
+			propertyProcessTasklet.setParameters(ownerId, propertyId, fileBytes);
+			JobParameters jobParameters = new JobParametersBuilder()
+					.addString("ownerId", ownerId)
+					.addString("propertyId", propertyId)
+					.addString("fileName", file.getOriginalFilename())
+					.addString("jobExecutionId", jobExecutionId) 
+					.toJobParameters();
+			jobLauncher.run(propertyProcessJob, jobParameters);
+
 		} catch (Exception e) {
-			return new Pair<Boolean,String>(false, e.getMessage());
+			System.out.println("error:::"+e);
 		}
 	}
 
