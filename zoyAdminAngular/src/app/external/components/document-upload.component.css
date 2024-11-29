@@ -13,8 +13,9 @@
     padding: 10px 0;
     margin: 2px;
     cursor: pointer;
+  }
     p {
-      margin: 0;
+      margin: 0px;
       padding: 0;
     }
     .icon {
@@ -23,13 +24,12 @@
     .title {
       margin: 0 0 4px;
       color: rgba(0,0,0,.85);
-      font-size: 16px;
+      font-size: 14px;
     }
     .desc {
       color: rgba(0,0,0,.45);
-      font-size: 14px;
+      font-size: 13px;
     }
-  }
   
  
   
