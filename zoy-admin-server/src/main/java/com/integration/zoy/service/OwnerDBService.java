@@ -10,29 +10,37 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.entity.UserMaster;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
+import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
+import com.integration.zoy.entity.ZoyPgPropertyAmeneties;
+import com.integration.zoy.entity.ZoyPgPropertyDetails;
 import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
+import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.repository.ZoyPgAmenetiesMasterRepository;
 import com.integration.zoy.repository.ZoyPgBedDetailsRepository;
 import com.integration.zoy.repository.ZoyPgDueFactorMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueTypeMasterRepository;
+import com.integration.zoy.repository.ZoyPgOwnerBookingDetailsRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
+import com.integration.zoy.repository.ZoyPgPropertyAmenetiesRepository;
 import com.integration.zoy.repository.ZoyPgPropertyDetailsRepository;
 import com.integration.zoy.repository.ZoyPgPropertyFloorDetailsRepository;
 import com.integration.zoy.repository.ZoyPgRentCycleMasterRepository;
 import com.integration.zoy.repository.ZoyPgRoomDetailsRepository;
 import com.integration.zoy.repository.ZoyPgRoomTypeMasterRepository;
 import com.integration.zoy.repository.ZoyPgShareMasterRepository;
+import com.integration.zoy.repository.ZoyPgTermsMasterRepository;
 import com.integration.zoy.repository.ZoyPgTimeMasterRepository;
 import com.integration.zoy.repository.ZoyPgTypeMasterRepository;
 
@@ -77,6 +85,15 @@ public class OwnerDBService implements OwnerDBImpl{
 	
 	@Autowired
 	private ZoyPgBedDetailsRepository zoyPgBedDetailsRepository;
+	
+	@Autowired
+	private ZoyPgOwnerBookingDetailsRepository bookingDetailsRepository;
+	
+	@Autowired
+	private ZoyPgPropertyAmenetiesRepository zoyPgPropertyAmenetiesRepository;
+	
+	@Autowired
+	private ZoyPgTermsMasterRepository zoyPgTermsMasterRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -410,5 +427,40 @@ public class OwnerDBService implements OwnerDBImpl{
 		return repository.save(zoyPgOwnerDetails);
 	}
 
+	@Override
+	public List<String> getNameOfByAmenitiesList(List<String> excelAmeneties) {
+	 return	zoyPgAmenetiesMasterRepository.getAmenityNameByNames(excelAmeneties);
+		
+	}
+
+	@Override
+	public ZoyPgPropertyDetails getPropertyById(String id) {
+		return zoyPgPropertyDetailsRepository.findById(id).orElse(null); 
+	}
+
+	@Override
+	public ZoyPgOwnerDetails findPgOwnerById(String ownerId) {
+		return repository.findById(ownerId).orElse(null);
+	}
+
+	@Override
+	public ZoyPgOwnerBookingDetails getBookingDetails(String userBookingsId) {
+		return bookingDetailsRepository.findById(userBookingsId).orElse(null);
+	}
+
+	@Override
+	public	ZoyPgBedDetails getBedsId(String bedId) {
+		return zoyPgBedDetailsRepository.findById(bedId).orElse(null);
+	}
+
+	@Override
+	public List<String> findPropertyAmenetiesName(String propertyId) {
+		return zoyPgPropertyAmenetiesRepository.findPropertyAmenetiesName(propertyId);
+	}
+
+	@Override
+	public ZoyPgTermsMaster findTermMaster(String propertyId) {
+		return zoyPgTermsMasterRepository.findTermMaster(propertyId) ;
+	}
 
 }

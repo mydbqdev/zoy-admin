@@ -21,12 +21,14 @@ import com.integration.zoy.entity.UserBillingMaster;
 import com.integration.zoy.entity.UserCurrencyMaster;
 import com.integration.zoy.entity.UserDueMaster;
 import com.integration.zoy.entity.UserEkycTypeMaster;
+import com.integration.zoy.entity.UserMaster;
 import com.integration.zoy.model.OwnerPropertyDTO;
 import com.integration.zoy.repository.NotificationModeMasterRepository;
 import com.integration.zoy.repository.UserBillingMasterRepository;
 import com.integration.zoy.repository.UserCurrencyMasterRepository;
 import com.integration.zoy.repository.UserDueMasterRepository;
 import com.integration.zoy.repository.UserEkycTypeMasterRepository;
+import com.integration.zoy.repository.UserMasterRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
 import com.integration.zoy.utils.OwnerLeadPaginationRequest;
 
@@ -50,6 +52,9 @@ public class UserDBService implements UserDBImpl{
 
 	@Autowired
 	private ZoyPgOwnerDetailsRepository zoyPgOwnerDetailsRepository;
+	
+	@Autowired
+	private UserMasterRepository masterRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -243,5 +248,9 @@ public class UserDBService implements UserDBImpl{
 				((BigInteger) result[4]).longValue(), 
 				"active"  
 				));
+	}
+
+	public UserMaster findUserMaster(String userId) {
+		return masterRepository.findById(userId).orElse(null);
 	}
 }

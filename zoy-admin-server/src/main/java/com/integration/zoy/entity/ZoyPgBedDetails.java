@@ -23,6 +23,9 @@ public class ZoyPgBedDetails {
 
     @Column(name = "bed_available", length = 50) 
     private String bedAvailable;
+    
+    @Column(name = "bed_status") 
+    private Boolean bedStatus;
 
     // Constructors
     public ZoyPgBedDetails() {
@@ -57,4 +60,13 @@ public class ZoyPgBedDetails {
     public void setBedAvailable(String bedAvailable) { // Setter for the new field
         this.bedAvailable = bedAvailable;
     }
+
+	public Boolean getBedStatus() {
+		return bedStatus;
+	}
+
+	public void setBedStatus(Boolean bedStatus) {
+		this.bedStatus = bedStatus;
+	}
+    
 }
