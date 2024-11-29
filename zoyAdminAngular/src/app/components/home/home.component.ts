@@ -8,6 +8,8 @@ import { AuthService } from 'src/app/common/service/auth.service';
 import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AppService } from 'src/app/common/service/application.service';
+import { DashboardCardModel } from 'src/app/common/models/dashboard.model';
 
 @Component({
 	selector: 'app-home',
@@ -21,8 +23,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	isExpandSideBar:boolean=true;
 	@ViewChild(SidebarComponent) sidemenuComp;
 	public rolesArray: string[] = [];
+	dashboardCardModel:DashboardCardModel=new DashboardCardModel();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private appService:AppService) {
 		this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
 		if (userService.getUserinfo() != undefined) {
@@ -56,6 +59,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 			this.router.navigate(['/']);
 		}
+		this.getDashboardCard();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(1);
@@ -66,5 +70,36 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	test(){
 		this.notifyService.showNotification("Success","");
 	}
+
+	getDashboardCard(){
+		this.appService.getDashboardCard().subscribe((result) => {
+			this.dashboardCardModel=result;
+		  },error =>{
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==403){
+			  this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+			  this.errorMsg =error.error.message;
+			  console.log("Error:"+this.errorMsg);
+			  this.notifyService.showError(this.errorMsg, "");
+			} else {
+			  if(error.status==500 && error.statusText=="Internal Server Error"){
+				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			  }else{
+				let str;
+				  if(error.status==400){
+				  str=error.error.error;
+				  }else{
+					str=error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:"+str);
+				  this.errorMsg=str;
+			  }
+			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+		  });
+		  }
 	
 }
