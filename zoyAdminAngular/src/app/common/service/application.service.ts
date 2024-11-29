@@ -4,6 +4,7 @@ import { MessageService } from 'src/app/message.service';
 import { BASE_PATH } from '../shared/variables';
 import { Observable, of} from 'rxjs';
 import { Router } from '@angular/router';
+import { ServiceHelper } from '../shared/service-helper';
 @Injectable({
     providedIn:'root'
 })
@@ -20,7 +21,17 @@ export class AppService{
 
     }
 
-    
+    getDashboardCard(): Observable<any> {
+        const url1=this.basePath +"zoy_admin/admin_cards_details";
+              return this.httpclient.get<any>(
+                  url1,
+                  {
+                      headers:ServiceHelper.buildHeaders(),
+                     observe : 'body',
+                     withCredentials:true
+                  }
+              );
+      } 
 
 
     private errorHandler(error:HttpErrorResponse){

@@ -95,7 +95,7 @@ export class ForgotPasswordComponent implements OnInit {
 		this.sending=false;
 		this.spinner.hide();
 		if(error.status == 0) {
-			this.error = "Internal Server Error/Connection not established";
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
 		 }else if(error.status==403){
 			this.router.navigate(['/forbidden']);
 			}else if (error.error && error.error.message) {
@@ -196,7 +196,9 @@ export class ForgotPasswordComponent implements OnInit {
 			this.errorMsg = (error.error.error !=undefined?(error.error.error  +"."):"")
 			+ (error.error.userEmail!=undefined?(error.error.userEmail+"."):"")
 			+(error.error.password!=undefined?(error.error.password  +"."):"");
-			if(error.status==403){
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==403){
 			this.router.navigate(['/forbidden']);
 			}else if (error.error && error.error.message) {
 			this.errorMsg =error.error.message;
@@ -247,7 +249,9 @@ export class ForgotPasswordComponent implements OnInit {
 			  this.errorMsg = (error.error.error !=undefined?(error.error.error  +"."):"")
 			  + (error.error.userEmail!=undefined?(error.error.userEmail+"."):"")
 			  +(error.error.password!=undefined?(error.error.password  +"."):"");
-			  if(error.status==403){
+			  if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==403){
 			  this.router.navigate(['/forbidden']);
 			  }else if (error.error && error.error.message) {
 			  this.errorMsg =error.error.message;

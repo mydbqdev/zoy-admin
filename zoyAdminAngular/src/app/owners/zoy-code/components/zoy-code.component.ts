@@ -137,7 +137,9 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		  },error =>{
 			this.spinner.hide();
 			console.log("error.error",error)
-			if(error.status==409){
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==409){
 				this.confirmationDialogService.confirm('Confirmation!!', 'A Zoycode has already been generated for this email Id, Would you like to resend the code?')
 				.then(
 				  (confirmed) =>{
@@ -186,7 +188,9 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			  },error =>{
 				this.spinner.hide();
 				console.log("error.error",error)
-				if(error.status==403){
+				if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "")
+				 }else if(error.status==403){
 				this.router.navigate(['/forbidden']);
 				}else if (error.error && error.error.message) {
 				this.errorMsg =error.error.message;
@@ -292,7 +296,9 @@ nameValidation(event: any, inputId: string) {
 			  },error =>{
 				this.spinner.hide();
 				console.log("error.error",error)
-				if(error.status==403){
+				if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "")
+				 }else if(error.status==403){
 				this.router.navigate(['/forbidden']);
 				}else if (error.error && error.error.message) {
 				this.errorMsg =error.error.message;
