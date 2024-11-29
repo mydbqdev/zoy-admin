@@ -1,0 +1,36 @@
+  .rightsidetext{
+    margin-left: 2px;
+  }
+
+  .upload-container {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    background: #fafafa;
+    border: 1px dashed #d9d9d9;
+    padding: 10px 0;
+    margin: 2px;
+    cursor: pointer;
+    p {
+      margin: 0;
+      padding: 0;
+    }
+    .icon {
+      margin-bottom: 3px;
+    }
+    .title {
+      margin: 0 0 4px;
+      color: rgba(0,0,0,.85);
+      font-size: 16px;
+    }
+    .desc {
+      color: rgba(0,0,0,.45);
+      font-size: 14px;
+    }
+  }
+  
+ 
+  
+ 
