@@ -9,9 +9,9 @@
                             <div>
                             <!-- Nested Row within Card Body -->
                             <div class="row"  style="height:calc(100vh - 35px);">                      
-                               <div class="col-lg-6 d-none d-lg-block bg-upload-image">
+                               <div class="col-lg-6 d-none d-lg-block">
                                     <div>
-                                        <img src="assets/images/document-upload.png" style="width: 100%; height: 720px;">
+                                        <img src="assets/images/document-upload.png" style="width: 100%; height: 740px;">
                                       </div>
                                  </div>
                                  <div class="col-lg-6">
@@ -19,11 +19,13 @@
                                         <div style="text-align: center;">
                                             <img src="assets/images/ZOY-logo.svg" style="height: 132px;width: auto;margin-top:-17px;">
                                         </div>
+                                          <div *ngIf="!uploaded">
+
                                           <div class="rightsidetext mt-2 ">
                                             <strong class="h4">Welcome to ZOY!</strong>
-                                            <p class="h4">Hi Owner!</p> 
-                                            <p style="text-justify: auto;" class="small">To ensure the security and realibility of our platform. we require all owners to complete a quick verification process to maintain the safety of our community and to provide you with a seamless and trustworthy experience. </p>
-                                            <P style="text-justify: auto;" class="small">Rest assured, your information is securely stored and used solely for verification purposes as outlined in our Privacy Policy. </P>
+                                            <p class="h5">Hi Owner!</p> 
+                                            <p style="text-align: justify;" class="small">To ensure the security and realibility of our platform. we require all owners to complete a quick verification process to maintain the safety of our community and to provide you with a seamless and trustworthy experience. </p>
+                                            <P style="text-align: justify;" class="small">Rest assured, your information is securely stored and used solely for verification purposes as outlined in our Privacy Policy. </P>
                                           </div>
                                           <div class="text-left">
                                             <label>Upload Property Document/Agreement</label>
@@ -32,8 +34,9 @@
                                                 dropzone
                                                 (click)="onClick()">
                                             <p class="icon"><i class="bi bi-cloud-arrow-up-fill"></i></p>
-                                            <p class="title">Click to upload or drag and drop</p>
+                                            <p class="title"><a class="text-blue-500">Click to upload</a> or drag and drop</p>
                                             <p class="desc">Supported formats : PDF,PNG,WORD </p>
+                                            <p class="desc">(Max File Size: 5MB)</p>
                                             </div>
 
                                             <input
@@ -51,12 +54,18 @@
                                              <label>Uploaded</label>
                                               <input type="text" class="form-control" placeholder="document.pdf" disabled> 
                                              </div>
-                                            <button type="submit" class="btn btn-primary-custom btn-block mt-2">
+                                            <button type="submit" (click)="submit()" class="btn btn-primary-custom btn-block mt-2">
                                                Submit
                                             </button>
+
+                                            </div>
+                                            <div class="mt-4" *ngIf="uploaded" style="text-align: center;">
+                                                <strong class="h4">Thanks for Uploading the Documents!<a class="text-blue-500 ml-2"><i class="bi bi-check-circle-fill"></i></a></strong>
+                                                <P class="small mt-2">We shall verify your documents and update you the status soon.If you have any questions please feel free to reach out to us at[Support Email/Contact Infomation] </P>
+                                              </div>
                                        </div>
-                                  </div>
-                              </div>
+                                   </div>
+                               </div>
                             </div>
                         </div>
                     </div>

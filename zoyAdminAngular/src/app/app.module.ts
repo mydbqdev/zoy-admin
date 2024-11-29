@@ -57,7 +57,8 @@ import { DoughnutNgxChartComponent } from './chart/doughnut-ngx';
 import { BarNgxChartComponent } from './chart/barchart-ngx';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { DocumentUploadComponent } from './external/components/document-upload.component';
-import { AppDocumentUploadRoutingModule } from './external/document-upload-routing.model';
+import { AppDocumentUploadRoutingModule } from './external/document-upload-routing.module';
+
 
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}

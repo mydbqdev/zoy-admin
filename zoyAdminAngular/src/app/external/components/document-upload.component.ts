@@ -1,16 +1,5 @@
-import { AfterViewInit, Component, EventEmitter, inject, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient, HttpEventType, HttpRequest } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NavigationEnd } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { UserService } from 'src/app/common/service/user.service';
-import { AuthService } from 'src/app/common/service/auth.service';
-import { DataService } from 'src/app/common/service/data.service';
-import { NotificationService } from 'src/app/common/shared/message/notification.service';
-
-import { FormBuilder } from '@angular/forms';
-import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FileUploadModel } from '../model/file-upload.model';
 import { last, map, tap } from 'rxjs';
 
@@ -21,41 +10,35 @@ import { last, map, tap } from 'rxjs';
   styleUrl: './document-upload.component.css'
 })
 export class DocumentUploadComponent implements OnInit, AfterViewInit {
-    
-  @Input() text = "Upload";
-  @Input() param = "file";
-  @Input() target = "https://file.io";
-  @Input() accept = "image/*";
-  @Output() complete = new EventEmitter<string>();
-  private files: Array<FileUploadModel> = [];
-	  constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
-		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
-			  this.authService.checkLoginUserVlidaate();
-		  //this.defHomeMenu=defMenuEnable;
-	  }
+		@Input() text = "Upload";
+		@Input() param = "file";
+		@Input() target = "https://file.io";
+		@Input() accept = "image/*";
+		@Output() complete = new EventEmitter<string>();
+        private files: Array<FileUploadModel> = [];
+		
+	  constructor( private http: HttpClient) {}
 
 	  ngOnDestroy() {
-		
 	  }
 	  ngOnInit() {
-		  //if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
-		  //	this.router.navigate(['/']);
-		  //}
-		  
-		  //this.getZoyOwnerList()
 	  }
 	  ngAfterViewInit() {
-		 
 	  }
 	 
+	  uploaded = false;
+	  submit() {
+		this.uploaded = true;
+		}
+
 	  onDrop(files: FileList) {
 		for (let index = 0; index < files.length; index++) {
 		  const file = files[index];
-		
 		  this.uploadFiles();
 		}
 	  }
 	
+
 	  onClick() {
 		const fileUpload = document.getElementById(
 		  "fileUpload"
