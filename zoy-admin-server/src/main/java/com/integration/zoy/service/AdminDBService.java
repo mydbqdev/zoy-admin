@@ -22,6 +22,7 @@ import com.integration.zoy.repository.AdminUserTemporaryRepository;
 import com.integration.zoy.repository.AppRoleRepository;
 import com.integration.zoy.repository.BulkUploadDetailsRepository;
 import com.integration.zoy.repository.RoleScreenRepository;
+import com.integration.zoy.repository.UserMasterRepository;
 
 @Service
 public  class AdminDBService implements AdminDBImpl {
@@ -43,7 +44,7 @@ public  class AdminDBService implements AdminDBImpl {
 
 	@Autowired
 	BulkUploadDetailsRepository bulkUploadDetailsRepository;
-
+	
 
 
 	@Override
@@ -233,5 +234,12 @@ public  class AdminDBService implements AdminDBImpl {
 	@Override
 	public boolean existsByUserEmail(String userEmail) {
 		return userMasterRepository.existsByUserEmail(userEmail);
+	}
+
+
+
+	@Override
+	public List<Object[]> findSuperAdminCardsDetails() {
+		return userMasterRepository.getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
 	}
 }

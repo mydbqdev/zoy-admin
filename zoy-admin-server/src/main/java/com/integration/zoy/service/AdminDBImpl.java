@@ -77,4 +77,6 @@ public interface AdminDBImpl {
 
 	List<BulkUploadDetails> findAllBulkUpload();
 
+	List<Object[]> findSuperAdminCardsDetails();
+
 }
