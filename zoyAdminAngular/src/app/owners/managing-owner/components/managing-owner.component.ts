@@ -242,5 +242,8 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		this.param.pageSize= event.pageSize;
 		this.getZoyOwnerList();
 		}
-	  
+
+		 setOwnerId(ownerId: string) {
+			this.dataService.setOwenerId(ownerId);
+		  }
   }  

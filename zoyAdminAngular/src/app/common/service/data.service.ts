@@ -30,4 +30,10 @@ export class DataService{
      setHeaderName(headerName:string){
         this.headerName.next(headerName);
      }
+
+     public owenerId=new BehaviorSubject<string>("Owner Details");
+     getOwenerId=this.owenerId.asObservable();
+     setOwenerId(owenerId:string){
+        this.owenerId.next(owenerId);
+     }
 }
