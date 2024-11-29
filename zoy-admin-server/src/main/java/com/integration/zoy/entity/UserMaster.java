@@ -49,6 +49,9 @@ public class UserMaster {
     
     @Column(name = "user_gender")
     private String userGender;
+    
+    @Column(name = "user_ekyc_isekycverified")
+    private Boolean userEkycIsEkycVerified;
 
     
     public String getUserId() {
@@ -139,12 +142,21 @@ public class UserMaster {
 		this.userGender = userGender;
 	}
 
+	public Boolean getUserEkycIsEkycVerified() {
+		return userEkycIsEkycVerified;
+	}
+
+	public void setUserEkycIsEkycVerified(Boolean userEkycIsEkycVerified) {
+		this.userEkycIsEkycVerified = userEkycIsEkycVerified;
+	}
+
 	@Override
 	public String toString() {
 		return "UserMaster [userId=" + userId + ", userMobile=" + userMobile + ", userEmail=" + userEmail + ", userPin="
 				+ userPin + ", userIdEnc=" + userIdEnc + ", userFirstName=" + userFirstName + ", userLastName="
 				+ userLastName + ", userNotificationMode=" + userNotificationMode + ", userCreatedAt=" + userCreatedAt
-				+ ", userModifiedAt=" + userModifiedAt + ", userGender=" + userGender + "]";
+				+ ", userModifiedAt=" + userModifiedAt + ", userGender=" + userGender + ", userEkycIsEkycVerified="
+				+ userEkycIsEkycVerified + "]";
 	}
     
     

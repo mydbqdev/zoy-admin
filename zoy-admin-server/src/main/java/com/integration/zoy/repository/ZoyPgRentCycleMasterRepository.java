@@ -28,4 +28,7 @@ public interface ZoyPgRentCycleMasterRepository extends JpaRepository<ZoyPgRentC
 			+ "where zppd.property_id =:propertyId and zprcm.cycle_name =:rentCycle" ,nativeQuery = true)
 	ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle);
 
+	@Query(value = "SELECT cycle_id FROM pgowners.zoy_pg_rent_cycle_master WHERE cycle_name =:rentName", nativeQuery = true)
+	String getRentCycleId(String rentName);
+
 }

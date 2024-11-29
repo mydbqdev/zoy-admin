@@ -71,4 +71,30 @@ public interface  ZoyAdminUploadImpl {
 	produces = { "application/json" }) 
 	ResponseEntity<String> getBulkUpload();
 
+
+	@Operation(summary = "downloadTemplateTenantsGet", description = "downloadTemplateTenants", 
+			security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin Upload" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_partner/download_template_tenants",
+	produces = { "application/json" })
+	ResponseEntity<Object> downloadTemplateTenantsGet();
+
+
+	@Operation(summary = "downloadTemplateGet", description = "downloadTemplateGet", 
+			security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin Upload" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_partner/download_template",
+	produces = { "application/json" })
+	ResponseEntity<Object> downloadTemplateGet();
+
+
+
 }

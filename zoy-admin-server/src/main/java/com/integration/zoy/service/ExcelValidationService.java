@@ -110,7 +110,7 @@ public class ExcelValidationService {
 			errors.add(new ErrorDetail(rowIndex, colIndex, fieldName, errorDesc));
 		} else {
 			List<String> excelAmeneties=cell.getStringCellValue().contains(",")?Arrays.asList(cell.getStringCellValue().split(",")):Arrays.asList(cell.getStringCellValue());
-			List<String> ameneties=ownerDBImpl.getIdsOfByAmenitiesList(excelAmeneties);
+			List<String> ameneties=ownerDBImpl.getNameOfByAmenitiesList(excelAmeneties);
 			List<String> missingAmenities = new ArrayList<>(excelAmeneties);
 			missingAmenities.removeAll(ameneties);
 			if(missingAmenities.size()!=0) {

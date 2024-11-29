@@ -17,4 +17,6 @@ public interface ZoyPgPropertyFloorDetailsRepository extends JpaRepository<ZoyPg
 			+ "where zppd.property_id =:propertyId and zppfd.floor_name =:floorName",nativeQuery = true)
 	ZoyPgPropertyFloorDetails findFloorDetails(String propertyId, String floorName);
 	
+	@Query(value = "select pgowners.check_dup_floor_names(:floorName,:propertyId)",nativeQuery = true)
+	String checkDuplicateFloorName(String floorName, String propertyId);
 }

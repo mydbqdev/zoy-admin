@@ -24,4 +24,18 @@ public interface ZoyPgBedDetailsRepository extends JpaRepository<ZoyPgBedDetails
 			+ "where zppd.property_id =:propertyId and zpbd.bed_name =:bedName",nativeQuery = true)
 	List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName);
 	
+	
+	@Query(value = "SELECT bd.bed_id " +
+            "FROM pgowners.zoy_pg_bed_details bd " +
+            "JOIN pgowners.zoy_pg_room_beds rb ON bd.bed_id = rb.bed_id " +
+            "JOIN pgowners.zoy_pg_room_details rd ON rb.room_id = rd.room_id " +
+            "JOIN pgowners.zoy_pg_floor_rooms fr ON rd.room_id = fr.room_id " +
+            "JOIN pgowners.zoy_pg_property_floors pf ON fr.floor_id = pf.floor_id " +
+            "WHERE pf.property_id = :propertyId", nativeQuery = true)
+List<String> findAllBedIdsByPropertyId(@Param("propertyId") String propertyId);
+	
+	 @Modifying
+	    @Transactional
+	    @Query(value = "DELETE FROM pgowners.zoy_pg_bed_details WHERE bed_id IN :bedIds", nativeQuery = true)
+	    void deleteByBedIds(@Param("bedIds") List<String> bedIds);
 }

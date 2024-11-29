@@ -21,6 +21,9 @@ public class ZoyPgPropertyFloorDetails {
 
     @Column(name = "floor_name", length = 50)
     private String floorName;
+    
+    @Column(name = "floor_status")
+    private Boolean floorStatus;
 
     public String getFloorId() {
         return floorId;
@@ -37,4 +40,14 @@ public class ZoyPgPropertyFloorDetails {
     public void setFloorName(String floorName) {
         this.floorName = floorName;
     }
+
+	public Boolean getFloorStatus() {
+		return floorStatus;
+	}
+
+	public void setFloorStatus(Boolean floorStatus) {
+		this.floorStatus = floorStatus;
+	}
+    
+    
 }
