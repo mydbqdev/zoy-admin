@@ -39,13 +39,14 @@
                                    <div class="d-flex">
                                      <div>
                                       <div class="owner-profile-top"> 
-                                        R
+                                        <img [src]="pgOwnerData.profile?.profile_photo" *ngIf="pgOwnerData.profile?.profile_photo?.includes('/')" >
+                                         <span *ngIf="!pgOwnerData.profile?.profile_photo?.includes('/')" >{{pgOwnerData.profile?.owner_name[0]?.toUpperCase()}}</span>
                                       </div>
                                      </div>
                                     <div class="ml-2"> 
-                                      <div style="font-size: 18px;">R T Nagaraju</div>
-                                      <div style="font-size: 14px;">Owner ID : Zoy001</div>
-                                      <div style="font-size: 14px;color: gray;">Status : Active</div>
+                                      <div style="font-size: 18px;">{{pgOwnerData.profile?.owner_name}} </div>
+                                      <div style="font-size: 14px;">  Owner ID : {{pgOwnerData.profile?.owner_i_d}}</div>
+                                      <div style="font-size: 14px;color: gray;">Status : {{pgOwnerData.profile?.status}}</div>
                                     </div>
                                     <div class="ml-auto">
                                       <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
@@ -61,32 +62,32 @@
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">First Name</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">R T</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.first_name}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Last Name</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">Nagaraju</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.last_name}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Email</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">nagaraju.gmail.com</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.email}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Contact</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">9874561230</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.contact}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Adhaar Number</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">xxxxxx678912</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.aadhar}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Address</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">Some placeholder content for the collapse component.This panel is hidden by default but revealed when the user activates the relevant trigger.</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.address}}</div>
                                         </div>
                                       </div>
                                     </div>
@@ -99,88 +100,38 @@
                                     <div class="card card-body ml-2 mr-2 p-2">
                                       <div class="scrollable-container-main pl-3 pr-3">
                                         <div class="row mb-1">
-                                          <div class="col-sm-4" style="font-size: 15px;font-weight: 600;">Bank Details(3)</div>
+                                          <div class="col-sm-4" style="font-size: 15px;font-weight: 600;">Bank Details({{pgOwnerData?.pg_owner_business_info?.length}})</div>
                                         </div>
                                         <div id="carouselbankFade" class="carousel slide">
                                             <div class="carousel-inner">
-                                              <div class="carousel-item active pr-4">
-                                                <div style="margin-bottom: -16px;margin-right: -3px;z-index: 0;" class="text-end"><i class="fas fa-check-circle" style="color: #ec41f1;"></i></div>
-                                                  <div class="primary-box p-2">
-                                                    <div class="text-start" style="font-weight: 600 !important;">Primary Account</div>
+                                              <div *ngFor="let bank of pgOwnerData?.pg_owner_business_info" >
+                                              <div class="carousel-item pr-4" [ngClass]=" bank.account_type == 'Primary Account' ? 'active' : '' ">
+                                                <div style="margin-bottom: -16px;margin-right: -3px;z-index: 0;" class="text-end" *ngIf="bank.account_type == 'Primary Account'" ><i class="fas fa-check-circle" style="color: #ec41f1;"></i></div>
+                                                  <div class="p-2" [ngClass]=" bank.account_type == 'Primary Account' ? 'primary-box' : 'secondary-box' " >
+                                                    <div class="text-start" style="font-weight: 600 !important;">{{bank?.account_type}}</div>
                                                     <div class="d-flex mt-1" style="font-size: 12px;">
                                                       <div >Account Number</div>
                                                       <div class="pl-1 pr-1">:</div>
-                                                      <div> XXXX45673454</div>
+                                                      <div> {{bank?.account_number}}</div>
                                                     </div>
                                                     <div class="d-flex mt-1" style="font-size: 12px;">
                                                       <div>IFS Code</div>
                                                       <div class="pl-1 pr-1">:</div>
-                                                      <div> SBI0012345</div>
+                                                      <div> {{bank?.ifsc_code}}</div>
                                                     </div>
                                                     <div class="d-flex mt-1" style="font-size: 12px;">
                                                       <div>Bank</div>
                                                       <div class="pl-1 pr-1">:</div>
-                                                      <div> SBI</div>
+                                                      <div> {{bank?.bank_name}}</div>
                                                     </div>
                                                     <div class="d-flex mt-1" style="font-size: 12px;">
                                                       <div>Branch</div>
                                                       <div class="pl-1 pr-1">:</div>
-                                                      <div> Marathali</div>
+                                                      <div>{{bank?.bank_branch}}-</div>
                                                     </div>
                                                   </div>
                                               </div>
-
-                                              <div class="carousel-item pr-4 pt-1">
-                                                <div class="secondary-box p-2">
-                                                  <div class="text-start" style="font-weight: 600 !important;">Secondary Account</div>
-                                                  <div class="d-flex mt-1" style="font-size: 12px;">
-                                                    <div >Account Number</div>
-                                                    <div class="pl-1 pr-1">:</div>
-                                                    <div> XXXX45673454</div>
-                                                  </div>
-                                                  <div class="d-flex mt-1" style="font-size: 12px;">
-                                                    <div>IFS Code</div>
-                                                    <div class="pl-1 pr-1">:</div>
-                                                    <div> SBI0012345</div>
-                                                  </div>
-                                                  <div class="d-flex mt-1" style="font-size: 12px;">
-                                                    <div>Bank</div>
-                                                    <div class="pl-1 pr-1">:</div>
-                                                    <div> SBI</div>
-                                                  </div>
-                                                  <div class="d-flex mt-1" style="font-size: 12px;">
-                                                    <div>Branch</div>
-                                                    <div class="pl-1 pr-1">:</div>
-                                                    <div> Marathali</div>
-                                                  </div>
-                                                </div>
-                                              </div>
-
-                                              <div class="carousel-item pr-4 pt-1">
-                                                <div class="secondary-box p-2">
-                                                  <div class="text-start" style="font-weight: 600 !important;">Secondary Account</div>
-                                                  <div class="d-flex mt-1" style="font-size: 12px;">
-                                                    <div >Account Number</div>
-                                                    <div class="pl-1 pr-1">:</div>
-                                                    <div> XXXX45673454</div>
-                                                  </div>
-                                                  <div class="d-flex mt-1" style="font-size: 12px;">
-                                                    <div>IFS Code</div>
-                                                    <div class="pl-1 pr-1">:</div>
-                                                    <div> SBI0012345</div>
-                                                  </div>
-                                                  <div class="d-flex mt-1" style="font-size: 12px;">
-                                                    <div>Bank</div>
-                                                    <div class="pl-1 pr-1">:</div>
-                                                    <div> SBI</div>
-                                                  </div>
-                                                  <div class="d-flex mt-1" style="font-size: 12px;">
-                                                    <div>Branch</div>
-                                                    <div class="pl-1 pr-1">:</div>
-                                                    <div> Marathali</div>
-                                                  </div>
-                                                </div>
-                                              </div>
+                                            </div>
                                           </div>
                                           <button class="carousel-control-next" type="button" data-bs-target="#carouselbankFade" data-bs-slide="next">
                                             <i class="fas fa-chevron-right" style="color: gray;margin-right: -30px;"></i>
@@ -219,23 +170,18 @@
                                     <div class="row mt-2">
                                       <div class="col-sm-7">
                                         <div class="form-group row">
-                                          <label for="category" class="col-sm-5 col-form-label">Property Name</label>
+                                          <label for="category" class="col-sm-5 col-form-label">Property Name </label>
                                           <div class="col-sm-7">
-                                            <select class="custom-select custom-select-sm" id="category">                                             
-                                            <option value="Received">Received</option>
-                                            <option value="Not Receive">Not Receive</option>
+                                            <select class="custom-select custom-select-sm" id="category" [(ngModel)]="property_id" (ngModelChange)="selectProperty()" >                                             
+                                            <option *ngFor="let property of pgOwnerData?.pg_owner_property_information" [value]="property.property_name" >{{property.property_name}}</option>
                                             </select> 
                                           </div>
                                         </div>
                                       </div>
                                       <div class="col-sm-5">
                                         <div class="form-group row">
-                                          <label for="category" class="col-sm-4 col-form-label">Status</label>
-                                          <div class="col-sm-8">
-                                            <select class="custom-select custom-select-sm" id="category">                                             
-                                            <option value="Received">Received</option>
-                                            <option value="Not Receive">Not Receive</option>
-                                            </select> 
+                                          <label for="category" class="col-sm-4 col-form-label">Status :</label>
+                                          <div class="col-sm-8 mt-2"> {{property_status}}
                                           </div>
                                         </div>
                                       </div>
@@ -250,42 +196,42 @@
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">PG Type</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">Men</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{propertyInfo.basic_property_information?.pg_type}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Address</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">Some placeholder content for the collapse component.This panel is hidden by default but revealed when the user activates the relevant trigger.</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{propertyInfo.basic_property_information?.pg_address}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Manager Name</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">Nagaraju</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{propertyInfo.basic_property_information?.manager_name}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Manager Email</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">nagaraju.gmail.com</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{propertyInfo.basic_property_information?.manager_emailid}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Manager Contact</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">9874561230</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{propertyInfo.basic_property_information?.manager_contact}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">GST Number</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">9874561230</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{propertyInfo.basic_property_information?.gst_number}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">No Of Floor</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">3</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{propertyInfo.basic_property_information?.number_of_floors}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Total Occupancy</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">50</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{propertyInfo.basic_property_information?.total_occupancy}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-3" style="font-size: 14px;">Ownership Proof</div>
@@ -306,89 +252,36 @@
                                           <div>Floor</div>
                                           <div class="ml-2 text-center" style="width: 20px;">:</div>
                                           <div style="width: 100px;">
-                                            <select class="custom-select custom-select-sm" id="category">                                             
-                                              <option value="Received">01</option>
-                                              <option value="Not Receive">02</option>
+                                            <select class="custom-select custom-select-sm" id="category" [(ngModel)]="floorNumber" (ngModelChange)="selectFloor()">                                             
+                                              <option *ngFor="let floor of propertyInfo.floor_information;let i = index "  [value]="i+1">{{i+1}}</option>
                                             </select> 
                                           </div>
                                           <div class="ml-auto"><i class="fas fa-circle mr-1" style="color:green;"></i><span style="color:green;">Vacancy</span> <i class="fas fa-circle ml-2 mr-1" style="color:red;"></i><span style="color:red;">Occupied</span></div>
                                         </div>
                                         <div class="d-flex mt-2 mb-2">
-                                          <div class="mr-2 ml-1 common-box">Total Rooms - 09 </div>
-                                          <div class="mr-2 common-box">Total Occupancy -50</div>
-                                          <div class="mr-2 common-box">Occupied - 45</div>
-                                          <div class="common-box"> Vacant - 05 </div>
+                                          <div class="mr-2 ml-1 common-box">Total Rooms - {{floorInfo?.total_rooms}} </div>
+                                          <div class="mr-2 common-box">Total Occupancy -{{floorInfo?.total_occupancy}} </div>
+                                          <div class="mr-2 common-box">Occupied - {{floorInfo?.occupied}} </div>
+                                          <div class="common-box"> Vacant - {{floorInfo?.vacant}}  </div>
                                         </div>
-                                        <div class="row">
-                                          <div class="col-sm-4">
+                                        <div class="row" *ngFor="let roomList of roomArrayList" >
+                                          <div class="col-sm-4" *ngFor="let room of roomList" >
                                             <div class="common-box m-1">
-                                              <div class="text-center">Room 101</div>
+                                              <div class="text-center">Room {{room.room_no}} </div>
                                               <div class="row">
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:green"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:green"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div class="col-sm-4">
-                                            <div class="common-box m-1">
-                                              <div class="text-center">Room 102</div>
-                                              <div class="row">
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:green"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div class="col-sm-4">
-                                            <div class="common-box m-1">
-                                              <div class="text-center">Room 103</div>
-                                              <div class="row">
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:green"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:green"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                              </div>
+                                                
+                                                <div class="col-sm-3 text-center" *ngFor="let bed of unavailableBedsArray(room);">
+                                                  <i class="fas fa-bed" style="color:red"></i>
+                                                </div>
+                                                <div class="col-sm-3 text-center" *ngFor="let bed2 of availableBedsArray(room.beds_available);">
+                                                    <i class="fas fa-bed" style="color:green"></i>
+                                                  </div>
+                                                </div>
                                             </div>
                                           </div>
                                         </div>
-                                        <div class="row mt-2">
-                                          <div class="col-sm-4">
-                                            <div class="common-box m-1">
-                                              <div class="text-center">Room 104</div>
-                                              <div class="row">
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:green"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:green"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div class="col-sm-4">
-                                            <div class="common-box m-1">
-                                              <div class="text-center">Room 105</div>
-                                              <div class="row">
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:green"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div class="col-sm-4">
-                                            <div class="common-box m-1">
-                                              <div class="text-center">Room 106</div>
-                                              <div class="row">
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:green"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:green"></i></div>
-                                                <div class="col-sm-3 text-center"><i class="fas fa-bed" style="color:red"></i></div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
+                                        <div class="text-center" *ngIf="roomArrayList.length == 0" > No Ro0ms Available </div>
+                                       
                                        </div>
                                     </div>
                                   </div>
@@ -401,47 +294,47 @@
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Security Deposit Amount</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">Rs. 3000.00</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">Rs. {{propertyInfo?.pg_owner_additional_info?.security_deposit}}</div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Notice Period</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">1 month</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;"> {{propertyInfo?.pg_owner_additional_info?.notice_period}} </div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Rent Cycle</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">01-01</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.rent_cycle}} </div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Late Payment</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">No</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.late_payment_fee}} </div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Grace Period</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">No</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.grace_period}} </div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Additional Charges</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">No</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.additional_charges}} </div>
                                         </div>
                                         <div class="row">
-                                          <div class="col-sm-4 text-end text-gray-800" style="font-size: 14px;">Aggrement Charges</div>
+                                          <div class="col-sm-4" style="font-size: 14px;">Aggrement Charges</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-7 text-gray-800" style="font-size: 14px;color: gray;">No</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.agreement_charges}} </div>
                                         </div>
                                         <div class="row">
-                                          <div class="col-sm-4 text-end text-gray-800" style="font-size: 14px;">EKYC Changes</div>
+                                          <div class="col-sm-4" style="font-size: 14px;">EKYC Changes</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-7 text-gray-800" style="font-size: 14px;color: gray;">No</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.ekyc_charges}} </div>
                                         </div>
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Description</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">Some placeholder content for the collapse component.This panel is hidden by default but revealed when the user activates the relevant trigger.</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.property_description}}</div>
                                         </div>
                                       </div>
                                     </div>
