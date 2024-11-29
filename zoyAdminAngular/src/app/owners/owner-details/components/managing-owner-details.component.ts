@@ -8,15 +8,12 @@ import { AuthService } from 'src/app/common/service/auth.service';
 import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
-import { MatSort, Sort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { OwnerDetails } from '../models/owner-details-model';
-import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { GenerateZoyCodeService } from '../../service/zoy-code.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
+import { FloorInformation, PgOwnerData, PgOwnerPropertyInformation, Room } from '../models/owner-full-details';
+import { ZoyOwnerService } from '../../service/zoy-owner.service';
 
 @Component({
   selector: 'app-managing-owner-details',
@@ -24,39 +21,26 @@ import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
   styleUrl: './managing-owner-details.component.css'
 })
 export class OwnerDetailsComponent implements OnInit, AfterViewInit {
-	displayedColumns: string[] = ['zoy_code', 'owner_name', 'email_id', 'mobile_no','noof_properties', 'status','action'];
-	public ELEMENT_DATA:OwnerDetails[]=[];
-	orginalFetchData:OwnerDetails[]=[];
-	searchText:string='';
-	dataSource:MatTableDataSource<OwnerDetails>=new MatTableDataSource<OwnerDetails>();
-	columnSortDirectionsOg: { [key: string]: string | null } = {
-	  zoy_code: null,
-	  owner_name: null,
-	  email_id: null,
-	  noof_properties: null,
-	  status: null
-	};
-	stopPropagation(event: MouseEvent): void {
-		event.stopPropagation();
-	  }
-	generateZCode : OwnerDetails=new OwnerDetails();
+	
 	public userNameSession: string = "";
 	  errorMsg: any = "";
 	  mySubscription: any;
 	  isExpandSideBar:boolean=true;
 	  @ViewChild(SidebarComponent) sidemenuComp;
-	  @ViewChild(MatSort) sort: MatSort;
-	  @ViewChild(MatPaginator) paginator: MatPaginator;
 	  public rolesArray: string[] = [];
 	  submitted=false;
-	  columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
-	  private _liveAnnouncer = inject(LiveAnnouncer);
-
-	  pageSize: number = 10; 
-	  pageSizeOptions: number[] = [10, 20, 50]; 
-	  totalProduct: number = 0;
 	  userInfo:UserInfo=new UserInfo();
-	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
+	  owenerId :string ='' ;
+	  pgOwnerData : PgOwnerData = new PgOwnerData();
+	  roomList:Room[]=[]
+	  roomArrayList:any[]=[];
+	  floorInfo:FloorInformation = new FloorInformation();
+	  floorNumber:number=1;
+	  property_id:string='';
+	  property_status:string='';
+
+	  propertyInfo :PgOwnerPropertyInformation =new PgOwnerPropertyInformation();
+	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService :ZoyOwnerService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			  this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
@@ -85,6 +69,9 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		  this.dataService.getIsExpandSideBar.subscribe(name=>{
 			  this.isExpandSideBar=name;
 		  });
+		  this.dataService.getOwenerId.subscribe(id=>{
+			this.owenerId=id;
+		});
 	  }
 
 	  ngOnDestroy() {
@@ -96,12 +83,15 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		  //if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		  //	this.router.navigate(['/']);
 		  //}
-		  //this.getZoyOwnerList()
+		 
+		  
 	  }
 	  ngAfterViewInit() {
 		  this.sidemenuComp.expandMenu(2);
 		  this.sidemenuComp.activeMenu(2, 'manage-owner');
 		  this.dataService.setHeaderName("Manage Owner Details");
+		  
+		  this.getZoyOwnerDetails();
 	  }
 	  
 	  collaspeList = [
@@ -146,4 +136,91 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		  this.pdfSource = '/assets/sample_files/sample.pdf';
 		  this.spinner.hide();
 	  }
+	  
+	  selectProperty(){
+		this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_name == this.property_id);
+		this.property_status = this.propertyInfo.status ;
+		if(this.propertyInfo.floor_information.length>0){
+
+			this.floorInfo = this.propertyInfo.floor_information[0];
+			this.showRooms();
+		}
+		
+	  }
+	  selectFloor(){
+		if(this.propertyInfo.floor_information.length>=this.floorNumber){
+			this.floorInfo = this.propertyInfo.floor_information[this.floorNumber-1];
+			this.showRooms();
+		}else{
+			this.floorInfo = new FloorInformation() 
+		}
+	  }
+	 
+ 	showRooms(){
+		this.roomArrayList=[];
+		 for(let i=0;i<this.floorInfo.rooms?.length;i=i+3){
+					this.roomList=[];
+					for(let j=i;j<i+3 && j<this.floorInfo.rooms.length;j++){
+						this.roomList.push(this.floorInfo.rooms[j]);
+					}
+					this.roomArrayList.push(this.roomList);
+				 }
+	  }
+
+	  availableBedsArray(n:number) {
+		const num = Number(n);
+		return new Array(num); 
+	  }
+	
+	  unavailableBedsArray(room:any) {
+		const num = Number(room.number_of_beds) - Number(room.beds_available) ;
+		return new Array(num); 
+	  }
+
+	  getZoyOwnerDetails(){
+		this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
+		this.zoyOwnerService.getZoyOwnerDetails(this.owenerId).subscribe(res => {
+		this.pgOwnerData = res?.data ;
+		if(this.pgOwnerData.pg_owner_property_information.length>0){
+			this.property_id =this.pgOwnerData.pg_owner_property_information[0].property_name; 
+			this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_name == this.property_id);
+			this.property_status = this.propertyInfo.status ;
+			if(this.propertyInfo.floor_information.length>0){
+				this.floorInfo = this.propertyInfo.floor_information[0];
+				this.showRooms();
+			}
+			
+		} 
+		this.spinner.hide();
+		}, error => {
+		this.spinner.hide();
+		if(error.status == 0) {
+		  this.notifyService.showError("Internal Server Error/Connection not established", "")
+	   }else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+			this.errorMsg = error.error.message;
+			console.log("Error:" + this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+		} else {
+			if (error.status == 500 && error.statusText == "Internal Server Error") {
+			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+			} else {
+			let str;
+			if (error.status == 400) {
+				str = error.error;
+			} else {
+				str = error.message;
+				str = str.substring(str.indexOf(":") + 1);
+			}
+			console.log("Error:" + str);
+			this.errorMsg = str;
+			}
+			//if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			this.notifyService.showError(this.errorMsg, "");
+		}
+		});
+	}
+
   }  
