@@ -17,12 +17,23 @@ import { MessageService } from 'src/app/message.service';
     constructor(private httpclient:HttpClient,@Inject(BASE_PATH) private basePath:string, private messageService:MessageService){
 
     }
-   
-     public getDocumentUpload(): Observable<any> {
-        const url1=this.basePath +'zoy_admin/getDocumentUpload';
+    public getVerify(emailId:any): Observable<any> {
+        const url1=this.basePath +'zoy_admin/getDocumentUpload?emailId='+emailId;
         return this.httpclient.get<any>(
             url1,
-            
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+     }
+   
+     public uploadDocumentUpload(fileToUpload: File): Observable<any> {
+        const url1=this.basePath +'zoy_admin/uploadDocumentUpload';
+        return this.httpclient.post<any>(
+            url1,
+            'data',
             {
                 headers:ServiceHelper.buildHeaders(),
                observe : 'body',
