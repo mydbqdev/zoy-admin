@@ -13,10 +13,21 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	@Query(value = "select email_id, zoy_code from pg_owner_master where email_id = :emailId", nativeQuery = true)
     List<Object[]> findEmailAndZoyCodeByEmailId(String emailId);
 	
-	@Query(value = "  SELECT pom.zoy_code, \r\n" + "    CONCAT(pom.first_name, ' ', pom.last_name) AS username,\r\n"
-			+ "    pom.email_id,pom.mobile_no,pom.created_at, \r\n" + "    'pending' AS status\r\n"
-			+ "FROM pg_owner_master pom\r\n" + "LEFT JOIN pgcommon.user_profile up ON pom.zoy_code = up.zoy_code\r\n"
-			+ "WHERE up.zoy_code IS NULL;", nativeQuery = true)
+	@Query(value = "SELECT\r\n"
+			+ "    pzm.zoy_code,\r\n"
+			+ "    pzm.first_name || ' ' || pzm.last_name AS owner_name,\r\n"
+			+ "    up.email_id,\r\n"
+			+ "    up.mobile_no AS contact,\r\n"
+			+ "    pzm.created_at,\r\n"
+			+ "    'pending' AS status\r\n"
+			+ "FROM\r\n"
+			+ "    pgadmin.pg_owner_master pzm\r\n"
+			+ "JOIN\r\n"
+			+ "    pgcommon.user_profile up ON pzm.email_id = up.email_id\r\n"
+			+ "WHERE\r\n"
+			+ "    up.enabled = false\r\n"
+			+ "ORDER BY\r\n"
+			+ "    pzm.created_at DESC", nativeQuery = true)
 	List<Object[]> getAllPgOwnerDetails();
 
 @Query(value = "SELECT * " +
