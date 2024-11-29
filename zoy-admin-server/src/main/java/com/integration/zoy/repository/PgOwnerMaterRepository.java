@@ -47,7 +47,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 			+ "    SPLIT_PART(pg_owner_name, ' ', 2) AS last_name,\r\n"
 			+ "    pg_owner_email AS email_id,\r\n"
 			+ "    pg_owner_mobile AS contact_number,\r\n"
-			+ "    ekyc.enocded_aadhaar AS aadhaar_number,\r\n"
+			+ "    ekyc.user_ekyc_masked_aadhaar AS aadhaar_number,\r\n"
 			+ "    CONCAT(\r\n"
 			+ "        COALESCE(ekyc.user_ekyc_house, ''), ' ',\r\n"
 			+ "        COALESCE(ekyc.user_ekyc_street, ''), ' ',\r\n"
