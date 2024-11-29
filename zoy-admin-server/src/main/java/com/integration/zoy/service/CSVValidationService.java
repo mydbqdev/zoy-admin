@@ -6,6 +6,7 @@ import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.utils.ErrorDetail;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,15 @@ public class CSVValidationService {
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
 	
-	public List<ErrorDetail> validateCSV(InputStream inputStream,String propertyId) {
+	public List<ErrorDetail> validateCSV(byte[] file,String propertyId) {
 		this.propertyId=propertyId;
 		List<ErrorDetail> errorDetails = new ArrayList<>();
 		Map<String, List<Integer>> emailTracker = new HashMap<>();
 		Map<String, List<Integer>> phoneTracker = new HashMap<>();
 
-		try (CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream))) {
+		try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(file);
+				InputStreamReader inputStreamReader = new InputStreamReader(byteArrayInputStream);
+				CSVReader csvReader = new CSVReaderBuilder(inputStreamReader).build()) {
 			List<String[]> records = csvReader.readAll();
 			if (records.isEmpty()) {
 				return Collections.singletonList(new ErrorDetail(0, 0, "file", "CSV file is empty"));

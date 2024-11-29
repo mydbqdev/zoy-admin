@@ -112,15 +112,14 @@ public class ZoyAdminService {
 	}
 
 	@Async
-	public void processTenant(String ownerId, String propertyId, MultipartFile file,String jobExeId) {
+	public void processTenant(String ownerId, String propertyId, byte[] file,String fileName,String jobExeId) {
 		try {
-			InputStream inputStream = file.getInputStream();
-			byte[] fileBytes = inputStream.readAllBytes();
-			tenantProcessTasklet.setParameters(ownerId, propertyId, fileBytes);
+
+			tenantProcessTasklet.setParameters(ownerId, propertyId, file);
 			JobParameters jobParameters = new JobParametersBuilder()
 					.addString("ownerId", ownerId)
 					.addString("propertyId", propertyId)
-					.addString("fileName", file.getOriginalFilename())
+					.addString("fileName", fileName)
 					.addString("jobExecutionId", jobExeId) 
 					.toJobParameters();
 			jobLauncher.run(tenantProcessJob, jobParameters);
@@ -131,15 +130,13 @@ public class ZoyAdminService {
 	}
 
 	@Async
-	public void processProperty(String ownerId, String propertyId, MultipartFile file,String jobExecutionId) {
+	public void processProperty(String ownerId, String propertyId, byte[] file,String fileName,String jobExecutionId) {
 		try {
-			InputStream inputStream = file.getInputStream();
-			byte[] fileBytes = inputStream.readAllBytes();
-			propertyProcessTasklet.setParameters(ownerId, propertyId, fileBytes);
+			propertyProcessTasklet.setParameters(ownerId, propertyId, file);
 			JobParameters jobParameters = new JobParametersBuilder()
 					.addString("ownerId", ownerId)
 					.addString("propertyId", propertyId)
-					.addString("fileName", file.getOriginalFilename())
+					.addString("fileName", fileName)
 					.addString("jobExecutionId", jobExecutionId) 
 					.toJobParameters();
 			jobLauncher.run(propertyProcessJob, jobParameters);

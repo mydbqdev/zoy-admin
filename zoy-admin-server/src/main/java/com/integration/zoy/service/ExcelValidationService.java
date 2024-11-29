@@ -1,5 +1,6 @@
 package com.integration.zoy.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +26,9 @@ public class ExcelValidationService {
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
 
-	public List<ErrorDetail> validateExcel(MultipartFile file) {
+	public List<ErrorDetail> validateExcel(byte[] file) {
 		List<ErrorDetail> errors = new ArrayList<>();
-		try (InputStream is = file.getInputStream(); Workbook workbook = WorkbookFactory.create(is)) {
+		try (ByteArrayInputStream is = new ByteArrayInputStream(file); Workbook workbook = new XSSFWorkbook(is)) {
 			Sheet sheet = workbook.getSheetAt(0);
 			Row headerRow = sheet.getRow(0);
 			if (!validateHeaders(headerRow, errors)) {
