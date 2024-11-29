@@ -4,7 +4,7 @@ import { DocumentUploadComponent } from './components/document-upload.component'
 
 
 const routes: Routes = [
-  { path: 'document-upload', component: DocumentUploadComponent},
+  { path: 'document-upload/:name', component: DocumentUploadComponent},
 
 ];
 

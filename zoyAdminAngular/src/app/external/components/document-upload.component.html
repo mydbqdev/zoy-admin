@@ -23,7 +23,7 @@
 
                                           <div class="rightsidetext mt-2 ">
                                             <strong class="h4">Welcome to ZOY!</strong>
-                                            <p class="h5">Hi Owner!</p> 
+                                            <p class="h5">Hi {{ token }}!</p> 
                                             <p style="text-align: justify;" class="small">To ensure the security and realibility of our platform. we require all owners to complete a quick verification process to maintain the safety of our community and to provide you with a seamless and trustworthy experience. </p>
                                             <P style="text-align: justify;" class="small">Rest assured, your information is securely stored and used solely for verification purposes as outlined in our Privacy Policy. </P>
                                           </div>
@@ -33,7 +33,7 @@
                                                 #uploadzone
                                                 dropzone
                                                 (click)="onClick()">
-                                            <p class="icon"><i class="bi bi-cloud-arrow-up-fill"></i></p>
+                                            <p class="icon"><a class="text-blue-500"><i class="bi bi-cloud-arrow-up-fill"></i></a></p>
                                             <p class="title"><a class="text-blue-500">Click to upload</a> or drag and drop</p>
                                             <p class="desc">Supported formats : PDF,PNG,WORD </p>
                                             <p class="desc">(Max File Size: 5MB)</p>
@@ -54,7 +54,7 @@
                                              <label>Uploaded</label>
                                               <input type="text" class="form-control" placeholder="document.pdf" disabled> 
                                              </div>
-                                            <button type="submit" (click)="submit()" class="btn btn-primary-custom btn-block mt-2">
+                                            <button type="submit" (click)="getDocumentUpload()" class="btn btn-primary-custom btn-block mt-2">
                                                Submit
                                             </button>
 
