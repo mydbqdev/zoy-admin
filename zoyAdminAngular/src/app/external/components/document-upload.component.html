@@ -3,40 +3,35 @@
         <div class="container">
             <!-- Outer Row -->
             <div class="row justify-content-center" style="margin: 0px;">
-                <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="col-xl-11 col-lg-12 col-md-10">
                     <div class="card o-hidden border-0 shadow-lg my-3">
                         <div class="card-body p-0">
-                            <div>
                             <!-- Nested Row within Card Body -->
                             <div class="row"  style="height:calc(100vh - 35px);">                      
-                               <div class="col-lg-6 d-none d-lg-block">
-                                    <div>
-                                        <img src="assets/images/document-upload.png" style="width: 100%; height: 740px;">
-                                      </div>
+                               <div class="col-lg-5 d-none d-lg-block">
+                                        <img src="assets/images/document-upload.png" class="img-fluid" style="height: 100%;">
                                  </div>
-                                 <div class="col-lg-6">
-                                    <div class="p-5">
+                                 <div class="col-lg-7">
+                                    <div class="p-3" style="margin-right: 15px;">
                                         <div style="text-align: center;">
-                                            <img src="assets/images/ZOY-logo.svg" style="height: 132px;width: auto;margin-top:-17px;">
+                                            <img src="assets/images/ZOY-logo.svg" style="height: 100px;width: auto;">
                                         </div>
                                           <div *ngIf="!uploaded">
-
                                           <div class="rightsidetext mt-2 ">
-                                            <strong class="h4">Welcome to ZOY!</strong>
-                                            <p class="h5">Hi Owner!</p> 
-                                            <p style="text-align: justify;" class="small">To ensure the security and realibility of our platform. we require all owners to complete a quick verification process to maintain the safety of our community and to provide you with a seamless and trustworthy experience. </p>
-                                            <P style="text-align: justify;" class="small">Rest assured, your information is securely stored and used solely for verification purposes as outlined in our Privacy Policy. </P>
+                                            <strong class="h5">Welcome to ZOY!</strong>
+                                            <p><strong class="h6">Hi {{ token }},</strong></p>
+                                            <p style="text-align: justify;color:#5b5b5b" class="small">To ensure the security and realibility of our platform. we require all owners to complete a quick verification process to maintain the safety of our community and to provide you with a seamless and trustworthy experience. </p>
+                                            <P style="text-align: justify;color:#5b5b5b" class="small pt-1">Rest assured, your information is securely stored and used solely for verification purposes as outlined in our Privacy Policy. </P>
                                           </div>
-                                          <div class="text-left">
-                                            <label>Upload Property Document/Agreement</label>
+                                          <div class="text-left pt-1">
+                                            <label style="font-size: 15px;"><strong>Upload Property Document/Agreement</strong></label>
                                             <div class="upload-container"
                                                 #uploadzone
                                                 dropzone
                                                 (click)="onClick()">
-                                            <p class="icon"><i class="bi bi-cloud-arrow-up-fill"></i></p>
-                                            <p class="title"><a class="text-blue-500">Click to upload</a> or drag and drop</p>
-                                            <p class="desc">Supported formats : PDF,PNG,WORD </p>
-                                            <p class="desc">(Max File Size: 5MB)</p>
+                                            <p class="icon"><i class="bi bi-cloud-arrow-up-fill text-blue-500"></i></p>
+                                            <p class="title" style="font-size: 14px;"><a class="text-blue-500">Click to upload</a> or drag and drop</p>
+                                            <p class="desc" >Supported formats : PDF only  (Max file size: 5MB)</p>
                                             </div>
 
                                             <input
@@ -47,14 +42,17 @@
                                             accept="{{accept}}"
                                             style="display:none;"/>
                                         </div>
-                                          <!-- <div class="text-left">
-                                            <p class="small text-nowrap mb-0"></p>
-                                          </div> -->
-                                            <div class="text-left">
-                                             <label>Uploaded</label>
-                                              <input type="text" class="form-control" placeholder="document.pdf" disabled> 
+                                            <div class="text-left pt-1" style="max-height: 140px;" *ngIf="files?.length!=0">
+                                             <div style="font-size: 15px;"><strong>Uploaded</strong></div>
+                                            <div style="max-height: 110px;overflow: auto;">
+                                             <div class="desc-inner">
+                                              <div *ngFor="let x of files" class="mb-1 d-flex" style="font-size: 13px;padding: 2px 10px;border:1px solid gray;border-radius: 3px;">
+                                                 <div style="color:5b5b5b;">documents.pdf</div><div class="ml-auto"><i class="far fa-times-circle text-danger"></i></div>
+                                              </div>                                           
                                              </div>
-                                            <button type="submit" (click)="submit()" class="btn btn-primary-custom btn-block mt-2">
+                                             </div>
+                                            </div>
+                                            <button type="submit" (click)="getDocumentUpload()" class="btn btn-primary-custom btn-block mt-2">
                                                Submit
                                             </button>
 
@@ -65,7 +63,6 @@
                                               </div>
                                        </div>
                                    </div>
-                               </div>
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,9 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import { HttpClient, HttpEventType, HttpRequest } from '@angular/common/http';
 import { FileUploadModel } from '../model/file-upload.model';
 import { last, map, tap } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { DocumentUploadService } from '../services/document-upload.service';
 
 
 @Component({
@@ -15,29 +18,28 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 		@Input() target = "https://file.io";
 		@Input() accept = "image/*";
 		@Output() complete = new EventEmitter<string>();
-        private files: Array<FileUploadModel> = [];
-		
-	  constructor( private http: HttpClient) {}
+        files: Array<FileUploadModel> = [];
+		token: string = '';
+
+	constructor(private route: ActivatedRoute, private http: HttpClient,private documentUploadService: DocumentUploadService, private spinner:NgxSpinnerService) {}
 
 	  ngOnDestroy() {
 	  }
 	  ngOnInit() {
+		this.route.paramMap.subscribe(params => {
+			this.token = params.get('name') || ''; 
+		  });
 	  }
 	  ngAfterViewInit() {
 	  }
 	 
 	  uploaded = false;
-	  submit() {
-		this.uploaded = true;
-		}
-
 	  onDrop(files: FileList) {
 		for (let index = 0; index < files.length; index++) {
 		  const file = files[index];
 		  this.uploadFiles();
 		}
 	  }
-	
 
 	  onClick() {
 		const fileUpload = document.getElementById(
@@ -51,14 +53,7 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 		};
 		fileUpload.click();
 	  }
-	  cancelFile(file: FileUploadModel) {
-		file.sub.unsubscribe();
-		this.removeFileFromArray(file);
-	  }
-	  retryFile(file: FileUploadModel) {
-		this.uploadFile(file);
-		file.canRetry = false;
-	  }
+
 	  private uploadFile(file: FileUploadModel) {
 		const fd = new FormData();
 		fd.append(this.param, file.data);
@@ -107,4 +102,50 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 		  this.files.splice(index, 1);
 		}
 	  }
+
+	  getDocumentUpload(){
+		 this.spinner.show();
+		 this.documentUploadService.getDocumentUpload().subscribe(data => {
+	// 	if(data !=null && data.length>0){
+
+	// 	  this.ELEMENT_DATA = Object.assign([],data);
+	// 	   this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+	// 	   this.dataSource.sort = this.sort;
+	// 	   this.dataSource.paginator = this.paginator;
+	// 	}else{
+	// 	  this.ELEMENT_DATA = Object.assign([]);
+	// 	   this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+	// 	   this.dataSource.sort = this.sort;
+	// 	   this.dataSource.paginator = this.paginator;
+	// 	}
+	// 	   this.spinner.hide();
+	// 	}, error => {
+	// 	 this.spinner.hide();
+	// 	 if(error.status == 0) {
+	// 	  this.notifyService.showError("Internal Server Error/Connection not established", "")
+	// 	 }else if(error.status==403){
+	// 	   this.router.navigate(['/forbidden']);
+	// 	 }else if (error.error && error.error.message) {
+	// 	   this.errorMsg = error.error.message;
+	// 	   console.log("Error:" + this.errorMsg);
+	// 	   this.notifyService.showError(this.errorMsg, "");
+	// 	 } else {
+	// 	   if (error.status == 500 && error.statusText == "Internal Server Error") {
+	// 		 this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+	// 	   } else {
+	// 		 let str;
+	// 		 if (error.status == 400) {
+	// 		   str = error.error;
+	// 		 } else {
+	// 		   str = error.message;
+	// 		   str = str.substring(str.indexOf(":") + 1);
+	// 		 }
+	// 		 console.log("Error:" + str);
+	// 		 this.errorMsg = str;
+	// 	   }
+	// 	   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+	// 	 }
+		});
+
+	   }
   }  
