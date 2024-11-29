@@ -1,6 +1,7 @@
 package com.integration.zoy.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Timestamp;
@@ -130,7 +131,10 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 		try {
 			UploadTenant tenant=gson2.fromJson(data,UploadTenant.class);
 			BulkUploadDetails bulkUploadDetails=new BulkUploadDetails();
-			List<ErrorDetail> error = csvValidationService.validateCSV(file.getInputStream(),tenant.getPropertyId());
+			String fileName=file.getOriginalFilename();
+			InputStream inputStream = file.getInputStream();
+			byte[] fileBytes = inputStream.readAllBytes();
+			List<ErrorDetail> error = csvValidationService.validateCSV(fileBytes,tenant.getPropertyId());
 			if(error.size()>0) {
 				bulkUploadDetails.setCategory(tenant.getCategory());
 				bulkUploadDetails.setOwnerId(tenant.getOwnerId());
@@ -154,7 +158,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				bulkUploadDetails.setStatus("Processing");
 				bulkUploadDetails.setFileName(file.getOriginalFilename());
 				adminDBImpl.saveBulkUpload(bulkUploadDetails);
-				zoyAdminService.processTenant(tenant.getOwnerId(),tenant.getPropertyId(),file,jobExecutionId);
+				zoyAdminService.processTenant(tenant.getOwnerId(),tenant.getPropertyId(),fileBytes,fileName,jobExecutionId);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData("Processed");
 			} 
@@ -186,7 +190,10 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 		try {
 			UploadTenant property=gson2.fromJson(data,UploadTenant.class);
 			BulkUploadDetails bulkUploadDetails=new BulkUploadDetails();
-			List<ErrorDetail> error = excelValidationService.validateExcel(file);
+			String fileName=file.getOriginalFilename();
+			InputStream inputStream = file.getInputStream();
+			byte[] fileBytes = inputStream.readAllBytes();
+			List<ErrorDetail> error = excelValidationService.validateExcel(fileBytes);
 			if(error.size()>0) {
 				bulkUploadDetails.setCategory(property.getCategory());
 				bulkUploadDetails.setOwnerId(property.getOwnerId());
@@ -210,7 +217,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				bulkUploadDetails.setStatus("Processing");
 				bulkUploadDetails.setFileName(file.getOriginalFilename());
 				adminDBImpl.saveBulkUpload(bulkUploadDetails);
-				zoyAdminService.processProperty(property.getOwnerId(),property.getPropertyId(),file,jobExecutionId);
+				zoyAdminService.processProperty(property.getOwnerId(),property.getPropertyId(),fileBytes,fileName,jobExecutionId);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData("Sucess");
 
