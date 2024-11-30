@@ -50,7 +50,9 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 			this.rolesArray = userService.getUserinfo().privilege;
 		}else{
 			this.dataService.getUserDetails.subscribe(name=>{
-				this.rolesArray =name.privilege;
+				if(name?.privilege){
+				this.rolesArray =Object.assign([],name.privilege);
+				}
 			  });
 		}
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {

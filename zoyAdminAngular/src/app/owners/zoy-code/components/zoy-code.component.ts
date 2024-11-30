@@ -58,7 +58,9 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			this.rolesArray = userService.getUserinfo().privilege;
 		}else{
 			this.dataService.getUserDetails.subscribe(name=>{
-				this.rolesArray =name.privilege;
+				if(name?.privilege){
+				this.rolesArray =Object.assign([],name.privilege);
+				}
 			  });
 		}
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -216,7 +218,6 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			  });  
 	    }  
 			filterData(){
-				console.info("searchText:"+this.searchText);
 				if(this.searchText==''){
 					this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
     				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);

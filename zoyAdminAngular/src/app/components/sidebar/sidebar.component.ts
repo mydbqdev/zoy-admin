@@ -41,7 +41,9 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 		this.rolesArray = this.userService.getUserinfo().privilege;
 	}else{
 		this.dataService.getUserDetails.subscribe(name=>{
-				this.rolesArray =name.privilege;
+				if(name?.privilege){
+				this.rolesArray =Object.assign([],name.privilege);
+				}
 		});
 	}
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -236,7 +238,6 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 				break;
 			}
     }
-    console.info("this.menu3:"+this.menu3);
 	}
 
 	activeMenu(id: number, menuName: string): void {
@@ -325,7 +326,5 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 
 		}
     this.activeSubNenuName = menuName;
-    console.info("this.menu31:"+this.menu31);
-    console.info("this.activeSubNenuName:"+this.activeSubNenuName);
 	}
 }

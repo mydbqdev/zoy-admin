@@ -70,7 +70,6 @@ export class BulkUploadService {
     }).pipe(
       
       tap((data: Blob) => {
-        console.log("data",data)
         this.downloadCsvFile(data, 'PG_Propertys_Sample_File_tenants.xlsx');
       }),
       catchError((error) => {

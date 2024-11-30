@@ -56,7 +56,6 @@ export class SigninComponent implements OnInit {
 				this.authService.checkLoginUser();
 				this.router.navigate(['/home']);
 			}, error => {
-				console.log("error>>>",error)
 				if(error.status == 0) {
 					this.error = "Internal Server Error/Connection not established";
 				 }else if(error.status==403){
