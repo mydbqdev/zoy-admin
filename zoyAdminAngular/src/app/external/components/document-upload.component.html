@@ -40,6 +40,7 @@
                                             id="fileUpload"
                                             name="fileUpload"
                                             multiple="multiple"
+                                            accept="{{accept}}"
                                             style="display:none;"/>
                                         </div>
                                             <div class="text-left pt-1" style="max-height: 140px;" *ngIf="files?.length!=0">
@@ -47,12 +48,12 @@
                                             <div style="max-height: 110px;overflow: auto;">
                                              <div class="desc-inner">
                                               <div *ngFor="let file of files" class="mb-1 d-flex" style="font-size: 13px;padding: 2px 10px;border:1px solid gray;border-radius: 3px;">
-                                                 <div style="color:5b5b5b;"> {{file.data.name}}</div><div class="ml-auto"><i class="far fa-times-circle text-danger"></i></div>
+                                                 <div style="color:5b5b5b;"> {{file.data.name}}</div><div class="ml-auto"><i class="far fa-times-circle text-danger" (click)="removeFileFromArray(file)"></i></div>
                                               </div>                                           
                                              </div>
                                              </div>
                                             </div>
-                                            <button type="submit"  class="btn btn-primary-custom btn-block mt-2">
+                                            <button type="submit" (click)="submit()"  class="btn btn-primary-custom btn-block mt-2">
                                                Submit
                                             </button>
 
