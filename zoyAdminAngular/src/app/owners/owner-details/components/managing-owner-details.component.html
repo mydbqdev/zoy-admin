@@ -45,8 +45,8 @@
                                      </div>
                                     <div class="ml-2"> 
                                       <div style="font-size: 18px;">{{pgOwnerData.profile?.owner_name}} </div>
-                                      <div style="font-size: 14px;">  Owner ID : {{pgOwnerData.profile?.owner_i_d}}</div>
-                                      <div style="font-size: 14px;color: gray;">Status : {{pgOwnerData.profile?.status}}</div>
+                                      <div style="font-size: 13px;">  Owner ID : {{pgOwnerData.profile?.owner_i_d}}</div>
+                                      <div style="font-size: 13px; color: gray;padding-bottom:3px">Status : {{pgOwnerData.profile?.status}}</div>
                                     </div>
                                     <div class="ml-auto">
                                       <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
@@ -60,34 +60,34 @@
                                     <div class="card card-body ml-2 mr-2 mb-2 p-2">
                                       <div class="scrollable-container-main pl-3 pr-3">
                                         <div class="row">
-                                          <div class="col-sm-3" style="font-size: 14px;">First Name</div>
+                                          <div class="col-sm-4" style="font-size: 14px;">First Name</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.first_name}}</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.first_name}}</div>
                                         </div>
                                         <div class="row">
-                                          <div class="col-sm-3" style="font-size: 14px;">Last Name</div>
+                                          <div class="col-sm-4" style="font-size: 14px;">Last Name</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.last_name}}</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.last_name}}</div>
                                         </div>
                                         <div class="row">
-                                          <div class="col-sm-3" style="font-size: 14px;">Email</div>
+                                          <div class="col-sm-4" style="font-size: 14px;">Email</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.email}}</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.email}}</div>
                                         </div>
                                         <div class="row">
-                                          <div class="col-sm-3" style="font-size: 14px;">Contact</div>
+                                          <div class="col-sm-4" style="font-size: 14px;">Contact</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.contact}}</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.contact}}</div>
                                         </div>
                                         <div class="row">
-                                          <div class="col-sm-3" style="font-size: 14px;">Adhaar Number</div>
+                                          <div class="col-sm-4" style="font-size: 14px;">Adhaar Number</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.aadhar}}</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.aadhar}}</div>
                                         </div>
                                         <div class="row">
-                                          <div class="col-sm-3" style="font-size: 14px;">Address</div>
+                                          <div class="col-sm-4" style="font-size: 14px;">Address</div>
                                           <div class="col-sm-1 align-items-center">:</div>
-                                          <div class="col-sm-8" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.address}}</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">{{pgOwnerData.pg_ownerbasic_information?.address}}</div>
                                         </div>
                                       </div>
                                     </div>
@@ -133,7 +133,7 @@
                                               </div>
                                             </div>
                                           </div>
-                                          <button class="carousel-control-next" type="button" data-bs-target="#carouselbankFade" data-bs-slide="next">
+                                          <button *ngIf="pgOwnerData?.pg_owner_business_info?.length>1" class="carousel-control-next" type="button" data-bs-target="#carouselbankFade" data-bs-slide="next">
                                             <i class="fas fa-chevron-right" style="color: gray;margin-right: -30px;"></i>
                                           </button>
                                         </div>
