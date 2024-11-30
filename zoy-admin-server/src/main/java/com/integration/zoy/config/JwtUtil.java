@@ -1,83 +1,81 @@
 package com.integration.zoy.config;
 
-import java.util.Date;
-
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-	@Value("${jwt.secret}")
-	private String jwtSecret;
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
-	@Value("${jwt.token.validity}")
-	private long tokenValidity;
-	@Value("${jwt.token.refreshExpireDateInMs}")
-	private long refreshExpireDateInMs;
+    @Value("${jwt.token.validity}")
+    private long tokenValidity;
 
+    @Value("${jwt.token.refreshExpireDateInMs}")
+    private long refreshExpireDateInMs;
 
-	public String getUserName(final String token) {
-		try {
-			Claims body = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+    // Method to create a secure key
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    }
 
-			return body.getSubject();
-		} catch (Exception e) {
-		}
+    public String getUserName(final String token) {
+        try {
+            Claims body = Jwts.parser()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
-		return null;
-	}
+            return body.getSubject();
+        } catch (JwtException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	public String generateToken(Authentication authentication) {
-		User user = (User) authentication.getPrincipal();
-		Claims claims = Jwts.claims().setSubject(user.getUsername());
+    public String generateToken(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
 
-		final long nowMillis = System.currentTimeMillis();
-		final long expMillis = nowMillis + tokenValidity;
+        long nowMillis = System.currentTimeMillis();
+        long expMillis = nowMillis + tokenValidity;
 
-		Date exp = new Date(expMillis);
+        return Jwts.builder()
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date(nowMillis))
+                .setExpiration(new Date(expMillis))
+                .signWith(getSigningKey())
+                .compact();
+    }
 
-		return Jwts.builder().setClaims(claims).setIssuedAt(new Date(nowMillis)).setExpiration(exp)
-				.signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
-		
+    public String doGenerateRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpireDateInMs))
+                .signWith(getSigningKey())
+                .compact();
+    }
 
-	}
-	
-	public String doGenerateRefreshToken(String username) {
-
-		Claims claims = Jwts.claims().setSubject(username);
-		return Jwts.builder().setClaims(claims).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + refreshExpireDateInMs))
-				.signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
-
-	}
-
-	public boolean validateToken(final String token) {
-		try {
-			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-			return true;
-		} catch (SignatureException ex) {
-			throw new JwtTokenMalformedException("Invalid JWT signature");
-		} catch (MalformedJwtException ex) {
-			throw new JwtTokenMalformedException("Invalid JWT token");
-		} catch (ExpiredJwtException ex) {
-			throw new JwtTokenMalformedException("Expired JWT token");
-		} catch (UnsupportedJwtException ex) {
-			throw new JwtTokenMalformedException("Unsupported JWT token");
-		} catch (IllegalArgumentException ex) {
-			throw new JwtTokenMissingException("JWT claims string is empty.");
-		}
-	}
-
+    public boolean validateToken(final String token) {
+        try {
+            Jwts.parser()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token);
+            return true;
+        } catch (JwtException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
 }
