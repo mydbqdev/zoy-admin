@@ -23,12 +23,10 @@ public class UserPaymentFilterRequest {
 	
 	
 	@JsonProperty("fromDate")
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Timestamp fromDate;
+	private String fromDate;
 	
 	@JsonProperty("toDate")
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Timestamp toDate;
+	private String toDate;
 	
 	
 	@JsonProperty("reportType")
@@ -81,19 +79,20 @@ public class UserPaymentFilterRequest {
 		this.cityLocation = cityLocation;
 	}
 
-	public Timestamp getFromDate() {
+	
+	public String getFromDate() {
 		return fromDate;
 	}
 
-	public void setFromDate(Timestamp fromDate) {
+	public void setFromDate(String fromDate) {
 		this.fromDate = fromDate;
 	}
 
-	public Timestamp getToDate() {
+	public String getToDate() {
 		return toDate;
 	}
 
-	public void setToDate(Timestamp toDate) {
+	public void setToDate(String toDate) {
 		this.toDate = toDate;
 	}
 
