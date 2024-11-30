@@ -145,8 +145,6 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 	  
 			  const reader = new FileReader();
 			  reader.onload = (event: any) => {
-				console.log(`File Content (${fileName}):`, event.target.result);
-				this.notifyService.showSuccess(`File Uploaded Successfully (${fileName})`, "");
 			  };
 			  reader.onerror = (error) => {
 				console.error(`Error reading file (${fileName}):`, error);
