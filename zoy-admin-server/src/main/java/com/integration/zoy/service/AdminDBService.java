@@ -242,4 +242,11 @@ public  class AdminDBService implements AdminDBImpl {
 	public List<Object[]> findSuperAdminCardsDetails() {
 		return userMasterRepository.getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
 	}
+	
+	@Override
+	public void doUserActiveteDeactivete(String user_email,boolean status) {
+		userLoginDetailsRepository.doUserActiveteDeactiveteInUserLoginDetails(user_email ,status);
+		userLoginDetailsRepository.doUserActiveteDeactiveteInuserMaster(user_email ,status);
+
+	}
 }

@@ -243,5 +243,6 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 
 		 setOwnerId(ownerId: string) {
 			this.dataService.setOwenerId(ownerId);
+			localStorage.setItem('ownerInfo', ownerId);
 		  }
   }  

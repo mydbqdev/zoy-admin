@@ -592,4 +592,49 @@ getWriteIcon(writePrv: boolean): string {
     }
   }
 
+  doUserActiveteDeactivete(user:any){
+    //  this.authService.checkLoginUserVlidaate();
+    
+    this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to '+( user.status?'deactivate':'activate' )+' to the user ?')
+    .then(
+      (confirmed) =>{
+       if(confirmed){
+       this.spinner.show();
+       this.userMasterService.doUserActiveteDeactivete(user).subscribe(res => {
+       this.spinner.hide();
+       this.getUserDetais();
+       this.notifyService.showSuccess(res.message, "");   
+     }, error => {
+      this.spinner.hide();
+      if(error.status == 0) {
+        this.notifyService.showError("Internal Server Error/Connection not established", "")
+       }else if(error.status==403){
+        this.router.navigate(['/forbidden']);
+      }else if (error.error && error.error.message) {
+        this.errorMsg = error.error.message;
+        console.log("Error:" + this.errorMsg);
+        this.notifyService.showError(this.errorMsg, "");
+      } else {
+        if (error.status == 500 && error.statusText == "Internal Server Error") {
+          this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+        } else {
+          let str;
+          if (error.status == 400) {
+            str = error.error;
+          } else {
+            str = error.message;
+            str = str.substring(str.indexOf(":") + 1);
+          }
+          console.log("Error:" + str);
+          this.errorMsg = str;
+        }
+        if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+      }
+    });
+    }
+    }).catch(
+      () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+      ); 
+    } 
+
 }

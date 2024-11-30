@@ -165,7 +165,9 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 	            "(SELECT COUNT(DISTINCT pg_owner_id) FROM pgcommon.pg_owner_property_status WHERE status = true) AS activeOwnersCount, " +
 	            "(SELECT COUNT(*) FROM pgcommon.pg_owner_property_status WHERE status = true) AS activePropertiesCount",
 	            nativeQuery = true)
-		List<Object[]> getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
+	List<Object[]> getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
+		
+				
 
 	
 }
