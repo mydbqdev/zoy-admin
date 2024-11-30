@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -40,6 +41,7 @@ import com.integration.zoy.model.PgOwnerbasicInformation;
 import com.integration.zoy.model.PgOwnerdetailPortfolio;
 import com.integration.zoy.model.Room;
 import com.integration.zoy.repository.PgOwnerMaterRepository;
+import com.integration.zoy.repository.UserProfileRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
@@ -53,6 +55,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
     @Autowired
     private PgOwnerMaterRepository pgOwnerMaterRepository;
+    
+    @Autowired
+    private UserProfileRepository profileRepository;
     @Autowired
     ZoyCodeGenerationService zoyCodeGenerationService;
 	@Autowired
@@ -148,8 +153,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
         ResponseBody response = new ResponseBody();
         try {
         	PgOwnerMaster pgOwnerDetails = pgOwnerMaterRepository.getOwnerDetails(email);
-            
-            emailBodyService.resendPgOwnerDetails(pgOwnerDetails.getEmailId(),pgOwnerDetails.getFirstName(),pgOwnerDetails.getLastName(),pgOwnerDetails.getZoyCode());
+            UserProfile profile=profileRepository.findRegisterEmail(email).get();
+            emailBodyService.resendPgOwnerDetails(pgOwnerDetails.getEmailId(),pgOwnerDetails.getFirstName(),pgOwnerDetails.getLastName(),pgOwnerDetails.getZoyCode(),profile.getVerifyToken());
             
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("ZOY code has been sent successfully");

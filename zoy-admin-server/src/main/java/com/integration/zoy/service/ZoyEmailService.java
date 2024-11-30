@@ -100,7 +100,8 @@ public class ZoyEmailService {
 	}
  
  
-	public void resendPgOwnerDetails(String owneremail,String firstName,String lastName,String zoyCode) {
+	public void resendPgOwnerDetails(String owneremail,String firstName,String lastName,String zoyCode,String token) {
+		String verifyLink=emailVerificationUrl + token;
 		Email email = new Email();
 		email.setFrom("zoyAdmin@mydbq.com");
  
@@ -113,6 +114,7 @@ public class ZoyEmailService {
 		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
 				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we’ve made it quick and simple for you!</p>"
 				+ "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
+				+ "<p>Click the link to verify your email: " + verifyLink+"</p>"
 				+ "<p>Please use this code to verify your account and complete your registration in the app.</p>"
 				+ "<h4>Steps to Register:</h4>"
 				+ "<ul>"
