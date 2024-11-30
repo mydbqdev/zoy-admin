@@ -41,6 +41,7 @@ import com.integration.zoy.model.ShareType;
 import com.integration.zoy.model.ShareTypeId;
 import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
+import com.integration.zoy.utils.AdminUserList;
 import com.integration.zoy.utils.ChangePassWord;
 import com.integration.zoy.utils.OtpVerification;
 import com.integration.zoy.utils.ResetPassWord;
@@ -261,4 +262,17 @@ public interface ZoyAdminUserImpl {
 	produces = { "application/json" },
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminResetPasswordSave(@RequestBody ResetPassWord resetPassword);
+	
+	@Operation(summary = "Admin User Login", description = "Admin User Login", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/doUserActiveteDeactivete",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> doUserActiveteDeactivete(@RequestBody AdminUserList details);
+	
 }

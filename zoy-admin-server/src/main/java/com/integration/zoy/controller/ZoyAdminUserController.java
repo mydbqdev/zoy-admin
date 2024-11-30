@@ -136,6 +136,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		try {
 			AdminUserLoginDetails loginDetails=adminDBImpl.findByEmail(details.getEmail());
 			if(loginDetails!=null) {
+				
+				if(!loginDetails.getIsActive()) {
+					response.setStatus(HttpStatus.NOT_FOUND.value());
+					response.setMessage("Your account has been deactivated. Contact support for assistance. ");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+				}
 
 				String decryptedStoredPassword = passwordDecoder.decryptedText(details.getPassword()); 
 				String decryptedLoginPassword = passwordDecoder.decryptedText(loginDetails.getPassword()); 
@@ -157,7 +163,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				}
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
-				response.setMessage("User email not found " + details.getEmail());
+				response.setMessage("User email not found ");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
@@ -878,6 +884,29 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		response.setMessage("User not found.");
 		return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 
+	}
+
+
+
+	@Override
+	public ResponseEntity<String> doUserActiveteDeactivete(AdminUserList details) {
+		ResponseBody response = new ResponseBody();     
+		try {
+
+				adminDBImpl.doUserActiveteDeactivete(details.getUserEmail(),!details.getStatus()); 
+		//		zoyEmailService.sendForUserDoUserActiveteDeactivete(details);
+				
+				String status = details.getStatus()? "deactivated" :"activated";
+				response.setStatus(HttpStatus.OK.value());
+				response.setMessage("The user has been " + status + " successfully.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error in doUserActiveteDeactivete API: " + e.getMessage(), e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 

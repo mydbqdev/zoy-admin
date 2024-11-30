@@ -17,8 +17,8 @@ public interface AdminReportImpl {
 	CommonResponseDTO<ConsilidatedFinanceDetails> getConsolidatedFinanceDetails( UserPaymentFilterRequest filterRequest,FilterData filterData);
 	CommonResponseDTO<TenentDues> getTenentDuesDetails( UserPaymentFilterRequest filterRequest,FilterData filterData);
 	CommonResponseDTO<VendorPayments> getVendorPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData);
-	CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails( Timestamp fromDate, Timestamp toDate);
-	CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails( Timestamp fromDate, Timestamp toDate);
+	CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails( String fromDate, String toDate);
+	CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails( String fromDate, String toDate);
 	byte[] generateDynamicReport(UserPaymentFilterRequest filterRequest, FilterData filterData);
 	String[] getDistinctCities();
 	

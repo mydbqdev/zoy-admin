@@ -31,7 +31,7 @@ export class DataService{
         this.headerName.next(headerName);
      }
 
-     public owenerId=new BehaviorSubject<string>("Owner Details");
+     public owenerId=new BehaviorSubject<string>("");
      getOwenerId=this.owenerId.asObservable();
      setOwenerId(owenerId:string){
         this.owenerId.next(owenerId);
