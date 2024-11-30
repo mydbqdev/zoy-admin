@@ -37,11 +37,15 @@
                             <option *ngFor="let report of reportNamesList"  [value]="report.name" >{{report.name}}</option>
                         </select>
                     </div>
-                    <div class="ml-2" style="width: 270px;">
+                    <div class="ml-2" style="width: 405px;">
                            <label for="category">Date Range</label>
                             <div class="d-flex gap-2">
-                              <input type="date" class="form-control form-control-sm" style="width: 120px;" id="fromDate" [(ngModel)]="fromDate" /> - 
-                              <input type="date" class="form-control form-control-sm" style="width: 120px;" id="toDate"  [(ngModel)]="toDate"/>
+                              <input type="datetime-local" class="form-control form-control-sm" style="width: 190px;" id="fromDate" [(ngModel)]="fromDate"
+                                    [ngClass]="{'is-invalid': (!fromDate ||(fromDate>toDate && toDate))}" 
+                                    [title]="!fromDate? 'From Date is required':((fromDate>toDate && toDate)?'Invalid date range':'') " /> - 
+                              <input type="datetime-local" class="form-control form-control-sm" style="width: 190px;" id="toDate"  [(ngModel)]="toDate" 
+                                    [ngClass]="{'is-invalid': (!toDate ||(fromDate>toDate && fromDate ))}" 
+                                    [title]="!toDate? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
                             </div>
                     </div>
                     <div class="ml-2" style="padding-top:32px;" *ngIf="reportName!='Vendor Payments Gst Report'">

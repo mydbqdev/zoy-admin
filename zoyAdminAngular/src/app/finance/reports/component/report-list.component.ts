@@ -44,9 +44,10 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	cityLocationName:string='';
 	fromDate:string='';
 	toDate:string='';
+
+
 	reportName:string ='Tenant Transactions Report';
 	downloadType :string='';
-	searchText:string='';
 
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
 	public userNameSession: string = "";
@@ -124,7 +125,10 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		const year = date.getFullYear();
 		const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
 		const day = date.getDate().toString().padStart(2, '0');
-		return `${year}-${month}-${day}`; 
+		const hours = date.getHours().toString().padStart(2, '0');
+  		const minutes = date.getMinutes().toString().padStart(2, '0');
+
+		return `${year}-${month}-${day}T${hours}:${minutes}`
 	  }
 
 	  getCityList(){
@@ -201,14 +205,17 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 
 	getReportDetails(pageIndex:number,pageSize:number,sortActive:string,sortDirection:string){
 			//	this.authService.checkLoginUserVlidaate();
+				if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
+					return;
+				}
 				this.lastPageSize=pageSize;
 				this.filtersRequest.pageIndex=pageIndex;
 				this.filtersRequest.pageSize=pageSize;
 				this.filtersRequest.sortActive=sortActive;
 				this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 
-				this.filtersRequest.fromDate=this.fromDate+'';
-				this.filtersRequest.toDate=this.toDate;
+				this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
+				this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
 				this.filtersRequest.cityLocation = this.cityLocationName;
 				this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 				this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
@@ -278,12 +285,15 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	}
 	
 	downloadPdf(){   
+		if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
+			return;
+		}
 		//	this.authService.checkLoginUserVlidaate();
 		this.filtersRequest.sortActive=this.sortActive;
 		this.filtersRequest.sortDirection=this.sortDirection.toUpperCase();
 
-		this.filtersRequest.fromDate=this.fromDate;
-		this.filtersRequest.toDate=this.toDate;
+		this.filtersRequest.fromDate= (this.fromDate.replace('T',' '))+':00';
+		this.filtersRequest.toDate= (this.toDate.replace('T',' '))+':00';
 		this.filtersRequest.cityLocation = this.cityLocationName;
 		this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 		this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
