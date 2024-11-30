@@ -43,11 +43,9 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 	 
 	  handleFileInput(files: FileList) {
 		this.fileToUpload = files.item(0);
-		console.log("handleFileInput" ,this.handleFileInput);
 	}
 	uploadFileToActivity() {
 		this.documentUploadService.uploadDocumentUpload(this.fileToUpload).subscribe(data => {
-		  // do something, if upload success
 		  }, error => {
 			console.log(error);
 		  });
@@ -55,20 +53,17 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 	  onDrop(files: FileList): void {
 		for (let index = 0; index < files.length; index++) {
 		  const file = files[index];
-		  const fileExtension = file.name.split('.').pop()?.toLowerCase();
+		  const fileExtension = file.name.includes(".")? file.name.split('.').pop()?.toLowerCase(): null;
 		  if (fileExtension !== "pdf") {
 			console.error(`Invalid file extension (${file.name}): Only .pdf files are allowed.`);
-			this.notifyService.showError(`Invalid file extension (${file.name}): Only .pdf files are allowed.`, "");
 			continue;
 		  }
 		  if (file.type !== "application/pdf") {
 			console.error(`Invalid file type (${file.name}): Only PDFs are allowed.`);
-			this.notifyService.showError(`Invalid file type (${file.name}): Only PDFs are allowed.`, "");
 			continue;
 		  }
 		  if (file.size > 5 * 1024 * 1024) {
 			console.error(`File too large (${file.name}): Maximum size is 5MB.`);
-			this.notifyService.showError(`File too large (${file.name}): Maximum size is 5MB.`, "");
 			continue;
 		  }
 		  this.files.push({
@@ -80,13 +75,11 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 			canCancel: true,
 			sub: undefined
 		  });
-		  console.log(`File accepted: ${file.name}`);
-		  this.notifyService.showSuccess(`File "${file.name}" added successfully`, "");
 		}
 		this.uploadFiles();
 	  }
 	  
-	onClick(): void {
+	  onClick(): void {
 		const fileUpload = document.getElementById("fileUpload") as HTMLInputElement;
 	  
 		if (!fileUpload) {
@@ -95,34 +88,38 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 		}
 	  
 		fileUpload.accept = this.accept;
-
+	  
 		fileUpload.onchange = () => {
 		  const files = fileUpload.files;
 	  
 		  if (files) {
-			let totalSize = this.files.reduce((acc, file) => acc + file.data.size, 0); 
+			let totalSize = this.files.reduce((acc, file) => acc + file.data.size, 0);
 	  
 			for (let index = 0; index < files.length; index++) {
 			  const file = files[index];
-			  const fileExtension = file.name.split('.').pop()?.toLowerCase();
-
+			  const fileName = file.name;
+			  const fileExtension = fileName.includes(".")
+				? fileName.split(".").pop()?.toLowerCase()
+				: null;
+	  
+			  if (!fileExtension) {
+				console.error(`Invalid file name (${fileName}): No extension found.`);
+				continue;
+			  }
+	  
 			  if (fileExtension !== "pdf") {
-				console.error(`Invalid file extension (${file.name}): Only .pdf files are allowed.`);
-				this.notifyService.showError(`Invalid file format: Only .pdf files are allowed.`, "");
+				console.error(`Invalid file extension (${fileName}): Only .pdf files are allowed.`);
 				continue;
 			  }
 	  
 			  if (file.type !== "application/pdf") {
-				console.error(`Invalid file type (${file.name}): Only PDFs are allowed.`);
-				this.notifyService.showError(`Invalid file type: Only PDFs are allowed.`, "");
+				console.error(`Invalid file type (${fileName}): Only PDFs are allowed.`);
 				continue;
 			  }
-			 
+	  
 			  if (totalSize + file.size > 5 * 1024 * 1024) {
 				console.error(`Total file size exceeded: Maximum cumulative size is 5MB.`);
-				this.notifyService.showError(`Total file size exceeded: Maximum cumulative size is 5MB.`, "");
-				
-				break; 
+				break;
 			  }
 	  
 			  this.files.push({
@@ -132,29 +129,27 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 				progress: 0,
 				canRetry: false,
 				canCancel: true,
-				sub: undefined
+				sub: undefined,
 			  });
 	  
-			  totalSize += file.size; 
-
+			  totalSize += file.size;
+	  
 			  const reader = new FileReader();
 			  reader.onload = (event: any) => {
-				console.log(`File Content (${file.name}):`, event.target.result);
-				this.notifyService.showSuccess(`File Uploaded Successfully (${file.name})`, "");
 			  };
 			  reader.onerror = (error) => {
-				console.error(`Error reading file (${file.name}):`, error);
-				this.notifyService.showError("Error reading file", "");
+				console.error(`Error reading file (${fileName}):`, error);
 			  };
-			  reader.readAsText(file); 
+			  reader.readAsText(file);
 			}
 	  
-			console.log("Uploaded Files:", this.files);
 			this.uploadFiles();
 		  }
 		};
+	  
 		fileUpload.click();
 	  }
+	  
 	  
 	  
 	  private uploadFile(file: FileUploadModel) {
@@ -258,7 +253,6 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 	   getVerify(){
 		this.route.paramMap.subscribe(params => {
 			this.token = params.get('name') || ''; 
-			console.log(this.token); 
 		  });
 		 this.spinner.show();
 		 this.documentUploadService.getVerify(this.token).subscribe(data => {
