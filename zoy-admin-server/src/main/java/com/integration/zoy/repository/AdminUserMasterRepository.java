@@ -73,7 +73,7 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			+ "	        ELSE null  \n"
 			+ "	        END , ',') AS screens \n"
 			+ "	        FROM pgadmin.user_master um  \n"
-			+ "	        LEFT JOIN pgadmin.user_temprory ut ON um.user_email = ut.user_email\n"
+			+ "	        LEFT JOIN (select ust.* from pgadmin.user_temprory ust where concat(ust.user_email,'',ust.role_id) not in (select concat(user_email,'',role_id) from pgadmin.user_role)) ut ON um.user_email = ut.user_email\n"
 			+ "	        LEFT JOIN pgadmin.app_role art ON ut.role_id = art.id  \n"
 			+ "	        LEFT JOIN pgadmin.role_screen rst ON art.id = rst.role_id  \n"
 			+ "	       GROUP BY um.user_email ,ut.role_id,ut.is_approve, art.role_name,ut.is_rejected)pre ", nativeQuery = true)	
@@ -99,15 +99,17 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
             "WHERE is_approve = false AND is_rejected = false AND user_email = :user_email", nativeQuery = true)
         void insertUserDetails(String user_email);
 	
+	/** approve role time old record will be deleted from table and insert new record
+	 * 
+	 * */
 	@Transactional
 	@Modifying
-	@Query(value = "UPDATE user_temprory SET is_approve = TRUE WHERE user_email = :user_email", nativeQuery = true)
+	@Query(value = "DELETE from user_role WHERE user_email = :user_email", nativeQuery = true)
 	void approveUser(String user_email);
 	
 	@Transactional
 	@Modifying
-	@Query(value = "UPDATE user_temprory\r\n"
-			+ "	SET is_rejected = TRUE  WHERE user_email = :user_email", nativeQuery = true)
+	@Query(value = "DELETE from user_temprory WHERE user_email = :user_email", nativeQuery = true)
 	void rejectUser(String user_email);
 	
 	

@@ -419,7 +419,7 @@ oldRoles:any=[];
    updateRolesUser(){
    // this.authService.checkLoginUserVlidaate();
 
-   this.selectedRoleIds = this.selectedRoleIds.filter(roleId => !this.oldRoles.includes(roleId));
+   //this.selectedRoleIds = this.selectedRoleIds.filter(roleId => !this.oldRoles.includes(roleId));
   
    if(this.selectedRoleIds.length==0){
     this.notifyService.showWarning("Atleast one role is require to assign/update.", "");

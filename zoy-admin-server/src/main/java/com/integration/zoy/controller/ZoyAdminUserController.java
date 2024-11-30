@@ -45,6 +45,7 @@ import com.integration.zoy.entity.AdminUserLoginDetails;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AdminUserPasswordHistory;
 import com.integration.zoy.entity.AdminUserTemporary;
+import com.integration.zoy.entity.AdminUserTemporaryPK;
 import com.integration.zoy.entity.AppRole;
 import com.integration.zoy.entity.RoleScreen;
 import com.integration.zoy.model.AdminUserDetails;
@@ -411,18 +412,17 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	public ResponseEntity<String> zoyAdminUserAssign(UserRole userRole) {
 		ResponseBody response=new ResponseBody();
 		try {
-			AdminUserMaster master=adminDBImpl.findAdminUserMaster(userRole.getUserEmail());
 			List<AdminUserTemporary> adminUserTemporary=new ArrayList<>();
 			for(Long id:userRole.getRoleId()) {
-				AppRole appRole=adminDBImpl.findAppRoleId(id);
-				if(appRole!=null) {
 					AdminUserTemporary userTemporary=new AdminUserTemporary();
-					userTemporary.setUserMaster(master);
-					userTemporary.setAppRole(appRole);
+					AdminUserTemporaryPK userTemporaryPk=new AdminUserTemporaryPK();
+					
+					userTemporaryPk.setUserEmail(userRole.getUserEmail());
+					userTemporaryPk.setRoleId(id);
+					userTemporary.setAdminUserTemporaryPK(userTemporaryPk);
 					userTemporary.setIsApprove(false);
 					userTemporary.setCreatedOn(new Timestamp(System.currentTimeMillis()));
 					adminUserTemporary.add(userTemporary);
-				}
 			}
 			adminDBImpl.saveAllUserTemporary(adminUserTemporary);
 			response.setStatus(HttpStatus.OK.value());
@@ -603,13 +603,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			}else {
 
 				if(status.equals("approved")) {
-					adminDBImpl.insertUserDetails(userEmail);
 					adminDBImpl.approveUser(userEmail);
+					adminDBImpl.insertUserDetails(userEmail);
 				}        
-				else {
-					adminDBImpl.rejectUser(userEmail);        	
-				}
 
+				// remove record from temporary table after approve /reject
+				adminDBImpl.rejectUser(userEmail);        	
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("The Assigned Role has been " + status + " successfully.");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
