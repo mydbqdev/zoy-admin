@@ -64,7 +64,9 @@ export class BulkUploadComponent {
 			this.rolesArray = userService.getUserinfo().privilege;
 		}else{
 			this.dataService.getUserDetails.subscribe(name=>{
-				this.rolesArray =name.privilege;
+				if(name?.privilege){
+				this.rolesArray =Object.assign([],name.privilege);
+				}
 			  });
 		}
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -235,8 +237,6 @@ export class BulkUploadComponent {
 				   str = error.message;
 				   str = str.substring(str.indexOf(":") + 1);
 				 }
-				 console.log("Error:Madhan>>" + error);
-				 console.log("str:Madhan>>" + str);
 				 this.errorMsg = str;
 				 this.notifyService.showError(this.errorMsg, "");
 			   }
@@ -317,7 +317,6 @@ export class BulkUploadComponent {
 			this.spinner.hide();
 			sessionStorage.setItem('zoyadminapi','yes');
 		  },error =>{
-			console.log("error>>",error)
 			sessionStorage.setItem('zoyadminapi','yes');
 			this.spinner.hide();
 			if(error.status == 0) {
@@ -350,7 +349,6 @@ export class BulkUploadComponent {
 		getPgPropertysSampleFile(){
 			this.spinner.show();
 			this.bulkUploadService.getPgPropertysSampleFile().subscribe(data => {
-				console.log("getPgPropertysSampleFile data",data);
 				if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 					var blob = new Blob([data], {type: 'application/vnd.ms-excel'});
 					var fileURL=URL.createObjectURL(blob);				  
@@ -366,7 +364,6 @@ export class BulkUploadComponent {
 			this.spinner.hide();
 			sessionStorage.setItem('zoyadminapi','yes');
 		  },error =>{
-			console.log("error>>",error)
 			sessionStorage.setItem('zoyadminapi','yes');
 			this.spinner.hide();
 			if(error.status == 0) {
@@ -413,7 +410,6 @@ export class BulkUploadComponent {
 			  );
 		  this.spinner.hide();
 	    },error =>{
-		console.log("error>>",error)
 		this.spinner.hide();
 		if(error.status == 0) {
 			this.notifyService.showError("Internal Server Error/Connection not established", "")

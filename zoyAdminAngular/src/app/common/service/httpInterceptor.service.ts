@@ -13,7 +13,6 @@ export class HttpInterceptorService implements HttpInterceptor {
         if (this.isUserSignedin() && this.getToken()) {
 		//	const tokenString=this.getZoyadminApi()=='yes'? this.getToken():this.getExternalApi();
 			let headers = new HttpHeaders();
-			console.log(this.getZoyadminApi()," this.getExternalApi()", this.getExternalApi());
            if(this.getZoyadminApi()=='no'){
 			headers = new HttpHeaders({
 				'Content-Type': 'application/json',

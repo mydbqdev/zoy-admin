@@ -73,7 +73,9 @@ export class UserMasterComponent implements OnInit {
         this.rolesArray = this.userService.getUserinfo().privilege;
       }else{
         this.dataService.getUserDetails.subscribe(name=>{
-          this.rolesArray =name.privilege;
+          if(name?.privilege){
+				this.rolesArray =Object.assign([],name.privilege);
+				}
         });
       }
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -367,7 +369,7 @@ passwordsMatch(formGroup: FormGroup) {
         console.log("Error:"+str);
         this.errorMsg=str;
       }
-    //	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+    	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
       }
     }
     );  
@@ -413,9 +415,6 @@ oldRoles:any=[];
      this.selectedRoleIds.push(role.id);
      this.oldRoles.push(role.id);
   }
-  console.log("this.row",row)
- console.log("this.userReg",this.userReg)
-
   }
    updateRolesUser(){
    // this.authService.checkLoginUserVlidaate();
@@ -564,7 +563,6 @@ getWriteIcon(writePrv: boolean): string {
     this.userRolePermissions = [];
 
     if (user && user.roleModel && Array.isArray(user.roleModel)) {
-      console.log("user.roleModel",user.roleModel);
       user.roleModel.forEach(role => {
         if (role.screens && Array.isArray(role.screens)) {
           role.screens.forEach(privilege => {

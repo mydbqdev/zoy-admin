@@ -56,7 +56,9 @@ export class PaymentApprovalComponent  implements OnInit,AfterViewInit{
 			this.rolesArray = userService.getUserinfo().privilege;
 		}else{
 			this.dataService.getUserDetails.subscribe(name=>{
-				this.rolesArray =name.privilege;
+				if(name?.privilege){
+				this.rolesArray =Object.assign([],name.privilege);
+				}
 			  });
 		}
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -98,7 +100,6 @@ export class PaymentApprovalComponent  implements OnInit,AfterViewInit{
     this.dataService.setHeaderName("Owner Transaction Approval");
   }
   announceSortChange(sortState: Sort): void {
-	  console.info("sortState::"+sortState);
 	this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	this.columnSortDirections[sortState.active] = sortState.direction;
 

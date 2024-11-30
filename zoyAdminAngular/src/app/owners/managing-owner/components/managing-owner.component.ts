@@ -66,7 +66,9 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 			  this.rolesArray = userService.getUserinfo().privilege;
 		  }else{
 			  this.dataService.getUserDetails.subscribe(name=>{
-				  this.rolesArray =name.privilege;
+				  if(name?.privilege){
+				this.rolesArray =Object.assign([],name.privilege);
+				}
 				});
 		  }
 		  this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -166,8 +168,6 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	announceSortChange(sortState: Sort): void {
 	  this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	  this.columnSortDirections[sortState.active] = sortState.direction;
-		console.info("sortState.direction:"+sortState.direction);
-		console.info("sortState.active:"+sortState.active);
 		if (sortState.direction) {
 		  this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
 		} else {
@@ -181,7 +181,6 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	}
 
 	filterData(){
-		console.info("searchText:"+this.searchText);
 		if(this.searchText==''){
 			//this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
 			//this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
@@ -228,7 +227,7 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	  }
 	  // Apply and process the selected statuses
 	  applyStatuses(): void {
-		console.log('Selected Statuses:', this.selectedStatuses);
+		//console.log('Selected Statuses:', this.selectedStatuses);
 	  }
 
 	  pageChanged(event:any){
@@ -237,7 +236,6 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		this.paginator.pageIndex=0;
 		event.pageIndex=0;
 		}
-		console.info("this.paginator.pageIndex :"+this.paginator.pageIndex );
 		this.param.pageIndex=this.paginator.pageIndex;
 		this.param.pageSize= event.pageSize;
 		this.getZoyOwnerList();
