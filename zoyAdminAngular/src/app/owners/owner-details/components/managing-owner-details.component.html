@@ -93,7 +93,7 @@
                                     </div>
                                   </div>
 
-                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2">
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_business_info?.length == 0" >
                                     <i class="far mr-2 ml-2" class="far mr-2 ml-2" [ngClass]="collaspeList[1].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2" (click)="collaspeExpandPanel(collaspeList[1],'left2')"></i> Business Information
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeList[1].selected ? 'show':''" id="collapseExample2">
@@ -167,7 +167,7 @@
                                 <div class="container-main">
                                   <div class="p-3">
                                     <div style="font-size: 18px;">Property Information</div>
-                                    <div class="row mt-2">
+                                    <div class="row mt-2" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0">
                                       <div class="col-sm-7">
                                         <div class="form-group row">
                                           <label for="category" class="col-sm-5 col-form-label">Property Name </label>
@@ -187,9 +187,12 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div style="background-color: #c1a1f3;padding: 5px;margin-top:-20px;" class="mb-2">
+                                  <div style="background-color: #c1a1f3;padding: 5px;margin-top:-20px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[0].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight0" aria-expanded="false" aria-controls="collapseExampleRight0" (click)="collaspeExpandPanelRight(collaspeListRight[0],'right1')"></i>  Basic Property Information
                                   </div>
+                                  <div class="text-center" *ngIf="pgOwnerData?.pg_owner_property_information?.length == 0">
+                                    PG's are not available. 
+                                 </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[0].selected ? 'show':''" id="collapseExampleRight0">
                                     <div class="card card-body m-2 p-2">
                                       <div class="scrollable-container pl-3 pr-3">
@@ -242,8 +245,11 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2">
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0 && propertyInfo.floor_information ?.length > 0">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[1].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight1" aria-expanded="false" aria-controls="collapseExampleRight1" (click)="collaspeExpandPanelRight(collaspeListRight[1],'right2')"></i>  Floor Information
+                                  </div>
+                                  <div class="text-center" *ngIf="pgOwnerData.pg_owner_property_information?.length > 0 && propertyInfo.floor_information ?.length == 0">
+                                        Floors are not available 
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[1].selected ? 'show':''" id="collapseExampleRight1">
                                     <div class="card card-body m-2 p-2 ">
@@ -280,12 +286,15 @@
                                             </div>
                                           </div>
                                         </div>
-                                        
+
+                                        <div class="text-center" *ngIf="roomArrayList.length == 0 ">
+                                          Rooms are not available. 
+                                        </div>
                                        
                                        </div>
                                     </div>
                                   </div>
-                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2">
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="propertyInfo?.pg_owner_additional_info?.security_deposit">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[2].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight2" aria-expanded="false" aria-controls="collapseExampleRight2" (click)="collaspeExpandPanelRight(collaspeListRight[2],'right3')"></i>  Additional Information
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[2].selected ? 'show':''" id="collapseExampleRight2">
