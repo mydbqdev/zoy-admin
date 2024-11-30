@@ -72,7 +72,15 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			  this.isExpandSideBar=name;
 		  });
 		  this.dataService.getOwenerId.subscribe(id=>{
-			this.owenerId=id;
+			if(id == null || id == undefined || id == ''){
+				if(localStorage.getItem('ownerInfo')){
+					this.owenerId = localStorage.getItem('ownerInfo') ;
+				}else{
+					this.router.navigate(['/manage-owner']);
+				}
+			}else{
+				this.owenerId=id;
+			}
 		});
 	  }
 

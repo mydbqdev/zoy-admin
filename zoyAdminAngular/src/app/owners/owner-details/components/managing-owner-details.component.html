@@ -93,7 +93,7 @@
                                     </div>
                                   </div>
 
-                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_business_info?.length == 0" >
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_business_info?.length > 0" >
                                     <i class="far mr-2 ml-2" class="far mr-2 ml-2" [ngClass]="collaspeList[1].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2" (click)="collaspeExpandPanel(collaspeList[1],'left2')"></i> Business Information
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeList[1].selected ? 'show':''" id="collapseExample2">

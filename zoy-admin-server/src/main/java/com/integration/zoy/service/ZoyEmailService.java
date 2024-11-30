@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.entity.ZoyPgPropertyDetails;
 import com.integration.zoy.model.RegisterUser;
+import com.integration.zoy.utils.AdminUserList;
 import com.integration.zoy.utils.Email;
 
 @Service
@@ -263,6 +266,42 @@ public class ZoyEmailService {
 			e.printStackTrace();
 		}
 		emailService.sendEmail(email, file);
+	}
+	
+	public void sendForUserDoUserActiveteDeactivete(AdminUserList user) {
+		Email email = new Email();
+		List<String> to=new ArrayList<>();
+		email.setFrom(zoyAdminMail);
+		to.add(user.getUserEmail());
+		email.setTo(to);
+		String message ="";
+		if(user.getStatus()) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+			String deactivationDate = LocalDate.now().format(formatter);
+			
+			email.setSubject("Your Account - [" + user.getUserEmail().toUpperCase() + "] Has Been Deactivated");
+			message = "<p>Dear " + user.getFirstName() +" "+ user.getLastName() + ",</p>"
+				    + "<p>We’re writing to inform you that your account with ZOY Admin Platform has been deactivated as of " + deactivationDate + ". "
+				    + "This means you’ll no longer have access to use ZOY Admin Portal.</p>"
+				    + "<p>If you have questions or need further support, don’t hesitate to contact our admin support team.</p>"
+				    + "<p>We hope to see you again soon!</p>"
+				    + "<p>Best regards,<br>ZOY Administrator</p>";
+		}else {
+			email.setSubject("Welcome Back! Your Account - [" + user.getUserEmail().toUpperCase() + "] is Now Active");
+
+			message = "<p>Dear " + user.getFirstName() +" "+ user.getLastName() + ",</p>"
+			    + "<p>We’re excited to welcome you back to the ZOY Admin platform! Your account has been successfully reactivated, "
+			    + "and you’re all set to use the platform as before.</p>"
+			    + "<p>If you have any questions or need assistance, contact our admin support team.</p>"
+			    + "<p>Best regards,<br>ZOY Administrator</p>";
+			
+		}
+		
+		email.setBody(message);
+		email.setContent("text/html");
+		emailService.sendEmail(email,null);
+		
+		
 	}
 
 }

@@ -78,5 +78,7 @@ public interface AdminDBImpl {
 	List<BulkUploadDetails> findAllBulkUpload();
 
 	List<Object[]> findSuperAdminCardsDetails();
+	
+	void doUserActiveteDeactivete(String user_email ,boolean status);
 
 }
