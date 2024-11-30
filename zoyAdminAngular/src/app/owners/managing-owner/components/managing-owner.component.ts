@@ -180,7 +180,8 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		this.getZoyOwnerList();
 	}
 
-	filterData(){
+	filterData($event: KeyboardEvent){
+		if ($event.keyCode === 13) {
 		if(this.searchText==''){
 			//this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
 			//this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
@@ -201,10 +202,16 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		this.getZoyOwnerList();
 		//this.dataSource.sort = this.sort;
 		//this.dataSource.paginator = this.paginator;
+	  }
 	}
 	resetFilter(){
 		this.searchText='';
-		this.filterData();
+		this.paramFilter.searchText=null;
+		this.paramFilter.status=null;
+		this.param.pageIndex=0
+		this.paginator.pageIndex=0;
+		this.param.filter=this.paramFilter;
+		this.getZoyOwnerList();
 		this.statuses.filter(data=>data.selected=false);
 		this. selectedFilterStatus();
 	}

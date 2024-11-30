@@ -75,8 +75,6 @@ public class AdminReportService implements AdminReportImpl{
 						"JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id " +
 						"WHERE 1=1 "
 				);
-
-
 		Map<String, Object> parameters = new HashMap<>();
 
 		if (filterData.getTenantId() != null && !filterData.getTenantId().isEmpty()) {
@@ -109,7 +107,7 @@ public class AdminReportService implements AdminReportImpl{
 			parameters.put("cityLocation", filterRequest.getCityLocation());
 		}
 		if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-			queryBuilder.append(" AND up.user_payment_timestamp BETWEEN :fromDate AND :toDate");
+			queryBuilder.append(" AND up.user_payment_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 			parameters.put("fromDate", filterRequest.getFromDate());
 			parameters.put("toDate", filterRequest.getToDate());
 		}
@@ -150,8 +148,6 @@ public class AdminReportService implements AdminReportImpl{
 		} else {
 			queryBuilder.append(" ORDER BY up.user_payment_timestamp DESC");  
 		}
-
-
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
 		parameters.forEach(query::setParameter);
 
@@ -206,11 +202,12 @@ public class AdminReportService implements AdminReportImpl{
 		}
 
 		if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-			queryBuilder.append(" AND up.user_payment_timestamp BETWEEN :fromDate AND :toDate");
+			queryBuilder.append(" AND up.user_payment_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 			parameters.put("fromDate", filterRequest.getFromDate());
 			parameters.put("toDate", filterRequest.getToDate());
 		}
-
+		
+		
 		if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
 			queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:userPersonalName)");
 			parameters.put("userPersonalName", "%" + filterData.getTenantName() + "%");
@@ -272,7 +269,8 @@ public class AdminReportService implements AdminReportImpl{
 	@Override
 	public CommonResponseDTO<TenentDues> getTenentDuesDetails(UserPaymentFilterRequest filterRequest, FilterData filterData) {
 		StringBuilder queryBuilder = new StringBuilder(
-				"SELECT DISTINCT u.user_id, " +
+				 "SELECT DISTINCT ON (u.user_money_due_id) " +
+						"u.user_id, " +
 						"u.user_money_due_amount, " +
 						"u.user_money_due_bill_start_date, " +
 						"ud.user_personal_name, " +
@@ -291,11 +289,11 @@ public class AdminReportService implements AdminReportImpl{
 		Map<String, Object> parameters = new HashMap<>();
 
 		if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-			queryBuilder.append(" AND u.user_money_due_timestamp BETWEEN :fromDate AND :toDate");
+			queryBuilder.append(" AND u.user_money_due_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 			parameters.put("fromDate", filterRequest.getFromDate());
 			parameters.put("toDate", filterRequest.getToDate());
 		}
-
+		
 		if (filterData.getTenantId() != null && !filterData.getTenantId().isEmpty()) {
 			queryBuilder.append(" AND u.user_id = :tenantId");
 			parameters.put("tenantId", filterData.getTenantId());
@@ -346,7 +344,7 @@ public class AdminReportService implements AdminReportImpl{
 
 			queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
 		} else {
-			queryBuilder.append(" ORDER BY u.user_money_due_bill_start_date DESC");
+			queryBuilder.append(" ORDER BY u.user_money_due_id,u.user_money_due_bill_start_date DESC");
 		}
 
 
@@ -388,7 +386,8 @@ public class AdminReportService implements AdminReportImpl{
 	@Override
 	public CommonResponseDTO<VendorPayments> getVendorPaymentDetails(UserPaymentFilterRequest filterRequest, FilterData filterData) {
 		StringBuilder queryBuilder = new StringBuilder(
-				"SELECT DISTINCT o.pg_owner_id AS ownerId, " +
+				 "SELECT DISTINCT ON (up.user_payment_id) " + 
+				        "o.pg_owner_id AS ownerId, " +
 						"o.pg_owner_name AS ownerName, " +
 						"pd.property_id AS pgId, " +
 						"pd.property_name AS pgName, " +
@@ -411,7 +410,7 @@ public class AdminReportService implements AdminReportImpl{
 		Map<String, Object> parameters = new HashMap<>();
 
 		if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-			queryBuilder.append(" AND up.user_payment_timestamp BETWEEN :fromDate AND :toDate");
+			queryBuilder.append(" AND up.user_payment_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 			parameters.put("fromDate", filterRequest.getFromDate());
 			parameters.put("toDate", filterRequest.getToDate());
 		}
@@ -468,7 +467,7 @@ public class AdminReportService implements AdminReportImpl{
 
 			queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
 		} else {
-			queryBuilder.append(" ORDER BY up.user_payment_timestamp DESC");
+			queryBuilder.append(" ORDER BY up.user_payment_id,up.user_payment_timestamp DESC");
 		}
 
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
@@ -498,7 +497,7 @@ public class AdminReportService implements AdminReportImpl{
 
 
 	@Override
-	public CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails(Timestamp fromDate, Timestamp toDate) {
+	public CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails(String fromDate, String toDate) {
 		List<VendorPaymentsDues> vendorPaymentsDues = new ArrayList<>();
 		VendorPaymentsDues vendorPayDues = new VendorPaymentsDues();
 		vendorPayDues.setOwnerId(" ");
@@ -515,7 +514,7 @@ public class AdminReportService implements AdminReportImpl{
 	}
 
 	@Override
-	public CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails(Timestamp fromDate, Timestamp toDate) {
+	public CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails(String fromDate, String toDate) {
 		List<VendorPaymentsGst> vendorPaymentsGst = new ArrayList<>();
 		VendorPaymentsGst vendorPaysGst = new VendorPaymentsGst();
 		vendorPaysGst.setTransactionDate(null);

@@ -140,7 +140,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getVendorPaymentDuesByDateRange(Timestamp fromDate, Timestamp toDate) {
+	public ResponseEntity<String> getVendorPaymentDuesByDateRange(String fromDate, String toDate) {
 		ResponseBody response=new ResponseBody();
 		try {
 
@@ -155,7 +155,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getVendorPaymentGstReportByDateRange(Timestamp fromDate, Timestamp toDate) {
+	public ResponseEntity<String> getVendorPaymentGstReportByDateRange(String fromDate, String toDate) {
 		ResponseBody response=new ResponseBody();
 		try {
 
