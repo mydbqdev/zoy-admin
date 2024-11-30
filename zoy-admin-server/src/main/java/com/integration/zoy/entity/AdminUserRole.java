@@ -1,47 +1,21 @@
 package com.integration.zoy.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user_role", schema = "pgadmin")
-public class AdminUserRole {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
-	private Long id;
-
-	@ManyToOne
-	@JoinColumn(name = "user_email", referencedColumnName = "user_email", nullable = false)
-	private UserMaster userMaster;
-
-	@ManyToOne
-	@JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-	private AppRole appRole;
-
-	// Getters and Setters
-
-	public Long getId() {
-		return id;
+public class AdminUserRole implements Serializable{
+	private static final long serialVersionUID = 1L;
+	@EmbeddedId
+	private AdminUserRolePK adminUserRolePK;
+	
+	public AdminUserRolePK getAdminUserRolePK() {
+		return adminUserRolePK;
 	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public void setAdminUserRolePK(AdminUserRolePK adminUserRolePK) {
+		this.adminUserRolePK = adminUserRolePK;
 	}
-
-	public UserMaster getUserMaster() {
-		return userMaster;
-	}
-
-	public void setUserMaster(UserMaster userMaster) {
-		this.userMaster = userMaster;
-	}
-
-	public AppRole getAppRole() {
-		return appRole;
-	}
-
-	public void setAppRole(AppRole appRole) {
-		this.appRole = appRole;
-	}
+	
 }

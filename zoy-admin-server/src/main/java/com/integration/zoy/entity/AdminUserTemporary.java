@@ -1,25 +1,19 @@
 package com.integration.zoy.entity;
 
-import javax.persistence.*;
-
+import java.io.Serializable;
 import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "user_temprory", schema = "pgadmin")
-public class AdminUserTemporary {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "user_email", referencedColumnName = "user_email", nullable = false)
-    private AdminUserMaster userMaster;
-
-    @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    private AppRole appRole;
+public class AdminUserTemporary implements Serializable{
+	private static final long serialVersionUID = 1L;
+	@EmbeddedId
+	private AdminUserTemporaryPK adminUserTemporaryPK;
 
     @Column(name = "is_approve", nullable = true)
     private Boolean isApprove = false;
@@ -32,35 +26,21 @@ public class AdminUserTemporary {
 
     // Getters and Setters
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public AdminUserMaster getUserMaster() {
-        return userMaster;
-    }
-
-    public void setUserMaster(AdminUserMaster userMaster) {
-        this.userMaster = userMaster;
-    }
-
-    public AppRole getAppRole() {
-        return appRole;
-    }
-
-    public void setAppRole(AppRole appRole) {
-        this.appRole = appRole;
-    }
+    
 
     public Boolean getIsApprove() {
         return isApprove;
     }
 
-    public void setIsApprove(Boolean isApprove) {
+    public AdminUserTemporaryPK getAdminUserTemporaryPK() {
+		return adminUserTemporaryPK;
+	}
+
+	public void setAdminUserTemporaryPK(AdminUserTemporaryPK adminUserTemporaryPK) {
+		this.adminUserTemporaryPK = adminUserTemporaryPK;
+	}
+
+	public void setIsApprove(Boolean isApprove) {
         this.isApprove = isApprove;
     }
 
