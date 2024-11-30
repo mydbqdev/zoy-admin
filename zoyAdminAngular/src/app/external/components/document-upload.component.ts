@@ -43,6 +43,7 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 	 
 	  handleFileInput(files: FileList) {
 		this.fileToUpload = files.item(0);
+		console.log("handleFileInput" ,this.handleFileInput);
 	}
 	uploadFileToActivity() {
 		this.documentUploadService.uploadDocumentUpload(this.fileToUpload).subscribe(data => {
@@ -56,14 +57,17 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 		  const fileExtension = file.name.includes(".")? file.name.split('.').pop()?.toLowerCase(): null;
 		  if (fileExtension !== "pdf") {
 			console.error(`Invalid file extension (${file.name}): Only .pdf files are allowed.`);
+			this.notifyService.showError(`Invalid file extension (${file.name}): Only .pdf files are allowed.`, "");
 			continue;
 		  }
 		  if (file.type !== "application/pdf") {
 			console.error(`Invalid file type (${file.name}): Only PDFs are allowed.`);
+			this.notifyService.showError(`Invalid file type (${file.name}): Only PDFs are allowed.`, "");
 			continue;
 		  }
 		  if (file.size > 5 * 1024 * 1024) {
 			console.error(`File too large (${file.name}): Maximum size is 5MB.`);
+			this.notifyService.showError(`File too large (${file.name}): Maximum size is 5MB.`, "");
 			continue;
 		  }
 		  this.files.push({
@@ -75,6 +79,7 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 			canCancel: true,
 			sub: undefined
 		  });
+		 
 		}
 		this.uploadFiles();
 	  }
@@ -104,21 +109,25 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 	  
 			  if (!fileExtension) {
 				console.error(`Invalid file name (${fileName}): No extension found.`);
+				this.notifyService.showError(`Invalid file format: Missing file extension.`, "");
 				continue;
 			  }
 	  
 			  if (fileExtension !== "pdf") {
 				console.error(`Invalid file extension (${fileName}): Only .pdf files are allowed.`);
+				this.notifyService.showError(`Invalid file format: Only .pdf files are allowed.`, "");
 				continue;
 			  }
 	  
 			  if (file.type !== "application/pdf") {
 				console.error(`Invalid file type (${fileName}): Only PDFs are allowed.`);
+				this.notifyService.showError(`Invalid file type: Only PDFs are allowed.`, "");
 				continue;
 			  }
 	  
 			  if (totalSize + file.size > 5 * 1024 * 1024) {
 				console.error(`Total file size exceeded: Maximum cumulative size is 5MB.`);
+				this.notifyService.showError(`Total file size exceeded: Maximum cumulative size is 5MB.`, "");
 				break;
 			  }
 	  
@@ -136,13 +145,17 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 	  
 			  const reader = new FileReader();
 			  reader.onload = (event: any) => {
+				console.log(`File Content (${fileName}):`, event.target.result);
+				this.notifyService.showSuccess(`File Uploaded Successfully (${fileName})`, "");
 			  };
 			  reader.onerror = (error) => {
 				console.error(`Error reading file (${fileName}):`, error);
+				this.notifyService.showError("Error reading file", "");
 			  };
 			  reader.readAsText(file);
 			}
 	  
+			console.log("Uploaded Files:", this.files);
 			this.uploadFiles();
 		  }
 		};
@@ -253,6 +266,7 @@ export class DocumentUploadComponent implements OnInit, AfterViewInit {
 	   getVerify(){
 		this.route.paramMap.subscribe(params => {
 			this.token = params.get('name') || ''; 
+			console.log(this.token); 
 		  });
 		 this.spinner.show();
 		 this.documentUploadService.getVerify(this.token).subscribe(data => {
