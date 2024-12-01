@@ -1,5 +1,7 @@
 package com.integration.zoy.entity;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -33,6 +36,11 @@ public class ZoyPgOwnerDetails {
     
     @Column(name = "pg_owner_encrypted_aadhar")
     private String pgOwnerEncryptedAadhar;
+    
+    @Column(name = "create_at", nullable = false)
+	@CreationTimestamp
+	private Timestamp ts;
+
 
     public String getPgOwnerId() {
         return pgOwnerId;
@@ -81,8 +89,14 @@ public class ZoyPgOwnerDetails {
 	public void setPgOwnerEncryptedAadhar(String pgOwnerEncryptedAadhar) {
 		this.pgOwnerEncryptedAadhar = pgOwnerEncryptedAadhar;
 	}
-    
-    
+
+	public Timestamp getTs() {
+		return ts;
+	}
+
+	public void setTs(Timestamp ts) {
+		this.ts = ts;
+	}
     
 }
 
