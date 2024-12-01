@@ -34,7 +34,7 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
   public ELEMENT_DATA:UserDetails[];
   dataSource:MatTableDataSource<UserDetails>=new MatTableDataSource<UserDetails>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
-    userName: null,
+    firstName: null,
     userMail: null,
     designation: null
   };
@@ -121,6 +121,7 @@ getUserDetais(){
      this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
      this.dataSource.sort = this.sort;
      this.dataSource.paginator = this.paginator;
+     this.dataSource.sortingDataAccessor = (data, sortHeaderId) => data[sortHeaderId].toLocaleLowerCase();
   }else{
     this.ELEMENT_DATA = Object.assign([]);
      this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);

@@ -237,6 +237,8 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			this.ELEMENT_DATA = Object.assign([],data);
 			this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 			this.dataSource.sort = this.sort;
+			this.columnSortDirections['created_date']='desc';
+			this.dataSource.sortingDataAccessor = (data, sortHeaderId) => data[sortHeaderId].toLocaleLowerCase();
 			this.spinner.hide();
 		}, error => {
 		this.spinner.hide();

@@ -116,10 +116,13 @@ export class BulkUploadComponent {
   }
 
   onFileChange(event: any) {
-	this.filevali=false;
+		this.filevali=false;
 		this.upfile=event.target.files[0]; 
 		const fileType = this.upfile.type;
-		if (fileType !== 'text/csv' && fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && fileType !== 'application/vnd.ms-excel') {
+		if (this.bulkUpload.category=='Tenant' && fileType !== 'text/csv') {
+			this.filevali=true;
+	    }
+		if (this.bulkUpload.category=='PG Property' && (fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && fileType !== 'application/vnd.ms-excel')) {
 		  this.filevali=true;
 	   	}    
 	}
@@ -177,7 +180,7 @@ export class BulkUploadComponent {
   			const model =JSON.stringify(bulkUploadModel);
 			var form_data = new FormData();
 
-			if(this.bulkUpload.category == 'Tenent'){
+			if(this.bulkUpload.category == 'Tenant'){
 				form_data.append('tenant', model);
 				form_data.append("file",this.upfile);
 				this.submitUploadTenentFile(form_data);
