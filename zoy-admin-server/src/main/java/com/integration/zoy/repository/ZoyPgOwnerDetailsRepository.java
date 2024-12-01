@@ -42,7 +42,8 @@ public interface ZoyPgOwnerDetailsRepository extends JpaRepository<ZoyPgOwnerDet
             "FROM pgowners.zoy_pg_owner_details o " +
             "LEFT JOIN pgowners.zoy_pg_property_details p ON o.pg_owner_id = p.pg_owner_id " +
             "WHERE (:searchText IS NULL OR LOWER(o.pg_owner_name) LIKE LOWER(CONCAT('%', :searchText, '%'))) " +
-            "GROUP BY o.pg_owner_id, o.pg_owner_name, o.pg_owner_email, o.pg_owner_mobile",
+            "GROUP BY o.pg_owner_id, o.pg_owner_name, o.pg_owner_email, o.pg_owner_mobile " +
+            "ORDER BY o.create_at DESC",
     countQuery = "SELECT COUNT(o) FROM pgowners.zoy_pg_owner_details o", 
     nativeQuery = true)
 Page<Object[]> findAllOwnerWithPropertyCountRaw(Pageable pageable,
