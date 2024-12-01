@@ -38,7 +38,7 @@
                                  <div>
                                      <div style="height: calc(100vh - 211px);overflow: auto;">
                                          <div class="desc-inner" style="height: auto;">
-                                     <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">                                                     
+                                     <table mat-table [dataSource]="dataSource" matSortActive="roleName" matSortDirection="asc" matSort (matSortChange)="announceSortChange($event)">                                                     
                                          <ng-container matColumnDef="roleName">
                                            <th mat-header-cell style="font-weight: 600;width: 300px;" *matHeaderCellDef mat-sort-header>
                                              NAME 
