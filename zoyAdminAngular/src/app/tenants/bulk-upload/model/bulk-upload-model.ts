@@ -5,7 +5,7 @@ export class BulkUploadModel{
 	public category?:string;
 	public status?:string;
 	public fileName?:string;
-	public created_at?:string;
+	public create_at?:string;
 	
 	ownerId: string ='';
     ownerName: string='';   

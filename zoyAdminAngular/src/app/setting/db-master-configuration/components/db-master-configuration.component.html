@@ -32,7 +32,7 @@
                 <div>
                   <button class="btn btn-primary-custom  btn-sm  mr-2" (click)="createSetting()" 
                   data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails">create</button></div>
-                  <select class="custom-select custom-select-sm"  style="min-width: 150px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
+                  <select class="form-select form-select-sm"  style="min-width: 150px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
                   <option *ngFor="let type of settingTypeObjClmApiDetailsList"  [value]="type.type" >{{type.type}}</option>
               </select>
               </div>

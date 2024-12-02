@@ -27,13 +27,13 @@
                     <div class="d-flex mb-2">
                     <div style="width: 150px;">
                       <label for="email">City / Location</label>
-                        <select class="custom-select custom-select-sm" aria-label="Default select example"   [(ngModel)]="cityLocationName" >
+                        <select class="form-select form-select-sm" aria-label="Default select example"   [(ngModel)]="cityLocationName" >
                             <option *ngFor="let city of cityLocation"  [value]="city" >{{city}}</option>
                         </select>
                     </div> 
                     <div class="ml-2" style="width: 220px;">
                         <label for="email">Report Type</label>
-                        <select class="custom-select custom-select-sm" aria-label="Default select example" [(ngModel)]="reportName" (ngModelChange)="changeReport()" > 
+                        <select class="form-select form-select-sm" aria-label="Default select example" [(ngModel)]="reportName" (ngModelChange)="changeReport()" > 
                             <option *ngFor="let report of reportNamesList"  [value]="report.name" >{{report.name}}</option>
                         </select>
                     </div>
