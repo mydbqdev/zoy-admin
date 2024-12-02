@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import com.integration.zoy.entity.UserDueMaster;
 import com.integration.zoy.entity.UserMaster;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
+import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
@@ -19,6 +21,7 @@ import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
+import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 
 public interface OwnerDBImpl {
@@ -93,6 +96,13 @@ public interface OwnerDBImpl {
 	ZoyPgBedDetails getBedsId(String selectedBed);
 	List<String> findPropertyAmenetiesName(String propertyId);
 	ZoyPgTermsMaster findTermMaster(String propertyId);
+	ZoyPgTokenDetails findTokenDetails(String tokenId);
+	ZoyPgTokenDetails saveToken(ZoyPgTokenDetails tokenDetails);
+	List<ZoyPgTokenDetails> findAllToken();
+	List<ZoyPgDueMaster> findAllDueMaster();
+	ZoyPgDueMaster saveUserDueMaster(ZoyPgDueMaster userDueMasters);
+	ZoyPgDueMaster findUserDueMaster(String id);
+	ZoyPgDueMaster updateDueMaster(ZoyPgDueMaster userDueMasters);
 	
 
 }
