@@ -44,13 +44,16 @@
                                                 </div>
 
                                         </div>
-                                        <div class="text-right alert-light">
+                                        <!--div class="text-right alert-light">
                                             <a class="small alert-link" style="font-weight: 400;" routerLink="/forgot-password">Forgot Password?</a>
-                                        </div>
-                                        <div style="margin-bottom: 2px;margin-top:-2px">
+                                        </div-->
+                                        <div class="d-flex" style="margin-bottom: 2px;margin-top:-2px">
                                             <div class="custom-control custom-checkbox small">
                                                 <input type="checkbox" class="custom-control-input" id="rememberme" [(ngModel)]="rememberme">
-                                                <label class="custom-control-label" for="rememberme">Remember me</label>
+                                                <span class="custom-control-label" for="rememberme">Remember me</span>
+                                            </div>
+                                            <div class="ml-auto alert-light">
+                                                <a class="small alert-link" style="font-weight: 400;" routerLink="/forgot-password">Forgot Password?</a>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary-custom btn-block">
