@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ import com.integration.zoy.entity.UserDueMaster;
 import com.integration.zoy.entity.UserEkycTypeMaster;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
+import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
@@ -61,6 +63,7 @@ import com.integration.zoy.model.ShareTypeId;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.UserDBImpl;
+import com.integration.zoy.utils.DueMaster;
 import com.integration.zoy.utils.OwnerLeadPaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
 
@@ -583,8 +586,16 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	public ResponseEntity<String> zoyAdminDueType() {
 		ResponseBody response=new ResponseBody();
 		try {
-			List<UserDueMaster> userDueMasters =  userDBImpl.findAllUserDueMaster();
-			return new ResponseEntity<>(gson2.toJson(userDueMasters), HttpStatus.OK);
+			List<ZoyPgDueMaster> userDueMasters =  ownerDBImpl.findAllDueMaster();
+			List<DueMaster> dueMasters = userDueMasters.stream()
+			        .map(zoyPgDueMaster -> {
+			            DueMaster dueMaster = new DueMaster();
+			            dueMaster.setDueTypeId(zoyPgDueMaster.getDueTypeId());
+			            dueMaster.setDueTypeName(zoyPgDueMaster.getDueName());
+			            return dueMaster;
+			        })
+			        .collect(Collectors.toList());
+			return new ResponseEntity<>(gson2.toJson(dueMasters), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting due type details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -597,9 +608,9 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	public ResponseEntity<String> zoyAdminDueTypePost(DueType dueType) {
 		ResponseBody response=new ResponseBody();
 		try {
-			UserDueMaster userDueMasters =  new UserDueMaster();
-			userDueMasters.setDueTypeName(dueType.getDueTypeName());
-			UserDueMaster saved=userDBImpl.saveUserDueMaster(userDueMasters);
+			ZoyPgDueMaster userDueMasters =  new ZoyPgDueMaster();
+			userDueMasters.setDueName(dueType.getDueTypeName());
+			ZoyPgDueMaster saved=ownerDBImpl.saveUserDueMaster(userDueMasters);
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting due type details: " + e.getMessage(),e);
@@ -613,10 +624,10 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	public ResponseEntity<String> zoyAdminDueTypePut(DueTypeId dueTypeId) {
 		ResponseBody response=new ResponseBody();
 		try {
-			UserDueMaster userDueMasters =  userDBImpl.findUserDueMaster(dueTypeId.getId());
+			ZoyPgDueMaster userDueMasters =  ownerDBImpl.findUserDueMaster(dueTypeId.getId());
 			if(userDueMasters!=null) {
-				userDueMasters.setDueTypeName(dueTypeId.getDueTypeName());
-				UserDueMaster updated=userDBImpl.updateUserDueMaster(userDueMasters);
+				userDueMasters.setDueName(dueTypeId.getDueTypeName());
+				ZoyPgDueMaster updated=ownerDBImpl.updateDueMaster(userDueMasters);
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
