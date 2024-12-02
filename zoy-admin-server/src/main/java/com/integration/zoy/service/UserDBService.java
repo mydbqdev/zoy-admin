@@ -231,7 +231,8 @@ public class UserDBService implements UserDBImpl{
 		sortFieldMapping.put("number_of_properties", "numberOfProperties");
 		String sortColumn = sortFieldMapping.getOrDefault(paginationRequest.getSortActive(), "pg_owner_name");
 		Sort sort = Sort.by(Sort.Order.by(sortColumn)
-				.with(Sort.Direction.fromString(paginationRequest.getSortDirection())));
+			    .with(Sort.Direction.fromString(paginationRequest.getSortDirection()))
+			    .ignoreCase());
 
 		Pageable pageable = PageRequest.of(paginationRequest.getPageIndex(), paginationRequest.getPageSize(), sort);
 
