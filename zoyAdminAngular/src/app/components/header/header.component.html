@@ -67,13 +67,22 @@
       <li class="nav-item dropdown no-arrow">
           <a class="nav-link" href="javascript:void(0)" id="userDropdown" role="button"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <div class="profile-top"> 
-                {{userInfo?.firstName?.charAt(0).toUpperCase()}}
+            <div class="d-flex mt-2">
+                <div>
+                    <div class="profile-top"> 
+                    {{userInfo?.firstName?.charAt(0).toUpperCase()}}
+                    </div>
+                </div>
+            <div>
+                <div style="padding-top:5px">    
+                <span class="ml-2 d-none d-lg-inline text-gray-600 small text-truncate" style="max-width: 100px;">
+                    {{userInfo?.firstName}} {{userInfo?.lastName}}
+                </span>
+                <i class="fas fa-chevron-circle-down text-gray-500 ml-2"></i>
+                </div>
+                <div class="ml-2" style="font-size: 11px;color:#bdb9b9;"> {{userInfo?.designation}}</div>
             </div>
-              <!-- <img class="img-profile rounded-circle"
-                  src="assets/images/undraw_profile.svg"> -->
-            <span class="ml-2 d-none d-lg-inline text-gray-600 small text-truncate" style="max-width: 100px;">{{userInfo?.firstName}} {{userInfo?.lastName}}</span>
-            <i class="fas fa-chevron-circle-down text-gray-500 ml-1"></i>
+            </div>
           </a>
           <!-- Dropdown - User Information -->
           <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
