@@ -25,8 +25,16 @@ public class RegistrationController {
 			model.addAttribute("message", "Your account has been verified successfully.");
 			return "verified";
 		} else {
-			model.addAttribute("message", "Invalid verification token.");
-			return "verify-email";
+			if(result.equals("invalid")) {
+				model.addAttribute("message", "Invalid verification token.");
+				return "verify-email";
+			} else if(result.equals("Email already verified")) {
+				model.addAttribute("message", result);
+				return "verify-email";
+			} else {
+				model.addAttribute("message", "Token is invalid");
+				return "verify-email";
+			}
 		}
 	}
 

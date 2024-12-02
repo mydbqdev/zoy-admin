@@ -152,26 +152,30 @@ public class ZoyAdminService {
 			return "invalid";
 		}
 
-		user.setEnabled(true);
-		commonDBImpl.registerNewUserAccount(user);
-		ZoyPgOwnerDetails zoyPgOwnerDetails=new ZoyPgOwnerDetails();
-		zoyPgOwnerDetails.setPgOwnerEmail(user.getEmailId());
-		zoyPgOwnerDetails.setPgOwnerMobile(user.getMobileNo());
-		zoyPgOwnerDetails.setPgOwnerName(user.getPropertyOwnerName());
-		zoyPgOwnerDetails.setZoyCode(user.getZoyCode());
-		zoyPgOwnerDetails.setPgOwnerEncryptedAadhar(user.getEncryptedAadhar());
-		ownerDBImpl.savePgOwner(zoyPgOwnerDetails);
+		if(!user.isEnabled()) {
+			user.setEnabled(true);
+			commonDBImpl.registerNewUserAccount(user);
+			ZoyPgOwnerDetails zoyPgOwnerDetails=new ZoyPgOwnerDetails();
+			zoyPgOwnerDetails.setPgOwnerEmail(user.getEmailId());
+			zoyPgOwnerDetails.setPgOwnerMobile(user.getMobileNo());
+			zoyPgOwnerDetails.setPgOwnerName(user.getPropertyOwnerName());
+			zoyPgOwnerDetails.setZoyCode(user.getZoyCode());
+			zoyPgOwnerDetails.setPgOwnerEncryptedAadhar(user.getEncryptedAadhar());
+			ownerDBImpl.savePgOwner(zoyPgOwnerDetails);
 
-		Whatsapp whatsapp = new Whatsapp();
-		whatsapp.tonumber("+91" + user.getMobileNo());
-		whatsapp.templateid(ZoyConstant.ZOY_OWNER_REG_WELCOME_MSG);
-		Map<Integer, String> params = new HashMap<>();
-		params.put(1, user.getPropertyOwnerName());
-		whatsapp.setParams(params);
-		whatsAppService.sendWhatsappMessage(whatsapp);
+			Whatsapp whatsapp = new Whatsapp();
+			whatsapp.tonumber("+91" + user.getMobileNo());
+			whatsapp.templateid(ZoyConstant.ZOY_OWNER_REG_WELCOME_MSG);
+			Map<Integer, String> params = new HashMap<>();
+			params.put(1, user.getPropertyOwnerName());
+			whatsapp.setParams(params);
+			whatsAppService.sendWhatsappMessage(whatsapp);
 
-		zoyEmailService.sendRegistrationMail(user);
+			zoyEmailService.sendRegistrationMail(user);
 
-		return "valid";
+			return "valid";
+		} else {
+			return "Email already verified";
+		}
 	}
 }
