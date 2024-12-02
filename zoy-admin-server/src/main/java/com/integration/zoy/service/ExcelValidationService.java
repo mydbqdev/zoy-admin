@@ -52,8 +52,8 @@ public class ExcelValidationService {
 		}
 		String[] expectedHeaders = {
 				"Floor Name", "Room Name", "Room Type", "Share Type",
-				"Room Area in Sqft", "Bed Numbers", "Daily Rent", "Monthly Rent",
-				"Room Amenities", "Occupied Bed Numbers", "Remarks About Room"
+				"Room Area in Sqft", "Available Bed Numbers", "Daily Rent", "Monthly Rent",
+				"Room Amenities", "Occupied Available Bed Numbers", "Remarks About Room"
 		};
 
 		for (int i = 0; i < expectedHeaders.length; i++) {
@@ -78,8 +78,8 @@ public class ExcelValidationService {
 		Cell availableBed = row.getCell(5);
 		Cell occupiedBed = row.getCell(9);
 		if(availableBed==null && occupiedBed==null) {
-			errors.add(new ErrorDetail(rowIndex, 6, "Bed Numbers", "Bed Numbers and Occupied Bed Numbers are empty."));
-			errors.add(new ErrorDetail(rowIndex, 9, "Occupied Bed Numbers", "Bed Numbers and Occupied Bed Numbers are empty."));
+			errors.add(new ErrorDetail(rowIndex, 6, "Available Bed Numbers", "Available Bed Numbers and Occupied Available Bed Numbers are empty."));
+			errors.add(new ErrorDetail(rowIndex, 9, "Occupied Available Bed Numbers", "Available Bed Numbers and Occupied Available Bed Numbers are empty."));
 		}
 
 		Cell remarksCell = row.getCell(10);
