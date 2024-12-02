@@ -45,22 +45,6 @@ export class BulkUploadService {
       });
   }
 
-  downloadTenentSampleFile():Observable<any>{
-    const url1=this.basePath +"zoy_partner/download_template_tenants";
-    return this.httpclient.get<any>(
-      url1,
-      { responseType: 'blob' as 'json'}
-    );
-  }
-
-  downloadPgPropertysSampleFile():Observable<any>{
-    const url1=this.basePath +"zoy_partner/download_template";
-     return this.httpclient.get<any>(
-          url1,
-         { responseType: 'blob' as 'json'}
-       );
-  }  
-
   public upload_tenant_file(data:any): Observable<any> {
      const url = this.basePath + 'zoy_admin/upload_tenant_file';
     return  this.httpclient.post<any>(

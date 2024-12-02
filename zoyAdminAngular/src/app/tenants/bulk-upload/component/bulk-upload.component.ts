@@ -54,6 +54,7 @@ export class BulkUploadComponent {
 	filteredProperties: Observable<PropertyDetail[]>;
 	selectedOwner: OwnerPropertyDetails ;
 	selectedProperty: PropertyDetail  ;
+	downloading : string ="";
    constructor(public dialog: MatDialog,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private  bulkUploadService:BulkUploadService,private confirmationDialogService :ConfirmationDialogService,
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
@@ -302,98 +303,15 @@ export class BulkUploadComponent {
 		  		);	
 		}
 
-		getTenentSampleFile(){
-			this.spinner.show();
-			this.bulkUploadService.downloadTenentSampleFile().subscribe(data => {
-				
-				if(data!=null && data!=undefined && data!='' && data.size!=0){ 
-					var blob = new Blob([data], {type: 'text/csv'});
-					var fileURL=URL.createObjectURL(blob);				  
-					const link = document.createElement("a");
-					link.href = fileURL;
-					link.target = '_blank';
-					link.download = 'Tenent_sample_File.csv';
-					document.body.appendChild(link);
-					link.click();
-					document.body.removeChild(link);
-				}
-			this.spinner.hide();
-		  },error =>{
-			this.spinner.hide();
-			if(error.status == 0) {
-				this.notifyService.showError("Internal Server Error/Connection not established", "")
-			 }else if(error.status==403){
-			  this.router.navigate(['/forbidden']);
-			}else if (error.error && error.error.message) {
-			  this.errorMsg =error.error.message;
-			  console.log("Error:"+this.errorMsg);
-			  this.notifyService.showError(this.errorMsg, "");		  
-			} else {
-			  if(error.status==500 && error.statusText=="Internal Server Error"){
-				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-			  }else{
-				let str;
-				  if(error.status==400){
-				  str=error.error;
-				  }else{
-					str=error.message;
-					str=str.substring(str.indexOf(":")+1);
-				  }
-				  console.log("Error:"+str);
-				  this.errorMsg=str;
-			  }
-			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			}
-		  });
+		downloadSamples(fileName:string){
+			this.downloading = fileName;
+			const filePath = `assets/sample_files/${fileName}`;
+			const link = document.createElement('a');
+			link.href = filePath;
+			link.download = fileName;
+			link.click();
+			this.downloading = "";
 		}
-
-		getPgPropertysSampleFile(){
-			this.spinner.show();
-			this.bulkUploadService.downloadPgPropertysSampleFile().subscribe(data => {
-				if(data!=null && data!=undefined && data!='' && data.size!=0){ 
-					var blob = new Blob([data], {type: 'application/vnd.ms-excel'});
-					var fileURL=URL.createObjectURL(blob);				  
-					const link = document.createElement("a");
-					link.href = fileURL;
-					link.target = '_blank';
-					link.download = 'PG_Propertys_sample_File.xlsx';
-					document.body.appendChild(link);
-					link.click();
-					document.body.removeChild(link);
-				}	
-			
-			this.spinner.hide();
-		  },error =>{
-			this.spinner.hide();
-			if(error.status == 0) {
-				this.notifyService.showError("Internal Server Error/Connection not established", "")
-			 }else if(error.status==403){
-			  this.router.navigate(['/forbidden']);
-			}else if (error.error && error.error.message) {
-			  this.errorMsg =error.error.message;
-			  console.log("Error:"+this.errorMsg);
-			  this.notifyService.showError(this.errorMsg, "");			  
-			} else {
-			  if(error.status==500 && error.statusText=="Internal Server Error"){
-				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-			  }else{
-				let str;
-				  if(error.status==400){
-				  str=error.error;
-				  }else{
-					str=error.message;
-					str=str.substring(str.indexOf(":")+1);
-				  }
-				  console.log("Error:"+str);
-				  this.errorMsg=str;
-			  }
-			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			}
-		  });
-		}
-				
-		    
-
 
 	getOwnerPropertyDetailsList(){
 	    this.spinner.show();
