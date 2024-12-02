@@ -1,3 +1,4 @@
-firstName,lastName,phoneNumber,alternativeNumber,email,dob,gender,permanentAddress,nationality,bloodGroup,motherTongue,tenantType,govtIdNum,vehicleNumber,officeName,officeId,officeAddress,officePhone,extension,floor,inDate,lockInPeriod,monthlyRent,outDate,paidDeposit,room,bed,securityDeposit,noticePeriod,fixedRent,calFixedRent,noOfDays,rentCycleEndDate
-Sarath,Kumar,9876453622,8087657545,sarath@gmail.com,1991-10-21 00:00:00,Male,Karnataka,Indian,B+,Telugu,Employee,,,Amazon,12345,Marathali,9867543210,434,First Floor,2024-10-01 00:00:00,01-01,8000,2025-10-01 00:00:00,10000,Room 101,101-A,10000,1 month,8000,500,30,2025-10-01 00:00:00
-Rajendran,M,7866875642,8988908997,rajendran@gmail.com,1991-01-01 00:00:00,Male,Karnataka,Indian,O+,Telugu,Employee,,,Flipkart,354523,Marathali,9876534422,111,Secound Floor,2024-10-01 00:00:00,10-10,8000,2025-10-01 00:00:00,10000,Room 201,201-A,10000,1 month,8000,500,30,2025-10-01 00:00:00
+First Name,Last Name,Phone Number,eMail,Date Of Birth,Gender,Permanent Address,Out Date,Floor,Room,Bed Number,Rent Cycle, Deposit Paid 
+20- Alphabets,20- Alphabets,10 Digits,25 Charectes,DD-MM-YYYY,Male/ Female / Transgender,200 Charecters,DD-MM-YYYY,20 Charecters,20 Charecters,,"01-01 , 10-10, 15-15", Amount 
+Rajesh,T,9089765431,rajesh@gmail.com,01-01-1991,Male,Karnataka,01-10-2025,First Floor,Room 201,201-A,01-01,10000
+Rajendran,M,7866875642,rajendran@gmail.com,01-01-1991,Male,Karnataka,01-10-2025,Secound Floor,Room 201,201-B,10-10,10000
