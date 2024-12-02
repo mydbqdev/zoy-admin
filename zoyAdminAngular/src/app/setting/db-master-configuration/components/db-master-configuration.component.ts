@@ -42,6 +42,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,
     private dbMasterConfigurationService:DbMasterConfigurationService) {
+    this.authService.checkLoginUserVlidaate();
 		this.userNameSession = userService.getUsername();
         
 		//this.defHomeMenu=defMenuEnable;
