@@ -45,52 +45,21 @@ export class BulkUploadService {
       });
   }
 
-  public getTenentSampleFile(): Observable<any> {
-   // const url = 'https://api-qa.zoypg.com/zoy_partner/download_template_tenants'; 
-   const url = this.basePathExternalServer+'zoy_partner/download_template_tenants'; 
-    sessionStorage.setItem('zoyadminapi','no');
-
-    const returnObj =  this.httpclient.get<any>(
-      url,
-      {
-          headers:ServiceHelper.buildHeadersSampleFile(),
-          observe : 'body',
-          withCredentials:false
-      });
-      return returnObj;
-  }
-
-  getPgPropertysSampleFile(): Observable<any> {
-    const url = this.basePathExternalServer +'zoy_partner/download_template'; 
-    sessionStorage.setItem('zoyadminapi','no');
-    const headers = ServiceHelper.buildHeadersSampleFile();
-    return this.httpclient.get(url,  {
-      headers,
-      responseType: 'blob'
-    }).pipe(
-      
-      tap((data: Blob) => {
-        this.downloadCsvFile(data, 'PG_Propertys_Sample_File_tenants.xlsx');
-      }),
-      catchError((error) => {
-        
-        return throwError(error);
-      })
+  downloadTenentSampleFile():Observable<any>{
+    const url1=this.basePath +"zoy_partner/download_template_tenants";
+    return this.httpclient.get<any>(
+      url1,
+      { responseType: 'blob' as 'json'}
     );
   }
 
-  private downloadCsvFile(data: Blob, filename: string) {
-    const downloadLink = document.createElement('a');
-    const url = window.URL.createObjectURL(data);
-  
-    downloadLink.href = url;
-    downloadLink.download = filename;
-    downloadLink.click();
-  
-    window.URL.revokeObjectURL(url);
-    downloadLink.remove();
-  }
-  
+  downloadPgPropertysSampleFile():Observable<any>{
+    const url1=this.basePath +"zoy_partner/download_template";
+     return this.httpclient.get<any>(
+          url1,
+         { responseType: 'blob' as 'json'}
+       );
+  }  
 
   public upload_tenant_file(data:any): Observable<any> {
      const url = this.basePath + 'zoy_admin/upload_tenant_file';
