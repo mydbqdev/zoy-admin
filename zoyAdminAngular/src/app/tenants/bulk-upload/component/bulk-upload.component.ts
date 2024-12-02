@@ -304,7 +304,7 @@ export class BulkUploadComponent {
 
 		getTenentSampleFile(){
 			this.spinner.show();
-			this.bulkUploadService.getTenentSampleFile().subscribe(data => {
+			this.bulkUploadService.downloadTenentSampleFile().subscribe(data => {
 				
 				if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 					var blob = new Blob([data], {type: 'text/csv'});
@@ -318,9 +318,7 @@ export class BulkUploadComponent {
 					document.body.removeChild(link);
 				}
 			this.spinner.hide();
-			sessionStorage.setItem('zoyadminapi','yes');
 		  },error =>{
-			sessionStorage.setItem('zoyadminapi','yes');
 			this.spinner.hide();
 			if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
@@ -351,23 +349,21 @@ export class BulkUploadComponent {
 
 		getPgPropertysSampleFile(){
 			this.spinner.show();
-			this.bulkUploadService.getPgPropertysSampleFile().subscribe(data => {
+			this.bulkUploadService.downloadPgPropertysSampleFile().subscribe(data => {
 				if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 					var blob = new Blob([data], {type: 'application/vnd.ms-excel'});
 					var fileURL=URL.createObjectURL(blob);				  
 					const link = document.createElement("a");
 					link.href = fileURL;
 					link.target = '_blank';
-					link.download = 'PG_Propertys_sample_File.csv';
+					link.download = 'PG_Propertys_sample_File.xlsx';
 					document.body.appendChild(link);
 					link.click();
 					document.body.removeChild(link);
 				}	
 			
 			this.spinner.hide();
-			sessionStorage.setItem('zoyadminapi','yes');
 		  },error =>{
-			sessionStorage.setItem('zoyadminapi','yes');
 			this.spinner.hide();
 			if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
