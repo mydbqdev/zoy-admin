@@ -32,11 +32,9 @@ export class UserMasterComponent implements OnInit {
   public ELEMENT_DATA:UserDetails[];
   dataSource:MatTableDataSource<UserDetails>=new MatTableDataSource<UserDetails>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
-    userName: null,
+    firstName: null,
     userMail: null,
-    designation: null,
-    roleName:null,
-    status: null
+    designation: null
   };
   columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
   isExpandSideBar:boolean=true;
@@ -127,7 +125,7 @@ export class UserMasterComponent implements OnInit {
 			Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
 		  ]],
 		  repeatPassword: ['', Validators.required]
-		}, { validator: this.passwordsMatch });
+    }, { validator: this.passwordsMatch });
   }
   ngOnDestroy() {
 		if (this.mySubscription) {
@@ -204,7 +202,8 @@ export class UserMasterComponent implements OnInit {
     this.ELEMENT_DATA = Object.assign([],data);
     this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
     this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sortingDataAccessor = (data, sortHeaderId) => data[sortHeaderId].toLocaleLowerCase();
     this.spinner.hide();
 
  }, error => {
