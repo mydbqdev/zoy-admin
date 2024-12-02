@@ -3,8 +3,6 @@ package com.integration.zoy.utils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UploadTenant {
-	@JsonProperty("category")
-	String category;
 
 	@JsonProperty("ownerId")
 	String ownerId;
@@ -17,14 +15,6 @@ public class UploadTenant {
 
 	@JsonProperty("propertyName")
 	String propertyName;
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
 
 	public String getOwnerId() {
 		return ownerId;
@@ -60,8 +50,9 @@ public class UploadTenant {
 
 	@Override
 	public String toString() {
-		return "UploadTenant [category=" + category + ", ownerId=" + ownerId + ", ownerName=" + ownerName
-				+ ", propertyId=" + propertyId + ", propertyName=" + propertyName + "]";
+		return "UploadTenant [ownerId=" + ownerId + ", ownerName=" + ownerName + ", propertyId=" + propertyId
+				+ ", propertyName=" + propertyName + "]";
 	}
+
 
 }

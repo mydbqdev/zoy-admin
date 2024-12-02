@@ -1,5 +1,7 @@
 package com.integration.zoy.utils;
 
+import java.sql.Timestamp;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BulkUploadData {
@@ -27,6 +29,9 @@ public class BulkUploadData {
 	
 	@JsonProperty("status")
 	String status;
+	
+	@JsonProperty("createAt")
+	Timestamp createAt;
 
 	public Long getId() {
 		return id;
@@ -92,12 +97,19 @@ public class BulkUploadData {
 		this.status = status;
 	}
 
+	public Timestamp getCreateAt() {
+		return createAt;
+	}
+
+	public void setCreateAt(Timestamp createAt) {
+		this.createAt = createAt;
+	}
+
 	@Override
 	public String toString() {
 		return "BulkUploadData [id=" + id + ", category=" + category + ", fileName=" + fileName + ", ownerId=" + ownerId
 				+ ", ownerName=" + ownerName + ", propertyId=" + propertyId + ", propertyName=" + propertyName
-				+ ", status=" + status + "]";
+				+ ", status=" + status + ", createAt=" + createAt + "]";
 	}
-
 	
 }

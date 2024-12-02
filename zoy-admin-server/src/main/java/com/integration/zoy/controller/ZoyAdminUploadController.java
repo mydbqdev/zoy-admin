@@ -136,7 +136,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			byte[] fileBytes = inputStream.readAllBytes();
 			List<ErrorDetail> error = csvValidationService.validateCSV(fileBytes,tenant.getPropertyId());
 			if(error.size()>0) {
-				bulkUploadDetails.setCategory(tenant.getCategory());
+				bulkUploadDetails.setCategory("Tenent");
 				bulkUploadDetails.setOwnerId(tenant.getOwnerId());
 				bulkUploadDetails.setOwnerName(tenant.getOwnerName());
 				bulkUploadDetails.setPropertyId(tenant.getPropertyId());
@@ -150,7 +150,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			} else {
 				String jobExecutionId = UUID.randomUUID().toString();
 				bulkUploadDetails.setJobExeId(jobExecutionId);
-				bulkUploadDetails.setCategory(tenant.getCategory());
+				bulkUploadDetails.setCategory("Tenent");
 				bulkUploadDetails.setOwnerId(tenant.getOwnerId());
 				bulkUploadDetails.setOwnerName(tenant.getOwnerName());
 				bulkUploadDetails.setPropertyId(tenant.getPropertyId());
@@ -195,7 +195,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			byte[] fileBytes = inputStream.readAllBytes();
 			List<ErrorDetail> error = excelValidationService.validateExcel(fileBytes);
 			if(error.size()>0) {
-				bulkUploadDetails.setCategory(property.getCategory());
+				bulkUploadDetails.setCategory("PG Property");
 				bulkUploadDetails.setOwnerId(property.getOwnerId());
 				bulkUploadDetails.setOwnerName(property.getOwnerName());
 				bulkUploadDetails.setPropertyId(property.getPropertyId());
@@ -209,7 +209,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			} else {
 				String jobExecutionId = UUID.randomUUID().toString();
 				bulkUploadDetails.setJobExeId(jobExecutionId);
-				bulkUploadDetails.setCategory(property.getCategory());
+				bulkUploadDetails.setCategory("PG Property");
 				bulkUploadDetails.setOwnerId(property.getOwnerId());
 				bulkUploadDetails.setOwnerName(property.getOwnerName());
 				bulkUploadDetails.setPropertyId(property.getPropertyId());
@@ -247,6 +247,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				uploadData.setPropertyId(data.getPropertyId());
 				uploadData.setPropertyName(data.getPropertyName());
 				uploadData.setStatus(data.getStatus());
+				uploadData.setCreateAt(data.getCreatedAt());
 				bulkUploadDatas.add(uploadData);
 			}
 			return new ResponseEntity<>(gson.toJson(bulkUploadDatas), HttpStatus.OK);
