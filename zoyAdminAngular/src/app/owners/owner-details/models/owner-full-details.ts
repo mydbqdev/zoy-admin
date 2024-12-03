@@ -2,8 +2,8 @@
 export class PgOwnerData {
     profile: Profile;
     pg_ownerbasic_information: PgOwnerBasicInformation;
-    pg_owner_property_information: PgOwnerPropertyInformation[];
-    pg_owner_business_info: PgOwnerBusinessInfo[];
+    pg_owner_property_information: PgOwnerPropertyInformation[]=[];
+    pg_owner_business_info: PgOwnerBusinessInfo[]=[];
   }
 
 // Profile Model
