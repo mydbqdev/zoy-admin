@@ -129,6 +129,7 @@ export class BulkUploadComponent {
 	}
   
 	getUploadFileDetails() {
+		this.authService.checkLoginUserVlidaate();
 		 this.spinner.show();
 		 this.bulkUploadService.getUploadFileDetails().subscribe((response) => {
 		 this.ELEMENT_DATA=Object.assign([],response);
@@ -167,7 +168,7 @@ export class BulkUploadComponent {
 				});
 		   }
 		submitUploadFile(){
-			//	this.authService.checkLoginUserVlidaate();
+			this.authService.checkLoginUserVlidaate();
 			this.submitted = true;
 			if (this.form.invalid || this.filevali) {
 			  return;

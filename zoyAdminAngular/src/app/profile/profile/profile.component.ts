@@ -111,6 +111,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 		}
 
 		changePassword() {
+			this.authService.checkLoginUserVlidaate();
 			this.submitted=true;		
 			this.changePasswordDetails.userEmail=this.userService.getUsername();
 		    	if(this.form.invalid){

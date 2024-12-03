@@ -74,6 +74,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	}
 
 	getDashboardCard(){
+		this.authService.checkLoginUserVlidaate();
 		this.appService.getDashboardCard().subscribe((result) => {
 			this.dashboardCardModel=result;
 		  },error =>{
