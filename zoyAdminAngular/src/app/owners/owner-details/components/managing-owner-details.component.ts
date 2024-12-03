@@ -227,8 +227,8 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			console.log("Error:" + str);
 			this.errorMsg = str;
 			}
-			//if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			this.notifyService.showError(this.errorMsg, "");
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			//this.notifyService.showError(this.errorMsg, "");
 		}
 		});
 	}
