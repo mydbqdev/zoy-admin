@@ -175,8 +175,8 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		byte[] fileData = adminReportImpl.generateDynamicReport(filterRequest,filterData);
 
 		if (fileData.length == 0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  
+	    }
 
 		MediaType contentType;
 		String fileExtension;
