@@ -132,7 +132,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	  }
 
 	  getCityList(){
-		// this.authService.checkLoginUserVlidaate();
+		 this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
 		this.reportService.getCityList().subscribe(data => {
 		this.cityLocation=data;
@@ -285,10 +285,11 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	}
 	
 	downloadPdf(){   
+		this.authService.checkLoginUserVlidaate();
 		if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
 			return;
 		}
-		//	this.authService.checkLoginUserVlidaate();
+		
 		this.filtersRequest.sortActive=this.sortActive;
 		this.filtersRequest.sortDirection=this.sortDirection.toUpperCase();
 

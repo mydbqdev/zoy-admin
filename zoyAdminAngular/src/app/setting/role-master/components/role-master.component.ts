@@ -122,7 +122,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
 }
 
   saveRoleModel() {
-   // this.authService.checkLoginUserVlidaate();
+   this.authService.checkLoginUserVlidaate();
    this.submitted = true
    if(this.form.invalid){
      return;
@@ -173,6 +173,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
     // this.roleModel.dataread = this.dataSelectedRead;
     // this.roleModel.datawrite = this.dataSelectedWrite;
     if(!this.form.invalid){
+      
       this.spinner.show();
       this.roleService.saveMyRole(this.roleModel).subscribe((result) =>{
         this.spinner.hide();
@@ -213,7 +214,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
 
 
     saveEditedData(){  
-     // this.authService.checkLoginUserVlidaate();
+      this.authService.checkLoginUserVlidaate();
       this.submitted=true;      
       if(this.editRoles.desc=="" || this.editRoles.desc==" "){
         return;

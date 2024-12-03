@@ -111,7 +111,7 @@ ngAfterViewInit(){
 }
  
 getUserDetais(){
-  // this.authService.checkLoginUserVlidaate();
+   this.authService.checkLoginUserVlidaate();
    this.spinner.show();
    this.permissionService.zoyAdminNotApprovedRoles().subscribe(data => {
     

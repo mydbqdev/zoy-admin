@@ -88,6 +88,7 @@ export class UserMasterComponent implements OnInit {
       this.dataService.getIsExpandSideBar.subscribe(name=>{
         this.isExpandSideBar=name;
       });
+      this.columnSortDirections.fileName= 'asc';
   }
   ngOnInit(): void {
     
@@ -195,7 +196,7 @@ export class UserMasterComponent implements OnInit {
  }
 
  getUserDetais(){
- // this.authService.checkLoginUserVlidaate();
+  this.authService.checkLoginUserVlidaate();
 
   this.spinner.show();
   this.userMasterService.getUserList().subscribe(data => {
@@ -416,7 +417,7 @@ oldRoles:any=[];
   }
   }
    updateRolesUser(){
-   // this.authService.checkLoginUserVlidaate();
+    this.authService.checkLoginUserVlidaate();
 
    //this.selectedRoleIds = this.selectedRoleIds.filter(roleId => !this.oldRoles.includes(roleId));
   
@@ -465,7 +466,7 @@ oldRoles:any=[];
   }
 
   sendInfo(userEmail:string){
-  //  this.authService.checkLoginUserVlidaate();
+  this.authService.checkLoginUserVlidaate();
   
   this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to send the login information to the user ?')
   .then(
@@ -592,7 +593,7 @@ getWriteIcon(writePrv: boolean): string {
   }
 
   doUserActiveteDeactivete(user:any){
-    //  this.authService.checkLoginUserVlidaate();
+    this.authService.checkLoginUserVlidaate();
     
     this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to '+( user.status?'deactivate':'activate' )+' to the user ?')
     .then(

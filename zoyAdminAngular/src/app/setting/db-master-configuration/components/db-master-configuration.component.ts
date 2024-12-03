@@ -108,7 +108,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
  
     isCreated :boolean=true;
     getDbSettingDetails(){
-      // this.authService.checkLoginUserVlidaate();
+       this.authService.checkLoginUserVlidaate();
       this.spinner.show();
       this.dbMasterConfigurationService.getDbSettingDetails(this.settingTypeDetails.api).subscribe(data => {
         this.dbSettingDataList=Object.assign([],data);
@@ -169,7 +169,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.submitted = true;
 
      if(this.validation()){      
-      
+      this.authService.checkLoginUserVlidaate();
       this.spinner.show();
       this.dbMasterConfigurationService.submitData(this.submitDataModel,this.isCreated,this.settingTypeDetails.api).subscribe(data => {
       this.closeModel.nativeElement.click(); 
