@@ -134,7 +134,7 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/config/other-charges",
+	@GetMapping(value = "/zoy_admin/config/data-grouping",
 	produces = { "application/json" })
 	ResponseEntity<String> zoyAdminConfigGetDataGrouping();
 
