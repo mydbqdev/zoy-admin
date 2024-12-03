@@ -24,7 +24,7 @@ public class CsvGenerateService {
 	         PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
 
 	        if (reportData == null || reportData.isEmpty()) {
-	            writer.println("No data available");
+			    return new byte[0];
 	        } else {
 	            createCsvHeaderRow(writer, reportData.get(0));
 
