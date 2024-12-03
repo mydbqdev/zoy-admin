@@ -120,7 +120,7 @@
     </div>
    </li>
    <!-- Nav Item - Settings Collapse Menu -->
-    <li class="nav-item" [ngClass]="{'active':menu41}" id="menu4" *ngIf="defMenu.settings && (rolesArray.includes('ROLE_AND_PERMISSION_READ') || rolesArray.includes('DB_MASTER_CONFIGURATION_READ') || rolesArray.includes('CANCELLATION_AND_REFUND_RULES_READ') || rolesArray.includes('PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ') || rolesArray.includes('PROMOTION_AND_OFFER_MANAGEMENT_READ'))"> 
+    <li class="nav-item" [ngClass]="{'active':menu41}" id="menu4" *ngIf="defMenu.settings && (rolesArray.includes('ROLE_AND_PERMISSION_READ') || rolesArray.includes('DB_MASTER_CONFIGURATION_READ') || rolesArray.includes('CONFIGURATION_MASTER_READ') || rolesArray.includes('CANCELLATION_AND_REFUND_RULES_READ') || rolesArray.includes('PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ') || rolesArray.includes('PROMOTION_AND_OFFER_MANAGEMENT_READ'))"> 
         <a [ngClass]="menu4 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(4)" [attr.data-toggle]="true?'collapse':'collapse'" data-target="#collapseSettings"
         [attr.aria-expanded]="!menu4" aria-controls="collapseSettings">
             <i class="fas fa-fw fa-cogs"></i>
@@ -132,11 +132,13 @@
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/db-master-configuration" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_READ')" [ngClass]="{'active':activeSubNenuName=='db-master-configuration'}">DB Master <br *ngIf="isExpandSideBar"> Configuration</a>
                 <div class="p-1"></div>
+                <a class="collapse-item" routerLink="/configuration-master" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ')" [ngClass]="{'active':activeSubNenuName=='configuration-master'}">Configuration <br *ngIf="isExpandSideBar"> Master </a>
+                <!-- <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/cancellation-refund-rules" *ngIf="rolesArray.includes('CANCELLATION_AND_REFUND_RULES_READ')">Cancellation and <br *ngIf="isExpandSideBar">  Refund Rules</a>
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/percentage-charge-configurations" *ngIf="rolesArray.includes('PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ')">Percentage and <br *ngIf="isExpandSideBar">  Charge</a>
                 <div class="p-1"></div>
-                <a class="collapse-item" routerLink="/promotion-offers-management" *ngIf="rolesArray.includes('PROMOTION_AND_OFFER_MANAGEMENT_READ')">Promotion and <br *ngIf="isExpandSideBar">  Offers Management</a>
+                <a class="collapse-item" routerLink="/promotion-offers-management" *ngIf="rolesArray.includes('PROMOTION_AND_OFFER_MANAGEMENT_READ')">Promotion and <br *ngIf="isExpandSideBar">  Offers Management</a> -->
             </div>
         </div>
     </li>

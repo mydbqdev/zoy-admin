@@ -1,0 +1,386 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+    <p style="color: white;">Loading ...</p>
+  </ngx-spinner>
+  <div id="page-top">
+      <!-- Page Wrapper -->
+      <div id="wrapper">    
+        <!-- Sidebar -->
+          <app-sidebar></app-sidebar>
+        <!-- End of Sidebar -->
+  
+          <!-- Content Wrapper -->
+          <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+              <!-- Main Content -->
+              <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+  
+                  <!-- Begin Page Content -->
+                  <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                      <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Configuration</span><span class="text-header-800-blue">Master</span></h3> 
+                      <div>
+                      </div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between w-100" style="display: block;margin: 0px;padding: 2px;">
+                    <div class="input-group w-100">
+                        <button type="button" class="form-control btn btn-primary">Advances</button>
+                        <button type="button" class="form-control">Cancellation Rules</button>
+                        <button type="button" class="form-control">Security Deposite Refund Rules</button>
+                        <button type="button" class="form-control">Other Charges</button>
+                        <button type="button" class="form-control">Data Grouping</button>
+                        <button type="button" class="form-control">Promotion and Offers <i class="fas fa-chevron-right ms-2"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                    <div class="card-body scrollable-container">
+                     <div class="card">
+                        <div class="col-sm-12">
+                            <div class="row p-3 align-items-center marginRow">
+                              <div class="col-sm-3">
+                                <span style="font-size: 16px;">Total Advance (%)</span>
+                              </div>
+                              <div class="col-sm-1">
+                                <div class="input-group">
+                                  <span class="form-control form-control-sm">20</span>
+                                  <span class="form-control form-control-sm">%</span>
+                                </div>
+                              </div>
+                              <div class="col-sm-1">
+                                <button class="btn btn-sm btn-outline-secondary">
+                                  <i class="fas fa-edit"></i>
+                                </button>
+                              </div>
+                            </div>
+                            <div class="row align-items-center marginRow" style="margin-left: 2px;">
+                            <div class="col-sm-3">
+                                <p class="small" style="font-size: 14px;color: gray">Specify the percentage of the total amount to be collected as a token advance during booking.</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="small" style="font-size: 14px;color: gray">Percentage of the token advance required during booking.</p>
+                            </div>
+                           </div>
+                          </div>
+                          <hr class="solid"> 
+                          <div class="col-sm-12">
+                            <div class="row p-3 marginRow">
+                              <div class="col-sm-3">
+                                <span style="font-size: 16px;">Cancellation And Refund Policy</span>
+                                <p class="small" style="font-size: 14px;color: gray">Define the deduction percentage and time frame for cancellation before and after check in..</p>
+                              </div>
+                              <div class="col-sm-9">
+                                <div style="background-color: #c1a1f3;padding: 5px;margin-top:-20px;" class="mb-2">
+                                    <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[0].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight0" aria-expanded="false" aria-controls="collapseExampleRight0" (click)="collaspeExpandPanelRight(collaspeListRight[0],'right1')"></i>  Before Check in
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeListRight[0].selected ? 'show':''" id="collapseExampleRight0">
+                                    <div class="card card-body m-2 p-2">
+                                      <div class="scrollable-container pl-3 pr-3">
+                                        <div class="row">
+                                          <div class="col-sm-3" style="font-size: 14px;">PG Type</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-3" style="font-size: 14px;">Address</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-3" style="font-size: 14px;">Manager Name</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-3" style="font-size: 14px;">Manager Email</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-3" style="font-size: 14px;">Manager Contact</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" >
+                                    <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[1].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight1" aria-expanded="false" aria-controls="collapseExampleRight1" (click)="collaspeExpandPanelRight(collaspeListRight[1],'right2')"></i> After Check in for Refund Rent 
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeListRight[1].selected ? 'show':''" id="collapseExampleRight1">
+                                    <div class="card card-body m-2 p-2 ">
+                                      <div class="scrollable-container pl-3 pr-3">
+                                        <div class="d-flex">
+                                          <div>Floor</div>
+                                          <div class="ml-2 text-center" style="width: 20px;">:</div>
+                                          <div style="width: 100px;">
+                                          </div>
+                                        </div>
+                                        <div class="d-flex">
+                                        </div>
+                                        <div class="row"  >
+                                          <div class="col-sm-4" >
+                                          </div>
+                                        </div>
+                                       </div>
+                                    </div>
+                                  </div>
+                               </div>
+                              <div class="row p-3 align-items-center marginRow">
+                              </div>
+                             </div>
+                             <div class="row align-items-center marginRow" style="margin-left: 2px;">
+                              <div class="col-sm-3">
+                            </div>
+                           </div>
+                          </div>
+                          <hr class="solid">
+                          <div class="col-sm-12">
+                            <div class="row p-3 marginRow">
+                              <div class="col-sm-3">
+                                <span style="font-size: 16px;">Security Deposite Refund rules</span>
+                                <p class="small" style="font-size: 14px;color: gray">Set the refund percentage based on the number of notice Period days served.</p>
+                              </div>
+                              <div class="col-sm-9">
+                                <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" >
+                                    <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[2].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight2" aria-expanded="false" aria-controls="collapseExampleRight2" (click)="collaspeExpandPanelRight(collaspeListRight[2],'right3')"></i> Noticed Period Not Served
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeListRight[2].selected ? 'show':''" id="collapseExampleRight2">
+                                    <div class="card card-body m-2 p-2">
+                                      <div class="scrollable-container pl-3 pr-3">
+                                        <div class="row">
+                                          <div class="col-sm-4" style="font-size: 14px;">Security Deposit Amount</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">Rs. </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-4" style="font-size: 14px;">Notice Period</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;">  </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-4" style="font-size: 14px;">Rent Cycle</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-4" style="font-size: 14px;">Late Payment</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-4" style="font-size: 14px;">Grace Period</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-4" style="font-size: 14px;">Additional Charges</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;"> </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-4" style="font-size: 14px;">Aggrement Charges</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-7" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                             </div>
+                          </div>
+                          <hr class="solid">
+                            <div class="col-sm-12">
+                               <div class="row p-3 marginRow">
+                                   <div class="col-sm-3">
+                                   <span style="font-size: 16px;">Other Charges</span>
+                                      <p class="small" style="font-size: 14px;color: gray">Configure GST Percentage and Documentation Charges</p>
+                                   </div>
+                                 <div class="col-sm-1">
+                                   <span>GST (%)</span>
+                                    <div class="input-group">
+                                    <span class="form-control form-control-sm">10</span>
+                                    <span class="form-control form-control-sm">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 mt-4">
+                                   <button class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-edit"></i>
+                                    </button>
+                                 </div>
+                               </div>
+                             <div class="row align-items-center marginRow" style="margin-left: 2px;margin-top:-25px">
+                                <div class="col-sm-3">
+                                </div>
+                                <div class="col-sm-6">
+                                  <p class="small" style="font-size: 14px;color: gray">Enter the Total GST applicable on Owner payments.</p>
+                                </div>
+                             </div>
+                           </div>
+                          <div class="col-sm-12">
+                            <div class="row p-3 marginRow">
+                              <div class="col-sm-3">
+                                <span style="font-size: 16px;"></span>
+                              </div>
+                              <div class="col-sm-3">
+                                <span>Documentation charges for Owners</span>
+                                <div class="input-group">
+                                  <span class="form-control form-control-sm">Rs.</span>
+                                  <span class="form-control form-control-sm">200</span>
+                                </div>
+                              </div>
+                              <div class="col-sm-1 mt-4">
+                                <button class="btn btn-sm btn-outline-secondary">
+                                  <i class="fas fa-edit"></i>
+                                </button>
+                              </div>
+                            </div>
+                            <div class="row align-items-center marginRow" style="margin-left: 2px;margin-top:-25px">
+                            <div class="col-sm-3">                                
+                            </div>
+                            <div class="col-sm-6 mt-2">
+                                <p class="small" style="font-size: 14px;color: gray">Enter the Total GST applicable on Owner payments.</p>
+                            </div>
+                           </div>
+                          </div>
+                          <hr class="solid">
+                          <div class="col-sm-12">
+                            <div class="row p-3 align-items-center marginRow">
+                              <div class="col-sm-3">
+                                <span style="font-size: 16px;">Data Grouping</span>
+                              </div>
+                              <div class="col-sm-3">
+                                <span>Trending PG Configuration</span>
+                                    <section style="width: fit-content;">
+                                        <div class="input-group">
+                                          <select class="form-select" id="dropdownMenu">
+                                            <option value="">2 months</option>
+                                            <option value="1">Option 1</option>
+                                            <option value="2">Option 2</option>
+                                            <option value="3">Option 3</option>
+                                            <option value="4">Option 4</option>
+                                          </select>
+                                        </div>
+                                      </section>
+                                 </div>
+                              <div class="col-sm-1">
+                              </div>
+                            </div>
+                            <div class="row align-items-center marginRow" style="margin-left: 2px;">
+                            <div class="col-sm-3">
+                            </div>
+                              <div class="col-sm-6 mt-2">
+                                 <p class="small" style="font-size: 14px;color: gray">Specify the number of months that is to be considered for showing trending PG's to Tenents .</p>
+                              </div>
+                           </div>
+                          </div>
+                          <hr class="solid">
+                          <div class="col-sm-12">
+                            <div class="row p-3 marginRow">
+                              <div class="col-sm-3">
+                                <span style="font-size: 16px;">Promotions and Codes</span>
+                                <p class="small" style="font-size: 14px;color: gray">Cashbacks for long-term booking.</p>
+                              </div>
+                              <div class="col-sm-9">
+                                <div style="background-color: #c1a1f3;padding: 5px;margin-top:-20px;" class="mb-2">
+                                    <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[3].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight3" aria-expanded="false" aria-controls="collapseExampleRight3" (click)="collaspeExpandPanelRight(collaspeListRight[3],'right4')"></i>  Discounts
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeListRight[3].selected ? 'show':''" id="collapseExampleRight3">
+                                    <div class="card card-body m-2 p-2">
+                                      <div class="scrollable-container pl-3 pr-3">
+                                        <div class="row">
+                                          <div class="col-sm-3" style="font-size: 14px;">PG Type</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-3" style="font-size: 14px;">Address</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-3" style="font-size: 14px;">Manager Name</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-3" style="font-size: 14px;">Manager Email</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-3" style="font-size: 14px;">Manager Contact</div>
+                                          <div class="col-sm-1 align-items-center">:</div>
+                                          <div class="col-sm-8" style="font-size: 14px;color: gray;"></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" >
+                                    <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[4].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight4" aria-expanded="false" aria-controls="collapseExampleRight4" (click)="collaspeExpandPanelRight(collaspeListRight[4],'right5')"></i> Cashback offers 
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeListRight[4].selected ? 'show':''" id="collapseExampleRight4">
+                                    <div class="card card-body m-2 p-2 ">
+                                      <div class="scrollable-container pl-3 pr-3">
+                                        <div class="d-flex">
+                                          <div>Floor</div>
+                                          <div class="ml-2 text-center" style="width: 20px;">:</div>
+                                          <div style="width: 100px;">
+                                           
+                                          </div>
+                                        </div>
+                                        <div class="d-flex mt-2 mb-2">
+                                        </div>
+                                        <div class="row"  >
+                                          <div class="col-sm-4" >
+                                          </div>
+                                        </div>
+                                       </div>
+                                    </div>
+                                  </div>
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" >
+                                    <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[5].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight5" aria-expanded="false" aria-controls="collapseExampleRight5" (click)="collaspeExpandPanelRight(collaspeListRight[5],'right6')"></i> Promocodes 
+                                  </div>
+                                  <div class="collapse" [ngClass]="collaspeListRight[5].selected ? 'show':''" id="collapseExampleRight5">
+                                    <div class="card card-body m-2 p-2 ">
+                                      <div class="scrollable-container pl-3 pr-3">
+                                        <div class="d-flex">
+                                          <div>Floor</div>
+                                          <div class="ml-2 text-center" style="width: 20px;">:</div>
+                                          <div style="width: 100px;">
+                                          </div>
+                                        </div>
+                                        <div class="d-flex mt-2 mb-2">
+                                        </div>
+                                        <div class="row"  >
+                                          <div class="col-sm-4" >
+                                          </div>
+                                        </div>
+                                       </div>
+                                    </div>
+                                  </div>
+                               </div>
+                              <div class="row p-3 align-items-center marginRow">
+                              </div>
+                             </div>
+                             <div class="row align-items-center marginRow" style="margin-left: 2px;">
+                              <div class="col-sm-3">
+                            </div>
+                           </div>
+                          </div>
+                          <hr class="solid">
+                      </div>
+                    </div>
+                  <!-- /.container-fluid -->
+              </div>
+              <!-- End of Main Content -->
+          </div>
+          <!-- End of Content Wrapper -->
+     </div>
+    <!-- End of Page Wrapper -->
+  </div>
+
+
+  

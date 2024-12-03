@@ -58,6 +58,7 @@ import { BarNgxChartComponent } from './chart/barchart-ngx';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { DocumentUploadComponent } from './external/components/document-upload.component';
 import { AppDocumentUploadRoutingModule } from './external/document-upload-routing.module';
+import { ConfigurationMasterComponent } from './setting/configuration-master/components/configuration-master.component';
 
 
 const appRoutes: Routes = [
@@ -95,7 +96,8 @@ const appRoutes: Routes = [
     DbMasterConfigurationComponent,
     DoughnutNgxChartComponent,
     BarNgxChartComponent,
-    DocumentUploadComponent
+    DocumentUploadComponent,
+    ConfigurationMasterComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,

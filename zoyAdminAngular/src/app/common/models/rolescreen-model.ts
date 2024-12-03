@@ -55,5 +55,7 @@ export class RoleScreenModel {
     DB_MASTER_CONFIGURATION_READ: boolean = false;
     DB_MASTER_CONFIGURATION_WRITE: boolean = false;
 
+    CONFIGURATION_MASTER_READ: boolean = false;
+    CONFIGURATION_MASTER_WRITE: boolean = false;
 
 }
