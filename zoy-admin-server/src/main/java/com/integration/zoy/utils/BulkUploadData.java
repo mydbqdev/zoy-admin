@@ -3,34 +3,35 @@ package com.integration.zoy.utils;
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 public class BulkUploadData {
 	
-	@JsonProperty("id")
+	@SerializedName("id")
 	Long id;
 
-	@JsonProperty("category")
+	@SerializedName("category")
 	String category;
 
-	@JsonProperty("fileName")
+	@SerializedName("fileName")
 	String fileName;
 
-	@JsonProperty("ownerId")
+	@SerializedName("ownerId")
 	String ownerId;
 	
-	@JsonProperty("ownerName")
+	@SerializedName("ownerName")
 	String ownerName;
 
-	@JsonProperty("propertyId")
+	@SerializedName("propertyId")
 	String propertyId;
 
-	@JsonProperty("propertyName")
+	@SerializedName("propertyName")
 	String propertyName;
 	
-	@JsonProperty("status")
+	@SerializedName("status")
 	String status;
 	
-	@JsonProperty("createAt")
+	@SerializedName("createAt")
 	Timestamp createAt;
 
 	public Long getId() {
