@@ -2,12 +2,20 @@
   <h1 class="h3 mb-0 text-gray-800" style="width: 200px;">Admin Portal</h1>
 
   <!-- Topbar Search -->
-  <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-  <div class="input-group">
-    <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i> 
-    <input type="text" class="form-control bg-light border-1 small" style="border-radius: 20px;padding-left: 29px;" placeholder="Search"
-          aria-label="Search" aria-describedby="basic-addon2">         
-  </div>
+  <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" (submit)="searchMenus($event)">
+  
+    <div class="input-group ">
+      <input class="form-control bg-light border-1 small" type="text"  style="border-radius: 20px;padding-left: 29px;"  placeholder="Search" [formControl]="searchControl"
+          aria-label="Search" aria-describedby="basic-addon2" matInput [matAutocomplete]="auto"/>
+      <div class="input-group-append">
+   
+      </div>
+    </div>
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let menu of filteredOptions | async" [value]="menu.name" (click)="navigateTo(menu)">
+        {{ menu.name }}
+      </mat-option>
+    </mat-autocomplete>
   </form>
   <!-- Topbar Navbar -->
   <ul class="navbar-nav ml-auto">
