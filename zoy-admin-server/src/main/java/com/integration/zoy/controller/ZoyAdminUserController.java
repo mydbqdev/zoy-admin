@@ -174,24 +174,24 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
 	@Override
 	public ResponseEntity<String> zoyAdminUserDetails(Token token) {
 		ResponseBody response=new ResponseBody();
 		try {
 			String emailId=jwtUtil.getUserName(token.getToken());
 			if(emailId!=null) {
-				List<String[]> user=adminDBImpl.findAllAdminUserDetails(emailId);
+				String generateToken = jwtUtil.doGenerateRefreshToken(emailId);
 				AdminUserDetailPrevilage adminUserList=new AdminUserDetailPrevilage();
+				List<String[]> user=adminDBImpl.findAllAdminUserDetails(emailId);
 				if(user.size()>0) {
-					adminUserList.setToken(token.getToken());
+					adminUserList.setToken(generateToken);
 					adminUserList.setFirstName(user.get(0)[0]);
 					adminUserList.setLastName(user.get(0)[1]!=null?user.get(0)[1]:"");
 					adminUserList.setUserEmail(user.get(0)[2]);
 					adminUserList.setContactNumber(user.get(0)[3]);
 					adminUserList.setDesignation(user.get(0)[4]);
 					adminUserList.setPrivilege(user.get(0)[6]!=null?Arrays.asList(user.get(0)[6].split(",")):new ArrayList<>());
-				}
+				}				
 				return new ResponseEntity<>(gson.toJson(adminUserList), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.BAD_GATEWAY.value());
@@ -207,38 +207,6 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	}
 
 	
-	@Override
-	public  ResponseEntity<String> zoyAdminUserDetailsTokenRefresh(String emailId){
-		ResponseBody response=new ResponseBody();
-		try {
-			if(emailId!=null) {
-				List<String[]> user=adminDBImpl.findAllAdminUserDetails(emailId);
-				AdminUserDetailPrevilage adminUserList=new AdminUserDetailPrevilage();
-				if(user.size()>0) {
-					String tokenRefresh = jwtUtil.doGenerateRefreshToken(emailId);
-					adminUserList.setToken(tokenRefresh);
-					adminUserList.setFirstName(user.get(0)[0]);
-					adminUserList.setLastName(user.get(0)[1]!=null?user.get(0)[1]:"");
-					adminUserList.setUserEmail(user.get(0)[2]);
-					adminUserList.setContactNumber(user.get(0)[3]);
-					adminUserList.setDesignation(user.get(0)[4]);
-					adminUserList.setPrivilege(user.get(0)[6]!=null?Arrays.asList(user.get(0)[6].split(",")):new ArrayList<>());
-				}
-				return new ResponseEntity<>(gson.toJson(adminUserList), HttpStatus.OK);
-			} else {
-				response.setStatus(HttpStatus.BAD_GATEWAY.value());
-				response.setMessage("Token is invalid");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_GATEWAY);
-			}
-		} catch (Exception e) {
-			log.error("Error getting ameneties details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-
 	@Override
 	public ResponseEntity<String> zoyAdminCreateUser(AdminUserDetails adminUserDetails) {
 		ResponseBody response=new ResponseBody();
