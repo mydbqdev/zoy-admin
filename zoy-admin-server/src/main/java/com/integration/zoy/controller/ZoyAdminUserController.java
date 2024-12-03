@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -173,26 +174,24 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-
-
 	@Override
 	public ResponseEntity<String> zoyAdminUserDetails(Token token) {
 		ResponseBody response=new ResponseBody();
 		try {
 			String emailId=jwtUtil.getUserName(token.getToken());
 			if(emailId!=null) {
-				List<String[]> user=adminDBImpl.findAllAdminUserDetails(emailId);
+				String generateToken = jwtUtil.doGenerateRefreshToken(emailId);
 				AdminUserDetailPrevilage adminUserList=new AdminUserDetailPrevilage();
+				List<String[]> user=adminDBImpl.findAllAdminUserDetails(emailId);
 				if(user.size()>0) {
-					adminUserList.setToken(token.getToken());
+					adminUserList.setToken(generateToken);
 					adminUserList.setFirstName(user.get(0)[0]);
 					adminUserList.setLastName(user.get(0)[1]!=null?user.get(0)[1]:"");
 					adminUserList.setUserEmail(user.get(0)[2]);
 					adminUserList.setContactNumber(user.get(0)[3]);
 					adminUserList.setDesignation(user.get(0)[4]);
 					adminUserList.setPrivilege(user.get(0)[6]!=null?Arrays.asList(user.get(0)[6].split(",")):new ArrayList<>());
-				}
+				}				
 				return new ResponseEntity<>(gson.toJson(adminUserList), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.BAD_GATEWAY.value());
@@ -207,8 +206,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		}
 	}
 
-
-
+	
 	@Override
 	public ResponseEntity<String> zoyAdminCreateUser(AdminUserDetails adminUserDetails) {
 		ResponseBody response=new ResponseBody();
