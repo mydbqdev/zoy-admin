@@ -6,11 +6,14 @@ import java.util.Optional;
 
 import com.integration.zoy.entity.UserDueMaster;
 import com.integration.zoy.entity.UserMaster;
+import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgBedDetails;
+import com.integration.zoy.entity.ZoyPgCancellationDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
+import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.entity.ZoyPgPropertyDetails;
@@ -23,6 +26,8 @@ import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
+import com.integration.zoy.entity.ZoyShareMaster;
+import com.integration.zoy.model.ZoyShareDetails;
 
 public interface OwnerDBImpl {
 
@@ -103,6 +108,18 @@ public interface OwnerDBImpl {
 	ZoyPgDueMaster saveUserDueMaster(ZoyPgDueMaster userDueMasters);
 	ZoyPgDueMaster findUserDueMaster(String id);
 	ZoyPgDueMaster updateDueMaster(ZoyPgDueMaster userDueMasters);
+	ZoyPgCancellationDetails findBeforeCancellationDetails(String cancellationId);
+	ZoyPgCancellationDetails saveBeforeCancellation(ZoyPgCancellationDetails cancelDetails);
+	List<ZoyPgCancellationDetails> findAllBeforeCancellation();
+	ZoyShareMaster findZoyShareDetails(String zoyShareId);
+	ZoyShareMaster saveZoyShare(ZoyShareMaster shareDetails);
+	List<ZoyShareMaster> findAllZoyShare();
+	ZoyPgOtherCharges findZoyOtherCharges(String otherChargesId);
+	ZoyPgOtherCharges saveOtherCharges(ZoyPgOtherCharges other);
+	List<ZoyPgOtherCharges> findAllOtherCharges();
+	ZoyDataGrouping findZoyDataGroup(String dataGroupingId);
+	ZoyDataGrouping saveDataGroup(ZoyDataGrouping group);
+	List<ZoyDataGrouping> findAllDataGroup();
 	
 
 }

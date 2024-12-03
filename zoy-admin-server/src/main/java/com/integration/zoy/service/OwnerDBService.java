@@ -12,11 +12,14 @@ import org.springframework.stereotype.Service;
 
 import com.integration.zoy.entity.UserDueMaster;
 import com.integration.zoy.entity.UserMaster;
+import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgBedDetails;
+import com.integration.zoy.entity.ZoyPgCancellationDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
+import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.entity.ZoyPgPropertyAmeneties;
@@ -30,8 +33,12 @@ import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
+import com.integration.zoy.entity.ZoyShareMaster;
+import com.integration.zoy.model.ZoyShareDetails;
+import com.integration.zoy.repository.ZoyDataGroupingRepository;
 import com.integration.zoy.repository.ZoyPgAmenetiesMasterRepository;
 import com.integration.zoy.repository.ZoyPgBedDetailsRepository;
+import com.integration.zoy.repository.ZoyPgCancellationDetailsRepository;
 import com.integration.zoy.repository.ZoyPgDueFactorMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueTypeMasterRepository;
@@ -48,6 +55,7 @@ import com.integration.zoy.repository.ZoyPgTermsMasterRepository;
 import com.integration.zoy.repository.ZoyPgTimeMasterRepository;
 import com.integration.zoy.repository.ZoyPgTokenDetailsRepository;
 import com.integration.zoy.repository.ZoyPgTypeMasterRepository;
+import com.integration.zoy.repository.ZoyShareMasterRepository;
 
 @Service
 public class OwnerDBService implements OwnerDBImpl{
@@ -106,6 +114,14 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Autowired
 	private ZoyPgDueMasterRepository zoyPgDueMasterRepository;
 
+	@Autowired
+	private ZoyPgCancellationDetailsRepository zoyPgCancellationDetailsRepository;
+	
+	@Autowired
+	private ZoyShareMasterRepository zoyShareMasterRepository;
+	
+	@Autowired
+	private ZoyDataGroupingRepository zoyDataGroupingRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -515,6 +531,69 @@ public class OwnerDBService implements OwnerDBImpl{
 		} else {
 			throw new RuntimeException("Due type not found with id: " + userDueMasters.getDueTypeId());
 		}
+	}
+
+	@Override
+	public ZoyPgCancellationDetails findBeforeCancellationDetails(String cancellationId) {
+		return zoyPgCancellationDetailsRepository.findById(cancellationId).orElse(null);
+	}
+
+	@Override
+	public ZoyPgCancellationDetails saveBeforeCancellation(ZoyPgCancellationDetails cancelDetails) {
+		return zoyPgCancellationDetailsRepository.save(cancelDetails);
+	}
+
+	@Override
+	public List<ZoyPgCancellationDetails> findAllBeforeCancellation() {
+		return zoyPgCancellationDetailsRepository.findAll();
+	}
+
+	@Override
+	public ZoyShareMaster findZoyShareDetails(String zoyShareId) {
+		return zoyShareMasterRepository.findById(zoyShareId).orElse(null);
+	}
+
+	@Override
+	public ZoyShareMaster saveZoyShare(ZoyShareMaster shareDetails) {
+		return zoyShareMasterRepository.save(shareDetails);
+	}
+
+	@Override
+	public List<ZoyShareMaster> findAllZoyShare() {
+		return zoyShareMasterRepository.findAll();
+	}
+
+	@Override
+	public ZoyPgOtherCharges findZoyOtherCharges(String otherChargesId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ZoyPgOtherCharges saveOtherCharges(ZoyPgOtherCharges other) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ZoyPgOtherCharges> findAllOtherCharges() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ZoyDataGrouping findZoyDataGroup(String dataGroupingId) {
+		return zoyDataGroupingRepository.findById(dataGroupingId).orElse(null);
+	}
+
+	@Override
+	public ZoyDataGrouping saveDataGroup(ZoyDataGrouping group) {
+		return zoyDataGroupingRepository.save(group);
+	}
+
+	@Override
+	public List<ZoyDataGrouping> findAllDataGroup() {
+		return zoyDataGroupingRepository.findAll();
 	}
 
 }
