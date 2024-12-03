@@ -269,8 +269,8 @@ public class AdminReportService implements AdminReportImpl{
 	@Override
 	public CommonResponseDTO<TenentDues> getTenentDuesDetails(UserPaymentFilterRequest filterRequest, FilterData filterData) {
 		StringBuilder queryBuilder = new StringBuilder(
-				 "SELECT DISTINCT ON (u.user_money_due_id) " +
-						"u.user_id, " +
+				"SELECT DISTINCT ON (u.user_money_due_id) " +
+				        "u.user_id, " +
 						"u.user_money_due_amount, " +
 						"u.user_money_due_bill_start_date, " +
 						"ud.user_personal_name, " +
@@ -341,10 +341,9 @@ public class AdminReportService implements AdminReportImpl{
 			}
 
 			String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
-
-			queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			 queryBuilder.append(" ORDER BY u.user_money_due_id, ").append(sort).append(" ").append(sortDirection);
 		} else {
-			queryBuilder.append(" ORDER BY u.user_money_due_id,u.user_money_due_bill_start_date DESC");
+		    queryBuilder.append(" ORDER BY  u.user_money_due_id,u.user_money_due_bill_start_date DESC");
 		}
 
 
@@ -353,9 +352,7 @@ public class AdminReportService implements AdminReportImpl{
 		int filterCount=query.getResultList().size();
 		query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
 		query.setMaxResults(filterRequest.getPageSize());
-
 		List<Object[]> results = query.getResultList();
-
 		List<TenentDues> tenentDuesDto = results.stream().map(row -> {
 			TenentDues dto = new TenentDues();
 			dto.setUserId((String) row[0]);
@@ -465,9 +462,9 @@ public class AdminReportService implements AdminReportImpl{
 
 			String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
 
-			queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			queryBuilder.append(" ORDER BY up.user_payment_id, ").append(sort).append(" ").append(sortDirection);
 		} else {
-			queryBuilder.append(" ORDER BY up.user_payment_id,up.user_payment_timestamp DESC");
+		    queryBuilder.append(" ORDER BY up.user_payment_id, up.user_payment_timestamp DESC");
 		}
 
 		Query query = entityManager.createNativeQuery(queryBuilder.toString());
@@ -566,8 +563,8 @@ public class AdminReportService implements AdminReportImpl{
 		}
 		 List<?> dataList = reportData.getData();
 		data.put("reportData", dataList);
-		data.put("startDate", filterRequest.getFromDate());
-		data.put("endDate", filterRequest.getToDate());
+		data.put("startDate", Timestamp.valueOf(filterRequest.getFromDate()));
+		data.put("endDate", Timestamp.valueOf(filterRequest.getToDate()));
 		data.put("printDate", new Timestamp(System.currentTimeMillis()));
 
 		switch (filterRequest.getDownloadType().toLowerCase()) {

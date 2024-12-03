@@ -81,7 +81,7 @@ public class ZoyEmailService {
 		email.setSubject("Welcome to ZOY! Unlock Your Journey – Verify & Register Today!");
 		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
 				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we’ve made it quick and simple for you!</p>"
-				+ "<p>Click the link to verify your email: " + verifyLink+"</p>"
+				+ "<p>Click the link to verify your email:<a href=\"" + verifyLink + "\">Verify Email</a></p>"
 				+ "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
 				+ "<p>Please use this code to verify your account and complete your registration in the app.</p>"
 				+ "<h4>Steps to Register:</h4>"
@@ -117,7 +117,7 @@ public class ZoyEmailService {
 		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
 				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we’ve made it quick and simple for you!</p>"
 				+ "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
-				+ "<p>Click the link to verify your email: " + verifyLink+"</p>"
+				+ "<p>Click the link to verify your email: <a href=\"" + verifyLink + "\">Verify Email</a></p>"
 				+ "<p>Please use this code to verify your account and complete your registration in the app.</p>"
 				+ "<h4>Steps to Register:</h4>"
 				+ "<ul>"

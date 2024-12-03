@@ -17,29 +17,30 @@ import com.integration.zoy.utils.VendorPaymentsGst;
 @Service
 public class CsvGenerateService {
 
-    public byte[] generateCsvFile(String templateName, Map<String, Object> data) {
-        List<?> reportData = (List<?>) data.get("reportData");
-        
-        if (reportData == null || reportData.isEmpty()) {
-            throw new IllegalArgumentException("Report data is empty");
-        }
-        
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
+	public byte[] generateCsvFile(String templateName, Map<String, Object> data) {
+	    List<?> reportData = (List<?>) data.get("reportData");
+	    
+	    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	         PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
 
-            createCsvHeaderRow(writer, reportData.get(0));
+	        if (reportData == null || reportData.isEmpty()) {
+	            writer.println("No data available");
+	        } else {
+	            createCsvHeaderRow(writer, reportData.get(0));
 
-            for (Object dto : reportData) {
-                createCsvDataRow(writer, dto);
-            }
+	            for (Object dto : reportData) {
+	                createCsvDataRow(writer, dto);
+	            }
+	        }
 
-            writer.flush();
-            return outputStream.toByteArray();
+	        writer.flush();
+	        return outputStream.toByteArray();
 
-        } catch (Exception e) {
-            throw new RuntimeException("Error generating CSV file", e);
-        }
-    }
+	    } catch (Exception e) {
+	        throw new RuntimeException("Error generating CSV file", e);
+	    }
+	}
+
 
     private void createCsvHeaderRow(PrintWriter writer, Object dto) {
         if (dto instanceof UserPaymentDTO) {
