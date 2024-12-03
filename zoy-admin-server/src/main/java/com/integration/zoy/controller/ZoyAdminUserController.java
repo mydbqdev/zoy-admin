@@ -174,7 +174,30 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 	@Override
+	public ResponseEntity<String> validateToken(Token token) {
+		ResponseBody response=new ResponseBody();
+		try {
+			String emailId=jwtUtil.getUserName(token.getToken());
+			if(emailId!=null) {
+				response.setStatus(HttpStatus.OK.value());
+				response.setEmail(emailId);
+								
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				response.setStatus(HttpStatus.BAD_GATEWAY.value());
+				response.setMessage("Token is invalid");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_GATEWAY);
+			}
+		} catch (Exception e) {
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	public ResponseEntity<String> zoyAdminUserDetails(Token token) {
 		ResponseBody response=new ResponseBody();
 		try {
@@ -906,6 +929,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
 
 
 }

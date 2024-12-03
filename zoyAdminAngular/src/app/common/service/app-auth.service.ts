@@ -263,6 +263,25 @@ export class AppAuthService extends AuthService{
         );*/
     }
 
+
+    public validateToken() : Observable<ApplicationSession>{
+        const url1=this.basePath +'zoy_admin/validateToken';
+        let token ={"token":""};
+        if(!sessionStorage.getItem("token")){
+            this.router.navigateByUrl('/signin');
+        }
+         token ={"token":sessionStorage.getItem("token").replace("Bearer ","")}
+        return this.httpclient.post<any>(
+            url1,
+            token,
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+    }
+
      public checkLogoutUserOnServer() : Observable<ApplicationSession>{
         const url1=this.basePath +'userlogout';
         return this.httpclient.post<ApplicationSession>(
