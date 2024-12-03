@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.hc.core5.http.ContentType;
@@ -37,9 +38,12 @@ private static final Logger log = LoggerFactory.getLogger(PdfGenerateService.cla
 	ZoyS3Service s3Service;
 	
 	public byte[] generatePdfFile(String templateName, Map<String, Object> data) {
+		 List<?> reportData = (List<?>) data.get("reportData");
+		 if (data == null || data.isEmpty() || reportData == null || reportData.isEmpty()) {
+		        return new byte[0]; 
+		    }
 	    Context context = new Context();
 	    context.setVariables(data);
-
 	    String htmlContent = templateEngine.process(templateName, context);
 
 	    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
