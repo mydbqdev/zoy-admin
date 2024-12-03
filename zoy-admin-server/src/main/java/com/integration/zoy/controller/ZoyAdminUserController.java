@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -174,8 +175,6 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		}
 	}
 
-
-
 	@Override
 	public ResponseEntity<String> zoyAdminUserDetails(Token token) {
 		ResponseBody response=new ResponseBody();
@@ -207,6 +206,37 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		}
 	}
 
+	
+	@Override
+	public  ResponseEntity<String> zoyAdminUserDetailsTokenRefresh(String emailId){
+		ResponseBody response=new ResponseBody();
+		try {
+			if(emailId!=null) {
+				List<String[]> user=adminDBImpl.findAllAdminUserDetails(emailId);
+				AdminUserDetailPrevilage adminUserList=new AdminUserDetailPrevilage();
+				if(user.size()>0) {
+					String tokenRefresh = jwtUtil.doGenerateRefreshToken(emailId);
+					adminUserList.setToken(tokenRefresh);
+					adminUserList.setFirstName(user.get(0)[0]);
+					adminUserList.setLastName(user.get(0)[1]!=null?user.get(0)[1]:"");
+					adminUserList.setUserEmail(user.get(0)[2]);
+					adminUserList.setContactNumber(user.get(0)[3]);
+					adminUserList.setDesignation(user.get(0)[4]);
+					adminUserList.setPrivilege(user.get(0)[6]!=null?Arrays.asList(user.get(0)[6].split(",")):new ArrayList<>());
+				}
+				return new ResponseEntity<>(gson.toJson(adminUserList), HttpStatus.OK);
+			} else {
+				response.setStatus(HttpStatus.BAD_GATEWAY.value());
+				response.setMessage("Token is invalid");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_GATEWAY);
+			}
+		} catch (Exception e) {
+			log.error("Error getting ameneties details: " + e.getMessage(),e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
 	@Override
