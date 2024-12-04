@@ -1,6 +1,7 @@
 package com.integration.zoy.service;
 
 import java.math.BigDecimal;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.model.FilterData;
@@ -48,7 +50,9 @@ public class AdminReportService implements AdminReportImpl{
 
 	@Autowired
 	private ZoyPgPropertyDetailsRepository propertyDetailsRepository;
-
+	
+	@Value("${app.zoy.logo}")
+	private String zoyLogoPath;
 
 	@Override
 	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData) {
@@ -566,7 +570,8 @@ public class AdminReportService implements AdminReportImpl{
 		data.put("startDate", Timestamp.valueOf(filterRequest.getFromDate()));
 		data.put("endDate", Timestamp.valueOf(filterRequest.getToDate()));
 		data.put("printDate", new Timestamp(System.currentTimeMillis()));
-
+		String logo = pdfGenerateService.imageToBase64(Paths.get(zoyLogoPath).toFile().getPath());
+		data.put("appLogo",logo);
 		switch (filterRequest.getDownloadType().toLowerCase()) {
 		case "pdf":
 			return pdfGenerateService.generatePdfFile(filterRequest.getReportType(), data);
