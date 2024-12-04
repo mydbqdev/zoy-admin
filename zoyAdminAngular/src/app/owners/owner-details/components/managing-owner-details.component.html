@@ -40,7 +40,7 @@
                                      <div>
                                       <div class="owner-profile-top"> 
                                         <img [src]="pgOwnerData.profile?.profile_photo" *ngIf="pgOwnerData.profile?.profile_photo?.includes('/')" >
-                                         <span *ngIf="!pgOwnerData.profile?.profile_photo?.includes('/')" >{{pgOwnerData.profile?.owner_name[0]?.toUpperCase()}}</span>
+                                         <span *ngIf="!pgOwnerData.profile?.profile_photo?.includes('/') || !pgOwnerData.profile.profile_photo  " >{{pgOwnerData.profile?.owner_name[0]?.toUpperCase()}}</span>
                                       </div>
                                      </div>
                                     <div class="ml-2"> 
@@ -100,7 +100,7 @@
                                     <div class="card card-body ml-2 mr-2 p-2">
                                       <div class="scrollable-container-main pl-3 pr-3">
                                         <div class="row mb-1">
-                                          <div class="col-sm-4" style="font-size: 15px;font-weight: 600;">Bank Details({{pgOwnerData?.pg_owner_business_info?.length}})</div>
+                                          <div class="col-sm-4" style="font-size: 15px;font-weight: 600;">Bank Details <span *ngIf="pgOwnerData?.pg_owner_business_info?.length>1" > ({{pgOwnerData?.pg_owner_business_info?.length}})</span> </div>
                                         </div>
                                         <div id="carouselbankFade" class="carousel slide">
                                             <div class="carousel-inner">
@@ -248,18 +248,15 @@
                                   <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0 && propertyInfo.floor_information ?.length > 0">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[1].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight1" aria-expanded="false" aria-controls="collapseExampleRight1" (click)="collaspeExpandPanelRight(collaspeListRight[1],'right2')"></i>  Floor Information
                                   </div>
-                                  <div class="text-center" *ngIf="pgOwnerData.pg_owner_property_information?.length > 0 && propertyInfo.floor_information ?.length == 0">
-                                        Floors are not available 
-                                  </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[1].selected ? 'show':''" id="collapseExampleRight1">
                                     <div class="card card-body m-2 p-2 ">
                                       <div class="scrollable-container pl-3 pr-3">
                                         <div class="d-flex">
-                                          <div>Floor</div>
+                                          <div>Floor </div>
                                           <div class="ml-2 text-center" style="width: 20px;">:</div>
                                           <div style="width: 100px;">
-                                            <select class="form-select form-select-sm" id="category" [(ngModel)]="floorNumber" (ngModelChange)="selectFloor()">                                             
-                                              <option *ngFor="let floor of propertyInfo.floor_information;let i = index "  [value]="i+1">{{i+1}}</option>
+                                            <select class="form-select form-select-sm" id="category" [(ngModel)]="floorName" (ngModelChange)="selectFloor()">                                             
+                                              <option *ngFor="let floor of propertyInfo.floor_information;"  [value]="floor.floor_name ">{{floor.floor_name}}</option>
                                             </select> 
                                           </div>
                                           <div class="ml-auto"><i class="fas fa-circle mr-1" style="color:green;"></i><span style="color:green;">Vacancy</span> <i class="fas fa-circle ml-2 mr-1" style="color:red;"></i><span style="color:red;">Occupied</span></div>
@@ -275,22 +272,14 @@
                                             <div class="common-box m-1">
                                               <div class="text-center">Room {{room.room_no}} </div>
                                               <div class="row">
-                                                
-                                                <div class="col-sm-3 text-center" *ngFor="let bed of unavailableBedsArray(room);">
-                                                  <i class="fas fa-bed" style="color:red"></i>
+                                                <div class="col-sm-3 text-center" *ngFor="let bed of room.beds;">
+                                                  <i class="fas fa-bed" [ngStyle]="bed.availability_status == 'occupied' ? {'color': 'red'} : {'color': 'green'}"></i>
+                                                  <span style="font-size: 7px;" [ngStyle]="bed.availability_status == 'occupied' ? {'color': 'red'} : {'color': 'green'}">{{bed.bed_name}}</span>
                                                 </div>
-                                                <div class="col-sm-3 text-center" *ngFor="let bed2 of availableBedsArray(room.beds_available);">
-                                                    <i class="fas fa-bed" style="color:green"></i>
-                                                  </div>
                                                 </div>
                                             </div>
                                           </div>
                                         </div>
-
-                                        <div class="text-center" *ngIf="roomArrayList.length == 0 ">
-                                          Rooms are not available. 
-                                        </div>
-                                       
                                        </div>
                                     </div>
                                   </div>
