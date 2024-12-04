@@ -152,8 +152,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	  
 		isEditing: boolean = false;
-		securityMinValue: number = 20;
-		securityMaxValue: number = 50;
+		securityMinValue: number = 5000;
+		securityMaxValue: number = 7000;
 
 		tempMinValue: number = this.securityMinValue;
 		tempMaxValue: number = this.securityMaxValue;
