@@ -272,18 +272,10 @@
                                             <div class="common-box m-1">
                                               <div class="text-center">Room {{room.room_no}} </div>
                                               <div class="row">
-
                                                 <div class="col-sm-3 text-center" *ngFor="let bed of room.beds;">
                                                   <i class="fas fa-bed" [ngStyle]="bed.availability_status == 'occupied' ? {'color': 'red'} : {'color': 'green'}"></i>
                                                   <span style="font-size: 7px;" [ngStyle]="bed.availability_status == 'occupied' ? {'color': 'red'} : {'color': 'green'}">{{bed.bed_name}}</span>
                                                 </div>
-                                                
-                                                <!-- <div class="col-sm-3 text-center" *ngFor="let bed of unavailableBedsArray(room);">
-                                                  <i class="fas fa-bed" style="color:red"></i>
-                                                </div>
-                                                <div class="col-sm-3 text-center" *ngFor="let bed2 of availableBedsArray(room.beds_available);">
-                                                    <i class="fas fa-bed" style="color:green"></i>
-                                                  </div> -->
                                                 </div>
                                             </div>
                                           </div>
