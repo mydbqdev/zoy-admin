@@ -1,9 +1,12 @@
 package com.integration.zoy.model;
 
+import java.util.List;
+
 public class Room{
 	private String roomNo;
 	private String numberOfBeds;
 	private String bedsAvailable;
+	private List<Bed> beds;
 	 
 	public String getRoomNo() {
 		return roomNo;
@@ -22,6 +25,12 @@ public class Room{
 	}
 	public void setBedsAvailable(String bedsAvailable) {
 		this.bedsAvailable = bedsAvailable;
+	}
+	public List<Bed> getBeds() {
+		return beds;
+	}
+	public void setBeds(List<Bed> beds) {
+		this.beds = beds;
 	}
     
 }

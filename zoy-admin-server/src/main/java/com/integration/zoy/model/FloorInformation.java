@@ -3,19 +3,21 @@ package com.integration.zoy.model;
 import java.util.List;
 
 public class FloorInformation {
-	private String floorNumber;
+	private String floorName;
 	private String totalRooms;
 	private String totalOccupancy;
 	private String occupied;
 	private String vacant;
 	private List<Room> rooms;
 
-	public String getFloorNumber() {
-		return floorNumber;
+	
+
+	public String getFloorName() {
+		return floorName;
 	}
 
-	public void setFloorNumber(String floorNumber) {
-		this.floorNumber = floorNumber;
+	public void setFloorName(String floorName) {
+		this.floorName = floorName;
 	}
 
 	public String getTotalRooms() {
@@ -60,7 +62,7 @@ public class FloorInformation {
 
 	@Override
 	public String toString() {
-		return "FloorInformation [floorNumber=" + floorNumber + ", totalRooms=" + totalRooms + ", totalOccupancy="
+		return "FloorInformation [floorName=" + floorName + ", totalRooms=" + totalRooms + ", totalOccupancy="
 				+ totalOccupancy + ", occupied=" + occupied + ", vacant=" + vacant + ", rooms=" + rooms + "]";
 	}
 
