@@ -26,7 +26,7 @@
                       </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-between w-100" style="display: block;margin: 0px;padding: 2px;">
-                    <div class="input-group w-100">
+                      <div class="input-group w-100">
                         <button type="button" class="form-control btn btn-primary">Advances</button>
                         <button type="button" class="form-control">Cancellation Rules</button>
                         <button type="button" class="form-control">Security Deposite Refund Rules</button>
@@ -36,36 +36,36 @@
                       </div>
                     </div>
                   </div>
-                    <div class="card-body scrollable-container">
+                    <div class="card-body">
                      <div class="card">
-                        <div class="col-sm-12">
+                        <div>
+                            <!--Total Advance section-->
                             <div class="row p-3 align-items-center marginRow">
                               <div class="col-sm-3">
-                                <span style="font-size: 16px;">Total Advance (%)</span>
+                                <div><span style="font-size: 16px;">Total Advance (%)</span></div>
+                                <div><p class="small" style="font-size: 14px;color: gray">Specify the percentage of the total amount to be collected as a token advance during booking.</p></div>
                               </div>
-                              <div class="col-sm-1">
+                              <div class="col-sm-9">
+                              <div class="row">  
+                              <div class="col-sm-2">
                                 <div class="input-group">
                                   <span class="form-control form-control-sm">20</span>
                                   <span class="form-control form-control-sm">%</span>
                                 </div>
                               </div>
-                              <div class="col-sm-1">
+                              <div class="col-sm-8">
                                 <button class="btn btn-sm btn-outline-secondary">
                                   <i class="fas fa-edit"></i>
                                 </button>
                               </div>
+                              </div>
+                              <p class="small" style="font-size: 14px;color: gray">Percentage of the token advance required during booking.</p>
+                              </div>
                             </div>
-                            <div class="row align-items-center marginRow" style="margin-left: 2px;">
-                            <div class="col-sm-3">
-                                <p class="small" style="font-size: 14px;color: gray">Specify the percentage of the total amount to be collected as a token advance during booking.</p>
-                            </div>
-                            <div class="col-sm-6">
-                                <p class="small" style="font-size: 14px;color: gray">Percentage of the token advance required during booking.</p>
-                            </div>
-                           </div>
                           </div>
                           <hr class="solid"> 
-                          <div class="col-sm-12">
+                           <!--Cancellation And Refund Policy-->
+                          <div>
                             <div class="row p-3 marginRow">
                               <div class="col-sm-3">
                                 <span style="font-size: 16px;">Cancellation And Refund Policy</span>
@@ -128,16 +128,11 @@
                                     </div>
                                   </div>
                                </div>
-                              <div class="row p-3 align-items-center marginRow">
-                              </div>
                              </div>
-                             <div class="row align-items-center marginRow" style="margin-left: 2px;">
-                              <div class="col-sm-3">
-                            </div>
-                           </div>
                           </div>
                           <hr class="solid">
-                          <div class="col-sm-12">
+                          <!--Security Deposite Refund rules-->
+                          <div>
                             <div class="row p-3 marginRow">
                               <div class="col-sm-3">
                                 <span style="font-size: 16px;">Security Deposite Refund rules</span>
@@ -192,92 +187,76 @@
                              </div>
                           </div>
                           <hr class="solid">
-                            <div class="col-sm-12">
+                          <!--Other Charges-->
+                            <div>
                                <div class="row p-3 marginRow">
                                    <div class="col-sm-3">
-                                   <span style="font-size: 16px;">Other Charges</span>
+                                      <span style="font-size: 16px;">Other Charges</span>
                                       <p class="small" style="font-size: 14px;color: gray">Configure GST Percentage and Documentation Charges</p>
                                    </div>
-                                 <div class="col-sm-1">
-                                   <span>GST (%)</span>
-                                    <div class="input-group">
-                                    <span class="form-control form-control-sm">10</span>
-                                    <span class="form-control form-control-sm">%</span>
-                                    </div>
-                                </div>
-                                <div class="col-sm-1 mt-4">
-                                   <button class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-edit"></i>
-                                    </button>
-                                 </div>
-                               </div>
-                             <div class="row align-items-center marginRow" style="margin-left: 2px;margin-top:-25px">
-                                <div class="col-sm-3">
-                                </div>
-                                <div class="col-sm-6">
-                                  <p class="small" style="font-size: 14px;color: gray">Enter the Total GST applicable on Owner payments.</p>
-                                </div>
-                             </div>
-                           </div>
-                          <div class="col-sm-12">
-                            <div class="row p-3 marginRow">
-                              <div class="col-sm-3">
-                                <span style="font-size: 16px;"></span>
-                              </div>
-                              <div class="col-sm-3">
-                                <span>Documentation charges for Owners</span>
-                                <div class="input-group">
-                                  <span class="form-control form-control-sm">Rs.</span>
-                                  <span class="form-control form-control-sm">200</span>
-                                </div>
-                              </div>
-                              <div class="col-sm-1 mt-4">
-                                <button class="btn btn-sm btn-outline-secondary">
-                                  <i class="fas fa-edit"></i>
-                                </button>
-                              </div>
-                            </div>
-                            <div class="row align-items-center marginRow" style="margin-left: 2px;margin-top:-25px">
-                            <div class="col-sm-3">                                
-                            </div>
-                            <div class="col-sm-6 mt-2">
-                                <p class="small" style="font-size: 14px;color: gray">Enter the Total GST applicable on Owner payments.</p>
-                            </div>
-                           </div>
-                          </div>
-                          <hr class="solid">
-                          <div class="col-sm-12">
-                            <div class="row p-3 align-items-center marginRow">
-                              <div class="col-sm-3">
-                                <span style="font-size: 16px;">Data Grouping</span>
-                              </div>
-                              <div class="col-sm-3">
-                                <span>Trending PG Configuration</span>
-                                    <section style="width: fit-content;">
-                                        <div class="input-group">
-                                          <select class="form-select" id="dropdownMenu">
-                                            <option value="">2 months</option>
-                                            <option value="1">Option 1</option>
-                                            <option value="2">Option 2</option>
-                                            <option value="3">Option 3</option>
-                                            <option value="4">Option 4</option>
-                                          </select>
+                                   <div class="col-sm-9">
+                                      <div class="row">
+                                        <div class="col-sm-4">
+                                          <div>GST (%)</div>
+                                          <div class="input-group">
+                                          <span class="form-control form-control-sm">10</span>
+                                          <span class="form-control form-control-sm">%</span>
+                                          </div>
+                                      </div>
+                                      <div class="col-sm-8 mt-4">
+                                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                                      </div>
+                                      </div>
+                                      <p class="small mt-1" style="font-size: 14px;color: gray">Enter the Total GST applicable on Owner payments.</p>
+                                      <div class="mt-2">
+                                        <span>Documentation charges for Owners</span>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-4">
+                                          <div class="input-group">
+                                            <span class="form-control form-control-sm">Rs.</span>
+                                            <span class="form-control form-control-sm">200</span>
+                                          </div>
                                         </div>
-                                      </section>
-                                 </div>
-                              <div class="col-sm-1">
+                                        <div class="col-sm-8">
+                                          <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                          </button>
+                                        </div>
+                                      </div>
+                                      <p class="small mt-1" style="font-size: 14px;color: gray">Enter the Total GST applicable on Owner payments.</p>
+                                   </div>                       
+                                  </div>
                               </div>
-                            </div>
-                            <div class="row align-items-center marginRow" style="margin-left: 2px;">
-                            <div class="col-sm-3">
-                            </div>
-                              <div class="col-sm-6 mt-2">
-                                 <p class="small" style="font-size: 14px;color: gray">Specify the number of months that is to be considered for showing trending PG's to Tenents .</p>
+                              <hr class="solid">
+                              <!--Data Grouping-->
+                              <div>
+                                <div class="row p-3 align-items-center marginRow">
+                                  <div class="col-sm-3">
+                                    <span style="font-size: 16px;">Data Grouping</span>
+                                  </div>
+                                  <div class="col-sm-9 row">
+                                  <div>
+                                            <span>Trending PG Configuration</span>
+                                            <div class="input-group" style="width: 200px;">
+                                              <select class="form-select" id="dropdownMenu">
+                                                <option value="">2 months</option>
+                                                <option value="1">Option 1</option>
+                                                <option value="2">Option 2</option>
+                                                <option value="3">Option 3</option>
+                                                <option value="4">Option 4</option>
+                                              </select>
+                                            </div>
+                                    </div>
+                                  <div>
+                                    <p class="small" style="font-size: 14px;color: gray">Specify the number of months that is to be considered for showing trending PG's to Tenents .</p>
+                                  </div>
+                                  </div>
+                                </div>
                               </div>
-                           </div>
-                          </div>
                           <hr class="solid">
-                          <div class="col-sm-12">
+                          <!--Promotions and Codes-->
+                          <div>
                             <div class="row p-3 marginRow">
                               <div class="col-sm-3">
                                 <span style="font-size: 16px;">Promotions and Codes</span>
@@ -362,16 +341,10 @@
                                     </div>
                                   </div>
                                </div>
-                              <div class="row p-3 align-items-center marginRow">
-                              </div>
                              </div>
-                             <div class="row align-items-center marginRow" style="margin-left: 2px;">
-                              <div class="col-sm-3">
-                            </div>
-                           </div>
                           </div>
-                          <hr class="solid">
-                      </div>
+                           <!-- end Promotions and Codes-->
+                     </div>
                     </div>
                   <!-- /.container-fluid -->
               </div>
