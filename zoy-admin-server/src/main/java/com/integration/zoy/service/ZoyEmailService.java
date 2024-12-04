@@ -43,6 +43,9 @@ public class ZoyEmailService {
 	@Value("${zoy.admin.toMail}")
 	private String zoyAdminMail;
 	
+	@Value("${zoy.support.toMail}")
+	private String zoySupportMail;
+	
 	@Value("${app.zoy.email.verification.url}")
 	String emailVerificationUrl;
 	
@@ -80,20 +83,21 @@ public class ZoyEmailService {
 		email.setTo(to);
 		email.setSubject("Welcome to ZOY! Unlock Your Journey – Verify & Register Today!");
 		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
-				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we’ve made it quick and simple for you!</p>"
+				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we've made it quick and simple for you!</p>"
 				+ "<p>Click the link to verify your email:<a href=\"" + verifyLink + "\">Verify Email</a></p>"
 				+ "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
 				+ "<p>Please use this code to verify your account and complete your registration in the app.</p>"
-				+ "<h4>Steps to Register:</h4>"
+				+ "<h4><strong>Steps to Register:</strong></h4>"
 				+ "<ul>"
 				+ "<li>Download ZOY Owner App from <a href='" + ownerAppLink + "'>" + ownerAppLink + "</a>.</li>"
-				+ "<li>Open the app and select “Register.”</li>"
-				+ "<li>Enter the invitation code provided above and your PG details.</li>"
+				+ "<li>Open the app and select &quot;Register&quot;.</li>"
+				+ "<li>Enter your invitation code provided above to fetch your details.</li>"
+				+ "<li>Enter your desired Password</li>"
+				+ "<li>Start exploring amazing functions tailored just for you!</li>"
 				+ "</ul>"
-				+ "<p>Start exploring amazing functions tailored just for you!</p>"
-				+ "<p>This verification ensures you receive the latest updates, offers, and a secure experience.</p>"
-				+ "<p>If you have any questions or need assistance, feel free to reach out to our support team at [support email/phone].</p>"
-				+ "<p>Welcome aboard, and we can’t wait to make your experience amazing!</p>"
+				+ "<p>This verification ensures you a secure experience.</p>"
+				+ "<p>If you have any questions or need assistance, feel free to reach out to our support team at <a href='mailto:" + zoySupportMail + "'>" + zoySupportMail + "</a>.</p>"
+				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>"
 				+ "<p>Best regards,</p>"
 				+ "<p>ZOY Administrator</p>";
  
@@ -115,20 +119,21 @@ public class ZoyEmailService {
 		email.setSubject("Welcome to ZOY! Unlock Your Journey – Verify & Register Today!");
  
 		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
-				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we’ve made it quick and simple for you!</p>"
+				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we've made it quick and simple for you!</p>"
+				+ "<p>Click the link to verify your email:<a href=\"" + verifyLink + "\">Verify Email</a></p>"
 				+ "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
-				+ "<p>Click the link to verify your email: <a href=\"" + verifyLink + "\">Verify Email</a></p>"
 				+ "<p>Please use this code to verify your account and complete your registration in the app.</p>"
-				+ "<h4>Steps to Register:</h4>"
+				+ "<h4><strong>Steps to Register:</strong></h4>"
 				+ "<ul>"
-				+"<li>Download ZOY Owner App from <a href='" + ownerAppLink + "'>" + ownerAppLink + "</a>.</li>"
-				+ "<li>Open the app and select “Register.”</li>"
-				+ "<li>Enter the invitation code provided above and your PG details.</li>"
+				+ "<li>Download ZOY Owner App from <a href='" + ownerAppLink + "'>" + ownerAppLink + "</a>.</li>"
+				+ "<li>Open the app and select &quot;Register&quot;.</li>"
+				+ "<li>Enter your invitation code provided above to fetch your details.</li>"
+				+ "<li>Enter your desired Password</li>"
+				+ "<li>Start exploring amazing functions tailored just for you!</li>"
 				+ "</ul>"
-				+ "<p>Start exploring amazing functions tailored just for you!</p>"
-				+ "<p>This verification ensures you receive the latest updates, offers, and a secure experience.</p>"
-				+ "<p>If you have any questions or need assistance, feel free to reach out to our support team at [support email/phone].</p>"
-				+ "<p>Welcome aboard, and we can’t wait to make your experience amazing!</p>"
+				+ "<p>This verification ensures you a secure experience.</p>"
+				+ "<p>If you have any questions or need assistance, feel free to reach out to our support team at <a href='mailto:" + zoySupportMail + "'>" + zoySupportMail + "</a>.</p>"
+				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>"
 				+ "<p>Best regards,</p>"
 				+ "<p>ZOY Administrator</p>";
  
