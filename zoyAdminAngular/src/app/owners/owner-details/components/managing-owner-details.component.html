@@ -100,7 +100,7 @@
                                     <div class="card card-body ml-2 mr-2 p-2">
                                       <div class="scrollable-container-main pl-3 pr-3">
                                         <div class="row mb-1">
-                                          <div class="col-sm-4" style="font-size: 15px;font-weight: 600;">Bank Details({{pgOwnerData?.pg_owner_business_info?.length}})</div>
+                                          <div class="col-sm-4" style="font-size: 15px;font-weight: 600;">Bank Details <span *ngIf="pgOwnerData?.pg_owner_business_info?.length>1" > ({{pgOwnerData?.pg_owner_business_info?.length}})</span> </div>
                                         </div>
                                         <div id="carouselbankFade" class="carousel slide">
                                             <div class="carousel-inner">
@@ -252,7 +252,7 @@
                                     <div class="card card-body m-2 p-2 ">
                                       <div class="scrollable-container pl-3 pr-3">
                                         <div class="d-flex">
-                                          <div>Floor {{floorName}}</div>
+                                          <div>Floor </div>
                                           <div class="ml-2 text-center" style="width: 20px;">:</div>
                                           <div style="width: 100px;">
                                             <select class="form-select form-select-sm" id="category" [(ngModel)]="floorName" (ngModelChange)="selectFloor()">                                             
@@ -280,11 +280,6 @@
                                             </div>
                                           </div>
                                         </div>
-
-                                        <div class="text-center" *ngIf="roomArrayList.length == 0 ">
-                                          Rooms are not available. 
-                                        </div>
-                                       
                                        </div>
                                     </div>
                                   </div>
