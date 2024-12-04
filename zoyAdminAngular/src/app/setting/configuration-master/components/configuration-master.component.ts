@@ -83,10 +83,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  collaspeListRight = [
 		{ id: 1, name: 'right1', selected: false },
 		{ id: 2, name: 'right2', selected: false },
-		{ id: 3, name: 'right3', selected: false },
-        { id: 4, name: 'right4', selected: false },
-        { id: 5, name: 'right5', selected: false },
-        { id: 6, name: 'right6', selected: false },
 	  ];
 	  // Toggle the selected status for a button
 	  collaspeExpandPanelRight(status: any,side:string): void {
@@ -94,45 +90,123 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
          if(side=='right1' && this.collaspeListRight[0].selected){
 			this.collaspeListRight[1].selected=false;
 			this.collaspeListRight[2].selected=false;
-            this.collaspeListRight[3].selected=false;
-			this.collaspeListRight[4].selected=false;
-            this.collaspeListRight[5].selected=false;
 		 }
 		 if(side=='right2' && this.collaspeListRight[1].selected){
 			this.collaspeListRight[0].selected=false;
 			this.collaspeListRight[2].selected=false;
-            this.collaspeListRight[3].selected=false;
-			this.collaspeListRight[4].selected=false;
-            this.collaspeListRight[5].selected=false;
 		 }
-		 if(side=='right3' && this.collaspeListRight[2].selected){
-			this.collaspeListRight[0].selected=false;
-			this.collaspeListRight[1].selected=false;
-            this.collaspeListRight[3].selected=false;
-			this.collaspeListRight[4].selected=false;
-            this.collaspeListRight[5].selected=false;
-		 }
-         if(side=='right4' && this.collaspeListRight[3].selected){
-			this.collaspeListRight[0].selected=false;
-            this.collaspeListRight[1].selected=false;
-			this.collaspeListRight[2].selected=false;
-            this.collaspeListRight[4].selected=false;
-            this.collaspeListRight[5].selected=false;
-		 }
-         if(side=='right5' && this.collaspeListRight[4].selected){
-			this.collaspeListRight[0].selected=false;
-			this.collaspeListRight[1].selected=false;
-            this.collaspeListRight[2].selected=false;
-			this.collaspeListRight[3].selected=false;
-            this.collaspeListRight[5].selected=false;
-		 }
-         if(side=='right6' && this.collaspeListRight[5].selected){
-			this.collaspeListRight[0].selected=false;
-			this.collaspeListRight[1].selected=false;
-            this.collaspeListRight[2].selected=false;
-			this.collaspeListRight[3].selected=false;
-            this.collaspeListRight[4].selected=false;
-		 }
+		 
 	  }
+	  collaspeListNoticePeriod = [
+		{ id: 1, name: 'right1', selected: false },
+	  ];
+	  // Toggle the selected status for a button
+	  collaspeExpandNoticePeriod(status: any,side:string): void {
+		status.selected = !status.selected;
+         if(side=='right1' && this.collaspeListNoticePeriod[0].selected){
+			this.collaspeListNoticePeriod[1].selected=false;
+		 }
+		 
+	  }
+
+	  collaspeListPromoCode = [
+		{ id: 1, name: 'right1', selected: false },
+		{ id: 2, name: 'right2', selected: false },
+		{ id: 3, name: 'right3', selected: false },
+        
+	  ];
+	  // Toggle the selected status for a button
+	  collaspeExpandPromoCode(status: any,side:string): void {
+		status.selected = !status.selected;
+         if(side=='right1' && this.collaspeListPromoCode[0].selected){
+			this.collaspeListPromoCode[1].selected=false;
+			this.collaspeListPromoCode[2].selected=false;
+		 }
+		 if(side=='right2' && this.collaspeListPromoCode[1].selected){
+			this.collaspeListPromoCode[0].selected=false;
+			this.collaspeListPromoCode[2].selected=false;
+		 }
+		 if(side=='right3' && this.collaspeListPromoCode[2].selected){
+			this.collaspeListPromoCode[0].selected=false;
+			this.collaspeListPromoCode[1].selected=false;
+			
+		 }
+		}
+
+	  hidden: boolean = true;
+	  value: number = 20; 
+	  tempValue: number = this.value; 
+	
+	  edit() {
+		this.hidden = false;
+	  }
+	
+	  submit() {
+		this.value = this.tempValue;
+		this.hidden = true;
+	  }
+	
+	  reset() {
+		this.tempValue = this.value;
+		this.hidden = true;
+	  }
+	  
+		isEditing: boolean = false;
+		securityMinValue: number = 20;
+		securityMaxValue: number = 50;
+
+		tempMinValue: number = this.securityMinValue;
+		tempMaxValue: number = this.securityMaxValue;
+
+		startEditing() {
+			this.isEditing = true;
+		}
+
+		submitValues() {
+			this.securityMinValue = this.tempMinValue;
+			this.securityMaxValue = this.tempMaxValue;
+			this.isEditing = false;
+		}
+
+		resetValues() {
+			this.tempMinValue = this.securityMinValue;
+			this.tempMaxValue = this.securityMaxValue;
+			this.isEditing = false;
+		}
+
+		gstHidden: boolean = true; 
+		gstValue: number = 10;
+		tempGSTValue: number = this.gstValue; 
+
+		editGST() {
+			this.gstHidden = false;
+		}
+		submitGST() {
+			this.gstValue = this.tempGSTValue;
+			this.gstHidden = true;
+		}
+		resetGST() {
+			this.tempGSTValue = this.gstValue;
+			this.gstHidden = true;
+		}
+
+
+		amountHidden: boolean = true; 
+		amountValue: number = 200; 
+		tempAmountValue: number = this.amountValue; 
+
+		editAmount() {
+			this.amountHidden = false;
+		}
+
+		submitAmount() {
+			this.amountValue = this.tempAmountValue;
+			this.amountHidden = true;
+		}
+
+		resetAmount() {
+			this.tempAmountValue = this.amountValue;
+			this.amountHidden = true;
+		}
 
   }  
