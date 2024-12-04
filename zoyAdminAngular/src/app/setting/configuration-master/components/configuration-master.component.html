@@ -46,18 +46,18 @@
                                 <div><p class="small" style="font-size: 12px;color: gray">Specify the percentage of the total amount to be collected as a token advance during booking.</p></div>
                               </div>
                               <div class="col-sm-9">
-                                <div class="row">  
-                                  <div class="col-sm-2">
-                                    <div class="input-group shadow" >
+                                <div class="d-flex">  
+                                  <div style="width: 120px;">
+                                    <div class="input-group input-group-sm" [ngClass]="!hidden? 'shadow':''" >
                                       <input 
                                         type="text" 
                                         class="form-control form-control-sm" 
                                         [(ngModel)]="tempValue" 
-                                        style="width: 50px;" [disabled]="hidden" />
-                                      <span class="form-control form-control-sm">%</span>
+                                        style="max-width: 70px !important;" [disabled]="hidden" />
+                                       <span class="input-group-text">%</span>
                                     </div>
                                   </div>
-                                  <div class="col-sm-8">
+                                  <div class="ml-2">
                                     <div *ngIf="hidden">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="edit()">
                                         <i class="fas fa-edit"></i>
@@ -92,15 +92,15 @@
                               <div class="col-sm-9">
                                 <div class="row">
                                   <!-- Minimum Security Deposit -->
-                                  <div class="col-sm-3">
+                                  <div class="col-sm-4">
                                     <div>Minimum Security Deposit</div>
-                                    <div class="input-group">
-                                      <span class="form-control form-control-sm">Rs</span>
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                       <input 
                                         type="text" 
                                         class="form-control form-control-sm"
                                         [(ngModel)]="tempMinValue"
-                                        style="width: 70px;"
+                                        style="max-width: 140px !important;"
                                         [disabled]="!isEditing" />
                                     </div>
                                     <p class="small" style="font-size: 12px; color: gray;">
@@ -108,15 +108,15 @@
                                     </p>
                                   </div>
                                   <!-- Maximum Security Deposit -->
-                                  <div class="col-sm-3">
+                                  <div class="col-sm-4">
                                     <div>Maximum Security Deposit</div>
-                                    <div class="input-group">
-                                      <span class="form-control form-control-sm">Rs</span>
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                       <input 
                                         type="text" 
                                         class="form-control form-control-sm"
                                         [(ngModel)]="tempMaxValue"
-                                        style="width: 70px;"
+                                        style="max-width: 140px !important;"
                                         [disabled]="!isEditing" />
                                     </div>
                                     <p class="small" style="font-size: 12px; color: gray;">
@@ -160,7 +160,7 @@
                                 <p class="small" style="font-size: 12px;color: gray">Define the deduction percentage and time frame for cancellation before and after check in..</p>
                               </div>
                               <div class="col-sm-9">
-                                <div style="background-color: #c1a1f3; padding: 5px;" class="mb-2">
+                                <div style="background-color: #c1a1f3; padding: 5px;">
                                       <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[0].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight0" aria-expanded="false" aria-controls="collapseExampleRight0" (click)="collaspeExpandPanelRight(collaspeListRight[0],'right1')"> </i>
                                       Before Check in
                                     <span style="float: right; cursor: pointer;">
@@ -168,48 +168,63 @@
                                     </span>
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[0].selected ? 'show':''" id="collapseExampleRight0">
-                                    <div class="card card-body m-2 p-2">
-                                      <div class="scrollable-container pl-3 pr-3">
-                                        <div class="col-sm-12">
+                                    <div class="card card-body m-0 p-0">
+                                      <div>
+                                        <div class="p-2 m-2">
                                          <div class="row">
-                                          <div class="col-sm-3">
-                                            <div>Days before check in</div>
-                                            <div class="input-group">
-                                              <span class="form-control form-control-sm">20</span>
-                                              <span class="form-control form-control-sm">Days</span>
-                                            </div>
-                                            <p class="small" style="font-size: 12px;color: gray">Enter days before check in.</p>
-                                            </div>
-                                            <div class="col-sm-3">
-                                              <div>Deduction percentage</div>
-                                              <div class="input-group">
-                                                <span class="form-control form-control-sm">20</span>
-                                                <span class="form-control form-control-sm">%</span>
+                                              <div class="col-sm-3">
+                                                <div>Days before check in</div>
+                                                <div class="input-group input-group-sm">
+                                                  <input 
+                                                  type="text" 
+                                                  class="form-control form-control-sm"
+                                                  style="max-width: 100px !important;"
+                                                  />
+                                                  <span class="input-group-text">Days</span>
+                                                </div>
+                                                <p class="small" style="font-size: 12px;color: gray">Enter days before check in.</p>
                                               </div>
-                                              <p class="small" style="font-size: 12px;color: gray">Percentage of booking amount to deduct.</p>
-                                            </div>
-                                            <div class="col-sm-2">
-                                              <div>Actions</div>
-                                              <div class="input-group">
-                                                <button type="submit" class="btn-sm btn-primary">Save</button>
+                                              <div class="col-sm-4">
+                                                  <div>Deduction percentage</div>
+                                                  <div class="input-group input-group-sm">
+                                                    <input 
+                                                    type="text" 
+                                                    class="form-control form-control-sm"
+                                                    style="max-width: 120px !important;"
+                                                    />
+                                                    <span class="input-group-text">%</span>
+                                                   </div>
+                                                  <p class="small" style="font-size: 12px;color: gray">Percentage of booking amount to deduct.</p>
                                               </div>
-                                              <p></p>
-                                            </div>
-                                         </div>
+                                              <div class="col-sm-2">
+                                                <div>Actions</div>
+                                                <div>
+                                                  <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                                </div>
+                                              </div>
+                                          </div>
                                         </div>
                                         <hr class="solid">
-                                        <div class="col-sm-12">
+                                        <div class="p-2 m-2">
                                           <div class="row">
                                            <div class="col-sm-3">
-                                             <div class="input-group">
-                                               <span class="form-control form-control-sm">20</span>
-                                               <span class="form-control form-control-sm">Days</span>
+                                             <div class="input-group input-group-sm">
+                                                <input 
+                                                  type="text" 
+                                                  class="form-control form-control-sm"
+                                                  style="max-width: 100px !important;"
+                                                  disabled  value="20"/>
+                                                  <span class="input-group-text">Days</span>
+                                              </div>
                                              </div>
-                                             </div>
-                                             <div class="col-sm-3">                                              
-                                               <div class="input-group">
-                                                 <span class="form-control form-control-sm">20</span>
-                                                 <span class="form-control form-control-sm">%</span>
+                                             <div class="col-sm-4">                                              
+                                               <div class="input-group input-group-sm">
+                                                <input 
+                                                type="text" 
+                                                class="form-control form-control-sm"
+                                                style="max-width: 120px !important;"
+                                                disabled  value="20"/>
+                                                <span class="input-group-text">%</span>
                                                </div>
                                              </div>
                                              <div class="col-sm-2">
@@ -229,29 +244,32 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div style="background-color: #c1a1f3; padding: 5px;" class="mb-2">
+                                  <div style="background-color: #c1a1f3; padding: 5px;" class="mb-2 mt-2">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[1].selected ? 'fa fa-angle-down' : 'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight1" aria-expanded="false" aria-controls="collapseExampleRight1" (click)="collaspeExpandPanelRight(collaspeListRight[1],'right2')"></i>
                                     After Check in for Refund Rent 
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[1].selected ? 'show':''" id="collapseExampleRight1">
                                     <div class="card card-body m-2 p-2 ">
-                                      <div class="scrollable-container pl-3 pr-3">
-                                        <div class="col-sm-12">
+                                      <div class="pl-3 pr-3">
+                                        <div>
                                           <div class="row">
-                                           <div class="col-sm-3">
+                                           <div class="col-sm-5">
                                              <div>Days after check in</div>
-                                             <div class="input-group">
-                                               <span class="form-control form-control-sm">20</span>
-                                               <span class="form-control form-control-sm">Days</span>
+                                             <div class="input-group input-group-sm">
+                                              <input 
+                                                  type="text" 
+                                                  class="form-control form-control-sm"
+                                                  style="max-width: 100px !important;"
+                                                  />
+                                                  <span class="input-group-text">Days</span>
                                              </div>
                                              <p class="small" style="font-size: 12px;color: gray">The maximum Number of days allowing tenants to get refunf of rent amount in prorate basis id not happy with the current PG.</p>
                                              </div>
                                              <div class="col-sm-2">
                                                <div>Actions</div>
-                                               <div class="input-group">
-                                                 <button type="submit" class="btn-sm btn-primary">Save</button>
+                                               <div>
+                                                 <button type="submit" class=" btn btn-sm btn-primary">Save</button>
                                                </div>
-                                               <p></p>
                                              </div>
                                           </div>
                                          </div>
