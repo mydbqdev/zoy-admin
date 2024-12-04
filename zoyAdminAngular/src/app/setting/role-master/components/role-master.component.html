@@ -22,7 +22,7 @@
               <!-- Begin Page Content -->
               <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-3">
-                  <h3 class="h3 mb-0 text-gray-800"><span class="text-header-800 text-header-border">Role</span><span class="text-header-800-blue">and Permission</span></h3> 
+                  <h3 class="h3 mb-0 text-gray-800"><span class="text-header-800 text-header-border">Role</span><span class="text-header-800-blue">& Permission</span></h3> 
                   <div>
                     <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"  (click)="clearArrays(); myForm.reset();" aria-controls="createRole" class="btn btn-sm btn-primary-custom shadow-sm" ><i
                       class="fas fa-user-shield text-white-50"></i> New Role</a>
@@ -236,27 +236,27 @@
      </div>
          <div  id="collapseSETTINGSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #settingsetab>
           <div class="row" >
-              <div class="col-sm-8 pl-4">Role and Permission</div>
+              <div class="col-sm-8 pl-4">Role & Permission</div>
               <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="ROLE_AND_PERMISSION_READ" id="settingseReadRP"  (click)="onChangeCheck($event,'read','settingse','RP')"/></div>
               <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="ROLE_AND_PERMISSION_WRITE"  id="settingseWriteRP" (click)="onChangeCheck($event,'write','settingse','RP')"/></div>
            </div>  
            <div class="row" >
-            <div class="col-sm-8 pl-4">DB Master Configuration</div>
+            <div class="col-sm-8 pl-4">Database Configuration</div>
             <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="DB_MASTER_CONFIGURATION_READ" id="settingseReadDBM"  (click)="onChangeCheck($event,'read','settingse','DBM')"/></div>
             <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="DB_MASTER_CONFIGURATION_WRITE"  id="settingseWriteDBM" (click)="onChangeCheck($event,'write','settingse','DBM')"/></div>
          </div>
          <div class="row" >
-          <div class="col-sm-8 pl-4">Configuration Master</div>
+          <div class="col-sm-8 pl-4">Master Configuration</div>
           <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="CONFIGURATION_MASTER_READ" id="settingseReadCM"  (click)="onChangeCheck($event,'read','settingse','CM')"/></div>
           <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="CONFIGURATION_MASTER_WRITE"  id="settingseWriteCM" (click)="onChangeCheck($event,'write','settingse','CM')"/></div>
        </div>
            <div class="row" >
-             <div class="col-sm-8 pl-4">Cancellation and Refund Rules</div>
+             <div class="col-sm-8 pl-4">Cancellation & Refund Rules</div>
              <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="CANCELLATION_AND_REFUND_RULES_READ" id="settingseReadCRR"  (click)="onChangeCheck($event,'read','settingse','CRR')"/></div>
              <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="CANCELLATION_AND_REFUND_RULES_WRITE"  id="settingseReadCRR" (click)="onChangeCheck($event,'write','settingse','CRR')"/></div>
           </div>        
            <div class="row" >
-              <div class="col-sm-8 pl-4">Percentage and Charge</div>
+              <div class="col-sm-8 pl-4">Percentage & Charge</div>
               <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="settingseReadPCC"  (click)="onChangeCheck($event,'read','settingse','PCC')"/></div>
               <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_WRITE"  id="settingseReadPCC" (click)="onChangeCheck($event,'write','settingse','PCC')"/></div>
            </div>
@@ -417,27 +417,27 @@
                </div>
                    <div  id="collapseSETTINGSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #settingsctab>
                     <div class="row" >
-                        <div class="col-sm-8 pl-4">Role and Permission</div>
+                        <div class="col-sm-8 pl-4">Role & Permission</div>
                         <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="ROLE_AND_PERMISSION_READ" id="settingscReadRP"  (click)="onChangeCheck($event,'read','settingsc','RP')"/></div>
                         <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="ROLE_AND_PERMISSION_WRITE"  id="settingscWriteRP" (click)="onChangeCheck($event,'write','settingsc','RP')"/></div>
                      </div>  
                      <div class="row" >
-                      <div class="col-sm-8 pl-4">DB Master Configuration</div>
+                      <div class="col-sm-8 pl-4">Database Configuration</div>
                       <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="DB_MASTER_CONFIGURATION_READ" id="settingscReadDBM"  (click)="onChangeCheck($event,'read','settingsc','DBM')"/></div>
                       <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="DB_MASTER_CONFIGURATION_WRITE"  id="settingscWriteDBM" (click)="onChangeCheck($event,'write','settingsc','DBM')"/></div>
                    </div> 
                    <div class="row" >
-                    <div class="col-sm-8 pl-4">Configuration Master</div>
+                    <div class="col-sm-8 pl-4">Master Configuration</div>
                     <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="CONFIGURATION_MASTER_READ" id="settingscReadCM"  (click)="onChangeCheck($event,'read','settingsc','CM')"/></div>
                     <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="CONFIGURATION_MASTER_WRITE"  id="settingscWriteCM" (click)="onChangeCheck($event,'write','settingsc','CM')"/></div>
                  </div>
                      <div class="row" >
-                       <div class="col-sm-8 pl-4">Cancellation and Refund Rules</div>
+                       <div class="col-sm-8 pl-4">Cancellation & Refund Rules</div>
                        <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="CANCELLATION_AND_REFUND_RULES_READ" id="settingscReadCRR"  (click)="onChangeCheck($event,'read','settingsc','CRR')"/></div>
                        <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="CANCELLATION_AND_REFUND_RULES_WRITE"  id="settingscReadCRR" (click)="onChangeCheck($event,'write','settingsc','CRR')"/></div>
                     </div>        
                      <div class="row" >
-                        <div class="col-sm-8 pl-4">Percentage and Charge</div>
+                        <div class="col-sm-8 pl-4">Percentage & Charge</div>
                         <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="settingscReadPCC"  (click)="onChangeCheck($event,'read','settingsc','PCC')"/></div>
                         <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_WRITE"  id="settingscReadPCC" (click)="onChangeCheck($event,'write','settingsc','PCC')"/></div>
                      </div>

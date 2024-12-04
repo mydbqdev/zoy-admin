@@ -128,11 +128,11 @@
         </a>
         <div id="collapseSettings" [ngClass]="menu4 ? 'collapse show':'collapse'" aria-labelledby="headingSettings" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" routerLink="/role-master" *ngIf="rolesArray.includes('ROLE_AND_PERMISSION_READ')" [ngClass]="{'active':activeSubNenuName=='role-master'}" (click)="setHeaderName('Role and Permission')" >Role and <br *ngIf="isExpandSideBar"> Permission</a>
+                <a class="collapse-item" routerLink="/role-master" *ngIf="rolesArray.includes('ROLE_AND_PERMISSION_READ')" [ngClass]="{'active':activeSubNenuName=='role-master'}" (click)="setHeaderName('Role and Permission')" >Role & Permission</a>
                 <div class="p-1"></div>
-                <a class="collapse-item" routerLink="/db-master-configuration" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_READ')" [ngClass]="{'active':activeSubNenuName=='db-master-configuration'}">DB Master <br *ngIf="isExpandSideBar"> Configuration</a>
+                <a class="collapse-item" routerLink="/db-master-configuration" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_READ')" [ngClass]="{'active':activeSubNenuName=='db-master-configuration'}">Database Configuration</a>
                 <div class="p-1"></div>
-                <a class="collapse-item" routerLink="/configuration-master" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ')" [ngClass]="{'active':activeSubNenuName=='configuration-master'}">Configuration <br *ngIf="isExpandSideBar"> Master </a>
+                <a class="collapse-item" routerLink="/configuration-master" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ')" [ngClass]="{'active':activeSubNenuName=='configuration-master'}">Master Configuration</a>
                 <!-- <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/cancellation-refund-rules" *ngIf="rolesArray.includes('CANCELLATION_AND_REFUND_RULES_READ')">Cancellation and <br *ngIf="isExpandSideBar">  Refund Rules</a>
                 <div class="p-1"></div>
