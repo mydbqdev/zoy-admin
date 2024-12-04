@@ -244,12 +244,12 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div style="background-color: #c1a1f3; padding: 5px;" class="mb-2 mt-2">
+                                  <div style="background-color: #c1a1f3; padding: 5px;" class="mt-2">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[1].selected ? 'fa fa-angle-down' : 'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight1" aria-expanded="false" aria-controls="collapseExampleRight1" (click)="collaspeExpandPanelRight(collaspeListRight[1],'right2')"></i>
                                     After Check in for Refund Rent 
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[1].selected ? 'show':''" id="collapseExampleRight1">
-                                    <div class="card card-body m-2 p-2 ">
+                                    <div class="card card-body m-0 p-0 ">
                                       <div class="pl-3 pr-3">
                                         <div>
                                           <div class="row">
@@ -288,16 +288,16 @@
                                 <p class="small" style="font-size: 12px;color: gray">Set the refund percentage based on the number of notice Period days served.</p>
                               </div>
                               <div class="col-sm-9">
-                                <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" >
+                                <div style="background-color: #c1a1f3;padding: 5px;" >
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListNoticePeriod[0].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collaspeListNoticePeriod0" aria-expanded="false" aria-controls="collaspeListNoticePeriod0" (click)="collaspeExpandNoticePeriod(collaspeListNoticePeriod[0],'right1')"></i> Noticed Period Not Served
                                     <span style="float: right; cursor: pointer;">
                                       <i class="fa fa-plus" style="margin-right: 4px;"></i>Add
                                     </span>
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeListNoticePeriod[0].selected ? 'show':''" id="collaspeListNoticePeriod0">
-                                    <div class="card card-body m-2 p-2">
-                                      <div class="scrollable-container pl-3 pr-3">
-                                        <div class="col-sm-12">
+                                    <div class="card card-body m-0 p-0">
+                                      <div>
+                                        <div class="p-2 m-2">
                                           <div class="row">
                                            <div class="col-sm-4">
                                              <div>Notice period Served</div>
@@ -339,7 +339,7 @@
                                           </div>
                                          </div>
                                          <hr class="solid">
-                                          <div class="col-sm-12">
+                                          <div class="p-2 m-2">
                                             <div class="row">
                                              <div class="col-sm-4">
                                                <div class="input-group">
@@ -380,7 +380,6 @@
                                                     </button>
                                                   </div>
                                                  </div>
-                                                 <p></p>
                                                </div>
                                             </div>
                                           </div>
