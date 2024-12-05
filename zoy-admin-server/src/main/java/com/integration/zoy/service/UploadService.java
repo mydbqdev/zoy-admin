@@ -115,13 +115,13 @@ public class UploadService {
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
 			.registerTypeAdapter(Timestamp.class, (JsonSerializer<Timestamp>) (src, typeOfSrc, context) -> {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				dateFormat.setTimeZone(TimeZone.getTimeZone("UTC")); 
+				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
 				return new JsonPrimitive(dateFormat.format(src)); 
 			})
 			.registerTypeAdapter(Timestamp.class, (JsonDeserializer<Timestamp>) (json, typeOfT, context) -> {
 				try {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					dateFormat.setTimeZone(TimeZone.getTimeZone("UTC")); 
+					dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
 					return new Timestamp(dateFormat.parse(json.getAsString()).getTime()); 
 				} catch (Exception ex) {
 					throw new JsonParseException("Failed to parse Timestamp", ex);
