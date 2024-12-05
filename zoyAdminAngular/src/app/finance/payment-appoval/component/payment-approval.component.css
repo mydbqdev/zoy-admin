@@ -67,3 +67,9 @@
   background-color: #e67e77;
   color: #fff;
 }
+tr:hover {
+  opacity: 0.3;
+  background-color: #c1e2fd; 
+  cursor: pointer;         
+}
+

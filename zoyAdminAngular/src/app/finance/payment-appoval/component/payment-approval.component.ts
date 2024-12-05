@@ -47,6 +47,7 @@ export class PaymentApprovalComponent  implements OnInit,AfterViewInit{
 	@ViewChild(SidebarComponent) sidemenuComp;
 	public rolesArray: string[] = [];
 	userInfo:UserInfo=new UserInfo();
+	selectedRow: any;
   constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private confirmationDialogService :ConfirmationDialogService,
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
@@ -119,14 +120,21 @@ export class PaymentApprovalComponent  implements OnInit,AfterViewInit{
 	this.dataSource.sort = this.sort;
 	this.dataSource.paginator = this.paginator;
   }
+  openModal(row: any) {
+    const modalElement = document.getElementById('paymentRowSelectionkdrop');
+    if (modalElement) {
+		this.selectedRow = row;
+    }
+  }
 }
+
 
 const mockData = [
 	{
 	  owner_id: "OWNR001",
 	  owner_name: "John Doe",
 	  owner_share: 25000,
-	  status: "Received",
+	  status: "Success",
 	  zoy_share: 7000,
 	  acknowledgment: "Received",
 	},
@@ -142,7 +150,7 @@ const mockData = [
 	  owner_id: "OWNR003",
 	  owner_name: "Michael Johnson",
 	  owner_share: 40000,
-	  status: "Received",
+	  status: "Success",
 	  zoy_share: 25000,
 	  acknowledgment: "Received",
 	},
@@ -158,7 +166,7 @@ const mockData = [
 	  owner_id: "OWNR005",
 	  owner_name: "David Wilson",
 	  owner_share: 50000,
-	  status: "Received",
+	  status: "Success",
 	  zoy_share: 28000,
 	  acknowledgment: "Received",
 	},
@@ -168,13 +176,13 @@ const mockData = [
 	  owner_share: 20000,
 	  status: "Failed",
 	  zoy_share: 15000,
-	  acknowledgment: "Pending",
+	  acknowledgment: "Not Received",
 	},
 	{
 	  owner_id: "OWNR007",
 	  owner_name: "Robert Taylor",
 	  owner_share: 60000,
-	  status: "Received",
+	  status: "Success",
 	  zoy_share: 40000,
 	  acknowledgment: "Received",
 	},
@@ -190,9 +198,9 @@ const mockData = [
 	  owner_id: "OWNR009",
 	  owner_name: "Daniel White",
 	  owner_share: 55000,
-	  status: "Received",
+	  status: "Success",
 	  zoy_share: 31000,
-	  acknowledgment: "Received",
+	  acknowledgment: "Not Received",
 	},
 	{
 	  owner_id: "OWNR0012",

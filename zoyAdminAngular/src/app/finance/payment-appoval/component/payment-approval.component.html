@@ -73,18 +73,15 @@
                                 </select> 
                               </div>
                              <div style="height: 30px;margin-top:-15px;"> 
-                              
                             </div>
                         </div>                                                                
                         <div style="padding-top: 37px;width: 130px;padding-left:10px;">                                            
                               <button type="submit" class="btn btn-primary-custom">Show Results</button>
                         </div>
-                         
                         </div>
                     </form>
                     </div>
                   </div>
-            
                   </div>
                   <div class="row mt-2">
                       <div class="col-xl-12 col-lg-12">
@@ -93,7 +90,7 @@
                                 <div class="scrollable-container-main">
                                   <div>
                                     <table mat-table [dataSource]="dataSource" matSort  
-                                    (matSortChange)="announceSortChange($event)" matSortActive="transaction_date" matSortDirection="desc"  >
+                                      (matSortChange)="announceSortChange($event)" matSortActive="owner_id" matSortDirection="desc"  >
                                       <!-- Zoy Code Column -->
                                       <ng-container matColumnDef="owner_id">
                                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> OWNER ID
@@ -113,7 +110,7 @@
                                             <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'desc'}"></i>
                                           </span>
                                         </th>
-                                        <td mat-cell *matCellDef="let element" style="width: 200px;"> {{ element.owner_name }} </td>
+                                        <td mat-cell *matCellDef="let element" style="width: 200px;" > {{ element.owner_name }} </td>
                                       </ng-container>
   
                                       <!-- Email Column -->
@@ -139,15 +136,14 @@
                                             class="common-status"
                                             [ngClass]="{
                                               'btn-pending': element.status === 'Pending',
-                                              'btn-registered': element.status === 'Received',
+                                              'btn-registered': element.status === 'Success',
                                               'btn-processing': element.status === 'Processing',
                                               'btn-failed': element.status === 'Failed'
-                                            }"
-                                          >
+                                            }">
                                             <span *ngIf="element.status === 'Pending'">Pending</span>
-                                            <span *ngIf="element.status === 'Received'">Received</span>
+                                            <span *ngIf="element.status === 'Success'"><i class="fa fa-check"></i><span class="ms-2">Success</span></span>
                                             <span *ngIf="element.status === 'Processing'">Processing</span>
-                                            <span *ngIf="element.status === 'Failed'">Failed</span>
+                                            <span *ngIf="element.status === 'Failed'"><i class="fa fa-times"></i><span class="ms-2">Failed</span></span>
                                           </span>
                                         </td>
                                       </ng-container>
@@ -170,20 +166,17 @@
                                             <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['acknowledgment'] === 'desc'}"></i>
                                           </span>
                                         </th>
-                                        <td mat-cell *matCellDef="let element" style="padding: 4px;">
-                                          <span
-                                            class="common-status"
-                                            [ngClass]="element.acknowledgment !== 'Received' ? 'btn-pending' : 'btn-registered'"
-                                          >
-                                            <span *ngIf="element.acknowledgment !== 'Received'">Not Receive</span>
+                                        <td mat-cell *matCellDef="let element" style="padding: 4px;" >
+                                          <span class="common-status" [ngClass]="{'btn-pending': element.acknowledgment === 'Pending','btn-registered': element.acknowledgment === 'Received', 'btn-failed': element.acknowledgment === 'Not Received'}">
+                                            <span *ngIf="element.acknowledgment === 'Pending'">Pending</span>
                                             <span *ngIf="element.acknowledgment === 'Received'">Received</span>
+                                            <span *ngIf="element.acknowledgment === 'Not Received'">Not Received</span>
                                           </span>
                                         </td>
-                                        
                                       </ng-container>
                                       <ng-container matColumnDef="action">
                                         <th mat-header-cell *matHeaderCellDef style="width: 50px;"> </th>
-                                        <td mat-cell *matCellDef="let element" style="width: 50px;">
+                                        <td mat-cell *matCellDef="let element" style="width: 50px;" data-bs-toggle="modal" data-bs-target="#paymentRowSelectionkdrop">
                                                   <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
                                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
@@ -199,7 +192,7 @@
                                       <!-- Header Row -->
                                       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
                                       <!-- Data Row -->
-                                      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                      <tr mat-row *matRowDef="let row; columns: displayedColumns;"(click)="openModal(row)" data-bs-toggle="modal" data-bs-target="#paymentRowSelectionkdrop"></tr>
                                     </table>
                                   
                                   <div style="text-align: center; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length === 0">
@@ -227,4 +220,54 @@
 
   </div>
   <!-- End of Page Wrapper -->
+</div>
+
+
+<!------To view Row details PopUp model------->
+<div class="modal fade" id="paymentRowSelectionkdrop" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Payment Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row mb-2">
+            <div class="col-4 fw-bold text-start">Owner ID</div>
+            <div class="col-2 text-enter">:</div>
+            <div class="col-6">{{ selectedRow?.owner_id }}</div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4 fw-bold text-start">Owner Name</div>
+            <div class="col-2 text-enter">:</div>
+            <div class="col-6">{{ selectedRow?.owner_name }}</div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4 fw-bold text-start">Owner Share</div>
+            <div class="col-2 text-enter">:</div>
+            <div class="col-6">{{ selectedRow?.owner_share }}</div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4 fw-bold text-start">Status</div>
+            <div class="col-2 text-enter">:</div>
+            <div class="col-6">{{ selectedRow?.status }}</div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4 fw-bold text-start">Zoy Share</div>
+            <div class="col-2 text-enter">:</div>
+            <div class="col-6">{{ selectedRow?.zoy_share }}</div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4 fw-bold text-start">Acknowledgment</div>
+            <div class="col-2 text-enter">:</div>
+            <div class="col-6">{{ selectedRow?.acknowledgment }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary-custom" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
