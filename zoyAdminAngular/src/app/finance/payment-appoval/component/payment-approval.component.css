@@ -67,9 +67,8 @@
   background-color: #e67e77;
   color: #fff;
 }
-tr:hover {
-  opacity: 0.3;
-  background-color: #c1e2fd; 
+tr.mat-mdc-row:hover {
+  background-color: #e4f0fa; 
   cursor: pointer;         
 }
 
