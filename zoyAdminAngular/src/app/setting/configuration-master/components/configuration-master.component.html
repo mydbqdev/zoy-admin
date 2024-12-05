@@ -183,7 +183,7 @@
                                       <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[0].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight0" aria-expanded="false" aria-controls="collapseExampleRight0" (click)="collaspeExpandPanelRight(collaspeListRight[0],'right1')"> </i>
                                       Before Check in
                                   </div>
-                                  <div class="collapse" [ngClass]="collaspeListRight[0].selected ? 'show':''" id="collapseExampleRight0">
+                                  <div class="collapse show"  id="collapseExampleRight0">
                                     <div class="card card-body m-0 p-0">
                                       <div>
                                         <div class="p-2 m-2">
@@ -307,7 +307,7 @@
                                 <div style="background-color: #c1a1f3;padding: 5px;" >
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListNoticePeriod[0].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collaspeListNoticePeriod0" aria-expanded="false" aria-controls="collaspeListNoticePeriod0" (click)="collaspeExpandNoticePeriod(collaspeListNoticePeriod[0],'right1')"></i> Noticed Period Not Served
                                   </div>
-                                  <div class="collapse" [ngClass]="collaspeListNoticePeriod[0].selected ? 'show':''" id="collaspeListNoticePeriod0">
+                                  <div class="collapse show" id="collaspeListNoticePeriod0">
                                     <div class="card card-body m-0 p-0">
                                       <div>
                                         <div class="p-2 m-2">
@@ -505,37 +505,41 @@
                                     <span style="font-size: 16px;">Data Grouping</span>
                                   </div>
                                   <div class="col-sm-9 row">
-                                   <div class="row">
-                                      <span>Trending PG Configuration</span>
-                                      <div class="input-group input-group-sm">
-                                        <input 
-                                        type="text" 
-                                        class="form-control form-control-sm"
-                                        [(ngModel)]="configMasterModel.dataGroupingModel.considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
-                                        [ngClass]="{'is-invalid': !dataGroupingDisabled && (this.configMasterModel.dataGroupingModel.considerDays == 0 || !this.configMasterModel.dataGroupingModel.considerDays) }" 
-                                        style="max-width: 120px !important;" />
-                                        <span class="input-group-text">Days</span>
-                                      </div>
-                                      </div>
                                    <div>
-                                    <p class="small" style="font-size: 12px;color: gray">Specify the number of days that is to be considered for showing trending PG's to Tenents .</p>
-                                  </div>
-                                  </div>
-                                  <div class="col-sm-3">
-                                    <div *ngIf="dataGroupingDisabled">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="dataGroupingDisabled = false">
-                                        <i class="fas fa-edit"></i>
-                                      </button>
+                                      <span>Trending PG Configuration</span>
+                                      <div class="d-flex">
+                                        <div style="width: 170px;">
+                                          <div class="input-group input-group-sm">
+                                            <input 
+                                            type="text" 
+                                            class="form-control form-control-sm"
+                                            [(ngModel)]="configMasterModel.dataGroupingModel.considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
+                                            [ngClass]="{'is-invalid': !dataGroupingDisabled && (this.configMasterModel.dataGroupingModel.considerDays == 0 || !this.configMasterModel.dataGroupingModel.considerDays) }" 
+                                            style="max-width: 120px !important;" />
+                                            <span class="input-group-text">Days</span>
+                                          </div>
+                                        </div>
+                                        <div class="ml-2">
+                                          <div *ngIf="dataGroupingDisabled">
+                                            <button class="btn btn-sm btn-outline-secondary" (click)="dataGroupingDisabled = false">
+                                              <i class="fas fa-edit"></i>
+                                            </button>
+                                          </div>
+                                          <div class="btn-group" *ngIf="!dataGroupingDisabled">
+                                            <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGSubmit()">
+                                              <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGReset()">
+                                              <i class="fas fa-redo" style="color: red;"></i>
+                                            </button>
+                                          </div>
+                                        </div>
+                                        </div>
                                     </div>
-                                    <div class="btn-group" *ngIf="!dataGroupingDisabled">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGSubmit()">
-                                        <i class="fas fa-check"></i>
-                                      </button>
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGReset()">
-                                        <i class="fas fa-redo" style="color: red;"></i>
-                                      </button>
+                                    <div>
+                                      <p class="small" style="font-size: 12px;color: gray">Specify the number of days that is to be considered for showing trending PG's to Tenents .</p>
                                     </div>
-                                </div>
+                                  </div>
                                 </div>
                               </div>
                           <!--hr class="solid" -->

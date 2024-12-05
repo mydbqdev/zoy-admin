@@ -185,7 +185,9 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
         this.spinner.hide();
         if(error.status == 0) {
           this.notifyService.showError("Internal Server Error/Connection not established", "")
-         }else if(error.status==403){
+         }else if(error.status==401){
+          console.error("Unauthorised");
+        }else if(error.status==403){
           this.router.navigate(['/forbidden']);
         }else if (error.error && error.error.message) {
           this.errorMsg = error.error.message;
@@ -270,7 +272,9 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
         this.spinner.hide();
         if(error.status == 0) {
           this.notifyService.showError("Internal Server Error/Connection not established", "")
-         }else if(error.status==403){
+         }else if(error.status==401){
+          console.error("Unauthorised");
+        }else if(error.status==403){
           this.router.navigate(['/forbidden']);
         }else if (error.error && error.error.message) {
          this.errorMsg = error.error.message;
@@ -310,7 +314,9 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
         this.spinner.hide();
         if(error.status == 0) {
           this.notifyService.showError("Internal Server Error/Connection not established", "")
-         }else if(error.status==403){
+         }else if(error.status==401){
+          console.error("Unauthorised");
+        }else if(error.status==403){
           this.router.navigate(['/forbidden']);
         }else if (error.error && error.error.message) {
           this.errorMsg =error.error.message;
@@ -390,7 +396,9 @@ deleteRecord(row : RoleModel){
     this.spinner.hide();
     if(error.status == 0) {
       this.notifyService.showError("Internal Server Error/Connection not established", "")
-     }else if(error.status==403){
+     }else if(error.status==401){
+      console.error("Unauthorised");
+    }else if(error.status==403){
       this.router.navigate(['/forbidden']);
     }else if (error.error && error.error.message) {
       this.errorMsg =error.error.message;
