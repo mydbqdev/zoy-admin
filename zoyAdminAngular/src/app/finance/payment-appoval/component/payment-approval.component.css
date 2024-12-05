@@ -57,3 +57,13 @@
   background-color:#e6dff7; 
     color: #470ecf;
 }
+
+.btn-processing {
+  background-color: #91c8f5; 
+  color: #fff;
+}
+
+.btn-failed {
+  background-color: #e67e77;
+  color: #fff;
+}
