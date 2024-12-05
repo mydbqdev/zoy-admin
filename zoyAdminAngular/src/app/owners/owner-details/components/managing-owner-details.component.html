@@ -100,7 +100,7 @@
                                     <div class="card card-body ml-2 mr-2 p-2">
                                       <div class="scrollable-container-main pl-3 pr-3">
                                         <div class="row mb-1">
-                                          <div class="col-sm-4" style="font-size: 15px;font-weight: 600;">Bank Details <span *ngIf="pgOwnerData?.pg_owner_business_info?.length>1" > ({{pgOwnerData?.pg_owner_business_info?.length}})</span> </div>
+                                          <div class="col-auto" style="font-size: 15px;font-weight: 600;">Bank Details <span *ngIf="pgOwnerData?.pg_owner_business_info?.length>1" > ({{pgOwnerData?.pg_owner_business_info?.length}})</span> </div>
                                         </div>
                                         <div id="carouselbankFade" class="carousel slide">
                                             <div class="carousel-inner">
@@ -272,9 +272,9 @@
                                             <div class="common-box m-1">
                                               <div class="text-center">Room {{room.room_no}} </div>
                                               <div class="row">
-                                                <div class="col-sm-3 text-center" *ngFor="let bed of room.beds;">
+                                                <div class="col-sm-4 text-center" *ngFor="let bed of room.beds;">
                                                   <i class="fas fa-bed" [ngStyle]="bed.availability_status == 'occupied' ? {'color': 'red'} : {'color': 'green'}"></i>
-                                                  <span style="font-size: 7px;" [ngStyle]="bed.availability_status == 'occupied' ? {'color': 'red'} : {'color': 'green'}">{{bed.bed_name}}</span>
+                                                  <span style="font-size: 11px;" [ngStyle]="bed.availability_status == 'occupied' ? {'color': 'red'} : {'color': 'green'}">{{bed.bed_name}}</span>
                                                 </div>
                                                 </div>
                                             </div>
