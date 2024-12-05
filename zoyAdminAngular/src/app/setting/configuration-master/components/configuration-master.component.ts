@@ -11,6 +11,8 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
+import { ConfigMasterService } from '../service/config-master-serive';
+import { ConfigMasterModel } from '../models/config-master-model';
 
 
 @Component({
@@ -29,7 +31,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  submitted=false;
 	  userInfo:UserInfo=new UserInfo();
 
-	  constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
+	  constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService, private configMasterService :ConfigMasterService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			  this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
@@ -133,45 +135,172 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		 }
 		}
 
-	  hidden: boolean = true;
+	  tokenAdvancDisabled: boolean = true;
 	  value: number = 20; 
 	  tempValue: number = this.value; 
 	
-	  edit() {
-		this.hidden = false;
+	//   edit() {
+	// 	this.tokenAdvancDisabled = false;
+	//   }
+	
+	tokenAdvancSubmit() {
+		this.authService.checkLoginUserVlidaate();
+		if(this.configMasterModel.tokenDetailsModel.fixedToken == 0 || this.configMasterModel.tokenDetailsModel.variableToken == 0 || !this.configMasterModel.tokenDetailsModel.fixedToken || !this.configMasterModel.tokenDetailsModel.variableToken ){
+			return
+		}
+		
+		this.spinner.show();
+		this.configMasterService.UpdateTokenAdvanceDetails(this.configMasterModel.tokenDetailsModel).subscribe(res => {
+			this.configMasterOrg.tokenDetailsModel = Object.assign(new ConfigMasterModel(), res.data );
+			this.configMasterModel.tokenDetailsModel = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetailsModel));
+			this.tokenAdvancDisabled = true;
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error;
+				} else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" + str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});						
+			
+		
 	  }
 	
-	  submit() {
-		this.value = this.tempValue;
-		this.hidden = true;
-	  }
-	
-	  reset() {
-		this.tempValue = this.value;
-		this.hidden = true;
+	  tokenAdvanceReset() {
+		this.configMasterModel.tokenDetailsModel = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetailsModel));
+		this.tokenAdvancDisabled = true;
 	  }
 	  
-		isEditing: boolean = false;
+		securityDepositLimitsDisabled: boolean = true;
 		securityMinValue: number = 20;
 		securityMaxValue: number = 50;
 
 		tempMinValue: number = this.securityMinValue;
 		tempMaxValue: number = this.securityMaxValue;
 
-		startEditing() {
-			this.isEditing = true;
+		// securityDepositLimitsEditing() {
+		// 	this.securityDepositLimitsDisabled = true;
+		// }
+
+		securityDepositLimitsSubmit() {
+			this.authService.checkLoginUserVlidaate();
+			if(this.configMasterModel.securityDepositLimitsModel.maximumDeposit == 0 || this.configMasterModel.securityDepositLimitsModel.minimumDeposit == 0 || !this.configMasterModel.securityDepositLimitsModel.maximumDeposit || !this.configMasterModel.securityDepositLimitsModel.minimumDeposit ){
+				return ;
+			}
+			
+			this.spinner.show();
+			this.configMasterService.UpdatesecurityDepositLimitsDetails(this.configMasterModel.securityDepositLimitsModel).subscribe(res => {
+				this.configMasterOrg.securityDepositLimitsModel = Object.assign(new ConfigMasterModel(), res.data );
+				this.configMasterModel.securityDepositLimitsModel = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositLimitsModel));
+				this.securityDepositLimitsDisabled = true;
+				this.spinner.hide();
+				}, error => {
+				this.spinner.hide();
+				if(error.status == 0) {
+				  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			   }else if(error.status==403){
+					this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+				} else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					let str;
+					if (error.status == 400) {
+						str = error.error;
+					} else {
+						str = error.message;
+						str = str.substring(str.indexOf(":") + 1);
+					}
+					console.log("Error:" + str);
+					this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+					//this.notifyService.showError(this.errorMsg, "");
+				}
+				});						
+				
+			
+		  }
+			
+		  dataGroupingDisabled:boolean = true;
+		securityDepositLimitsReset() {
+			this.configMasterModel.securityDepositLimitsModel = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositLimitsModel));
+			this.securityDepositLimitsDisabled = true;
 		}
 
-		submitValues() {
-			this.securityMinValue = this.tempMinValue;
-			this.securityMaxValue = this.tempMaxValue;
-			this.isEditing = false;
-		}
+		trendingPGSubmit() {
+			this.authService.checkLoginUserVlidaate();
+			if(this.configMasterModel.dataGroupingModel.considerDays == 0 ||  !this.configMasterModel.dataGroupingModel.considerDays ){
+				return ;
+			}
+			
+			this.spinner.show();
+			this.configMasterService.UpdateDataGroupingDetails(this.configMasterModel.dataGroupingModel).subscribe(res => {
+				this.configMasterOrg.dataGroupingModel = Object.assign(new ConfigMasterModel(), res.data );
+				this.configMasterModel.dataGroupingModel = JSON.parse(JSON.stringify(this.configMasterOrg.dataGroupingModel));
+				this.dataGroupingDisabled = true;
+				this.spinner.hide();
+				}, error => {
+				this.spinner.hide();
+				if(error.status == 0) {
+				  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			   }else if(error.status==403){
+					this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+				} else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					let str;
+					if (error.status == 400) {
+						str = error.error;
+					} else {
+						str = error.message;
+						str = str.substring(str.indexOf(":") + 1);
+					}
+					console.log("Error:" + str);
+					this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+					//this.notifyService.showError(this.errorMsg, "");
+				}
+				});						
+				
+			
+		  }
+			
 
-		resetValues() {
-			this.tempMinValue = this.securityMinValue;
-			this.tempMaxValue = this.securityMaxValue;
-			this.isEditing = false;
+		  trendingPGReset() {
+			this.configMasterModel.dataGroupingModel = JSON.parse(JSON.stringify(this.configMasterOrg.dataGroupingModel));
+			this.dataGroupingDisabled = true;
 		}
 
 		gstHidden: boolean = true; 
@@ -208,5 +337,76 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.tempAmountValue = this.amountValue;
 			this.amountHidden = true;
 		}
+
+		configMasterModel :ConfigMasterModel =new ConfigMasterModel();
+		configMasterOrg :ConfigMasterModel =new ConfigMasterModel();
+
+		numberOnly(event): boolean {
+			const charCode = (event.which) ? event.which : event.keyCode;
+			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+			  return false;
+			}
+			return true;
+		   }
+
+		percentageOnly(event): boolean {
+			const charCode = (event.which) ? event.which : event.keyCode;
+			const inputValue = event.target.value + String.fromCharCode(charCode); 
+console.log("inputValue",inputValue)
+			if (inputValue.startsWith('.')) {
+				return false;
+			  }
+			
+			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+			  if (charCode !== 46 ) { // Allow decimal point (46) and percent symbol (37)
+				return false;
+			  }
+			}
+		  
+			if ((inputValue.match(/\./g) || []).length> 1 || parseFloat(inputValue) > 100 ) {
+			  return false;
+			}
+
+			return true;
+		  }
+		  
+
+		getConfigMasterDetails(){
+			this.authService.checkLoginUserVlidaate();
+			this.spinner.show();
+			this.configMasterService.getConfigMasterDetails().subscribe(res => {
+			this.configMasterOrg = Object.assign(new ConfigMasterModel(), res.data );
+			this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
+			
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error;
+				} else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" + str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}		
 
   }  
