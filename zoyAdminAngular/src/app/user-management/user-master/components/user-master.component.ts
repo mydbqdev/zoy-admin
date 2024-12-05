@@ -163,7 +163,9 @@ export class UserMasterComponent implements OnInit {
    },error =>{
     if(error.status == 0) {
       this.notifyService.showError("Internal Server Error/Connection not established", "")
-     }else if(error.status==403){
+     }else if(error.status==401){
+      console.error("Unauthorised");
+    }else if(error.status==403){
        this.router.navigate(['/forbidden']);
      }else if (error.error && error.error.message) {
        this.errorMsg =error.error.message;
@@ -211,7 +213,9 @@ export class UserMasterComponent implements OnInit {
   this.spinner.hide();
   if(error.status == 0) {
     this.notifyService.showError("Internal Server Error/Connection not established", "")
-   }else if(error.status==403){
+   }else if(error.status==401){
+    console.error("Unauthorised");
+  }else if(error.status==403){
     this.router.navigate(['/forbidden']);
   }else if (error.error && error.error.message) {
     this.errorMsg = error.error.message;
@@ -346,7 +350,9 @@ passwordsMatch(formGroup: FormGroup) {
       +(error.error.password!=undefined?(error.error.password  +"."):"");
       if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
-			 }else if(error.status==403){
+			 }else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
       this.router.navigate(['/forbidden']);
       }else if (error.error && error.error.message) {
       this.errorMsg =error.error.message;
@@ -439,7 +445,9 @@ oldRoles:any=[];
     this.spinner.hide();
     if(error.status == 0) {
       this.notifyService.showError("Internal Server Error/Connection not established", "")
-     }else if(error.status==403){
+     }else if(error.status==401){
+      console.error("Unauthorised");
+    }else if(error.status==403){
       this.router.navigate(['/forbidden']);
     }else if (error.error && error.error.message) {
       this.errorMsg = error.error.message;
@@ -481,7 +489,9 @@ oldRoles:any=[];
     this.spinner.hide();
     if(error.status == 0) {
       this.notifyService.showError("Internal Server Error/Connection not established", "")
-     }else if(error.status==403){
+     }else if(error.status==401){
+      console.error("Unauthorised");
+    }else if(error.status==403){
       this.router.navigate(['/forbidden']);
     }else if (error.error && error.error.message) {
       this.errorMsg = error.error.message;
@@ -608,7 +618,9 @@ getWriteIcon(writePrv: boolean): string {
       this.spinner.hide();
       if(error.status == 0) {
         this.notifyService.showError("Internal Server Error/Connection not established", "")
-       }else if(error.status==403){
+       }else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
         this.router.navigate(['/forbidden']);
       }else if (error.error && error.error.message) {
         this.errorMsg = error.error.message;

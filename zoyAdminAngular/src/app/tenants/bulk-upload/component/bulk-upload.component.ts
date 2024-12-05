@@ -141,8 +141,10 @@ export class BulkUploadComponent {
 		   this.spinner.hide();
 		   if(error.status == 0) {
 			this.notifyService.showError("Internal Server Error/Connection not established", "")
-		    }else if(error.status==403){
-		   this.router.navigate(['/forbidden']);
+		    }else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
+		       this.router.navigate(['/forbidden']);
 		     }else if (error.error && error.error.message) {
 			 this.errorMsg =error.error.message;
 			 console.log("Error:"+this.errorMsg);
@@ -222,7 +224,9 @@ export class BulkUploadComponent {
 			this.spinner.hide();		
 			if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
-			 }else if(error?.status==409){
+			 }else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error?.status==409){
 				if(error?.error?.data){
 					this.resetModel();
 					this.uploadErrorModalList=error.error.data;
@@ -272,7 +276,9 @@ export class BulkUploadComponent {
 					this.spinner.hide();
 					if(error.status == 0) {
 						this.notifyService.showError("Internal Server Error/Connection not established", "")
-					 }else if(error?.status==409){
+					 }else if(error.status==401){
+						console.error("Unauthorised");
+					}else if(error?.status==409){
             				if(error?.error?.data){
 								this.resetModel();
 								this.uploadErrorModalList=error.error.data;
@@ -337,7 +343,9 @@ export class BulkUploadComponent {
 		this.spinner.hide();
 		if(error.status == 0) {
 			this.notifyService.showError("Internal Server Error/Connection not established", "")
-		 }else if(error.status==403){
+		 }else if(error.status==401){
+			console.error("Unauthorised");
+		}else if(error.status==403){
 		  this.router.navigate(['/forbidden']);
 		}else if (error.error && error.error.message) {
 		  this.errorMsg =error.error.message;
