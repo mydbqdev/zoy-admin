@@ -270,6 +270,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 			List<Object[]> pgOwnerBusinessDetails = pgOwnerMaterRepository.getPgOwnerBusinessInfo(ownerId);
 			List<PgOwnerBusinessInfo> businessInfoList = new ArrayList<>();
+			if (pgOwnerBusinessDetails != null && !pgOwnerBusinessDetails.isEmpty()) {				
 			for (Object[] details : pgOwnerBusinessDetails) {
 				PgOwnerBusinessInfo businessInfo = new PgOwnerBusinessInfo();
 				businessInfo.setAccountNumber(details[0] != null ? details[0].toString() : null);
@@ -279,7 +280,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				businessInfo.setAccountType(details[4] != null ? details[4].toString() : null);
 				businessInfoList.add(businessInfo);
 			}
-
+			}
 			List<Object[]> propertyDetailsList = pgOwnerMaterRepository.getPropertyDetailsByOwnerId(ownerId);
 			Map<String, PgOwnerPropertyInformation> propertyMap = new HashMap<>();
 
@@ -290,6 +291,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				PgOwnerPropertyInformation propertyInfo = propertyMap.computeIfAbsent(propertyId, key -> {
 					PgOwnerPropertyInformation newProperty = new PgOwnerPropertyInformation();
 					newProperty.setPropertyName(property[0] != null ? property[0].toString() : null);
+					newProperty.setPropertyId(propertyId);
 					newProperty.setStatus(property[1] != null ? property[1].toString() : null);
 					BasicPropertyInformation basicPropertyInfo = new BasicPropertyInformation();
 					basicPropertyInfo.setPgType(property[2] != null ? property[2].toString() : null);
@@ -345,6 +347,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 							.orElseGet(() -> {
 								FloorInformation newFloor = new FloorInformation();
 								newFloor.setFloorName(floorName);
+								newFloor.setFloorId(floorId);
 								newFloor.setTotalRooms(floorDetail.length > 0 && floorDetail[0] != null ? floorDetail[0].toString() : "0");
 								newFloor.setTotalOccupancy(floorDetail.length > 1 && floorDetail[1] != null ? floorDetail[1].toString() : "0");
 								newFloor.setOccupied(floorDetail.length > 2 && floorDetail[2] != null ? floorDetail[2].toString() : "0");

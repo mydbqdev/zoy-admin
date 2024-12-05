@@ -4,6 +4,7 @@ import java.util.List;
 
 public class FloorInformation {
 	private String floorName;
+	private String floorId;
 	private String totalRooms;
 	private String totalOccupancy;
 	private String occupied;
@@ -60,11 +61,23 @@ public class FloorInformation {
 		this.rooms = rooms;
 	}
 
+	
+	public String getFloorId() {
+		return floorId;
+	}
+
+	public void setFloorId(String floorId) {
+		this.floorId = floorId;
+	}
+
 	@Override
 	public String toString() {
-		return "FloorInformation [floorName=" + floorName + ", totalRooms=" + totalRooms + ", totalOccupancy="
-				+ totalOccupancy + ", occupied=" + occupied + ", vacant=" + vacant + ", rooms=" + rooms + "]";
+		return "FloorInformation [floorName=" + floorName + ", floorId=" + floorId + ", totalRooms=" + totalRooms
+				+ ", totalOccupancy=" + totalOccupancy + ", occupied=" + occupied + ", vacant=" + vacant + ", rooms="
+				+ rooms + "]";
 	}
+
+	
 
 	
 }

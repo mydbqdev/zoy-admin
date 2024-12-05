@@ -189,7 +189,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	List<Object[]> getPropertyDetailsByOwnerId(String pgownerid);
 
 
-	@Query(value ="SELECT \r\n"
+	@Query(value =" SELECT \r\n"
 			+ "    b.user_account_number AS account_number,\r\n"
 			+ "    b.user_bank_name AS bank_name,\r\n"
 			+ "    b.user_bank_branch AS bank_branch,\r\n"
@@ -200,10 +200,10 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 			+ "    END AS account_type\r\n"
 			+ "FROM \r\n"
 			+ "    pgowners.zoy_pg_owner_details o\r\n"
-			+ "LEFT JOIN \r\n"
+			+ "JOIN \r\n"
 			+ "    pgcommon.bank_master bm ON o.pg_owner_id = bm.user_id\r\n"
-			+ "LEFT JOIN \r\n"
-			+ "    pgcommon.bank_details b ON bm.user_bank_id = b.user_bank_id\r\n"
+			+ "JOIN \r\n"
+			+ " pgcommon.bank_details b ON bm.user_bank_id = b.user_bank_id\r\n"
 			+ "WHERE \r\n"
 			+ "    o.pg_owner_id = :pgownerid", nativeQuery = true)
 	List<Object[]>getPgOwnerBusinessInfo(String pgownerid);
@@ -276,6 +276,16 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
             "LEFT JOIN pgowners.zoy_pg_room_beds rb ON rd.room_id = rb.room_id " +
             "WHERE pf.property_id = :propertyId", nativeQuery = true)
 	List<Object[]> getActiveFloorsAndTotalBedsByPropertyId(String propertyId);
+	
+	
+	@Query(value = "SELECT \r\n"
+			+ "    o.pg_owner_id AS ownerId,\r\n"
+			+ "    o.pg_owner_name AS ownerName,\r\n"
+			+ "    o.pg_owner_email AS ownerEmail\r\n"
+			+ "FROM pgowners.zoy_pg_owner_details o\r\n"
+			+ "WHERE o.pg_owner_email = :emailId", nativeQuery = true)
+    List<Object[]> getDetailsofEncryptedEMail(String emailId);
+	
 
 
 }

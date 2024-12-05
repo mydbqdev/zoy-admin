@@ -4,6 +4,7 @@ import java.util.List;
 
 public class PgOwnerPropertyInformation {
 	private String propertyName;
+	private String propertyId;
 	private String status;
 	private BasicPropertyInformation basicPropertyInformation;
 	private PgOwnerAdditionalInfo pgOwnerAdditionalInfo;
@@ -53,5 +54,15 @@ public class PgOwnerPropertyInformation {
 		// TODO Auto-generated method stub
 
 	}
+
+	public String getPropertyId() {
+		return propertyId;
+	}
+
+	public void setPropertyId(String propertyId) {
+		this.propertyId = propertyId;
+	}
+	
+	
 
 }
