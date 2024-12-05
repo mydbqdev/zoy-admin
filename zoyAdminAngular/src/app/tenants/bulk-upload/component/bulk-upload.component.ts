@@ -201,6 +201,10 @@ export class BulkUploadComponent {
 			this.form.reset();
 			this.selectedOwner = null ;
 			this.selectedProperty = null;
+			this.filteredOwners = this.ownerSearchControl.valueChanges.pipe(
+				startWith(''),
+				map(value => this.filterOwners(value))
+			  );
 			this.getUploadFileDetails();
 		}
 
@@ -220,6 +224,7 @@ export class BulkUploadComponent {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
 			 }else if(error?.status==409){
 				if(error?.error?.data){
+					this.resetModel();
 					this.uploadErrorModalList=error.error.data;
 					this.openModel.nativeElement.click();   
 				}
@@ -269,6 +274,7 @@ export class BulkUploadComponent {
 						this.notifyService.showError("Internal Server Error/Connection not established", "")
 					 }else if(error?.status==409){
             				if(error?.error?.data){
+								this.resetModel();
 								this.uploadErrorModalList=error.error.data;
 								this.openModel.nativeElement.click();    
 							}
