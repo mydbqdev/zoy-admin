@@ -2,8 +2,8 @@
 export class PgOwnerData {
     profile: Profile;
     pg_ownerbasic_information: PgOwnerBasicInformation;
-    pg_owner_property_information: PgOwnerPropertyInformation[];
-    pg_owner_business_info: PgOwnerBusinessInfo[];
+    pg_owner_property_information: PgOwnerPropertyInformation[]=[];
+    pg_owner_business_info: PgOwnerBusinessInfo[]=[];
   }
 
 // Profile Model
@@ -70,7 +70,7 @@ export class Profile {
   
   // Floor Information Model
   export class FloorInformation {
-    floor_number: string;
+    floor_name: string;
     total_rooms: string;
     total_occupancy: string;
     occupied: string;
@@ -83,10 +83,16 @@ export class Profile {
     room_no: string;
     number_of_beds: string;
     beds_available: string;
+    beds : Beds[];
+  }
+
+   // Beds Model
+   export class Beds {
+    bed_id: string;
+    bed_name: string;
+    availability_status: string;
   }
   
- 
-
   
   
   

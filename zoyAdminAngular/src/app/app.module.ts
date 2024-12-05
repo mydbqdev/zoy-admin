@@ -55,9 +55,9 @@ import { DbMasterConfigurationComponent } from './setting/db-master-configuratio
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DoughnutNgxChartComponent } from './chart/doughnut-ngx';
 import { BarNgxChartComponent } from './chart/barchart-ngx';
-import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { DocumentUploadComponent } from './external/components/document-upload.component';
 import { AppDocumentUploadRoutingModule } from './external/document-upload-routing.module';
+import { ConfigurationMasterComponent } from './setting/configuration-master/components/configuration-master.component';
 
 
 const appRoutes: Routes = [
@@ -95,7 +95,8 @@ const appRoutes: Routes = [
     DbMasterConfigurationComponent,
     DoughnutNgxChartComponent,
     BarNgxChartComponent,
-    DocumentUploadComponent
+    DocumentUploadComponent,
+    ConfigurationMasterComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -118,7 +119,6 @@ const appRoutes: Routes = [
     AppSettingMenuRoutingModule,
     TenantMenuRoutingModule,
     NgxChartsModule,
-    PdfViewerModule,
     AppDocumentUploadRoutingModule,
     ],
   providers: [

@@ -328,7 +328,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			  document.body.appendChild(link);
 			  link.click();
 			}else{
-			  this.notifyService.showWarning(this.reportName+" is not available", "");
+			  this.notifyService.showWarning("The record is not available", "");
 			}
 			this.downloadType='';
 		  }, error => {

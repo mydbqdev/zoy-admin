@@ -1,0 +1,18 @@
+.form-control {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: fit-content;
+  }
+
+  .form-control i {
+    margin-right: -38px;
+  }
+
+  .ms-2 {
+    margin-left: 0.5rem; 
+  }
+  .marginRow{
+    margin-bottom:-20px !important; 
+  }
+
+ 

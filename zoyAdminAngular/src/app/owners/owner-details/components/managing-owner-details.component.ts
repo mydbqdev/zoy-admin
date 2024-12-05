@@ -35,7 +35,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  roomList:Room[]=[]
 	  roomArrayList:any[]=[];
 	  floorInfo:FloorInformation = new FloorInformation();
-	  floorNumber:number=1;
+	  floorName:string='';
 	  property_id:string='';
 	  property_status:string='';
 
@@ -153,17 +153,14 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		if(this.propertyInfo.floor_information.length>0){
 
 			this.floorInfo = this.propertyInfo.floor_information[0];
+			this.floorName = this.floorInfo.floor_name; 
 			this.showRooms();
 		}
 		
 	  }
 	  selectFloor(){
-		if(this.propertyInfo.floor_information.length>=this.floorNumber){
-			this.floorInfo = this.propertyInfo.floor_information[this.floorNumber-1];
+			this.floorInfo = this.propertyInfo.floor_information.find(f=>f.floor_name == this.floorName);
 			this.showRooms();
-		}else{
-			this.floorInfo = new FloorInformation() 
-		}
 	  }
 	 
  	showRooms(){
@@ -198,6 +195,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			this.property_status = this.propertyInfo.status ;
 			if(this.propertyInfo.floor_information.length>0){
 				this.floorInfo = this.propertyInfo.floor_information[0];
+				this.floorName = this.floorInfo.floor_name; 
 				this.showRooms();
 			}
 			
@@ -227,8 +225,8 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			console.log("Error:" + str);
 			this.errorMsg = str;
 			}
-			//if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			this.notifyService.showError(this.errorMsg, "");
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			//this.notifyService.showError(this.errorMsg, "");
 		}
 		});
 	}

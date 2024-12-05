@@ -68,13 +68,13 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
 			.registerTypeAdapter(Timestamp.class, (JsonSerializer<Timestamp>) (src, typeOfSrc, context) -> {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				dateFormat.setTimeZone(TimeZone.getTimeZone("UTC")); 
+				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
 				return new JsonPrimitive(dateFormat.format(src)); 
 			})
 			.registerTypeAdapter(Timestamp.class, (JsonDeserializer<Timestamp>) (json, typeOfT, context) -> {
 				try {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					dateFormat.setTimeZone(TimeZone.getTimeZone("UTC")); 
+					dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
 					return new Timestamp(dateFormat.parse(json.getAsString()).getTime()); 
 				} catch (Exception ex) {
 					throw new JsonParseException("Failed to parse Timestamp", ex);
@@ -83,24 +83,6 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
 	
-	private static final Gson gsonIst = new GsonBuilder()
-	        .setDateFormat("yyyy-MM-dd HH:mm:ss")
-	        .registerTypeAdapter(Timestamp.class, (JsonDeserializer<Timestamp>) (json, typeOfT, context) -> {
-	            try {
-	                SimpleDateFormat utcDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	                utcDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-	                long utcMillis = utcDateFormat.parse(json.getAsString()).getTime();
-
-	                SimpleDateFormat istDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	                istDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
-	                String istDateStr = istDateFormat.format(new Timestamp(utcMillis));
-	                return Timestamp.valueOf(istDateStr);
-	            } catch (Exception ex) {
-	                throw new JsonParseException("Failed to parse Timestamp to IST", ex);
-	            }
-	        })
-	        .create();
-
 	private static final Gson gson2 = new GsonBuilder().create();
 
 
@@ -269,7 +251,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				uploadData.setCreateAt(data.getCreatedAt());
 				bulkUploadDatas.add(uploadData);
 			}
-			return new ResponseEntity<>(gsonIst.toJson(bulkUploadDatas), HttpStatus.OK);
+			return new ResponseEntity<>(gson.toJson(bulkUploadDatas), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error uploading property details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
