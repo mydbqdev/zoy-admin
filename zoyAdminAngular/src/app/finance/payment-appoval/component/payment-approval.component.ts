@@ -24,17 +24,18 @@ import { LiveAnnouncer } from "@angular/cdk/a11y";
 export class PaymentApprovalComponent  implements OnInit,AfterViewInit{
 	public ELEMENT_DATA:PaymentApprovalModel[]=[];
 	dataSource:MatTableDataSource<PaymentApprovalModel>=new MatTableDataSource<PaymentApprovalModel>();
-	displayedColumns: string[] = [ 'zoy_code','owner_name', 'total_amount',  'transaction_date','transaction_no','transaction_approval']; 
+	displayedColumns: string[] = [ 'owner_id','owner_name', 'owner_share', 'status', 'zoy_share', 'acknowledgment']; 
 	pageSizeOptions: number[] = [10, 25, 50];
 	pageSize = 10;
 	@ViewChild(MatSort) sort: MatSort;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	columnSortDirectionsOg: { [key: string]: string | null } = {
-		zoy_code: null,
+		owner_id: null,
 		owner_name: null,
-		total_amount: null,
-		transaction_date: null,
-		transaction_approval: null
+		owner_share: null,
+		status: null,
+		zoy_share: null,
+		acknowledgment:null
 	  };
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	  private _liveAnnouncer = inject(LiveAnnouncer);
@@ -46,6 +47,7 @@ export class PaymentApprovalComponent  implements OnInit,AfterViewInit{
 	@ViewChild(SidebarComponent) sidemenuComp;
 	public rolesArray: string[] = [];
 	userInfo:UserInfo=new UserInfo();
+	selectedRow: any;
   constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private confirmationDialogService :ConfirmationDialogService,
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
@@ -98,6 +100,8 @@ export class PaymentApprovalComponent  implements OnInit,AfterViewInit{
     this.sidemenuComp.expandMenu(5);
     this.sidemenuComp.activeMenu(5,'payment-approval');
     this.dataService.setHeaderName("Owner Transaction Approval");
+	this.dataSource.sort = this.sort;
+	this.dataSource.paginator = this.paginator;
   }
   announceSortChange(sortState: Sort): void {
 	this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
@@ -116,87 +120,103 @@ export class PaymentApprovalComponent  implements OnInit,AfterViewInit{
 	this.dataSource.sort = this.sort;
 	this.dataSource.paginator = this.paginator;
   }
+  openModal(row: any) {
+    const modalElement = document.getElementById('paymentRowSelectionkdrop');
+    if (modalElement) {
+		this.selectedRow = row;
+    }
+  }
 }
+
 
 const mockData = [
 	{
-	  zoy_code: "ZC001",
+	  owner_id: "OWNR001",
 	  owner_name: "John Doe",
-	  total_amount: "1200.50",
-	  transaction_date: "2024-11-15",
-	  transaction_no: "TXN12345",
-	  transaction_approval: "Received",
+	  owner_share: 25000,
+	  status: "Success",
+	  zoy_share: 7000,
+	  acknowledgment: "Received",
 	},
 	{
-	  zoy_code: "ZC002",
+	  owner_id: "OWNR002",
 	  owner_name: "Jane Smith",
-	  total_amount: "850.00",
-	  transaction_date: "2024-11-10",
-	  transaction_no: "TXN12346",
-	  transaction_approval: "Not Receive",
+	  owner_share: 35000,
+	  status: "Failed",
+	  zoy_share: 15000,
+	  acknowledgment: "Pending",
 	},
 	{
-	  zoy_code: "ZC003",
+	  owner_id: "OWNR003",
+	  owner_name: "Michael Johnson",
+	  owner_share: 40000,
+	  status: "Success",
+	  zoy_share: 25000,
+	  acknowledgment: "Received",
+	},
+	{
+	  owner_id: "OWNR004",
 	  owner_name: "Emily Davis",
-	  total_amount: "450.75",
-	  transaction_date: "2024-11-18",
-	  transaction_no: "TXN12347",
-	  transaction_approval: "Received",
+	  owner_share: 30000,
+	  status: "Processing",
+	  zoy_share: 10000,
+	  acknowledgment: "Pending",
 	},
 	{
-	  zoy_code: "ZC004",
-	  owner_name: "Michael Brown",
-	  total_amount: "960.20",
-	  transaction_date: "2024-11-12",
-	  transaction_no: "TXN12348",
-	  transaction_approval: "Not Receive",
+	  owner_id: "OWNR005",
+	  owner_name: "David Wilson",
+	  owner_share: 50000,
+	  status: "Success",
+	  zoy_share: 28000,
+	  acknowledgment: "Received",
 	},
 	{
-	  zoy_code: "ZC005",
-	  owner_name: "Sarah Wilson",
-	  total_amount: "1500.00",
-	  transaction_date: "2024-11-20",
-	  transaction_no: "TXN12349",
-	  transaction_approval: "Received",
+	  owner_id: "OWNR006",
+	  owner_name: "Sarah Brown",
+	  owner_share: 20000,
+	  status: "Failed",
+	  zoy_share: 15000,
+	  acknowledgment: "Not Received",
 	},
 	{
-	  zoy_code: "ZC006",
-	  owner_name: "David Johnson",
-	  total_amount: "700.50",
-	  transaction_date: "2024-11-08",
-	  transaction_no: "TXN12350",
-	  transaction_approval: "Not Receive",
+	  owner_id: "OWNR007",
+	  owner_name: "Robert Taylor",
+	  owner_share: 60000,
+	  status: "Success",
+	  zoy_share: 40000,
+	  acknowledgment: "Received",
 	},
 	{
-	  zoy_code: "ZC007",
-	  owner_name: "Sophia Martinez",
-	  total_amount: "2300.00",
-	  transaction_date: "2024-11-05",
-	  transaction_no: "TXN12351",
-	  transaction_approval: "Received",
+	  owner_id: "OWNR008",
+	  owner_name: "Olivia Martinez",
+	  owner_share: 45000,
+	  status: "Processing",
+	  zoy_share: 18000,
+	  acknowledgment: "Pending",
 	},
 	{
-	  zoy_code: "ZC008",
-	  owner_name: "James Taylor",
-	  total_amount: "1250.75",
-	  transaction_date: "2024-11-16",
-	  transaction_no: "TXN12352",
-	  transaction_approval: "Not Receive",
+	  owner_id: "OWNR009",
+	  owner_name: "Daniel White",
+	  owner_share: 55000,
+	  status: "Success",
+	  zoy_share: 31000,
+	  acknowledgment: "Not Received",
 	},
 	{
-	  zoy_code: "ZC009",
-	  owner_name: "Olivia Harris",
-	  total_amount: "1450.00",
-	  transaction_date: "2024-11-18",
-	  transaction_no: "TXN12353",
-	  transaction_approval: "Received",
+	  owner_id: "OWNR0012",
+	  owner_name: "Sophia Hall",
+	  owner_share: 25000,
+	  status: "Pending",
+	  zoy_share: 9000,
+	  acknowledgment: "Pending",
 	},
 	{
-	  zoy_code: "ZC010",
-	  owner_name: "Liam Scott",
-	  total_amount: "950.25",
-	  transaction_date: "2024-11-20",
-	  transaction_no: "TXN12354",
-	  transaction_approval: "Not Receive",
-	},
+		owner_id: "OWNR0013",
+		owner_name: "Sophia Hall",
+		owner_share: 27000,
+		status: "Pending",
+		zoy_share: 7000,
+		acknowledgment: "Pending",
+	  },
   ];
+  
