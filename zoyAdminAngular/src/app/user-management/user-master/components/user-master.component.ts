@@ -46,6 +46,7 @@ export class UserMasterComponent implements OnInit {
 
 	form: FormGroup;
   userReg : UserDetails=new UserDetails();
+  filterUserData: UserDetails[] = [];
   roles:string[]=['Super Admin','Finance Admin','Support Admin']
   submitted=false;
   dropdownList = [];
@@ -56,7 +57,7 @@ export class UserMasterComponent implements OnInit {
   shouldBeChecked = [];
   checkedApplications: { [key: string]: boolean } = {};
   createOrUpdate:boolean=true;
-
+  searchText:string='';
   @ViewChild(SidebarComponent) sidemenuComp;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -90,6 +91,9 @@ export class UserMasterComponent implements OnInit {
       });
       this.columnSortDirections.fileName= 'asc';
   }
+  stopPropagation(event: MouseEvent): void {
+		event.stopPropagation();
+	  }
   ngOnInit(): void {
     
     this.getUserDetais();
@@ -138,6 +142,9 @@ export class UserMasterComponent implements OnInit {
     this.sidemenuComp.expandMenu(3);
     this.sidemenuComp.activeMenu(3,'user-master');
     this.dataService.setHeaderName("Managing Users");
+    	
+		this.dataSource.sort = this.sort;
+		this.dataSource.paginator = this.paginator;
   }
   getRoleNames(roleModel: any[]): string {
     return roleModel.map(role => role.roleName).join(', ');
@@ -648,5 +655,25 @@ getWriteIcon(writePrv: boolean): string {
       () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
       ); 
     } 
+   
+    filterData(){
+      console.log("Hi");
+      if(this.searchText==''){
+        this.ELEMENT_DATA = Object.assign([],this.filterUserData);
+          this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+      }else{
+        alert("Hello");
+        const pagedData = Object.assign([],this.filterUserData.filter(data =>
+          data.firstName.toLowerCase().includes(this.searchText.toLowerCase()) || data.userEmail.toLowerCase().includes(this.searchText.toLowerCase()) || data.designation.toLowerCase().includes(this.searchText.toLowerCase()) 
+        ));
+        this.ELEMENT_DATA = Object.assign([],pagedData);
+          this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+      }
+    }
+		
+	resetFilter(){
+		this.searchText='';
+		this.paginator.pageIndex=0;
+	}
 
 }
