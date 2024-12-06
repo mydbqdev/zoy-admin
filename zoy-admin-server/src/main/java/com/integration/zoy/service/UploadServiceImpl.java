@@ -271,6 +271,10 @@ public class UploadServiceImpl {
 	public List<UserPayment> saveAllUserPayment(List<UserPayment> userPayment) {
 		return userPaymentRepository.saveAll(userPayment);
 		
-	};
+	}
+
+	public List<ZoyPgBedDetails> updateAllBeds(List<ZoyPgBedDetails> bedDetails) {
+		return zoyPgBedDetailsRepository.saveAll(bedDetails);
+	}
 
 }
