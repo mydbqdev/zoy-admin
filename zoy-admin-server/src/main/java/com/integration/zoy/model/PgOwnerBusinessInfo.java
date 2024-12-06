@@ -6,6 +6,14 @@ public class PgOwnerBusinessInfo {
 	private String bankBranch;
 	private String ifscCode;
 
+	public PgOwnerBusinessInfo(String accountNumber, String bankName, String bankBranch, String ifscCode,String accountType) {
+		this.accountNumber=accountNumber;
+		this.bankName=bankName;
+		this.bankBranch=bankBranch;
+		this.ifscCode=ifscCode;
+		this.accountType=accountType;
+	}
+
 	public String getAccountNumber() {
 		return accountNumber;
 	}
