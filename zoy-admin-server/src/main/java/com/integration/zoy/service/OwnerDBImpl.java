@@ -1,11 +1,8 @@
 package com.integration.zoy.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import com.integration.zoy.entity.UserDueMaster;
-import com.integration.zoy.entity.UserMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgBedDetails;
@@ -21,13 +18,14 @@ import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
+import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
+import com.integration.zoy.entity.ZoyPgSecurityDepositRefundRule;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.entity.ZoyShareMaster;
-import com.integration.zoy.model.ZoyShareDetails;
 
 public interface OwnerDBImpl {
 
@@ -101,7 +99,7 @@ public interface OwnerDBImpl {
 	ZoyPgBedDetails getBedsId(String selectedBed);
 	List<String> findPropertyAmenetiesName(String propertyId);
 	ZoyPgTermsMaster findTermMaster(String propertyId);
-	ZoyPgTokenDetails findTokenDetails(String tokenId);
+	ZoyPgTokenDetails findTokenDetails();
 	ZoyPgTokenDetails saveToken(ZoyPgTokenDetails tokenDetails);
 	List<ZoyPgTokenDetails> findAllToken();
 	List<ZoyPgDueMaster> findAllDueMaster();
@@ -114,12 +112,13 @@ public interface OwnerDBImpl {
 	ZoyShareMaster findZoyShareDetails(String zoyShareId);
 	ZoyShareMaster saveZoyShare(ZoyShareMaster shareDetails);
 	List<ZoyShareMaster> findAllZoyShare();
-	ZoyPgOtherCharges findZoyOtherCharges(String otherChargesId);
+	ZoyPgOtherCharges findZoyOtherCharges();
 	ZoyPgOtherCharges saveOtherCharges(ZoyPgOtherCharges other);
-	List<ZoyPgOtherCharges> findAllOtherCharges();
-	ZoyDataGrouping findZoyDataGroup(String dataGroupingId);
+	ZoyDataGrouping findZoyDataGroup();
 	ZoyDataGrouping saveDataGroup(ZoyDataGrouping group);
 	List<ZoyDataGrouping> findAllDataGroup();
-	
-
+	ZoyPgSecurityDepositDetails findZoySecurityDeposit();
+	ZoyPgSecurityDepositDetails saveZoySecurityDepositLimits(ZoyPgSecurityDepositDetails group);
+	ZoyPgSecurityDepositRefundRule findSecurityDepositRefundRuleById();
+	ZoyPgSecurityDepositRefundRule saveSecurityDepositRefundRule(ZoyPgSecurityDepositRefundRule rule);
 }
