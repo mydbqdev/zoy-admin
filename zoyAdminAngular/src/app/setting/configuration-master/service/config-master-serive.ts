@@ -4,7 +4,7 @@ import { Observable,of } from 'rxjs';
 import { ServiceHelper } from 'src/app/common/shared/service-helper';
 import { BASE_PATH } from 'src/app/common/shared/variables';
 import { MessageService } from 'src/app/message.service';
-import { DataGroupingModel, SecurityDepositLimitsModel, TokenDetailsModel } from "../models/config-master-model";
+import { BeforeCheckInCancellationRefundModel, DataGroupingModel, SecurityDepositLimitsModel, SecurityDepositRefundModel, TokenDetailsModel } from "../models/config-master-model";
 
 @Injectable({
     providedIn: 'root'
@@ -30,7 +30,7 @@ import { DataGroupingModel, SecurityDepositLimitsModel, TokenDetailsModel } from
                 }
             );
     } 
-     public UpdateTokenAdvanceDetails(data:TokenDetailsModel): Observable<any> {
+     public updateTokenAdvanceDetails(data:TokenDetailsModel): Observable<any> {
             const url1=this.basePath +"zoy_admin/UpdateTokenAdvanceDetails";
             return  this.httpclient.post<any>(
                 url1,
@@ -42,7 +42,7 @@ import { DataGroupingModel, SecurityDepositLimitsModel, TokenDetailsModel } from
                 }
             );
     } 
-    public UpdatesecurityDepositLimitsDetails(data:SecurityDepositLimitsModel): Observable<any> {
+    public updatesecurityDepositLimitsDetails(data:SecurityDepositLimitsModel): Observable<any> {
         const url1=this.basePath +"zoy_admin/UpdatesecurityDepositLimitsDetails";
         return  this.httpclient.post<any>(
             url1,
@@ -54,7 +54,7 @@ import { DataGroupingModel, SecurityDepositLimitsModel, TokenDetailsModel } from
             }
         );
     }    
-    public UpdateDataGroupingDetails(data:DataGroupingModel): Observable<any> {
+    public updateDataGroupingDetails(data:DataGroupingModel): Observable<any> {
         const url1=this.basePath +"zoy_admin/UpdateDataGroupingDetails";
         return  this.httpclient.post<any>(
             url1,
@@ -66,7 +66,31 @@ import { DataGroupingModel, SecurityDepositLimitsModel, TokenDetailsModel } from
             }
         );
     } 
-   
+
+    public submitBeforeCheckInCRfDetails(data:BeforeCheckInCancellationRefundModel): Observable<any> {
+        const url1=this.basePath +"zoy_admin/submitBeforeCheckInCRfDetails";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    }
+    public updatesecurityDepositRefundDetails(data:SecurityDepositRefundModel): Observable<any> {
+        const url1=this.basePath +"zoy_admin/updatesecurityDepositRefundDetails";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    } 
 
       private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");    
