@@ -3,12 +3,15 @@ package com.integration.zoy.controller;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +52,7 @@ import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.ZoyCodeGenerationService;
 import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.utils.ResponseBody;
+import com.integration.zoy.utils.Ameneties.Amenetie;
 
 @RestController
 @RequestMapping("")
@@ -242,148 +246,146 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 		ResponseBody response = new ResponseBody();
 
 		try {
-			List<Object[]> pgOwnerProfileDetails = pgOwnerMaterRepository.getPgOwnerProfileDetails(ownerId);
-			if (pgOwnerProfileDetails == null || pgOwnerProfileDetails.isEmpty()) {
+			List<String[]> ownerPropertyDetails = pgOwnerMaterRepository.getOwnerPropertyDetails(ownerId);
+			if (ownerPropertyDetails == null || ownerPropertyDetails.isEmpty()) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 				response.setError("Owner details not found.");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
 
 			PgOwnerProfile profile = new PgOwnerProfile();
-			for (Object[] details : pgOwnerProfileDetails) {
-				profile.setOwnerID(details[0] != null ? details[0].toString() : null);
-				profile.setOwnerName(details[1] != null ? details[1].toString() : null);
-				profile.setStatus(details[2] != null ? details[2].toString() : null);
-				profile.setProfilePhoto( details[3] != null ? details[3].toString() : null);
-			}
 
-			List<Object[]> pgOwnerBasicDetails = pgOwnerMaterRepository.getPgOwnerBasicInfo(ownerId);
+			String[] details = ownerPropertyDetails.get(0);
+			profile.setOwnerID(details[0] != null ? details[0] : null);
+			profile.setOwnerName(details[1] != null ? details[1] : null);
+			profile.setStatus(details[8] != null ? details[8].toString() : null);
+			profile.setProfilePhoto( details[9] != null ? details[9].toString() : null);
 			PgOwnerbasicInformation basicInformation = new PgOwnerbasicInformation();
-			for (Object[] details : pgOwnerBasicDetails) {
-				basicInformation.setFirstName(details[0] != null ? details[0].toString() : null);
-				basicInformation.setLastName(details[1] != null ? details[1].toString() : null);
-				basicInformation.setEmail(details[2] != null ? details[2].toString() : null);
-				basicInformation.setContact(details[3] != null ? details[3].toString() : null);
-				basicInformation.setAadhar(details[4] != null ? details[4].toString() : null);
-				basicInformation.setAddress(details[5] != null ? details[5].toString() : null);
-			}
-
-			List<Object[]> pgOwnerBusinessDetails = pgOwnerMaterRepository.getPgOwnerBusinessInfo(ownerId);
-			List<PgOwnerBusinessInfo> businessInfoList = new ArrayList<>();
-			if (pgOwnerBusinessDetails != null && !pgOwnerBusinessDetails.isEmpty()) {				
-			for (Object[] details : pgOwnerBusinessDetails) {
-				PgOwnerBusinessInfo businessInfo = new PgOwnerBusinessInfo();
-				businessInfo.setAccountNumber(details[0] != null ? details[0].toString() : null);
-				businessInfo.setBankName(details[1] != null ? details[1].toString() : null);
-				businessInfo.setBankBranch(details[2] != null ? details[2].toString() : null);
-				businessInfo.setIfscCode(details[3] != null ? details[3].toString() : null);
-				businessInfo.setAccountType(details[4] != null ? details[4].toString() : null);
-				businessInfoList.add(businessInfo);
-			}
-			}
-			List<Object[]> propertyDetailsList = pgOwnerMaterRepository.getPropertyDetailsByOwnerId(ownerId);
+			basicInformation.setFirstName(details[2] != null ? details[2].toString() : null);
+			basicInformation.setLastName(details[3] != null ? details[3].toString() : null);
+			basicInformation.setEmail(details[4] != null ? details[4].toString() : null);
+			basicInformation.setContact(details[5] != null ? details[5].toString() : null);
+			basicInformation.setAadhar(details[6] != null ? details[6].toString() : null);
+			basicInformation.setAddress(details[7] != null ? details[7].toString() : null);
 			Map<String, PgOwnerPropertyInformation> propertyMap = new HashMap<>();
 
-			for (Object[] property : propertyDetailsList) {
-				String propertyId = property[29] != null ? property[29].toString() : null;
+			for (String[] property : ownerPropertyDetails) {
+				String propertyId = property[11] != null ? property[11].toString() : null;
 				if (propertyId == null) continue;
 
 				PgOwnerPropertyInformation propertyInfo = propertyMap.computeIfAbsent(propertyId, key -> {
 					PgOwnerPropertyInformation newProperty = new PgOwnerPropertyInformation();
-					newProperty.setPropertyName(property[0] != null ? property[0].toString() : null);
+					newProperty.setPropertyName(property[12] != null ? property[12].toString() : null);
 					newProperty.setPropertyId(propertyId);
-					newProperty.setStatus(property[1] != null ? property[1].toString() : null);
+					newProperty.setStatus(property[13] != null ? property[13].toString() : null);
 					BasicPropertyInformation basicPropertyInfo = new BasicPropertyInformation();
-					basicPropertyInfo.setPgType(property[2] != null ? property[2].toString() : null);
-					basicPropertyInfo.setPgAddress(property[3] != null ? property[3].toString() : null);
-					basicPropertyInfo.setManagerName(property[4] != null ? property[4].toString() : null);
-					basicPropertyInfo.setManagerContact(property[5] != null ? property[5].toString() : null);
-					basicPropertyInfo.setManagerEmailid(property[6] != null ? property[6].toString() : null);
-					List<Object[]> results = pgOwnerMaterRepository.getActiveFloorsAndTotalBedsByPropertyId(propertyId);
-
-					if (results != null && !results.isEmpty()) {
-						Object[] result = results.get(0); 
-						if (result != null && result.length >= 2) {
-							Integer activeFloors = result[0] != null ? Integer.parseInt(result[0].toString()) : 0;
-							Integer totalBeds = result[1] != null ? Integer.parseInt(result[1].toString()) : 0;
-							basicPropertyInfo.setNumberOfFloors(activeFloors.toString());
-							basicPropertyInfo.setTotalOccupancy(totalBeds.toString());
-						}
-					}
-
-					basicPropertyInfo.setGstNumber(property[9] != null ? property[9].toString() : null);
-					basicPropertyInfo.setCin(property[10] != null ? property[10].toString() : null);
-					basicPropertyInfo.setGstOwnershiProofNumber(property[11] != null ? property[11].toString() : null);
+					basicPropertyInfo.setPgType(property[14] != null ? property[14].toString() : null);
+					basicPropertyInfo.setPgAddress(property[15] != null ? property[15].toString() : null);
+					basicPropertyInfo.setManagerName(property[16] != null ? property[16].toString() : null);
+					basicPropertyInfo.setManagerContact(property[17] != null ? property[17].toString() : null);
+					basicPropertyInfo.setManagerEmailid(property[18] != null ? property[18].toString() : null);
+					basicPropertyInfo.setGstNumber(property[19] != null ? property[19].toString() : null);
+					basicPropertyInfo.setCin(property[20] != null ? property[20].toString() : null);
+					basicPropertyInfo.setGstOwnershiProofNumber(property[21] != null ? property[21].toString() : null);
 
 					PgOwnerAdditionalInfo additionalInfo = new PgOwnerAdditionalInfo();
-					additionalInfo.setSecurityDeposit(property[20] != null ? property[20].toString() : null);
-					additionalInfo.setNoticePeriod(property[21] != null ? property[21].toString() : null);
-					additionalInfo.setRentCycle(property[22] != null ? property[22].toString() : null);
-					additionalInfo.setLatePaymentFee(property[23] != null ? property[23].toString() : null);
-					additionalInfo.setGracePeriod(property[24] != null ? property[24].toString() : null);
-					additionalInfo.setAdditionalCharges(property[25] != null ? property[25].toString() : null);
-					additionalInfo.setAgreementCharges(property[26] != null ? property[26].toString() : null);
-					additionalInfo.setEkycCharges(property[27] != null ? property[27].toString() : null);
-					additionalInfo.setPropertyDescription(property[28] != null ? property[28].toString() : null);
+					additionalInfo.setSecurityDeposit(property[22] != null ? property[22].toString() : null);
+					additionalInfo.setNoticePeriod(property[23] != null ? property[23].toString() : null);
+					additionalInfo.setRentCycle(property[24] != null ? property[24].toString() : null);
+					additionalInfo.setLatePaymentFee(property[25] != null ? property[25].toString() : null);
+					additionalInfo.setGracePeriod(property[26] != null ? property[26].toString() : null);
+					additionalInfo.setAdditionalCharges(property[27] != null ? property[27].toString() : null);
+					additionalInfo.setAgreementCharges(property[28] != null ? property[28].toString() : null);
+					additionalInfo.setEkycCharges(property[29] != null ? property[29].toString() : null);
+					additionalInfo.setPropertyDescription(property[30] != null ? property[30].toString() : null);
 
 					newProperty.setPgOwnerAdditionalInfo(additionalInfo);
 					newProperty.setBasicPropertyInformation(basicPropertyInfo);
-					newProperty.setFloorInformation(new ArrayList<>());
+					Map<String, String> allFloors = new LinkedHashMap<>(); 
+					LinkedHashMap<String, Room> rooms = new LinkedHashMap<>(); 
+					int totalBeds = 0;
+					for (String[] data : ownerPropertyDetails) {
+						int totalRoomBeds = 0,totalAvailableBeds = 0, totalOccupiedBeds = 0, totalNoticeBeds = 0;
+						String floorName = data[32];
+						String floorId = data[31];
 
+						allFloors.putIfAbsent(floorId, floorName);
+
+						if (data[33] == null && data[34] == null) {
+							continue; 
+						}
+
+						String availableBedsStr = data[35] != null ? data[35] : "";
+						String occupiedBedsStr = data[36] != null ? data[36] : "";
+
+						int availableBedsCount = availableBedsStr.isEmpty() ? 0 : availableBedsStr.split(",").length;
+						int occupiedBedsCount = occupiedBedsStr.isEmpty() ? 0 : occupiedBedsStr.split(",").length;
+
+						totalAvailableBeds += availableBedsCount;
+						totalOccupiedBeds += occupiedBedsCount;
+						totalBeds += availableBedsCount + occupiedBedsCount;
+						totalRoomBeds+= availableBedsCount + occupiedBedsCount;
+						Room roomResponse = new Room();
+						roomResponse.setFloorId(floorId);
+						roomResponse.setRoomNo(data[34]);
+						roomResponse.setBedsAvailable(String.valueOf(totalAvailableBeds));
+						roomResponse.setBedsOccupied(String.valueOf(totalOccupiedBeds));
+						roomResponse.setNumberOfBeds(String.valueOf(totalRoomBeds));
+						if(data[35] != null && !data[35].isEmpty()) {
+							roomResponse.setBeds(data[35] != null ? Arrays.stream(data[35].split(","))
+									.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 3)   
+									.map(parts -> new Bed(parts[0], parts[1],parts[2]))
+									.collect(Collectors.toList()) : new ArrayList<>());
+						}
+						if(data[36] != null && !data[36].isEmpty()) {
+							roomResponse.setBeds(data[36] != null ? Arrays.stream(data[36].split(","))
+									.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 3)   
+									.map(parts -> new Bed(parts[0], parts[1],parts[2]))
+									.collect(Collectors.toList()) : new ArrayList<>());
+						}
+						rooms.put(roomResponse.getRoomNo(), roomResponse);
+					}
+					LinkedHashMap<String, FloorInformation> floors = new LinkedHashMap<>();
+					for (Map.Entry<String, String> floorEntry : allFloors.entrySet()) {
+						String floorId = floorEntry.getKey();
+						String floorName = floorEntry.getValue();
+
+						LinkedHashMap<String, Room> filteredRooms = rooms.values().stream()
+								.filter(room -> room.getFloorId().equals(floorId))
+								.collect(Collectors.toMap(Room::getRoomNo, room -> room, (existing, replacement) -> existing, LinkedHashMap::new));
+
+						int floorTotalBeds = 0, floorAvailableBeds = 0, floorOccupiedBeds = 0, floorNoticeBeds = 0;
+						for (Room room : filteredRooms.values()) {
+							floorTotalBeds += Integer.valueOf(room.getBedsAvailable()) + Integer.valueOf(room.getBedsOccupied());
+							floorAvailableBeds += Integer.valueOf(room.getBedsAvailable());
+							floorOccupiedBeds += Integer.valueOf(room.getBedsOccupied());
+						}
+
+						FloorInformation floorLevelDetails = new FloorInformation();
+						floorLevelDetails.setFloorName(floorName);
+						floorLevelDetails.setFloorId(floorId);
+						floorLevelDetails.setOccupied(String.valueOf(floorOccupiedBeds));
+						floorLevelDetails.setTotalOccupancy(String.valueOf(floorTotalBeds));
+						floorLevelDetails.setVacant(String.valueOf(floorTotalBeds-floorOccupiedBeds));
+						floorLevelDetails.setTotalRooms(String.valueOf(filteredRooms.size()));
+
+						floorLevelDetails.setRooms(new ArrayList<>(filteredRooms.values()));
+						floors.put(floorName, floorLevelDetails);
+					}
+					newProperty.setFloorInformation(new ArrayList<>(floors.values()));
+					basicPropertyInfo.setNumberOfFloors(String.valueOf(floors.size()));
+					basicPropertyInfo.setTotalOccupancy(String.valueOf(totalBeds));
 					return newProperty;
 				});
-
-				String floorId = property[30] != null ? property[30].toString() : null;
-				String floorName = property[31] != null ? property[31].toString() : null;
-
-
-				if (floorName != null && floorId != null) {
-					List<Object[]> floorDetails = pgOwnerMaterRepository.getFloorDetailsByFloorId(floorId);
-					Object[] floorDetail = floorDetails.isEmpty() ? new Object[0] : floorDetails.get(0);
-
-					FloorInformation floorInfo = propertyInfo.getFloorInformation().stream()
-							.filter(floor -> floor.getFloorName().equals(floorName))
-							.findFirst()
-							.orElseGet(() -> {
-								FloorInformation newFloor = new FloorInformation();
-								newFloor.setFloorName(floorName);
-								newFloor.setFloorId(floorId);
-								newFloor.setTotalRooms(floorDetail.length > 0 && floorDetail[0] != null ? floorDetail[0].toString() : "0");
-								newFloor.setTotalOccupancy(floorDetail.length > 1 && floorDetail[1] != null ? floorDetail[1].toString() : "0");
-								newFloor.setOccupied(floorDetail.length > 2 && floorDetail[2] != null ? floorDetail[2].toString() : "0");
-								newFloor.setVacant(floorDetail.length > 3 && floorDetail[3] != null ? floorDetail[3].toString() : "0");
-								newFloor.setRooms(new ArrayList<>());
-								propertyInfo.getFloorInformation().add(newFloor);
-								return newFloor;
-							});
-
-					String roomNo = property[17] != null ? property[17].toString() : null;
-					if (roomNo != null) {
-						Room room = new Room();
-						room.setRoomNo(roomNo);
-						room.setNumberOfBeds(property[18] != null ? property[18].toString() : "0");
-						room.setBedsAvailable(property[19] != null ? property[19].toString() : "0");
-
-						String roomId = pgOwnerMaterRepository.getRoomIdByRoomNumberAndFloor(roomNo, floorId);
-						List<Object[]> bedDetails = pgOwnerMaterRepository.getBedDetailsByRoomId(roomId);
-						List<Bed> bedList = new ArrayList<>();
-						for (Object[] bedDetail : bedDetails) {
-							Bed bed = new Bed();
-							bed.setBedId(bedDetail[0].toString());
-							bed.setBedName(bedDetail[1].toString());
-							bed.setAvailabilityStatus(bedDetail[2].toString()); 
-							bedList.add(bed);
-						}
-						room.setBeds(bedList);
-						floorInfo.getRooms().add(room);
-					}
-				}
 			}
 
 			PgOwnerdetailPortfolio root = new PgOwnerdetailPortfolio();
 			root.setProfile(profile);
 			root.setPgOwnerbasicInformation(basicInformation);
-			root.setPgOwnerBusinessInfo(businessInfoList);
+			root.setPgOwnerBusinessInfo(details[10] != null ? Arrays.stream(details[10].split(","))
+					.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 5)   
+					.map(parts -> new PgOwnerBusinessInfo(parts[0], parts[1],parts[2],parts[3],parts[4]))
+					.collect(Collectors.toList()) : new ArrayList<>());
 			root.setPgOwnerPropertyInformation(new ArrayList<>(propertyMap.values()));
 
 			response.setStatus(HttpStatus.OK.value());
