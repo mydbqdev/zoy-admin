@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -53,7 +52,7 @@ import com.integration.zoy.utils.ResponseBody;
 @RestController
 @RequestMapping("")
 public class PgOwnerMasterController implements PgOwnerMasterImpl {
-
+	private static final Logger log=LoggerFactory.getLogger(PgOwnerMasterController.class);
 	@Autowired
 	private PgOwnerMaterRepository pgOwnerMaterRepository;
 
@@ -77,7 +76,6 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	private String qaRegistrationLink;
 
 
-	private static final Logger log = LoggerFactory.getLogger(PgOwnerMasterController.class);  // Fixed logger reference
 	private static final Gson gson = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
 			.registerTypeAdapter(Timestamp.class, (JsonSerializer<Timestamp>) (src, typeOfSrc, context) -> {
@@ -172,7 +170,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 	public ResponseEntity<String> pgOwnerDetailsGet() {
 		ResponseBody response = new ResponseBody();
-
+		log.info("Testing logs");
 		try {
 			List<Object[]> allPgOwnerDetails = pgOwnerMaterRepository.getAllPgOwnerDetails();
 
