@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { ConfigMasterService } from '../service/config-master-serive';
-import { ConfigMasterModel } from '../models/config-master-model';
+import { BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, SecurityDepositLimitsModel, SecurityDepositRefundModel, TokenDetailsModel } from '../models/config-master-model';
 
 
 @Component({
@@ -74,7 +74,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  //	this.router.navigate(['/']);
 		  //}
 		 
-		  
+		  this.configMasterOrg = Object.assign(new ConfigMasterModel(), this.configMasterMockData );
+			this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
+			
 	  }
 	  ngAfterViewInit() {
 		  this.sidemenuComp.expandMenu(4);
@@ -150,8 +152,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}
 		
 		this.spinner.show();
-		this.configMasterService.UpdateTokenAdvanceDetails(this.configMasterModel.tokenDetailsModel).subscribe(res => {
-			this.configMasterOrg.tokenDetailsModel = Object.assign(new ConfigMasterModel(), res.data );
+		this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetailsModel).subscribe(res => {
+			this.configMasterOrg.tokenDetailsModel = Object.assign(new TokenDetailsModel(), res.data );
 			this.configMasterModel.tokenDetailsModel = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetailsModel));
 			this.tokenAdvancDisabled = true;
 			this.spinner.hide();
@@ -210,8 +212,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			}
 			
 			this.spinner.show();
-			this.configMasterService.UpdatesecurityDepositLimitsDetails(this.configMasterModel.securityDepositLimitsModel).subscribe(res => {
-				this.configMasterOrg.securityDepositLimitsModel = Object.assign(new ConfigMasterModel(), res.data );
+			this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.securityDepositLimitsModel).subscribe(res => {
+				this.configMasterOrg.securityDepositLimitsModel = Object.assign(new SecurityDepositLimitsModel(), res.data );
 				this.configMasterModel.securityDepositLimitsModel = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositLimitsModel));
 				this.securityDepositLimitsDisabled = true;
 				this.spinner.hide();
@@ -260,8 +262,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			}
 			
 			this.spinner.show();
-			this.configMasterService.UpdateDataGroupingDetails(this.configMasterModel.dataGroupingModel).subscribe(res => {
-				this.configMasterOrg.dataGroupingModel = Object.assign(new ConfigMasterModel(), res.data );
+			this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGroupingModel).subscribe(res => {
+				this.configMasterOrg.dataGroupingModel = Object.assign(new DataGroupingModel(), res.data );
 				this.configMasterModel.dataGroupingModel = JSON.parse(JSON.stringify(this.configMasterOrg.dataGroupingModel));
 				this.dataGroupingDisabled = true;
 				this.spinner.hide();
@@ -303,11 +305,161 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.dataGroupingDisabled = true;
 		}
 
+		beforeCheckInCRfModel:BeforeCheckInCancellationRefundModel = new BeforeCheckInCancellationRefundModel()
+		beforeCheckInCRfSaveVali:boolean=false;
+		beforeCheckInCRfSave(){
+			this.beforeCheckInCRfSaveVali = true ;
+			this.authService.checkLoginUserVlidaate();
+			if(this.beforeCheckInCRfModel.daysBeforeCheckIn == 0 ||  !this.beforeCheckInCRfModel.daysBeforeCheckIn || this.beforeCheckInCRfModel.deductionPercentages == 0 ||  !this.beforeCheckInCRfModel.deductionPercentages){
+				return ;
+			}
+			this.configMasterService.submitBeforeCheckInCRfDetails(this.beforeCheckInCRfModel).subscribe(res => {
+				this.configMasterOrg.beforeCheckInCancellationRefund = Object.assign([], res.data );
+				this.configMasterModel.beforeCheckInCancellationRefund = JSON.parse(JSON.stringify(this.configMasterOrg.beforeCheckInCancellationRefund));
+				this.beforeCheckInCRfSaveVali = false ;
+				this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
+				this.spinner.hide();
+				}, error => {
+				this.spinner.hide();
+				if(error.status == 0) {
+				  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			   }else if(error.status==403){
+					this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+				} else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					let str;
+					if (error.status == 400) {
+						str = error.error;
+					} else {
+						str = error.message;
+						str = str.substring(str.indexOf(":") + 1);
+					}
+					console.log("Error:" + str);
+					this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+					//this.notifyService.showError(this.errorMsg, "");
+				}
+				});	
+			
+		}
+
+		beforeCheckInCRfReset(i:number) {
+			this.configMasterModel.beforeCheckInCancellationRefund[i] = JSON.parse(JSON.stringify(this.configMasterOrg.beforeCheckInCancellationRefund[i]));
+		}
+
+		beforeCheckInCRfUpDate(i:number){
+			const model =this.configMasterModel.beforeCheckInCancellationRefund[i] ;
+					
+			if(model.daysBeforeCheckIn == 0 ||  !model.daysBeforeCheckIn || model.deductionPercentages == 0 ||  !model.deductionPercentages){
+				return ;
+			}
+			this.authService.checkLoginUserVlidaate();
+			this.spinner.show();
+			this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
+				this.configMasterOrg.beforeCheckInCancellationRefund = Object.assign([], res.data );
+				this.configMasterModel.beforeCheckInCancellationRefund = JSON.parse(JSON.stringify(this.configMasterOrg.beforeCheckInCancellationRefund));
+				this.spinner.hide();
+				}, error => {
+				this.spinner.hide();
+				if(error.status == 0) {
+				  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			   }else if(error.status==403){
+					this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+				} else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					let str;
+					if (error.status == 400) {
+						str = error.error;
+					} else {
+						str = error.message;
+						str = str.substring(str.indexOf(":") + 1);
+					}
+					console.log("Error:" + str);
+					this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+					//this.notifyService.showError(this.errorMsg, "");
+				}
+				});						
+				
+			
+		}
+
+		securityDepositRefundDisabled: boolean = true;
+	 
+	
+	//   edit() {
+	// 	this.tokenAdvancDisabled = false;
+	//   }
+	
+	securityDepositRefundSubmit() {
+		this.authService.checkLoginUserVlidaate();
+		if(this.configMasterModel.securityDepositRefundModel.maximumDays == 0 || this.configMasterModel.securityDepositRefundModel.deductionPercentages == 0 || !this.configMasterModel.securityDepositRefundModel.deductionPercentages || !this.configMasterModel.securityDepositRefundModel.deductionPercentages ){
+			return
+		}
+		
+		this.spinner.show();
+		this.configMasterService.updatesecurityDepositRefundDetails(this.configMasterModel.securityDepositRefundModel).subscribe(res => {
+			this.configMasterOrg.securityDepositRefundModel = Object.assign(new SecurityDepositRefundModel(), res.data );
+			this.configMasterModel.securityDepositRefundModel = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositRefundModel));
+			this.tokenAdvancDisabled = true;
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error;
+				} else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" + str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});						
+			
+		
+	  }
+	
+	  securityDepositRefundReset() {
+		this.configMasterModel.securityDepositRefundModel = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositRefundModel));
+		this.securityDepositRefundDisabled = true;
+	  }
+
 		gstHidden: boolean = true; 
 		gstValue: number = 10;
 		tempGSTValue: number = this.gstValue; 
 
 		editGST() {
+			this.beforeCheckInCRfModel.daysBeforeCheckIn
 			this.gstHidden = false;
 		}
 		submitGST() {
@@ -352,7 +504,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		percentageOnly(event): boolean {
 			const charCode = (event.which) ? event.which : event.keyCode;
 			const inputValue = event.target.value + String.fromCharCode(charCode); 
-console.log("inputValue",inputValue)
+
 			if (inputValue.startsWith('.')) {
 				return false;
 			  }
@@ -407,6 +559,48 @@ console.log("inputValue",inputValue)
 				//this.notifyService.showError(this.errorMsg, "");
 			}
 			});
-		}		
+		}	
+		
+		 configMasterMockData: ConfigMasterModel = {
+			tokenDetailsModel: {
+				tokenId: 'TKN12345',
+				fixedToken: 500,
+				variableToken: 20
+			},
+			securityDepositLimitsModel: {
+				depositId: 'DEP001',
+				minimumDeposit: 1000,
+				maximumDeposit: 100000
+			},
+			beforeCheckInCancellationRefund: [
+				{
+					cancellationId: 'CCN001',
+					daysBeforeCheckIn: 7,
+					deductionPercentages: 20,
+					bcicrDisable:true
+				},
+				{
+					cancellationId: 'CCN002',
+					daysBeforeCheckIn: 14,
+					deductionPercentages: 15,
+					bcicrDisable:true
+				},
+				{
+					cancellationId: 'CCN003',
+					daysBeforeCheckIn: 2,
+					deductionPercentages: 75,
+					bcicrDisable:true
+				}
+			],
+			securityDepositRefundModel: {
+				refundId: 'REF001',
+				maximumDays: 30,
+				deductionPercentages: 10
+			},
+			dataGroupingModel: {
+				id: 'GROUP001',
+				considerDays: 15
+			}
+		};
 
   }  
