@@ -157,6 +157,7 @@ public class UploadService {
 			List<PgOwnerUserStatus> userStatus=new ArrayList<>();
 			List<UserPgDetails> userPgDetails=new ArrayList<>();
 			List<UserPayment> userPayment=new ArrayList<>();
+			List<ZoyPgBedDetails> bedDetails=new ArrayList<>();
 			List<CsvTenantDetails> tenantDetailsList = csvToBean.parse();
 			for(CsvTenantDetails tenantDetails:tenantDetailsList) {
 				UserMaster userMaster=uploadDBImpl.findUserMaster(tenantDetails.getPhoneNumber(),tenantDetails.getEmail());
@@ -173,12 +174,13 @@ public class UploadService {
 			uploadDBImpl.saveAllUserDetails(userDetails);
 			List<ZoyPgOwnerBookingDetails> bookingDetails=uploadDBImpl.saveAllOwnerBooking(zoyPgOwnerBookingDetails);
 			for(ZoyPgOwnerBookingDetails booking:bookingDetails) {
-				createWebcheckIn(ownerId,booking,userBookingDetails,userStatus,userPgDetails,userPayment);
+				createWebcheckIn(ownerId,booking,userBookingDetails,userStatus,userPgDetails,userPayment,bedDetails);
 			}
 			uploadDBImpl.saveAllUserBookings(userBookingDetails);
 			uploadDBImpl.saveAllUserPgDetails(userPgDetails);
 			uploadDBImpl.saveAllOwnerUserStatus(userStatus);
 			uploadDBImpl.saveAllUserPayment(userPayment);
+			uploadDBImpl.updateAllBeds(bedDetails);
 			for(UserBookings userBooking:userBookingDetails) {
 				ZoyPgPropertyDetails propertyDetail = ownerDBImpl.getPropertyById(userBooking.getUserBookingsPropertyId());
 				ZoyPgOwnerDetails zoyPgOwnerDetails = ownerDBImpl.findPgOwnerById(userBooking.getUserBookingsPgOwnerId());
@@ -216,7 +218,7 @@ public class UploadService {
 
 
 	private void createWebcheckIn(String ownerId,ZoyPgOwnerBookingDetails booking, List<UserBookings> userBookingDetails, 
-			List<PgOwnerUserStatus> userStatus, List<UserPgDetails> userPgDetails,List<UserPayment> userPayment) {
+			List<PgOwnerUserStatus> userStatus, List<UserPgDetails> userPgDetails,List<UserPayment> userPayment,List<ZoyPgBedDetails> bedDetails) {
 		ZoyPgRentCycleMaster rentCycle=uploadDBImpl.findRentCycle(booking.getLockInPeriod());
 		if(rentCycle!=null) {
 			UserBookings details=new UserBookings();
@@ -262,6 +264,10 @@ public class UploadService {
 			payment.setUserPaymentZoyPaymentType("Deposit");
 			userPayment.add(payment);
 
+			ZoyPgBedDetails pgBedDetails=ownerDBImpl.getBedsId(booking.getSelectedBed());
+			pgBedDetails.setBedId(booking.getSelectedBed());
+			pgBedDetails.setBedAvailable("occupied");
+			bedDetails.add(pgBedDetails);
 		}
 	}
 
