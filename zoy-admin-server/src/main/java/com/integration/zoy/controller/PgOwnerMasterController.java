@@ -160,7 +160,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.error("Error occurred while saving PG owner details", e);
+			log.error("Error occurred while resend PG owner details", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error. Please try again later.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -170,7 +170,6 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 	public ResponseEntity<String> pgOwnerDetailsGet() {
 		ResponseBody response = new ResponseBody();
-		log.info("Testing logs");
 		try {
 			List<Object[]> allPgOwnerDetails = pgOwnerMaterRepository.getAllPgOwnerDetails();
 
@@ -228,7 +227,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(pgOwnerDetailsList), HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.error("Error fetching details: {}", e.getMessage(), e);
+			log.error("Error searchPgOwnerDetails details: {}", e.getMessage(), e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error: " + e.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
