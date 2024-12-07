@@ -229,11 +229,10 @@
                                             <tr mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></tr>
                                             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                                         </table>
+                                        <div style="text-align: center;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length == 0">
+                                            No records found
+                                        </div>
                                     </div>
-                                </div>
-                            
-                                <div style="text-align: center;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length == 0">
-                                    No records found
                                 </div>
                                 <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
                             </div>

@@ -217,7 +217,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 				}
 			  });  
 	    }  
-			filterData(){
+		filterData(){
 				if(this.searchText==''){
 					this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
     				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
@@ -228,7 +228,9 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 					this.ELEMENT_DATA = Object.assign([],pagedData);
     				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 				}
-			}
+				this.dataSource.sort = this.sort;
+				this.dataSource.sortingDataAccessor = (data, sortHeaderId) => data[sortHeaderId].toLocaleLowerCase();
+		}
 	getZoyCodeDetails(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
