@@ -29,7 +29,7 @@ export class UserMasterComponent implements OnInit {
   pageSizeOptions: number[] = [10, 20, 50]; 
   totalProduct: number = 0; 
   displayedColumns: string[] = ['firstName', 'userEmail', 'designation', 'status','roleName', 'action'];
-  public ELEMENT_DATA:UserDetails[];
+  public ELEMENT_DATA:UserDetails[]=[];
   dataSource:MatTableDataSource<UserDetails>=new MatTableDataSource<UserDetails>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
     firstName: null,
@@ -94,8 +94,7 @@ export class UserMasterComponent implements OnInit {
   stopPropagation(event: MouseEvent): void {
 		event.stopPropagation();
 	  }
-  ngOnInit(): void {
-    
+  ngOnInit(): void {  
     this.getUserDetais();
     this.getRlesList();
     this.settings = {
@@ -210,12 +209,12 @@ export class UserMasterComponent implements OnInit {
   this.spinner.show();
   this.userMasterService.getUserList().subscribe(data => {
     this.ELEMENT_DATA = Object.assign([],data);
+    this.filterUserData= Object.assign([],data);
     this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.dataSource.sortingDataAccessor = (data, sortHeaderId) => data[sortHeaderId].toLocaleLowerCase();
     this.spinner.hide();
-
  }, error => {
   this.spinner.hide();
   if(error.status == 0) {
@@ -657,18 +656,20 @@ getWriteIcon(writePrv: boolean): string {
     } 
    
     filterData(){
-      console.log("Hi");
       if(this.searchText==''){
         this.ELEMENT_DATA = Object.assign([],this.filterUserData);
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
       }else{
-        alert("Hello");
         const pagedData = Object.assign([],this.filterUserData.filter(data =>
           data.firstName.toLowerCase().includes(this.searchText.toLowerCase()) || data.userEmail.toLowerCase().includes(this.searchText.toLowerCase()) || data.designation.toLowerCase().includes(this.searchText.toLowerCase()) 
         ));
         this.ELEMENT_DATA = Object.assign([],pagedData);
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
       }
+
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sortingDataAccessor = (data, sortHeaderId) => data[sortHeaderId].toLocaleLowerCase();
     }
 		
 	resetFilter(){

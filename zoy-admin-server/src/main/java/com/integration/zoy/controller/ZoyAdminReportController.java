@@ -38,7 +38,7 @@ import com.integration.zoy.utils.VendorPaymentsGst;
 @RestController
 @RequestMapping("")
 public class ZoyAdminReportController implements ZoyAdminReportImpl{
-	private static final Logger log = LoggerFactory.getLogger(ZoyAdminMasterController.class);
+	private static final Logger log=LoggerFactory.getLogger(PgOwnerMasterController.class);
 	private static final Gson gson = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
 			.registerTypeAdapter(Timestamp.class, (JsonSerializer<Timestamp>) (src, typeOfSrc, context) -> {
@@ -57,7 +57,6 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			})
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
-	private static final Gson gson2 = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
 	@Autowired
 	AdminReportImpl adminReportImpl;
@@ -71,7 +70,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting paymentDetails : " + e.getMessage(),e);
+			log.error("Error getting getUserPaymentsByDateRange : " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -86,7 +85,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting paymentDetails : " + e.getMessage(),e);
+			log.error("Error getting getUserGstReportByDateRange : " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -101,7 +100,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			CommonResponseDTO<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ConsilidatedFinanceDetails details: " + e.getMessage(),e);
+			log.error("Error getting getConsolidatedFinanceByDateRange details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -117,7 +116,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			CommonResponseDTO<TenentDues> tenentDuesDetails =  adminReportImpl.getTenentDuesDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(tenentDuesDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
+			log.error("Error getting getTenantDuesByDateRange details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -132,7 +131,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			CommonResponseDTO<VendorPayments> vendorPaymentsDetails =  adminReportImpl.getVendorPaymentDetails(filterRequest,filterData);
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
+			log.error("Error getting getTenantDuesByDateRange details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -147,7 +146,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			CommonResponseDTO<VendorPaymentsDues> vendorPaymentsDuesDetails =  adminReportImpl.getVendorPaymentDuesDetails(fromDate,toDate);
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsDuesDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
+			log.error("Error getting getVendorPaymentDuesByDateRange details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -162,7 +161,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			CommonResponseDTO<VendorPaymentsGst> vendorPaymentsGstDetails =  adminReportImpl.getVendorPaymentGstDetails(fromDate,toDate);
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsGstDetails), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting tenentDuesDetails details: " + e.getMessage(),e);
+			log.error("Error getting getVendorPaymentGstReportByDateRange details: " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -171,14 +170,17 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 
 	@Override
 	public ResponseEntity<byte[]> downloadDynamicReportByDateRange(@RequestBody UserPaymentFilterRequest filterRequest) {
+		byte[] fileData=null;
+		String fileName ="";
+		MediaType contentType = null;
+		try {
 		FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-		byte[] fileData = adminReportImpl.generateDynamicReport(filterRequest,filterData);
+		fileData = adminReportImpl.generateDynamicReport(filterRequest,filterData);
 
 		if (fileData.length == 0) {
 	        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  
 	    }
 
-		MediaType contentType;
 		String fileExtension;
 
 		switch (filterRequest.getDownloadType().toLowerCase()) {
@@ -197,8 +199,10 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			break;
 		}
 
-		String fileName = filterRequest.getReportType() + fileExtension;
-
+		fileName = filterRequest.getReportType() + fileExtension;
+		}catch(Exception e) {
+			log.error("Error getting downloadDynamicReportByDateRange details: " + e.getMessage(),e);
+		}
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
 				.contentType(contentType)
@@ -214,7 +218,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			}
 			return new ResponseEntity<>(cities, HttpStatus.OK);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error getting zoyCityList: " + e.getMessage(),e);
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

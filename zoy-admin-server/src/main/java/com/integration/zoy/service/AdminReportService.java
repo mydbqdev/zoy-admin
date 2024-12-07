@@ -570,8 +570,8 @@ public class AdminReportService implements AdminReportImpl{
 		data.put("startDate", Timestamp.valueOf(filterRequest.getFromDate()));
 		data.put("endDate", Timestamp.valueOf(filterRequest.getToDate()));
 		data.put("printDate", new Timestamp(System.currentTimeMillis()));
-		String logo = pdfGenerateService.imageToBase64(Paths.get(zoyLogoPath).toFile().getPath());
-		data.put("appLogo",logo);
+		//String logo = pdfGenerateService.imageToBase64(Paths.get(zoyLogoPath).toFile().getPath());
+		//data.put("appLogo",logo);
 		switch (filterRequest.getDownloadType().toLowerCase()) {
 		case "pdf":
 			return pdfGenerateService.generatePdfFile(filterRequest.getReportType(), data);
