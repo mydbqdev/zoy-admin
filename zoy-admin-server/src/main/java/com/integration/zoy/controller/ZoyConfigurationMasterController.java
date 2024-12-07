@@ -3,9 +3,7 @@ package com.integration.zoy.controller;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -23,19 +21,20 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
-import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgCancellationDetails;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
+import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
+import com.integration.zoy.entity.ZoyPgSecurityDepositRefundRule;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
 import com.integration.zoy.model.ZoyOtherCharges;
 import com.integration.zoy.model.ZoyShareDetails;
-import com.integration.zoy.model.ZoyToken;
 import com.integration.zoy.service.OwnerDBImpl;
-import com.integration.zoy.utils.BulkUploadData;
 import com.integration.zoy.utils.ResponseBody;
+import com.integration.zoy.utils.ZoyAdminConfigDTO;
+
 
 @RestController
 @RequestMapping("")
@@ -67,69 +66,43 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 
 	@Override
-	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyToken details) {
-		ResponseBody response=new ResponseBody();
+	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetails details) {
+		ResponseBody response = new ResponseBody();
 		try {
-			if(details==null) {
+			if (details == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 				response.setError("Required token details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
-			if(details.getTokenId()!=null && !details.getTokenId().isEmpty()) {
-				ZoyPgTokenDetails tokenDetails=ownerDBImpl.findTokenDetails(details.getTokenId());
-				if(tokenDetails==null) {
-					response.setStatus(HttpStatus.CONFLICT.value());
-					response.setError("Unable to get token details");
-					return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
-				}
-				tokenDetails.setFixedToken(details.getFixedToken()!=0?new BigDecimal(details.getFixedToken()):BigDecimal.ZERO);
-				tokenDetails.setVariableToken(details.getVariableToken()!=0?new BigDecimal(details.getVariableToken()):BigDecimal.ZERO);
+			ZoyPgTokenDetails tokenDetails = ownerDBImpl.findTokenDetails();
+			if (tokenDetails != null) {
+				// Update the existing token record
+				tokenDetails.setFixedToken(details.getFixedToken() != null ? details.getFixedToken() : BigDecimal.ZERO);
+				tokenDetails.setVariableToken(details.getVariableToken() != null ? details.getVariableToken() : BigDecimal.ZERO);
 				ownerDBImpl.saveToken(tokenDetails);
-
 				response.setStatus(HttpStatus.OK.value());
-				response.setError("Updated Token details");
+				response.setData(tokenDetails);
+				response.setMessage("Updated Token details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
-				ZoyPgTokenDetails tokenDetails=new ZoyPgTokenDetails();
-				tokenDetails.setFixedToken(details.getFixedToken()!=0?new BigDecimal(details.getFixedToken()):BigDecimal.ZERO);
-				tokenDetails.setVariableToken(details.getVariableToken()!=0?new BigDecimal(details.getVariableToken()):BigDecimal.ZERO);
-				ownerDBImpl.saveToken(tokenDetails);
-
+				// Create a new token record
+				ZoyPgTokenDetails newTokenDetails = new ZoyPgTokenDetails();
+				newTokenDetails.setFixedToken(details.getFixedToken() != null ? details.getFixedToken() : BigDecimal.ZERO);
+				newTokenDetails.setVariableToken(details.getVariableToken() != null ? details.getVariableToken() : BigDecimal.ZERO);
+				ownerDBImpl.saveToken(newTokenDetails);
 				response.setStatus(HttpStatus.OK.value());
-				response.setError("Saved Token details");
+				response.setData(newTokenDetails);
+				response.setMessage("Saved Token details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error uploading property details: " + e.getMessage(),e);
+			log.error("Error saving/updating token details: API:/zoy_admin/config/token " + e.getMessage(), e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-
-	@Override
-	public ResponseEntity<String> zoyAdminConfigGetToken() {
-		ResponseBody response=new ResponseBody();
-		try {
-			ZoyPgTokenDetails tokenDetails=ownerDBImpl.findAllToken().get(0);
-			if(tokenDetails==null) {
-				response.setStatus(HttpStatus.CONFLICT.value());
-				response.setError("Unable to get token details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
-			}
-			ZoyToken token=new ZoyToken();
-			token.setTokenId(tokenDetails.getTokenId());
-			token.setVariableToken(tokenDetails.getVariableToken()!=null?tokenDetails.getVariableToken().doubleValue():0.0);
-			token.setFixedToken(tokenDetails.getFixedToken()!=null?tokenDetails.getFixedToken().doubleValue():0.0);
-			return new ResponseEntity<>(gson.toJson(token), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error uploading property details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
 
 
 	@Override
@@ -148,57 +121,31 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					response.setError("Unable to get before check in cancellation details");
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
 				}
-				cancelDetails.setCancellationFixedCharges(details.getCancellationFixedCharges()!=0?new BigDecimal(details.getCancellationFixedCharges()):BigDecimal.ZERO);
-				cancelDetails.setCancellationVariableCharges(details.getCancellationVariableCharges()!=0?new BigDecimal(details.getCancellationVariableCharges()):BigDecimal.ZERO);
-				cancelDetails.setCancellationDays(null);
+				cancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
+				cancelDetails.setDeductionPercentages(details.getDeductionPercentages());
 				ownerDBImpl.saveBeforeCancellation(cancelDetails);
 
 				response.setStatus(HttpStatus.OK.value());
-				response.setError("Updated Before CheckIn details");
+				response.setData(cancelDetails);
+				response.setMessage("Updated Before CheckIn details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
 				ZoyPgCancellationDetails cancelDetails=new ZoyPgCancellationDetails();
-				cancelDetails.setCancellationFixedCharges(details.getCancellationFixedCharges()!=0?new BigDecimal(details.getCancellationFixedCharges()):BigDecimal.ZERO);
-				cancelDetails.setCancellationVariableCharges(details.getCancellationVariableCharges()!=0?new BigDecimal(details.getCancellationVariableCharges()):BigDecimal.ZERO);
-				cancelDetails.setCancellationDays(null);
+				cancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
+				cancelDetails.setDeductionPercentages(details.getDeductionPercentages());
 				ownerDBImpl.saveBeforeCancellation(cancelDetails);
-
 				response.setStatus(HttpStatus.OK.value());
-				response.setError("Saved Before CheckIn details");
+				response.setData(cancelDetails);
+				response.setMessage("Saved Before CheckIn details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error uploading property details: " + e.getMessage(),e);
+			log.error("Error uploading property details API: /zoy_admin/config/before-check-in " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-	}
-
-
-	@Override
-	public ResponseEntity<String> zoyAdminConfigGetBeforeCheckIn() {
-		ResponseBody response=new ResponseBody();
-		try {
-			ZoyPgCancellationDetails cancellationDetails=ownerDBImpl.findAllBeforeCancellation().get(0);
-			if(cancellationDetails==null) {
-				response.setStatus(HttpStatus.CONFLICT.value());
-				response.setError("Unable to get cancellation details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
-			}
-			ZoyBeforeCheckInCancellation cancellation=new ZoyBeforeCheckInCancellation();
-			cancellation.setCancellationId(cancellationDetails.getCancellationId());
-			cancellation.setCancellationVariableCharges(cancellationDetails.getCancellationVariableCharges()!=null?cancellationDetails.getCancellationVariableCharges().doubleValue():0.0);
-			cancellation.setCancellationFixedCharges(cancellationDetails.getCancellationFixedCharges()!=null?cancellationDetails.getCancellationFixedCharges().doubleValue():0.0);
-			cancellation.setCancellationDays(cancellationDetails.getCancellationDays());
-			return new ResponseEntity<>(gson.toJson(cancellation), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error getting Before CheckIn details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 	}
 
 
@@ -223,7 +170,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				ownerDBImpl.saveZoyShare(shareDetails);
 
 				response.setStatus(HttpStatus.OK.value());
-				response.setError("Updated Zoy Share details");
+				response.setMessage("Updated Zoy Share details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
 				ZoyShareMaster shareDetails=new ZoyShareMaster();
@@ -232,7 +179,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				ownerDBImpl.saveZoyShare(shareDetails);
 
 				response.setStatus(HttpStatus.OK.value());
-				response.setError("Saved Zoy Share details");
+				response.setMessage("Saved Zoy Share details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
@@ -273,73 +220,65 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateOtherCharges(ZoyOtherCharges details) {
-		ResponseBody response=new ResponseBody();
+		ResponseBody response = new ResponseBody();
 		try {
-			if(details==null) {
+			if (details == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Required cancellation details");
+				response.setError("Required Other Charges details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
-			if(details.getOtherChargesId()!=null && !details.getOtherChargesId().isEmpty()) {
-				ZoyPgOtherCharges other=ownerDBImpl.findZoyOtherCharges(details.getOtherChargesId());
-				if(other==null) {
-					response.setStatus(HttpStatus.CONFLICT.value());
-					response.setError("Unable to get Other Charges details");
-					return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
-				}
-				other.setDocumentCharges(new BigDecimal(details.getDocumentCharges()));
-				other.setOtherGst(new BigDecimal(details.getOtherGst()));
-				ownerDBImpl.saveOtherCharges(other);
+
+			ZoyPgOtherCharges otherCharges = ownerDBImpl.findZoyOtherCharges();
+
+			BigDecimal documentCharges;
+			BigDecimal otherGst;
+
+			if (otherCharges != null) {
+				documentCharges = (details.getDocumentCharges() != null) 
+						? details.getDocumentCharges() 
+								: otherCharges.getDocumentCharges();
+
+				otherGst = (details.getOtherGst() != null) 
+						? details.getOtherGst() 
+								: otherCharges.getOtherGst();
+
+				otherCharges.setDocumentCharges(documentCharges);
+				otherCharges.setOtherGst(otherGst);
+
+				ownerDBImpl.saveOtherCharges(otherCharges);
 				response.setStatus(HttpStatus.OK.value());
-				response.setError("Updated Other Charges details");
+				response.setData(otherCharges);
+				response.setMessage("Updated Other Charges details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
 			} else {
-				ZoyPgOtherCharges other=new ZoyPgOtherCharges();
-				other.setDocumentCharges(new BigDecimal(details.getDocumentCharges()));
-				other.setOtherGst(new BigDecimal(details.getOtherGst()));
-				ownerDBImpl.saveOtherCharges(other);
+				documentCharges = (details.getDocumentCharges() != null) 
+						? details.getDocumentCharges() 
+								: BigDecimal.ZERO; 
 
+				otherGst = (details.getOtherGst() != null) 
+						? details.getOtherGst() 
+								: BigDecimal.ZERO; 
+
+
+				ZoyPgOtherCharges newOtherCharges = new ZoyPgOtherCharges();
+				newOtherCharges.setDocumentCharges(documentCharges);
+				newOtherCharges.setOtherGst(otherGst);
+
+				ownerDBImpl.saveOtherCharges(newOtherCharges);
 				response.setStatus(HttpStatus.OK.value());
-				response.setError("Saved Other Charges details");
+				response.setData(newOtherCharges);
+				response.setMessage("Saved Other Charges details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error saving/creating Other Charges details: " + e.getMessage(),e);
+			log.error("Error saving/creating Other Charges details API:/zoy_admin/config/other-charges " + e.getMessage(), e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-
-
 	}
 
-
-	@Override
-	public ResponseEntity<String> zoyAdminConfigGetOtherCharges() {
-
-		ResponseBody response=new ResponseBody();
-		try {
-			ZoyPgOtherCharges otherDetails=ownerDBImpl.findAllOtherCharges().get(0);
-			if(otherDetails==null) {
-				response.setStatus(HttpStatus.CONFLICT.value());
-				response.setError("Unable to get Other Charges details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
-			}
-			ZoyOtherCharges other=new ZoyOtherCharges();
-			other.setOtherChargesId(otherDetails.getOtherChargesId());
-			other.setDocumentCharges(otherDetails.getDocumentCharges().doubleValue());
-			other.setOtherGst(otherDetails.getOtherGst().doubleValue());
-			return new ResponseEntity<>(gson.toJson(other), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error getting Other Charges details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-
-	}
 
 
 	@Override
@@ -351,29 +290,25 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				response.setError("Required cancellation details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
-			if(details.getDataGroupingId()!=null && !details.getDataGroupingId().isEmpty()) {
-				ZoyDataGrouping group=ownerDBImpl.findZoyDataGroup(details.getDataGroupingId());
-				if(group==null) {
-					response.setStatus(HttpStatus.CONFLICT.value());
-					response.setError("Unable to get Data Grouping details");
-					return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
-				}
-				group.setDataGroupingName(details.getDataGroupingName());
+			ZoyDataGrouping group=ownerDBImpl.findZoyDataGroup();
+			if (group != null) {
+				group.setConsiderDays(details.getConsiderDays());
 				ownerDBImpl.saveDataGroup(group);
 				response.setStatus(HttpStatus.OK.value());
-				response.setError("Updated Data Grouping details");
+				response.setData(group);
+				response.setMessage("Updated Data Grouping details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
-				ZoyDataGrouping group=new ZoyDataGrouping();
-				group.setDataGroupingName(details.getDataGroupingName());
-				ownerDBImpl.saveDataGroup(group);
-
+				ZoyDataGrouping newGroup=new ZoyDataGrouping();
+				newGroup.setConsiderDays(details.getConsiderDays());
+				ownerDBImpl.saveDataGroup(newGroup);
 				response.setStatus(HttpStatus.OK.value());
-				response.setError("Saved Data Grouping details");
+				response.setData(newGroup);
+				response.setMessage("Saved Data Grouping details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error saving/updating Data Grouping details: " + e.getMessage(),e);
+			log.error("Error saving/updating Data Grouping details API:/zoy_admin/config/security-deposit-limits  " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -382,25 +317,111 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 
 	@Override
-	public ResponseEntity<String> zoyAdminConfigGetDataGrouping() {
-		ResponseBody response=new ResponseBody();
+	public ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositLimits(ZoyPgSecurityDepositDetails details) {
+		ResponseBody response = new ResponseBody();
 		try {
-			ZoyDataGrouping groupDetails=ownerDBImpl.findAllDataGroup().get(0);
-			if(groupDetails==null) {
-				response.setStatus(HttpStatus.CONFLICT.value());
-				response.setError("Unable to get Data Grouping details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+			if (details == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Required SecurityDeposit Limit details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
-			ZoyDataGrouping group=new ZoyDataGrouping();
-			group.setDataGroupingId(groupDetails.getDataGroupingId());
-			group.setDataGroupingName(groupDetails.getDataGroupingName());
-			return new ResponseEntity<>(gson.toJson(group), HttpStatus.OK);
+			ZoyPgSecurityDepositDetails limits = ownerDBImpl.findZoySecurityDeposit();      
+			if (limits != null) {
+				// Update the existing record
+				limits.setSecurityDepositMax(details.getSecurityDepositMax());
+				limits.setSecurityDepositMin(details.getSecurityDepositMin());
+				ownerDBImpl.saveZoySecurityDepositLimits(limits);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(limits);
+				response.setMessage("Updated Security Deposits Limit Details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				ZoyPgSecurityDepositDetails newSecurityLimit = new ZoyPgSecurityDepositDetails();
+				newSecurityLimit.setSecurityDepositMax(details.getSecurityDepositMax());
+				newSecurityLimit.setSecurityDepositMin(details.getSecurityDepositMin());
+				ownerDBImpl.saveZoySecurityDepositLimits(newSecurityLimit);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(newSecurityLimit);
+				response.setMessage("Saved Security Deposits Limit details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
 		} catch (Exception e) {
-			log.error("Error getting Data Grouping details: " + e.getMessage(),e);
+			log.error("Error saving/updating Security Deposits Limit details: API:/zoy_admin/config/security-deposit-limits " + e.getMessage(), e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+	@Override
+	public ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositRefundRules(ZoyPgSecurityDepositRefundRule ruleDetails) {
+		ResponseBody response = new ResponseBody();
+		try {
+			if (ruleDetails == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Required Security Deposit Refund Rule details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+
+			ZoyPgSecurityDepositRefundRule existingRule = ownerDBImpl.findSecurityDepositRefundRuleById();
+
+			if (existingRule != null) {
+				existingRule.setMaxDaysForRefund(ruleDetails.getMaxDaysForRefund());
+				ownerDBImpl.saveSecurityDepositRefundRule(existingRule);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(existingRule);
+				response.setMessage("Updated Security Deposit Refund Rule");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				ZoyPgSecurityDepositRefundRule newRule = new ZoyPgSecurityDepositRefundRule();
+				newRule.setMaxDaysForRefund(ruleDetails.getMaxDaysForRefund());
+				ownerDBImpl.saveSecurityDepositRefundRule(newRule);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(newRule);
+				response.setMessage("Created new Security Deposit Refund Rule");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
+
+		} catch (Exception e) {
+			log.error("Error saving/updating Security Deposit Refund Rule API: /zoy_admin/config/security-deposit-refund-rules " + e.getMessage(), e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	@Override
+	public ResponseEntity<String> getAllConfigurationDetails() {
+		ResponseBody response = new ResponseBody();
+		try {
+			ZoyPgTokenDetails tokenDetails = ownerDBImpl.findTokenDetails();
+			ZoyPgSecurityDepositDetails depositDetails = ownerDBImpl.findZoySecurityDeposit();
+			List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
+			ZoyPgSecurityDepositRefundRule refundRules = ownerDBImpl.findSecurityDepositRefundRuleById();
+			ZoyDataGrouping dataGrouping=ownerDBImpl.findZoyDataGroup();
+			ZoyPgOtherCharges otherCharges = ownerDBImpl.findZoyOtherCharges();
+
+			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
+			configDTO.setTokenDetails(tokenDetails);
+			configDTO.setDepositDetails(depositDetails);
+			configDTO.setCancellationDetails(cancellationDetails);
+			configDTO.setRefundRules(refundRules);
+			configDTO.setDataGrouping(dataGrouping);
+			configDTO.setOtherCharges(otherCharges);
+			
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(configDTO);
+			response.setMessage("Successfully fetched all config details");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		}catch (Exception e) {
+			log.error("Error fetching config details: " + e.getMessage(), e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 
 }

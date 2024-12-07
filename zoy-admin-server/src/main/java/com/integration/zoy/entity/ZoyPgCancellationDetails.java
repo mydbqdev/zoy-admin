@@ -16,14 +16,13 @@ public class ZoyPgCancellationDetails {
     @Column(name = "cancellation_id", nullable = false, length = 36)
     private String cancellationId;
 
-    @Column(name = "cancellation_fixed_charges", precision = 10, scale = 2)
-    private BigDecimal cancellationFixedCharges;
+    @Column(name = "before_checkin_days")
+    private Integer daysBeforeCheckIn;
+    
+    @Column(name = "deduction_percentage", precision = 10, scale = 2)
+    private BigDecimal deductionPercentages;
 
-    @Column(name = "cancellation_variable_charges", precision = 10, scale = 2)
-    private BigDecimal cancellationVariableCharges;
-
-    @Column(name = "cancellation_days")
-    private Integer cancellationDays;
+    
 
     // Getters and Setters
     public String getCancellationId() {
@@ -34,37 +33,27 @@ public class ZoyPgCancellationDetails {
         this.cancellationId = cancellationId;
     }
 
-    public BigDecimal getCancellationFixedCharges() {
-        return cancellationFixedCharges;
-    }
+	public Integer getDaysBeforeCheckIn() {
+		return daysBeforeCheckIn;
+	}
 
-    public void setCancellationFixedCharges(BigDecimal cancellationFixedCharges) {
-        this.cancellationFixedCharges = cancellationFixedCharges;
-    }
+	public void setDaysBeforeCheckIn(Integer daysBeforeCheckIn) {
+		this.daysBeforeCheckIn = daysBeforeCheckIn;
+	}
 
-    public BigDecimal getCancellationVariableCharges() {
-        return cancellationVariableCharges;
-    }
+	public BigDecimal getDeductionPercentages() {
+		return deductionPercentages;
+	}
 
-    public void setCancellationVariableCharges(BigDecimal cancellationVariableCharges) {
-        this.cancellationVariableCharges = cancellationVariableCharges;
-    }
+	public void setDeductionPercentages(BigDecimal deductionPercentages) {
+		this.deductionPercentages = deductionPercentages;
+	}
 
-    public Integer getCancellationDays() {
-        return cancellationDays;
-    }
+	@Override
+	public String toString() {
+		return "ZoyPgCancellationDetails [cancellationId=" + cancellationId + ", daysBeforeCheckIn=" + daysBeforeCheckIn
+				+ ", deductionPercentages=" + deductionPercentages + "]";
+	}
 
-    public void setCancellationDays(Integer cancellationDays) {
-        this.cancellationDays = cancellationDays;
-    }
-
-    @Override
-    public String toString() {
-        return "CancellationDetails{" +
-                "cancellationId='" + cancellationId + '\'' +
-                ", cancellationFixedCharges=" + cancellationFixedCharges +
-                ", cancellationVariableCharges=" + cancellationVariableCharges +
-                ", cancellationDays=" + cancellationDays +
-                '}';
-    }
+  
 }

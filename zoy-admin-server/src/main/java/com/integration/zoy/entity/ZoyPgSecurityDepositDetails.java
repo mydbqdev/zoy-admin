@@ -2,7 +2,9 @@ package com.integration.zoy.entity;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -24,9 +26,11 @@ public class ZoyPgSecurityDepositDetails {
 	private BigDecimal securityDepositMax;
 
 	@Column(name = "created_at", nullable = false, updatable = false)
+	@CreationTimestamp
 	private Timestamp createdAt;
 
 	@Column(name = "update_at")
+	@UpdateTimestamp
 	private Timestamp updatedAt;
 
 	// Getters and Setters
