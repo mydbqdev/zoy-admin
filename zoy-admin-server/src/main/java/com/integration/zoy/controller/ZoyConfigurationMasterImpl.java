@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.integration.zoy.entity.ZoyDataGrouping;
+import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
+import com.integration.zoy.entity.ZoyPgSecurityDepositRefundRule;
+import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.model.LoginDetails;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
 import com.integration.zoy.model.ZoyOtherCharges;
@@ -29,22 +32,24 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PostMapping(value = "/zoy_admin/config/token",
+	@PostMapping(value = "/zoy_admin/config/token_advance",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigCreateUpdateToken(@RequestBody ZoyToken details);
+	ResponseEntity<String> zoyAdminConfigCreateUpdateToken(@RequestBody ZoyPgTokenDetails details);
 
-	@Operation(summary = "Admin Configration Token", description = "Getting Admin Configration Token", security = {
+	@Operation(summary = "Admin Configration Security Deposit Limits", description = "Getting Admin Configration Security Deposit Limits", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/config/getToken",
+	@PostMapping(value = "/zoy_admin/config/security-deposit-limits",
 	produces = { "application/json" })
-	ResponseEntity<String> zoyAdminConfigGetToken();
+	ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositLimits(@RequestBody ZoyPgSecurityDepositDetails details);
 
+	
+	
 	@Operation(summary = "Admin Configration Before Check In", description = "Creating/Updating Admin Configration Before Check In", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
 	@ApiResponses(value = { 
@@ -56,17 +61,6 @@ public interface ZoyConfigurationMasterImpl {
 	produces = { "application/json" },
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellation details);
-
-	@Operation(summary = "Admin Configration Before Check In", description = "Getting Admin Configration Before Check In", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
-	@ApiResponses(value = { 
-			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
-			@ApiResponse(responseCode = "400", description = "Bad Request"),
-			@ApiResponse(responseCode = "404", description = "Not Found"),
-			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/config/before-check-in",
-	produces = { "application/json" })
-	ResponseEntity<String> zoyAdminConfigGetBeforeCheckIn();
 
 
 	@Operation(summary = "Admin Configration Zoy Share", description = "Creating/Updating Admin Configration Zoy Share", security = {
@@ -104,17 +98,6 @@ public interface ZoyConfigurationMasterImpl {
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminConfigCreateUpdateOtherCharges(@RequestBody ZoyOtherCharges details);
 
-	@Operation(summary = "Admin Configration Other Charges", description = "Getting Admin Configration Other Charges", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
-	@ApiResponses(value = { 
-			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
-			@ApiResponse(responseCode = "400", description = "Bad Request"),
-			@ApiResponse(responseCode = "404", description = "Not Found"),
-			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/config/other-charges",
-	produces = { "application/json" })
-	ResponseEntity<String> zoyAdminConfigGetOtherCharges();
-
 	@Operation(summary = "Admin Configration Data Grouping", description = "Creating/Updating Admin Configration Data Grouping", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
 	@ApiResponses(value = { 
@@ -127,16 +110,31 @@ public interface ZoyConfigurationMasterImpl {
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminConfigCreateUpdateDataGrouping(@RequestBody ZoyDataGrouping details);
 
-	@Operation(summary = "Admin Configration Data Grouping", description = "Getting Admin Configration Data Grouping", security = {
+	
+	
+	
+	@Operation(summary = "Admin Configration Security Deposit Refund Rules ", description = "Getting Admin Configration Security Deposit Refund Rules", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/config/data-grouping",
+	@PostMapping(value = "/zoy_admin/config/security-deposit-refund-rules",
 	produces = { "application/json" })
-	ResponseEntity<String> zoyAdminConfigGetDataGrouping();
-
+	ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositRefundRules(@RequestBody ZoyPgSecurityDepositRefundRule  ruleDetails);
+	
+	
+	
+	@Operation(summary = "Get All Configuration Details ", description = "Getting All  Admin Configration Details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/admin-configuration-details",
+	produces = { "application/json" })
+	ResponseEntity<String> getAllConfigurationDetails();
 
 }

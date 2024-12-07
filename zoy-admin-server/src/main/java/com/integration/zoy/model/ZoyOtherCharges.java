@@ -1,17 +1,19 @@
 package com.integration.zoy.model;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZoyOtherCharges {
 
-	@JsonProperty("other_charges_id")
+	@JsonProperty("otherChargesId")
 	String otherChargesId;
 
-	@JsonProperty("other_gst")
-	double otherGst;
+	@JsonProperty("otherGst")
+	BigDecimal otherGst;
 
-	@JsonProperty("document_charges")
-	double documentCharges;
+	@JsonProperty("documentCharges")
+	BigDecimal documentCharges;
 
 	public String getOtherChargesId() {
 		return otherChargesId;
@@ -21,21 +23,23 @@ public class ZoyOtherCharges {
 		this.otherChargesId = otherChargesId;
 	}
 
-	public double getOtherGst() {
+	public BigDecimal getOtherGst() {
 		return otherGst;
 	}
 
-	public void setOtherGst(double otherGst) {
+	public void setOtherGst(BigDecimal otherGst) {
 		this.otherGst = otherGst;
 	}
 
-	public double getDocumentCharges() {
+	public BigDecimal getDocumentCharges() {
 		return documentCharges;
 	}
 
-	public void setDocumentCharges(double documentCharges) {
+	public void setDocumentCharges(BigDecimal documentCharges) {
 		this.documentCharges = documentCharges;
 	}
+
+	
 
 	
 

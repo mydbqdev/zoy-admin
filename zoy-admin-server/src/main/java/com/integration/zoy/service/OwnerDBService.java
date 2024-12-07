@@ -1,6 +1,5 @@
 package com.integration.zoy.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,10 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.integration.zoy.entity.UserDueMaster;
-import com.integration.zoy.entity.UserMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgBedDetails;
@@ -22,19 +20,19 @@ import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
-import com.integration.zoy.entity.ZoyPgPropertyAmeneties;
 import com.integration.zoy.entity.ZoyPgPropertyDetails;
 import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
+import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
+import com.integration.zoy.entity.ZoyPgSecurityDepositRefundRule;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.entity.ZoyShareMaster;
-import com.integration.zoy.model.ZoyShareDetails;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
 import com.integration.zoy.repository.ZoyPgAmenetiesMasterRepository;
 import com.integration.zoy.repository.ZoyPgBedDetailsRepository;
@@ -42,6 +40,7 @@ import com.integration.zoy.repository.ZoyPgCancellationDetailsRepository;
 import com.integration.zoy.repository.ZoyPgDueFactorMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueTypeMasterRepository;
+import com.integration.zoy.repository.ZoyPgOtherChargesRepository;
 import com.integration.zoy.repository.ZoyPgOwnerBookingDetailsRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
 import com.integration.zoy.repository.ZoyPgPropertyAmenetiesRepository;
@@ -50,6 +49,8 @@ import com.integration.zoy.repository.ZoyPgPropertyFloorDetailsRepository;
 import com.integration.zoy.repository.ZoyPgRentCycleMasterRepository;
 import com.integration.zoy.repository.ZoyPgRoomDetailsRepository;
 import com.integration.zoy.repository.ZoyPgRoomTypeMasterRepository;
+import com.integration.zoy.repository.ZoyPgSecurityDepositDetailsRepository;
+import com.integration.zoy.repository.ZoyPgSecurityDepositRefundRuleRepository;
 import com.integration.zoy.repository.ZoyPgShareMasterRepository;
 import com.integration.zoy.repository.ZoyPgTermsMasterRepository;
 import com.integration.zoy.repository.ZoyPgTimeMasterRepository;
@@ -116,12 +117,21 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Autowired
 	private ZoyPgCancellationDetailsRepository zoyPgCancellationDetailsRepository;
-	
+
 	@Autowired
 	private ZoyShareMasterRepository zoyShareMasterRepository;
-	
+
 	@Autowired
 	private ZoyDataGroupingRepository zoyDataGroupingRepository;
+
+	@Autowired
+	private ZoyPgSecurityDepositDetailsRepository zoySecurityDepositRepo;
+
+	@Autowired
+	private ZoyPgOtherChargesRepository zoyPgOtherChargesRepo;
+
+	@Autowired
+	private ZoyPgSecurityDepositRefundRuleRepository  zoySecurityDepositRefundRuleRepo;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -492,8 +502,9 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public ZoyPgTokenDetails findTokenDetails(String tokenId) {
-		return zoyPgTokenDetailsRepository.findById(tokenId).orElse(null);
+	public ZoyPgTokenDetails findTokenDetails() {
+		List<ZoyPgTokenDetails> results = zoyPgTokenDetailsRepository.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@Override
@@ -564,26 +575,20 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public ZoyPgOtherCharges findZoyOtherCharges(String otherChargesId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ZoyPgOtherCharges findZoyOtherCharges() {
+		List<ZoyPgOtherCharges> results =zoyPgOtherChargesRepo.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@Override
 	public ZoyPgOtherCharges saveOtherCharges(ZoyPgOtherCharges other) {
-		// TODO Auto-generated method stub
-		return null;
+		return zoyPgOtherChargesRepo.save(other);
 	}
 
 	@Override
-	public List<ZoyPgOtherCharges> findAllOtherCharges() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ZoyDataGrouping findZoyDataGroup(String dataGroupingId) {
-		return zoyDataGroupingRepository.findById(dataGroupingId).orElse(null);
+	public ZoyDataGrouping findZoyDataGroup() {
+		List<ZoyDataGrouping> results=zoyDataGroupingRepository.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@Override
@@ -594,6 +599,30 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public List<ZoyDataGrouping> findAllDataGroup() {
 		return zoyDataGroupingRepository.findAll();
+	}
+
+	@Override
+	public ZoyPgSecurityDepositDetails findZoySecurityDeposit() {
+		List<ZoyPgSecurityDepositDetails> results = zoySecurityDepositRepo.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
+	}
+
+	@Override
+	public ZoyPgSecurityDepositDetails saveZoySecurityDepositLimits(ZoyPgSecurityDepositDetails depositLimits) {
+		return zoySecurityDepositRepo.save(depositLimits);
+	}
+
+
+
+	@Override
+	public ZoyPgSecurityDepositRefundRule saveSecurityDepositRefundRule(ZoyPgSecurityDepositRefundRule refundRule) {
+		return zoySecurityDepositRefundRuleRepo.save(refundRule);
+	}
+
+	@Override
+	public ZoyPgSecurityDepositRefundRule findSecurityDepositRefundRuleById() {
+		List<ZoyPgSecurityDepositRefundRule> results= zoySecurityDepositRefundRuleRepo.findAll(PageRequest.of(0, 1)).getContent();;
+		return results.isEmpty() ? null : results.get(0);
 	}
 
 }

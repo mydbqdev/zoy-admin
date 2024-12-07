@@ -9,14 +9,30 @@ public class ZoyBeforeCheckInCancellation {
 	@JsonProperty("cancellation_id")
 	String cancellationId;
 
-	@JsonProperty("cancellation_fixed_charges")
-	double cancellationFixedCharges;
+	@JsonProperty("before_checkin_days")
+	int daysBeforeCheckIn;
+	
+	@JsonProperty("deduction_percentage")
+	BigDecimal deductionPercentages;
 
-	@JsonProperty("cancellation_variable_charges")
-	double cancellationVariableCharges;
 
-	@JsonProperty("cancellation_days")
-	int cancellationDays;
+	public int getDaysBeforeCheckIn() {
+		return daysBeforeCheckIn;
+	}
+
+	public void setDaysBeforeCheckIn(int daysBeforeCheckIn) {
+		this.daysBeforeCheckIn = daysBeforeCheckIn;
+	}
+
+	public BigDecimal getDeductionPercentages() {
+		return deductionPercentages;
+	}
+
+	public void setDeductionPercentages(BigDecimal deductionPercentages) {
+		this.deductionPercentages = deductionPercentages;
+	}
+
+	
 
 	public String getCancellationId() {
 		return cancellationId;
@@ -26,28 +42,6 @@ public class ZoyBeforeCheckInCancellation {
 		this.cancellationId = cancellationId;
 	}
 
-	public double getCancellationFixedCharges() {
-		return cancellationFixedCharges;
-	}
-
-	public void setCancellationFixedCharges(double cancellationFixedCharges) {
-		this.cancellationFixedCharges = cancellationFixedCharges;
-	}
-
-	public double getCancellationVariableCharges() {
-		return cancellationVariableCharges;
-	}
-
-	public void setCancellationVariableCharges(double cancellationVariableCharges) {
-		this.cancellationVariableCharges = cancellationVariableCharges;
-	}
-
-	public int getCancellationDays() {
-		return cancellationDays;
-	}
-
-	public void setCancellationDays(int cancellationDays) {
-		this.cancellationDays = cancellationDays;
-	}
+	
 
 }
