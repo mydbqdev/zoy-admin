@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 @Getter
 public class GenericErrorResponse extends RuntimeException {
+	private static final long serialVersionUID = 1L;
     private final String message;
     private final HttpStatus httpStatus;
 
