@@ -22,6 +22,7 @@ export class BeforeCheckInCancellationRefundModel{
     cancellationId : string ;
     daysBeforeCheckIn : number ;
     deductionPercentages : number ;
+    bcicrDisable : boolean = true ;
 }
 
 export class SecurityDepositRefundModel{

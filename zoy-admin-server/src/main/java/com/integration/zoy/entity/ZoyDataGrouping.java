@@ -15,8 +15,8 @@ public class ZoyDataGrouping {
 	@Column(name = "data_grouping_id", updatable = false, nullable = false, unique = true, length = 36)
 	private String dataGroupingId;
 
-	@Column(name = "data_grouping_name", nullable = false, length = 36)
-	private String dataGroupingName;
+	@Column(name = "consider_days", nullable = false, length = 36)
+	private int  considerDays;
 
 	// Getters and Setters
 
@@ -28,11 +28,13 @@ public class ZoyDataGrouping {
 		this.dataGroupingId = dataGroupingId;
 	}
 
-	public String getDataGroupingName() {
-		return dataGroupingName;
+	public int getConsiderDays() {
+		return considerDays;
 	}
 
-	public void setDataGroupingName(String dataGroupingName) {
-		this.dataGroupingName = dataGroupingName;
+	public void setConsiderDays(int considerDays) {
+		this.considerDays = considerDays;
 	}
+
+	
 }
