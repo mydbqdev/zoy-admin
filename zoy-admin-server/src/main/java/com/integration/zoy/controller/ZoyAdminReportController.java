@@ -2,7 +2,6 @@ package com.integration.zoy.controller;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -23,6 +22,8 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.integration.zoy.exception.WebServiceException;
+import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.utils.CommonResponseDTO;
@@ -71,9 +72,9 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getUserPaymentsByDateRange : " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -86,9 +87,9 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getUserGstReportByDateRange : " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -101,9 +102,9 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getConsolidatedFinanceByDateRange details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 
 	}
@@ -117,9 +118,9 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			return new ResponseEntity<>(gson.toJson(tenentDuesDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getTenantDuesByDateRange details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -132,9 +133,9 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getTenantDuesByDateRange details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -142,14 +143,13 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	public ResponseEntity<String> getVendorPaymentDuesByDateRange(String fromDate, String toDate) {
 		ResponseBody response=new ResponseBody();
 		try {
-
 			CommonResponseDTO<VendorPaymentsDues> vendorPaymentsDuesDetails =  adminReportImpl.getVendorPaymentDuesDetails(fromDate,toDate);
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsDuesDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getVendorPaymentDuesByDateRange details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -162,9 +162,9 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsGstDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getVendorPaymentGstReportByDateRange details: " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -200,8 +200,9 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		}
 
 		fileName = filterRequest.getReportType() + fileExtension;
-		}catch(Exception e) {
-			log.error("Error getting downloadDynamicReportByDateRange details: " + e.getMessage(),e);
+		}catch(Exception ex) {
+			log.error("Error getting download DynamicReport ByDateRange: " + ex.getMessage(),ex);
+	        	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage().getBytes());
 		}
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)

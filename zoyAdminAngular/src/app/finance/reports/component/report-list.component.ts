@@ -333,7 +333,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			  this.notifyService.showWarning("The record is not available", "");
 			}
 			this.downloadType='';
-		  }, error => {
+		  }, async error => {
 			this.downloadType='';
 			  this.spinner.hide();
 			  if(error.status == 0) {
@@ -357,8 +357,8 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 					str = error.message;
 					str = str.substring(str.indexOf(":") + 1);
 				  }
-				  console.log("Error:" + str);
-				  this.errorMsg = str;
+				  console.log("Error:" + await str.text());
+				  this.errorMsg =  await new Response(str).text()// or use await str.text();
 				}
 				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
 			  }

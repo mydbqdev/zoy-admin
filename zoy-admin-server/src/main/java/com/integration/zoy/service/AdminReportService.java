@@ -16,14 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.exception.WebServiceException;
+import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.repository.UserPaymentDueRepository;
 import com.integration.zoy.repository.UserPaymentRepository;
 import com.integration.zoy.repository.ZoyPgPropertyDetailsRepository;
+import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.UserPaymentDTO;
-import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.UserPaymentFilterRequest;
 import com.integration.zoy.utils.VendorPayments;
 import com.integration.zoy.utils.VendorPaymentsDues;
@@ -55,8 +57,9 @@ public class AdminReportService implements AdminReportImpl{
 	private String zoyLogoPath;
 
 	@Override
-	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData) {
-		StringBuilder queryBuilder = new StringBuilder(
+	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData) throws WebServiceException {
+		try{
+			StringBuilder queryBuilder = new StringBuilder(
 				"SELECT up.user_id, " +
 						"up.user_payment_timestamp, " +
 						"up.user_payment_bank_transaction_id, " +
@@ -181,11 +184,16 @@ public class AdminReportService implements AdminReportImpl{
 			return dto;
 		}).collect(Collectors.toList());
 		return new CommonResponseDTO<>(userPaymentDTOs, filterCount);
+	}catch (Exception e) {
+		new ZoyAdminApplicationException(e, "");
+	}
+	return null;
 	}
 
 	@Override
-	public CommonResponseDTO<ConsilidatedFinanceDetails> getConsolidatedFinanceDetails(UserPaymentFilterRequest filterRequest,FilterData filterData) {
-		StringBuilder queryBuilder = new StringBuilder(
+	public CommonResponseDTO<ConsilidatedFinanceDetails> getConsolidatedFinanceDetails(UserPaymentFilterRequest filterRequest,FilterData filterData) throws WebServiceException{
+		try{
+			StringBuilder queryBuilder = new StringBuilder(
 				"SELECT DISTINCT up.user_payment_timestamp AS transaction_date, " +
 						"up.user_payment_bank_transaction_id AS transaction_number, " +
 						"up.user_id, " +
@@ -268,11 +276,16 @@ public class AdminReportService implements AdminReportImpl{
 		}).collect(Collectors.toList());
 
 		return new CommonResponseDTO<>(consolidatedFinanceDTOs, filterCount);
+	}catch (Exception e) {
+		new ZoyAdminApplicationException(e, "");
+	}
+	return null;
 	}
 
 	@Override
-	public CommonResponseDTO<TenentDues> getTenentDuesDetails(UserPaymentFilterRequest filterRequest, FilterData filterData) {
-		StringBuilder queryBuilder = new StringBuilder(
+	public CommonResponseDTO<TenentDues> getTenentDuesDetails(UserPaymentFilterRequest filterRequest, FilterData filterData) throws WebServiceException {
+		try{
+			StringBuilder queryBuilder = new StringBuilder(
 				"SELECT DISTINCT ON (u.user_money_due_id) " +
 				        "u.user_id, " +
 						"u.user_money_due_amount, " +
@@ -381,12 +394,17 @@ public class AdminReportService implements AdminReportImpl{
 		}).collect(Collectors.toList());
 
 		return new CommonResponseDTO<>(tenentDuesDto, filterCount);
+	}catch (Exception e) {
+		new ZoyAdminApplicationException(e, "");
+	}
+	return null;
 	}
 
 
 	@Override
-	public CommonResponseDTO<VendorPayments> getVendorPaymentDetails(UserPaymentFilterRequest filterRequest, FilterData filterData) {
-		StringBuilder queryBuilder = new StringBuilder(
+	public CommonResponseDTO<VendorPayments> getVendorPaymentDetails(UserPaymentFilterRequest filterRequest, FilterData filterData) throws WebServiceException{	
+		try{
+			StringBuilder queryBuilder = new StringBuilder(
 				 "SELECT DISTINCT ON (up.user_payment_id) " + 
 				        "o.pg_owner_id AS ownerId, " +
 						"o.pg_owner_name AS ownerName, " +
@@ -494,12 +512,17 @@ public class AdminReportService implements AdminReportImpl{
 		}).collect(Collectors.toList());
 
 		return new CommonResponseDTO<>(vendorPaymentsDto, filterCount);
+	}catch (Exception e) {
+		new ZoyAdminApplicationException(e, "");
+	}
+	return null;
 	}
 
 
 	@Override
-	public CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails(String fromDate, String toDate) {
-		List<VendorPaymentsDues> vendorPaymentsDues = new ArrayList<>();
+	public CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails(String fromDate, String toDate) throws WebServiceException{		
+		try{
+			List<VendorPaymentsDues> vendorPaymentsDues = new ArrayList<>();
 		VendorPaymentsDues vendorPayDues = new VendorPaymentsDues();
 		vendorPayDues.setOwnerId(" ");
 		vendorPayDues.setOwnerName(" ");
@@ -512,10 +535,15 @@ public class AdminReportService implements AdminReportImpl{
 		vendorPaymentsDues.add(vendorPayDues);
 		int resultCount = vendorPaymentsDues.size();
 		return new CommonResponseDTO<>(vendorPaymentsDues, resultCount);
+		}catch (Exception e) {
+			new ZoyAdminApplicationException(e, "");
+		}
+		return null;
 	}
 
 	@Override
-	public CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails(String fromDate, String toDate) {
+	public CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails(String fromDate, String toDate) throws WebServiceException{
+		try {
 		List<VendorPaymentsGst> vendorPaymentsGst = new ArrayList<>();
 		VendorPaymentsGst vendorPaysGst = new VendorPaymentsGst();
 		vendorPaysGst.setTransactionDate(null);
@@ -529,10 +557,15 @@ public class AdminReportService implements AdminReportImpl{
 		vendorPaymentsGst.add(vendorPaysGst);
 		int resultCount = vendorPaymentsGst.size();
 		return new CommonResponseDTO<>(vendorPaymentsGst, resultCount);
+		}catch (Exception e) {
+			new ZoyAdminApplicationException(e, "");
+		}
+		return null;
 	}
 
 	@Override
-	public byte[] generateDynamicReport(UserPaymentFilterRequest filterRequest, FilterData filterData) {
+	public byte[] generateDynamicReport(UserPaymentFilterRequest filterRequest, FilterData filterData) throws WebServiceException {
+		try {
 		Map<String, Object> data = new HashMap<>();
 		CommonResponseDTO<?> reportData = null; 
 		switch (filterRequest.getReportType()) {
@@ -570,10 +603,10 @@ public class AdminReportService implements AdminReportImpl{
 		data.put("startDate", Timestamp.valueOf(filterRequest.getFromDate()));
 		data.put("endDate", Timestamp.valueOf(filterRequest.getToDate()));
 		data.put("printDate", new Timestamp(System.currentTimeMillis()));
-		//String logo = pdfGenerateService.imageToBase64(Paths.get(zoyLogoPath).toFile().getPath());
-		//data.put("appLogo",logo);
+		
 		switch (filterRequest.getDownloadType().toLowerCase()) {
 		case "pdf":
+			//data.put("appLogo", pdfGenerateService.imageToBase64(Paths.get(zoyLogoPath).toFile().getPath()));
 			return pdfGenerateService.generatePdfFile(filterRequest.getReportType(), data);
 		case "excel":
 			return excelGenerateService.generateExcelFile(filterRequest.getReportType(), data);  
@@ -582,6 +615,10 @@ public class AdminReportService implements AdminReportImpl{
 		default:
 			throw new IllegalArgumentException("Invalid file type provided. Supported types: pdf, excel, csv");
 		}
+		}catch (Exception e) {
+			new ZoyAdminApplicationException(e, "");
+		}
+		return null;
 	}
 
 	public String[] getDistinctCities() {
