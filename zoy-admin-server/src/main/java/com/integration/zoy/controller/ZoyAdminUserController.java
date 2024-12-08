@@ -410,7 +410,6 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				adminAppRole.setRoleScreen(roleScreens);
 				adminAppRoles.add(adminAppRole);
 			}
-			System.out.println("gson.toJson(adminAppRoles):"+gson.toJson(adminAppRoles));
 			return new ResponseEntity<>(gson.toJson(adminAppRoles), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting zoy Admin User Role List details: " + e.getMessage(),e);
