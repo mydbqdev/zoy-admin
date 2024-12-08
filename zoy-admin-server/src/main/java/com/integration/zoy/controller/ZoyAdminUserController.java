@@ -28,7 +28,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,6 +65,7 @@ import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.utils.AdminAppRole;
 import com.integration.zoy.utils.AdminUserDetailPrevilage;
 import com.integration.zoy.utils.AdminUserList;
+import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.ChangePassWord;
 import com.integration.zoy.utils.Email;
 import com.integration.zoy.utils.OtpVerification;
@@ -97,7 +97,6 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			})
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
-	private static final Gson gson2 = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 	private final Random random = new Random();
 	@Autowired
 	AdminDBImpl adminDBImpl;
@@ -125,6 +124,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 	@Autowired
 	AdminUserPasswordHistoryRepository passwordHistoryRepository;
+	
+	@Autowired
+	AuditHistoryUtilities auditHistoryUtilities;
 
 
 	@Value("${qa.signin.link}")
@@ -156,6 +158,10 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					response.setEmail(details.getEmail());
 					String token = jwtUtil.generateToken(authentication);
 					response.setToken(token);
+					
+					
+					// audit here
+					auditHistoryUtilities.auditForUserLoginLogout(loginDetails.getUserEmail(), true);
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 				} else {
 					response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -191,7 +197,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					adminUserList.setContactNumber(user.get(0)[3]);
 					adminUserList.setDesignation(user.get(0)[4]);
 					adminUserList.setPrivilege(user.get(0)[6]!=null?Arrays.asList(user.get(0)[6].split(",")):new ArrayList<>());
-				}				
+				}	
 				return new ResponseEntity<>(gson.toJson(adminUserList), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.BAD_GATEWAY.value());
@@ -236,7 +242,8 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			newPasswordHistory.setUserEmail(adminUserDetails.getUserEmail());
 			newPasswordHistory.setPassword(adminUserLoginDetails.getPassword());
 			passwordHistoryRepository.save(newPasswordHistory);
-
+			//audit here
+			//auditHistoryUtilities.auditForCreateUserDelete(,master,true);
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("User created Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -403,6 +410,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				adminAppRole.setRoleScreen(roleScreens);
 				adminAppRoles.add(adminAppRole);
 			}
+			System.out.println("gson.toJson(adminAppRoles):"+gson.toJson(adminAppRoles));
 			return new ResponseEntity<>(gson.toJson(adminAppRoles), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting zoy Admin User Role List details: " + e.getMessage(),e);
