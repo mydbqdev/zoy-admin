@@ -32,5 +32,20 @@ public class ZoyConstant {
 	
 	public static final String RENTAL_AGGREMENT_PDF_NAME="RentalAgreement.pdf";
 	public static final String CANCELLATION_PDF_NAME ="Cancellation.pdf";
-
+	
+	
+	public static final String ZOY_ADMIN_LOGIN="USER_LOGIN";
+	public static final String ZOY_ADMIN_LOGOUT="USER_LOGOUT";
+	public static final String ZOY_ADMIN_USER_CREATE="USER_ADD";
+	public static final String ZOY_ADMIN_USER_UPDATE="USER_UPDATE";
+	public static final String ZOY_ADMIN_USER_ACTIVE="USER_ACTIVE";
+	public static final String ZOY_ADMIN_USER_INACTIVE="USER_INACTIVE";
+	public static final String ZOY_ADMIN_USER_DELETE="USER_DELETE";
+	public static final String ZOY_ADMIN_USER_AUTHORZITION="USER_ROLE_ADDED";
+	public static final String ZOY_ADMIN_USER_AUTHORZITION_APPROVE="USER_ROLE_APPROVED";
+	public static final String ZOY_ADMIN_USER_AUTHORZITION_REJECTED="USER_ROLE_REJECTED";
+	public static final String ZOY_ADMIN_ZOY_CODE_GENERATE="ZOY_CODE_GENERATE";
+	public static final String ZOY_ADMIN_ROLE_CREATE="ADMIN_ROLE_CREATE";
+	public static final String ZOY_ADMIN_ROLE_UPDATE="ADMIN_ROLE_UPDATE";
+	public static final String ZOY_ADMIN_ROLE_DELETE="ADMIN_ROLE_DELETE";
 }
