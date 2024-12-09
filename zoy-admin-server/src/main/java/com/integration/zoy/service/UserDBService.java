@@ -1,7 +1,6 @@
 package com.integration.zoy.service;
 
 import java.math.BigInteger;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +25,10 @@ import com.integration.zoy.entity.UserCurrencyMaster;
 import com.integration.zoy.entity.UserDueMaster;
 import com.integration.zoy.entity.UserEkycTypeMaster;
 import com.integration.zoy.entity.UserMaster;
+import com.integration.zoy.exception.WebServiceException;
+import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.AuditActivitiesLogDTO;
 import com.integration.zoy.model.OwnerPropertyDTO;
-import com.integration.zoy.model.PgOwnerDetails;
 import com.integration.zoy.repository.AuditHistoryRepository;
 import com.integration.zoy.repository.NotificationModeMasterRepository;
 import com.integration.zoy.repository.UserBillingMasterRepository;
@@ -267,12 +267,11 @@ public class UserDBService implements UserDBImpl{
 	}
 
 	@Override
-	public CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) {
+	public CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) throws WebServiceException{
 			StringBuilder queryBuilder = new StringBuilder();
-	        String mail = SecurityContextHolder.getContext().getAuthentication().getName();
-	       	       
-	        queryBuilder.append("SELECT created_on, history_data FROM audit_history WHERE user_email = '"+mail+"' ");
-	        
+	       try {
+			String mail = SecurityContextHolder.getContext().getAuthentication().getName();  	       
+	        queryBuilder.append("SELECT created_on, history_data FROM audit_history WHERE user_email = '"+mail+"' ");	        
 	     
 	        if("created_on".equals(paginationRequest.getSortActive())) {
 	         	queryBuilder.append(" order by created_on "+paginationRequest.getSortDirection());
@@ -300,6 +299,10 @@ public class UserDBService implements UserDBImpl{
 	            list.add(auditActivityData);
 	        }
 	        return new CommonResponseDTO<>(list, count);
+	       }catch (Exception e) {
+				new ZoyAdminApplicationException(e, "");
+		   }
+	       return null;
 	}
 
 }
