@@ -85,7 +85,7 @@ public class AuditHistoryUtilities {
 				userName=user.get().getFirstName()+" "+user.get().getLastName();
 			}
 			StringBuffer histotyData=new StringBuffer(userName+" has updated the user for,");
-			if(!dbObject.getFirstName().equals(object.getFirstName()) || !dbObject.getLastName().equals(object.getLastName())) {
+			if(!dbObject.getFirstName().equals(object.getFirstName()) || ! String.valueOf(dbObject.getLastName()).equals(String.valueOf(object.getLastName()))) {
 				if(!(",".equals(histotyData.substring(histotyData.length()-1)))) {
 					histotyData.append(",");
 				}
@@ -99,7 +99,7 @@ public class AuditHistoryUtilities {
 				histotyData.append(" Designation from "+dbObject.getDesignation()+" to "+object.getDesignation());
 			}
 			
-			if(!dbObject.getContactNumber().equals(object.getContactNumber())) {
+			if(!String.valueOf(dbObject.getContactNumber()).equals(String.valueOf(object.getContactNumber()))) {
 				if(!(",".equals(histotyData.substring(histotyData.length()-1)))) {
 					histotyData.append(",");
 				}

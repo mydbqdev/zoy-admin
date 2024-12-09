@@ -19,6 +19,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -243,7 +245,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			newPasswordHistory.setPassword(adminUserLoginDetails.getPassword());
 			passwordHistoryRepository.save(newPasswordHistory);
 			//audit here
-			//auditHistoryUtilities.auditForCreateUserDelete(,master,true);
+			auditHistoryUtilities.auditForCreateUserDelete(SecurityContextHolder.getContext().getAuthentication().getName(),true,master);
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("User created Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -279,13 +281,17 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		ResponseBody response=new ResponseBody();
 		try {
 			AdminUserMaster master=adminDBImpl.findAdminUserMaster(email);
+			//AdminUserMaster masterOld=SerializationUtils.clone((AdminUserMaster) master);
+			AdminUserMaster masterOld=new AdminUserMaster(master);
 			if(master!=null) {
 				master.setFirstName(adminUserDetails.getFirstName());
 				master.setLastName(adminUserDetails.getLastName());
 				master.setDesignation(adminUserDetails.getDesignation());
-				master.setContactNumber(adminUserDetails.getMobileNumber());
+				master.setContactNumber(adminUserDetails.getContactNumber());
 				adminDBImpl.updateAdminUser(master);
 
+				//audit here
+				auditHistoryUtilities.auditForUpdateUser(SecurityContextHolder.getContext().getAuthentication().getName(),master,masterOld);
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("User updated Successfully");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -391,7 +397,8 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	public ResponseEntity<String> zoyAdminUserRoleList() {
 		ResponseBody response=new ResponseBody();
 		List<AdminAppRole> adminAppRoles=new ArrayList<>();
-		try {
+		try { 
+			//System.out.println("SecurityContextHolder.getContext().getAuthentication().getDetails().toString():"+SecurityContextHolder.getContext().getAuthentication().getName()); 
 			List<AppRole> appRole=adminDBImpl.findAllAppRole();
 			for(AppRole role:appRole) {
 				AdminAppRole adminAppRole=new AdminAppRole();
@@ -897,10 +904,14 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	public ResponseEntity<String> doUserActiveteDeactivete(AdminUserList details) {
 		ResponseBody response = new ResponseBody();     
 		try {
-
+			AdminUserMaster master=adminDBImpl.findAdminUserMaster(details.getUserEmail());
+			AdminUserMaster masterOld=new AdminUserMaster(master);
 				adminDBImpl.doUserActiveteDeactivete(details.getUserEmail(),!details.getStatus()); 
-		//		zoyEmailService.sendForUserDoUserActiveteDeactivete(details);
+		       //zoyEmailService.sendForUserDoUserActiveteDeactivete(details);
 				
+				//audit here
+				master.setStatus(!details.getStatus());
+				auditHistoryUtilities.auditForUpdateUser(SecurityContextHolder.getContext().getAuthentication().getName(),master,masterOld);
 				String status = details.getStatus()? "deactivated" :"activated";
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("The user has been " + status + " successfully.");
