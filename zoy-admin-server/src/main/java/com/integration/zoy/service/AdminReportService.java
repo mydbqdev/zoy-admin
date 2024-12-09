@@ -2,6 +2,7 @@ package com.integration.zoy.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
@@ -618,21 +619,18 @@ public class AdminReportService implements AdminReportImpl{
 
 			switch (filterRequest.getDownloadType().toLowerCase()) {
 			case "pdf":
-				String logoPath = Paths.get(zoyLogoPath).toFile().getPath();
-				//data.put("appLogo", pdfGenerateService.imageToBase64(Paths.get(zoyLogoPath).toFile().getPath()));
-				log.info("Logo path: {}", zoyLogoPath);
-				File logoFile = new File(zoyLogoPath);
-				if (!logoFile.exists()) {
-					log.error("Logo file not found at path: {}", zoyLogoPath);
-					throw new FileNotFoundException("Logo file not found at path: " + zoyLogoPath);
-				}
+				//String logoPath = Paths.get(zoyLogoPath).toFile().getPath();
 				try {
-					String base64Logo = pdfGenerateService.imageToBase64(logoPath);
+					InputStream inputStreamImg =getClass().getResourceAsStream("/joyAdminResource/logo.png");
+					if (inputStreamImg == null) {
+						log.error("Logo image not found at the specified path: /joyAdminResource/logo.png");
+						throw new FileNotFoundException("Logo image not found at the specified path: /joyAdminResource/logo.png");
+					}
+					String base64Logo = pdfGenerateService.imageToBase64(inputStreamImg);
 					data.put("appLogo", base64Logo);
-					log.info("Logo converted to Base64 successfully.");
-				} catch (Exception e) {
-					log.error("Error converting logo to Base64: {}", e.getMessage(), e);
-					throw new IllegalStateException("Failed to convert logo to Base64", e);
+				}catch (FileNotFoundException e) {
+					log.error("Logo image not found, PDF generation failed.");
+					throw new RuntimeException("Logo image not found, PDF generation failed.");
 				}
 				return pdfGenerateService.generatePdfFile(filterRequest.getReportType(), data);
 			case "excel":
