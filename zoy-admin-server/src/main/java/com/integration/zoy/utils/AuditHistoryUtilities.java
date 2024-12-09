@@ -127,4 +127,38 @@ public class AuditHistoryUtilities {
 			log.error("Error in audit entry for auditForCreateUserDelete"+email+":",e);
 		}
 	}
+	
+	public void auditForRoleCreate(String email,boolean isCreate,String history) {
+		try {
+			String userName="";
+			Optional<AdminUserMaster> user=userMasterRepository.findById(email);
+			if(user.isPresent()) {
+				userName=user.get().getFirstName()+" "+user.get().getLastName();
+			}
+			history=history.replace("true", "Yes");
+			history=history.replace("false", "No");
+			history=history.replace("role_name", "Role Name");
+			history=history.replace("desc", "Description");
+			history=history.replace("role_screen", "Roles");
+			history=history.replace("screen_name", "Screen Name");
+			history=history.replace("read_prv", "Read");
+			history=history.replace("write_prv", "Write");
+			history=history.replace("\"", "");
+			
+			String histotyData=null;
+			if(isCreate) {
+				histotyData=userName+" has created the role for, "+history;
+			}else {
+				histotyData=userName+" has deleted the role for, "+history;	
+			}
+			AuditHistory auditHistory=new AuditHistory();
+			auditHistory.setUserEmail(email);
+			auditHistory.setOperation(isCreate? ZoyConstant.ZOY_ADMIN_ROLE_CREATE: ZoyConstant.ZOY_ADMIN_ROLE_DELETE);
+			
+			auditHistory.setHistoryData(histotyData);
+			auditHistoryRepository.save(auditHistory);
+		}catch(Exception e) {
+			log.error("Error in audit entry for auditForRoleCreate"+email+":",e);
+		}
+	}
 }
