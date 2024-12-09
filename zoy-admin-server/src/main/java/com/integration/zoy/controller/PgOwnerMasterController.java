@@ -144,7 +144,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.error("Error occurred while saving PG owner details", e);
+			log.error("Error occurred while saving PG owner details API:/zoy_admin/savePgOwnerData.pgOwnerDetalaisSave ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error. Please try again later.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -164,7 +164,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.error("Error occurred while resend PG owner details", e);
+			log.error("Error occurred while resend PG owner details API:/zoy_admin/resendPgOwnerData.pgOwnerDetalaisresend ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error. Please try again later.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -195,7 +195,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(pgOwnerDetailsList), HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.error("Error getting PG Owner details: " + e.getMessage(), e);
+			log.error("Error getting PG Owner details API:/zoy_admin/getAllPgOwnerData.pgOwnerDetailsGet ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -231,7 +231,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(pgOwnerDetailsList), HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.error("Error searchPgOwnerDetails details: {}", e.getMessage(), e);
+			log.error("Error searchPgOwnerDetails details API:/zoy_admin/PgOwnersDataBySearch.searchPgOwnerDetails", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error: " + e.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -390,7 +390,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.error("Error fetching PG Owner details portfolio: {}", e.getMessage(), e);
+			log.error("Error fetching PG Owner details portfolio API:/zoy_admin/ownerdetailsportfolio.pgOwnerDetailsPortfolio", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);

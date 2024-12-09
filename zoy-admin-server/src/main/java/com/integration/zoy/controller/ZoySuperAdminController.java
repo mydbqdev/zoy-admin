@@ -72,12 +72,12 @@ public class ZoySuperAdminController implements ZoySuperAdminImpl {
 			response.setMessage("Successfully fetched super admin card details.");
 			return new ResponseEntity<>(gson.toJson(superAdminCardsDetails), HttpStatus.OK);
 		} catch (DataAccessException e) {
-			log.error("Database error: " + e.getMessage(), e);
+			log.error("Database error API:/zoy_admin/admin_cards_details.zoySuperAdminCardsDetails " + e.getMessage(), e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Database error occurred while fetching super admin card details.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
-			log.error("Unexpected error: " + e.getMessage(), e);
+			log.error("Unexpected error API:/zoy_admin/admin_cards_details.zoySuperAdminCardsDetails" + e.getMessage(), e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("An unexpected error occurred.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
