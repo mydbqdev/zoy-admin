@@ -99,20 +99,17 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 		this.getActivityLogDetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
 	}
 	
-	filterData(){
+	filterData($event: KeyboardEvent){
+		if ($event.keyCode === 13) {
 		if(this.searchText==''){
-		  this.ELEMENT_DATA = Object.assign([],this.filterActivitiesData);
-			this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+			//this.paramFilter.searchText=null;
 		}else{
-		  const pagedData = Object.assign([],this.filterActivitiesData.filter(data =>
-			data. created_on.toLowerCase().includes(this.searchText.toLowerCase()) || data.history_data.toLowerCase().includes(this.searchText.toLowerCase()) 
-		  ));
-		  this.ELEMENT_DATA = Object.assign([],pagedData);
-			this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+			//this.paramFilter.searchText=this.searchText;
 		}
-  
-	
+		this.paginator.pageIndex=0;
+		// server side call for filter
 	  }
+	}
 		  
 	  resetFilter(){
 		  this.searchText='';
@@ -130,8 +127,15 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 	   }
 
  	 onSortData(sort: Sort) {
+		this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+		this.columnSortDirections[sort.active] = sort.direction;
+		  if (sort.direction) {
+			this._liveAnnouncer.announce(`Sorted ${sort.direction}ending`);
+		  } else {
+			this._liveAnnouncer.announce('Sorting cleared');
+		  }
 		this.sortActive=sort.active;
-		this.sortDirection=sort.direction;
+		this.sortDirection=sort.direction!="" ? sort.direction:"asc";
 		this.paginator.pageIndex=0;
 		 this.getActivityLogDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
 	   }
@@ -140,12 +144,12 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
 		this.lastPageSize=pageSize;
-				this.filtersRequest.pageIndex=pageIndex;
-				this.filtersRequest.pageSize=pageSize;
-				this.filtersRequest.sortActive=sortActive;
-				this.filtersRequest.sortDirection=sortDirection.toUpperCase();
+		this.filtersRequest.pageIndex=pageIndex;
+		this.filtersRequest.pageSize=pageSize;
+		this.filtersRequest.sortActive=sortActive;
+		this.filtersRequest.sortDirection=sortDirection.toUpperCase();
+		this.columnSortDirections[sortActive] = sortDirection;
 		this.activityLogService.getActivityLogdetails(this.filtersRequest).subscribe(data => {
-
 			if(data?.data?.length >0){
 				  this.totalProduct=data.count;
 				  this.ELEMENT_DATA=Object.assign([],data.data);
@@ -156,7 +160,6 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 				this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
 			  }
 			  this.spinner.hide();
-
 	   }, error => {
 		this.spinner.hide();
 		if(error.status == 0) {

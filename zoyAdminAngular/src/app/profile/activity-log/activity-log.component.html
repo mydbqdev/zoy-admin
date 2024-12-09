@@ -27,7 +27,7 @@
                             <!-- Search Input -->
                             <div class="position-relative mr-3">
                               <i class="fas fa-search fa-sm position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%); z-index: 1;"></i>
-                              <input type="text" class="form-control form-control-sm border-1" style="border-radius: 20px; padding-left: 35px; width: 300px;"placeholder="Search by keyword" [(ngModel)]="searchText" (input)="filterData()" aria-label="Search" aria-describedby="basic-addon2"/>
+                              <input type="text" class="form-control form-control-sm border-1" style="border-radius: 20px; padding-left: 35px; width: 300px;"placeholder="Search by keyword" [(ngModel)]="searchText" (keyup)="filterData($event)" aria-label="Search" aria-describedby="basic-addon2"/>
                             </div>
                         <div>
                             <a href="javascript:void(0)" class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm"><i class="fas fa-plus-circle"></i> Download</a>
@@ -50,12 +50,8 @@
                                                             <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 200px;">
                                                               CREATED ON
                                                               <span style="margin-left: 2px;">
-                                                                <i class="fas fa-lg fa-sort-up sorting-normal-color" style="color:#969595;" 
-                                                                   [ngClass]="{ 'asc': sortActive === 'created_on' && sortDirection === 'asc' }"
-                                                                   *ngIf="sortActive === 'created_on' && sortDirection === 'asc'"></i>
-                                                                <i class="fas fa-lg fa-sort-down sorting-normal-color"
-                                                                   [ngClass]="{ 'desc': sortActive === 'created_on' && sortDirection === 'desc' }"
-                                                                   *ngIf="sortActive === 'created_on' && sortDirection === 'desc'"></i> 
+                                                                <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['created_on'] === 'asc' }"></i>
+                                                                <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['created_on'] === 'desc'}"></i> 
                                                               </span>
                                                             </th>
                                                             <td mat-cell *matCellDef="let element" style="width: 200px;">
@@ -65,41 +61,30 @@
                                                           
                                                           <!-- Activity Column -->
                                                           <ng-container matColumnDef="history_data">
-                                                            <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 300px;">
+                                                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
                                                               ACTIVITY
                                                               <span style="margin-left: 2px;">
-                                                                <i class="fas fa-lg fa-sort-up sorting-normal-color" style="color:#969595;"
-                                                                   [ngClass]="{ 'asc': sortActive === 'history_data' && sortDirection === 'asc' }"
-                                                                   *ngIf="sortActive === 'history_data' && sortDirection === 'asc'"></i> <!-- Ascending -->
-                                                                <i class="fas fa-lg fa-sort-down sorting-normal-color"
-                                                                   [ngClass]="{ 'desc': sortActive === 'history_data' && sortDirection === 'desc' }"
-                                                                   *ngIf="sortActive === 'history_data' && sortDirection === 'desc'"></i> <!-- Descending -->
+                                                                <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['history_data'] === 'asc' }"></i>
+                                                                <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['history_data'] === 'desc'}"></i> 
                                                               </span>
                                                             </th>
-                                                            <td mat-cell *matCellDef="let element" style="width: 300px;">
+                                                            <td mat-cell *matCellDef="let element">
                                                               {{ element.history_data }}
                                                             </td>
-                                                          </ng-container>
-                                                          
-                                        
+                                                          </ng-container>                                        
                                                         <!-- Header and Row Definitions -->
                                                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                                                
-                                                    </table>
-                                        
+                                                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>                                             
+                                                    </table>                                      
                                                     <!-- No Records Found Message -->
                                                     <div style="text-align: center; min-height: 45px; padding-top: 10px;" *ngIf="dataSource?.data?.length === 0">
                                                         No records found
                                                     </div>
                                                 </div>
-                                            </div>
-                                        
+                                            </div>                                      
                                             <!-- Paginator -->
                                             <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
-                                        </div>
-                                        
-                                        
+                                        </div>                                                                         
                                     </div>
                                 </div>
                             </div>  

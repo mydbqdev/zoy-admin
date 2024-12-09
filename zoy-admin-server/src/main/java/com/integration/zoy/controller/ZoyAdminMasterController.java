@@ -717,27 +717,18 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	    }
 	}
 	
-	//Audit Activities log Details
-	
+	   //my Audit Activities log Details
 		@Override
 		public ResponseEntity<String> zoyAuditActivitiesLogDetails(OwnerLeadPaginationRequest paginationRequest) {
 			ResponseBody response = new ResponseBody();
 			try {
-				CommonResponseDTO<AuditActivitiesLogDTO> auditActivitiesLogList = userDBImpl.getAuditActivitiesLogCount( paginationRequest);
-		            return new ResponseEntity<>(gson2.toJson(auditActivitiesLogList), HttpStatus.OK);
-	 		}catch (DataAccessException dae) {
-		        log.error("Database error occurred while fetching audit-activitieslog details: " + dae.getMessage(), dae);
-		        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		        response.setError("Database error: Unable to fetch audit activities log details");
-		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		        
-		    }catch (Exception e) {
+				CommonResponseDTO<AuditActivitiesLogDTO> auditActivitiesLogList = userDBImpl.getAuditActivitiesLogCount(paginationRequest);
+		        return new ResponseEntity<>(gson2.toJson(auditActivitiesLogList), HttpStatus.OK);
+	 		}catch (Exception e) {
 		        log.error("Unexpected error occurredAPI:/zoy_admin/audit-activitieslog.auditactivitieslogdetails", e);
-		        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		        response.setError("An unexpected error occurred while fetching audit activitieslog details");
-		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		        response.setStatus(HttpStatus.BAD_REQUEST.value());
+		        response.setError(e.getMessage());
+		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		    }
 		}
-
-
 }
