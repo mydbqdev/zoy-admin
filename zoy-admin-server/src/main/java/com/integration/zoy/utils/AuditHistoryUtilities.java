@@ -61,10 +61,10 @@ public class AuditHistoryUtilities {
 			}
 			String histotyData=null;
 			if(isCreate) {
-				histotyData=userName+" has created the user for User Name="+object.getFirstName()+" "+object.getLastName()+", Designation="+object.getDesignation()+", Contact Number="+object.getContactNumber()+", Email="+object.getUserEmail();
+				histotyData=userName+" has created the user for, User Name="+object.getFirstName()+" "+object.getLastName()+", Designation="+object.getDesignation()+", Contact Number="+object.getContactNumber()+", Email="+object.getUserEmail();
 			}else {
 				String status=object.getStatus() ? "Active":"Inactive";
-				histotyData=userName+" has deleted the user for User Name="+object.getFirstName()+" "+object.getLastName()+", Designation="+object.getDesignation()+", Contact Number="+object.getContactNumber()+", Email="+object.getUserEmail()+", status="+status;	
+				histotyData=userName+" has deleted the user for, User Name="+object.getFirstName()+" "+object.getLastName()+", Designation="+object.getDesignation()+", Contact Number="+object.getContactNumber()+", Email="+object.getUserEmail()+", status="+status;	
 			}
 			AuditHistory auditHistory=new AuditHistory();
 			auditHistory.setUserEmail(email);
@@ -85,7 +85,7 @@ public class AuditHistoryUtilities {
 				userName=user.get().getFirstName()+" "+user.get().getLastName();
 			}
 			StringBuffer histotyData=new StringBuffer(userName+" has updated the user for,");
-			if(!dbObject.getFirstName().equals(object.getFirstName()) || !dbObject.getLastName().equals(object.getLastName())) {
+			if(!dbObject.getFirstName().equals(object.getFirstName()) || ! String.valueOf(dbObject.getLastName()).equals(String.valueOf(object.getLastName()))) {
 				if(!(",".equals(histotyData.substring(histotyData.length()-1)))) {
 					histotyData.append(",");
 				}
@@ -99,7 +99,7 @@ public class AuditHistoryUtilities {
 				histotyData.append(" Designation from "+dbObject.getDesignation()+" to "+object.getDesignation());
 			}
 			
-			if(!dbObject.getContactNumber().equals(object.getContactNumber())) {
+			if(!String.valueOf(dbObject.getContactNumber()).equals(String.valueOf(object.getContactNumber()))) {
 				if(!(",".equals(histotyData.substring(histotyData.length()-1)))) {
 					histotyData.append(",");
 				}

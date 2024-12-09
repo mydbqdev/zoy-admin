@@ -91,6 +91,22 @@ public class AdminUserMaster {
 	public void setTs(Timestamp ts) {
 		this.ts = ts;
 	}
+
+	
+	public AdminUserMaster() {
+		super();
+	}
+
+	public AdminUserMaster(AdminUserMaster object) {
+		super();
+		this.firstName = object.firstName;
+		this.lastName = object.lastName;
+		this.userEmail = object.userEmail;
+		this.designation = object.designation;
+		this.contactNumber = object.contactNumber;
+		this.status = object.status;
+		this.ts = object.ts;
+	}
 	
 	
 }
