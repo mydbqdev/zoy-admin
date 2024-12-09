@@ -96,7 +96,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error saving/updating token details: API:/zoy_admin/config/token " + e.getMessage(), e);
+			log.error("Error saving/updating token details:API:/zoy_admin/config/token_advance.zoyAdminConfigCreateUpdateToken ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -140,7 +140,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error uploading property details API: /zoy_admin/config/before-check-in " + e.getMessage(),e);
+			log.error("Error uploading property details API:/zoy_admin/config/security-deposit-limits.zoyAdminCreateUpadateConfigSecurityDepositLimits ",e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -183,7 +183,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error saving/updating zoy share details: " + e.getMessage(),e);
+			log.error("Error saving/updating zoy share details API:/zoy_admin/config/zoy-share.zoyAdminConfigCreateUpdateZoyShare ",e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -209,7 +209,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			zoyShare.setPropertyShare(zoyShareDetails.getPropertyShare().doubleValue());
 			return new ResponseEntity<>(gson.toJson(zoyShare), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error Getting zoy share details: " + e.getMessage(),e);
+			log.error("Error Getting zoy share details API:/zoy_admin/config/zoy-share.zoyAdminConfigGetZoyShare ",e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -272,7 +272,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error saving/creating Other Charges details API:/zoy_admin/config/other-charges " + e.getMessage(), e);
+			log.error("Error saving/creating Other Charges details API:/zoy_admin/config/other-charges.zoyAdminConfigCreateUpdateOtherCharges ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -308,7 +308,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error saving/updating Data Grouping details API:/zoy_admin/config/security-deposit-limits  " + e.getMessage(),e);
+			log.error("Error saving/updating Data Grouping details API:/zoy_admin/config/data-grouping.zoyAdminConfigCreateUpdateDataGrouping ",e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -346,7 +346,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error saving/updating Security Deposits Limit details: API:/zoy_admin/config/security-deposit-limits " + e.getMessage(), e);
+			log.error("Error saving/updating Security Deposits Limit details: API:/zoy_admin/config/security-deposit-limits ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -384,7 +384,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			}
 
 		} catch (Exception e) {
-			log.error("Error saving/updating Security Deposit Refund Rule API: /zoy_admin/config/security-deposit-refund-rules " + e.getMessage(), e);
+			log.error("Error saving/updating Security Deposit Refund Rule API:/zoy_admin/config/security-deposit-refund-rules.zoyAdminCreateUpadateConfigSecurityDepositRefundRules\r\n ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -416,7 +416,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			response.setMessage("Successfully fetched all config details");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		}catch (Exception e) {
-			log.error("Error fetching config details: " + e.getMessage(), e);
+			log.error("Error fetching config details API:/zoy_admin/config/admin-configuration-details.getAllConfigurationDetails ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);

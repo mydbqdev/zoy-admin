@@ -119,7 +119,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			}
 			return new ResponseEntity<>(gson.toJson(details), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting owner property details: " + e.getMessage(),e);
+			log.error("Error getting owner property details API:/zoy_admin/owner_property_details.ownerPropertyDetails",e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -165,19 +165,19 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			} 
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (JsonSyntaxException e) {
-			log.error("JSON parsing error: " + e.getMessage(), e);
+			log.error("JSON parsing error API:/zoy_admin/upload_tenant_file.uploadTenantFile ", e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			response.setError("Invalid JSON format.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 
 		}catch (IOException e) {
-			log.error("File processing error: " + e.getMessage(), e);
+			log.error("File processing error API:/zoy_admin/upload_tenant_file.uploadTenantFile " + e.getMessage(), e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Error reading the uploaded file.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 
 		} catch (Exception e) {
-			log.error("Error uploading tenant file: " + e.getMessage(), e);
+			log.error("Error uploading tenant file API:/zoy_admin/upload_tenant_file.uploadTenantFile " + e.getMessage(), e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("An internal error occurred.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -225,7 +225,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error uploading property details: " + e.getMessage(),e);
+			log.error("Error uploading property API:/zoy_admin/upload_property_file.uploadPropertyFile ",e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -253,7 +253,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			}
 			return new ResponseEntity<>(gson.toJson(bulkUploadDatas), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error uploading property details: " + e.getMessage(),e);
+			log.error("Error uploading property details API:/zoy_admin/getBulkUpload.getBulkUpload ",e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -272,7 +272,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 					.contentType(MediaType.TEXT_PLAIN).body(fileBytes);
 
 		} catch (Exception e) {
-			log.error("An error occurred while downloading the tenants bulk upload file template: " + e.getMessage() , e);
+			log.error("An error occurred while downloading the tenants bulk upload file template API:/zoy_partner/download_template_tenants.downloadTemplateTenantsGet ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setMessage("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -295,7 +295,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 					.contentType(MediaType.APPLICATION_OCTET_STREAM)
 					.body(fileBytes);
 		} catch (Exception e) {
-			log.error("An error occurred while downloading the template file: " + e.getMessage() , e);
+			log.error("An error occurred while downloading the template file API:/zoy_partner/download_template.downloadTemplateGet ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setMessage("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
