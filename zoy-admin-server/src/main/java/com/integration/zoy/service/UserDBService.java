@@ -282,7 +282,7 @@ public class UserDBService implements UserDBImpl{
 	        	queryBuilder.append(" order by created_on DESC ");
 	        }
 	        	
-	        System.out.println("queryBuilder" +queryBuilder.toString());
+	        //System.out.println("queryBuilder" +queryBuilder.toString());
 	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
 	        
 			int count=query.getResultList().size();
