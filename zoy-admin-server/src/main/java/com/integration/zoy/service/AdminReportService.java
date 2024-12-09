@@ -81,7 +81,7 @@ public class AdminReportService implements AdminReportImpl{
 							"bd.bed_name, " +
 							"up.user_payment_zoy_payment_type, " +
 							"CASE " +
-							"    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'cash' " +
+							"    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Cash' " +
 							"    ELSE up.user_payment_result_method " +
 							"END AS user_payment_result_method, " +
 							"pgt.property_city " + 

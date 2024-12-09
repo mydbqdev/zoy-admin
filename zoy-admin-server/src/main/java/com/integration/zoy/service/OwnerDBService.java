@@ -33,6 +33,7 @@ import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.entity.ZoyShareMaster;
+import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
 import com.integration.zoy.repository.ZoyPgAmenetiesMasterRepository;
 import com.integration.zoy.repository.ZoyPgBedDetailsRepository;
@@ -132,28 +133,28 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Autowired
 	private ZoyPgSecurityDepositRefundRuleRepository  zoySecurityDepositRefundRuleRepo;
-
+	
 	@PersistenceContext
 	private EntityManager entityManager;
 
 	@Override
-	public ZoyPgTypeMaster createPgType(ZoyPgTypeMaster pgType) {
+	public ZoyPgTypeMaster createPgType(ZoyPgTypeMaster pgType)throws WebServiceException {
 		return zoyPgTypeMasterRepository.save(pgType);
 	}
 
 	@Override
-	public ZoyPgTypeMaster getPgTypeById(String id) {
+	public ZoyPgTypeMaster getPgTypeById(String id) throws WebServiceException{
 		return zoyPgTypeMasterRepository.findById(id).orElse(null);
 	}
 
 	@Override
-	public List<ZoyPgTypeMaster> getAllPgTypes() {
+	public List<ZoyPgTypeMaster> getAllPgTypes() throws WebServiceException{
 		return zoyPgTypeMasterRepository.findAll();
 	}
 
 
 	@Override
-	public ZoyPgTypeMaster updatePgType(ZoyPgTypeMaster pgType) {
+	public ZoyPgTypeMaster updatePgType(ZoyPgTypeMaster pgType) throws WebServiceException{
 		Optional<ZoyPgTypeMaster> existingPgType = zoyPgTypeMasterRepository.findById(pgType.getPgTypeId());
 		if (existingPgType.isPresent()) {
 			ZoyPgTypeMaster updatedPgType = existingPgType.get();
@@ -164,18 +165,18 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public void deletePgType(String id) {
+	public void deletePgType(String id) throws WebServiceException{
 		zoyPgTypeMasterRepository.deleteById(id);
 	}
 
 	//PG Share
 	@Override
-	public ZoyPgShareMaster createShare(ZoyPgShareMaster share) {
+	public ZoyPgShareMaster createShare(ZoyPgShareMaster share) throws WebServiceException{
 		return zoyPgShareMasterRepository.save(share);
 	}
 
 	@Override
-	public ZoyPgShareMaster updateShare(ZoyPgShareMaster share) {
+	public ZoyPgShareMaster updateShare(ZoyPgShareMaster share)throws WebServiceException {
 		Optional<ZoyPgShareMaster> existingShare = zoyPgShareMasterRepository.findById(share.getShareId());
 		if (existingShare.isPresent()) {
 			ZoyPgShareMaster updateShare = existingShare.get();
@@ -188,46 +189,46 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public void deleteShare(String shareId) {
+	public void deleteShare(String shareId) throws WebServiceException{
 		zoyPgShareMasterRepository.deleteById(shareId);
 	}
 
 	@Override
-	public List<ZoyPgShareMaster> getAllShares() {
+	public List<ZoyPgShareMaster> getAllShares()throws WebServiceException {
 		return zoyPgShareMasterRepository.findAll();
 	}
 
 	@Override
-	public ZoyPgShareMaster getShareById(String shareId) {
+	public ZoyPgShareMaster getShareById(String shareId)throws WebServiceException {
 		return zoyPgShareMasterRepository.findById(shareId).orElse(null);
 	}
 
 	@Override
-	public String getShareIdByShareType(String ShareType) {
+	public String getShareIdByShareType(String ShareType)throws WebServiceException {
 		String id=zoyPgShareMasterRepository.findShareIdByShareType(ShareType);
 		return id ;
 	}
 
 
 	@Override
-	public ZoyPgAmenetiesMaster createAmeneties(ZoyPgAmenetiesMaster ameneties) {
+	public ZoyPgAmenetiesMaster createAmeneties(ZoyPgAmenetiesMaster ameneties) throws WebServiceException{
 		return zoyPgAmenetiesMasterRepository.save(ameneties);
 	}
 
 	@Override
-	public List<ZoyPgAmenetiesMaster> createAllAmeneties(List<ZoyPgAmenetiesMaster> ameneties) {
+	public List<ZoyPgAmenetiesMaster> createAllAmeneties(List<ZoyPgAmenetiesMaster> ameneties)throws WebServiceException {
 		return zoyPgAmenetiesMasterRepository.saveAll(ameneties);
 	}
 
 
 
 	@Override
-	public List<ZoyPgAmenetiesMaster> getAllAmeneties() {
+	public List<ZoyPgAmenetiesMaster> getAllAmeneties() throws WebServiceException{
 		return zoyPgAmenetiesMasterRepository.findAll();
 	}
 
 	@Override
-	public ZoyPgAmenetiesMaster updateAmeneties(String id, ZoyPgAmenetiesMaster ameneties) {
+	public ZoyPgAmenetiesMaster updateAmeneties(String id, ZoyPgAmenetiesMaster ameneties) throws WebServiceException{
 		Optional<ZoyPgAmenetiesMaster> existingAmeneties = zoyPgAmenetiesMasterRepository.findById(id);
 		if (existingAmeneties.isPresent()) {
 			ZoyPgAmenetiesMaster updatedAmeneties = existingAmeneties.get();
@@ -239,12 +240,12 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public ZoyPgAmenetiesMaster findAmeneties(String id) {
+	public ZoyPgAmenetiesMaster findAmeneties(String id) throws WebServiceException {
 		return zoyPgAmenetiesMasterRepository.findById(id).orElse(null);
 	}
 
 	@Override
-	public void deleteAmeneties(String id) {
+	public void deleteAmeneties(String id) throws WebServiceException{
 		if (!repository.existsById(id)) {
 			throw new RuntimeException("Ameneties not found with id: " + id);
 		}
@@ -252,24 +253,24 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public List<String>  getIdsOfByAmenitiesList(List<String> amenities){
+	public List<String>  getIdsOfByAmenitiesList(List<String> amenities)throws WebServiceException{
 		return zoyPgAmenetiesMasterRepository.getAmenityIdsByNames(amenities);
 	}
 
 
 	// Room Types methods
 	@Override
-	public ZoyPgRoomTypeMaster createRoomType(ZoyPgRoomTypeMaster roomType) {
+	public ZoyPgRoomTypeMaster createRoomType(ZoyPgRoomTypeMaster roomType)throws WebServiceException {
 		return roomTypeRepository.save(roomType);
 	}
 
 	@Override
-	public void deleteRoomType(String roomTypeId) {
+	public void deleteRoomType(String roomTypeId) throws WebServiceException{
 		roomTypeRepository.deleteById(roomTypeId);
 	}
 
 	@Override
-	public ZoyPgRoomTypeMaster updateRoomType(ZoyPgRoomTypeMaster roomType) {
+	public ZoyPgRoomTypeMaster updateRoomType(ZoyPgRoomTypeMaster roomType)throws WebServiceException {
 		Optional<ZoyPgRoomTypeMaster> existingRoom = roomTypeRepository.findById(roomType.getRoomTypeId());
 		if (existingRoom.isPresent()) {
 			ZoyPgRoomTypeMaster updatedRoom = existingRoom.get();
@@ -282,33 +283,33 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public List<ZoyPgRoomTypeMaster> getAllRoomTypes() {
+	public List<ZoyPgRoomTypeMaster> getAllRoomTypes()throws WebServiceException {
 		return roomTypeRepository.findAll();
 	}
 
 	@Override
-	public String getRoomTypeIdByRoomType(String roomTypeName) {
+	public String getRoomTypeIdByRoomType(String roomTypeName) throws WebServiceException{
 		return roomTypeRepository.findRoomTypeIdByName(roomTypeName);
 	}
 
 	@Override
-	public ZoyPgRoomTypeMaster findRoomType(String id) {
+	public ZoyPgRoomTypeMaster findRoomType(String id) throws WebServiceException{
 		return roomTypeRepository.findById(id).orElse(null);
 	}
 
 	//Pg due dueType
 	@Override
-	public ZoyPgDueFactorMaster createDueFactor(ZoyPgDueFactorMaster dueFactor) {
+	public ZoyPgDueFactorMaster createDueFactor(ZoyPgDueFactorMaster dueFactor)throws WebServiceException {
 		return zoyPgDueFactorMasterRepository.save(dueFactor);
 	}
 
 	@Override
-	public void deleteDueFactor(String factorId) {
+	public void deleteDueFactor(String factorId) throws WebServiceException{
 		zoyPgDueFactorMasterRepository.deleteById(factorId);
 	}
 
 	@Override
-	public ZoyPgDueFactorMaster updateDueFactor(ZoyPgDueFactorMaster dueFactor) {
+	public ZoyPgDueFactorMaster updateDueFactor(ZoyPgDueFactorMaster dueFactor)throws WebServiceException {
 		Optional<ZoyPgDueFactorMaster> existingDue = zoyPgDueFactorMasterRepository.findById(dueFactor.getFactorId());
 		if (existingDue.isPresent()) {
 			ZoyPgDueFactorMaster updatedDue = existingDue.get();
@@ -319,41 +320,41 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public List<ZoyPgDueFactorMaster> getAllDueFactors() {
+	public List<ZoyPgDueFactorMaster> getAllDueFactors() throws WebServiceException{
 		return zoyPgDueFactorMasterRepository.findAll();
 	}
 
 	@Override
-	public String getFactorIdbyFactorName(String factorName) {
+	public String getFactorIdbyFactorName(String factorName)throws WebServiceException {
 		String dueTypeId=	zoyPgDueFactorMasterRepository.findFactorIdByFactorName(factorName);
 		return dueTypeId;
 	}
 
 	@Override
-	public ZoyPgDueFactorMaster findDueFactor(String id) {
+	public ZoyPgDueFactorMaster findDueFactor(String id)throws WebServiceException {
 		return zoyPgDueFactorMasterRepository.findById(id).orElse(null);
 	}
 
 
 	//Pg Due Type
 	@Override
-	public ZoyPgDueTypeMaster createDueType(ZoyPgDueTypeMaster dueType) {
+	public ZoyPgDueTypeMaster createDueType(ZoyPgDueTypeMaster dueType)throws WebServiceException {
 		return zoyPgDueTypeMasterRepository.save(dueType);
 	}
 
 	@Override
-	public List<ZoyPgDueTypeMaster> createAllDueType(List<ZoyPgDueTypeMaster> dueType) {
+	public List<ZoyPgDueTypeMaster> createAllDueType(List<ZoyPgDueTypeMaster> dueType) throws WebServiceException{
 		return zoyPgDueTypeMasterRepository.saveAll(dueType);
 	}
 
 
 	@Override
-	public void deleteDueType(String dueId) {
+	public void deleteDueType(String dueId)throws WebServiceException {
 		zoyPgDueTypeMasterRepository.deleteById(dueId);
 	}
 
 	@Override
-	public ZoyPgDueTypeMaster updateDueType(ZoyPgDueTypeMaster dueType) {
+	public ZoyPgDueTypeMaster updateDueType(ZoyPgDueTypeMaster dueType) throws WebServiceException{
 		Optional<ZoyPgDueTypeMaster> existingDue = zoyPgDueTypeMasterRepository.findById(dueType.getDueId());
 		if (existingDue.isPresent()) {
 			ZoyPgDueTypeMaster updatedDue = existingDue.get();
@@ -364,19 +365,19 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public List<ZoyPgDueTypeMaster> getAllDueTypes() {
+	public List<ZoyPgDueTypeMaster> getAllDueTypes() throws WebServiceException{
 		return zoyPgDueTypeMasterRepository.findAll();
 	}
 
 
 	//Pg Rent Cycle
 	@Override
-	public ZoyPgRentCycleMaster saveRentCycle(ZoyPgRentCycleMaster rentCycle) {
+	public ZoyPgRentCycleMaster saveRentCycle(ZoyPgRentCycleMaster rentCycle) throws WebServiceException{
 		return zoyPgRentCycleMasterRepository.save(rentCycle);
 	}
 
 	@Override
-	public ZoyPgRentCycleMaster updateRentCycle(ZoyPgRentCycleMaster rentCycle) {
+	public ZoyPgRentCycleMaster updateRentCycle(ZoyPgRentCycleMaster rentCycle)throws WebServiceException {
 		Optional<ZoyPgRentCycleMaster> existingRentCycle = zoyPgRentCycleMasterRepository.findById(rentCycle.getCycleId());
 		if (existingRentCycle.isPresent()) {
 			ZoyPgRentCycleMaster updatedRentCycle = existingRentCycle.get();
@@ -388,38 +389,38 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public void deleteRentCycle(String cycleId) {
+	public void deleteRentCycle(String cycleId) throws WebServiceException{
 		zoyPgRentCycleMasterRepository.deleteById(cycleId);
 	}
 
 	@Override
-	public List<ZoyPgRentCycleMaster> getAllRentCycle() {
+	public List<ZoyPgRentCycleMaster> getAllRentCycle()throws WebServiceException {
 		return zoyPgRentCycleMasterRepository.findAll();
 	}
 
 	@Override
-	public List<String[]> findRentCycleName(String propertyId) {
+	public List<String[]> findRentCycleName(String propertyId) throws WebServiceException{
 		return zoyPgRentCycleMasterRepository.findRentCycleName(propertyId);
 	}
 
 	@Override
-	public ZoyPgRentCycleMaster findRentCycle(String rentCycelId) {
+	public ZoyPgRentCycleMaster findRentCycle(String rentCycelId) throws WebServiceException{
 		return zoyPgRentCycleMasterRepository.findById(rentCycelId).orElse(null);
 	}
 
 	//Pg Time
 	@Override
-	public ZoyPgTimeMaster saveTime(ZoyPgTimeMaster time) {
+	public ZoyPgTimeMaster saveTime(ZoyPgTimeMaster time) throws WebServiceException{
 		return zoyPgTimeMasterRepository.save(time);
 	}
 
 	@Override
-	public void deleteTime(String timeId) {
+	public void deleteTime(String timeId) throws WebServiceException{
 		zoyPgTimeMasterRepository.deleteById(timeId);
 	}
 
 	@Override
-	public ZoyPgTimeMaster updateTime(ZoyPgTimeMaster time) {
+	public ZoyPgTimeMaster updateTime(ZoyPgTimeMaster time) throws WebServiceException{
 		Optional<ZoyPgTimeMaster> existingTime = zoyPgTimeMasterRepository.findById(time.getTimeId());
 		if (existingTime.isPresent()) {
 			ZoyPgTimeMaster updatedTime = existingTime.get();
@@ -431,109 +432,109 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public List<ZoyPgTimeMaster> getAllTime() {
+	public List<ZoyPgTimeMaster> getAllTime() throws WebServiceException{
 		return zoyPgTimeMasterRepository.findAll();
 	}
 
 	@Override
-	public List<String[]> getOwnerPropertyDetails() {
+	public List<String[]> getOwnerPropertyDetails() throws WebServiceException {
 		return zoyPgPropertyDetailsRepository.getOwnerPropertyDetails();
 	}
 
 	@Override
-	public ZoyPgPropertyFloorDetails findFloorDetails(String propertyId, String floorName) {
+	public ZoyPgPropertyFloorDetails findFloorDetails(String propertyId, String floorName)throws WebServiceException {
 		return zoyPgPropertyFloorDetailsRepository.findFloorDetails(propertyId, floorName);
 	}
 
 	@Override
-	public ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName) {
+	public ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName)throws WebServiceException {
 		return zoyPgRoomDetailsRepository.findRoomDetails(propertyId, roomName);
 	}
 
 	@Override
-	public List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName) {
+	public List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName)throws WebServiceException {
 		return zoyPgBedDetailsRepository.findBedDetails(propertyId, bedName);
 	}
 
 	@Override
-	public ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle) {
+	public ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle) throws WebServiceException{
 		return zoyPgRentCycleMasterRepository.findRentCycleName(propertyId,rentCycle);
 	}
 
 	@Override
-	public ZoyPgOwnerDetails savePgOwner(ZoyPgOwnerDetails zoyPgOwnerDetails) {
+	public ZoyPgOwnerDetails savePgOwner(ZoyPgOwnerDetails zoyPgOwnerDetails) throws WebServiceException{
 		return repository.save(zoyPgOwnerDetails);
 	}
 
 	@Override
-	public List<String> getNameOfByAmenitiesList(List<String> excelAmeneties) {
+	public List<String> getNameOfByAmenitiesList(List<String> excelAmeneties)throws WebServiceException {
 		return	zoyPgAmenetiesMasterRepository.getAmenityNameByNames(excelAmeneties);
 
 	}
 
 	@Override
-	public ZoyPgPropertyDetails getPropertyById(String id) {
+	public ZoyPgPropertyDetails getPropertyById(String id)throws WebServiceException {
 		return zoyPgPropertyDetailsRepository.findById(id).orElse(null); 
 	}
 
 	@Override
-	public ZoyPgOwnerDetails findPgOwnerById(String ownerId) {
+	public ZoyPgOwnerDetails findPgOwnerById(String ownerId)throws WebServiceException {
 		return repository.findById(ownerId).orElse(null);
 	}
 
 	@Override
-	public ZoyPgOwnerBookingDetails getBookingDetails(String userBookingsId) {
+	public ZoyPgOwnerBookingDetails getBookingDetails(String userBookingsId)throws WebServiceException {
 		return bookingDetailsRepository.findById(userBookingsId).orElse(null);
 	}
 
 	@Override
-	public	ZoyPgBedDetails getBedsId(String bedId) {
+	public	ZoyPgBedDetails getBedsId(String bedId) throws WebServiceException{
 		return zoyPgBedDetailsRepository.findById(bedId).orElse(null);
 	}
 
 	@Override
-	public List<String> findPropertyAmenetiesName(String propertyId) {
+	public List<String> findPropertyAmenetiesName(String propertyId)throws WebServiceException {
 		return zoyPgPropertyAmenetiesRepository.findPropertyAmenetiesName(propertyId);
 	}
 
 	@Override
-	public ZoyPgTermsMaster findTermMaster(String propertyId) {
+	public ZoyPgTermsMaster findTermMaster(String propertyId) throws WebServiceException{
 		return zoyPgTermsMasterRepository.findTermMaster(propertyId) ;
 	}
 
 	@Override
-	public ZoyPgTokenDetails findTokenDetails() {
+	public ZoyPgTokenDetails findTokenDetails()throws WebServiceException {
 		List<ZoyPgTokenDetails> results = zoyPgTokenDetailsRepository.findAll(PageRequest.of(0, 1)).getContent();
 		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@Override
-	public ZoyPgTokenDetails saveToken(ZoyPgTokenDetails tokenDetails) {
+	public ZoyPgTokenDetails saveToken(ZoyPgTokenDetails tokenDetails) throws WebServiceException{
 		return zoyPgTokenDetailsRepository.save(tokenDetails);
 	}
 
 	@Override
-	public List<ZoyPgTokenDetails> findAllToken() {
+	public List<ZoyPgTokenDetails> findAllToken() throws WebServiceException{
 		return zoyPgTokenDetailsRepository.findAll();
 	}
 
 	@Override
-	public List<ZoyPgDueMaster> findAllDueMaster() {
+	public List<ZoyPgDueMaster> findAllDueMaster() throws WebServiceException{
 		return zoyPgDueMasterRepository.findAll();
 	}
 
 	@Override
-	public ZoyPgDueMaster saveUserDueMaster(ZoyPgDueMaster userDueMasters) {
+	public ZoyPgDueMaster saveUserDueMaster(ZoyPgDueMaster userDueMasters)throws WebServiceException {
 		return zoyPgDueMasterRepository.save(userDueMasters);
 	}
 
 	@Override
-	public ZoyPgDueMaster findUserDueMaster(String id) {
+	public ZoyPgDueMaster findUserDueMaster(String id)throws WebServiceException {
 		return zoyPgDueMasterRepository.findById(id).orElse(null);
 	}
 
 	@Override
-	public ZoyPgDueMaster updateDueMaster(ZoyPgDueMaster userDueMasters) {
+	public ZoyPgDueMaster updateDueMaster(ZoyPgDueMaster userDueMasters)throws WebServiceException {
 		Optional<ZoyPgDueMaster> existingMaster = zoyPgDueMasterRepository.findById(userDueMasters.getDueTypeId());
 		if (existingMaster.isPresent()) {
 			ZoyPgDueMaster updatedMaster = existingMaster.get();
@@ -545,84 +546,89 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public ZoyPgCancellationDetails findBeforeCancellationDetails(String cancellationId) {
+	public ZoyPgCancellationDetails findBeforeCancellationDetails(String cancellationId) throws WebServiceException {
 		return zoyPgCancellationDetailsRepository.findById(cancellationId).orElse(null);
 	}
 
 	@Override
-	public ZoyPgCancellationDetails saveBeforeCancellation(ZoyPgCancellationDetails cancelDetails) {
+	public ZoyPgCancellationDetails saveBeforeCancellation(ZoyPgCancellationDetails cancelDetails) throws WebServiceException {
 		return zoyPgCancellationDetailsRepository.save(cancelDetails);
 	}
 
 	@Override
-	public List<ZoyPgCancellationDetails> findAllBeforeCancellation() {
+	public List<ZoyPgCancellationDetails> findAllBeforeCancellation() throws WebServiceException {
 		return zoyPgCancellationDetailsRepository.findAll();
 	}
 
 	@Override
-	public ZoyShareMaster findZoyShareDetails(String zoyShareId) {
+	public ZoyShareMaster findZoyShareDetails(String zoyShareId) throws WebServiceException {
 		return zoyShareMasterRepository.findById(zoyShareId).orElse(null);
 	}
 
 	@Override
-	public ZoyShareMaster saveZoyShare(ZoyShareMaster shareDetails) {
+	public ZoyShareMaster saveZoyShare(ZoyShareMaster shareDetails) throws WebServiceException {
 		return zoyShareMasterRepository.save(shareDetails);
 	}
 
 	@Override
-	public List<ZoyShareMaster> findAllZoyShare() {
+	public List<ZoyShareMaster> findAllZoyShare() throws WebServiceException{
 		return zoyShareMasterRepository.findAll();
 	}
 
 	@Override
-	public ZoyPgOtherCharges findZoyOtherCharges() {
+	public ZoyPgOtherCharges findZoyOtherCharges() throws WebServiceException{
 		List<ZoyPgOtherCharges> results =zoyPgOtherChargesRepo.findAll(PageRequest.of(0, 1)).getContent();
 		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@Override
-	public ZoyPgOtherCharges saveOtherCharges(ZoyPgOtherCharges other) {
+	public ZoyPgOtherCharges saveOtherCharges(ZoyPgOtherCharges other) throws WebServiceException{
 		return zoyPgOtherChargesRepo.save(other);
 	}
 
 	@Override
-	public ZoyDataGrouping findZoyDataGroup() {
+	public ZoyDataGrouping findZoyDataGroup() throws WebServiceException{
 		List<ZoyDataGrouping> results=zoyDataGroupingRepository.findAll(PageRequest.of(0, 1)).getContent();
 		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@Override
-	public ZoyDataGrouping saveDataGroup(ZoyDataGrouping group) {
+	public ZoyDataGrouping saveDataGroup(ZoyDataGrouping group) throws WebServiceException {
 		return zoyDataGroupingRepository.save(group);
 	}
 
 	@Override
-	public List<ZoyDataGrouping> findAllDataGroup() {
+	public List<ZoyDataGrouping> findAllDataGroup()throws WebServiceException {
 		return zoyDataGroupingRepository.findAll();
 	}
 
 	@Override
-	public ZoyPgSecurityDepositDetails findZoySecurityDeposit() {
+	public ZoyPgSecurityDepositDetails findZoySecurityDeposit() throws WebServiceException {
 		List<ZoyPgSecurityDepositDetails> results = zoySecurityDepositRepo.findAll(PageRequest.of(0, 1)).getContent();
 		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@Override
-	public ZoyPgSecurityDepositDetails saveZoySecurityDepositLimits(ZoyPgSecurityDepositDetails depositLimits) {
+	public ZoyPgSecurityDepositDetails saveZoySecurityDepositLimits(ZoyPgSecurityDepositDetails depositLimits) throws WebServiceException {
 		return zoySecurityDepositRepo.save(depositLimits);
 	}
 
 
 
 	@Override
-	public ZoyPgSecurityDepositRefundRule saveSecurityDepositRefundRule(ZoyPgSecurityDepositRefundRule refundRule) {
+	public ZoyPgSecurityDepositRefundRule saveSecurityDepositRefundRule(ZoyPgSecurityDepositRefundRule refundRule) throws WebServiceException {
 		return zoySecurityDepositRefundRuleRepo.save(refundRule);
 	}
 
 	@Override
-	public ZoyPgSecurityDepositRefundRule findSecurityDepositRefundRuleById() {
+	public ZoyPgSecurityDepositRefundRule findSecurityDepositRefundRuleById() throws WebServiceException{
 		List<ZoyPgSecurityDepositRefundRule> results= zoySecurityDepositRefundRuleRepo.findAll(PageRequest.of(0, 1)).getContent();;
 		return results.isEmpty() ? null : results.get(0);
+	}
+
+	@Override
+	public ZoyPgRoomDetails findRoomName(String roomId) {
+		return zoyPgRoomDetailsRepository.findRoomNameByRoomId(roomId);
 	}
 
 }
