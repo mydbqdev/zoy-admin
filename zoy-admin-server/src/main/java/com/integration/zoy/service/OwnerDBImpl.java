@@ -89,6 +89,7 @@ public interface OwnerDBImpl {
 	List<String[]> getOwnerPropertyDetails();
 	ZoyPgPropertyFloorDetails findFloorDetails(String propertyId, String floorName);
 	ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName);
+	ZoyPgRoomDetails findRoomName(String roomId);
 	List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName);
 	ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle);
 	ZoyPgOwnerDetails savePgOwner(ZoyPgOwnerDetails zoyPgOwnerDetails);

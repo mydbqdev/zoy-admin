@@ -174,35 +174,35 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		String fileName ="";
 		MediaType contentType = null;
 		try {
-		FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-		fileData = adminReportImpl.generateDynamicReport(filterRequest,filterData);
+			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+			fileData = adminReportImpl.generateDynamicReport(filterRequest,filterData);
 
-		if (fileData.length == 0) {
-	        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  
-	    }
+			if (fileData.length == 0) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  
+			}
 
-		String fileExtension;
+			String fileExtension;
 
-		switch (filterRequest.getDownloadType().toLowerCase()) {
-		case "excel":
-			contentType = MediaType.APPLICATION_OCTET_STREAM; 
-			fileExtension = ".xlsx";
-			break;
-		case "csv":
-			contentType = MediaType.TEXT_PLAIN; 
-			fileExtension = ".csv";
-			break;
-		case "pdf":
-		default:
-			contentType = MediaType.APPLICATION_PDF;
-			fileExtension = ".pdf";
-			break;
-		}
+			switch (filterRequest.getDownloadType().toLowerCase()) {
+			case "excel":
+				contentType = MediaType.APPLICATION_OCTET_STREAM; 
+				fileExtension = ".xlsx";
+				break;
+			case "csv":
+				contentType = MediaType.TEXT_PLAIN; 
+				fileExtension = ".csv";
+				break;
+			case "pdf":
+			default:
+				contentType = MediaType.APPLICATION_PDF;
+				fileExtension = ".pdf";
+				break;
+			}
 
-		fileName = filterRequest.getReportType() + fileExtension;
+			fileName = filterRequest.getReportType() + fileExtension;
 		}catch(Exception ex) {
 			log.error("Error getting download DynamicReport ByDateRange API:/zoy_admin/download_report.downloadDynamicReportByDateRange ",ex);
-	        	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage().getBytes());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage().getBytes());
 		}
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)

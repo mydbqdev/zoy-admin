@@ -1,7 +1,5 @@
 package com.integration.zoy.controller;
 
-import java.sql.Timestamp;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;

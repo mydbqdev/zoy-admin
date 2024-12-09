@@ -36,22 +36,22 @@ public class ZoyEmailService {
 
 	@Value("${qa.signin.link}")
 	private String qaSigninLink;
-	
+
 	@Value("${zoy.owner.app}")
 	private String ownerAppLink;
-	
+
 	@Value("${zoy.admin.toMail}")
 	private String zoyAdminMail;
-	
+
 	@Value("${zoy.support.toMail}")
 	private String zoySupportMail;
-	
+
 	@Value("${app.zoy.email.verification.url}")
 	String emailVerificationUrl;
-	
+
 	@Value("${app.zoy.banner.30}")
 	private String zoyBanner30Path;
-	
+
 	@Value("${app.zoy.term.doc}")
 	private String zoyTermDoc;
 
@@ -63,12 +63,12 @@ public class ZoyEmailService {
 		email.setTo(to);
 		email.setSubject("Change new password");
 		String message = "<p>Hi,</p>"
-			    + "<p>We received a request to reset your password for your Zoy Admin Portal account. "
-			    + "Please use the following One-Time Password (OTP) to reset your password:</p>"
-			    + "<p><strong>OTP: " + otp + "</strong></p>"
-			    + "<p>This OTP is valid for the next 10 minutes. If you did not request this password reset, please ignore this email.</p>"
-			    + "<p>Zoy Admin Portal Sign-in Link: <a href='" + qaSigninLink + "'>" + qaSigninLink + "</a></p>"
-			    + "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
+				+ "<p>We received a request to reset your password for your Zoy Admin Portal account. "
+				+ "Please use the following One-Time Password (OTP) to reset your password:</p>"
+				+ "<p><strong>OTP: " + otp + "</strong></p>"
+				+ "<p>This OTP is valid for the next 10 minutes. If you did not request this password reset, please ignore this email.</p>"
+				+ "<p>Zoy Admin Portal Sign-in Link: <a href='" + qaSigninLink + "'>" + qaSigninLink + "</a></p>"
+				+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
 		email.setBody(message);
 		email.setContent("text/html");
 		emailService.sendEmail(email,null);
@@ -101,24 +101,24 @@ public class ZoyEmailService {
 				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>"
 				+ "<p>Best regards,</p>"
 				+ "<p>ZOY Administrator</p>";
- 
+
 		email.setBody(message);
 		email.setContent("text/html");
 		emailService.sendEmail(email, null);
 	}
- 
- 
+
+
 	public void resendPgOwnerDetails(String owneremail,String firstName,String lastName,String zoyCode,String token) {
 		String verifyLink=emailVerificationUrl + token;
 		Email email = new Email();
 		email.setFrom("zoyAdmin@mydbq.com");
- 
+
 		List<String> to = new ArrayList<>();
 		to.add(owneremail);
 		email.setTo(to);
- 
+
 		email.setSubject("Welcome to ZOY! Unlock Your Journey – Verify & Register Today!");
- 
+
 		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
 				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we've made it quick and simple for you!</p>"
 				+ "<p>Click the link to verify your email:<a href=\"" + verifyLink + "\">Verify Email</a></p>"
@@ -138,10 +138,10 @@ public class ZoyEmailService {
 				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>"
 				+ "<p>Best regards,</p>"
 				+ "<p>ZOY Administrator</p>";
- 
+
 		email.setBody(message);
 		email.setContent("text/html");
- 
+
 		emailService.sendEmail(email, null);
 	}
 
@@ -177,7 +177,7 @@ public class ZoyEmailService {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void sendUserWelcomeMail(RegisterUser registerUser) {
 		Email email=new Email();
 		email.setFrom("zoyPg@mydbq.com");
@@ -203,41 +203,43 @@ public class ZoyEmailService {
 	}
 
 	public void sendBookingEmail(String toEmail, ZoyPgOwnerBookingDetails saveMyBookings, ZoyPgPropertyDetails propertyDetail,
-			ZoyPgOwnerDetails zoyPgOwnerDetails,ZoyPgBedDetails bedName,String shareType) {
+			ZoyPgOwnerDetails zoyPgOwnerDetails,ZoyPgBedDetails bedName,String shareType,String roomName) {
 		Email email=new Email();
 		email.setFrom("zoyPg@mydbq.com");
 		List<String> sendTo=new ArrayList<>();
 		sendTo.add(toEmail);
 		email.setTo(sendTo);
-		email.setSubject("Booking Confirmation - "+propertyDetail.getPropertyName());
+		email.setSubject("Welcome to ZOY - Your happy stay Starts Here! ");
 		String body="<h1>Dear "+saveMyBookings.getName()+",</h1>"
-				+ "<p>We are delighted to confirm your reservation at "+propertyDetail.getPropertyName()+". We look forward to hosting you and ensuring your stay is comfortable and enjoyable.</p>"
-				+ "<p><strong>Booking Details:</strong></p>"
+				+ "<p>We are delighted to welcome you to ZOY!</p>"
+				+ "<p><strong>Your Renting Details:</strong></p>"
 				+ "<ul>"
-				+ "<li><strong>Guest Name:</strong> "+saveMyBookings.getName()+"</li>"
-				+ "<li><strong>Check-in Date:</strong> "+saveMyBookings.getInDate()+"</li>"
-				+ "<li><strong>Check-out Date:</strong> "+saveMyBookings.getOutDate()+"</li>"
-				+ "<li><strong>Room Type:</strong> "+shareType+"</li>"
-				+ "<li><strong>Room / Bed Number:</strong> "+bedName.getBedName()+"</li>"
-				+ "<li><strong>Booking Reference:</strong> "+saveMyBookings.getBookingId()+"</li>"
-				+ "<li><strong>Token Amount Paid:</strong> "+saveMyBookings.getPaidDeposit()+"</li>"
+				+ "<li><strong>PG Name:</strong> "+propertyDetail.getPropertyName()+"</li>"
+				+ "<li><strong>Room Number:</strong> "+roomName+"</li>"
+				+ "<li><strong>Bed Number:</strong> "+bedName.getBedName()+"</li>"
+				+ "<li><strong>Share Type: </strong> "+shareType+"</li>"
+				+ "<li><strong>Date of Joning: </strong> "+saveMyBookings.getInDate()+"</li>"
+				+ "<li><strong>Date of Leaving: </strong> "+saveMyBookings.getOutDate()+"</li>"
 				+ "</ul>"
-				+ "<p><strong>PG Address:</strong></p>"
-				+ "<p>"
-				+ ""+propertyDetail.getPropertyName()+"<br>"+propertyDetail.getPropertyHouseArea()+"</p>"
-				+ "<p><strong>Contact Information:</strong></p>"
+				+ "<p>Manage your bookings, payments and enhance your stay experience with the ZOY mobile application. "
+				+ "We are committed to providing you with a seamless and enjoyable experience.</p>"
+				+ "<p><strong>Here's what you can look forward to:</strong></p>"
 				+ "<ul>"
-				+ "<li><strong>Phone:</strong> "+zoyPgOwnerDetails.getPgOwnerMobile()+"</li>"
-				+ "<li><strong>Email:</strong> <a href=\"mailto:"+zoyPgOwnerDetails.getPgOwnerEmail()+"\">"+zoyPgOwnerDetails.getPgOwnerEmail()+"</a></li>"
+				+ "<li><strong>Wide Range of Options:</strong> From PGs to co-live, we have everything you need for your perfect stay.</li>"
+				+ "<li><strong>Exclusive Deals:</strong> Enjoy special discounts and offers available only to our members.</li>"
+				+ "<li><strong>24/7 Customer Support:</strong> Our dedicated support team is here to assist you anytime, anywhere.</li>"
+				+ "<li><strong>User-Friendly Interface:</strong> Easily search, book, and manage your reservations with our intuitive platform.</li>"
 				+ "</ul>"
-				+ "<p><strong>Check-in/Check-out Policy:</strong></p>"
+				+ "<p><strong>Getting started is easy:</strong></p>"
 				+ "<ul>"
-				+ "<li><strong>Check-in time:</strong> 24 Hrs</li>"
-				+ "<li><strong>Check-out time:</strong> 24 Hrs</li>"
+				+ "<li><strong>Download the App:</strong> Click below to download and unlock your perfect stay.</li>"
+				+ "<li><a href='"+ ownerAppLink +"'>Download ZOY for Android</a></li>"
+				+ "<li><strong>Explore:</strong> Browse through our extensive selection of stay options.</li>"
+				+ "<li><strong>Book:</strong> Secure your reservations quickly and effortlessly.</li>"
+				+ "<li><strong>Manage:</strong> Access, pay dues, and cancel your bookings anytime from your account.</li>"
 				+ "</ul>"
-				+ "<p>If you need any assistance before your arrival or have any special requests, please do not hesitate to contact us. We are here to make your stay as pleasant as possible.</p>"
-				+ "<p>Thank you for choosing ZOY. We look forward to welcoming you soon.</p>"
-				+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
+				+ "<p>If you have any questions or need assistance, please do not hesitate to contact our customer support team at <a href='mailto:" + zoySupportMail + "'>" + zoySupportMail + "</a></p>"
+				+ "<p>Warm regards,<br>ZOY Administrator</p>";
 		email.setBody(body);
 		email.setContent("text/html");
 		//ClassPathResource imageResource = new ClassPathResource("static/images/30.png");
@@ -250,8 +252,8 @@ public class ZoyEmailService {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	public void sendRentalAgreementToTenant(UserMaster master, String pgName, InputStream is) {
 		Email email = new Email();
 		email.setFrom("zoyPg@mydbq.com");
@@ -274,7 +276,7 @@ public class ZoyEmailService {
 		}
 		emailService.sendEmail(email, file);
 	}
-	
+
 	public void sendForUserDoUserActiveteDeactivete(AdminUserList user) {
 		Email email = new Email();
 		List<String> to=new ArrayList<>();
@@ -285,30 +287,30 @@ public class ZoyEmailService {
 		if(user.getStatus()) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 			String deactivationDate = LocalDate.now().format(formatter);
-			
+
 			email.setSubject("Your Account - [" + user.getUserEmail().toUpperCase() + "] Has Been Deactivated");
 			message = "<p>Dear " + user.getFirstName() +" "+ user.getLastName() + ",</p>"
-				    + "<p>We’re writing to inform you that your account with ZOY Admin Platform has been deactivated as of " + deactivationDate + ". "
-				    + "This means you’ll no longer have access to use ZOY Admin Portal.</p>"
-				    + "<p>If you have questions or need further support, don’t hesitate to contact our admin support team.</p>"
-				    + "<p>We hope to see you again soon!</p>"
-				    + "<p>Best regards,<br>ZOY Administrator</p>";
+					+ "<p>We’re writing to inform you that your account with ZOY Admin Platform has been deactivated as of " + deactivationDate + ". "
+					+ "This means you’ll no longer have access to use ZOY Admin Portal.</p>"
+					+ "<p>If you have questions or need further support, don’t hesitate to contact our admin support team.</p>"
+					+ "<p>We hope to see you again soon!</p>"
+					+ "<p>Best regards,<br>ZOY Administrator</p>";
 		}else {
 			email.setSubject("Welcome Back! Your Account - [" + user.getUserEmail().toUpperCase() + "] is Now Active");
 
 			message = "<p>Dear " + user.getFirstName() +" "+ user.getLastName() + ",</p>"
-			    + "<p>We’re excited to welcome you back to the ZOY Admin platform! Your account has been successfully reactivated, "
-			    + "and you’re all set to use the platform as before.</p>"
-			    + "<p>If you have any questions or need assistance, contact our admin support team.</p>"
-			    + "<p>Best regards,<br>ZOY Administrator</p>";
-			
+					+ "<p>We’re excited to welcome you back to the ZOY Admin platform! Your account has been successfully reactivated, "
+					+ "and you’re all set to use the platform as before.</p>"
+					+ "<p>If you have any questions or need assistance, contact our admin support team.</p>"
+					+ "<p>Best regards,<br>ZOY Administrator</p>";
+
 		}
-		
+
 		email.setBody(message);
 		email.setContent("text/html");
 		emailService.sendEmail(email,null);
-		
-		
+
+
 	}
 
 }

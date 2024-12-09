@@ -132,7 +132,7 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Autowired
 	private ZoyPgSecurityDepositRefundRuleRepository  zoySecurityDepositRefundRuleRepo;
-
+	
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -623,6 +623,11 @@ public class OwnerDBService implements OwnerDBImpl{
 	public ZoyPgSecurityDepositRefundRule findSecurityDepositRefundRuleById() {
 		List<ZoyPgSecurityDepositRefundRule> results= zoySecurityDepositRefundRuleRepo.findAll(PageRequest.of(0, 1)).getContent();;
 		return results.isEmpty() ? null : results.get(0);
+	}
+
+	@Override
+	public ZoyPgRoomDetails findRoomName(String roomId) {
+		return zoyPgRoomDetailsRepository.findRoomNameByRoomId(roomId);
 	}
 
 }
