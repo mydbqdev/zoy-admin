@@ -122,4 +122,5 @@ public interface OwnerDBImpl {
 	ZoyPgSecurityDepositDetails saveZoySecurityDepositLimits(ZoyPgSecurityDepositDetails group) throws WebServiceException;
 	ZoyPgSecurityDepositRefundRule findSecurityDepositRefundRuleById() throws WebServiceException;
 	ZoyPgSecurityDepositRefundRule saveSecurityDepositRefundRule(ZoyPgSecurityDepositRefundRule rule)throws WebServiceException;
+  ZoyPgRoomDetails findRoomName(String roomId);
 }

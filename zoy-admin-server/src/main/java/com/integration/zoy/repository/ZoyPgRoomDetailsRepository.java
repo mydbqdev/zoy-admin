@@ -38,4 +38,7 @@ List<String> findAllRoomIdsByPropertyId(@Param("propertyId") String propertyId);
 	 
 	 @Query(value = "select pgowners.check_dup_room_names(:roomName,:floorId,:propertyId)",nativeQuery = true)
 		String checkDuplicateRoomName(String roomName, String floorId, String propertyId);
+	 
+	 @Query(value = "SELECT * FROM pgowners.zoy_pg_room_details WHERE room_id = :roomId", nativeQuery = true)
+	 ZoyPgRoomDetails findRoomNameByRoomId(String roomId);
 }
