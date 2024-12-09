@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AuditHistory;
+import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AuditHistoryRepository;
 @Service
@@ -23,7 +24,7 @@ public class AuditHistoryUtilities {
 	@Autowired
 	AdminUserMasterRepository userMasterRepository;
 	
-	public void auditForUserLoginLogout(String email,boolean islogin) {
+	public void auditForUserLoginLogout(String email,boolean islogin) throws WebServiceException {
 		try {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
@@ -52,7 +53,7 @@ public class AuditHistoryUtilities {
 		}
 	}
 	
-	public void auditForCreateUserDelete(String email,boolean isCreate,AdminUserMaster object) {
+	public void auditForCreateUserDelete(String email,boolean isCreate,AdminUserMaster object) throws WebServiceException {
 		try {
 			String userName="";
 			Optional<AdminUserMaster> user=userMasterRepository.findById(email);
@@ -77,7 +78,7 @@ public class AuditHistoryUtilities {
 		}
 	}
 	
-	public void auditForUpdateUser(String email,AdminUserMaster object,AdminUserMaster dbObject) {
+	public void auditForUpdateUser(String email,AdminUserMaster object,AdminUserMaster dbObject)throws WebServiceException {
 		try {
 			String userName="";
 			Optional<AdminUserMaster> user=userMasterRepository.findById(email);

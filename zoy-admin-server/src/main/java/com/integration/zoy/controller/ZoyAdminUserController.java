@@ -178,8 +178,8 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		} catch (Exception e) {
 			log.error("Error getting ameneties details API:/zoy_admin/login.zoyAdminUserLogin " + e.getMessage(),e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 	@Override
@@ -208,9 +208,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			}
 		} catch (Exception e) {
 			log.error("Error getting ameneties details API:/zoy_admin/user_details.zoyAdminUserDetails " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -251,9 +251,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details  API:/zoy_admin/user_create.zoyAdminCreateUser",e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -269,10 +269,10 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setStatus(HttpStatus.OK.value());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ameneties details API:/zoy_admin/user_availability/{email}.zoyAdminUserAvailability " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			log.error("Error getting ameneties details API:/zoy_admin/user_availability/{email}.zoyAdminUserAvailability ",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -302,9 +302,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			}
 		} catch (Exception e) {
 			log.error("Error getting ameneties details API:/zoy_admin/user_update/{email}.zoyAdminUserUpdate " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 
 	}
@@ -333,9 +333,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details API:/zoy_admin/role_create.zoyAdminUserRoleCreate",e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -387,9 +387,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details API:/zoy_admin/role_update.zoyAdminUserRoleUpdate " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -420,9 +420,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			return new ResponseEntity<>(gson.toJson(adminAppRoles), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting zoy Admin User Role List details API:/zoy_admin/role_list.zoyAdminUserRoleList " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -448,9 +448,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details API:/zoy_admin/user_assign.zoyAdminUserAssign",e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -488,9 +488,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			}
 		} catch (Exception e) {
 			log.error("Error getting ameneties details API:/zoy_admin/send_login_info.zoyAdminUserSendLoginInfo " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -542,9 +542,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 		} catch (Exception e) {
 			log.error("Error getting amenities details " + e.getMessage(), e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -602,9 +602,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 		} catch (Exception e) {
 			log.error("Error getting user list details API:/zoy_admin/user_list.zoyAdminUserList " + e.getMessage(), e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -634,9 +634,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 		} catch (Exception e) {
 			log.error("Error in approveOrRejectRole API:/zoy_admin/approve_or_reject_role.approveOrRejectRole " + e.getMessage(), e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 	@Override
@@ -660,9 +660,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			}
 		} catch (Exception e) {
 			log.error("Error in deleteRole API:zoy_admin/role_delete.deleteRole " + e.getMessage(), e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -726,9 +726,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 		} catch (Exception e) {
 			log.error("Error getting user list details /zoy_admin/userListNotApprove.zoyAdminNotApprovedRoles" + e.getMessage(), e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -760,9 +760,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			}
 		} catch (Exception e) {
 			log.error("Error occurred during registration API:/zoy_admin/admin_forgot_password.zoyAdminUserForgotpasswordPost", e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setMessage("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setMessage(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 
 	}
@@ -787,16 +787,16 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	            response.setMessage(otpResponse);       
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.GONE);
 	        } else {
-	            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
 	            response.setMessage("Something went wrong");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	        }
 	        
 	    } catch (Exception e) {
 	        log.error("Error occurred during OTP validation for user API:/zoy_admin/admin_otp_verify.zoyAdminUserOtpValidation", verifiOtp.getEmail(), e.getMessage(), e);
-	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setMessage("An internal error occurred while validating OTP.");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setMessage(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
 	}
 
@@ -848,9 +848,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		} catch (Exception e) {
 	        log.error("Error occurred while updating password for user API:/zoy_admin/admin_reset_password.zoyAdminUserPasswordSave", e);
 			e.printStackTrace();
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setMessage("An error occurred while updating the password.");
-			return  new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setMessage(e.getMessage());
+			return  new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 
 		}
 	}
@@ -895,9 +895,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			} catch (Exception e) {
 	            log.error("Error occurred while resetting password for user API:/zoy_admin/admin_reset_password.zoyAdminResetPasswordSave ", e);
 				e.printStackTrace();
-				response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-				response.setMessage("An error occurred while resetting the password");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setMessage(e.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
 		}
 		
@@ -928,9 +928,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 		} catch (Exception e) {
 			log.error("Error in doUserActiveteDeactivete API:/zoy_admin/doUserActiveteDeactivete.doUserActiveteDeactivete " + e.getMessage(), e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
 
