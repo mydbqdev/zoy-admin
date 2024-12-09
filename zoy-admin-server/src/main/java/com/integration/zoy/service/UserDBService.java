@@ -1,28 +1,35 @@
 package com.integration.zoy.service;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 import com.integration.zoy.entity.NotificationModeMaster;
 import com.integration.zoy.entity.UserBillingMaster;
 import com.integration.zoy.entity.UserCurrencyMaster;
 import com.integration.zoy.entity.UserDueMaster;
 import com.integration.zoy.entity.UserEkycTypeMaster;
 import com.integration.zoy.entity.UserMaster;
+import com.integration.zoy.model.AuditActivitiesLogDTO;
 import com.integration.zoy.model.OwnerPropertyDTO;
+import com.integration.zoy.model.PgOwnerDetails;
+import com.integration.zoy.repository.AuditHistoryRepository;
 import com.integration.zoy.repository.NotificationModeMasterRepository;
 import com.integration.zoy.repository.UserBillingMasterRepository;
 import com.integration.zoy.repository.UserCurrencyMasterRepository;
@@ -30,6 +37,7 @@ import com.integration.zoy.repository.UserDueMasterRepository;
 import com.integration.zoy.repository.UserEkycTypeMasterRepository;
 import com.integration.zoy.repository.UserMasterRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
+import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.OwnerLeadPaginationRequest;
 
 @Service
@@ -55,6 +63,9 @@ public class UserDBService implements UserDBImpl{
 	
 	@Autowired
 	private UserMasterRepository masterRepository;
+	
+	@Autowired
+	private AuditHistoryRepository auditHistoryRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -254,4 +265,41 @@ public class UserDBService implements UserDBImpl{
 	public UserMaster findUserMaster(String userId) {
 		return masterRepository.findById(userId).orElse(null);
 	}
+
+	@Override
+	public CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) {
+			StringBuilder queryBuilder = new StringBuilder();
+	        String mail = SecurityContextHolder.getContext().getAuthentication().getName();
+	       	       
+	        queryBuilder.append("SELECT created_on, history_data FROM audit_history WHERE user_email = '"+mail+"' ");
+	        
+	     
+	        if("created_on".equals(paginationRequest.getSortActive())) {
+	         	queryBuilder.append(" order by created_on "+paginationRequest.getSortDirection());
+	        	
+	        }else if("history_data".equals(paginationRequest.getSortActive())) {
+	        	queryBuilder.append(" order by history_data "+paginationRequest.getSortDirection());
+	        }else {
+	        	queryBuilder.append(" order by created_on DESC ");
+	        }
+	        	
+	        System.out.println("queryBuilder" +queryBuilder.toString());
+	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
+	        
+			int count=query.getResultList().size();
+			query.setFirstResult(paginationRequest.getPageIndex() * paginationRequest.getPageSize());
+			query.setMaxResults(paginationRequest.getPageSize());
+
+			List<Object[]> activityLogData = query.getResultList();
+	        List<AuditActivitiesLogDTO> list = new ArrayList<>(activityLogData.size());
+
+	        for (Object[] details : activityLogData) {
+	            AuditActivitiesLogDTO auditActivityData = new AuditActivitiesLogDTO();
+	            auditActivityData.setCreatedOn(String.valueOf(details[0]));
+	            auditActivityData.setHistoryData(String.valueOf(details[1]));
+	            list.add(auditActivityData);
+	        }
+	        return new CommonResponseDTO<>(list, count);
+	}
+
 }
