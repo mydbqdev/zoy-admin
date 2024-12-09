@@ -444,7 +444,21 @@ public interface ZoyAdminMasterImpl {
 	@PostMapping(value = "/zoy_admin/manage-owners",
 	produces = { "application/json" })
 	ResponseEntity<String> zoyPgOwnerDetails(@RequestBody OwnerLeadPaginationRequest paginationRequest);
+	
+	
+	@Operation(summary = "audit activities log details", description = "getting audit activities log details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/audit-activitieslog",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyAuditActivitiesLogDetails(@RequestBody OwnerLeadPaginationRequest paginationRequest);
+
 }
+
 
 
 

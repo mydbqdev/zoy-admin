@@ -4,6 +4,7 @@ import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
+import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.utils.ErrorDetail;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -27,7 +28,7 @@ public class CSVValidationService {
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
 	
-	public List<ErrorDetail> validateCSV(byte[] file,String propertyId) {
+	public List<ErrorDetail> validateCSV(byte[] file,String propertyId) throws WebServiceException{
 		this.propertyId=propertyId;
 		List<ErrorDetail> errorDetails = new ArrayList<>();
 		Map<String, List<Integer>> emailTracker = new HashMap<>();

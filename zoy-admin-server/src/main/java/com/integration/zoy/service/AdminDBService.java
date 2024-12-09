@@ -17,6 +17,7 @@ import com.integration.zoy.entity.AdminUserTemporary;
 import com.integration.zoy.entity.AppRole;
 import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.entity.RoleScreen;
+import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.repository.AdminUserLoginDetailsRepository;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AdminUserTemporaryRepository;
@@ -49,25 +50,25 @@ public  class AdminDBService implements AdminDBImpl {
 
 
 	@Override
-	public AdminUserMaster saveAdminUser(AdminUserMaster master) {
+	public AdminUserMaster saveAdminUser(AdminUserMaster master) throws WebServiceException {
 		return userMasterRepository.save(master);
 	}
 	
 	
 
 	@Override
-	public AdminUserLoginDetails saveAdminLoginDetails(AdminUserLoginDetails adminUserLoginDetails) {
+	public AdminUserLoginDetails saveAdminLoginDetails(AdminUserLoginDetails adminUserLoginDetails) throws WebServiceException{
 		return userLoginDetailsRepository.save(adminUserLoginDetails);
 	}
 
 	@Override
-	public AdminUserMaster findAdminUserMaster(String email) {
+	public AdminUserMaster findAdminUserMaster(String email) throws WebServiceException{
 		return userMasterRepository.findById(email).orElse(null);
 	}
 
 	@Override
 	@Transactional
-	public AdminUserMaster updateAdminUser(AdminUserMaster updatedUser) {
+	public AdminUserMaster updateAdminUser(AdminUserMaster updatedUser) throws WebServiceException {
 		Optional<AdminUserMaster> user = userMasterRepository.findById(updatedUser.getUserEmail());
 		if(user.isPresent()) {
 			AdminUserMaster existingUser=user.get();
@@ -87,22 +88,22 @@ public  class AdminDBService implements AdminDBImpl {
 	}
 
 	@Override
-	public AppRole saveAppRole(AppRole appRole) {
+	public AppRole saveAppRole(AppRole appRole) throws WebServiceException {
 		return roleRepository.save(appRole);
 	}
 
 	@Override
-	public List<RoleScreen> saveAllRoleScreen(List<RoleScreen> roleScreens) {
+	public List<RoleScreen> saveAllRoleScreen(List<RoleScreen> roleScreens) throws WebServiceException {
 		return roleScreenRepository.saveAll(roleScreens);
 	}
 
 	@Override
-	public AppRole findAppRole(String roleName) {
+	public AppRole findAppRole(String roleName) throws WebServiceException{
 		return roleRepository.findAppRole(roleName);
 	}
 
 	@Override
-	public AppRole updateAppRole(AppRole appRole) {
+	public AppRole updateAppRole(AppRole appRole) throws WebServiceException{
 		Optional<AppRole> existingRole = roleRepository.findById(appRole.getId());
 		if(!existingRole.isPresent()) {
 			AppRole role= existingRole.get(); 
@@ -116,47 +117,47 @@ public  class AdminDBService implements AdminDBImpl {
 	}
 
 	@Override
-	public List<RoleScreen> findRoleScreen(Long id) {
+	public List<RoleScreen> findRoleScreen(Long id) throws WebServiceException{
 		return roleScreenRepository.findRoleScreen(id);
 	}
 
 	@Override
-	public void deleteAllRoleScreen(List<Long> obsoleteScreenIds) {
+	public void deleteAllRoleScreen(List<Long> obsoleteScreenIds) throws WebServiceException {
 		roleScreenRepository.deleteAllById(obsoleteScreenIds);
 	}
 
 	@Override
-	public List<AppRole> findAllAppRole() {
+	public List<AppRole> findAllAppRole() throws WebServiceException{
 		return roleRepository.findAllRolesOrderedByCreateAtDesc();
 	}
 
 	@Override
-	public AppRole findAppRoleId(Long id) {
+	public AppRole findAppRoleId(Long id) throws WebServiceException {
 		return roleRepository.findById(id).orElse(null);
 	}
 
 	@Override
-	public List<AdminUserTemporary> saveAllUserTemporary(List<AdminUserTemporary> adminUserTemporary) {
+	public List<AdminUserTemporary> saveAllUserTemporary(List<AdminUserTemporary> adminUserTemporary) throws WebServiceException{
 		return userTemporaryRepository.saveAll(adminUserTemporary);
 	}
 
 	@Override
-	public List<AdminUserMaster> findAllAdminUser() {
+	public List<AdminUserMaster> findAllAdminUser() throws WebServiceException {
 		return userMasterRepository.findAllAdminUsersOrderedByCreationDateDesc();
 	}
 
 	@Override
-	public  List<Object[]> findAllAdminUserPrevilages() {
+	public  List<Object[]> findAllAdminUserPrevilages() throws WebServiceException {
 		return userMasterRepository.findAllAdminUserPrivileges();
 	}
 
 	@Override
-	public AdminUserLoginDetails findByEmail(String email) {
+	public AdminUserLoginDetails findByEmail(String email) throws WebServiceException {
 		return userLoginDetailsRepository.findById(email).orElse(null);
 	}
 
 	@Override
-	public List<String> findUserRoles(String email) {
+	public List<String> findUserRoles(String email) throws WebServiceException {
 		String result= roleScreenRepository.findUserRole(email);
 		if(result!=null)
 			return Arrays.asList(result.split(","));
@@ -165,87 +166,87 @@ public  class AdminDBService implements AdminDBImpl {
 	}
 
 	@Override
-	public List<String[]> findAllAdminUserDetails(String emailId) {
+	public List<String[]> findAllAdminUserDetails(String emailId) throws WebServiceException {
 		return userMasterRepository.findAllAdminUserDetails(emailId);
 	}
 
 	@Override
-	public void insertUserDetails(String user_email) {
+	public void insertUserDetails(String user_email) throws WebServiceException {
 		userMasterRepository.insertUserDetails(user_email);
 
 	}
 
 	@Override
-	public void approveUser(String user_email) {
+	public void approveUser(String user_email) throws WebServiceException{
 		userMasterRepository.approveUser(user_email);
 
 	}
 
 	@Override
-	public void rejectUser(String user_email) {
+	public void rejectUser(String user_email) throws WebServiceException{
 		userMasterRepository.rejectUser( user_email);
 
 	}
 
 	@Override
-	public  List<Integer> findRoleIfAssigned(int  role_id) {
+	public  List<Integer> findRoleIfAssigned(int  role_id) throws WebServiceException{
 		return roleScreenRepository.findAssignedRole(role_id);
 	}
 
 	@Override
-	public void deleteRolefromApp_role(int  role_id) {
+	public void deleteRolefromApp_role(int  role_id) throws WebServiceException {
 		roleScreenRepository.deleteRolefromApp_role( role_id);	
 	}
 
 	@Override
-	public void deleteRolefromRoleScreen(int role_id) {
+	public void deleteRolefromRoleScreen(int role_id) throws WebServiceException {
 		roleScreenRepository.deleteRolefromRoleScreen( role_id);	
 	}
 
 
 
 	@Override
-	public List<Object[]> findAllAdminUserPrivileges1() {
+	public List<Object[]> findAllAdminUserPrivileges1() throws WebServiceException {
 		return userMasterRepository.findAllAdminUserPrivileges1();
 	}
 
 	@Override
-	public List<AdminUserMaster> userdata(String[] userMails) {
+	public List<AdminUserMaster> userdata(String[] userMails) throws WebServiceException{
 		return	userMasterRepository.userdata(userMails);
 
 	}
 
 	@Override
-	public AdminUserLoginDetails findAdminRegisterEmail(String Usermail) {
+	public AdminUserLoginDetails findAdminRegisterEmail(String Usermail) throws WebServiceException{
 		return userLoginDetailsRepository.findRegisterEmail(Usermail).orElse(null);
 	}
 
 	@Override
-	public BulkUploadDetails saveBulkUpload(BulkUploadDetails bulkUploadDetails) {
+	public BulkUploadDetails saveBulkUpload(BulkUploadDetails bulkUploadDetails) throws WebServiceException{
 		return bulkUploadDetailsRepository.save(bulkUploadDetails);
 	}
 
 	@Override
-	public List<BulkUploadDetails> findAllBulkUpload() {
+	public List<BulkUploadDetails> findAllBulkUpload()throws WebServiceException {
 		return bulkUploadDetailsRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
 	}
 
 
 
 	@Override
-	public boolean existsByUserEmail(String userEmail) {
+	public boolean existsByUserEmail(String userEmail) throws WebServiceException{
 		return userMasterRepository.existsByUserEmail(userEmail);
 	}
 
 
 
 	@Override
-	public List<Object[]> findSuperAdminCardsDetails() {
+	public List<Object[]> findSuperAdminCardsDetails() throws WebServiceException {
 		return userMasterRepository.getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
 	}
 	
 	@Override
-	public void doUserActiveteDeactivete(String user_email,boolean status) {
+	public void doUserActiveteDeactivete(String user_email,boolean status)throws WebServiceException {
 		userLoginDetailsRepository.doUserActiveteDeactiveteInUserLoginDetails(user_email ,status);
 		userLoginDetailsRepository.doUserActiveteDeactiveteInuserMaster(user_email ,status);
 

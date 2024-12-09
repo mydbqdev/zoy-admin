@@ -199,9 +199,8 @@ public class UploadService {
 
 				ZoyPgShareMaster pgPropertyShareTypes=ownerDBImpl.getShareById(saveMyBookings.getShare());
 				ZoyPgBedDetails bedName=ownerDBImpl.getBedsId(saveMyBookings.getSelectedBed());
-
-				zoyEmailService.sendBookingEmail(master.getUserEmail(), saveMyBookings, propertyDetail, zoyPgOwnerDetails,bedName,pgPropertyShareTypes.getShareType());
-				zoyEmailService.sendBookingEmail(zoyPgOwnerDetails.getPgOwnerEmail(), saveMyBookings, propertyDetail,zoyPgOwnerDetails,bedName,pgPropertyShareTypes.getShareType());
+                ZoyPgRoomDetails roomDetails=ownerDBImpl.findRoomName(saveMyBookings.getRoom());
+				zoyEmailService.sendBookingEmail(master.getUserEmail(), saveMyBookings, propertyDetail, zoyPgOwnerDetails,bedName,pgPropertyShareTypes.getShareType(),roomDetails.getRoomName());
 
 				generateSendRentalAgreement(master,zoyPgOwnerDetails,propertyDetail,saveMyBookings);
 			}
