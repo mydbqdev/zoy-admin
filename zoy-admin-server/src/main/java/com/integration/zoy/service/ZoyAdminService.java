@@ -30,6 +30,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.UserProfile;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
+import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.utils.NotificationRequest;
 import com.integration.zoy.utils.OtpVerification;
 import com.integration.zoy.utils.Whatsapp;
@@ -94,11 +95,11 @@ public class ZoyAdminService {
 		}, 10, TimeUnit.MINUTES);
 	}
 
-	public Map<String, String> getForgotPasswordOtp() {
+	public Map<String, String> getForgotPasswordOtp() throws WebServiceException {
 		return otpMap;
 	}
 
-	public String validateOtp(OtpVerification otpVerify) {
+	public String validateOtp(OtpVerification otpVerify)throws WebServiceException {
 		String otp=otpMap.get(otpVerify.getEmail());
 		if (otp != null) {
 			if (!otp.equals(otpVerify.getOtp())) {
@@ -112,7 +113,7 @@ public class ZoyAdminService {
 	}
 
 	@Async
-	public void processTenant(String ownerId, String propertyId, byte[] file,String fileName,String jobExeId) {
+	public void processTenant(String ownerId, String propertyId, byte[] file,String fileName,String jobExeId) throws WebServiceException {
 		try {
 
 			tenantProcessTasklet.setParameters(ownerId, propertyId, file);
@@ -130,7 +131,7 @@ public class ZoyAdminService {
 	}
 
 	@Async
-	public void processProperty(String ownerId, String propertyId, byte[] file,String fileName,String jobExecutionId) {
+	public void processProperty(String ownerId, String propertyId, byte[] file,String fileName,String jobExecutionId) throws WebServiceException {
 		try {
 			propertyProcessTasklet.setParameters(ownerId, propertyId, file);
 			JobParameters jobParameters = new JobParametersBuilder()

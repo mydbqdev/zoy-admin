@@ -24,6 +24,7 @@ import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.entity.ZoyPgPropertyDetails;
+import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.model.RegisterUser;
 import com.integration.zoy.utils.AdminUserList;
 import com.integration.zoy.utils.Email;
@@ -55,7 +56,7 @@ public class ZoyEmailService {
 	@Value("${app.zoy.term.doc}")
 	private String zoyTermDoc;
 
-	public void sendForgotEmail(AdminUserLoginDetails user,String otp) {
+	public void sendForgotEmail(AdminUserLoginDetails user,String otp) throws WebServiceException {
 		Email email = new Email();
 		List<String> to=new ArrayList<>();
 		email.setFrom(zoyAdminMail);

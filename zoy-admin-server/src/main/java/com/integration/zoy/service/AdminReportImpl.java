@@ -19,6 +19,6 @@ public interface AdminReportImpl {
 	CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails( String fromDate, String toDate) throws WebServiceException;
 	CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails( String fromDate, String toDate) throws WebServiceException;
 	byte[] generateDynamicReport(UserPaymentFilterRequest filterRequest, FilterData filterData)  throws WebServiceException;
-	String[] getDistinctCities();
+	String[] getDistinctCities() throws WebServiceException;
 	
 }
