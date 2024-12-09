@@ -61,10 +61,10 @@ public class AuditHistoryUtilities {
 			}
 			String histotyData=null;
 			if(isCreate) {
-				histotyData=userName+" has created the user for User Name="+object.getFirstName()+" "+object.getLastName()+", Designation="+object.getDesignation()+", Contact Number="+object.getContactNumber()+", Email="+object.getUserEmail();
+				histotyData=userName+" has created the user for, User Name="+object.getFirstName()+" "+object.getLastName()+", Designation="+object.getDesignation()+", Contact Number="+object.getContactNumber()+", Email="+object.getUserEmail();
 			}else {
 				String status=object.getStatus() ? "Active":"Inactive";
-				histotyData=userName+" has deleted the user for User Name="+object.getFirstName()+" "+object.getLastName()+", Designation="+object.getDesignation()+", Contact Number="+object.getContactNumber()+", Email="+object.getUserEmail()+", status="+status;	
+				histotyData=userName+" has deleted the user for, User Name="+object.getFirstName()+" "+object.getLastName()+", Designation="+object.getDesignation()+", Contact Number="+object.getContactNumber()+", Email="+object.getUserEmail()+", status="+status;	
 			}
 			AuditHistory auditHistory=new AuditHistory();
 			auditHistory.setUserEmail(email);
