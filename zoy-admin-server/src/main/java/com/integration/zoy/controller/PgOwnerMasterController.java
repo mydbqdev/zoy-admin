@@ -4,11 +4,13 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -302,53 +304,59 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					LinkedHashMap<String, Room> rooms = new LinkedHashMap<>(); 
 					int totalBeds = 0;
 					for (String[] data : ownerPropertyDetails) {
-						int totalRoomBeds = 0,totalAvailableBeds = 0, totalOccupiedBeds = 0, totalNoticeBeds = 0;
-						String floorName = data[32];
-						String floorId = data[31];
+						String propId = data[11] != null ? data[11].toString() : null;
+						if(propertyId.equals(propId)) {
+							int totalRoomBeds = 0,totalAvailableBeds = 0, totalOccupiedBeds = 0, totalNoticeBeds = 0;
+							String floorName = data[32];
+							String floorId = data[31];
 
-						allFloors.putIfAbsent(floorId, floorName);
+							allFloors.putIfAbsent(floorId, floorName);
 
-						if (data[33] == null && data[34] == null) {
-							continue; 
+							if (data[33] == null && data[34] == null) {
+								continue; 
+							}
+
+							String availableBedsStr = data[35] != null ? data[35] : "";
+							String occupiedBedsStr = data[36] != null ? data[36] : "";
+
+							int availableBedsCount = availableBedsStr.isEmpty() ? 0 : availableBedsStr.split(",").length;
+							int occupiedBedsCount = occupiedBedsStr.isEmpty() ? 0 : occupiedBedsStr.split(",").length;
+
+							totalAvailableBeds += availableBedsCount;
+							totalOccupiedBeds += occupiedBedsCount;
+							totalBeds += availableBedsCount + occupiedBedsCount;
+							totalRoomBeds+= availableBedsCount + occupiedBedsCount;
+							Room roomResponse = new Room();
+							roomResponse.setFloorId(floorId);
+							roomResponse.setRoomNo(data[34]);
+							roomResponse.setBedsAvailable(String.valueOf(totalAvailableBeds));
+							roomResponse.setBedsOccupied(String.valueOf(totalOccupiedBeds));
+							roomResponse.setNumberOfBeds(String.valueOf(totalRoomBeds));
+							List<Bed> beds=new ArrayList<>();
+							if(data[35] != null && !data[35].isEmpty()) {
+								beds.addAll(data[35] != null ? Arrays.stream(data[35].split(","))
+										.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 3)   
+										.map(parts -> new Bed(parts[0], parts[1],parts[2]))
+										.collect(Collectors.toList()) : new ArrayList<>());
+							}
+							if(data[36] != null && !data[36].isEmpty()) {
+								beds.addAll( data[36] != null ? Arrays.stream(data[36].split(","))
+										.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 3)   
+										.map(parts -> new Bed(parts[0], parts[1],parts[2]))
+										.collect(Collectors.toList()) : new ArrayList<>());
+							}
+							roomResponse.setBeds(beds);
+							rooms.put(roomResponse.getRoomNo(), roomResponse);
 						}
-
-						String availableBedsStr = data[35] != null ? data[35] : "";
-						String occupiedBedsStr = data[36] != null ? data[36] : "";
-
-						int availableBedsCount = availableBedsStr.isEmpty() ? 0 : availableBedsStr.split(",").length;
-						int occupiedBedsCount = occupiedBedsStr.isEmpty() ? 0 : occupiedBedsStr.split(",").length;
-
-						totalAvailableBeds += availableBedsCount;
-						totalOccupiedBeds += occupiedBedsCount;
-						totalBeds += availableBedsCount + occupiedBedsCount;
-						totalRoomBeds+= availableBedsCount + occupiedBedsCount;
-						Room roomResponse = new Room();
-						roomResponse.setFloorId(floorId);
-						roomResponse.setRoomNo(data[34]);
-						roomResponse.setBedsAvailable(String.valueOf(totalAvailableBeds));
-						roomResponse.setBedsOccupied(String.valueOf(totalOccupiedBeds));
-						roomResponse.setNumberOfBeds(String.valueOf(totalRoomBeds));
-						if(data[35] != null && !data[35].isEmpty()) {
-							roomResponse.setBeds(data[35] != null ? Arrays.stream(data[35].split(","))
-									.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 3)   
-									.map(parts -> new Bed(parts[0], parts[1],parts[2]))
-									.collect(Collectors.toList()) : new ArrayList<>());
-						}
-						if(data[36] != null && !data[36].isEmpty()) {
-							roomResponse.setBeds(data[36] != null ? Arrays.stream(data[36].split(","))
-									.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 3)   
-									.map(parts -> new Bed(parts[0], parts[1],parts[2]))
-									.collect(Collectors.toList()) : new ArrayList<>());
-						}
-						rooms.put(roomResponse.getRoomNo(), roomResponse);
 					}
-					LinkedHashMap<String, FloorInformation> floors = new LinkedHashMap<>();
+					TreeMap<String, FloorInformation> floors = new TreeMap<>(Comparator.nullsLast(String::compareTo));
 					for (Map.Entry<String, String> floorEntry : allFloors.entrySet()) {
 						String floorId = floorEntry.getKey();
 						String floorName = floorEntry.getValue();
 
 						LinkedHashMap<String, Room> filteredRooms = rooms.values().stream()
 								.filter(room -> room.getFloorId().equals(floorId))
+								.sorted(Comparator.comparing(Room::getRoomNo))
 								.collect(Collectors.toMap(Room::getRoomNo, room -> room, (existing, replacement) -> existing, LinkedHashMap::new));
 
 						int floorTotalBeds = 0, floorAvailableBeds = 0, floorOccupiedBeds = 0, floorNoticeBeds = 0;
