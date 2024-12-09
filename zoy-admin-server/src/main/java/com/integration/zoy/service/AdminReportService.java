@@ -69,7 +69,10 @@ public class AdminReportService implements AdminReportImpl{
 					"SELECT up.user_id, " +
 							"up.user_payment_timestamp, " +
 							"up.user_payment_bank_transaction_id, " +
-							"up.user_payment_payment_status, " +
+							"CASE " +
+							"    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid' " +
+							"    ELSE up.user_payment_payment_status " +
+							"END AS user_payment_payment_status, " +
 							"up.user_payment_payable_amount, " +
 							"up.user_payment_gst, " +
 							"ud.user_personal_name, " +
@@ -77,7 +80,10 @@ public class AdminReportService implements AdminReportImpl{
 							"pgt.property_id AS user_pg_property_id, " +  
 							"bd.bed_name, " +
 							"up.user_payment_zoy_payment_type, " +
-							"up.user_payment_result_method, " +
+							"CASE " +
+							"    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'cash' " +
+							"    ELSE up.user_payment_result_method " +
+							"END AS user_payment_result_method, " +
 							"pgt.property_city " + 
 							"FROM pgusers.user_payments up " +
 							"JOIN pgusers.user_details ud ON up.user_id = ud.user_id " +
