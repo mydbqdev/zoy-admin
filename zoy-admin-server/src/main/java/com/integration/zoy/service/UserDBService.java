@@ -266,22 +266,42 @@ public class UserDBService implements UserDBImpl{
 		return masterRepository.findById(userId).orElse(null);
 	}
 
+	
+	
 	@Override
 	public CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) throws WebServiceException{
 			StringBuilder queryBuilder = new StringBuilder();
 	       try {
-			String mail = SecurityContextHolder.getContext().getAuthentication().getName();  	       
-	        queryBuilder.append("SELECT created_on, history_data FROM audit_history WHERE user_email = '"+mail+"' ");	        
-	     
+			  queryBuilder.append("select concat(um.first_name,' ',um.last_name )as userName, ah.created_on, ah.history_data, ah.operation , ah.user_email  FROM audit_history ah\r\n"
+	        		+ "	join user_master um  on ah.user_email = um.user_email Where 1=1 ");
+	        
+	        if(!"".equals(paginationRequest.getUserEmail()) && null != paginationRequest.getUserEmail()) {
+	        	
+	        	 queryBuilder.append("AND um.user_email = '"+paginationRequest.getUserEmail()+"' ");
+	        	 if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
+	        	       queryBuilder.append("AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
+	 	         }	        	
+	             }else {
+	        	      if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
+	        		    queryBuilder.append(" AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) "
+	        		 		+ " or (LOWER( concat(um.first_name,' ',um.last_name )) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.operation) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
+	 	                }
+	            }
+//	        System.out.println("Generated Query: " + queryBuilder.toString());
 	        if("created_on".equals(paginationRequest.getSortActive())) {
-	         	queryBuilder.append(" order by created_on "+paginationRequest.getSortDirection());
+	         	queryBuilder.append(" order by ah.created_on "+paginationRequest.getSortDirection());
 	        	
 	        }else if("history_data".equals(paginationRequest.getSortActive())) {
-	        	queryBuilder.append(" order by history_data "+paginationRequest.getSortDirection());
-	        }else {
-	        	queryBuilder.append(" order by created_on DESC ");
-	        }
-	        	
+	        	queryBuilder.append(" order by ah.history_data "+paginationRequest.getSortDirection());
+	        
+	       }else if ("user_name".equals(paginationRequest.getSortActive())) {
+	    	     queryBuilder.append(" order by concat(um.first_name, ' ', um.last_name) " + paginationRequest.getSortDirection());
+	    	} else if ("type".equals(paginationRequest.getSortActive())) {
+	    		 queryBuilder.append(" order by ah.operation " + paginationRequest.getSortDirection());
+	    	} else {
+	    		queryBuilder.append(" order by ah.created_on DESC ");
+	    	}
+	        
 	        //System.out.println("queryBuilder" +queryBuilder.toString());
 	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
 	        
@@ -294,8 +314,10 @@ public class UserDBService implements UserDBImpl{
 
 	        for (Object[] details : activityLogData) {
 	            AuditActivitiesLogDTO auditActivityData = new AuditActivitiesLogDTO();
-	            auditActivityData.setCreatedOn(String.valueOf(details[0]));
-	            auditActivityData.setHistoryData(String.valueOf(details[1]));
+	            auditActivityData.setUserName(String.valueOf(details[0]));
+	            auditActivityData.setCreatedOn(String.valueOf(details[1]));
+	            auditActivityData.setHistoryData(String.valueOf(details[2]));
+	            auditActivityData.setType(String.valueOf(details[3]));
 	            list.add(auditActivityData);
 	        }
 	        return new CommonResponseDTO<>(list, count);
@@ -304,5 +326,6 @@ public class UserDBService implements UserDBImpl{
 		   }
 	       return null;
 	}
+	
 
 }

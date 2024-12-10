@@ -8,32 +8,36 @@ import { AuthService } from 'src/app/common/service/auth.service';
 import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
-import { ActivityLogModel } from '../model/activity-log-model';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { ActivityLogService } from '../service/activity-log-service';
 import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
+import { UserAuditService } from '../service/user-audit-service';
+import { UserAuditModel } from '../models/user-audit-model';
+import { FormControl } from '@angular/forms';
 
 
 @Component({
-	selector: 'app-activity-log',
-	templateUrl: './activity-log.component.html',
-	styleUrls: ['./activity-log.component.css']
+	selector: 'app-user-audit',
+	templateUrl: './user-audit.component.html',
+	styleUrls: ['./user-audit.component.css']
 })
-export class ActivityLogComponent implements OnInit, AfterViewInit {
+
+export class UserAuditComponent implements OnInit, AfterViewInit {
 	private _liveAnnouncer = inject(LiveAnnouncer);
 	public userNameSession: string = "";
 	errorMsg: any = "";
 	mySubscription: any;
 	isExpandSideBar:boolean=true;
-	displayedColumns: string[] = ['created_on','history_data'];
-	public ELEMENT_DATA:ActivityLogModel[]=[];
-	dataSource:MatTableDataSource<ActivityLogModel>=new MatTableDataSource<ActivityLogModel>();
-	filterActivitiesData: ActivityLogModel[] = [];
+	displayedColumns: string[] = ['created_on','user_name','type','history_data'];
+	public ELEMENT_DATA:UserAuditModel[]=[];
+	dataSource:MatTableDataSource<UserAuditModel>=new MatTableDataSource<UserAuditModel>();
+	filterActivitiesData: UserAuditModel[] = [];
 	columnSortDirectionsOg: { [key: string]: string | null } = {
 		created_on: null,
+        user_name:null,
+        type:null,
 		history_data: null
 	  };
 	  columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
@@ -48,10 +52,11 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 	sortActive:string="created_on";
 	sortDirection:string="desc";
 	public rolesArray: string[] = [];
+    searchControl = new FormControl();
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
-	constructor(private activityLogService: ActivityLogService, private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
+	constructor(private userAuditService: UserAuditService, private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
-			this.authService.checkLoginUserVlidaate();
+            this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
 		if (userService.getUserinfo() != undefined) {
@@ -91,13 +96,32 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 
 	}
 	ngAfterViewInit() {
-		this.sidemenuComp.expandMenu(0);
-		this.sidemenuComp.activeMenu(0, '');
-		this.dataService.setHeaderName("Activity Log");
+		this.sidemenuComp.expandMenu(4);
+		this.sidemenuComp.activeMenu(4, 'user-audit');
+		this.dataService.setHeaderName("User Audit");
 		
-		this.dataSource.paginator = this.paginator;
-		this.getActivityLogDetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
+        this.dataSource.paginator = this.paginator;
+		this.getUserAuditdetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
 	}
+    
+  // Dummy data for autocomplete
+  options: string[] = [
+    'User1',
+    'User2',
+    'User3',
+    'Admin',
+    'Guest',
+    'Siva Ram',
+    'John Doe',
+    'Jane Smith',
+  ];
+  filteredOptions: string[] = this.options;
+  filterOptions(value: string): void {
+    const filterValue = value.toLowerCase();
+    this.filteredOptions = this.options.filter(option =>
+      option.toLowerCase().includes(filterValue)
+    );
+  }
 	
 	filterData($event: KeyboardEvent){
 		if ($event.keyCode === 13) {
@@ -107,7 +131,7 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 			this.filtersRequest.searchText= this.searchText;
 		}
 		this.paginator.pageIndex=0;
-		 this.getActivityLogDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
+		 this.getUserAuditdetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
 	  }
 	}
 		  
@@ -123,10 +147,9 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 			event.pageIndex=0;
 		   }
 		 this.pageSize=event.pageSize;
-		 this.getActivityLogDetails(this.paginator.pageIndex , event.pageSize,this.sortActive,this.sortDirection);
+		 this.getUserAuditdetails(this.paginator.pageIndex , event.pageSize,this.sortActive,this.sortDirection);
 	   }
-
- 	 onSortData(sort: Sort) {
+       onSortData(sort: Sort) {
 		this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 		this.columnSortDirections[sort.active] = sort.direction;
 		  if (sort.direction) {
@@ -137,10 +160,10 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 		this.sortActive=sort.active;
 		this.sortDirection=sort.direction!="" ? sort.direction:"asc";
 		this.paginator.pageIndex=0;
-		 this.getActivityLogDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
+		this.getUserAuditdetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
 	   }
 
-	  getActivityLogDetails(pageIndex:number,pageSize:number,sortActive:string,sortDirection:string){
+       getUserAuditdetails(pageIndex:number,pageSize:number,sortActive:string,sortDirection:string){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
 		this.lastPageSize=pageSize;
@@ -149,9 +172,7 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.sortActive=sortActive;
 		this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 		this.columnSortDirections[sortActive] = sortDirection;
-		
-		this.filtersRequest.userEmail=this.userService.getUsername();
-		this.activityLogService.getActivityLogdetails(this.filtersRequest).subscribe(data => {
+		this.userAuditService.getUserAuditdetails(this.filtersRequest).subscribe(data => {
 			if(data?.data?.length >0){
 				  this.totalProduct=data.count;
 				  this.ELEMENT_DATA=Object.assign([],data.data);
@@ -159,7 +180,7 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 			  }else{
 				this.totalProduct=0;
 				this.ELEMENT_DATA=Object.assign([]);
-				this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
+				 this.dataSource =  new MatTableDataSource(this.ELEMENT_DATA);
 			  }
 			  this.spinner.hide();
 	   }, error => {

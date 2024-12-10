@@ -57,6 +57,7 @@ public interface UserDBImpl {
 	//Audit Activities Log
 	CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) throws WebServiceException;
 	
+	
 
 
 }
