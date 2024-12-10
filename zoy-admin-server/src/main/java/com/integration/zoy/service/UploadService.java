@@ -107,7 +107,7 @@ public class UploadService {
 	@Autowired
 	ZoyS3Service zoyS3Service;
 
-	@Value("${app.zoy.logo}")
+	@Value("${zoy.admin.logo}")
 	private String zoyLogoPath;
 
 	private static final Logger log = LoggerFactory.getLogger(UploadService.class);
@@ -643,7 +643,8 @@ public class UploadService {
 			List<String> propertyAmenities=ownerDBImpl.findPropertyAmenetiesName(propertyDetail.getPropertyId());
 			ZoyPgTermsMaster zoyPgTermsMaster=ownerDBImpl.findTermMaster(propertyDetail.getPropertyId());
 			details.setPropertyAmenities(propertyAmenities);
-			String base64Image = pdfGenerateService.imageToBase64(Paths.get(zoyLogoPath).toFile().getPath());
+			InputStream inputStreamImg =getClass().getResourceAsStream(zoyLogoPath);
+			String base64Image = pdfGenerateService.imageToBase64(inputStreamImg);
 			details.setBase64Images(base64Image);
 			details.setRoom(roomName);
 			details.setMoveInDate(saveMyBookings.getInDate());

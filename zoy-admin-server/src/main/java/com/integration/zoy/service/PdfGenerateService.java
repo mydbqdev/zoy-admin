@@ -61,15 +61,16 @@ private static final Logger log = LoggerFactory.getLogger(PdfGenerateService.cla
 	    return outputStream.toByteArray(); 
 	}
     
-    public String imageToBase64(String imagePath) {
-        byte[] imageBytes = null;
-		try {
-			imageBytes = Files.readAllBytes(Paths.get(imagePath));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        return Base64.getEncoder().encodeToString(imageBytes);
-    }
+	public String imageToBase64(InputStream inputStream) {
+	    byte[] imageBytes = null;
+	    try {
+	        imageBytes = inputStream.readAllBytes();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    return Base64.getEncoder().encodeToString(imageBytes);
+	}
+
     
     public Boolean generateRenatalPdfFile(String templateName, Map<String, Object> data,String userId,String bookingId) throws IOException {
     	Context context = new Context();
