@@ -1,6 +1,5 @@
 package com.integration.zoy.utils;
 import java.sql.Timestamp;
-import java.util.Date;
 
 import com.google.gson.annotations.SerializedName;
 

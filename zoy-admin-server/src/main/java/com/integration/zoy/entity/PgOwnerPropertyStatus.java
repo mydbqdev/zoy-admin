@@ -1,15 +1,9 @@
 package com.integration.zoy.entity;
 
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "pg_owner_property_status", schema = "pgcommon")

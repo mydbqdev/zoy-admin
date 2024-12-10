@@ -1,50 +1,31 @@
 package com.integration.zoy.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
-import org.springframework.data.web.JsonPath;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.integration.zoy.entity.AdminUserLoginDetails;
 import com.integration.zoy.model.AdminUserDetails;
 import com.integration.zoy.model.AdminUserUpdateDetails;
-import com.integration.zoy.model.Amenetie;
-import com.integration.zoy.model.AmenetiesId;
-import com.integration.zoy.model.BillingType;
-import com.integration.zoy.model.BillingTypeId;
-import com.integration.zoy.model.CurrencyType;
-import com.integration.zoy.model.CurrencyTypeId;
-import com.integration.zoy.model.DueFactor;
-import com.integration.zoy.model.DueFactorId;
-import com.integration.zoy.model.DueType;
-import com.integration.zoy.model.DueTypeId;
-import com.integration.zoy.model.EkycType;
-import com.integration.zoy.model.EkycTypeId;
 import com.integration.zoy.model.ForgotPassword;
 import com.integration.zoy.model.LoginDetails;
-import com.integration.zoy.model.NotificationMode;
-import com.integration.zoy.model.NotificationModeId;
-import com.integration.zoy.model.PgType;
-import com.integration.zoy.model.PgTypeId;
-import com.integration.zoy.model.RentCycle;
-import com.integration.zoy.model.RentCycleId;
 import com.integration.zoy.model.RoleDetails;
-import com.integration.zoy.model.RoomType;
-import com.integration.zoy.model.RoomTypeId;
-import com.integration.zoy.model.ShareType;
-import com.integration.zoy.model.ShareTypeId;
 import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
 import com.integration.zoy.utils.AdminUserList;
 import com.integration.zoy.utils.ChangePassWord;
 import com.integration.zoy.utils.OtpVerification;
 import com.integration.zoy.utils.ResetPassWord;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
 

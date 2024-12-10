@@ -1,10 +1,14 @@
 package com.integration.zoy.entity;
 
-import javax.persistence.*;
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-
-import java.sql.Timestamp;
 
 @Entity
 @Table(name = "user_pg_details", schema = "pgusers")

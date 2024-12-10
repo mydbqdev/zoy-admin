@@ -1,6 +1,9 @@
 package com.integration.zoy.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "zoy_pg_properties_images", schema = "pgowners")

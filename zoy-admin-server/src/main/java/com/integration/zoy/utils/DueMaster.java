@@ -1,7 +1,5 @@
 package com.integration.zoy.utils;
 
-import javax.persistence.Column;
-
 import com.google.gson.annotations.SerializedName;
 
 public class DueMaster {

@@ -1,7 +1,5 @@
 package com.integration.zoy.service;
 
-import java.io.InputStream;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,32 +8,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.UserProfile;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.exception.WebServiceException;
-import com.integration.zoy.utils.NotificationRequest;
 import com.integration.zoy.utils.OtpVerification;
 import com.integration.zoy.utils.Whatsapp;
-
-import kotlin.Pair;
 
 @Service
 public class ZoyAdminService {

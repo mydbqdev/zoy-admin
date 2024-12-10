@@ -1,10 +1,8 @@
 package com.integration.zoy.utils;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
 
    
 public class Result {

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.exception.GenericErrorResponse;
-import com.integration.zoy.model.MimeTypes;
 
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;

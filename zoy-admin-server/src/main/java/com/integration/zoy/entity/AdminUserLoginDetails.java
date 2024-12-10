@@ -9,8 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.ColumnTransformer;
-
 @Entity
 @Table(name = "user_login_details", schema = "pgadmin")
 public class AdminUserLoginDetails {

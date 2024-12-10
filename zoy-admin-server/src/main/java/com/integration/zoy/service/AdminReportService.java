@@ -1,10 +1,8 @@
 package com.integration.zoy.service;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.integration.zoy.controller.PgOwnerMasterController;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.FilterData;
@@ -630,8 +627,12 @@ public class AdminReportService implements AdminReportImpl{
 					String base64Logo = pdfGenerateService.imageToBase64(inputStreamImg);
 					data.put("appLogo", base64Logo);
 				}catch (FileNotFoundException e) {
-					log.error("Logo image not found, PDF generation failed.");
-					throw new RuntimeException("Logo image not found, PDF generation failed.");
+					log.error("Logo image not found, PDF generation failed."+e);
+					new ZoyAdminApplicationException(e,"Logo image not found, PDF generation failed.");
+				}
+				catch (Exception ex) {
+					log.error("Exception in logo for pdf report."+ex);
+					new ZoyAdminApplicationException(ex,"");
 				}
 				return pdfGenerateService.generatePdfFile(filterRequest.getReportType(), data);
 			case "excel":

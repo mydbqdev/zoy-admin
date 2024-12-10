@@ -1,6 +1,5 @@
 package com.integration.zoy.utils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
    

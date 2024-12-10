@@ -24,7 +24,6 @@ import com.integration.zoy.repository.AdminUserTemporaryRepository;
 import com.integration.zoy.repository.AppRoleRepository;
 import com.integration.zoy.repository.BulkUploadDetailsRepository;
 import com.integration.zoy.repository.RoleScreenRepository;
-import com.integration.zoy.repository.UserMasterRepository;
 
 @Service
 public  class AdminDBService implements AdminDBImpl {
