@@ -12,7 +12,6 @@ export class UserActivityService {
     this.listenForUserActivity();
   }
 
-  
   private listenForUserActivity() {
     this.ngZone.runOutsideAngular(() => {
       document.addEventListener('mousemove', this.updateLastActionTime.bind(this));
@@ -22,7 +21,6 @@ export class UserActivityService {
     });
   }
 
-  
   private updateLastActionTime() {
     this.lastActionTimeSubject.next(Date.now()); 
   }
