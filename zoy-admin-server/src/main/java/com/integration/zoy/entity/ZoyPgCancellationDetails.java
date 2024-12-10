@@ -1,6 +1,7 @@
 package com.integration.zoy.entity;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -25,10 +27,11 @@ public class ZoyPgCancellationDetails {
     
     @Column(name = "deduction_percentage", precision = 10, scale = 2)
     private BigDecimal deductionPercentages;
-
     
+    @Column(name="create_at")
+    @CreationTimestamp
+    private Timestamp createdAt;
 
-    // Getters and Setters
     public String getCancellationId() {
         return cancellationId;
     }
@@ -52,12 +55,22 @@ public class ZoyPgCancellationDetails {
 	public void setDeductionPercentages(BigDecimal deductionPercentages) {
 		this.deductionPercentages = deductionPercentages;
 	}
+	
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
 
 	@Override
 	public String toString() {
 		return "ZoyPgCancellationDetails [cancellationId=" + cancellationId + ", daysBeforeCheckIn=" + daysBeforeCheckIn
-				+ ", deductionPercentages=" + deductionPercentages + "]";
+				+ ", deductionPercentages=" + deductionPercentages + ", createdAt=" + createdAt + "]";
 	}
+
+	
 
   
 }

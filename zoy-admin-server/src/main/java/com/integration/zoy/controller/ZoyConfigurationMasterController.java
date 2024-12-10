@@ -120,47 +120,49 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(ZoyBeforeCheckInCancellation details) {
-		ResponseBody response=new ResponseBody();
-		try {
-			if(details==null) {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Required cancellation details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
-			if(details.getCancellationId()!=null && !details.getCancellationId().isEmpty()) {
-				ZoyPgCancellationDetails cancelDetails=ownerDBImpl.findBeforeCancellationDetails(details.getCancellationId());
-				if(cancelDetails==null) {
-					response.setStatus(HttpStatus.CONFLICT.value());
-					response.setError("Unable to get before check in cancellation details");
-					return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
-				}
-				cancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
-				cancelDetails.setDeductionPercentages(details.getDeductionPercentages());
-				ownerDBImpl.saveBeforeCancellation(cancelDetails);
-				ZoyBeforeCheckInCancellation dto=convertToDTO(cancelDetails);
-				response.setStatus(HttpStatus.OK.value());
-				response.setData(dto);
-				response.setMessage("Updated Before CheckIn details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-			} else {
-				ZoyPgCancellationDetails newCancelDetails=new ZoyPgCancellationDetails();
-				newCancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
-				newCancelDetails.setDeductionPercentages(details.getDeductionPercentages());
-				ownerDBImpl.saveBeforeCancellation(newCancelDetails);
-				ZoyBeforeCheckInCancellation dto=convertToDTO(newCancelDetails);
-				response.setStatus(HttpStatus.OK.value());
-				response.setData(dto);
-				response.setMessage("Saved Before CheckIn details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-			}
-		} catch (Exception e) {
-			log.error("Error uploading property details API:/zoy_admin/config/security-deposit-limits.zoyAdminCreateUpadateConfigSecurityDepositLimits ",e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        if (details == null) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError("Required cancellation details");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
 
+	        if (details.getCancellationId() != null && !details.getCancellationId().isEmpty()) {
+	            ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(details.getCancellationId());
+	            if (cancelDetails == null) {
+	                response.setStatus(HttpStatus.CONFLICT.value());
+	                response.setError("Unable to get before check-in cancellation details");
+	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+	            }
+	            cancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
+	            cancelDetails.setDeductionPercentages(details.getDeductionPercentages());
+	            ownerDBImpl.saveBeforeCancellation(cancelDetails);
+	        } else {
+	            ZoyPgCancellationDetails newCancelDetails = new ZoyPgCancellationDetails();
+	            newCancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
+	            newCancelDetails.setDeductionPercentages(details.getDeductionPercentages());
+	            ownerDBImpl.saveBeforeCancellation(newCancelDetails);
+	        }
+
+	        List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
+	        List<ZoyBeforeCheckInCancellation> dtoList = cancellationDetails.stream()
+	                .map(this::convertToDTO)
+	                .collect(Collectors.toList());
+
+	        response.setStatus(HttpStatus.OK.value());
+	        response.setData(dtoList);
+	        response.setMessage("Retrieved all Before CheckIn details");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error uploading property details API:/zoy_admin/config/security-deposit-limits.zoyAdminCreateUpdateConfigSecurityDepositLimits", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError("Internal server error");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
 	}
+
 	
 	private ZoyBeforeCheckInCancellation convertToDTO(ZoyPgCancellationDetails entity) {
 		ZoyBeforeCheckInCancellation dto = new ZoyBeforeCheckInCancellation();
