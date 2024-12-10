@@ -5,6 +5,7 @@ export class FiltersRequestModel{
     public pageSize :number  ;
     public sortActive:string="";
     public sortDirection:string="asc";
+    public userEmail :string ='';
 
     public cityLocation :string  ;
     public fromDate ?: string  ;

@@ -58,6 +58,7 @@ import { BarNgxChartComponent } from './chart/barchart-ngx';
 import { DocumentUploadComponent } from './external/components/document-upload.component';
 import { AppDocumentUploadRoutingModule } from './external/document-upload-routing.module';
 import { ConfigurationMasterComponent } from './setting/configuration-master/components/configuration-master.component';
+import { UserAuditComponent } from './setting/user-audit/components/user-audit.component';
 
 
 const appRoutes: Routes = [
@@ -96,7 +97,8 @@ const appRoutes: Routes = [
     DoughnutNgxChartComponent,
     BarNgxChartComponent,
     DocumentUploadComponent,
-    ConfigurationMasterComponent
+    ConfigurationMasterComponent,
+    UserAuditComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,

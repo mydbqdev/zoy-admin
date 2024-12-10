@@ -1,0 +1,144 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+    <p style="color: white;">Loading ...</p>
+  </ngx-spinner>
+  <div id="page-top">
+      <!-- Page Wrapper -->
+      <div id="wrapper">    
+        <!-- Sidebar -->
+          <app-sidebar></app-sidebar>
+        <!-- End of Sidebar -->
+  
+          <!-- Content Wrapper -->
+          <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+              <!-- Main Content -->
+              <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+  
+                  <!-- Begin Page Content -->
+                  <div class="container-fluid">
+                      <!-- Page Heading -->
+                      <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                          <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">User Audit</span></h3> 
+                          <div class="d-flex align-items-center justify-content-between">
+                              <!-- Search Input -->
+                              <div class="position-relative mr-2">
+                                <i class="fas fa-search fa-sm position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%); z-index: 1;"></i>
+                                <input type="text" class="form-control form-control-sm border-1" style="border-radius: 20px; padding-left: 35px; width: 300px;"placeholder="Search by keyword" [(ngModel)]="searchText" (keyup)="filterData($event)" aria-label="Search" aria-describedby="basic-addon2"/>
+                              </div>
+                              <div class="ml-auto mr-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="input-group">
+                                        <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 5px; margin-right: 5px;" [formControl]="searchControl">
+                                          <option value="" disabled selected>Select User</option>
+                                          <option *ngFor="let option of filteredOptions" [value]="option">{{ option }}</option>
+                                        </select>
+                                      </div>
+                                  <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 10px; margin-right: 10px;">
+                                    <option  value="" disabled selected>Select Type</option>
+                                    <option value="USER_UPDATE">USER_UPDATE</option> 
+                                    <option value="USER_LOGIN">USER_LOGIN</option>
+                                    <option value="USER_ADD">USER_ADD</option>
+                                </select>
+                                  <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                              </div>
+                             <div>
+                              <a href="javascript:void(0)" class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm"><i class="fas fa-plus-circle"></i> Download</a>
+                           </div>
+                          </div>
+                      </div>
+  
+                      <!-- Content Row -->
+                          <div class="row">
+                              <!-- Card with 8 columns width -->
+                              <div class="col-xl-12 col-md-12 mb-2">                               
+                                  <div>
+                                      <div class="card">
+                                          <div class="card-body" style="padding:2px; margin:0px;">
+                                              <div style="max-height: calc(100vh - 207px); overflow: auto;">
+                                                  <div class="desc-inner" style="height: calc(100vh - 207px);">
+                                                      <table mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortData($event)" 
+                                                      matSortActive="created_on" matSortDirection="asc" multiTemplateDataRows>
+                                                         <!-- created date Column -->
+                                                          <ng-container matColumnDef="created_on">
+                                                              <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 200px;">
+                                                                CREATED ON
+                                                                <span style="margin-left: 2px;">
+                                                                  <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['created_on'] === 'asc' }"></i>
+                                                                  <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['created_on'] === 'desc'}"></i> 
+                                                                </span>
+                                                              </th>
+                                                              <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                                                {{ element.created_on }}
+                                                              </td>
+                                                            </ng-container>
+                                                            <!-- user name Column -->
+                                                            <ng-container matColumnDef="user_name">
+                                                                <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 200px;">
+                                                                  USER NAME
+                                                                  <span style="margin-left: 2px;">
+                                                                    <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['user_name'] === 'asc' }"></i>
+                                                                    <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['user_name'] === 'desc'}"></i> 
+                                                                  </span>
+                                                                </th>
+                                                                <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                                                  {{ element.user_name }}
+                                                                </td>
+                                                              </ng-container>
+                                                                 <!-- type Column -->
+                                                              <ng-container matColumnDef="type">
+                                                                <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 200px;">
+                                                                 TYPE
+                                                                  <span style="margin-left: 2px;">
+                                                                    <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['type'] === 'asc' }"></i>
+                                                                    <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['type'] === 'desc'}"></i> 
+                                                                  </span>
+                                                                </th>
+                                                                <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                                                  {{ element.type }}
+                                                                </td>
+                                                              </ng-container>
+                                                            
+                                                            <!-- Activity Column -->
+                                                            <ng-container matColumnDef="history_data">
+                                                              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                                ACTIVITY
+                                                                <span style="margin-left: 2px;">
+                                                                  <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['history_data'] === 'asc' }"></i>
+                                                                  <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['history_data'] === 'desc'}"></i> 
+                                                                </span>
+                                                              </th>
+                                                              <td mat-cell *matCellDef="let element">
+                                                                {{ element.history_data }}
+                                                              </td>
+                                                            </ng-container>                                        
+                                                          <!-- Header and Row Definitions -->
+                                                          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                                                          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>                                             
+                                                      </table>                                      
+                                                      <!-- No Records Found Message -->
+                                                      <div style="text-align: center; min-height: 45px; padding-top: 10px;" *ngIf="dataSource?.data?.length === 0">
+                                                          No records found
+                                                      </div>
+                                                  </div>
+                                              </div>                                      
+                                              <!-- Paginator -->
+                                              <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
+                                          </div>                                                                         
+                                      </div>
+                                  </div>
+                              </div>  
+                           </div>   
+                     </div>
+                  <!-- /.container-fluid -->
+              </div>
+              <!-- End of Main Content -->
+          </div>
+          <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+  </div>
