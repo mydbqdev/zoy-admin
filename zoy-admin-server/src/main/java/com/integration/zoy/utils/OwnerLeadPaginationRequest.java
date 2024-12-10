@@ -5,15 +5,19 @@ public class OwnerLeadPaginationRequest {
     private int pageSize=10;
     private String sortActive;
     private String sortDirection;
+    private String userEmail;
+    private String searchText;
     private OwnerLeadFilter filter;
+    
+    
+    public void setPageIndex(int pageIndex) {
+		this.pageIndex = pageIndex;
+		}
 	public int getPageIndex() {
 		return pageIndex;
 	}
-	public void setPageIndex(int pageIndex) {
-		this.pageIndex = pageIndex;
-	}
 	public int getPageSize() {
-		return pageSize;
+	    return pageSize;
 	}
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
@@ -36,6 +40,18 @@ public class OwnerLeadPaginationRequest {
 	public void setFilter(OwnerLeadFilter filter) {
 		this.filter = filter;
 	}
-    
+	public String getUserEmail() {
+		return userEmail;
+	}
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+	public String getSearchText() {
+		return searchText;
+	}
+	public void setSearchText(String searchText) {
+		this.searchText = searchText;
+	}
+	
     
 }

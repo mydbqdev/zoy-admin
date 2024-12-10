@@ -7,18 +7,29 @@ public class AuditActivitiesLogDTO {
 	@JsonProperty("created_on")
 	private String createdOn;
 	
+	@JsonProperty("user_name")
+	private String userName;
+
+	@JsonProperty("type")
+    private String type;
+	
 	@JsonProperty("history_data")
     private String historyData;
 	
-    @JsonProperty("search_text")
-    private String searchText;
-
-	public String getSearchText() {
-		return searchText;
+   	public String getUserName() {
+		return userName;
 	}
 
-	public void setSearchText(String searchText) {
-		this.searchText = searchText;
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getCreatedOn() {

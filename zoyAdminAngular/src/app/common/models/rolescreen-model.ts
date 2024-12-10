@@ -58,4 +58,7 @@ export class RoleScreenModel {
     CONFIGURATION_MASTER_READ: boolean = false;
     CONFIGURATION_MASTER_WRITE: boolean = false;
 
+    USER_AUDIT_READ: boolean = false;
+    USER_AUDIT_WRITE: boolean = false;
+
 }
