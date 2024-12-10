@@ -2,17 +2,17 @@ package com.integration.zoy.model;
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 public class ZoyBeforeCheckInCancellation {
 
-	@JsonProperty("cancellation_id")
+	@SerializedName("cancellationId")
 	String cancellationId;
 
-	@JsonProperty("before_checkin_days")
+	@SerializedName("daysBeforeCheckIn")
 	int daysBeforeCheckIn;
 	
-	@JsonProperty("deduction_percentage")
+	@SerializedName("deductionPercentages")
 	BigDecimal deductionPercentages;
 
 
