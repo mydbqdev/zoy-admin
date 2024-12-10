@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>USER TRANSACTIONS REPORT</title>
     <style>
+		@page {
+				      size: landscape;
+					}
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -115,15 +118,15 @@
     <table>
         <thead>
             <tr>
-                <th>Customer ID</th>
-                <th>Customer Name</th>
+                <th>Tenant ID</th>
+                <th>Tenant Name</th>
                 <th>PG ID</th>
                 <th>PG Name</th>
                 <th>BED Number</th>
                 <th>Transaction Date</th>
                 <th>Transaction No</th>
                 <th>Transaction Status</th>
-                <th>Base Amount</th>
+                <th>Due Amount</th>
                 <th>GST Amount</th>
                 <th>Total Amount</th>
                 <th>Category</th>
@@ -132,15 +135,15 @@
         </thead>
         <tbody>
             <tr th:each="row : ${reportData}">
-                <td th:text="${row.userId != null ? row.userId : 'N/A'}">Owner ID</td>
-                <td th:text="${row.userPersonalName != null ? row.userPersonalName : 'N/A'}">Owner Name</td>
+                <td th:text="${row.userId != null ? row.userId : 'N/A'}">Tenant ID</td>
+                <td th:text="${row.userPersonalName != null ? row.userPersonalName : 'N/A'}">Tenant Name</td>
                 <td th:text="${row.userPgPropertyId != null ? row.userPgPropertyId : 'N/A'}">PG ID</td>
                 <td th:text="${row.userPgPropertyName != null ? row.userPgPropertyName : 'N/A'}">PG Name</td>
                 <td th:text="${row.bedNumber != null ? row.bedNumber : 'N/A'}">Bed Number</td>
                 <td th:text="${row.userPaymentTimestamp != null ? #dates.format(row.userPaymentTimestamp, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}">Transaction Date</td>
                 <td th:text="${row.userPaymentBankTransactionId != null ? row.userPaymentBankTransactionId : 'N/A'}">Transaction Number</td>
                 <td th:text="${row.userPaymentResultStatus != null ? row.userPaymentResultStatus : 'N/A'}">Transaction Status</td>
-                <td th:text="${row.totalAmount != null ? #numbers.formatDecimal(row.totalAmount, 2, 2) : '0.00'}">Base Amount</td>
+                <td th:text="${row.totalAmount != null ? #numbers.formatDecimal(row.totalAmount, 2, 2) : '0.00'}">Due Amount</td>
                 <td th:text="${row.userPaymentGst != null ? #numbers.formatDecimal(row.userPaymentGst, 2, 2) : '0.00'}">GST Amount</td>
                 <td th:text="${(row.totalAmount != null && row.userPaymentGst != null) ? #numbers.formatDecimal(row.totalAmount.add(row.userPaymentGst), 2, 2) : '0.00'}">Total Amount</td>
                 <td th:text="${row.category != null ? row.category : 'N/A'}">Category</td>
