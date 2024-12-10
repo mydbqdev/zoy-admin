@@ -1,7 +1,7 @@
 package com.integration.zoy.utils;
-import java.util.List;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,11 +1,12 @@
 package com.integration.zoy.repository;
 
-import com.integration.zoy.entity.UserPaymentDue;
-import com.integration.zoy.entity.UserPaymentDueId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.integration.zoy.entity.UserPaymentDue;
+import com.integration.zoy.entity.UserPaymentDueId;
 
 @Repository
 public interface UserPaymentDueRepository extends JpaRepository<UserPaymentDue, UserPaymentDueId> {

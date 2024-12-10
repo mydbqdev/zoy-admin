@@ -1,12 +1,6 @@
 package com.integration.zoy.service;
 
 import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
-
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 
 import com.integration.zoy.entity.AdminUserLoginDetails;
 import com.integration.zoy.entity.AdminUserMaster;

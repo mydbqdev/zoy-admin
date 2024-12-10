@@ -10,7 +10,6 @@ import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
 import com.integration.zoy.entity.ZoyPgSecurityDepositRefundRule;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
-import com.integration.zoy.model.LoginDetails;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
 import com.integration.zoy.model.ZoyOtherCharges;
 import com.integration.zoy.model.ZoyShareDetails;

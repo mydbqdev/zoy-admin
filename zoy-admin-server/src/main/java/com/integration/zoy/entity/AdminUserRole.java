@@ -2,7 +2,9 @@ package com.integration.zoy.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "user_role", schema = "pgadmin")
