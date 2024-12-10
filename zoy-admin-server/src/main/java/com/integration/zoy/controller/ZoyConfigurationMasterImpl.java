@@ -13,6 +13,12 @@ import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
 import com.integration.zoy.model.ZoyOtherCharges;
 import com.integration.zoy.model.ZoyShareDetails;
+import com.integration.zoy.model.ZoyToken;
+import com.integration.zoy.utils.ZoyDataGroupingDto;
+import com.integration.zoy.utils.ZoyOtherChargesDto;
+import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
+import com.integration.zoy.utils.ZoyPgSecurityDepositRefundRuleDto;
+import com.integration.zoy.utils.ZoyPgTokenDetailsDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,7 +39,7 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/token_advance",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigCreateUpdateToken(@RequestBody ZoyPgTokenDetails details);
+	ResponseEntity<String> zoyAdminConfigCreateUpdateToken(@RequestBody ZoyPgTokenDetailsDTO details);
 
 	@Operation(summary = "Admin Configration Security Deposit Limits", description = "Getting Admin Configration Security Deposit Limits", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
@@ -44,7 +50,7 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/config/security-deposit-limits",
 	produces = { "application/json" })
-	ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositLimits(@RequestBody ZoyPgSecurityDepositDetails details);
+	ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositLimits(@RequestBody ZoyPgSecurityDepositDetailsDTO details);
 
 	
 	
@@ -94,7 +100,7 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/other-charges",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigCreateUpdateOtherCharges(@RequestBody ZoyOtherCharges details);
+	ResponseEntity<String> zoyAdminConfigCreateUpdateOtherCharges(@RequestBody ZoyOtherChargesDto details);
 
 	@Operation(summary = "Admin Configration Data Grouping", description = "Creating/Updating Admin Configration Data Grouping", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
@@ -106,7 +112,7 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/data-grouping",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigCreateUpdateDataGrouping(@RequestBody ZoyDataGrouping details);
+	ResponseEntity<String> zoyAdminConfigCreateUpdateDataGrouping(@RequestBody ZoyDataGroupingDto details);
 
 	
 	
@@ -120,7 +126,7 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/config/security-deposit-refund-rules",
 	produces = { "application/json" })
-	ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositRefundRules(@RequestBody ZoyPgSecurityDepositRefundRule  ruleDetails);
+	ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositRefundRules(@RequestBody ZoyPgSecurityDepositRefundRuleDto  ruleDetails);
 	
 	
 	

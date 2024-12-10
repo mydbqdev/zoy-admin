@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +30,15 @@ import com.integration.zoy.entity.ZoyPgSecurityDepositRefundRule;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
-import com.integration.zoy.model.ZoyOtherCharges;
 import com.integration.zoy.model.ZoyShareDetails;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.ZoyAdminConfigDTO;
+import com.integration.zoy.utils.ZoyDataGroupingDto;
+import com.integration.zoy.utils.ZoyOtherChargesDto;
+import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
+import com.integration.zoy.utils.ZoyPgSecurityDepositRefundRuleDto;
+import com.integration.zoy.utils.ZoyPgTokenDetailsDTO;
 
 
 @RestController
@@ -66,7 +71,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 
 	@Override
-	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetails details) {
+	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetailsDTO details) {
 		ResponseBody response = new ResponseBody();
 		try {
 			if (details == null) {
@@ -80,8 +85,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				tokenDetails.setFixedToken(details.getFixedToken() != null ? details.getFixedToken() : BigDecimal.ZERO);
 				tokenDetails.setVariableToken(details.getVariableToken() != null ? details.getVariableToken() : BigDecimal.ZERO);
 				ownerDBImpl.saveToken(tokenDetails);
+				ZoyPgTokenDetailsDTO dto = convertToDTO(tokenDetails);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(tokenDetails);
+				response.setData(dto);
 				response.setMessage("Updated Token details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
@@ -90,8 +96,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newTokenDetails.setFixedToken(details.getFixedToken() != null ? details.getFixedToken() : BigDecimal.ZERO);
 				newTokenDetails.setVariableToken(details.getVariableToken() != null ? details.getVariableToken() : BigDecimal.ZERO);
 				ownerDBImpl.saveToken(newTokenDetails);
+				ZoyPgTokenDetailsDTO dto = convertToDTO(newTokenDetails);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(newTokenDetails);
+				response.setData(dto);
 				response.setMessage("Saved Token details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
@@ -103,7 +110,13 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		}
 	}
 
-
+	private ZoyPgTokenDetailsDTO convertToDTO(ZoyPgTokenDetails entity) {
+	    ZoyPgTokenDetailsDTO dto = new ZoyPgTokenDetailsDTO();
+	    dto.setTokenId(entity.getTokenId());
+	    dto.setFixedToken(entity.getFixedToken());
+	    dto.setVariableToken(entity.getVariableToken());
+	    return dto;
+	}
 
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(ZoyBeforeCheckInCancellation details) {
@@ -124,18 +137,19 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				cancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
 				cancelDetails.setDeductionPercentages(details.getDeductionPercentages());
 				ownerDBImpl.saveBeforeCancellation(cancelDetails);
-
+				ZoyBeforeCheckInCancellation dto=convertToDTO(cancelDetails);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(cancelDetails);
+				response.setData(dto);
 				response.setMessage("Updated Before CheckIn details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
-				ZoyPgCancellationDetails cancelDetails=new ZoyPgCancellationDetails();
-				cancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
-				cancelDetails.setDeductionPercentages(details.getDeductionPercentages());
-				ownerDBImpl.saveBeforeCancellation(cancelDetails);
+				ZoyPgCancellationDetails newCancelDetails=new ZoyPgCancellationDetails();
+				newCancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
+				newCancelDetails.setDeductionPercentages(details.getDeductionPercentages());
+				ownerDBImpl.saveBeforeCancellation(newCancelDetails);
+				ZoyBeforeCheckInCancellation dto=convertToDTO(newCancelDetails);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(cancelDetails);
+				response.setData(dto);
 				response.setMessage("Saved Before CheckIn details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
@@ -146,6 +160,14 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 
+	}
+	
+	private ZoyBeforeCheckInCancellation convertToDTO(ZoyPgCancellationDetails entity) {
+		ZoyBeforeCheckInCancellation dto = new ZoyBeforeCheckInCancellation();
+	    dto.setCancellationId(entity.getCancellationId());
+	    dto.setDaysBeforeCheckIn(entity.getDaysBeforeCheckIn());
+	    dto.setDeductionPercentages(entity.getDeductionPercentages());
+	    return dto;
 	}
 
 
@@ -219,7 +241,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 
 	@Override
-	public ResponseEntity<String> zoyAdminConfigCreateUpdateOtherCharges(ZoyOtherCharges details) {
+	public ResponseEntity<String> zoyAdminConfigCreateUpdateOtherCharges(ZoyOtherChargesDto details) {
 		ResponseBody response = new ResponseBody();
 		try {
 			if (details == null) {
@@ -246,8 +268,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				otherCharges.setOtherGst(otherGst);
 
 				ownerDBImpl.saveOtherCharges(otherCharges);
+				ZoyOtherChargesDto dto =convertToDTO(otherCharges);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(otherCharges);
+				response.setData(dto);
 				response.setMessage("Updated Other Charges details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
@@ -266,8 +289,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newOtherCharges.setOtherGst(otherGst);
 
 				ownerDBImpl.saveOtherCharges(newOtherCharges);
+				ZoyOtherChargesDto dto =convertToDTO(newOtherCharges);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(newOtherCharges);
+				response.setData(dto);
 				response.setMessage("Saved Other Charges details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
@@ -279,10 +303,18 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		}
 	}
 
+	
+	private ZoyOtherChargesDto convertToDTO(ZoyPgOtherCharges entity) {
+		ZoyOtherChargesDto dto = new ZoyOtherChargesDto();
+	    dto.setOtherChargesId(entity.getOtherChargesId());
+	    dto.setDocumentCharges(entity.getDocumentCharges());
+	    dto.setOtherGst(entity.getOtherGst());
+	    return dto;
+	}
 
 
 	@Override
-	public ResponseEntity<String> zoyAdminConfigCreateUpdateDataGrouping(ZoyDataGrouping details) {
+	public ResponseEntity<String> zoyAdminConfigCreateUpdateDataGrouping(ZoyDataGroupingDto details) {
 		ResponseBody response=new ResponseBody();
 		try {
 			if(details==null) {
@@ -294,16 +326,18 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			if (group != null) {
 				group.setConsiderDays(details.getConsiderDays());
 				ownerDBImpl.saveDataGroup(group);
+				ZoyDataGroupingDto dto=convertToDTO(group);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(group);
+				response.setData(dto);
 				response.setMessage("Updated Data Grouping details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
 				ZoyDataGrouping newGroup=new ZoyDataGrouping();
 				newGroup.setConsiderDays(details.getConsiderDays());
 				ownerDBImpl.saveDataGroup(newGroup);
+				ZoyDataGroupingDto dto=convertToDTO(newGroup);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(newGroup);
+				response.setData(dto);
 				response.setMessage("Saved Data Grouping details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
@@ -314,10 +348,17 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	private ZoyDataGroupingDto convertToDTO(ZoyDataGrouping entity) {
+		ZoyDataGroupingDto dto = new ZoyDataGroupingDto();
+	    dto.setDataGroupingId(entity.getDataGroupingId());
+	    dto.setConsiderDays(entity.getConsiderDays());
+	    return dto;
+	}
 
 
 	@Override
-	public ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositLimits(ZoyPgSecurityDepositDetails details) {
+	public ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositLimits(ZoyPgSecurityDepositDetailsDTO details) {
 		ResponseBody response = new ResponseBody();
 		try {
 			if (details == null) {
@@ -328,20 +369,22 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyPgSecurityDepositDetails limits = ownerDBImpl.findZoySecurityDeposit();      
 			if (limits != null) {
 				// Update the existing record
-				limits.setSecurityDepositMax(details.getSecurityDepositMax());
-				limits.setSecurityDepositMin(details.getSecurityDepositMin());
+				limits.setSecurityDepositMax(details.getMaximumDeposit());
+				limits.setSecurityDepositMin(details.getMinimumDeposit());
 				ownerDBImpl.saveZoySecurityDepositLimits(limits);
+				ZoyPgSecurityDepositDetailsDTO dto = convertToDTO(limits);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(limits);
+				response.setData(dto);
 				response.setMessage("Updated Security Deposits Limit Details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
 				ZoyPgSecurityDepositDetails newSecurityLimit = new ZoyPgSecurityDepositDetails();
-				newSecurityLimit.setSecurityDepositMax(details.getSecurityDepositMax());
-				newSecurityLimit.setSecurityDepositMin(details.getSecurityDepositMin());
+				newSecurityLimit.setSecurityDepositMax(details.getMaximumDeposit());
+				newSecurityLimit.setSecurityDepositMin(details.getMinimumDeposit());
 				ownerDBImpl.saveZoySecurityDepositLimits(newSecurityLimit);
+				ZoyPgSecurityDepositDetailsDTO dto = convertToDTO(newSecurityLimit);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(newSecurityLimit);
+				response.setData(dto);
 				response.setMessage("Saved Security Deposits Limit details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
@@ -352,10 +395,20 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	private ZoyPgSecurityDepositDetailsDTO convertToDTO(ZoyPgSecurityDepositDetails entity) {
+	    ZoyPgSecurityDepositDetailsDTO dto = new ZoyPgSecurityDepositDetailsDTO();
+	    dto.setDepositId(entity.getSecurityDepositId());
+	    dto.setMinimumDeposit(entity.getSecurityDepositMin());
+	    dto.setMaximumDeposit(entity.getSecurityDepositMax());
+	    return dto;
+	}
+
+
 
 
 	@Override
-	public ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositRefundRules(ZoyPgSecurityDepositRefundRule ruleDetails) {
+	public ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositRefundRules(ZoyPgSecurityDepositRefundRuleDto ruleDetails) {
 		ResponseBody response = new ResponseBody();
 		try {
 			if (ruleDetails == null) {
@@ -367,18 +420,20 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyPgSecurityDepositRefundRule existingRule = ownerDBImpl.findSecurityDepositRefundRuleById();
 
 			if (existingRule != null) {
-				existingRule.setMaxDaysForRefund(ruleDetails.getMaxDaysForRefund());
+				existingRule.setMaxDaysForRefund(ruleDetails.getMaximumDays());
 				ownerDBImpl.saveSecurityDepositRefundRule(existingRule);
+				ZoyPgSecurityDepositRefundRuleDto dto =convertToDTO(existingRule);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(existingRule);
+				response.setData(dto);
 				response.setMessage("Updated Security Deposit Refund Rule");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
 				ZoyPgSecurityDepositRefundRule newRule = new ZoyPgSecurityDepositRefundRule();
-				newRule.setMaxDaysForRefund(ruleDetails.getMaxDaysForRefund());
+				newRule.setMaxDaysForRefund(ruleDetails.getMaximumDays());
 				ownerDBImpl.saveSecurityDepositRefundRule(newRule);
+				ZoyPgSecurityDepositRefundRuleDto dto =convertToDTO(newRule);
 				response.setStatus(HttpStatus.OK.value());
-				response.setData(newRule);
+				response.setData(dto);
 				response.setMessage("Created new Security Deposit Refund Rule");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
@@ -389,6 +444,21 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	
+	private ZoyPgSecurityDepositRefundRuleDto convertToDTO(ZoyPgSecurityDepositRefundRule entity) {
+		ZoyPgSecurityDepositRefundRuleDto dto = new ZoyPgSecurityDepositRefundRuleDto();
+	    dto.setRuleId(entity.getRuleId());
+	    dto.setMaximumDays(entity.getMaxDaysForRefund());
+	    return dto;
+	}
+
+	
+	private List<ZoyBeforeCheckInCancellation> convertToDTO(List<ZoyPgCancellationDetails> cancellationDetailsList) {
+	    return cancellationDetailsList.stream()
+	        .map(this::convertToDTO) 
+	        .collect(Collectors.toList());
 	}
 
 
@@ -404,12 +474,12 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyPgOtherCharges otherCharges = ownerDBImpl.findZoyOtherCharges();
 
 			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
-			configDTO.setTokenDetails(tokenDetails);
-			configDTO.setDepositDetails(depositDetails);
-			configDTO.setCancellationDetails(cancellationDetails);
-			configDTO.setRefundRules(refundRules);
-			configDTO.setDataGrouping(dataGrouping);
-			configDTO.setOtherCharges(otherCharges);
+			configDTO.setTokenDetails(convertToDTO(tokenDetails));
+			configDTO.setDepositDetails(convertToDTO(depositDetails));
+			configDTO.setCancellationDetails(convertToDTO(cancellationDetails));
+			configDTO.setRefundRules(convertToDTO(refundRules));
+			configDTO.setDataGrouping(convertToDTO(dataGrouping));
+			configDTO.setOtherCharges(convertToDTO(otherCharges));
 			
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(configDTO);

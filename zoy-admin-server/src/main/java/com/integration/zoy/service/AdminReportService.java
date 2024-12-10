@@ -59,10 +59,10 @@ public class AdminReportService implements AdminReportImpl{
 
 	@Value("${zoy.admin.logo}")
 	private String zoyLogoPath;
-	
+
 
 	@Override
-	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData) throws WebServiceException {
+	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException {
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT up.user_id, " +
@@ -170,10 +170,10 @@ public class AdminReportService implements AdminReportImpl{
 			parameters.forEach(query::setParameter);
 
 			int filterCount=query.getResultList().size();
-
-			query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
-			query.setMaxResults(filterRequest.getPageSize());
-
+			if(applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
 			List<Object[]> result= query.getResultList();
 			List<UserPaymentDTO> userPaymentDTOs = result.stream().map(row -> {
 				UserPaymentDTO dto = new UserPaymentDTO();
@@ -202,7 +202,7 @@ public class AdminReportService implements AdminReportImpl{
 	}
 
 	@Override
-	public CommonResponseDTO<ConsilidatedFinanceDetails> getConsolidatedFinanceDetails(UserPaymentFilterRequest filterRequest,FilterData filterData) throws WebServiceException{
+	public CommonResponseDTO<ConsilidatedFinanceDetails> getConsolidatedFinanceDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException{
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT DISTINCT up.user_payment_timestamp AS transaction_date, " +
@@ -269,8 +269,10 @@ public class AdminReportService implements AdminReportImpl{
 			Query query = entityManager.createNativeQuery(queryBuilder.toString());
 			parameters.forEach(query::setParameter);
 			int filterCount=query.getResultList().size();
-			query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
-			query.setMaxResults(filterRequest.getPageSize());
+			if(applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
 			List<Object[]> result= query.getResultList();
 			List<ConsilidatedFinanceDetails> consolidatedFinanceDTOs = result.stream().map(row -> {
 				ConsilidatedFinanceDetails dto = new ConsilidatedFinanceDetails();
@@ -294,7 +296,7 @@ public class AdminReportService implements AdminReportImpl{
 	}
 
 	@Override
-	public CommonResponseDTO<TenentDues> getTenentDuesDetails(UserPaymentFilterRequest filterRequest, FilterData filterData) throws WebServiceException {
+	public CommonResponseDTO<TenentDues> getTenentDuesDetails(UserPaymentFilterRequest filterRequest, FilterData filterData,Boolean applyPagination) throws WebServiceException {
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT DISTINCT ON (u.user_money_due_id) " +
@@ -378,8 +380,10 @@ public class AdminReportService implements AdminReportImpl{
 			Query query = entityManager.createNativeQuery(queryBuilder.toString());
 			parameters.forEach(query::setParameter);
 			int filterCount=query.getResultList().size();
-			query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
-			query.setMaxResults(filterRequest.getPageSize());
+			if(applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
 			List<Object[]> results = query.getResultList();
 			List<TenentDues> tenentDuesDto = results.stream().map(row -> {
 				TenentDues dto = new TenentDues();
@@ -413,7 +417,7 @@ public class AdminReportService implements AdminReportImpl{
 
 
 	@Override
-	public CommonResponseDTO<VendorPayments> getVendorPaymentDetails(UserPaymentFilterRequest filterRequest, FilterData filterData) throws WebServiceException{	
+	public CommonResponseDTO<VendorPayments> getVendorPaymentDetails(UserPaymentFilterRequest filterRequest, FilterData filterData,Boolean applyPagination) throws WebServiceException{	
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT DISTINCT ON (up.user_payment_id) " + 
@@ -503,9 +507,10 @@ public class AdminReportService implements AdminReportImpl{
 			Query query = entityManager.createNativeQuery(queryBuilder.toString());
 			parameters.forEach(query::setParameter);
 			int filterCount=query.getResultList().size();
-			query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
-			query.setMaxResults(filterRequest.getPageSize());
-
+			if(applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
 			List<Object[]> results = query.getResultList();
 			List<VendorPayments> vendorPaymentsDto = results.stream().map(row -> {
 				VendorPayments dto = new VendorPayments();
@@ -575,30 +580,26 @@ public class AdminReportService implements AdminReportImpl{
 	}
 
 	@Override
-	public byte[] generateDynamicReport(UserPaymentFilterRequest filterRequest, FilterData filterData) throws WebServiceException {
+	public byte[] generateDynamicReport(UserPaymentFilterRequest filterRequest, FilterData filterData,Boolean applyPagination) throws WebServiceException {
 		try {
 			Map<String, Object> data = new HashMap<>();
 			CommonResponseDTO<?> reportData = null; 
 			switch (filterRequest.getReportType()) {
 			case "userTransactionReport":
-				reportData = getUserPaymentDetails(filterRequest, filterData);
+				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
 				break;
 			case "userPaymentGstReport":
-				reportData = getUserPaymentDetails(filterRequest, filterData);
+				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
 				break;
 			case "consolidatedFinanceReport":
-				reportData = getConsolidatedFinanceDetails(filterRequest, filterData);
-
+				reportData = getConsolidatedFinanceDetails(filterRequest, filterData,applyPagination);
 				break;
-
 			case "tenantDuesReport":
-				reportData = getTenentDuesDetails(filterRequest, filterData);
+				reportData = getTenentDuesDetails(filterRequest, filterData,applyPagination);
 				break;
-
 			case "vendorPaymentsReport":
-				reportData = getVendorPaymentDetails(filterRequest, filterData);
+				reportData = getVendorPaymentDetails(filterRequest, filterData,applyPagination);
 				break;
-
 			case "vendorPaymentsDuesReport":
 				reportData = getVendorPaymentDuesDetails(filterRequest.getFromDate(), filterRequest.getToDate());
 				break;
@@ -621,8 +622,8 @@ public class AdminReportService implements AdminReportImpl{
 				try {
 					InputStream inputStreamImg =getClass().getResourceAsStream(zoyLogoPath);
 					if (inputStreamImg == null) {
-						 log.error("Logo image not found at the specified path: {}", zoyLogoPath);
-						 throw new FileNotFoundException("Logo image not found at the specified path: " + zoyLogoPath);
+						log.error("Logo image not found at the specified path: {}", zoyLogoPath);
+						throw new FileNotFoundException("Logo image not found at the specified path: " + zoyLogoPath);
 					}
 					String base64Logo = pdfGenerateService.imageToBase64(inputStreamImg);
 					data.put("appLogo", base64Logo);
