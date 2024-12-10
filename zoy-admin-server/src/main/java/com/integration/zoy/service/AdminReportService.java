@@ -69,7 +69,7 @@ public class AdminReportService implements AdminReportImpl{
 							"up.user_payment_timestamp, " +
 							"up.user_payment_bank_transaction_id, " +
 							"CASE " +
-							"    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid' " +
+							"    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' " +
 							"    ELSE up.user_payment_payment_status " +
 							"END AS user_payment_payment_status, " +
 							"up.user_payment_payable_amount, " +

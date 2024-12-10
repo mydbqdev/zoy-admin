@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>VENDOR PAYMENT REPORT</title>
     <style>
+		@page {
+				 size: landscape;
+			}
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -121,7 +124,7 @@
                 <th>PG Name</th>
                 <th>Total Amount Received from Tenants</th>
                 <th>Total Amount Paid to Owner</th>
-				<th>ZOY Commission</th>
+				<th>ZOY Share</th>
 				<th>Transaction Date</th>
 				<th>Transaction Number</th>
 				<th>Payment Status</th>
@@ -148,7 +151,7 @@
 			        <td th:text="${row.amountPaidToOwner != null ? #numbers.formatDecimal(row.amountPaidToOwner, 2, 2) : '0.00'}">Total Amount Paid to Owner</td>
 
 			        <!-- ZOY Commission -->
-			        <td th:text="${row.zoyCommission != null ? #numbers.formatDecimal(row.zoyCommission, 2, 2) : '0.00'}">ZOY Commission</td>
+			        <td th:text="${row.zoyCommission != null ? #numbers.formatDecimal(row.zoyCommission, 2, 2) : '0.00'}">ZOY Share</td>
 
 			        <!-- Transaction Date -->
 			        <td th:text="${row.transactionDate != null ? #dates.format(row.transactionDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}">Transaction Date</td>

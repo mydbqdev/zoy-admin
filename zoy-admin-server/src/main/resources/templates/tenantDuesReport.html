@@ -115,8 +115,8 @@
     <table>
         <thead>
             <tr>
-                <th>Customer ID</th>
-                <th>Customer Name </th>
+                <th>Tenant ID</th>
+                <th>Tenant Name</th>
                 <th>PG ID</th>
                 <th>PG Name</th>
                 <th>Bed No</th>
@@ -127,10 +127,10 @@
         <tbody>
 			<tr th:each="row : ${reportData}">
 			        <!-- Customer ID -->
-			        <td th:text="${row.userId != null ? row.userId : 'N/A'}">Customer ID</td>
+			        <td th:text="${row.userId != null ? row.userId : 'N/A'}">Tenant ID</td>
 
 			        <!-- Customer Name -->
-			        <td th:text="${row.userPersonalName != null ? row.userPersonalName : 'N/A'}">Customer Name</td>
+			        <td th:text="${row.userPersonalName != null ? row.userPersonalName : 'N/A'}">Tenant Name</td>
 
 			        <!-- PG ID -->
 			        <td th:text="${row.userPgPropertyId != null ? row.userPgPropertyId : 'N/A'}">PG ID</td>
