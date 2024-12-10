@@ -68,7 +68,8 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData);
+			boolean applyPagination = true;
+			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData,applyPagination);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getUserPaymentsByDateRange API:/zoy_admin/payment_transfer_details.getUserPaymentsByDateRange ",e);
@@ -83,7 +84,8 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData);
+			boolean applyPagination = true;
+			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData,applyPagination);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getUserGstReportByDateRange API:/zoy_admin/user_gst_report_details.getUserGstReportByDateRange ",e);
@@ -98,7 +100,8 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			CommonResponseDTO<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(filterRequest,filterData);
+			boolean applyPagination = true;
+			CommonResponseDTO<ConsilidatedFinanceDetails> paymentDetails =  adminReportImpl.getConsolidatedFinanceDetails(filterRequest,filterData,applyPagination);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getConsolidatedFinanceByDateRange details API:/zoy_admin/consolidated_finance_report_details.getConsolidatedFinanceByDateRange ",e);
@@ -114,7 +117,8 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			CommonResponseDTO<TenentDues> tenentDuesDetails =  adminReportImpl.getTenentDuesDetails(filterRequest,filterData);
+			boolean applyPagination = true;
+			CommonResponseDTO<TenentDues> tenentDuesDetails =  adminReportImpl.getTenentDuesDetails(filterRequest,filterData,applyPagination);
 			return new ResponseEntity<>(gson.toJson(tenentDuesDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getTenantDuesByDateRange details API:/zoy_admin/tenant-dues-report_details.getTenantDuesByDateRange ",e);
@@ -129,7 +133,8 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		ResponseBody response=new ResponseBody();
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			CommonResponseDTO<VendorPayments> vendorPaymentsDetails =  adminReportImpl.getVendorPaymentDetails(filterRequest,filterData);
+			boolean applyPagination = true;
+			CommonResponseDTO<VendorPayments> vendorPaymentsDetails =  adminReportImpl.getVendorPaymentDetails(filterRequest,filterData,applyPagination);
 			return new ResponseEntity<>(gson.toJson(vendorPaymentsDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getTenantDuesByDateRange details API:/zoy_admin/vendor-payment-report_details.getVendorPaymentDetailsByDateRange ",e);
@@ -173,9 +178,10 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		byte[] fileData=null;
 		String fileName ="";
 		MediaType contentType = null;
+		boolean applyPagination = false;
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
-			fileData = adminReportImpl.generateDynamicReport(filterRequest,filterData);
+			fileData = adminReportImpl.generateDynamicReport(filterRequest,filterData,applyPagination);
 
 			if (fileData.length == 0) {
 				return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  
