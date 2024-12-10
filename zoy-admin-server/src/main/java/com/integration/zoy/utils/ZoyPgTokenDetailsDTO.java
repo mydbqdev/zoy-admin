@@ -40,5 +40,4 @@ public class ZoyPgTokenDetailsDTO {
 		this.variableToken = variableToken;
 	}
 
-	// Optionally, you can add toString(), equals(), hashCode() if needed for better logging/debugging
 }
