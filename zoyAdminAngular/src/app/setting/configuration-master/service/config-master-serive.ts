@@ -4,7 +4,6 @@ import { Observable,of } from 'rxjs';
 import { ServiceHelper } from 'src/app/common/shared/service-helper';
 import { BASE_PATH } from 'src/app/common/shared/variables';
 import { MessageService } from 'src/app/message.service';
-import { BeforeCheckInCancellationRefundModel, DataGroupingModel, SecurityDepositLimitsModel, SecurityDepositRefundModel, TokenDetailsModel } from "../models/config-master-model";
 
 @Injectable({
     providedIn: 'root'
@@ -20,9 +19,10 @@ import { BeforeCheckInCancellationRefundModel, DataGroupingModel, SecurityDeposi
     }
     
      public getConfigMasterDetails(): Observable<any> {
-          const url1=this.basePath +"zoy_admin/getConfigMasterDetails";
-            return  this.httpclient.get<any>(
+          const url1=this.basePath +"zoy_admin/config/admin-configuration-details";
+            return  this.httpclient.post<any>(
                 url1,
+                "",
                 {
                    headers:ServiceHelper.buildHeaders(),
                    observe : 'body',
@@ -30,8 +30,8 @@ import { BeforeCheckInCancellationRefundModel, DataGroupingModel, SecurityDeposi
                 }
             );
     } 
-     public updateTokenAdvanceDetails(data:TokenDetailsModel): Observable<any> {
-            const url1=this.basePath +"zoy_admin/UpdateTokenAdvanceDetails";
+     public updateTokenAdvanceDetails(data:any): Observable<any> {
+            const url1=this.basePath +"zoy_admin/config/token_advance";
             return  this.httpclient.post<any>(
                 url1,
                 data,
@@ -42,8 +42,8 @@ import { BeforeCheckInCancellationRefundModel, DataGroupingModel, SecurityDeposi
                 }
             );
     } 
-    public updatesecurityDepositLimitsDetails(data:SecurityDepositLimitsModel): Observable<any> {
-        const url1=this.basePath +"zoy_admin/UpdatesecurityDepositLimitsDetails";
+    public updatesecurityDepositLimitsDetails(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/security-deposit-limits";
         return  this.httpclient.post<any>(
             url1,
             data,
@@ -54,8 +54,8 @@ import { BeforeCheckInCancellationRefundModel, DataGroupingModel, SecurityDeposi
             }
         );
     }    
-    public updateDataGroupingDetails(data:DataGroupingModel): Observable<any> {
-        const url1=this.basePath +"zoy_admin/UpdateDataGroupingDetails";
+    public updateDataGroupingDetails(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/data-grouping";
         return  this.httpclient.post<any>(
             url1,
             data,
@@ -67,8 +67,8 @@ import { BeforeCheckInCancellationRefundModel, DataGroupingModel, SecurityDeposi
         );
     } 
 
-    public submitBeforeCheckInCRfDetails(data:BeforeCheckInCancellationRefundModel): Observable<any> {
-        const url1=this.basePath +"zoy_admin/submitBeforeCheckInCRfDetails";
+    public submitBeforeCheckInCRfDetails(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/before-check-in";
         return  this.httpclient.post<any>(
             url1,
             data,
@@ -79,8 +79,8 @@ import { BeforeCheckInCancellationRefundModel, DataGroupingModel, SecurityDeposi
             }
         );
     }
-    public updatesecurityDepositRefundDetails(data:SecurityDepositRefundModel): Observable<any> {
-        const url1=this.basePath +"zoy_admin/updatesecurityDepositRefundDetails";
+    public updatesecurityDepositRefundDetails(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/security-deposit-refund-rules";
         return  this.httpclient.post<any>(
             url1,
             data,

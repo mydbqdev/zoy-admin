@@ -1,9 +1,9 @@
 export class ConfigMasterModel{
-    tokenDetailsModel :TokenDetailsModel = new TokenDetailsModel() ;
-    securityDepositLimitsModel : SecurityDepositLimitsModel = new SecurityDepositLimitsModel ();
-    beforeCheckInCancellationRefund : BeforeCheckInCancellationRefundModel[] =[];
-    securityDepositRefundModel : SecurityDepositRefundModel= new SecurityDepositRefundModel() ;
-    dataGroupingModel : DataGroupingModel = new DataGroupingModel() ;
+    tokenDetails :TokenDetailsModel = new TokenDetailsModel() ;
+    depositDetails : SecurityDepositLimitsModel = new SecurityDepositLimitsModel ();
+    cancellationDetails : BeforeCheckInCancellationRefundModel[] =[];
+    refundRules : SecurityDepositRefundModel= new SecurityDepositRefundModel() ;
+    dataGrouping : DataGroupingModel = new DataGroupingModel() ;
 }
 
 export class TokenDetailsModel{

@@ -14,6 +14,9 @@ public class ZoyBeforeCheckInCancellation {
 	
 	@SerializedName("deductionPercentages")
 	BigDecimal deductionPercentages;
+	
+	@SerializedName("bcicrDisable")
+	boolean bcicrDisable = true ;
 
 
 	public int getDaysBeforeCheckIn() {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthService } from 'src/app/common/service/auth.service';
 import { DataService } from 'src/app/common/service/data.service';
@@ -9,6 +9,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Menu } from './menu';
 import { MenuService } from './menu.service';
+import { UserActivityService } from 'src/app/user-activity.service';
 
 @Component({
   selector: 'app-header',
@@ -26,8 +27,13 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 	filteredMenus: Menu[] = [];
 	searchControl = new FormControl();
 	filteredOptions: Observable<Menu[]>;
-  constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,private menuService: MenuService,) {
-   this.userInfo=this.userService.getUserinfo();
+  sessionTime:Date;
+  constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,
+    private menuService: MenuService,private userActivityService: UserActivityService,
+    ) {
+     
+    this.userInfo=this.userService.getUserinfo();
+    this.sessionTime = this.userService.getSessionTime();
     this.userNameSession = this.userService.getUsername();
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
@@ -55,16 +61,49 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 			startWith(''),
 			map(value => this.filter(value))
 		  );
+  
   }
+  
+ 
+  
   ngAfterViewInit(): void {
     
   }
+  lastActionTime: number = 0;
+   nun=0
+   countdown=0;
+   
+   getTimeSinceLastAction(): number {
+   // console.log("this.sessionTime ",this.sessionTime );
+    const time = this.userActivityService.getTimeSinceLastAction();
+    // console.log("time",time ,"----",this.nun)
+    if(time >300000 && this.nun ==0){
+      this.nun=this.nun+1;
+      this.countdown = 30;
+      this.showModal();
+      this.startSessionTimeout();
+    }
+    return time;
+  }
+
+  
+
   ngOnInit(): void {
     if(this.userNameSession==null || this.userNameSession==undefined || this.userNameSession==''){
      // this.router.navigate(['/']);
       }
+     // this.resetTimeOut();
       this.menus = this.menuService.getAllMenus();
       	this.filteredMenus = this.menus ;
+        this.userActivityService.lastActionTime$.subscribe(time => {
+          this.lastActionTime = time;
+        });
+        setInterval(() => {
+          const timeSinceLastAction = this.userActivityService.getTimeSinceLastAction();
+          if (timeSinceLastAction > 5 * 60 * 1000) {
+          }
+        }, 1000); 
+        this.startValidateToken();
   }
   ngOnDestroy() {
     if (this.mySubscription) {
@@ -94,5 +133,64 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 		const filterValue = value.toLowerCase();
 		return this.menus.filter(menu => menu.name.toLowerCase().includes(filterValue));
 	  }
+
+  
+  startSessionTimeout() {
+   // console.log("this.countdown",this.countdown)
+    const interval = setInterval(() => {
+      if (this.countdown <= 0) {
+        this.nun=0;
+        clearInterval(interval); 
+        this.logout();
+      } else {
+        this.countdown--;
+      }
+    }, 1000); 
+  }
+
+
+  timeoutId: any;
+   
+      startValidateToken() {
+    //    console.log("this.setTimeouttimeoutId",this.timeoutId);
+        this.timeoutId = setTimeout(() => {
+          this.sessionTime = this.userService.getSessionTime();
+          const diff = this.sessionTime.getTime() - new Date().getTime();
+          if(diff>500000){
+            this.logout();
+          }
+          this.startValidateToken();
+        }, 100000); 
+      }
+      stopValidateToken() {
+        if (this.timeoutId) {
+          clearTimeout(this.timeoutId);
+        }
+      }
+
+
+  @ViewChild('sessionModelOpen') sessionModelOpen: any;
+  @ViewChild('sessionModelClose') sessionModelClose: any;
+
+  showModal() {
+    this.sessionModelOpen.nativeElement.click();    
+  }
+
+  stay() {
+    this.nun=0;
+    console.log('User chose to stay logged in');
+    this.sessionModelClose.nativeElement.click(); 
+   this.authService.checkLoginUserVlidaate();
+  }
+
+  logout() {
+    this.nun=0;
+    console.log('User logged out');
+    this.sessionModelClose.nativeElement.click(); 
+    this.stopValidateToken();
+    this.doSignout();
+  }
+
+    
 
 }
