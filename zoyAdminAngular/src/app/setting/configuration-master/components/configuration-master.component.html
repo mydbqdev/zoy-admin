@@ -25,6 +25,7 @@
                     <div>
                     </div>
                   </div>
+                   <!--
                   <div class="d-flex align-items-center justify-content-between w-100" style="display: block;margin: 0px;padding: 2px;">
                     <div class="input-group w-100">
                       <button type="button" class="form-control btn btn-primary">Advances</button>
@@ -32,11 +33,12 @@
                       <button type="button" class="form-control">Cancellation Rules</button>
                       <button type="button" class="form-control">Security Deposite Refund Rules</button>
                       <button type="button" class="form-control">Other Charges</button>
-                      <button type="button" class="form-control">Data Grouping</button>
+                      <button type="button" class="form-control">Data Grouping</button>-->
                       <!--button type="button" class="form-control">Promotion and Offers</button -->
-                    </div>
+                  <!--  </div>
                     <i class="fas fa-chevron-right ms-2"></i>
                   </div>
+                -->
                 </div>
                   <div class="card-body">
                    <div class="card">
@@ -56,8 +58,8 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm" 
-                                      [(ngModel)]="configMasterModel.tokenDetailsModel.fixedToken" [disabled]="tokenAdvancDisabled" (keypress)="numberOnly($event)" maxlength="8"
-                                       [ngClass]="{'is-invalid': !tokenAdvancDisabled && (configMasterModel.tokenDetailsModel.fixedToken == 0 || !configMasterModel.tokenDetailsModel.fixedToken) }" 
+                                      [(ngModel)]="configMasterModel.tokenDetails.fixedToken" [disabled]="tokenAdvancDisabled" (keypress)="numberOnly($event)" maxlength="8"
+                                       [ngClass]="{'is-invalid': !tokenAdvancDisabled && (configMasterModel.tokenDetails.fixedToken == 0 || !configMasterModel.tokenDetails.fixedToken) }" 
                                       style="max-width: 70px !important;" />
                                   </div>
                                   <p class="small" style="font-size: 12px; color: gray;">
@@ -69,8 +71,8 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.tokenDetailsModel.variableToken"  (keypress)="percentageOnly($event)" maxlength="5"
-                                          [ngClass]="{'is-invalid': !tokenAdvancDisabled && ( configMasterModel.tokenDetailsModel.variableToken == 0 || !configMasterModel.tokenDetailsModel.variableToken)}" 
+                                          [(ngModel)]="configMasterModel.tokenDetails.variableToken"  (keypress)="percentageOnly($event)" maxlength="5"
+                                          [ngClass]="{'is-invalid': !tokenAdvancDisabled && ( configMasterModel.tokenDetails.variableToken == 0 || !configMasterModel.tokenDetails.variableToken)}" 
                                           style="max-width: 70px !important;" [disabled]="tokenAdvancDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
@@ -118,8 +120,8 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.securityDepositLimitsModel.minimumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="9"
-                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.securityDepositLimitsModel.minimumDeposit == 0 || !configMasterModel.securityDepositLimitsModel.minimumDeposit) }" 
+                                      [(ngModel)]="configMasterModel.depositDetails.minimumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="9"
+                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.minimumDeposit == 0 || !configMasterModel.depositDetails.minimumDeposit) }" 
                                       style="max-width: 140px !important;" />
                                   </div>
                                   <p class="small" style="font-size: 12px; color: gray;">
@@ -134,8 +136,8 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.securityDepositLimitsModel.maximumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="8"
-                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.securityDepositLimitsModel.maximumDeposit == 0 || !configMasterModel.securityDepositLimitsModel.maximumDeposit) }" 
+                                      [(ngModel)]="configMasterModel.depositDetails.maximumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="8"
+                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.maximumDeposit == 0 || !configMasterModel.depositDetails.maximumDeposit) }" 
                                       style="max-width: 140px !important;"/>
                                   </div>
                                   <p class="small" style="font-size: 12px; color: gray;">
@@ -226,7 +228,7 @@
                                       </div>
                                       <hr class="solid">
                                       <div class="p-2 m-2">
-                                        <div class="row m-1" *ngFor="let bci of configMasterModel.beforeCheckInCancellationRefund ; let n=index;" >
+                                        <div class="row m-1" *ngFor="let bci of configMasterModel.cancellationDetails ; let n=index;" >
                                          <div class="col-sm-3">
                                            <div class="input-group input-group-sm">
                                               <input 
@@ -321,7 +323,7 @@
                           <!--Total Advance section-->
                           <div class="row p-3 align-items-center marginRow">
                             <div class="col-sm-3">
-                              <div><span style="font-size: 16px;">Security Deposite Refund rules</span></div>
+                              <div><span style="font-size: 16px;">Early Check-out Rules</span></div>
                               <div><p class="small" style="font-size: 12px;color: gray">The Maximim Number of days allowing tenants to get refund of rent amount in prorate basis if not happy with the current PG</p></div>
                             </div>
                             
@@ -330,26 +332,26 @@
                                 <div class="col-sm-4">
                                   <div> Maximum Days for Refund</div>
                                   <div class="input-group input-group-sm">
-                                    <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm" 
-                                      [(ngModel)]="configMasterModel.securityDepositRefundModel.maximumDays" [disabled]="securityDepositRefundDisabled" (keypress)="numberOnly($event)" maxlength="3"
-                                       [ngClass]="{'is-invalid': !securityDepositRefundDisabled && (configMasterModel.securityDepositRefundModel.maximumDays == 0 || !configMasterModel.securityDepositRefundModel.maximumDays) }" 
+                                      [(ngModel)]="configMasterModel.refundRules.maximumDays" [disabled]="securityDepositRefundDisabled" (keypress)="numberOnly($event)" maxlength="3"
+                                       [ngClass]="{'is-invalid': !securityDepositRefundDisabled && (configMasterModel.refundRules.maximumDays == 0 || !configMasterModel.refundRules.maximumDays) }" 
                                       style="max-width: 70px !important;" />
+                                      <span class="input-group-text">Days</span>
                                   </div>
                                   <p class="small" style="font-size: 12px; color: gray;">
                                     Enter maximum days for refund
                                   </p>
                                 </div>
                                 <div class="col-sm-4">
-                                  <div>Security deposit Deduction</div>
+                                  <div>Platform charges</div>
                                       <div class="input-group input-group-sm" >
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.securityDepositRefundModel.deductionPercentages"  (keypress)="percentageOnly($event)" maxlength="5"
-                                          [ngClass]="{'is-invalid': !securityDepositRefundDisabled && ( configMasterModel.securityDepositRefundModel.deductionPercentages == 0 || !configMasterModel.securityDepositRefundModel.deductionPercentages)}" 
+                                          [(ngModel)]="configMasterModel.refundRules.deductionPercentages"  (keypress)="percentageOnly($event)" maxlength="5"
+                                          [ngClass]="{'is-invalid': !securityDepositRefundDisabled && ( configMasterModel.refundRules.deductionPercentages == 0 || !configMasterModel.refundRules.deductionPercentages)}" 
                                           style="max-width: 70px !important;" [disabled]="securityDepositRefundDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
@@ -590,8 +592,8 @@
                                       <input 
                                       type="text" 
                                       class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.dataGroupingModel.considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
-                                      [ngClass]="{'is-invalid': !dataGroupingDisabled && (configMasterModel.dataGroupingModel.considerDays == 0 || !configMasterModel.dataGroupingModel.considerDays) }" 
+                                      [(ngModel)]="configMasterModel.dataGrouping.considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
+                                      [ngClass]="{'is-invalid': !dataGroupingDisabled && (configMasterModel.dataGrouping.considerDays == 0 || !configMasterModel.dataGrouping.considerDays) }" 
                                       style="max-width: 70px !important;" />
                                       <span class="input-group-text">Days</span>
                                     </div>

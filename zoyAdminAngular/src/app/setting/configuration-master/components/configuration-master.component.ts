@@ -74,9 +74,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  //	this.router.navigate(['/']);
 		  //}
 		 
-		  this.configMasterOrg = Object.assign(new ConfigMasterModel(), this.configMasterMockData );
-			this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
-			
+		  this.getConfigMasterDetails();
 	  }
 	  ngAfterViewInit() {
 		  this.sidemenuComp.expandMenu(4);
@@ -147,14 +145,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	
 	tokenAdvancSubmit() {
 		this.authService.checkLoginUserVlidaate();
-		if(this.configMasterModel.tokenDetailsModel.fixedToken == 0 || this.configMasterModel.tokenDetailsModel.variableToken == 0 || !this.configMasterModel.tokenDetailsModel.fixedToken || !this.configMasterModel.tokenDetailsModel.variableToken ){
+		if(this.configMasterModel.tokenDetails.fixedToken == 0 || this.configMasterModel.tokenDetails.variableToken == 0 || !this.configMasterModel.tokenDetails.fixedToken || !this.configMasterModel.tokenDetails.variableToken ){
 			return
 		}
 		
 		this.spinner.show();
-		this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetailsModel).subscribe(res => {
-			this.configMasterOrg.tokenDetailsModel = Object.assign(new TokenDetailsModel(), res.data );
-			this.configMasterModel.tokenDetailsModel = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetailsModel));
+		this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetails).subscribe(res => {
+			this.configMasterOrg.tokenDetails = Object.assign(new TokenDetailsModel(), res.data );
+			this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
 			this.tokenAdvancDisabled = true;
 			this.spinner.hide();
 			}, error => {
@@ -190,7 +188,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	
 	  tokenAdvanceReset() {
-		this.configMasterModel.tokenDetailsModel = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetailsModel));
+		this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
 		this.tokenAdvancDisabled = true;
 	  }
 	  
@@ -207,14 +205,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 
 		securityDepositLimitsSubmit() {
 			this.authService.checkLoginUserVlidaate();
-			if(this.configMasterModel.securityDepositLimitsModel.maximumDeposit == 0 || this.configMasterModel.securityDepositLimitsModel.minimumDeposit == 0 || !this.configMasterModel.securityDepositLimitsModel.maximumDeposit || !this.configMasterModel.securityDepositLimitsModel.minimumDeposit ){
+			if(this.configMasterModel.depositDetails.maximumDeposit == 0 || this.configMasterModel.depositDetails.minimumDeposit == 0 || !this.configMasterModel.depositDetails.maximumDeposit || !this.configMasterModel.depositDetails.minimumDeposit ){
 				return ;
 			}
 			
 			this.spinner.show();
-			this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.securityDepositLimitsModel).subscribe(res => {
-				this.configMasterOrg.securityDepositLimitsModel = Object.assign(new SecurityDepositLimitsModel(), res.data );
-				this.configMasterModel.securityDepositLimitsModel = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositLimitsModel));
+			this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.depositDetails).subscribe(res => {
+				this.configMasterOrg.depositDetails = Object.assign(new SecurityDepositLimitsModel(), res.data );
+				this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
 				this.securityDepositLimitsDisabled = true;
 				this.spinner.hide();
 				}, error => {
@@ -251,20 +249,20 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			
 		  dataGroupingDisabled:boolean = true;
 		securityDepositLimitsReset() {
-			this.configMasterModel.securityDepositLimitsModel = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositLimitsModel));
+			this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
 			this.securityDepositLimitsDisabled = true;
 		}
 
 		trendingPGSubmit() {
 			this.authService.checkLoginUserVlidaate();
-			if(this.configMasterModel.dataGroupingModel.considerDays == 0 ||  !this.configMasterModel.dataGroupingModel.considerDays ){
+			if(this.configMasterModel.dataGrouping.considerDays == 0 ||  !this.configMasterModel.dataGrouping.considerDays ){
 				return ;
 			}
 			
 			this.spinner.show();
-			this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGroupingModel).subscribe(res => {
-				this.configMasterOrg.dataGroupingModel = Object.assign(new DataGroupingModel(), res.data );
-				this.configMasterModel.dataGroupingModel = JSON.parse(JSON.stringify(this.configMasterOrg.dataGroupingModel));
+			this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGrouping).subscribe(res => {
+				this.configMasterOrg.dataGrouping = Object.assign(new DataGroupingModel(), res.data );
+				this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
 				this.dataGroupingDisabled = true;
 				this.spinner.hide();
 				}, error => {
@@ -301,7 +299,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			
 
 		  trendingPGReset() {
-			this.configMasterModel.dataGroupingModel = JSON.parse(JSON.stringify(this.configMasterOrg.dataGroupingModel));
+			this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
 			this.dataGroupingDisabled = true;
 		}
 
@@ -314,8 +312,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				return ;
 			}
 			this.configMasterService.submitBeforeCheckInCRfDetails(this.beforeCheckInCRfModel).subscribe(res => {
-				this.configMasterOrg.beforeCheckInCancellationRefund = Object.assign([], res.data );
-				this.configMasterModel.beforeCheckInCancellationRefund = JSON.parse(JSON.stringify(this.configMasterOrg.beforeCheckInCancellationRefund));
+				this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
+				this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
+				console.log("this.configMasterModel.cancellationDetails",this.configMasterModel.cancellationDetails);
 				this.beforeCheckInCRfSaveVali = false ;
 				this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
 				this.spinner.hide();
@@ -351,11 +350,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}
 
 		beforeCheckInCRfReset(i:number) {
-			this.configMasterModel.beforeCheckInCancellationRefund[i] = JSON.parse(JSON.stringify(this.configMasterOrg.beforeCheckInCancellationRefund[i]));
+			this.configMasterModel.cancellationDetails[i] = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails[i]));
 		}
 
 		beforeCheckInCRfUpDate(i:number){
-			const model =this.configMasterModel.beforeCheckInCancellationRefund[i] ;
+			const model =this.configMasterModel.cancellationDetails[i] ;
 					
 			if(model.daysBeforeCheckIn == 0 ||  !model.daysBeforeCheckIn || model.deductionPercentages == 0 ||  !model.deductionPercentages){
 				return ;
@@ -363,8 +362,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
 			this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
-				this.configMasterOrg.beforeCheckInCancellationRefund = Object.assign([], res.data );
-				this.configMasterModel.beforeCheckInCancellationRefund = JSON.parse(JSON.stringify(this.configMasterOrg.beforeCheckInCancellationRefund));
+				this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
+				this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
 				this.spinner.hide();
 				}, error => {
 				this.spinner.hide();
@@ -407,15 +406,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	
 	securityDepositRefundSubmit() {
 		this.authService.checkLoginUserVlidaate();
-		if(this.configMasterModel.securityDepositRefundModel.maximumDays == 0 || this.configMasterModel.securityDepositRefundModel.deductionPercentages == 0 || !this.configMasterModel.securityDepositRefundModel.deductionPercentages || !this.configMasterModel.securityDepositRefundModel.deductionPercentages ){
+		if(this.configMasterModel.refundRules.maximumDays == 0 || this.configMasterModel.refundRules.deductionPercentages == 0 || !this.configMasterModel.refundRules.deductionPercentages || !this.configMasterModel.refundRules.deductionPercentages ){
 			return
 		}
 		
 		this.spinner.show();
-		this.configMasterService.updatesecurityDepositRefundDetails(this.configMasterModel.securityDepositRefundModel).subscribe(res => {
-			this.configMasterOrg.securityDepositRefundModel = Object.assign(new SecurityDepositRefundModel(), res.data );
-			this.configMasterModel.securityDepositRefundModel = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositRefundModel));
-			this.tokenAdvancDisabled = true;
+		this.configMasterService.updatesecurityDepositRefundDetails(this.configMasterModel.refundRules).subscribe(res => {
+			this.configMasterOrg.refundRules = Object.assign(new SecurityDepositRefundModel(), res.data );
+			this.configMasterModel.refundRules = JSON.parse(JSON.stringify(this.configMasterOrg.refundRules));
+			this.securityDepositRefundDisabled = true;
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -450,7 +449,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	
 	  securityDepositRefundReset() {
-		this.configMasterModel.securityDepositRefundModel = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositRefundModel));
+		this.configMasterModel.refundRules = JSON.parse(JSON.stringify(this.configMasterOrg.refundRules));
 		this.securityDepositRefundDisabled = true;
 	  }
 
@@ -529,7 +528,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.configMasterService.getConfigMasterDetails().subscribe(res => {
 			this.configMasterOrg = Object.assign(new ConfigMasterModel(), res.data );
 			this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
-			
+			console.log("this.configMasterModel",this.configMasterModel)
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -561,46 +560,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			});
 		}	
 		
-		 configMasterMockData: ConfigMasterModel = {
-			tokenDetailsModel: {
-				tokenId: 'TKN12345',
-				fixedToken: 500,
-				variableToken: 20
-			},
-			securityDepositLimitsModel: {
-				depositId: 'DEP001',
-				minimumDeposit: 1000,
-				maximumDeposit: 100000
-			},
-			beforeCheckInCancellationRefund: [
-				{
-					cancellationId: 'CCN001',
-					daysBeforeCheckIn: 7,
-					deductionPercentages: 20,
-					bcicrDisable:true
-				},
-				{
-					cancellationId: 'CCN002',
-					daysBeforeCheckIn: 14,
-					deductionPercentages: 15,
-					bcicrDisable:true
-				},
-				{
-					cancellationId: 'CCN003',
-					daysBeforeCheckIn: 2,
-					deductionPercentages: 75,
-					bcicrDisable:true
-				}
-			],
-			securityDepositRefundModel: {
-				refundId: 'REF001',
-				maximumDays: 30,
-				deductionPercentages: 10
-			},
-			dataGroupingModel: {
-				id: 'GROUP001',
-				considerDays: 15
-			}
-		};
+	
 
   }  
