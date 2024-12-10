@@ -39,6 +39,7 @@ import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
+import com.integration.zoy.model.AuditActivitiesLogDTO;
 import com.integration.zoy.model.BillingType;
 import com.integration.zoy.model.BillingTypeId;
 import com.integration.zoy.model.CurrencyType;
@@ -63,6 +64,7 @@ import com.integration.zoy.model.ShareTypeId;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.UserDBImpl;
+import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.DueMaster;
 import com.integration.zoy.utils.OwnerLeadPaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
@@ -714,5 +716,19 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
 	}
-
+	
+	   //my Audit Activities log Details
+		@Override
+		public ResponseEntity<String> zoyAuditActivitiesLogDetails(OwnerLeadPaginationRequest paginationRequest) {
+			ResponseBody response = new ResponseBody();
+			try {
+				CommonResponseDTO<AuditActivitiesLogDTO> auditActivitiesLogList = userDBImpl.getAuditActivitiesLogCount(paginationRequest);
+		        return new ResponseEntity<>(gson2.toJson(auditActivitiesLogList), HttpStatus.OK);
+	 		}catch (Exception e) {
+		        log.error("Unexpected error occurredAPI:/zoy_admin/audit-activitieslog.auditactivitieslogdetails", e);
+		        response.setStatus(HttpStatus.BAD_REQUEST.value());
+		        response.setError(e.getMessage());
+		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		    }
+		}
 }

@@ -19,7 +19,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -327,7 +326,10 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				roleScreens.add(roleScreen);
 			}
 			adminDBImpl.saveAllRoleScreen(roleScreens);
-
+			String history=gson.toJson(roleDetails).toString();
+			
+			//audit here
+			auditHistoryUtilities.auditForRoleCreate(SecurityContextHolder.getContext().getAuthentication().getName(),true,history);
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("Role created Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -414,8 +416,10 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					data.setWritePrv(screen.getWritePrv());
 					roleScreens.add(data);
 				}
+				//System.out.println("roleScreens::"+roleScreens);
 				adminAppRole.setRoleScreen(roleScreens);
 				adminAppRoles.add(adminAppRole);
+				//System.out.println("roleScreens::"+gson.toJson(adminAppRoles));
 			}
 			return new ResponseEntity<>(gson.toJson(adminAppRoles), HttpStatus.OK);
 		} catch (Exception e) {
@@ -647,9 +651,27 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			List<Integer> roleIdPresent = adminDBImpl.findRoleIfAssigned(roleId);
 
 			if (roleIdPresent == null || roleIdPresent.isEmpty()|| roleIdPresent.size()==0) {
+				AppRole approle=adminDBImpl.findAppRoleId(Long.valueOf(roleId));
+				RoleDetails roleDetails=new RoleDetails();
+				List<RoleScreen> roleScreen= adminDBImpl.findRoleScreen(Long.valueOf(roleId));
+				List<com.integration.zoy.model.RoleScreen> roleScreens=new ArrayList<>();
+				for(RoleScreen screen : roleScreen) {
+					com.integration.zoy.model.RoleScreen data=new com.integration.zoy.model.RoleScreen();
+					data.setScreenName(screen.getScreenName());
+					data.setReadPrv(screen.getReadPrv());
+					data.setWritePrv(screen.getWritePrv());
+					roleScreens.add(data);
+				}
+				roleDetails.setRoleScreen(roleScreens);
+				roleDetails.setRoleName(approle.getRoleName());
+				roleDetails.setDesc(approle.getRoleDescription());
+				String history=gson.toJson(roleDetails).toString();
+				
 				adminDBImpl.deleteRolefromRoleScreen(roleId);   
-				adminDBImpl.deleteRolefromApp_role(roleId);      
-
+				adminDBImpl.deleteRolefromApp_role(roleId); 
+				
+				//audit here
+				auditHistoryUtilities.auditForRoleCreate(SecurityContextHolder.getContext().getAuthentication().getName(),false,history);
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage( roleName + " role has been deleted successfully.");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);

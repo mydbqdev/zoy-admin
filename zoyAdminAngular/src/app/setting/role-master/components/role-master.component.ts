@@ -382,7 +382,7 @@ this.getMenuSelectedForEDITPOPUP(this.menuListEdit,"write",this.dataSelectedWrit
 
 
 deleteRecord(row : RoleModel){
-  this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to delete the User?')
+  this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to delete the Role?')
   .then(
     (confirmed) =>{
      if(confirmed){

@@ -23,37 +23,73 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-3">
                         <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Activity Log</span></h3> 
+                        <div class="d-flex align-items-center justify-content-between">
+                            <!-- Search Input -->
+                            <div class="position-relative mr-3">
+                              <i class="fas fa-search fa-sm position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%); z-index: 1;"></i>
+                              <input type="text" class="form-control form-control-sm border-1" style="border-radius: 20px; padding-left: 35px; width: 300px;"placeholder="Search by keyword" [(ngModel)]="searchText" (keyup)="filterData($event)" aria-label="Search" aria-describedby="basic-addon2"/>
+                            </div>
                         <div>
                             <a href="javascript:void(0)" class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm"><i class="fas fa-plus-circle"></i> Download</a>
+                         </div>
                          </div>
                     </div>
 
                     <!-- Content Row -->
-                    <div class="card shadow mb-2">
-                    <div class="card-body">
-                        <div class="row mb-1">
+                        <div class="row">
                             <!-- Card with 8 columns width -->
                             <div class="col-xl-12 col-md-12 mb-2">                               
                                 <div>
                                     <div class="card">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div style="height: calc(100vh - 240px);overflow: auto;">
-                                                        <div class="desc-inner" style="height: auto;">
-                                                            page under construction
-                                                        </div>
-                                                    </div>    
+                                        <div class="card-body" style="padding:2px; margin:0px;">
+                                            <div style="max-height: calc(100vh - 207px); overflow: auto;">
+                                                <div class="desc-inner" style="height: calc(100vh - 207px);">
+                                                    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortData($event)" 
+                                                        matSortActive="created_on" matSortDirection="asc" multiTemplateDataRows>
+                                                        <ng-container matColumnDef="created_on">
+                                                            <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 200px;">
+                                                              CREATED ON
+                                                              <span style="margin-left: 2px;">
+                                                                <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['created_on'] === 'asc' }"></i>
+                                                                <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['created_on'] === 'desc'}"></i> 
+                                                              </span>
+                                                            </th>
+                                                            <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                                              {{ element.created_on }}
+                                                            </td>
+                                                          </ng-container>
+                                                          
+                                                          <!-- Activity Column -->
+                                                          <ng-container matColumnDef="history_data">
+                                                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                              ACTIVITY
+                                                              <span style="margin-left: 2px;">
+                                                                <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['history_data'] === 'asc' }"></i>
+                                                                <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['history_data'] === 'desc'}"></i> 
+                                                              </span>
+                                                            </th>
+                                                            <td mat-cell *matCellDef="let element">
+                                                              {{ element.history_data }}
+                                                            </td>
+                                                          </ng-container>                                        
+                                                        <!-- Header and Row Definitions -->
+                                                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>                                             
+                                                    </table>                                      
+                                                    <!-- No Records Found Message -->
+                                                    <div style="text-align: center; min-height: 45px; padding-top: 10px;" *ngIf="dataSource?.data?.length === 0">
+                                                        No records found
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
+                                            </div>                                      
+                                            <!-- Paginator -->
+                                            <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
+                                        </div>                                                                         
                                     </div>
                                 </div>
                             </div>  
                          </div>   
-                    </div> <!-- End Card Body -->
-                    </div>
-                </div>
+                   </div>
                 <!-- /.container-fluid -->
             </div>
             <!-- End of Main Content -->
