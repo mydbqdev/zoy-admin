@@ -345,8 +345,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	public ResponseEntity<String> zoyAdminUserRoleUpdate(RoleDetails roleDetails) {
 		ResponseBody response=new ResponseBody();
 		try {
+			StringBuffer history=new StringBuffer();
 			AppRole appRole=adminDBImpl.findAppRole(roleDetails.getRoleName());
 			if(appRole!=null) {
+				if(!(String.valueOf(appRole.getRoleDescription()).equals(roleDetails.getDesc()))) {
+					history.append("Description from "+appRole.getRoleDescription()+" to "+roleDetails.getDesc());
+				}
 				appRole.setRoleDescription(roleDetails.getDesc());
 				appRole.setRoleName(roleDetails.getRoleName());
 				appRole.setTs(Timestamp.valueOf(LocalDateTime.now()));
@@ -356,6 +360,14 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				Map<String, RoleScreen> appRoleScreenMap = appRoleScreens.stream()
 						.collect(Collectors.toMap(RoleScreen::getScreenName, screen -> screen));
 
+				List<com.integration.zoy.model.RoleScreen> appRoleScreensDb=new ArrayList<>();
+				appRoleScreens.forEach(role->{
+					com.integration.zoy.model.RoleScreen sc=new com.integration.zoy.model.RoleScreen();
+					sc.setScreenName(role.getScreenName());
+					sc.setReadPrv(role.getReadPrv());
+					sc.setWritePrv(role.getWritePrv());
+					appRoleScreensDb.add(sc);
+				});
 				List<RoleScreen> newScreens = new ArrayList<>();
 				List<RoleScreen> updatedScreens = new ArrayList<>();
 				List<Long> obsoleteScreenIds = new ArrayList<>();
@@ -383,10 +395,27 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					adminDBImpl.saveAllRoleScreen(updatedScreens);
 				if(obsoleteScreenIds.size()>0)
 					adminDBImpl.deleteAllRoleScreen(obsoleteScreenIds);
+				List<RoleScreen> appRoleScreensnew=new ArrayList<>(newScreens);
+				appRoleScreensnew.addAll(updatedScreens);
+				List<com.integration.zoy.model.RoleScreen> appRoleScreensUpdate=new ArrayList<>();
+				appRoleScreensnew.forEach(role->{
+					com.integration.zoy.model.RoleScreen sc=new com.integration.zoy.model.RoleScreen();
+					sc.setScreenName(role.getScreenName());
+					sc.setReadPrv(role.getReadPrv());
+					sc.setWritePrv(role.getWritePrv());
+					appRoleScreensUpdate.add(sc);
+				});
+				//audit here
+				//auditHistoryUtilities.auditForRoleUpdate(SecurityContextHolder.getContext().getAuthentication().getName(),history,gson.toJson(appRoleScreensDb).toString(),gson.toJson(appRoleScreensUpdate).toString());
+				
+				response.setStatus(HttpStatus.OK.value());
+				response.setMessage("Role Updated Successfully");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}else {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setError("Not found the role "+roleDetails.getRoleName());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 			}
-			response.setStatus(HttpStatus.OK.value());
-			response.setMessage("Role Updated Successfully");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details API:/zoy_admin/role_update.zoyAdminUserRoleUpdate " + e.getMessage(),e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -433,6 +462,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	@Override
 	public ResponseEntity<String> zoyAdminUserAssign(UserRole userRole) {
 		ResponseBody response=new ResponseBody();
+		List<String> history=new ArrayList<>();
 		try {
 			List<AdminUserTemporary> adminUserTemporary=new ArrayList<>();
 			for(Long id:userRole.getRoleId()) {
@@ -445,8 +475,14 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					userTemporary.setIsApprove(false);
 					userTemporary.setCreatedOn(new Timestamp(System.currentTimeMillis()));
 					adminUserTemporary.add(userTemporary);
+					AppRole approle=adminDBImpl.findAppRoleId(id);
+					history.add(approle.getRoleName());
 			}
 			adminDBImpl.saveAllUserTemporary(adminUserTemporary);
+			
+			//audit here
+			auditHistoryUtilities.auditForRoleAssign(SecurityContextHolder.getContext().getAuthentication().getName(),gson.toJson(history).toString(),userRole.getUserEmail());
+			
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("Role Assigned & sent for approval successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
