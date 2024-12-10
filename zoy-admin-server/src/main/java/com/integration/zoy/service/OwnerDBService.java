@@ -557,7 +557,7 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public List<ZoyPgCancellationDetails> findAllBeforeCancellation() throws WebServiceException {
-		return zoyPgCancellationDetailsRepository.findAll();
+		return zoyPgCancellationDetailsRepository.findAllByOrderByCreatedAtDesc();
 	}
 
 	@Override
