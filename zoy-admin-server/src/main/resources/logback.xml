@@ -29,7 +29,7 @@
 		</triggeringPolicy>
 	</appender>
 
-	<logger name="com.message.integration" level="DEBUG">
+	<logger name="com.integration.zoy" level="DEBUG">
 		<appender-ref ref="zoyAdmin" />
 	</logger>
 
