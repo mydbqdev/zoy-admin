@@ -48,4 +48,5 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_ROLE_CREATE="ADMIN_ROLE_CREATE";
 	public static final String ZOY_ADMIN_ROLE_UPDATE="ADMIN_ROLE_UPDATE";
 	public static final String ZOY_ADMIN_ROLE_DELETE="ADMIN_ROLE_DELETE";
+	public static final String ZOY_ADMIN_USER_AUTHORZITION_ASSIGN="USER_ROLE_ASSIGN";
 }
