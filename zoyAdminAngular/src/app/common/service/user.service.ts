@@ -12,6 +12,7 @@ export class UserService {
   public username :string;
   public dbquser:boolean;
   public userinfo:UserInfo;
+  public sessionTime:Date;
   
 
   getUsername(){
@@ -29,5 +30,13 @@ export class UserService {
   setUserinfo(_userinfo:UserInfo){
       this.userinfo=_userinfo;
   }  
+
+  getSessionTime(){
+    return this.sessionTime;
+}
+
+setSessionTime(sessionTime:Date){
+    this.sessionTime=sessionTime;
+}
 
 }

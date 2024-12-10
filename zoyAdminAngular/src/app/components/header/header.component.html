@@ -1,5 +1,9 @@
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 fixed-top-expand">
   <h1 class="h3 mb-0 text-gray-800" style="width: 200px;">Admin Portal</h1>
+  <!-- <div>
+    <p>Last Action Time (in milliseconds): {{ lastActionTime }}</p>
+    <p>Time since last action (in seconds): {{ getTimeSinceLastAction() / 1000 }}</p>
+  </div> -->
 
   <!-- Topbar Search -->
   <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" (submit)="searchMenus($event)">
@@ -117,3 +121,26 @@
       </li>
   </ul>
 </nav>
+
+<div hidden> 
+    <button class="btn btn-primary"  data-toggle="modal" data-target="#sessionModel" #sessionModelOpen> </button>
+</div>
+
+  <div class="modal fade" id="sessionModel" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">  
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Session Timeout Warning..</h3>
+          <button type="button" hidden class="close" data-dismiss="modal" aria-label="Close" #sessionModelClose >
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Your session will expire in {{ countdown }} seconds..</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary"  (click)="stay()" >Stay Logged In</button>
+            <button class="btn btn-danger" (click)="logout()" >Log Out</button>
+        </div>
+      </div>
+    </div>
+  </div>

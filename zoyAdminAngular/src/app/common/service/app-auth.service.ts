@@ -14,7 +14,6 @@ import { ResponseStore } from '../models/response.model';
 import { SignupDetails } from '../shared/signup-details';
 import { DataService } from './data.service';
 import { BrowserDetectorService } from './browser-detector.service';
-import { MockData } from './mockData';
 
 @Injectable()
 export class AppAuthService extends AuthService{
@@ -218,6 +217,7 @@ export class AppAuthService extends AuthService{
                this.sessionSnapshot.token = result.token;
                this.userService.setUsername(result.userEmail);
                this.userService.setUserinfo(result);
+               this.userService.setSessionTime(new Date());
 
                let resp: ResponseStore={userEmail:result.userEmail,token:result.token};
                this.setSessionStore(resp);
