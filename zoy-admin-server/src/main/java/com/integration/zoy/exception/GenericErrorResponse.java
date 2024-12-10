@@ -1,8 +1,9 @@
 package com.integration.zoy.exception;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Builder
 @Getter

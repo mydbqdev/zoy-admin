@@ -1,9 +1,8 @@
 package com.integration.zoy.entity;
  
-import javax.persistence.*;
- 
- 
-import java.io.Serializable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
  
 @Entity
 @Table(name = "zoy_pg_property_floors", schema = "pgowners")

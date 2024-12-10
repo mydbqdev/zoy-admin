@@ -3,9 +3,12 @@ package com.integration.zoy.entity;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.persistence.*;
-
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "user_search_data", schema = "pgusers")

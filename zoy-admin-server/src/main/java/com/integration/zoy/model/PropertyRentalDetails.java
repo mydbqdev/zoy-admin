@@ -1,10 +1,9 @@
 package com.integration.zoy.model;
 
-import java.util.List;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
    

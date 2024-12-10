@@ -3,7 +3,6 @@ package com.integration.zoy.entity;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.Id;
 
 public class ZoyPgPropertyFloorsId implements Serializable{
 

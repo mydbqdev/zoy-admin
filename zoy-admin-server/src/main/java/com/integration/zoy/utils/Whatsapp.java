@@ -1,10 +1,10 @@
 package com.integration.zoy.utils;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.validation.annotation.Validated;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 public class Whatsapp   {

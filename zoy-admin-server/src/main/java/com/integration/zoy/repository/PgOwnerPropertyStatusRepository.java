@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import com.integration.zoy.entity.PgOwnerPropertyStatus;
 import com.integration.zoy.entity.PgOwnerPropertyStatusId;
-import com.integration.zoy.entity.PgOwnerUserStatus;
 
 @Repository
 public interface PgOwnerPropertyStatusRepository extends JpaRepository<PgOwnerPropertyStatus,PgOwnerPropertyStatusId>{

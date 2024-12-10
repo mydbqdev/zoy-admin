@@ -1,11 +1,7 @@
 package com.integration.zoy.utils;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
 
    

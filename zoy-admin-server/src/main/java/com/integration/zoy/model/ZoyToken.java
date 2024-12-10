@@ -1,7 +1,5 @@
 package com.integration.zoy.model;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZoyToken {

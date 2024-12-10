@@ -22,8 +22,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
-import com.integration.zoy.exception.WebServiceException;
-import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.utils.CommonResponseDTO;
