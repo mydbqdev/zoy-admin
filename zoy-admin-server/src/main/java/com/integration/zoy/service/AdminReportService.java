@@ -60,8 +60,9 @@ public class AdminReportService implements AdminReportImpl{
 	@Autowired
 	private ZoyPgPropertyDetailsRepository propertyDetailsRepository;
 
-	@Value("${app.zoy.logo}")
+	@Value("${zoy.admin.logo}")
 	private String zoyLogoPath;
+	
 
 	@Override
 	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData) throws WebServiceException {
@@ -621,10 +622,10 @@ public class AdminReportService implements AdminReportImpl{
 			case "pdf":
 				//String logoPath = Paths.get(zoyLogoPath).toFile().getPath();
 				try {
-					InputStream inputStreamImg =getClass().getResourceAsStream("/joyAdminResource/logo.png");
+					InputStream inputStreamImg =getClass().getResourceAsStream(zoyLogoPath);
 					if (inputStreamImg == null) {
-						log.error("Logo image not found at the specified path: /joyAdminResource/logo.png");
-						throw new FileNotFoundException("Logo image not found at the specified path: /joyAdminResource/logo.png");
+						 log.error("Logo image not found at the specified path: {}", zoyLogoPath);
+						 throw new FileNotFoundException("Logo image not found at the specified path: " + zoyLogoPath);
 					}
 					String base64Logo = pdfGenerateService.imageToBase64(inputStreamImg);
 					data.put("appLogo", base64Logo);
