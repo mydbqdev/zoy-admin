@@ -11,14 +11,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 
 import com.integration.zoy.entity.NotificationModeMaster;
 import com.integration.zoy.entity.UserBillingMaster;
@@ -31,7 +31,6 @@ import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.AuditActivitiesLogDTO;
 import com.integration.zoy.model.OwnerPropertyDTO;
 import com.integration.zoy.model.UserNameDTO;
-import com.integration.zoy.repository.AuditHistoryRepository;
 import com.integration.zoy.repository.NotificationModeMasterRepository;
 import com.integration.zoy.repository.UserBillingMasterRepository;
 import com.integration.zoy.repository.UserCurrencyMasterRepository;
@@ -44,7 +43,7 @@ import com.integration.zoy.utils.OwnerLeadPaginationRequest;
 
 @Service
 public class UserDBService implements UserDBImpl{
-
+	private static final Logger log = LoggerFactory.getLogger(UserDBService.class);
 	@Autowired
 	private NotificationModeMasterRepository notificationModeMasterRepository;
 
@@ -321,6 +320,7 @@ public class UserDBService implements UserDBImpl{
 	        }
 	        return new CommonResponseDTO<>(list, count);
 	       }catch (Exception e) {
+	    	   log.error("Error in getAuditActivitiesLogCount() service :"+e);
 				new ZoyAdminApplicationException(e, "");
 		   }
 	       return null;
@@ -342,6 +342,7 @@ public class UserDBService implements UserDBImpl{
   	           userList.add(userNameDTO);
 	        }
 	     } catch(Exception e) {
+	    	 	log.error("Error in getUserNameList() service :"+e);
 				new ZoyAdminApplicationException(e, "");
 		   }
 

@@ -739,7 +739,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 						List<UserNameDTO> userNameList = userDBImpl.getUserNameList();
 						return new ResponseEntity<>(gson2.toJson(userNameList), HttpStatus.OK);
 			 		}catch (Exception e) {
-				        log.error("Unexpected error occurredAPI:/zoy_admin/userName-List.userName-List", e);
+				        log.error("Error while occurredAPI:/zoy_admin/userName-List zoyUserNameList()", e);
 				        response.setStatus(HttpStatus.BAD_REQUEST.value());
 				        response.setError(e.getMessage());
 				        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
