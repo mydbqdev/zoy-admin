@@ -66,9 +66,6 @@ public class UserDBService implements UserDBImpl{
 	@Autowired
 	private UserMasterRepository masterRepository;
 	
-	@Autowired
-	private AuditHistoryRepository auditHistoryRepository;
-
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -270,7 +267,7 @@ public class UserDBService implements UserDBImpl{
 
 	
 	
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) throws WebServiceException{
 			StringBuilder queryBuilder = new StringBuilder();
@@ -345,9 +342,9 @@ public class UserDBService implements UserDBImpl{
 	            UserNameDTO userNameDTO = new UserNameDTO(username, useremail);
   	            userList.add(userNameDTO);
 	        }
-	     } catch (Exception e) {
-	       throw new WebServiceException("Error while fetching user names");
-	    }
+	     } catch(Exception e) {
+				new ZoyAdminApplicationException(e, "");
+		   }
 
 	    return userList;
 	}

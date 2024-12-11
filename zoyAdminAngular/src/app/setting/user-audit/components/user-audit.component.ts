@@ -239,22 +239,23 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
      });
      
      }
-     constantType: { key: string, value: string }[] = [
-        { key: 'ZOY_ADMIN_LOGIN', value: 'USER_LOGIN' },
-        { key: 'ZOY_ADMIN_LOGOUT', value: 'USER_LOGOUT' },
-        { key: 'ZOY_ADMIN_USER_CREATE', value: 'USER_ADD' },
-        { key: 'ZOY_ADMIN_USER_UPDATE', value: 'USER_UPDATE' },
-        { key: 'ZOY_ADMIN_USER_ACTIVE', value: 'USER_ACTIVE' },
-        { key: 'ZOY_ADMIN_USER_INACTIVE', value: 'USER_INACTIVE' },
-        { key: 'ZOY_ADMIN_USER_DELETE', value: 'USER_DELETE' },
-        { key: 'ZOY_ADMIN_USER_AUTHORZITION', value: 'USER_ROLE_ADDED' },
-        { key: 'ZOY_ADMIN_USER_AUTHORZITION_APPROVE', value: 'USER_ROLE_APPROVED' },
-        { key: 'ZOY_ADMIN_USER_AUTHORZITION_REJECTED', value: 'USER_ROLE_REJECTED' },
-        { key: 'ZOY_ADMIN_ZOY_CODE_GENERATE', value: 'ZOY_CODE_GENERATE' },
-        { key: 'ZOY_ADMIN_ROLE_CREATE', value: 'ADMIN_ROLE_CREATE' },
-        { key: 'ZOY_ADMIN_ROLE_UPDATE', value: 'ADMIN_ROLE_UPDATE' },
-        { key: 'ZOY_ADMIN_ROLE_DELETE', value: 'ADMIN_ROLE_DELETE' },
-        { key: 'ZOY_ADMIN_USER_AUTHORZITION_ASSIGN', value: 'USER_ROLE_ASSIGN' }
+
+      constantType: { key: string, value: string }[] = [
+        { key: 'USER_LOGIN', value: 'User Login' },
+        { key: 'USER_LOGOUT', value: 'User Logout' },
+        { key: 'USER_ADD', value: 'Create User' },
+        { key: 'USER_UPDATE', value: 'Update User' },
+        { key: 'USER_ACTIVE', value: 'Activate User' },
+        { key: 'USER_INACTIVE', value: 'Deactivate User' },
+        { key: 'USER_DELETE', value: 'Delete User' },
+        { key: 'USER_ROLE_ADDED', value: 'Role Added to User' },
+        { key: 'USER_ROLE_APPROVED', value: 'Role Approved for User' },
+        { key: 'USER_ROLE_REJECTED', value: 'Role Rejected for User' },
+        { key: 'ZOY_CODE_GENERATE', value: 'Generate Zoy Code' },
+        { key: 'ADMIN_ROLE_CREATE', value: 'Create Admin Role' },
+        { key: 'ADMIN_ROLE_UPDATE', value: 'Update Admin Role' },
+        { key: 'ADMIN_ROLE_DELETE', value: 'Delete Admin Role' },
+        { key: 'USER_ROLE_ASSIGN', value: 'Assign Role to User' }
       ];
 }
 
