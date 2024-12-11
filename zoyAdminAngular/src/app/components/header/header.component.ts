@@ -123,9 +123,9 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
     getTimeSinceLastAction(): number {
       const time = this.userActivityService.getTimeSinceLastAction();
-      if(time >60000 && this.nun ==0){
+      if(time > 720000 && this.nun == 0){
         this.nun=this.nun+1;
-        this.countdown = 20;
+        this.countdown = 120;
         this.sessionModelOpen.nativeElement.click();   
         this.startSessionTimeout();
       }
@@ -148,16 +148,16 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         this.timeoutId = setTimeout(() => {
           this.sessionTime = this.userService.getSessionTime();
           const diff =  new Date().getTime() - this.sessionTime.getTime();
-          if(diff>500000){
+          if(diff>800000){
            this.authService.checkLoginUserVlidaate();
           }
           this.startValidateToken();
-        }, 10000); 
+        }, 60000); 
       }
 
   stay() {
     this.nun=0;
-    this.countdown = 20;
+    this.countdown = 120;
     clearInterval(this.interval); 
     this.sessionModelClose.nativeElement.click(); 
     this.authService.checkLoginUserVlidaate();
@@ -165,7 +165,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
   logout() {
     this.nun = 0;
-    this.countdown = 20;
+    this.countdown = 120;
     clearTimeout(this.timeoutId);  
     clearInterval(this.interval); 
     this.sessionModelClose.nativeElement.click(); 
