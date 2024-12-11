@@ -96,7 +96,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		///	this.router.navigate(['/']);
 		//}
-		// this.loadDummyData();
+		
         this.getUserNameList();
 
 	}
@@ -110,31 +110,21 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	}
 
     submit(): void {
-        this.filterData({ keyCode: 13 } as KeyboardEvent); 
+        this.paginator.pageIndex=0;
+        this.getUserAuditdetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
       }
-	
-	filterData($event: KeyboardEvent){
-		if ($event.keyCode === 13) {
-		if(this.searchText==''){
-			this.filtersRequest.searchText= '';
-		}else{
-			this.filtersRequest.searchText= this.searchText;
-		}
-		this.paginator.pageIndex=0;
-		 this.getUserAuditdetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
+       
+	filterData(event){
+        const charCode = (event.which) ? event.which : event.keyCode;
+        const inputValue = event.target.value + String.fromCharCode(charCode);
+        if (inputValue.startsWith(' ')) {
+               return false;
+             }
+		if (charCode === 13) {
+		this.submit();
 	  }
 	}
-		  
-	  resetFilter(){
-		  this.searchText='';
-		  this.paginator.pageIndex=0;
-	  }
-      onDropdownChange(event: any): void {
-        this.selectedValue = event.target.value;
-        console.log('Selected value:', this.selectedValue);
-      }
-
-	  pageChanged(event:any){
+      pageChanged(event:any){
 		this.dataSource=new MatTableDataSource<any>();
 		if(this.lastPageSize!=event.pageSize){
 			this.paginator.pageIndex=0;
@@ -166,6 +156,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.sortActive=sortActive;
 		this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 		this.columnSortDirections[sortActive] = sortDirection;
+        this.filtersRequest.searchText=this.searchText;
         this.filtersRequest.userEmail=this.username;
 		this.filtersRequest.activity=this.selectedValue;
 		this.userAuditService.getUserAuditdetails(this.filtersRequest).subscribe(data => {
@@ -212,11 +203,11 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	  }
 
       getUserNameList(){
-        this.authService.checkLoginUserVlidaate();
+       this.authService.checkLoginUserVlidaate();
        this.spinner.show();
        this.userAuditService.getUserNameList().subscribe(data => {
-        this.userNameList=Object.assign([],data);
-        this.spinner.hide();
+       this.userNameList=Object.assign([],data);
+       this.spinner.hide();
        }, error => {
        this.spinner.hide();
        if(error.status == 0) {

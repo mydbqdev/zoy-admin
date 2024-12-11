@@ -279,21 +279,18 @@ public class UserDBService implements UserDBImpl{
 	        		+ "	join user_master um  on ah.user_email = um.user_email Where 1=1 ");
 	        
 	        if(!"".equals(paginationRequest.getUserEmail()) && null != paginationRequest.getUserEmail()) {
-	        	
 	        	 queryBuilder.append("AND um.user_email = '"+paginationRequest.getUserEmail()+"' ");
 	        }
 	        
 	        if(!"".equals(paginationRequest.getActivity()) && null != paginationRequest.getActivity()) {
-	        	
-	        	 queryBuilder.append("AND ah.operation = '"+paginationRequest.getActivity()+"' ");
+	           	 queryBuilder.append("AND ah.operation = '"+paginationRequest.getActivity()+"' ");
 	        }
 	        
 	        if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
     		    queryBuilder.append(" AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) "
     		 		+ " or (LOWER( concat(um.first_name,' ',um.last_name )) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.operation) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
-	                }	     
+	         }	     
 	            
-
 	        if("created_on".equals(paginationRequest.getSortActive())) {
 	         	queryBuilder.append(" order by ah.created_on "+paginationRequest.getSortDirection());
 	        	

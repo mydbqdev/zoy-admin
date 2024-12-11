@@ -27,7 +27,7 @@
                               <!-- Search Input -->
                               <div class="position-relative mr-2">
                                 <i class="fas fa-search fa-sm position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%); z-index: 1;"></i>
-                                <input type="text" class="form-control form-control-sm border-1" style="border-radius: 20px; padding-left: 35px; width: 300px;"placeholder="Search by keyword" [(ngModel)]="searchText" (keyup)="filterData($event)" aria-label="Search" aria-describedby="basic-addon2"/>
+                                <input type="text" class="form-control form-control-sm border-1" style="border-radius: 20px; padding-left: 35px; width: 300px;"placeholder="Search by keyword" [(ngModel)]="searchText" (keypress)="filterData($event)" maxlength="30" aria-label="Search" aria-describedby="basic-addon2"/>
                               </div>
                               <div class="ml-auto mr-2">
                                 <div class="d-flex align-items-center">
@@ -38,7 +38,7 @@
                                           <option *ngFor="let user of userNameList" [value]="user.useremail">{{ user.username }}</option>
                                         </select>
                                       </div>
-                                   <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 10px; margin-right: 10px;" [(ngModel)]="selectedValue" (change)="onDropdownChange($event)">
+                                    <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 10px; margin-right: 10px;" [(ngModel)]="selectedValue" >
                                     <option  value="" disabled selected>Select Type</option>
                                     <option  value="" >All Type</option>
                                     <option *ngFor="let constant of constantType" [value]="constant.value"> {{ constant.value }}</option> 
