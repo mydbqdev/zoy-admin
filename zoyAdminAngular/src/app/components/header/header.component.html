@@ -15,6 +15,7 @@
    
       </div>
     </div>
+    {{ getTimeSinceLastAction() / 1000 }}
     <mat-autocomplete #auto="matAutocomplete">
       <mat-option *ngFor="let menu of filteredOptions | async" [value]="menu.name" (click)="navigateTo(menu)">
         {{ menu.name }}

@@ -155,6 +155,7 @@ export class AppAuthService extends AuthService{
         let token ={"token":""};
         if(!sessionStorage.getItem("token")){
             this.router.navigateByUrl('/signin');
+            return;
         }
          token ={"token":sessionStorage.getItem("token").replace("Bearer ","")}
         return this.httpclient.post<any>(

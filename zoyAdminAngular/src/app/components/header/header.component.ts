@@ -27,7 +27,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 	filteredMenus: Menu[] = [];
 	searchControl = new FormControl();
 	filteredOptions: Observable<Menu[]>;
-  sessionTime:Date;
+  sessionTime:Date= new Date();
   constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,
     private menuService: MenuService,private userActivityService: UserActivityService,
     ) {
@@ -77,7 +77,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
    // console.log("this.sessionTime ",this.sessionTime );
     const time = this.userActivityService.getTimeSinceLastAction();
     // console.log("time",time ,"----",this.nun)
-    if(time >300000 && this.nun ==0){
+    if(time >30000 && this.nun ==0){
       this.nun=this.nun+1;
       this.countdown = 30;
       this.showModal();
@@ -103,6 +103,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
           if (timeSinceLastAction > 5 * 60 * 1000) {
           }
         }, 1000); 
+        
         this.startValidateToken();
   }
   ngOnDestroy() {
@@ -153,16 +154,20 @@ export class HeaderComponent implements OnInit,AfterViewInit {
    
       startValidateToken() {
     //    console.log("this.setTimeouttimeoutId",this.timeoutId);
+    this.sessionTime = this.userService.getSessionTime();
+    const diff =  new Date().getTime() - this.sessionTime.getTime();
+    console.log(new Date(),",>>>",this.sessionTime,"this.startValidateToken",diff);
         this.timeoutId = setTimeout(() => {
           this.sessionTime = this.userService.getSessionTime();
-          const diff = this.sessionTime.getTime() - new Date().getTime();
-          if(diff>500000){
-            this.logout();
+          const diff =  new Date().getTime() - this.sessionTime.getTime();
+          if(diff>50000){
+            this.stay();
           }
           this.startValidateToken();
-        }, 100000); 
+        }, 10000); 
       }
       stopValidateToken() {
+        console.log("this.timeoutId",this.timeoutId)
         if (this.timeoutId) {
           clearTimeout(this.timeoutId);
         }
@@ -188,6 +193,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     console.log('User logged out');
     this.sessionModelClose.nativeElement.click(); 
     this.stopValidateToken();
+    clearTimeout(this.timeoutId);  
     this.doSignout();
   }
 
