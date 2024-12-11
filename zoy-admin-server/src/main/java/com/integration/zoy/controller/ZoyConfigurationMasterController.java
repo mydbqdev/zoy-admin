@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -423,6 +426,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			if (existingRule != null) {
 				existingRule.setMaxDaysForRefund(ruleDetails.getMaximumDays());
+				existingRule.setPlotformCharges(ruleDetails.getPlotformCharges());
 				ownerDBImpl.saveSecurityDepositRefundRule(existingRule);
 				ZoyPgSecurityDepositRefundRuleDto dto =convertToDTO(existingRule);
 				response.setStatus(HttpStatus.OK.value());
@@ -432,6 +436,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			} else {
 				ZoyPgSecurityDepositRefundRule newRule = new ZoyPgSecurityDepositRefundRule();
 				newRule.setMaxDaysForRefund(ruleDetails.getMaximumDays());
+				newRule.setPlotformCharges(ruleDetails.getPlotformCharges());
 				ownerDBImpl.saveSecurityDepositRefundRule(newRule);
 				ZoyPgSecurityDepositRefundRuleDto dto =convertToDTO(newRule);
 				response.setStatus(HttpStatus.OK.value());
@@ -453,6 +458,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		ZoyPgSecurityDepositRefundRuleDto dto = new ZoyPgSecurityDepositRefundRuleDto();
 	    dto.setRuleId(entity.getRuleId());
 	    dto.setMaximumDays(entity.getMaxDaysForRefund());
+	    dto.setPlotformCharges(entity.getPlotformCharges());
 	    return dto;
 	}
 
@@ -493,6 +499,41 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@Override
+	@Transactional
+	public ResponseEntity<String> zoyAdminConfigDeleteBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellation cancellationID) {
+		 ResponseBody response = new ResponseBody();
+		    try {
+		        if (cancellationID.getCancellationId() == null || cancellationID.getCancellationId().isEmpty()) {
+		            response.setStatus(HttpStatus.BAD_REQUEST.value());
+		            response.setError("Cancellation ID is required");
+		            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		        }
+
+		        ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(cancellationID.getCancellationId());
+		        if (cancelDetails == null) {
+		            response.setStatus(HttpStatus.NOT_FOUND.value());
+		            response.setError("Cancellation details not found for the given ID");
+		            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+		        }
+		        ownerDBImpl.deleteBeforeCancellation(cancellationID.getCancellationId());
+		        List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
+		        List<ZoyBeforeCheckInCancellation> dtoList = cancellationDetails.stream()
+		                .map(this::convertToDTO)
+		                .collect(Collectors.toList());
+		        response.setStatus(HttpStatus.OK.value());
+		        response.setData(dtoList);
+		        response.setMessage("Cancellation details successfully deleted");
+		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		    } catch (Exception e) {
+		        log.error("Error deleting cancellation details API: /zoy_admin/config/before-check-in/{cancellationId}", e);
+		        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		        response.setError("Internal server error");
+		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		    }
 	}
 
 

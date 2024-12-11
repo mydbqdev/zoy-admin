@@ -133,7 +133,7 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Autowired
 	private ZoyPgSecurityDepositRefundRuleRepository  zoySecurityDepositRefundRuleRepo;
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -629,6 +629,11 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public ZoyPgRoomDetails findRoomName(String roomId) {
 		return zoyPgRoomDetailsRepository.findRoomNameByRoomId(roomId);
+	}
+
+	@Override
+	public void deleteBeforeCancellation(String cancellationId) {
+		zoyPgCancellationDetailsRepository.deleteByCancellationId(cancellationId);
 	}
 
 }
