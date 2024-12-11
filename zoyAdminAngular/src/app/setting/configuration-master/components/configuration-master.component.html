@@ -353,8 +353,8 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.refundRules.deductionPercentages"  (keypress)="percentageOnly($event)" maxlength="5"
-                                          [ngClass]="{'is-invalid': !securityDepositRefundDisabled && ( configMasterModel.refundRules.deductionPercentages == 0 || !configMasterModel.refundRules.deductionPercentages)}" 
+                                          [(ngModel)]="configMasterModel.refundRules.plotformCharges"  (keypress)="percentageOnly($event)" maxlength="5"
+                                          [ngClass]="{'is-invalid': !securityDepositRefundDisabled && ( configMasterModel.refundRules.plotformCharges == 0 || !configMasterModel.refundRules.plotformCharges)}" 
                                           style="max-width: 70px !important;" [disabled]="securityDepositRefundDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>

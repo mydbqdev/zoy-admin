@@ -28,7 +28,7 @@ export class BeforeCheckInCancellationRefundModel{
 export class SecurityDepositRefundModel{
     refundId : string ;
     maximumDays : number ;
-    deductionPercentages : number ;
+    plotformCharges : number ;
 }
 
 export class DataGroupingModel{
