@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
 import com.integration.zoy.model.ZoyShareDetails;
-import com.integration.zoy.utils.CancellationID;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
 import com.integration.zoy.utils.ZoyOtherChargesDto;
 import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
@@ -69,10 +68,10 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@DeleteMapping(value = "/zoy_admin/config/before-check-in",
+	@DeleteMapping(value = "/zoy_admin/config/deleteCancellationRefundRule",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigDeleteBeforeCheckIn(@RequestBody CancellationID cancellationID);
+	ResponseEntity<String> zoyAdminConfigDeleteBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellation cancellationID);
 
 	@Operation(summary = "Admin Configration Zoy Share", description = "Creating/Updating Admin Configration Zoy Share", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })

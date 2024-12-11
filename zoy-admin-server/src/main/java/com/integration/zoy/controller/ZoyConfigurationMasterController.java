@@ -35,7 +35,6 @@ import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
 import com.integration.zoy.model.ZoyShareDetails;
 import com.integration.zoy.service.OwnerDBImpl;
-import com.integration.zoy.utils.CancellationID;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.ZoyAdminConfigDTO;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
@@ -501,22 +500,22 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	@Override
 	@Transactional
-	public ResponseEntity<String> zoyAdminConfigDeleteBeforeCheckIn(@RequestBody CancellationID cancellationID) {
+	public ResponseEntity<String> zoyAdminConfigDeleteBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellation cancellationID) {
 		 ResponseBody response = new ResponseBody();
 		    try {
-		        if (cancellationID.getCancellationID() == null || cancellationID.getCancellationID().isEmpty()) {
+		        if (cancellationID.getCancellationId() == null || cancellationID.getCancellationId().isEmpty()) {
 		            response.setStatus(HttpStatus.BAD_REQUEST.value());
 		            response.setError("Cancellation ID is required");
 		            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		        }
 
-		        ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(cancellationID.getCancellationID());
+		        ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(cancellationID.getCancellationId());
 		        if (cancelDetails == null) {
 		            response.setStatus(HttpStatus.NOT_FOUND.value());
 		            response.setError("Cancellation details not found for the given ID");
 		            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 		        }
-		        ownerDBImpl.deleteBeforeCancellation(cancellationID.getCancellationID());
+		        ownerDBImpl.deleteBeforeCancellation(cancellationID.getCancellationId());
 		        List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
 		        List<ZoyBeforeCheckInCancellation> dtoList = cancellationDetails.stream()
 		                .map(this::convertToDTO)
