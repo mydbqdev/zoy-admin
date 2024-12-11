@@ -262,6 +262,9 @@
                                                     (click)="bci.bcicrDisable = false">
                                                     <i class="fas fa-edit"></i>
                                                   </button>
+                                                <button class="btn btn-sm btn-outline-secondary" (click)="deleteRefundRule(bci)">
+                                                  <i class="fas fa-trash" style="color: red;"></i>
+                                                </button>
                                                   <button 
                                                     class="btn btn-sm btn-outline-secondary" 
                                                     *ngIf="!bci.bcicrDisable"

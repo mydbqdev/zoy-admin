@@ -74,9 +74,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
    countdown=0;
    
    getTimeSinceLastAction(): number {
-   // console.log("this.sessionTime ",this.sessionTime );
     const time = this.userActivityService.getTimeSinceLastAction();
-    // console.log("time",time ,"----",this.nun)
     if(time >30000 && this.nun ==0){
       this.nun=this.nun+1;
       this.countdown = 30;
@@ -92,7 +90,6 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     if(this.userNameSession==null || this.userNameSession==undefined || this.userNameSession==''){
      // this.router.navigate(['/']);
       }
-     // this.resetTimeOut();
       this.menus = this.menuService.getAllMenus();
       	this.filteredMenus = this.menus ;
         this.userActivityService.lastActionTime$.subscribe(time => {
@@ -103,7 +100,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
           if (timeSinceLastAction > 5 * 60 * 1000) {
           }
         }, 1000); 
-        
+
         this.startValidateToken();
   }
   ngOnDestroy() {
@@ -137,11 +134,10 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
   
   startSessionTimeout() {
-   // console.log("this.countdown",this.countdown)
-    const interval = setInterval(() => {
+  
+    this.interval = setInterval(() => {
       if (this.countdown <= 0) {
         this.nun=0;
-        clearInterval(interval); 
         this.logout();
       } else {
         this.countdown--;
@@ -149,14 +145,13 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     }, 1000); 
   }
 
-
+  interval:any;
   timeoutId: any;
    
       startValidateToken() {
     //    console.log("this.setTimeouttimeoutId",this.timeoutId);
     this.sessionTime = this.userService.getSessionTime();
     const diff =  new Date().getTime() - this.sessionTime.getTime();
-    console.log(new Date(),",>>>",this.sessionTime,"this.startValidateToken",diff);
         this.timeoutId = setTimeout(() => {
           this.sessionTime = this.userService.getSessionTime();
           const diff =  new Date().getTime() - this.sessionTime.getTime();
@@ -166,13 +161,6 @@ export class HeaderComponent implements OnInit,AfterViewInit {
           this.startValidateToken();
         }, 10000); 
       }
-      stopValidateToken() {
-        console.log("this.timeoutId",this.timeoutId)
-        if (this.timeoutId) {
-          clearTimeout(this.timeoutId);
-        }
-      }
-
 
   @ViewChild('sessionModelOpen') sessionModelOpen: any;
   @ViewChild('sessionModelClose') sessionModelClose: any;
@@ -183,17 +171,19 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
   stay() {
     this.nun=0;
-    console.log('User chose to stay logged in');
+    this.countdown = 30;
+    clearInterval(this.interval); 
     this.sessionModelClose.nativeElement.click(); 
    this.authService.checkLoginUserVlidaate();
   }
 
   logout() {
-    this.nun=0;
-    console.log('User logged out');
-    this.sessionModelClose.nativeElement.click(); 
-    this.stopValidateToken();
+    console.log("logout.countdown",this.countdown);
+    this.nun = 0;
+    this.countdown = 30;
     clearTimeout(this.timeoutId);  
+    clearInterval(this.interval); 
+    this.sessionModelClose.nativeElement.click(); 
     this.doSignout();
   }
 
