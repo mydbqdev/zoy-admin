@@ -12,7 +12,7 @@ export class UserService {
   public username :string;
   public dbquser:boolean;
   public userinfo:UserInfo;
-  public sessionTime:Date;
+  public sessionTime:Date = new Date();
   
 
   getUsername(){
