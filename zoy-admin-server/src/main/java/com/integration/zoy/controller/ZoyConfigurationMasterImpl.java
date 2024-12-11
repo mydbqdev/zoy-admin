@@ -68,7 +68,7 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@DeleteMapping(value = "/zoy_admin/config/deleteCancellationRefundRule",
+	@DeleteMapping(value = "/zoy_admin/config/delete-early-check-out",
 	produces = { "application/json" },
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminConfigDeleteBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellation cancellationID);
