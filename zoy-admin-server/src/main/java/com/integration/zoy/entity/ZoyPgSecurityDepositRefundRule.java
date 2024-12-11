@@ -1,5 +1,7 @@
 package com.integration.zoy.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,6 +22,9 @@ public class ZoyPgSecurityDepositRefundRule {
     
     @Column(name = "max_days_for_refund", nullable = true)
     private Integer maxDaysForRefund;
+    
+    @Column(name = "platform_charges", nullable = true)
+    private BigDecimal plotformCharges;
 
   
     public String getRuleId() {
@@ -38,5 +43,14 @@ public class ZoyPgSecurityDepositRefundRule {
 		this.maxDaysForRefund = maxDaysForRefund;
 	}
 
+	public BigDecimal getPlotformCharges() {
+		return plotformCharges;
+	}
+
+	public void setPlotformCharges(BigDecimal plotformCharges) {
+		this.plotformCharges = plotformCharges;
+	}
+
+	
  
 }

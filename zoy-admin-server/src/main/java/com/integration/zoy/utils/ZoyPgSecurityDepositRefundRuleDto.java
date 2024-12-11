@@ -1,5 +1,7 @@
 package com.integration.zoy.utils;
 
+import java.math.BigDecimal;
+
 import com.google.gson.annotations.SerializedName;
 
 public class ZoyPgSecurityDepositRefundRuleDto {
@@ -8,6 +10,11 @@ public class ZoyPgSecurityDepositRefundRuleDto {
 
 	@SerializedName("maximumDays")
 	private Integer maximumDays;
+	
+	@SerializedName("plotformCharges")
+	private BigDecimal plotformCharges;
+	
+	
 
 	public String getRuleId() {
 		return ruleId;
@@ -23,6 +30,14 @@ public class ZoyPgSecurityDepositRefundRuleDto {
 
 	public void setMaximumDays(Integer maximumDays) {
 		this.maximumDays = maximumDays;
+	}
+
+	public BigDecimal getPlotformCharges() {
+		return plotformCharges;
+	}
+
+	public void setPlotformCharges(BigDecimal plotformCharges) {
+		this.plotformCharges = plotformCharges;
 	} 
 
 

@@ -10,4 +10,5 @@ import com.integration.zoy.entity.ZoyPgCancellationDetails;
 @Repository
 public interface ZoyPgCancellationDetailsRepository extends JpaRepository<ZoyPgCancellationDetails, String> {
 	List<ZoyPgCancellationDetails> findAllByOrderByCreatedAtDesc();
+    void deleteByCancellationId(String cancellationId);
 }
