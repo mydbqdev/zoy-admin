@@ -426,6 +426,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			if (existingRule != null) {
 				existingRule.setMaxDaysForRefund(ruleDetails.getMaximumDays());
+				existingRule.setPlotformCharges(ruleDetails.getPlotformCharges());
 				ownerDBImpl.saveSecurityDepositRefundRule(existingRule);
 				ZoyPgSecurityDepositRefundRuleDto dto =convertToDTO(existingRule);
 				response.setStatus(HttpStatus.OK.value());
@@ -435,6 +436,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			} else {
 				ZoyPgSecurityDepositRefundRule newRule = new ZoyPgSecurityDepositRefundRule();
 				newRule.setMaxDaysForRefund(ruleDetails.getMaximumDays());
+				newRule.setPlotformCharges(ruleDetails.getPlotformCharges());
 				ownerDBImpl.saveSecurityDepositRefundRule(newRule);
 				ZoyPgSecurityDepositRefundRuleDto dto =convertToDTO(newRule);
 				response.setStatus(HttpStatus.OK.value());
@@ -456,6 +458,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		ZoyPgSecurityDepositRefundRuleDto dto = new ZoyPgSecurityDepositRefundRuleDto();
 	    dto.setRuleId(entity.getRuleId());
 	    dto.setMaximumDays(entity.getMaxDaysForRefund());
+	    dto.setPlotformCharges(entity.getPlotformCharges());
 	    return dto;
 	}
 
