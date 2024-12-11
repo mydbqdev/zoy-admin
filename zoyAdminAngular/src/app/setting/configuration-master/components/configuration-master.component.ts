@@ -314,7 +314,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.configMasterService.submitBeforeCheckInCRfDetails(this.beforeCheckInCRfModel).subscribe(res => {
 				this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
 				this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
-				console.log("this.configMasterModel.cancellationDetails",this.configMasterModel.cancellationDetails);
 				this.beforeCheckInCRfSaveVali = false ;
 				this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
 				this.spinner.hide();
@@ -396,6 +395,50 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				
 			
 		}
+		deleteRefundRule(data:any){
+		 this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want delete ?')
+			.then(
+				(confirmed) =>{
+				 if(confirmed){
+				  this.spinner.show();		     
+			  this.configMasterService.deleteRefundRule(data).subscribe(res => {
+			  this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
+			  this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
+			  this.spinner.hide();
+			},error =>{
+			  this.spinner.hide();
+			  console.log("error.error",error)
+			  if(error.status == 0) {
+				  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			   }else if(error.status==403){
+			  this.router.navigate(['/forbidden']);
+			  }else if (error.error && error.error.message) {
+			  this.errorMsg =error.error.message;
+			  console.log("Error:"+this.errorMsg);
+		
+			  if(error.status==500 && error.statusText=="Internal Server Error"){
+				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			  }else{
+			  //  this.spinner.hide();
+				let str;
+				if(error.status==400){
+				str=error.error;
+				}else{
+				  str=error.message;
+				  str=str.substring(str.indexOf(":")+1);
+				}
+				console.log("Error:"+str);
+				this.errorMsg=str;
+			  }
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			  //this.notifyService.showError(this.errorMsg, "");
+			  }
+			});  
+				 }
+			  }).catch(
+				  () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+			  );				 
+		  }
 
 		securityDepositRefundDisabled: boolean = true;
 	 
