@@ -28,6 +28,13 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 	searchControl = new FormControl();
 	filteredOptions: Observable<Menu[]>;
   sessionTime:Date= new Date();
+  interval:any;
+  timeoutId: any;
+  lastActionTime: number = 0;
+  nun:number=0
+  countdown:number=0;
+  @ViewChild('sessionModelOpen') sessionModelOpen: any;
+  @ViewChild('sessionModelClose') sessionModelClose: any;
   constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,
     private menuService: MenuService,private userActivityService: UserActivityService,
     ) {
@@ -63,29 +70,11 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 		  );
   
   }
-  
- 
-  
+
   ngAfterViewInit(): void {
     
   }
-  lastActionTime: number = 0;
-   nun=0
-   countdown=0;
-   
-   getTimeSinceLastAction(): number {
-    const time = this.userActivityService.getTimeSinceLastAction();
-    if(time >30000 && this.nun ==0){
-      this.nun=this.nun+1;
-      this.countdown = 30;
-      this.showModal();
-      this.startSessionTimeout();
-    }
-    return time;
-  }
-
-  
-
+ 
   ngOnInit(): void {
     if(this.userNameSession==null || this.userNameSession==undefined || this.userNameSession==''){
      // this.router.navigate(['/']);
@@ -114,7 +103,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   }
 
   searchMenus(event: Event): void {
-		event.preventDefault();
+    event.preventDefault();
 		this.filteredOptions.subscribe(options => {
 		  this.filteredMenus=options.filter(menu => menu.name.toLowerCase().includes(this.searchControl.value.toLowerCase()));
 		  if (this.filteredMenus.length === 1) {
@@ -132,9 +121,19 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 		return this.menus.filter(menu => menu.name.toLowerCase().includes(filterValue));
 	  }
 
+    getTimeSinceLastAction(): number {
+      const time = this.userActivityService.getTimeSinceLastAction();
+      if(time >60000 && this.nun ==0){
+        this.nun=this.nun+1;
+        this.countdown = 20;
+        this.sessionModelOpen.nativeElement.click();   
+        this.startSessionTimeout();
+      }
+      return time;
+    }	
+
   
   startSessionTimeout() {
-  
     this.interval = setInterval(() => {
       if (this.countdown <= 0) {
         this.nun=0;
@@ -145,42 +144,28 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     }, 1000); 
   }
 
-  interval:any;
-  timeoutId: any;
-   
-      startValidateToken() {
-    //    console.log("this.setTimeouttimeoutId",this.timeoutId);
-    this.sessionTime = this.userService.getSessionTime();
-    const diff =  new Date().getTime() - this.sessionTime.getTime();
+    startValidateToken() {
         this.timeoutId = setTimeout(() => {
           this.sessionTime = this.userService.getSessionTime();
           const diff =  new Date().getTime() - this.sessionTime.getTime();
-          if(diff>50000){
-            this.stay();
+          if(diff>500000){
+           this.authService.checkLoginUserVlidaate();
           }
           this.startValidateToken();
         }, 10000); 
       }
 
-  @ViewChild('sessionModelOpen') sessionModelOpen: any;
-  @ViewChild('sessionModelClose') sessionModelClose: any;
-
-  showModal() {
-    this.sessionModelOpen.nativeElement.click();    
-  }
-
   stay() {
     this.nun=0;
-    this.countdown = 30;
+    this.countdown = 20;
     clearInterval(this.interval); 
     this.sessionModelClose.nativeElement.click(); 
-   this.authService.checkLoginUserVlidaate();
+    this.authService.checkLoginUserVlidaate();
   }
 
   logout() {
-    console.log("logout.countdown",this.countdown);
     this.nun = 0;
-    this.countdown = 30;
+    this.countdown = 20;
     clearTimeout(this.timeoutId);  
     clearInterval(this.interval); 
     this.sessionModelClose.nativeElement.click(); 
