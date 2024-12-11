@@ -30,6 +30,16 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  public rolesArray: string[] = [];
 	  submitted=false;
 	  userInfo:UserInfo=new UserInfo();
+	  tokenAdvancDisabled: boolean = true;
+	  value: number = 20; 
+	  tempValue: number = this.value; 
+	  securityDepositLimitsDisabled: boolean = true;
+	  dataGroupingDisabled:boolean = true;
+	  beforeCheckInCRfModel:BeforeCheckInCancellationRefundModel = new BeforeCheckInCancellationRefundModel()
+	  beforeCheckInCRfSaveVali:boolean=false;
+	  securityDepositRefundDisabled: boolean = true;
+	  configMasterModel :ConfigMasterModel =new ConfigMasterModel();
+	  configMasterOrg :ConfigMasterModel =new ConfigMasterModel();
 
 	  constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService, private configMasterService :ConfigMasterService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
@@ -135,15 +145,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		 }
 		}
 
-	  tokenAdvancDisabled: boolean = true;
-	  value: number = 20; 
-	  tempValue: number = this.value; 
-	
-	//   edit() {
-	// 	this.tokenAdvancDisabled = false;
-	//   }
-	
-	tokenAdvancSubmit() {
+	 tokenAdvancSubmit() {
 		this.authService.checkLoginUserVlidaate();
 		if(this.configMasterModel.tokenDetails.fixedToken == 0 || this.configMasterModel.tokenDetails.variableToken == 0 || !this.configMasterModel.tokenDetails.fixedToken || !this.configMasterModel.tokenDetails.variableToken ){
 			return
@@ -183,273 +185,254 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				//this.notifyService.showError(this.errorMsg, "");
 			}
 			});						
-			
-		
 	  }
 	
 	  tokenAdvanceReset() {
 		this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
 		this.tokenAdvancDisabled = true;
 	  }
-	  
-		securityDepositLimitsDisabled: boolean = true;
-		securityMinValue: number = 20;
-		securityMaxValue: number = 50;
 
-		tempMinValue: number = this.securityMinValue;
-		tempMaxValue: number = this.securityMaxValue;
-
-		// securityDepositLimitsEditing() {
-		// 	this.securityDepositLimitsDisabled = true;
-		// }
-
-		securityDepositLimitsSubmit() {
-			this.authService.checkLoginUserVlidaate();
-			if(this.configMasterModel.depositDetails.maximumDeposit == 0 || this.configMasterModel.depositDetails.minimumDeposit == 0 || !this.configMasterModel.depositDetails.maximumDeposit || !this.configMasterModel.depositDetails.minimumDeposit ){
-				return ;
-			}
-			
-			this.spinner.show();
-			this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.depositDetails).subscribe(res => {
-				this.configMasterOrg.depositDetails = Object.assign(new SecurityDepositLimitsModel(), res.data );
-				this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
-				this.securityDepositLimitsDisabled = true;
-				this.spinner.hide();
-				}, error => {
-				this.spinner.hide();
-				if(error.status == 0) {
-				  this.notifyService.showError("Internal Server Error/Connection not established", "")
-			   }else if(error.status==403){
-					this.router.navigate(['/forbidden']);
-				}else if (error.error && error.error.message) {
-					this.errorMsg = error.error.message;
-					console.log("Error:" + this.errorMsg);
-					this.notifyService.showError(this.errorMsg, "");
+	  securityDepositLimitsSubmit() {
+		this.authService.checkLoginUserVlidaate();
+		if(this.configMasterModel.depositDetails.maximumDeposit == 0 || this.configMasterModel.depositDetails.minimumDeposit == 0 || !this.configMasterModel.depositDetails.maximumDeposit || !this.configMasterModel.depositDetails.minimumDeposit ){
+			return ;
+		}
+		
+		this.spinner.show();
+		this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.depositDetails).subscribe(res => {
+			this.configMasterOrg.depositDetails = Object.assign(new SecurityDepositLimitsModel(), res.data );
+			this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
+			this.securityDepositLimitsDisabled = true;
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
 				} else {
-					if (error.status == 500 && error.statusText == "Internal Server Error") {
-					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-					} else {
-					let str;
-					if (error.status == 400) {
-						str = error.error;
-					} else {
-						str = error.message;
-						str = str.substring(str.indexOf(":") + 1);
-					}
-					console.log("Error:" + str);
-					this.errorMsg = str;
-					}
-					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-					//this.notifyService.showError(this.errorMsg, "");
+				let str;
+				if (error.status == 400) {
+					str = error.error;
+				} else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
 				}
-				});						
-				
-			
-		  }
-			
-		  dataGroupingDisabled:boolean = true;
-		securityDepositLimitsReset() {
+				console.log("Error:" + str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});								
+	  }
+		
+	securityDepositLimitsReset() {
 			this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
 			this.securityDepositLimitsDisabled = true;
 		}
 
-		trendingPGSubmit() {
-			this.authService.checkLoginUserVlidaate();
-			if(this.configMasterModel.dataGrouping.considerDays == 0 ||  !this.configMasterModel.dataGrouping.considerDays ){
-				return ;
-			}
-			
-			this.spinner.show();
-			this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGrouping).subscribe(res => {
-				this.configMasterOrg.dataGrouping = Object.assign(new DataGroupingModel(), res.data );
-				this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
-				this.dataGroupingDisabled = true;
-				this.spinner.hide();
-				}, error => {
-				this.spinner.hide();
-				if(error.status == 0) {
-				  this.notifyService.showError("Internal Server Error/Connection not established", "")
-			   }else if(error.status==403){
-					this.router.navigate(['/forbidden']);
-				}else if (error.error && error.error.message) {
-					this.errorMsg = error.error.message;
-					console.log("Error:" + this.errorMsg);
-					this.notifyService.showError(this.errorMsg, "");
-				} else {
-					if (error.status == 500 && error.statusText == "Internal Server Error") {
-					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-					} else {
-					let str;
-					if (error.status == 400) {
-						str = error.error;
-					} else {
-						str = error.message;
-						str = str.substring(str.indexOf(":") + 1);
-					}
-					console.log("Error:" + str);
-					this.errorMsg = str;
-					}
-					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-					//this.notifyService.showError(this.errorMsg, "");
-				}
-				});						
-				
-			
-		  }
-			
-
-		  trendingPGReset() {
+	trendingPGSubmit() {
+		this.authService.checkLoginUserVlidaate();
+		if(this.configMasterModel.dataGrouping.considerDays == 0 ||  !this.configMasterModel.dataGrouping.considerDays ){
+			return ;
+		}
+		
+		this.spinner.show();
+		this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGrouping).subscribe(res => {
+			this.configMasterOrg.dataGrouping = Object.assign(new DataGroupingModel(), res.data );
 			this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
 			this.dataGroupingDisabled = true;
-		}
-
-		beforeCheckInCRfModel:BeforeCheckInCancellationRefundModel = new BeforeCheckInCancellationRefundModel()
-		beforeCheckInCRfSaveVali:boolean=false;
-		beforeCheckInCRfSave(){
-			this.beforeCheckInCRfSaveVali = true ;
-			this.authService.checkLoginUserVlidaate();
-			if(this.beforeCheckInCRfModel.daysBeforeCheckIn == 0 ||  !this.beforeCheckInCRfModel.daysBeforeCheckIn || this.beforeCheckInCRfModel.deductionPercentages == 0 ||  !this.beforeCheckInCRfModel.deductionPercentages){
-				return ;
-			}
-			this.configMasterService.submitBeforeCheckInCRfDetails(this.beforeCheckInCRfModel).subscribe(res => {
-				this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
-				this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
-				this.beforeCheckInCRfSaveVali = false ;
-				this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
-				this.spinner.hide();
-				}, error => {
-				this.spinner.hide();
-				if(error.status == 0) {
-				  this.notifyService.showError("Internal Server Error/Connection not established", "")
-			   }else if(error.status==403){
-					this.router.navigate(['/forbidden']);
-				}else if (error.error && error.error.message) {
-					this.errorMsg = error.error.message;
-					console.log("Error:" + this.errorMsg);
-					this.notifyService.showError(this.errorMsg, "");
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
 				} else {
-					if (error.status == 500 && error.statusText == "Internal Server Error") {
-					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-					} else {
-					let str;
-					if (error.status == 400) {
-						str = error.error;
-					} else {
-						str = error.message;
-						str = str.substring(str.indexOf(":") + 1);
-					}
-					console.log("Error:" + str);
-					this.errorMsg = str;
-					}
-					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-					//this.notifyService.showError(this.errorMsg, "");
-				}
-				});	
-			
-		}
-
-		beforeCheckInCRfReset(i:number) {
-			this.configMasterModel.cancellationDetails[i] = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails[i]));
-		}
-
-		beforeCheckInCRfUpDate(i:number){
-			const model =this.configMasterModel.cancellationDetails[i] ;
-					
-			if(model.daysBeforeCheckIn == 0 ||  !model.daysBeforeCheckIn || model.deductionPercentages == 0 ||  !model.deductionPercentages){
-				return ;
-			}
-			this.authService.checkLoginUserVlidaate();
-			this.spinner.show();
-			this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
-				this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
-				this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
-				this.spinner.hide();
-				}, error => {
-				this.spinner.hide();
-				if(error.status == 0) {
-				  this.notifyService.showError("Internal Server Error/Connection not established", "")
-			   }else if(error.status==403){
-					this.router.navigate(['/forbidden']);
-				}else if (error.error && error.error.message) {
-					this.errorMsg = error.error.message;
-					console.log("Error:" + this.errorMsg);
-					this.notifyService.showError(this.errorMsg, "");
-				} else {
-					if (error.status == 500 && error.statusText == "Internal Server Error") {
-					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-					} else {
-					let str;
-					if (error.status == 400) {
-						str = error.error;
-					} else {
-						str = error.message;
-						str = str.substring(str.indexOf(":") + 1);
-					}
-					console.log("Error:" + str);
-					this.errorMsg = str;
-					}
-					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-					//this.notifyService.showError(this.errorMsg, "");
-				}
-				});						
-				
-			
-		}
-		deleteRefundRule(data:any){
-		 this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want delete ?')
-			.then(
-				(confirmed) =>{
-				 if(confirmed){
-				  this.spinner.show();		     
-			  this.configMasterService.deleteRefundRule(data).subscribe(res => {
-			  this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
-			  this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
-			  this.spinner.hide();
-			},error =>{
-			  this.spinner.hide();
-			  console.log("error.error",error)
-			  if(error.status == 0) {
-				  this.notifyService.showError("Internal Server Error/Connection not established", "")
-			   }else if(error.status==403){
-			  this.router.navigate(['/forbidden']);
-			  }else if (error.error && error.error.message) {
-			  this.errorMsg =error.error.message;
-			  console.log("Error:"+this.errorMsg);
-		
-			  if(error.status==500 && error.statusText=="Internal Server Error"){
-				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-			  }else{
-			  //  this.spinner.hide();
 				let str;
-				if(error.status==400){
-				str=error.error;
-				}else{
-				  str=error.message;
-				  str=str.substring(str.indexOf(":")+1);
+				if (error.status == 400) {
+					str = error.error;
+				} else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
 				}
-				console.log("Error:"+str);
-				this.errorMsg=str;
-			  }
+				console.log("Error:" + str);
+				this.errorMsg = str;
+				}
 				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			  //this.notifyService.showError(this.errorMsg, "");
-			  }
-			});  
-				 }
-			  }).catch(
-				  () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-			  );				 
-		  }
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});						
+	  }				
+			
 
-		securityDepositRefundDisabled: boolean = true;
-	 
+	  trendingPGReset() {
+		this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
+		this.dataGroupingDisabled = true;
+	}		  
+	beforeCheckInCRfSave(){
+		this.beforeCheckInCRfSaveVali = true ;
+		this.authService.checkLoginUserVlidaate();
+		if(this.beforeCheckInCRfModel.daysBeforeCheckIn == 0 ||  !this.beforeCheckInCRfModel.daysBeforeCheckIn || this.beforeCheckInCRfModel.deductionPercentages == 0 ||  !this.beforeCheckInCRfModel.deductionPercentages){
+			return ;
+		}
+		if(this.configMasterOrg.cancellationDetails.find(c=>c.daysBeforeCheckIn == this.beforeCheckInCRfModel.daysBeforeCheckIn) != undefined){
+			this.notifyService.showInfo('This Cancellation and Refund Policy is already available for '+this.beforeCheckInCRfModel.daysBeforeCheckIn+' days.',"");
+			return;
+		}
+		this.configMasterService.submitBeforeCheckInCRfDetails(this.beforeCheckInCRfModel).subscribe(res => {
+			this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
+			this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
+			this.beforeCheckInCRfSaveVali = false ;
+			this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error;
+				} else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" + str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});	
+		
+	}
+
+	beforeCheckInCRfReset(i:number) {
+		this.configMasterModel.cancellationDetails[i] = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails[i]));
+	}
+
+	beforeCheckInCRfUpDate(i:number){
+		const model =this.configMasterModel.cancellationDetails[i] ;
+		if(model.daysBeforeCheckIn == 0 ||  !model.daysBeforeCheckIn || model.deductionPercentages == 0 ||  !model.deductionPercentages){
+			return ;
+		}
+
+		if(this.configMasterOrg.cancellationDetails.find(c=>c.daysBeforeCheckIn == model.daysBeforeCheckIn && c.cancellationId != model.cancellationId ) != undefined){
+			this.notifyService.showInfo('This Cancellation and Refund Policy is already available for '+model.daysBeforeCheckIn+' days.',"");
+			return;
+		}
 	
-	//   edit() {
-	// 	this.tokenAdvancDisabled = false;
-	//   }
-	
+		this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
+		this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
+			this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
+			this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error;
+				} else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" + str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});						
+	}
+		
+	deleteRefundRule(data:any){
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want delete ?')
+		.then(
+		   (confirmed) =>{
+			if(confirmed){
+		     this.authService.checkLoginUserVlidaate();
+			 this.spinner.show();		     
+			 this.configMasterService.deleteRefundRule(data).subscribe(res => {
+			 this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
+			 this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
+			 this.spinner.hide();
+		   },error =>{
+			 this.spinner.hide();
+			 console.log("error.error",error)
+			 if(error.status == 0) {
+				 this.notifyService.showError("Internal Server Error/Connection not established", "")
+			  }else if(error.status==403){
+			 this.router.navigate(['/forbidden']);
+			 }else if (error.error && error.error.message) {
+			 this.errorMsg =error.error.message;
+			 console.log("Error:"+this.errorMsg);
+	   
+			 if(error.status==500 && error.statusText=="Internal Server Error"){
+			   this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			 }else{
+			 //  this.spinner.hide();
+			   let str;
+			   if(error.status==400){
+			   str=error.error;
+			   }else{
+				 str=error.message;
+				 str=str.substring(str.indexOf(":")+1);
+			   }
+			   console.log("Error:"+str);
+			   this.errorMsg=str;
+			 }
+			   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			 //this.notifyService.showError(this.errorMsg, "");
+			 }
+		   });  
+				}
+			 }).catch(
+				 () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+			 );				 
+		 }		
+
 	securityDepositRefundSubmit() {
 		this.authService.checkLoginUserVlidaate();
-		if(this.configMasterModel.refundRules.maximumDays == 0 || this.configMasterModel.refundRules.deductionPercentages == 0 || !this.configMasterModel.refundRules.deductionPercentages || !this.configMasterModel.refundRules.deductionPercentages ){
+		if(this.configMasterModel.refundRules.maximumDays == 0 || this.configMasterModel.refundRules.plotformCharges == 0 || !this.configMasterModel.refundRules.maximumDays || !this.configMasterModel.refundRules.plotformCharges ){
 			return
 		}
 		
@@ -487,8 +470,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				//this.notifyService.showError(this.errorMsg, "");
 			}
 			});						
-			
-		
 	  }
 	
 	  securityDepositRefundReset() {
@@ -532,9 +513,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.amountHidden = true;
 		}
 
-		configMasterModel :ConfigMasterModel =new ConfigMasterModel();
-		configMasterOrg :ConfigMasterModel =new ConfigMasterModel();
-
 		numberOnly(event): boolean {
 			const charCode = (event.which) ? event.which : event.keyCode;
 			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -571,7 +549,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.configMasterService.getConfigMasterDetails().subscribe(res => {
 			this.configMasterOrg = Object.assign(new ConfigMasterModel(), res.data );
 			this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
-			console.log("this.configMasterModel",this.configMasterModel)
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();

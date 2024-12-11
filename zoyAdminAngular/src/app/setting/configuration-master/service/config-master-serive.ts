@@ -80,7 +80,7 @@ import { MessageService } from 'src/app/message.service';
         );
     }
     public updatesecurityDepositRefundDetails(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/config/security-deposit-refund-rules";
+        const url1=this.basePath +"zoy_admin/config/early-checkout-rules";
         return  this.httpclient.post<any>(
             url1,
             data,
@@ -92,11 +92,11 @@ import { MessageService } from 'src/app/message.service';
         );
     } 
     public deleteRefundRule(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/config/deleteRefundRule";
-        return  this.httpclient.post<any>(
+        const url1=this.basePath +"zoy_admin/config/deleteCancellationRefundRule";
+        return  this.httpclient.delete<any>(
             url1,
-            data,
             {
+                body: data,
                 headers:ServiceHelper.buildHeaders(),
                 observe : 'body',
                 withCredentials:true

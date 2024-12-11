@@ -28,10 +28,12 @@
       <li class="nav-item dropdown no-arrow mx-1">
           <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="alertsDropdown" role="button"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-bell fa-fw"></i>
+              <i class="fas fa-bell fa-fw mr-3"></i>
               <!-- Counter - Alerts -->
-              <span class="badge badge-danger badge-counter">{{ getTimeSinceLastAction() / 1000 }}+</span>
+              <!-- <span class="badge badge-danger badge-counter">3+</span> -->
+              <div class="badge badge-danger badge-counter">{{ getTimeSinceLastAction() / 1000 }}+</div>
           </a>
+          
           <!-- Dropdown - Alerts -->
           <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
               aria-labelledby="alertsDropdown">
@@ -136,7 +138,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <p>Your session will expire in {{ countdown }} seconds..</p>
+          <p>Your session will expire in  <span [ngClass]="{'blink': countdown < 10, 'red-text': countdown < 10}" > {{ countdown }}</span> seconds..</p>
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary"  (click)="stay()" >Stay Logged In</button>
