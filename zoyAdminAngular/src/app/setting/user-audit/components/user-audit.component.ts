@@ -16,6 +16,7 @@ import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filter
 import { UserAuditService } from '../service/user-audit-service';
 import { UserAuditModel } from '../models/user-audit-model';
 import { FormControl } from '@angular/forms';
+import { UserListModel } from '../models/userlist-model';
 
 
 @Component({
@@ -54,6 +55,9 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	public rolesArray: string[] = [];
     searchControl = new FormControl();
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
+    username: string = '';  
+    userNameList: UserListModel[] = []; 
+    selectedValue: string = '';   
 	constructor(private userAuditService: UserAuditService, private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
             this.authService.checkLoginUserVlidaate();
@@ -92,7 +96,8 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		///	this.router.navigate(['/']);
 		//}
-		// this.loadDummyData();
+		
+        this.getUserNameList();
 
 	}
 	ngAfterViewInit() {
@@ -103,44 +108,23 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
         this.dataSource.paginator = this.paginator;
 		this.getUserAuditdetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
 	}
-    
-  // Dummy data for autocomplete
-  options: string[] = [
-    'User1',
-    'User2',
-    'User3',
-    'Admin',
-    'Guest',
-    'Siva Ram',
-    'John Doe',
-    'Jane Smith',
-  ];
-  filteredOptions: string[] = this.options;
-  filterOptions(value: string): void {
-    const filterValue = value.toLowerCase();
-    this.filteredOptions = this.options.filter(option =>
-      option.toLowerCase().includes(filterValue)
-    );
-  }
-	
-	filterData($event: KeyboardEvent){
-		if ($event.keyCode === 13) {
-		if(this.searchText==''){
-			this.filtersRequest.searchText= '';
-		}else{
-			this.filtersRequest.searchText= this.searchText;
-		}
-		this.paginator.pageIndex=0;
-		 this.getUserAuditdetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
+
+    submit(): void {
+        this.paginator.pageIndex=0;
+        this.getUserAuditdetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
+      }
+       
+	filterData(event){
+        const charCode = (event.which) ? event.which : event.keyCode;
+        const inputValue = event.target.value + String.fromCharCode(charCode);
+        if (inputValue.startsWith(' ')) {
+               return false;
+             }
+		if (charCode === 13) {
+		this.submit();
 	  }
 	}
-		  
-	  resetFilter(){
-		  this.searchText='';
-		  this.paginator.pageIndex=0;
-	  }
-
-	  pageChanged(event:any){
+      pageChanged(event:any){
 		this.dataSource=new MatTableDataSource<any>();
 		if(this.lastPageSize!=event.pageSize){
 			this.paginator.pageIndex=0;
@@ -172,6 +156,9 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.sortActive=sortActive;
 		this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 		this.columnSortDirections[sortActive] = sortDirection;
+        this.filtersRequest.searchText=this.searchText;
+        this.filtersRequest.userEmail=this.username;
+		this.filtersRequest.activity=this.selectedValue;
 		this.userAuditService.getUserAuditdetails(this.filtersRequest).subscribe(data => {
 			if(data?.data?.length >0){
 				  this.totalProduct=data.count;
@@ -214,4 +201,60 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	  });
 	  
 	  }
+
+      getUserNameList(){
+       this.authService.checkLoginUserVlidaate();
+       this.spinner.show();
+       this.userAuditService.getUserNameList().subscribe(data => {
+       this.userNameList=Object.assign([],data);
+       this.spinner.hide();
+       }, error => {
+       this.spinner.hide();
+       if(error.status == 0) {
+         this.notifyService.showError("Internal Server Error/Connection not established", "")
+        }else if(error.status==401){
+                 console.error("Unauthorised");
+             }else if(error.status==403){
+       this.router.navigate(['/forbidden']);
+       }else if (error.error && error.error.message) {
+       this.errorMsg = error.error.message;
+       console.log("Error:" + this.errorMsg);
+       this.notifyService.showError(this.errorMsg, "");
+       } else {
+       if (error.status == 500 && error.statusText == "Internal Server Error") {
+         this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+       } else {
+         let str;
+         if (error.status == 400) {
+         str = error.error;
+         } else {
+         str = error.message;
+         str = str.substring(str.indexOf(":") + 1);
+         }
+         console.log("Error:" + str);
+         this.errorMsg = str;
+       }
+       if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+       }
+     });
 }
+
+      constantType: { key: string, value: string }[] = [
+        { key: 'USER_LOGIN', value: 'User Login' },
+        { key: 'USER_LOGOUT', value: 'User Logout' },
+        { key: 'USER_ADD', value: 'Create User' },
+        { key: 'USER_UPDATE', value: 'Update User' },
+        { key: 'USER_ACTIVE', value: 'Activate User' },
+        { key: 'USER_INACTIVE', value: 'Deactivate User' },
+        { key: 'USER_DELETE', value: 'Delete User' },
+        { key: 'USER_ROLE_ADDED', value: 'Role Added to User' },
+        { key: 'USER_ROLE_APPROVED', value: 'Role Approved for User' },
+        { key: 'USER_ROLE_REJECTED', value: 'Role Rejected for User' },
+        { key: 'ZOY_CODE_GENERATE', value: 'Generate Zoy Code' },
+        { key: 'ADMIN_ROLE_CREATE', value: 'Create Admin Role' },
+        { key: 'ADMIN_ROLE_UPDATE', value: 'Update Admin Role' },
+        { key: 'ADMIN_ROLE_DELETE', value: 'Delete Admin Role' },
+        { key: 'USER_ROLE_ASSIGN', value: 'Assign Role to User' }
+      ];
+}
+

@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+
 import com.integration.zoy.entity.NotificationModeMaster;
 import com.integration.zoy.entity.UserBillingMaster;
 import com.integration.zoy.entity.UserCurrencyMaster;
@@ -29,6 +30,7 @@ import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.AuditActivitiesLogDTO;
 import com.integration.zoy.model.OwnerPropertyDTO;
+import com.integration.zoy.model.UserNameDTO;
 import com.integration.zoy.repository.AuditHistoryRepository;
 import com.integration.zoy.repository.NotificationModeMasterRepository;
 import com.integration.zoy.repository.UserBillingMasterRepository;
@@ -64,9 +66,6 @@ public class UserDBService implements UserDBImpl{
 	@Autowired
 	private UserMasterRepository masterRepository;
 	
-	@Autowired
-	private AuditHistoryRepository auditHistoryRepository;
-
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -268,6 +267,7 @@ public class UserDBService implements UserDBImpl{
 
 	
 	
+	
 	@Override
 	public CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) throws WebServiceException{
 			StringBuilder queryBuilder = new StringBuilder();
@@ -276,18 +276,18 @@ public class UserDBService implements UserDBImpl{
 	        		+ "	join user_master um  on ah.user_email = um.user_email Where 1=1 ");
 	        
 	        if(!"".equals(paginationRequest.getUserEmail()) && null != paginationRequest.getUserEmail()) {
-	        	
 	        	 queryBuilder.append("AND um.user_email = '"+paginationRequest.getUserEmail()+"' ");
-	        	 if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
-	        	       queryBuilder.append("AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
-	 	         }	        	
-	             }else {
-	        	      if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
-	        		    queryBuilder.append(" AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) "
-	        		 		+ " or (LOWER( concat(um.first_name,' ',um.last_name )) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.operation) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
-	 	                }
-	            }
-//	        System.out.println("Generated Query: " + queryBuilder.toString());
+	        }
+	        
+	        if(!"".equals(paginationRequest.getActivity()) && null != paginationRequest.getActivity()) {
+	           	 queryBuilder.append("AND ah.operation = '"+paginationRequest.getActivity()+"' ");
+	        }
+	        
+	        if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
+    		    queryBuilder.append(" AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) "
+    		 		+ " or (LOWER( concat(um.first_name,' ',um.last_name )) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.operation) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
+	         }	     
+	            
 	        if("created_on".equals(paginationRequest.getSortActive())) {
 	         	queryBuilder.append(" order by ah.created_on "+paginationRequest.getSortDirection());
 	        	
@@ -302,7 +302,6 @@ public class UserDBService implements UserDBImpl{
 	    		queryBuilder.append(" order by ah.created_on DESC ");
 	    	}
 	        
-	        //System.out.println("queryBuilder" +queryBuilder.toString());
 	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
 	        
 			int count=query.getResultList().size();
@@ -327,5 +326,27 @@ public class UserDBService implements UserDBImpl{
 	       return null;
 	}
 	
+
+	//User name List 
+	@Override
+	public List<UserNameDTO> getUserNameList() throws WebServiceException {
+	    List<UserNameDTO> userList = new ArrayList<>();
+	      try {
+	        List<Object[]> list = masterRepository.getUsersNameList();
+
+	       for (Object[] row : list) {
+	           String username = (String) row[0];  
+	           String useremail = (String) row[1]; 
+ 
+	           UserNameDTO userNameDTO = new UserNameDTO(username, useremail);
+  	           userList.add(userNameDTO);
+	        }
+	     } catch(Exception e) {
+				new ZoyAdminApplicationException(e, "");
+		   }
+
+	    return userList;
+	}
+
 
 }

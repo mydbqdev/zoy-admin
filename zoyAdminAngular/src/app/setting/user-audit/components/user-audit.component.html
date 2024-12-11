@@ -27,23 +27,23 @@
                               <!-- Search Input -->
                               <div class="position-relative mr-2">
                                 <i class="fas fa-search fa-sm position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%); z-index: 1;"></i>
-                                <input type="text" class="form-control form-control-sm border-1" style="border-radius: 20px; padding-left: 35px; width: 300px;"placeholder="Search by keyword" [(ngModel)]="searchText" (keyup)="filterData($event)" aria-label="Search" aria-describedby="basic-addon2"/>
+                                <input type="text" class="form-control form-control-sm border-1" style="border-radius: 20px; padding-left: 35px; width: 300px;"placeholder="Search by keyword" [(ngModel)]="searchText" (keypress)="filterData($event)" maxlength="30" aria-label="Search" aria-describedby="basic-addon2"/>
                               </div>
                               <div class="ml-auto mr-2">
                                 <div class="d-flex align-items-center">
                                     <div class="input-group">
-                                        <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 5px; margin-right: 5px;" [formControl]="searchControl">
+                                        <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 5px; margin-right: 5px;"[(ngModel)]="username">
                                           <option value="" disabled selected>Select User</option>
-                                          <option *ngFor="let option of filteredOptions" [value]="option">{{ option }}</option>
+                                          <option  value="" >All User</option>
+                                          <option *ngFor="let user of userNameList" [value]="user.useremail">{{ user.username }}</option>
                                         </select>
                                       </div>
-                                  <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 10px; margin-right: 10px;">
-                                    <option  value="" disabled selected>Select Type</option>
-                                    <option value="USER_UPDATE">USER_UPDATE</option> 
-                                    <option value="USER_LOGIN">USER_LOGIN</option>
-                                    <option value="USER_ADD">USER_ADD</option>
-                                </select>
-                                  <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                    <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 10px; margin-right: 10px;" [(ngModel)]="selectedValue" >
+                                     <option  value="" disabled selected>Select Type</option>
+                                     <option  value="" >All Type</option>
+                                     <option *ngFor="let constant of constantType" [value]="constant.key">{{ constant.value }}</option> 
+                                  </select>
+                                  <button type="button" class="btn btn-primary btn-sm" (click)="submit()"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 </div>
                               </div>
                              <div>

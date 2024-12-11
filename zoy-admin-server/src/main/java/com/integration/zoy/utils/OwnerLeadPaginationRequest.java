@@ -7,6 +7,7 @@ public class OwnerLeadPaginationRequest {
     private String sortDirection;
     private String userEmail;
     private String searchText;
+    private String activity;
     private OwnerLeadFilter filter;
     
     
@@ -51,6 +52,12 @@ public class OwnerLeadPaginationRequest {
 	}
 	public void setSearchText(String searchText) {
 		this.searchText = searchText;
+	}
+	public String getActivity() {
+		return activity;
+	}
+	public void setActivity(String activity) {
+		this.activity = activity;
 	}
 	
     

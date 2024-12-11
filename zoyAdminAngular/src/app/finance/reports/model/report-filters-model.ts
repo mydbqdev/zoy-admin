@@ -6,6 +6,7 @@ export class FiltersRequestModel{
     public sortActive:string="";
     public sortDirection:string="asc";
     public userEmail :string ='';
+    public activity :string ='';
 
     public cityLocation :string  ;
     public fromDate ?: string  ;
