@@ -33,6 +33,17 @@ export class UserAuditService {
     );
  }
  
+ public getUserNameList(): Observable<any> {
+    const url1=this.basePath +'zoy_admin/userName-List';
+    return this.httpclient.get<any>(
+        url1,
+     {
+            headers:ServiceHelper.buildHeaders(),
+           observe : 'body',
+           withCredentials:true
+        }
+    );
+ }
 
 
 

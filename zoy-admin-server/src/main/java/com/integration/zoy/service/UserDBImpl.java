@@ -12,6 +12,7 @@ import com.integration.zoy.entity.UserEkycTypeMaster;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.model.AuditActivitiesLogDTO;
 import com.integration.zoy.model.OwnerPropertyDTO;
+import com.integration.zoy.model.UserNameDTO;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.OwnerLeadPaginationRequest;
 
@@ -57,7 +58,8 @@ public interface UserDBImpl {
 	//Audit Activities Log
 	CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) throws WebServiceException;
 	
-	
+	//User Name List
+	List<UserNameDTO> getUserNameList() throws WebServiceException;
 
 
 }

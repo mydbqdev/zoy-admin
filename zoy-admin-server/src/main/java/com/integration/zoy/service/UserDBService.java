@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+
 import com.integration.zoy.entity.NotificationModeMaster;
 import com.integration.zoy.entity.UserBillingMaster;
 import com.integration.zoy.entity.UserCurrencyMaster;
@@ -29,6 +30,7 @@ import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.AuditActivitiesLogDTO;
 import com.integration.zoy.model.OwnerPropertyDTO;
+import com.integration.zoy.model.UserNameDTO;
 import com.integration.zoy.repository.AuditHistoryRepository;
 import com.integration.zoy.repository.NotificationModeMasterRepository;
 import com.integration.zoy.repository.UserBillingMasterRepository;
@@ -327,5 +329,28 @@ public class UserDBService implements UserDBImpl{
 	       return null;
 	}
 	
+
+	//User name List 
+	@Override
+	public List<UserNameDTO> getUserNameList() throws WebServiceException {
+	    List<UserNameDTO> userList = new ArrayList<>();
+	    
+	    try {
+	        List<Object[]> list = masterRepository.getUsersNameList();
+
+	       for (Object[] row : list) {
+	           String username = (String) row[0];  
+	           String useremail = (String) row[1]; 
+ 
+	            UserNameDTO userNameDTO = new UserNameDTO(username, useremail);
+  	            userList.add(userNameDTO);
+	        }
+	     } catch (Exception e) {
+	       throw new WebServiceException("Error while fetching user names");
+	    }
+
+	    return userList;
+	}
+
 
 }

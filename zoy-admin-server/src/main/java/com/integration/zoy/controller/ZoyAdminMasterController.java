@@ -58,6 +58,7 @@ import com.integration.zoy.model.RoomType;
 import com.integration.zoy.model.RoomTypeId;
 import com.integration.zoy.model.ShareType;
 import com.integration.zoy.model.ShareTypeId;
+import com.integration.zoy.model.UserNameDTO;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.UserDBImpl;
@@ -728,4 +729,20 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		    }
 		}
+		
+		
+		//User Name List Details
+				@Override
+				public ResponseEntity<String> zoyUserNameList() {
+					ResponseBody response = new ResponseBody();
+					try {
+						List<UserNameDTO> userNameList = userDBImpl.getUserNameList();
+						return new ResponseEntity<>(gson2.toJson(userNameList), HttpStatus.OK);
+			 		}catch (Exception e) {
+				        log.error("Unexpected error occurredAPI:/zoy_admin/userName-List.userName-List", e);
+				        response.setStatus(HttpStatus.BAD_REQUEST.value());
+				        response.setError(e.getMessage());
+				        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+				    }
+				}
 }

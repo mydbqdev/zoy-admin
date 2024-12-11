@@ -32,17 +32,15 @@
                               <div class="ml-auto mr-2">
                                 <div class="d-flex align-items-center">
                                     <div class="input-group">
-                                        <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 5px; margin-right: 5px;" [formControl]="searchControl">
+                                        <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 5px; margin-right: 5px;"[(ngModel)]="username">
                                           <option value="" disabled selected>Select User</option>
-                                          <option *ngFor="let option of filteredOptions" [value]="option">{{ option }}</option>
+                                          <option *ngFor="let user of userNameList" [value]="user.useremail">{{ user.username }}</option>
                                         </select>
                                       </div>
-                                  <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 10px; margin-right: 10px;">
+                                  <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 10px; margin-right: 10px;" [(ngModel)]="selectedValue" (change)="onDropdownChange($event)">
                                     <option  value="" disabled selected>Select Type</option>
-                                    <option value="USER_UPDATE">USER_UPDATE</option> 
-                                    <option value="USER_LOGIN">USER_LOGIN</option>
-                                    <option value="USER_ADD">USER_ADD</option>
-                                </select>
+                                    <option *ngFor="let constant of constantType" [value]="constant.key"> {{ constant.value }}</option> 
+                                  </select>
                                   <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 </div>
                               </div>

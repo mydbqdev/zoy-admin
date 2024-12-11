@@ -16,6 +16,7 @@ import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filter
 import { UserAuditService } from '../service/user-audit-service';
 import { UserAuditModel } from '../models/user-audit-model';
 import { FormControl } from '@angular/forms';
+import { UserListModel } from '../models/userlist-model';
 
 
 @Component({
@@ -54,6 +55,9 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	public rolesArray: string[] = [];
     searchControl = new FormControl();
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
+    username: string = '';  
+    userNameList: UserListModel[] = []; 
+    selectedValue: string = '';   
 	constructor(private userAuditService: UserAuditService, private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
             this.authService.checkLoginUserVlidaate();
@@ -93,6 +97,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		///	this.router.navigate(['/']);
 		//}
 		// this.loadDummyData();
+        this.getUserNameList();
 
 	}
 	ngAfterViewInit() {
@@ -103,25 +108,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
         this.dataSource.paginator = this.paginator;
 		this.getUserAuditdetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
 	}
-    
-  // Dummy data for autocomplete
-  options: string[] = [
-    'User1',
-    'User2',
-    'User3',
-    'Admin',
-    'Guest',
-    'Siva Ram',
-    'John Doe',
-    'Jane Smith',
-  ];
-  filteredOptions: string[] = this.options;
-  filterOptions(value: string): void {
-    const filterValue = value.toLowerCase();
-    this.filteredOptions = this.options.filter(option =>
-      option.toLowerCase().includes(filterValue)
-    );
-  }
+
 	
 	filterData($event: KeyboardEvent){
 		if ($event.keyCode === 13) {
@@ -139,6 +126,10 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		  this.searchText='';
 		  this.paginator.pageIndex=0;
 	  }
+      onDropdownChange(event: any): void {
+        this.selectedValue = event.target.value;
+        console.log('Selected value:', this.selectedValue);
+      }
 
 	  pageChanged(event:any){
 		this.dataSource=new MatTableDataSource<any>();
@@ -214,4 +205,60 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	  });
 	  
 	  }
+
+      getUserNameList(){
+        this.authService.checkLoginUserVlidaate();
+       this.spinner.show();
+       this.userAuditService.getUserNameList().subscribe(data => {
+        this.userNameList=Object.assign([],data);
+        this.spinner.hide();
+       }, error => {
+       this.spinner.hide();
+       if(error.status == 0) {
+         this.notifyService.showError("Internal Server Error/Connection not established", "")
+        }else if(error.status==401){
+                 console.error("Unauthorised");
+             }else if(error.status==403){
+       this.router.navigate(['/forbidden']);
+       }else if (error.error && error.error.message) {
+       this.errorMsg = error.error.message;
+       console.log("Error:" + this.errorMsg);
+       this.notifyService.showError(this.errorMsg, "");
+       } else {
+       if (error.status == 500 && error.statusText == "Internal Server Error") {
+         this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+       } else {
+         let str;
+         if (error.status == 400) {
+         str = error.error;
+         } else {
+         str = error.message;
+         str = str.substring(str.indexOf(":") + 1);
+         }
+         console.log("Error:" + str);
+         this.errorMsg = str;
+       }
+       if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+       }
+     });
+     
+     }
+     constantType: { key: string, value: string }[] = [
+        { key: 'ZOY_ADMIN_LOGIN', value: 'USER_LOGIN' },
+        { key: 'ZOY_ADMIN_LOGOUT', value: 'USER_LOGOUT' },
+        { key: 'ZOY_ADMIN_USER_CREATE', value: 'USER_ADD' },
+        { key: 'ZOY_ADMIN_USER_UPDATE', value: 'USER_UPDATE' },
+        { key: 'ZOY_ADMIN_USER_ACTIVE', value: 'USER_ACTIVE' },
+        { key: 'ZOY_ADMIN_USER_INACTIVE', value: 'USER_INACTIVE' },
+        { key: 'ZOY_ADMIN_USER_DELETE', value: 'USER_DELETE' },
+        { key: 'ZOY_ADMIN_USER_AUTHORZITION', value: 'USER_ROLE_ADDED' },
+        { key: 'ZOY_ADMIN_USER_AUTHORZITION_APPROVE', value: 'USER_ROLE_APPROVED' },
+        { key: 'ZOY_ADMIN_USER_AUTHORZITION_REJECTED', value: 'USER_ROLE_REJECTED' },
+        { key: 'ZOY_ADMIN_ZOY_CODE_GENERATE', value: 'ZOY_CODE_GENERATE' },
+        { key: 'ZOY_ADMIN_ROLE_CREATE', value: 'ADMIN_ROLE_CREATE' },
+        { key: 'ZOY_ADMIN_ROLE_UPDATE', value: 'ADMIN_ROLE_UPDATE' },
+        { key: 'ZOY_ADMIN_ROLE_DELETE', value: 'ADMIN_ROLE_DELETE' },
+        { key: 'ZOY_ADMIN_USER_AUTHORZITION_ASSIGN', value: 'USER_ROLE_ASSIGN' }
+      ];
 }
+
