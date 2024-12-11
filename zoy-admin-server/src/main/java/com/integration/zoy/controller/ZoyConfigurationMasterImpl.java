@@ -56,7 +56,7 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PostMapping(value = "/zoy_admin/config/before-check-in",
+	@PostMapping(value = "/zoy_admin/config/early-check-out",
 	produces = { "application/json" },
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellation details);
