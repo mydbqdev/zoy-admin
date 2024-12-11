@@ -331,16 +331,15 @@ public class UserDBService implements UserDBImpl{
 	@Override
 	public List<UserNameDTO> getUserNameList() throws WebServiceException {
 	    List<UserNameDTO> userList = new ArrayList<>();
-	    
-	    try {
+	      try {
 	        List<Object[]> list = masterRepository.getUsersNameList();
 
 	       for (Object[] row : list) {
 	           String username = (String) row[0];  
 	           String useremail = (String) row[1]; 
  
-	            UserNameDTO userNameDTO = new UserNameDTO(username, useremail);
-  	            userList.add(userNameDTO);
+	           UserNameDTO userNameDTO = new UserNameDTO(username, useremail);
+  	           userList.add(userNameDTO);
 	        }
 	     } catch(Exception e) {
 				new ZoyAdminApplicationException(e, "");

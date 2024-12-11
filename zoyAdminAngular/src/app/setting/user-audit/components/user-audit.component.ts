@@ -237,8 +237,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
        if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
        }
      });
-     
-     }
+}
 
       constantType: { key: string, value: string }[] = [
         { key: 'USER_LOGIN', value: 'User Login' },
