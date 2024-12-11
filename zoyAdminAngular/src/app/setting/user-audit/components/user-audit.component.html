@@ -34,14 +34,16 @@
                                     <div class="input-group">
                                         <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 5px; margin-right: 5px;"[(ngModel)]="username">
                                           <option value="" disabled selected>Select User</option>
+                                          <option  value="" >All User</option>
                                           <option *ngFor="let user of userNameList" [value]="user.useremail">{{ user.username }}</option>
                                         </select>
                                       </div>
-                                  <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 10px; margin-right: 10px;" [(ngModel)]="selectedValue" (change)="onDropdownChange($event)">
+                                   <select class="form-select form-select-sm" style="min-width: 150px; margin-left: 10px; margin-right: 10px;" [(ngModel)]="selectedValue" (change)="onDropdownChange($event)">
                                     <option  value="" disabled selected>Select Type</option>
-                                    <option *ngFor="let constant of constantType" [value]="constant.key"> {{ constant.value }}</option> 
+                                    <option  value="" >All Type</option>
+                                    <option *ngFor="let constant of constantType" [value]="constant.value"> {{ constant.value }}</option> 
                                   </select>
-                                  <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                  <button type="button" class="btn btn-primary btn-sm" (click)="submit()"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 </div>
                               </div>
                              <div>

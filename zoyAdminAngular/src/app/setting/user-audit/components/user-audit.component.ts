@@ -109,6 +109,9 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		this.getUserAuditdetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
 	}
 
+    submit(): void {
+        this.filterData({ keyCode: 13 } as KeyboardEvent); 
+      }
 	
 	filterData($event: KeyboardEvent){
 		if ($event.keyCode === 13) {
@@ -163,6 +166,8 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.sortActive=sortActive;
 		this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 		this.columnSortDirections[sortActive] = sortDirection;
+        this.filtersRequest.userEmail=this.username;
+		this.filtersRequest.activity=this.selectedValue;
 		this.userAuditService.getUserAuditdetails(this.filtersRequest).subscribe(data => {
 			if(data?.data?.length >0){
 				  this.totalProduct=data.count;

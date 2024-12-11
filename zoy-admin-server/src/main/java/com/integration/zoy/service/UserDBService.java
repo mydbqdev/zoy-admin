@@ -270,6 +270,7 @@ public class UserDBService implements UserDBImpl{
 
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) throws WebServiceException{
 			StringBuilder queryBuilder = new StringBuilder();
@@ -280,16 +281,19 @@ public class UserDBService implements UserDBImpl{
 	        if(!"".equals(paginationRequest.getUserEmail()) && null != paginationRequest.getUserEmail()) {
 	        	
 	        	 queryBuilder.append("AND um.user_email = '"+paginationRequest.getUserEmail()+"' ");
-	        	 if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
-	        	       queryBuilder.append("AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
-	 	         }	        	
-	             }else {
-	        	      if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
-	        		    queryBuilder.append(" AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) "
-	        		 		+ " or (LOWER( concat(um.first_name,' ',um.last_name )) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.operation) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
-	 	                }
-	            }
-//	        System.out.println("Generated Query: " + queryBuilder.toString());
+	        }
+	        
+	        if(!"".equals(paginationRequest.getActivity()) && null != paginationRequest.getActivity()) {
+	        	
+	        	 queryBuilder.append("AND ah.operation = '"+paginationRequest.getActivity()+"' ");
+	        }
+	        
+	        if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
+    		    queryBuilder.append(" AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) "
+    		 		+ " or (LOWER( concat(um.first_name,' ',um.last_name )) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.operation) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
+	                }	     
+	            
+
 	        if("created_on".equals(paginationRequest.getSortActive())) {
 	         	queryBuilder.append(" order by ah.created_on "+paginationRequest.getSortDirection());
 	        	
@@ -304,7 +308,6 @@ public class UserDBService implements UserDBImpl{
 	    		queryBuilder.append(" order by ah.created_on DESC ");
 	    	}
 	        
-	        //System.out.println("queryBuilder" +queryBuilder.toString());
 	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
 	        
 			int count=query.getResultList().size();
