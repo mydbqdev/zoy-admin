@@ -133,16 +133,17 @@
     <div class="modal-dialog" role="document">  
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title">Session Timeout Warning..</h3>
+          <h5 class="modal-title">Session Timeout Warning..</h5>
           <button type="button" hidden class="close" data-dismiss="modal" aria-label="Close" #sessionModelClose >
           </button>
         </div>
         <div class="modal-body">
-          <p>Your session will expire in  <span [ngClass]="{'blink': countdown < 10, 'red-text': countdown < 10}" > {{ countdown }}</span> seconds..</p>
+          <p>Your session will expire in  <span [ngClass]="{'blink': countdown < 10, 'red-text': countdown < 10}" > {{ countdown }}</span> seconds and logout automatically.</p>
+          <p>Click on <strong style="color:rgb(161, 7, 192)">stay logged in</strong> to continue the session<br>Otherwise click on <strong style="color:rgb(161, 7, 192)">logout</strong></p>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary"  (click)="stay()" >Stay Logged In</button>
-            <button class="btn btn-danger" (click)="logout()" >Log Out</button>
+            <button class="btn btn-primary-custom"  (click)="stay()" >Stay logged in</button>
+            <button class="btn btn-danger" (click)="logout()" >Logout</button>
         </div>
       </div>
     </div>
