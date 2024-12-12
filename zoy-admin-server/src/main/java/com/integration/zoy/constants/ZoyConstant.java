@@ -41,7 +41,6 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_USER_ACTIVE="USER_ACTIVE";
 	public static final String ZOY_ADMIN_USER_INACTIVE="USER_INACTIVE";
 	public static final String ZOY_ADMIN_USER_DELETE="USER_DELETE";
-	public static final String ZOY_ADMIN_USER_AUTHORZITION="USER_ROLE_ADDED";
 	public static final String ZOY_ADMIN_USER_AUTHORZITION_APPROVE="USER_ROLE_APPROVED";
 	public static final String ZOY_ADMIN_USER_AUTHORZITION_REJECTED="USER_ROLE_REJECTED";
 	public static final String ZOY_ADMIN_ZOY_CODE_GENERATE="ZOY_CODE_GENERATE";
