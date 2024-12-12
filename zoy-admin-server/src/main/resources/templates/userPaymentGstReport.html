@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>USER PAYMENT GST REPORT</title>
     <style>
-		@page {
-		      size: landscape;
-			}
+        @page {
+            size: landscape;
+            margin: 20mm;
+            @bottom-right {
+                content: "Page No: " counter(page);
+            }
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -19,6 +24,7 @@
             font-size: 24px;
             margin: 0;
             color: #333;
+			text-align: center;
         }
         
         .header {
@@ -43,7 +49,7 @@
         
         .date-range {
             text-align: right;
-            font-size: 14px;
+            font-size: 15px;
             color: #333;
         }
         
@@ -55,7 +61,7 @@
             table-layout: fixed;
             word-wrap: break-word;
             overflow-wrap: break-word;
-            page-break-inside: auto;
+            box-decoration-break: clone;
         }
         
         th, td {
@@ -74,12 +80,6 @@
             font-weight: bold;
         }
         
-        .printed-on {
-            font-size: 12px;
-            margin-top: 20px;
-            text-align: right;
-            color: #333;
-        }
 		thead {
 		    display: table-header-group;
 		 }
@@ -87,12 +87,19 @@
 		            page-break-inside: avoid;
 		        }
         
+.footer {
+            position: fixed;
+            bottom: 0;
+            left: 20px;
+            font-size: 12px;
+            color: #333;
+        }
         @media print {
             body {
                 margin: 0;
             }
             
-            .header, .date-range, .printed-on {
+            .header, .date-range, .footer {
                 font-size: 10px;
             }
             
@@ -101,12 +108,19 @@
                 page-break-before: auto;
                 page-break-after: auto;
             }
+ .footer {
+                position: fixed;
+                bottom: 0;
+                right: 20px;
+                page-break-after: always;
+            }
         }
     </style>
 </head>
 <body>
+<div th:each="pageChunk : ${#numbers.sequence(0, (reportData.size() - 1) / 7)}">
     <div class="header">
-		<img th:src="'data:image/png;base64,' + ${appLogo}" alt="Logo" />
+		<img th:src="'data:image/png;base64,' + ${appLogo}" alt="Logo" style="width: 70px;height:48px; margin-right: 20px; "/>
         <div class="title">
             <h2>USER PAYMENT GST REPORT</h2>
         </div>
@@ -120,10 +134,9 @@
             <tr>
 				<th>Transaction Date</th>
 				<th>Transaction No</th>
-                <th>Tenant ID</th>
                 <th>Tenant Name</th>
-                <th>PG ID</th>
                 <th>PG Name</th>
+				<th>PG Address</th>
 				<th>Total Amount</th>
 				<th>GST Amount</th>
                 <th>Due Amount</th>
@@ -131,13 +144,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="row : ${reportData}">
+            <tr th:each="row : ${reportData.subList(pageChunk*7, (pageChunk*7 + 7) > reportData.size() ? reportData.size() : pageChunk*7 + 7)}">
 				<td th:text="${row.userPaymentTimestamp != null ? #dates.format(row.userPaymentTimestamp, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}">Transaction Date</td>
 				<td th:text="${row.userPaymentBankTransactionId != null ? row.userPaymentBankTransactionId : 'N/A'}">Transaction Number</td>
-				<td th:text="${row.userId != null ? row.userId : 'N/A'}">Tenant ID</td>
                 <td th:text="${row.userPersonalName != null ? row.userPersonalName : 'N/A'}">Tenant Name</td>
-                <td th:text="${row.userPgPropertyId != null ? row.userPgPropertyId : 'N/A'}">PG ID</td>
                 <td th:text="${row.userPgPropertyName != null ? row.userPgPropertyName : 'N/A'}">PG Name</td>
+				<td th:text="${row.propertyHouseArea != null ? row.propertyHouseArea : 'N/A'}">PG Address</td>
 				<td th:text="${(row.totalAmount != null && row.userPaymentGst != null) ? #numbers.formatDecimal(row.totalAmount.add(row.userPaymentGst), 2, 2) : '0.00'}">Total Amount</td>
 				<td th:text="${row.userPaymentGst != null ? #numbers.formatDecimal(row.userPaymentGst, 2, 2) : '0.00'}">GST Amount</td>
                 <td th:text="${row.totalAmount != null ? #numbers.formatDecimal(row.totalAmount, 2, 2) : '0.00'}">Due Amount</td>
@@ -145,8 +157,9 @@
             </tr>
         </tbody>
     </table>
+</div>
 
-    <div class="printed-on">
+    <div class="footer">
         Printed on: <span th:text="${printDate}">Printed Date</span>
     </div>
 </body>

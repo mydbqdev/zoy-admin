@@ -9,17 +9,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class TenentDues {
 	
-	@SerializedName("customerId")
-	private String userId;
-	
 	@SerializedName("customerName")
     private String userPersonalName;
 	
+	@SerializedName("tenantMobileNum")
+	private String tenantMobileNum;
+	
 	@SerializedName("PgPropertyName")
     private String userPgPropertyName;
-	
-	@SerializedName("PgPropertyId")
-    private String userPgPropertyId;
 	
 	@SerializedName("bedNumber")
 	private String bedNumber;
@@ -29,14 +26,10 @@ public class TenentDues {
 	
 	@SerializedName("pendingDueDate")
 	private Timestamp pendingDueDate;
+	
+	@SerializedName("userPgPropertyAddress")
+	private String userPgPropertyAddress;
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 
 	public String getUserPersonalName() {
 		return userPersonalName;
@@ -54,13 +47,6 @@ public class TenentDues {
 		this.userPgPropertyName = userPgPropertyName;
 	}
 
-	public String getUserPgPropertyId() {
-		return userPgPropertyId;
-	}
-
-	public void setUserPgPropertyId(String userPgPropertyId) {
-		this.userPgPropertyId = userPgPropertyId;
-	}
 
 	public String getBedNumber() {
 		return bedNumber;
@@ -84,6 +70,22 @@ public class TenentDues {
 
 	public void setPendingDueDate(Timestamp pendingDueDate) {
 		this.pendingDueDate = pendingDueDate;
+	}
+
+	public String getUserPgPropertyAddress() {
+		return userPgPropertyAddress;
+	}
+
+	public void setUserPgPropertyAddress(String userPgPropertyAddress) {
+		this.userPgPropertyAddress = userPgPropertyAddress;
+	}
+
+	public String getTenantMobileNum() {
+		return tenantMobileNum;
+	}
+
+	public void setTenantMobileNum(String tenantMobileNum) {
+		this.tenantMobileNum = tenantMobileNum;
 	}
 	
 	
