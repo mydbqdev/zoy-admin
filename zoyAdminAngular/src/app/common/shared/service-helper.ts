@@ -5,7 +5,7 @@ export class ServiceHelper{
         let headers:HttpHeaders = new HttpHeaders({
             'Accept':'application/json',
             'Content-Type':'application/json',
-            'Access-Control-Allow-Origin': '*'
+           // 'Access-Control-Allow-Origin': '*'
         });
 
         return headers;
@@ -14,7 +14,7 @@ export class ServiceHelper{
         let headers:HttpHeaders = new HttpHeaders({
             'Accept':'application/json',
             'Content-Type':'multipart/form-data',
-            'Access-Control-Allow-Origin': '*'
+           // 'Access-Control-Allow-Origin': '*'
         });
 
         return headers;
@@ -24,7 +24,7 @@ export class ServiceHelper{
         let headers:HttpHeaders = new HttpHeaders({
             'Cache-Control':'no-cache',
             'Content-Type':'application/octet-stream',
-            'Access-Control-Allow-Origin': '*'
+          //  'Access-Control-Allow-Origin': '*'
         });
 
         return headers;
@@ -34,7 +34,7 @@ export class ServiceHelper{
         let headers:HttpHeaders = new HttpHeaders({
             'Accept':'application/json',
             'Content-Type':'application/json',
-            'Access-Control-Allow-Origin': '*',
+        //    'Access-Control-Allow-Origin': '*',
             'DBQ-TOKEN':pwd
         });
 
@@ -65,7 +65,7 @@ export class ServiceHelper{
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': 'Basic em95YWRtaW46em95YWRtaW5wYXNz',
-          'Access-Control-Allow-Origin': '*'  
+         // 'Access-Control-Allow-Origin': '*'  
         });
         return headers;
       }
@@ -80,7 +80,7 @@ export class ServiceHelper{
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': basicAuthValue,
-          'Access-Control-Allow-Origin': '*'  
+         // 'Access-Control-Allow-Origin': '*'  
         });
        
         return headers;
