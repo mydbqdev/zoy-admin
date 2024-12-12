@@ -173,7 +173,7 @@
                                           <label for="category" class="col-sm-5 col-form-label">Property Name </label>
                                           <div class="col-sm-7">
                                             <select class="form-select form-select-sm" id="category" [(ngModel)]="property_id" (ngModelChange)="selectProperty()" >                                             
-                                            <option *ngFor="let property of pgOwnerData?.pg_owner_property_information" [value]="property.property_name" >{{property.property_name}}</option>
+                                            <option *ngFor="let property of pgOwnerData?.pg_owner_property_information" [value]="property.property_id" >{{property.property_name}}</option>
                                             </select> 
                                           </div>
                                         </div>
@@ -255,8 +255,8 @@
                                           <div>Floor </div>
                                           <div class="ml-2 text-center" style="width: 20px;">:</div>
                                           <div style="width: 100px;">
-                                            <select class="form-select form-select-sm" id="category" [(ngModel)]="floorName" (ngModelChange)="selectFloor()">                                             
-                                              <option *ngFor="let floor of propertyInfo.floor_information;"  [value]="floor.floor_name ">{{floor.floor_name}}</option>
+                                            <select class="form-select form-select-sm" id="category" [(ngModel)]="floor_id" (ngModelChange)="selectFloor()">                                             
+                                              <option *ngFor="let floor of propertyInfo.floor_information;"  [value]="floor.floor_id ">{{floor.floor_name}}</option>
                                             </select> 
                                           </div>
                                           <div class="ml-auto"><i class="fas fa-circle mr-1" style="color:green;"></i><span style="color:green;">Vacancy</span> <i class="fas fa-circle ml-2 mr-1" style="color:red;"></i><span style="color:red;">Occupied</span></div>
