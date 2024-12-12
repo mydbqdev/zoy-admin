@@ -49,6 +49,11 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 	sortDirection:string="desc";
 	public rolesArray: string[] = [];
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
+	reportDataList :any[]=[];
+	reportDataSource: MatTableDataSource<any>=new MatTableDataSource(this.reportDataList);
+	reportName:string ='Activities log Report';
+	downloadType :string='';
+    selectedValue: string = '';
 	constructor(private activityLogService: ActivityLogService, private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
@@ -77,7 +82,6 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 			this.isExpandSideBar=name;
 		});
 	}
-
 	ngOnDestroy() {
 		if (this.mySubscription) {
 			this.mySubscription.unsubscribe();
@@ -110,13 +114,7 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 		 this.getActivityLogDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
 	  }
 	}
-		  
-	  resetFilter(){
-		  this.searchText='';
-		  this.paginator.pageIndex=0;
-	  }
-
-	  pageChanged(event:any){
+     pageChanged(event:any){
 		this.dataSource=new MatTableDataSource<any>();
 		if(this.lastPageSize!=event.pageSize){
 			this.paginator.pageIndex=0;
@@ -149,7 +147,7 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.sortActive=sortActive;
 		this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 		this.columnSortDirections[sortActive] = sortDirection;
-		
+		this.filtersRequest.searchText=this.searchText;
 		this.filtersRequest.userEmail=this.userService.getUsername();
 		this.activityLogService.getActivityLogdetails(this.filtersRequest).subscribe(data => {
 			if(data?.data?.length >0){
@@ -193,4 +191,72 @@ export class ActivityLogComponent implements OnInit, AfterViewInit {
 	  });
 	  
 	  }
+	  download(){   
+		this.authService.checkLoginUserVlidaate();
+	    this.filtersRequest.sortActive=this.sortActive;
+		this.filtersRequest.sortDirection=this.sortDirection.toUpperCase();
+		this.filtersRequest.searchText=this.searchText;
+		this.filtersRequest.userEmail=this.userService.getUsername();
+		this.filtersRequest.activity=this.selectedValue;
+		this.filtersRequest.downloadType = this.downloadType;
+		this.filtersRequest.isUserActivity =true;
+		this.activityLogService.downloadReport(this.filtersRequest).subscribe((data) => { 
+	
+			if(data!=null && data!=undefined && data!='' && data.size!=0){ 
+				let extension= 'text/csv';
+				switch (this.downloadType) {
+						case 'excel':
+						extension='application/vnd.ms-excel'
+						this.downloadType='xlsx'
+						break;
+						case 'csv':
+						extension='text/csv'
+						break;
+					default:
+						break;
+				}
+			  var blob = new Blob([data], {type : extension});
+			  var fileURL=URL.createObjectURL(blob);
+			  
+			  const link = document.createElement("a");
+			  link.href = fileURL;
+			  link.target = '_blank';
+			  link.download = this.reportName+'.'+this.downloadType;
+			  document.body.appendChild(link);
+			  link.click();
+			}else{
+			  this.notifyService.showWarning("The record is not available", "");
+			}
+			this.downloadType='';
+		  }, async error => {
+			this.downloadType='';
+			  this.spinner.hide();
+			  if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			}else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			  }else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			  } else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				  this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				  let str;
+				  if (error.status == 400) {
+					str = error.error;
+				  } else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				  }
+				  console.log("Error:" + await str.text());
+				  this.errorMsg =  await new Response(str).text()// or use await str.text();
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			  }
+			});	
+	 }
 }

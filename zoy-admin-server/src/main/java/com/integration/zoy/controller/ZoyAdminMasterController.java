@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -868,4 +870,50 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 				    }
 				}
+				
+	        //User Audit reports Download
+				@Override
+				public ResponseEntity<byte[]> downloadUserAuditReport(OwnerLeadPaginationRequest paginationRequest) {
+					byte[] fileData=null;
+					String fileName ="";
+					MediaType contentType = null;
+		
+					try {
+					  fileData = userDBImpl.generateDynamicReport(paginationRequest);
+
+						if (fileData.length == 0) {
+							return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  
+						}
+
+						String fileExtension;
+
+						switch (paginationRequest.getDownloadType().toLowerCase()) {
+						case "excel":
+							contentType = MediaType.APPLICATION_OCTET_STREAM; 
+							fileExtension = ".xlsx";
+							break;
+						case "csv":
+							contentType = MediaType.TEXT_PLAIN; 
+							fileExtension = ".csv";
+							break;
+						
+						default:
+							contentType = MediaType.TEXT_PLAIN; 
+							fileExtension = ".csv";
+							break;
+						}
+
+						fileName = paginationRequest + fileExtension;
+					}catch(Exception ex) {
+						log.error("Error getting download User Audit Report API:/zoy_admin/download_user_audit_report.downloadUserAuditReport",ex);
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage().getBytes());
+					}
+					return ResponseEntity.ok()
+							.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+							.contentType(contentType)
+							.body(fileData);
+				}			
+				
+				
+				
 }
