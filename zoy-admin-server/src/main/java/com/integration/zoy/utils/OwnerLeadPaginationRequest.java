@@ -1,5 +1,7 @@
 package com.integration.zoy.utils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class OwnerLeadPaginationRequest {
 	private int pageIndex=0;
     private int pageSize=10;
@@ -9,8 +11,9 @@ public class OwnerLeadPaginationRequest {
     private String searchText;
     private String activity;
     private OwnerLeadFilter filter;
-    
-    
+  	private String downloadType;
+    private boolean isUserActivity;
+
     public void setPageIndex(int pageIndex) {
 		this.pageIndex = pageIndex;
 		}
@@ -59,6 +62,18 @@ public class OwnerLeadPaginationRequest {
 	public void setActivity(String activity) {
 		this.activity = activity;
 	}
-	
+	public String getDownloadType() {
+		return downloadType;
+	}
+	public void setDownloadType(String downloadType) {
+		this.downloadType = downloadType;
+	}
+	public boolean getIsUserActivity() {
+		return isUserActivity;
+	}
+	public void setIsUserActivity(boolean isUserActivity) {
+		this.isUserActivity = isUserActivity;
+	}
+
     
 }

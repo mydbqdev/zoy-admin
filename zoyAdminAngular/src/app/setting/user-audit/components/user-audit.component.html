@@ -47,8 +47,12 @@
                                 </div>
                               </div>
                              <div>
-                              <a href="javascript:void(0)" class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm"><i class="fas fa-plus-circle"></i> Download</a>
-                           </div>
+                                <select class="form-select form-select-sm" [(ngModel)]="downloadType" (ngModelChange)="download()">
+                                  <option value="" disabled > Download </option>
+                                  <option value="excel">As Excel</option>
+                                  <option value="csv">As CSV</option>
+                                </select>
+                            </div>
                           </div>
                       </div>
   

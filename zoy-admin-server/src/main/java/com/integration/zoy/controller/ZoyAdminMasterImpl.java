@@ -470,6 +470,16 @@ public interface ZoyAdminMasterImpl {
 	@GetMapping(value = "/zoy_admin/userName-List",
 	produces = { "application/json" })
 	ResponseEntity<String> zoyUserNameList();
+	
+	
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/download_user_audit_report",
+	produces = { "application/json" })
+	ResponseEntity<byte[]> downloadUserAuditReport(@RequestBody OwnerLeadPaginationRequest paginationRequest);
 
 }
 

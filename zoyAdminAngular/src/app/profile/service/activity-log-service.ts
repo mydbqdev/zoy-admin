@@ -32,23 +32,28 @@ export class ActivityLogService {
         }
     );
  }
- 
+  downloadReport(data:any):Observable<any>{
+  const url1=this.basePath +"zoy_admin/download_user_audit_report";
+              return this.httpclient.post<any>(
+                  url1,
+                  data,
+                  { responseType: 'blob' as 'json'}
+              );
+       }
 
+    private errorHandler(error: HttpErrorResponse) {
+      return of(error.message || "server error");
+    }
 
+    private log(message: string) {
+      this.messageService.add(`AuthService:${message}`, 'info');
+    }
 
-  private errorHandler(error: HttpErrorResponse) {
-    return of(error.message || "server error");
-  }
-
-  private log(message: string) {
-    this.messageService.add(`AuthService:${message}`, 'info');
-  }
-
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(error);
-      this.log(`${operation} failed: ${error.message}`);
-      return of(result as T);
-    };
-  }
+    private handleError<T>(operation = 'operation', result?: T) {
+      return (error: any): Observable<T> => {
+        console.error(error);
+        this.log(`${operation} failed: ${error.message}`);
+        return of(result as T);
+      };
+    }
 }
