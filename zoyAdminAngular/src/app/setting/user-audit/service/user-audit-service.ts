@@ -44,7 +44,7 @@ export class UserAuditService {
      );
    }
     downloadReport(data:any):Observable<any>{
-    const url1=this.basePath +"zoy_admin/download_user_audit_reportt";
+    const url1=this.basePath +"zoy_admin/download_user_audit_report";
        return this.httpclient.post<any>(
         url1,
         data,
