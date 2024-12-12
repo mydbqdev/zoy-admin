@@ -18,12 +18,12 @@ export class HttpInterceptorService implements HttpInterceptor {
 				'Content-Type': 'application/json',
 				//'Content-Type':'text/csv',
 				'Authorization': this.getExternalApi(),
-				'Access-Control-Allow-Origin': '*'
+			//	'Access-Control-Allow-Origin': '*'
 			})
 		   }else{
 			headers = new HttpHeaders({
 				'Authorization': this.getToken(),
-				'Access-Control-Allow-Origin': '*'
+			//	'Access-Control-Allow-Origin': 'http://localhost:4200'
 			})
 		   }
 			
