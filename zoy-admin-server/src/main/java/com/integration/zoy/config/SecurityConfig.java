@@ -3,6 +3,7 @@ package com.integration.zoy.config;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +38,9 @@ public class SecurityConfig {
 
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+	@Value("${web.origin.link}")
+	private String origin;
 
 	
 	@Bean
@@ -54,7 +58,9 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-	    http.cors(cors -> cors.configurationSource(request -> buildConfig()));
+		
+	  //  http.cors(cors -> cors.configurationSource(request -> buildConfig()));
+	    http.cors(cors -> cors.configurationSource(corsConfigurationSource())); 
 	    http.csrf(csrf -> csrf.disable()).sessionManagement(session -> session
 	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	    .authorizeHttpRequests(requests -> {
@@ -81,7 +87,8 @@ public class SecurityConfig {
 
 	private CorsConfiguration buildConfig() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		corsConfiguration.addAllowedOrigin("*"); 
+		//corsConfiguration.addAllowedOrigin("*"); 
+		corsConfiguration.addAllowedOrigin(origin);
 		corsConfiguration.addAllowedHeader("*"); 
 		corsConfiguration.addAllowedMethod("*"); 
 		return corsConfiguration;
@@ -90,7 +97,8 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		final CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(ImmutableList.of("*"));
+	//	configuration.setAllowedOrigins(ImmutableList.of("*"));
+		configuration.setAllowedOrigins(ImmutableList.of(origin));  
 		configuration.setAllowedMethods(ImmutableList.of("HEAD","GET", "POST", "PUT", "DELETE", "PATCH"));
 		configuration.setAllowCredentials(true);
 		configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
