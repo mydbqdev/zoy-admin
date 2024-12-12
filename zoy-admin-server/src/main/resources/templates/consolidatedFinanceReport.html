@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>CONSOLIDATED FINANCE REPORT</title>
     <style>
+		@page {
+			    size: landscape;
+                            margin: 20mm;
+                            @bottom-right {
+                                   content: "Page No: " counter(page);
+				   
+                                    }
+			}
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -16,6 +24,7 @@
             font-size: 24px;
             margin: 0;
             color: #333;
+			text-align: center;
         }
         
         .header {
@@ -40,7 +49,7 @@
         
         .date-range {
             text-align: right;
-            font-size: 14px;
+            font-size: 15px;
             color: #333;
         }
         
@@ -52,7 +61,7 @@
             table-layout: fixed;
             word-wrap: break-word;
             overflow-wrap: break-word;
-            page-break-inside: auto;
+             box-decoration-break: clone;
         }
         
         th, td {
@@ -71,12 +80,7 @@
             font-weight: bold;
         }
         
-        .printed-on {
-            font-size: 12px;
-            margin-top: 20px;
-            text-align: right;
-            color: #333;
-        }
+    
 		thead {
 		    display: table-header-group;
 		 }
@@ -84,12 +88,19 @@
 		            page-break-inside: avoid;
 		        }
         
+  .footer {
+            position: fixed;
+            bottom: 0;
+            left: 20px;
+            font-size: 12px;
+            color: #333;
+        }
         @media print {
             body {
                 margin: 0;
             }
             
-            .header, .date-range, .printed-on {
+            .header, .date-range, .footer  {
                 font-size: 10px;
             }
             
@@ -98,12 +109,19 @@
                 page-break-before: auto;
                 page-break-after: auto;
             }
+  .footer {
+                position: fixed;
+                bottom: 0;
+                right: 20px;
+                page-break-after: always;
+            }
         }
     </style>
 </head>
 <body>
+<div th:each="pageChunk : ${#numbers.sequence(0, (reportData.size() - 1) / 10)}">
     <div class="header">
-		<img th:src="'data:image/png;base64,' + ${appLogo}" alt="Logo" />
+		<img th:src="'data:image/png;base64,' + ${appLogo}" alt="Logo" style="width: 70px;height:48px; margin-right: 20px; "/>
 		<div class="title">
             <h2>CONSOLIDATED FINANCE REPORT</h2>
         </div>
@@ -117,36 +135,36 @@
             <tr>
                 <th>Transaction Date</th>
                 <th>Transaction Number</th>
-                <th>ID of the Payer/ Payee</th>
+                <th>Payer/ Payee Type</th>
                 <th>Name of the Payer/ Payee</th>
                 <th>Debit</th>
                 <th>Credit</th>
             </tr>
         </thead>
         <tbody>
-			<tr th:each="row : ${reportData}">
+			<tr th:each="row : ${reportData.subList(pageChunk*10, (pageChunk*10 + 10) > reportData.size() ? reportData.size() : pageChunk*10 + 10)}">
 			       <!-- Transaction Date -->
 			       <td th:text="${row.userPaymentTimestamp != null ? #dates.format(row.userPaymentTimestamp, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}">Transaction Date</td>
 			       
 			       <!-- Transaction Number -->
 			       <td th:text="${row.userPaymentBankTransactionId != null ? row.userPaymentBankTransactionId : 'N/A'}">Transaction Number</td>
 			       
-			       <!-- ID of the Payer/Payee -->
-			       <td th:text="${row.userId != null ? row.userId : 'N/A'}">ID of the Payer/Payee</td>
+			       <td th:text="${row.payerPayeeType != null ? row.payerPayeeType : 'N/A'}">Payer/ Payee Type</td>
 			       
 			       <!-- Name of the Payer/Payee -->
-			       <td th:text="${row.userPersonalName != null ? row.userPersonalName : 'N/A'}">Name of the Payer/Payee</td>
+			       <td th:text="${row.payerPayeeName != null ? row.payerPayeeName : 'N/A'}">Name of the Payer/Payee</td>
 			       
 			       <!-- Debit Amount -->
 			       <td th:text="${row.debitAmount != null ? #numbers.formatDecimal(row.debitAmount, 2, 2) : '0.00'}">Debit</td>
 			       
 			       <!-- Credit Amount -->
-			       <td th:text="${row.totalAmount != null ? #numbers.formatDecimal(row.totalAmount, 2, 2) : '0.00'}">Credit</td>
+			       <td th:text="${row.creditAmount != null ? #numbers.formatDecimal(row.creditAmount, 2, 2) : '0.00'}">Credit</td>
 			   </tr>
         </tbody>
     </table>
+</div>
 
-    <div class="printed-on">
+    <div class="footer">
         Printed on: <span th:text="${printDate}">Printed Date</span>
     </div>
 </body>

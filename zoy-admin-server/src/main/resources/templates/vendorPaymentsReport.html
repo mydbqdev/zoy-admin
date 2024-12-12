@@ -6,7 +6,11 @@
     <title>VENDOR PAYMENT REPORT</title>
     <style>
 		@page {
-				 size: landscape;
+			size: landscape;
+                        margin: 20mm;
+                        @bottom-right {
+                        content: "Page No: " counter(page);
+                             }
 			}
         body {
             font-family: Arial, sans-serif;
@@ -19,6 +23,7 @@
             font-size: 24px;
             margin: 0;
             color: #333;
+			text-align: center;
         }
         
         .header {
@@ -43,7 +48,7 @@
         
         .date-range {
             text-align: right;
-            font-size: 14px;
+            font-size: 15px;
             color: #333;
         }
         
@@ -55,7 +60,7 @@
             table-layout: fixed;
             word-wrap: break-word;
             overflow-wrap: break-word;
-            page-break-inside: auto;
+           box-decoration-break: clone;
         }
         
         th, td {
@@ -74,12 +79,7 @@
             font-weight: bold;
         }
         
-        .printed-on {
-            font-size: 12px;
-            margin-top: 20px;
-            text-align: right;
-            color: #333;
-        }
+       
 		thead {
 		    display: table-header-group;
 		 }
@@ -87,12 +87,19 @@
 		            page-break-inside: avoid;
 		        }
         
+.footer {
+            position: fixed;
+            bottom: 0;
+            left: 20px;
+            font-size: 12px;
+            color: #333;
+        }
         @media print {
             body {
                 margin: 0;
             }
             
-            .header, .date-range, .printed-on {
+            .header, .date-range, .footer {
                 font-size: 10px;
             }
             
@@ -101,12 +108,19 @@
                 page-break-before: auto;
                 page-break-after: auto;
             }
+            .footer {
+                position: fixed;
+                bottom: 0;
+                right: 20px;
+                page-break-after: always;
+            }
         }
     </style>
 </head>
 <body>
+<div th:each="pageChunk : ${#numbers.sequence(0, (reportData.size() - 1) / 5)}">
     <div class="header">
-		<img th:src="'data:image/png;base64,' + ${appLogo}" alt="Logo" />
+		<img th:src="'data:image/png;base64,' + ${appLogo}" alt="Logo" style="width: 70px;height:48px; margin-right: 20px; "/>
         <div class="title">
             <h2>VENDOR PAYMENT REPORT</h2>
         </div>
@@ -118,31 +132,33 @@
     <table>
         <thead>
             <tr>
-                <th>Owner ID</th>
                 <th>Owner Name</th>
-                <th>PG ID</th>
                 <th>PG Name</th>
+				<th>Owner Email ID</th>
+				<th>PG Address</th>
                 <th>Total Amount Received from Tenants</th>
                 <th>Total Amount Paid to Owner</th>
 				<th>ZOY Share</th>
 				<th>Transaction Date</th>
 				<th>Transaction Number</th>
 				<th>Payment Status</th>
+				<th>Owner approval Status</th>
             </tr>
         </thead>
         <tbody>
-			<tr th:each="row : ${reportData}">
-			        <!-- Owner ID -->
-			        <td th:text="${row.ownerId != null ? row.ownerId : 'N/A'}">Owner ID</td>
+			<tr th:each="row : ${reportData.subList(pageChunk*5, (pageChunk*5 + 5) > reportData.size() ? reportData.size() : pageChunk*5 + 5)}">
 
 			        <!-- Owner Name -->
 			        <td th:text="${row.ownerName != null ? row.ownerName : 'N/A'}">Owner Name</td>
 
-			        <!-- PG ID -->
-			        <td th:text="${row.pgId != null ? row.pgId : 'N/A'}">PG ID</td>
 
 			        <!-- PG Name -->
 			        <td th:text="${row.pgName != null ? row.pgName : 'N/A'}">PG Name</td>
+					
+					<td th:text="${row.ownerEmail != null ? row.ownerEmail : 'N/A'}">Owner Email ID</td>
+					
+					<!-- PG Name -->
+				    <td th:text="${row.pgAddress != null ? row.pgAddress : 'N/A'}">PG Address</td>
 
 			        <!-- Total Amount Received from Tenants -->
 			        <td th:text="${row.totalAmountFromTenants != null ? #numbers.formatDecimal(row.totalAmountFromTenants, 2, 2) : '0.00'}">Total Amount Received from Tenants</td>
@@ -151,7 +167,7 @@
 			        <td th:text="${row.amountPaidToOwner != null ? #numbers.formatDecimal(row.amountPaidToOwner, 2, 2) : '0.00'}">Total Amount Paid to Owner</td>
 
 			        <!-- ZOY Commission -->
-			        <td th:text="${row.zoyCommission != null ? #numbers.formatDecimal(row.zoyCommission, 2, 2) : '0.00'}">ZOY Share</td>
+			        <td th:text="${row.zoyShare != null ? #numbers.formatDecimal(row.zoyShare, 2, 2) : '0.00'}">ZOY Share</td>
 
 			        <!-- Transaction Date -->
 			        <td th:text="${row.transactionDate != null ? #dates.format(row.transactionDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}">Transaction Date</td>
@@ -161,11 +177,15 @@
 
 			        <!-- Payment Status -->
 			        <td th:text="${row.paymentStatus != null ? row.paymentStatus : 'N/A'}">Payment Status</td>
+					
+					<!-- owner Approval Status -->
+					<td th:text="${row.ownerApprovalStatus != null ? row.ownerApprovalStatus : 'N/A'}">Owner approval Status</td>
 			    </tr>
         </tbody>
     </table>
+</div>
 
-    <div class="printed-on">
+    <div class="footer">
         Printed on: <span th:text="${printDate}">Printed Date</span>
     </div>
 </body>

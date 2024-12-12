@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>TENANT DUES REPORT</title>
     <style>
+		@page {
+				      size: landscape;
+                                       margin: 20mm;
+                                       @bottom-right {
+                                       content: "Page No: " counter(page);
+                          }
+			}
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -16,6 +23,7 @@
             font-size: 24px;
             margin: 0;
             color: #333;
+			text-align: center;
         }
         
         .header {
@@ -40,7 +48,7 @@
         
         .date-range {
             text-align: right;
-            font-size: 14px;
+            font-size: 15px;
             color: #333;
         }
         
@@ -52,7 +60,7 @@
             table-layout: fixed;
             word-wrap: break-word;
             overflow-wrap: break-word;
-            page-break-inside: auto;
+             box-decoration-break: clone;
         }
         
         th, td {
@@ -71,12 +79,7 @@
             font-weight: bold;
         }
         
-        .printed-on {
-            font-size: 12px;
-            margin-top: 20px;
-            text-align: right;
-            color: #333;
-        }
+        
 		thead {
 		    display: table-header-group;
 		 }
@@ -84,12 +87,19 @@
 		            page-break-inside: avoid;
 		        }
         
+ .footer {
+            position: fixed;
+            bottom: 0;
+            left: 20px;
+            font-size: 12px;
+            color: #333;
+        }
         @media print {
             body {
                 margin: 0;
             }
             
-            .header, .date-range, .printed-on {
+            .header, .date-range, .footer {
                 font-size: 10px;
             }
             
@@ -98,12 +108,19 @@
                 page-break-before: auto;
                 page-break-after: auto;
             }
+.footer {
+                position: fixed;
+                bottom: 0;
+                right: 20px;
+                page-break-after: always;
+            }
         }
     </style>
 </head>
 <body>
+<div th:each="pageChunk : ${#numbers.sequence(0, (reportData.size() - 1) / 7)}">
     <div class="header">
-		<img th:src="'data:image/png;base64,' + ${appLogo}" alt="Logo" />
+		<img th:src="'data:image/png;base64,' + ${appLogo}" alt="Logo" style="width: 70px;height:48px; margin-right: 20px; "/>
         <div class="title">
             <h2>TENANT DUES REPORT</h2>
         </div>
@@ -115,28 +132,28 @@
     <table>
         <thead>
             <tr>
-                <th>Tenant ID</th>
-                <th>Tenant Name</th>
-                <th>PG ID</th>
-                <th>PG Name</th>
-                <th>Bed No</th>
-                <th>Pending Amount</th>
+				<th>Tenant Name</th>
+				<th>Tenant Mobile Number</th>
+				<th>PG Name</th>
+				<th>PG Address</th>
+				<th>Bed No</th>
+				<th>Pending Amount</th>
 				<th>Payment Due Date</th>
             </tr>
         </thead>
         <tbody>
-			<tr th:each="row : ${reportData}">
-			        <!-- Customer ID -->
-			        <td th:text="${row.userId != null ? row.userId : 'N/A'}">Tenant ID</td>
+			<tr th:each="row : ${reportData.subList(pageChunk*7, (pageChunk*7 + 7) > reportData.size() ? reportData.size() : pageChunk*7 + 7)}">
 
 			        <!-- Customer Name -->
 			        <td th:text="${row.userPersonalName != null ? row.userPersonalName : 'N/A'}">Tenant Name</td>
 
-			        <!-- PG ID -->
-			        <td th:text="${row.userPgPropertyId != null ? row.userPgPropertyId : 'N/A'}">PG ID</td>
-
+					<td th:text="${row.tenantMobileNum != null ? row.tenantMobileNum : 'N/A'}">Tenant Mobile Number</td>
+					
 			        <!-- PG Name -->
 			        <td th:text="${row.userPgPropertyName != null ? row.userPgPropertyName : 'N/A'}">PG Name</td>
+
+					<!-- PG Address -->
+				    <td th:text="${row.userPgPropertyAddress != null ? row.userPgPropertyAddress : 'N/A'}">PG Address</td>
 
 			        <!-- Bed No -->
 			        <td th:text="${row.bedNumber != null ? row.bedNumber : 'N/A'}">Bed No</td>
@@ -149,8 +166,9 @@
 			    </tr>
         </tbody>
     </table>
+</div>
 
-    <div class="printed-on">
+    <div class="footer">
         Printed on: <span th:text="${printDate}">Printed Date</span>
     </div>
 </body>
