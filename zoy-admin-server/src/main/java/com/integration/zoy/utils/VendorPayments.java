@@ -6,17 +6,18 @@ import java.sql.Timestamp;
 import com.google.gson.annotations.SerializedName;
 
 public class VendorPayments {
-	@SerializedName("ownerId")
-	private String ownerId;
 	
 	@SerializedName("ownerName")
 	private String ownerName;
 	
-	@SerializedName("pgId")
-	private String pgId;
+	@SerializedName("ownerEmail")
+	private String ownerEmail;
 	
 	@SerializedName("pgName")
 	private String pgName;
+	
+	@SerializedName("pgAddress")
+	private String pgAddress;
 	
 	@SerializedName("totalAmountFromTenants")
 	private BigDecimal totalAmountFromTenants;
@@ -24,8 +25,8 @@ public class VendorPayments {
 	@SerializedName("amountPaidToOwner")
 	private BigDecimal amountPaidToOwner;
 	
-	@SerializedName("zoyCommission")
-	private BigDecimal zoyCommission;
+	@SerializedName("zoyShare")
+	private BigDecimal zoyShare;
 	
 	@SerializedName("transactionDate")
 	private Timestamp transactionDate;
@@ -35,14 +36,10 @@ public class VendorPayments {
 	
 	@SerializedName("paymentStatus")
 	private String paymentStatus;
+	
+	@SerializedName("ownerApprovalStatus")
+	private String ownerApprovalStatus;
 
-	public String getOwnerId() {
-		return ownerId;
-	}
-
-	public void setOwnerId(String ownerId) {
-		this.ownerId = ownerId;
-	}
 
 	public String getOwnerName() {
 		return ownerName;
@@ -50,14 +47,6 @@ public class VendorPayments {
 
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
-	}
-
-	public String getPgId() {
-		return pgId;
-	}
-
-	public void setPgId(String pgId) {
-		this.pgId = pgId;
 	}
 
 	public String getPgName() {
@@ -86,13 +75,6 @@ public class VendorPayments {
 		this.amountPaidToOwner = amountPaidToOwner;
 	}
 
-	public BigDecimal getZoyCommission() {
-		return zoyCommission;
-	}
-
-	public void setZoyCommission(BigDecimal zoyCommission) {
-		this.zoyCommission = zoyCommission;
-	}
 
 	public Timestamp getTransactionDate() {
 		return transactionDate;
@@ -116,6 +98,38 @@ public class VendorPayments {
 
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
+	}
+
+	public String getPgAddress() {
+		return pgAddress;
+	}
+
+	public void setPgAddress(String pgAddress) {
+		this.pgAddress = pgAddress;
+	}
+
+	public BigDecimal getZoyShare() {
+		return zoyShare;
+	}
+
+	public void setZoyShare(BigDecimal zoyShare) {
+		this.zoyShare = zoyShare;
+	}
+
+	public String getOwnerApprovalStatus() {
+		return ownerApprovalStatus;
+	}
+
+	public void setOwnerApprovalStatus(String ownerApprovalStatus) {
+		this.ownerApprovalStatus = ownerApprovalStatus;
+	}
+
+	public String getOwnerEmail() {
+		return ownerEmail;
+	}
+
+	public void setOwnerEmail(String ownerEmail) {
+		this.ownerEmail = ownerEmail;
 	}
 	
 	

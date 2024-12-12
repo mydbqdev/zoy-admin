@@ -7,9 +7,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserPaymentDTO {
 	
-	@SerializedName("customerId")
-	private String userId;
-	
 	@SerializedName("transactionDate")
     private Timestamp userPaymentTimestamp;
 	
@@ -34,9 +31,6 @@ public class UserPaymentDTO {
 	@SerializedName("PgPropertyName")
     private String userPgPropertyName;
 	
-	@SerializedName("PgPropertyId")
-    private String userPgPropertyId;
-	
 	@SerializedName("bedNumber")
 	private String bedNumber;
 	
@@ -46,13 +40,12 @@ public class UserPaymentDTO {
 	@SerializedName("paymentMethod")
 	private String paymentMethod;
 	
+	@SerializedName("propertyHouseArea")
+	private String propertyHouseArea;
 	
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+	@SerializedName("propertyHouseArea")
+	private String tenantContactNum;
+	
 	public Timestamp getUserPaymentTimestamp() {
 		return userPaymentTimestamp;
 	}
@@ -96,12 +89,6 @@ public class UserPaymentDTO {
 	public void setUserPgPropertyName(String userPgPropertyName) {
 		this.userPgPropertyName = userPgPropertyName;
 	}
-	public String getUserPgPropertyId() {
-		return userPgPropertyId;
-	}
-	public void setUserPgPropertyId(String userPgPropertyId) {
-		this.userPgPropertyId = userPgPropertyId;
-	}
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
@@ -125,6 +112,18 @@ public class UserPaymentDTO {
 	}
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
+	}
+	public String getPropertyHouseArea() {
+		return propertyHouseArea;
+	}
+	public void setPropertyHouseArea(String propertyHouseArea) {
+		this.propertyHouseArea = propertyHouseArea;
+	}
+	public String getTenantContactNum() {
+		return tenantContactNum;
+	}
+	public void setTenantContactNum(String tenantContactNum) {
+		this.tenantContactNum = tenantContactNum;
 	}
 	
 	

@@ -137,7 +137,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			byte[] fileBytes = inputStream.readAllBytes();
 			List<ErrorDetail> error = csvValidationService.validateCSV(fileBytes,tenant.getPropertyId());
 			if(error.size()>0) {
-				bulkUploadDetails.setCategory("Tenent");
+				bulkUploadDetails.setCategory("Tenant");
 				bulkUploadDetails.setOwnerId(tenant.getOwnerId());
 				bulkUploadDetails.setOwnerName(tenant.getOwnerName());
 				bulkUploadDetails.setPropertyId(tenant.getPropertyId());
@@ -151,7 +151,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			} else {
 				String jobExecutionId = UUID.randomUUID().toString();
 				bulkUploadDetails.setJobExeId(jobExecutionId);
-				bulkUploadDetails.setCategory("Tenent");
+				bulkUploadDetails.setCategory("Tenant");
 				bulkUploadDetails.setOwnerId(tenant.getOwnerId());
 				bulkUploadDetails.setOwnerName(tenant.getOwnerName());
 				bulkUploadDetails.setPropertyId(tenant.getPropertyId());

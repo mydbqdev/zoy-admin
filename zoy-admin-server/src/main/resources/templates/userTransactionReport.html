@@ -5,22 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>USER TRANSACTIONS REPORT</title>
     <style>
-		@page {
-				      size: landscape;
-					}
+        @page {
+            size: landscape;
+            margin: 20mm;
+            @bottom-right {
+                content: "Page No: " counter(page);
+            }
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
             background-color: #f8f9fa;
         }
-        
+
         h2 {
             font-size: 24px;
             margin: 0;
             color: #333;
+            text-align: center;
         }
-        
+
         .header {
             display: flex;
             align-items: center;
@@ -28,25 +34,25 @@
             padding: 10px;
             background-color: #ffffff;
         }
-        
+
         .header img {
             width: 50px;
             height: auto;
         }
-        
+
         .title {
             flex-grow: 1;
             text-align: left;
             margin-left: 10px;
             font-weight: bold;
         }
-        
+
         .date-range {
             text-align: right;
-            font-size: 14px;
+            font-size: 15px;
             color: #333;
         }
-        
+
         table {
             width: 100%;
             margin-top: 20px;
@@ -55,9 +61,9 @@
             table-layout: fixed;
             word-wrap: break-word;
             overflow-wrap: break-word;
-            page-break-inside: auto;
+            box-decoration-break: clone;
         }
-        
+
         th, td {
             border: 1px solid #dddddd;
             text-align: center;
@@ -68,60 +74,72 @@
             overflow: hidden;
             white-space: normal;
         }
-        
+
         th {
             background-color: #f0f0f0;
             font-weight: bold;
         }
-        
-        .printed-on {
+
+        thead {
+            display: table-header-group;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 20px;
             font-size: 12px;
-            margin-top: 20px;
-            text-align: right;
             color: #333;
         }
-		thead {
-		    display: table-header-group;
-		 }
-		 tr {
-		            page-break-inside: avoid;
-		        }
-        
+
         @media print {
             body {
                 margin: 0;
             }
-            
-            .header, .date-range, .printed-on {
+
+            .header, .date-range, .footer {
                 font-size: 10px;
             }
-            
+
             table {
                 width: 100%;
                 page-break-before: auto;
                 page-break-after: auto;
             }
+
+            .footer {
+                position: fixed;
+                bottom: 0;
+                right: 20px;
+                page-break-after: always;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-		<img th:src="'data:image/png;base64,' + ${appLogo}" alt="Logo" />
-        <div class="title">
-            <h2>USER TRANSACTIONS REPORT</h2>
+    <!-- Loop to create multiple tables with headers for each "page" -->
+    <div th:each="pageChunk : ${#numbers.sequence(0, (reportData.size() - 1) / 4)}">
+        <div class="header">
+            <img th:src="'data:image/png;base64,' + ${appLogo}" alt="Logo" style="width: 70px;height:48px; margin-right: 20px;"/>
+            <div class="title">
+                <h2>USER TRANSACTIONS REPORT</h2>
+            </div>
+            <div class="date-range">
+                Date range: <span th:text="${#dates.format(startDate, 'yyyy-MM-dd')}">Start Date</span> to <span th:text="${#dates.format(endDate, 'yyyy-MM-dd')}">End Date</span>
+            </div>
         </div>
-        <div class="date-range">
-            Date range: <span th:text="${#dates.format(startDate, 'yyyy-MM-dd')}">Start Date</span> to <span th:text="${#dates.format(endDate, 'yyyy-MM-dd')}">End Date</span>
-        </div>
-    </div>
 
-    <table>
-        <thead>
+        <table>
+            <thead>
             <tr>
-                <th>Tenant ID</th>
                 <th>Tenant Name</th>
-                <th>PG ID</th>
+				<th>Tenant Mobile Number</th>
                 <th>PG Name</th>
+                <th>PG Address</th>
                 <th>BED Number</th>
                 <th>Transaction Date</th>
                 <th>Transaction No</th>
@@ -132,13 +150,13 @@
                 <th>Category</th>
                 <th>Mode of Payment</th>
             </tr>
-        </thead>
-        <tbody>
-            <tr th:each="row : ${reportData}">
-                <td th:text="${row.userId != null ? row.userId : 'N/A'}">Tenant ID</td>
+            </thead>
+            <tbody>
+            <tr th:each="row : ${reportData.subList(pageChunk*4, (pageChunk*4 + 4) > reportData.size() ? reportData.size() : pageChunk*4 + 4)}">
                 <td th:text="${row.userPersonalName != null ? row.userPersonalName : 'N/A'}">Tenant Name</td>
-                <td th:text="${row.userPgPropertyId != null ? row.userPgPropertyId : 'N/A'}">PG ID</td>
+				<td th:text="${row.tenantContactNum != null ? row.tenantContactNum : 'N/A'}">Tenant Mobile Number</td>
                 <td th:text="${row.userPgPropertyName != null ? row.userPgPropertyName : 'N/A'}">PG Name</td>
+                <td th:text="${row.propertyHouseArea != null ? row.propertyHouseArea : 'N/A'}">PG Address</td>
                 <td th:text="${row.bedNumber != null ? row.bedNumber : 'N/A'}">Bed Number</td>
                 <td th:text="${row.userPaymentTimestamp != null ? #dates.format(row.userPaymentTimestamp, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}">Transaction Date</td>
                 <td th:text="${row.userPaymentBankTransactionId != null ? row.userPaymentBankTransactionId : 'N/A'}">Transaction Number</td>
@@ -149,11 +167,12 @@
                 <td th:text="${row.category != null ? row.category : 'N/A'}">Category</td>
                 <td th:text="${row.paymentMethod != null ? row.paymentMethod : 'N/A'}">Mode of payment</td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 
-    <div class="printed-on">
-        Printed on: <span th:text="${printDate}">Printed Date</span>
+    <div class="footer">
+      Printed on: <span th:text="${printDate}">Printed Date</span>
     </div>
 </body>
 </html>

@@ -65,40 +65,37 @@ public class AdminReportService implements AdminReportImpl{
 	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException {
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
-					"SELECT up.user_id, " +
-							"up.user_payment_timestamp, " +
-							"up.user_payment_bank_transaction_id, " +
-							"CASE " +
-							"    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' " +
-							"    ELSE up.user_payment_payment_status " +
-							"END AS user_payment_payment_status, " +
-							"up.user_payment_payable_amount, " +
-							"up.user_payment_gst, " +
-							"ud.user_personal_name, " +
-							"pgt.property_name AS user_pg_propertyname, " + 
-							"pgt.property_id AS user_pg_property_id, " +  
-							"bd.bed_name, " +
-							"up.user_payment_zoy_payment_type, " +
-							"CASE " +
-							"    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Cash' " +
-							"    ELSE up.user_payment_result_method " +
-							"END AS user_payment_result_method, " +
-							"pgt.property_city " + 
-							"FROM pgusers.user_payments up " +
-							"JOIN pgusers.user_details ud ON up.user_id = ud.user_id " +
-							"JOIN pgowners.zoy_pg_owner_booking_details bkd " +
-							"ON up.user_id = bkd.tenant_id " +
-							"AND up.user_payment_booking_id = bkd.booking_id " +
-							"JOIN pgowners.zoy_pg_property_details pgt ON pgt.property_id = bkd.property_id " + 
-							"JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id " +
-							"WHERE 1=1 "
-					);
+				    "SELECT " +
+				        "up.user_payment_timestamp, " +
+				        "up.user_payment_bank_transaction_id, " +
+				        "CASE " +
+				        "    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' " +
+				        "    ELSE up.user_payment_payment_status " +
+				        "END AS user_payment_payment_status, " +
+				        "up.user_payment_payable_amount, " +
+				        "up.user_payment_gst, " +
+				        "ud.user_personal_name, " +
+				        "pgt.property_name AS user_pg_propertyname, " +
+				        "bd.bed_name, " +
+				        "up.user_payment_zoy_payment_type, " +
+				        "CASE " +
+				        "    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Cash' " +
+				        "    ELSE up.user_payment_result_method " +
+				        "END AS user_payment_result_method, " +
+				        "pgt.property_city, " +
+				        "pgt.property_house_area, " + 
+				        "ud.user_personal_phone_num " + 
+				        "FROM pgusers.user_payments up " +
+				        "JOIN pgusers.user_details ud ON up.user_id = ud.user_id " +
+				        "JOIN pgowners.zoy_pg_owner_booking_details bkd " +
+				        "ON up.user_id = bkd.tenant_id " +
+				        "AND up.user_payment_booking_id = bkd.booking_id " +
+				        "JOIN pgowners.zoy_pg_property_details pgt ON pgt.property_id = bkd.property_id " +
+				        "JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id " +
+				        "WHERE 1=1"
+				);
 			Map<String, Object> parameters = new HashMap<>();
 
-			if (filterData.getTenantId() != null && !filterData.getTenantId().isEmpty()) {
-				queryBuilder.append(" AND up.user_id = :userId");
-				parameters.put("userId", filterData.getTenantId());
-			}
 			if (filterData.getTransactionStatus() != null && !filterData.getTransactionStatus().isEmpty()) {
 				queryBuilder.append(" AND LOWER(up.user_payment_payment_status) LIKE LOWER(:resultStatus)");
 				parameters.put("resultStatus", filterData.getTransactionStatus());
@@ -107,11 +104,7 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append(" AND up.user_payment_result_method = :paymentMethod");
 				parameters.put("paymentMethod", filterData.getModeOfPayment());
 			}
-			if (filterData.getPgId() != null && !filterData.getPgId().isEmpty()) {
-				queryBuilder.append(" AND pgt.property_id = :pgPropertyId");
-				parameters.put("pgPropertyId", filterData.getPgId());
-			}
-
+			
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
 				queryBuilder.append(" AND LOWER(pgt.property_name) LIKE LOWER('%' || :pgPropertyName || '%')");
 				parameters.put("pgPropertyName", filterData.getPgName());
@@ -129,6 +122,11 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
+			
+			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+				queryBuilder.append(" AND LOWER(ud.user_personal_phone_num) LIKE LOWER(:tenantContactNum)");
+				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
+			}
 
 			String sort = "up.user_payment_timestamp";  
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
@@ -136,8 +134,6 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "up.user_payment_bank_transaction_id";
 				} else if ("userPaymentResultStatus".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_payment_status";
-				} else if ("userId".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "up.user_id";
 				} else if ("userPaymentPayableAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_payable_amount";
 				} else if ("userPaymentGst".equalsIgnoreCase(filterRequest.getSortActive())) {
@@ -146,8 +142,6 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "(up.user_payment_payable_amount + up.user_payment_gst)";
 				} else if ("userPersonalName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "ud.user_personal_name";
-				} else if ("userPgPropertyId".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "pgt.property_id";
 				} else if ("userPgPropertyName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "pgt.property_name";
 				} else if ("bedNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
@@ -156,7 +150,12 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "up.user_payment_zoy_payment_type";
 				} else if ("paymentMethod".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_result_method";
-				} else {
+				} else if("propertyHouseArea".equalsIgnoreCase(filterRequest.getSortActive())) {
+					sort = "pgt.property_house_area";
+				} else if("tenantContactNum".equalsIgnoreCase(filterRequest.getSortDirection())) {
+					sort = "ud.user_personal_phone_num";
+				}
+				else {
 					sort = "up.user_payment_timestamp";  
 				}
 
@@ -174,26 +173,27 @@ public class AdminReportService implements AdminReportImpl{
 				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
 				query.setMaxResults(filterRequest.getPageSize());
 			}
-			List<Object[]> result= query.getResultList();
+			List<Object[]> result = query.getResultList();
 			List<UserPaymentDTO> userPaymentDTOs = result.stream().map(row -> {
-				UserPaymentDTO dto = new UserPaymentDTO();
-				dto.setUserId((String) row[0]);
-				dto.setUserPaymentTimestamp((Timestamp) row[1]);
-				dto.setUserPaymentBankTransactionId((String) row[2]);
-				dto.setUserPaymentResultStatus((String) row[3]);
-				BigDecimal payableAmount = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;
-				BigDecimal gst = (BigDecimal) row[5] != null ? (BigDecimal) row[5] : BigDecimal.ZERO;
-				dto.setUserPaymentPayableAmount(payableAmount);
-				dto.setUserPaymentGst(gst);
-				dto.setUserPersonalName((String) row[6]);
-				dto.setUserPgPropertyName((String) row[7]);
-				dto.setUserPgPropertyId((String) row[8]);
-				dto.setBedNumber((String) row[9]);
-				dto.setTotalAmount(payableAmount.add(gst));
-				dto.setCategory((String) row[10]);
-				dto.setPaymentMethod((String) row[11]);
-				return dto;
+			    UserPaymentDTO dto = new UserPaymentDTO();
+			    dto.setUserPaymentTimestamp((Timestamp) row[0]); 
+			    dto.setUserPaymentBankTransactionId((String) row[1]);  
+			    dto.setUserPaymentResultStatus((String) row[2]); 
+			    BigDecimal payableAmount = (BigDecimal) row[3] != null ? (BigDecimal) row[3] : BigDecimal.ZERO;  
+			    BigDecimal gst = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;  
+			    dto.setUserPaymentPayableAmount(payableAmount);
+			    dto.setUserPaymentGst(gst);
+			    dto.setUserPersonalName((String) row[5]); 
+			    dto.setUserPgPropertyName((String) row[6]);  
+			    dto.setBedNumber((String) row[7]); 
+			    dto.setTotalAmount(payableAmount.add(gst));  
+			    dto.setCategory((String) row[8]);  
+			    dto.setPaymentMethod((String) row[9]); 
+			    dto.setPropertyHouseArea((String) row[11]);  
+			    dto.setTenantContactNum((String) row[12]);
+			    return dto;
 			}).collect(Collectors.toList());
+
 			return new CommonResponseDTO<>(userPaymentDTOs, filterCount);
 		}catch (Exception e) {
 			new ZoyAdminApplicationException(e, "");
@@ -206,8 +206,8 @@ public class AdminReportService implements AdminReportImpl{
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT DISTINCT up.user_payment_timestamp AS transaction_date, " +
-							"up.user_payment_bank_transaction_id AS transaction_number, " +
-							"up.user_id, " +
+						    "up.user_payment_bank_transaction_id AS transaction_number, " +
+							"'Tenant' AS payer_payee_type, " +
 							"ud.user_personal_name, " +
 							"up.user_payment_payable_amount, " +
 							"up.user_payment_gst, " +
@@ -219,11 +219,6 @@ public class AdminReportService implements AdminReportImpl{
 					"WHERE 1=1 ");
 			Map<String, Object> parameters = new HashMap<>();
 
-			if (filterData.getTenantId() != null && !filterData.getTenantId().isEmpty()) {
-				queryBuilder.append(" AND up.user_id = :userId");
-				parameters.put("userId", filterData.getTenantId());
-			}
-
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
 				queryBuilder.append(" AND up.user_payment_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 				parameters.put("fromDate", filterRequest.getFromDate());
@@ -231,10 +226,15 @@ public class AdminReportService implements AdminReportImpl{
 			}
 
 
-			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
+			if (filterData.getPayerName() != null && !filterData.getPayerName().isEmpty()) {
 				queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:userPersonalName)");
 				parameters.put("userPersonalName", "%" + filterData.getTenantName() + "%");
 			}
+			
+			 if (filterData.getPayerType() != null && !filterData.getPayerType().isEmpty()) {
+		            queryBuilder.append(" AND 'Tenant' = :payerPayeeType");  
+		            parameters.put("payerPayeeType", filterData.getPayerType());
+		        }
 
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
 				queryBuilder.append(" AND LOWER(pgt.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
@@ -243,9 +243,7 @@ public class AdminReportService implements AdminReportImpl{
 			String sort = "up.user_payment_timestamp";  
 
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
-				if ("customerId".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "up.user_id";
-				} else if ("transactionDate".equalsIgnoreCase(filterRequest.getSortActive())) {
+				if ("transactionDate".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_timestamp";
 				} else if ("transactionNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_bank_transaction_id";
@@ -255,7 +253,7 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "(up.user_payment_payable_amount + up.user_payment_gst)";
 				} else if ("debitAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_payable_amount";
-				} else {
+				}else {
 					sort = "up.user_payment_timestamp";
 				}
 
@@ -276,14 +274,14 @@ public class AdminReportService implements AdminReportImpl{
 			List<Object[]> result= query.getResultList();
 			List<ConsilidatedFinanceDetails> consolidatedFinanceDTOs = result.stream().map(row -> {
 				ConsilidatedFinanceDetails dto = new ConsilidatedFinanceDetails();
-				dto.setUserId((String) row[2]);
 				dto.setUserPaymentTimestamp((Timestamp) row[0]);
 				dto.setUserPaymentBankTransactionId((String) row[1]);
-				dto.setUserPersonalName((String) row[3]);
+				dto.setPayerPayeeType((String) row[2]);
+				dto.setPayerPayeeName((String) row[3]);
 				BigDecimal payableAmount = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;
 				BigDecimal gst = (BigDecimal) row[5] != null ? (BigDecimal) row[5] : BigDecimal.ZERO;
 				BigDecimal totalAmount = payableAmount.add(gst);
-				dto.setTotalAmount(totalAmount);
+				dto.setCreditAmount(totalAmount);
 				dto.setDebitAmount(BigDecimal.valueOf(0));
 				return dto;
 			}).collect(Collectors.toList());
@@ -299,22 +297,24 @@ public class AdminReportService implements AdminReportImpl{
 	public CommonResponseDTO<TenentDues> getTenentDuesDetails(UserPaymentFilterRequest filterRequest, FilterData filterData,Boolean applyPagination) throws WebServiceException {
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
-					"SELECT DISTINCT ON (u.user_money_due_id) " +
-							"u.user_id, " +
-							"u.user_money_due_amount, " +
-							"u.user_money_due_bill_start_date, " +
-							"ud.user_personal_name, " +
-							"pgt.property_name AS user_pg_propertyname, " + 
-							"pgt.property_id AS user_pg_property_id, " +
-							"bd.bed_name, " +
-							"u.user_money_due_id, " +
-							"pgt.property_city " + 
-							"FROM pgusers.user_dues u " +
-							"JOIN pgusers.user_details ud ON u.user_id = ud.user_id " +
-							"JOIN pgowners.zoy_pg_owner_booking_details bkd ON u.user_id = bkd.tenant_id " +
-							"JOIN pgowners.zoy_pg_property_details pgt ON bkd.property_id = pgt.property_id " +  // Join with property details to get city
-							"JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id " +
-					"WHERE 1=1 ");
+				    "SELECT DISTINCT ON (u.user_money_due_id) " +
+				            "u.user_money_due_amount, " +  
+				            "u.user_money_due_bill_start_date, " +  
+				            "ud.user_personal_name, " + 
+				            "pgt.property_name AS user_pg_propertyname, " +  
+				            "pgt.property_house_area AS pgAddress, " +  
+				            "bd.bed_name, " +
+				            "u.user_money_due_id, " +
+				            "pgt.property_city, " +  
+				            "ud.user_personal_phone_num " + 
+				    "FROM pgusers.user_dues u " +
+				    "JOIN pgusers.user_details ud ON u.user_id = ud.user_id " +
+				    "JOIN pgowners.zoy_pg_owner_booking_details bkd ON u.user_id = bkd.tenant_id " +
+				    "JOIN pgowners.zoy_pg_property_details pgt ON bkd.property_id = pgt.property_id " +  
+				    "JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id " +
+				    "WHERE 1=1 "
+				);
+
 
 			Map<String, Object> parameters = new HashMap<>();
 
@@ -324,19 +324,15 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("toDate", filterRequest.getToDate());
 			}
 
-			if (filterData.getTenantId() != null && !filterData.getTenantId().isEmpty()) {
-				queryBuilder.append(" AND u.user_id = :tenantId");
-				parameters.put("tenantId", filterData.getTenantId());
-			}
 
 			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
 				queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:tenantName)");
 				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
 			}
-
-			if (filterData.getPgId() != null && !filterData.getPgId().isEmpty()) {
-				queryBuilder.append(" AND pgd.user_pg_property_id = :pgPropertyId");
-				parameters.put("pgPropertyId", filterData.getPgId());
+			
+			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+				queryBuilder.append(" AND ud.user_personal_phone_num = :tenantMobileNum");
+				parameters.put("tenantMobileNum", "%" + filterData.getTenantContactNum() + "%");
 			}
 
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
@@ -352,21 +348,19 @@ public class AdminReportService implements AdminReportImpl{
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
 				String sort = "";
 
-				if ("customerId".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "u.user_id";
-				} else if ("customerName".equalsIgnoreCase(filterRequest.getSortActive())) {
+			     if ("customerName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "ud.user_personal_name";
 				} else if ("PgPropertyName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "pgt.property_name";
-				} else if ("PgPropertyId".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "pgt.property_id";
-				} else if ("bedNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
+				}else if ("bedNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "bd.bed_name";
 				} else if ("pendingAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "u.user_money_due_amount";
 				} else if ("pendingDueDate".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "u.user_money_due_bill_start_date";
-				} else {
+				}else if ("tenantMobileNum".equalsIgnoreCase(filterRequest.getSortActive())) {
+					sort = "ud.user_personal_phone_num";
+				}else {
 					sort = "u.user_money_due_bill_start_date"; 
 				}
 
@@ -386,26 +380,29 @@ public class AdminReportService implements AdminReportImpl{
 			}
 			List<Object[]> results = query.getResultList();
 			List<TenentDues> tenentDuesDto = results.stream().map(row -> {
-				TenentDues dto = new TenentDues();
-				dto.setUserId((String) row[0]);
-
-				boolean isPresent = userPaymentDueRepository.existsByUserMoneyDueId((String) row[7]);
-				if (isPresent) {
-					String userPaymentId = userPaymentDueRepository.findUserPaymentIdByUserMoneyDueId((String) row[7]);
-					BigDecimal payableAmount = userPaymentRepository.findUserPaymentPayableAmountByUserPaymentId(userPaymentId);
-					if (((BigDecimal) row[1]).subtract(payableAmount).compareTo(BigDecimal.ZERO) > 0) {
-						dto.setPendingAmount(payableAmount.subtract((BigDecimal) row[1]));
-					}
-				} else {
-					dto.setPendingAmount((BigDecimal) row[1]);
-				}
-
-				dto.setPendingDueDate((Timestamp) row[2]);
-				dto.setUserPersonalName((String) row[3]);
-				dto.setUserPgPropertyName((String) row[4]);
-				dto.setUserPgPropertyId((String) row[5]);
-				dto.setBedNumber((String) row[6]);
-				return dto;
+			    TenentDues dto = new TenentDues();
+			    
+			    boolean isPresent = userPaymentDueRepository.existsByUserMoneyDueId((String) row[6]);
+			    if (isPresent) {
+			        String userPaymentId = userPaymentDueRepository.findUserPaymentIdByUserMoneyDueId((String) row[6]);
+			        BigDecimal payableAmount = userPaymentRepository.findUserPaymentPayableAmountByUserPaymentId(userPaymentId);
+			        
+			        if (((BigDecimal) row[0]).subtract(payableAmount).compareTo(BigDecimal.ZERO) > 0) {
+			            dto.setPendingAmount(payableAmount.subtract((BigDecimal) row[0]));
+			        } else {
+			            dto.setPendingAmount((BigDecimal) row[0]);
+			        }
+			    } else {
+			        dto.setPendingAmount((BigDecimal) row[0]);
+			    }
+			    dto.setPendingDueDate((Timestamp) row[1]);
+			    dto.setUserPersonalName((String) row[2]);
+			    dto.setUserPgPropertyName((String) row[3]);
+			    dto.setUserPgPropertyAddress((String) row[4]); 
+			    dto.setBedNumber((String) row[5]); 
+			    dto.setTenantMobileNum((String) row[8]);
+			    
+			    return dto;
 			}).collect(Collectors.toList());
 
 			return new CommonResponseDTO<>(tenentDuesDto, filterCount);
@@ -420,26 +417,28 @@ public class AdminReportService implements AdminReportImpl{
 	public CommonResponseDTO<VendorPayments> getVendorPaymentDetails(UserPaymentFilterRequest filterRequest, FilterData filterData,Boolean applyPagination) throws WebServiceException{	
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
-					"SELECT DISTINCT ON (up.user_payment_id) " + 
-							"o.pg_owner_id AS ownerId, " +
-							"o.pg_owner_name AS ownerName, " +
-							"pd.property_id AS pgId, " +
-							"pd.property_name AS pgName, " +
-							"up.user_payment_payable_amount AS totalAmountFromTenants, " +
-							"up.user_payment_timestamp AS transactionDate, " +
-							"up.user_payment_bank_transaction_id AS transactionNumber, " +
-							"up.user_payment_payment_status AS paymentStatus, " +
-							"pd.property_city AS city " +
-							"FROM pgusers.user_payments up " +
-							"JOIN pgusers.user_pg_details pgd ON up.user_id = pgd.user_id " +
-							"JOIN pgusers.user_details ud ON up.user_id = ud.user_id " +
-							"JOIN pgowners.zoy_pg_owner_booking_details bkd ON up.user_id = bkd.tenant_id " +
-							"AND up.user_payment_booking_id = bkd.booking_id " +
-							"AND pgd.user_pg_property_id = bkd.property_id " +
-							"JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id " +
-							"JOIN pgowners.zoy_pg_property_details pd ON bkd.property_id = pd.property_id " +  
-							"JOIN pgowners.zoy_pg_owner_details o ON pd.pg_owner_id = o.pg_owner_id " +
-					"WHERE 1=1 ");
+				    "SELECT DISTINCT ON (up.user_payment_id) " +
+				            "o.pg_owner_name AS ownerName, " +  
+				            "pd.property_name AS pgName, " +    
+				            "up.user_payment_payable_amount AS totalAmountFromTenants, " +
+				            "up.user_payment_timestamp AS transactionDate, " +
+				            "up.user_payment_bank_transaction_id AS transactionNumber, " +
+				            "up.user_payment_payment_status AS paymentStatus, " +
+				            "pd.property_city AS city, " +
+				            "pd.property_house_area AS propertyAddress, " +  
+				            "o.pg_owner_email AS ownerEmail " + 
+				            "FROM pgusers.user_payments up " +
+				            "JOIN pgusers.user_pg_details pgd ON up.user_id = pgd.user_id " +
+				            "JOIN pgusers.user_details ud ON up.user_id = ud.user_id " +
+				            "JOIN pgowners.zoy_pg_owner_booking_details bkd ON up.user_id = bkd.tenant_id " +
+				            "AND up.user_payment_booking_id = bkd.booking_id " +
+				            "AND pgd.user_pg_property_id = bkd.property_id " +
+				            "JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id " +
+				            "JOIN pgowners.zoy_pg_property_details pd ON bkd.property_id = pd.property_id " +  
+				            "JOIN pgowners.zoy_pg_owner_details o ON pd.pg_owner_id = o.pg_owner_id " +
+				    "WHERE 1=1 "
+				);
+
 
 			Map<String, Object> parameters = new HashMap<>();
 
@@ -454,11 +453,11 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("ownerName", "%" + filterData.getOwnerName() + "%");
 			}
 
-			if (filterData.getPgId() != null && !filterData.getPgId().isEmpty()) {
-				queryBuilder.append(" AND pd.property_id = :pgId");
-				parameters.put("pgId", filterData.getPgId());
+			if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
+				queryBuilder.append(" AND LOWER(o.pg_owner_email) LIKE LOWER(:ownerName)");
+				parameters.put("ownerEmail", "%" + filterData.getOwnerEmail() + "%");
 			}
-
+			
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
 				queryBuilder.append(" AND LOWER(pd.property_name) LIKE LOWER(:pgName)");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
@@ -477,12 +476,8 @@ public class AdminReportService implements AdminReportImpl{
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
 				String sort = "";
 
-				if ("ownerId".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "o.pg_owner_id";
-				} else if ("ownerName".equalsIgnoreCase(filterRequest.getSortActive())) {
+				if ("ownerName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "o.pg_owner_name";
-				} else if ("pgId".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "pd.property_id";
 				} else if ("pgName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "pd.property_name";
 				} else if ("totalAmountFromTenants".equalsIgnoreCase(filterRequest.getSortActive())) {
@@ -493,7 +488,10 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "up.user_payment_bank_transaction_id";
 				} else if ("paymentStatus".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_payment_status";
-				} else {
+				} else if ("ownerEmail".equalsIgnoreCase(filterRequest.getSortActive())) {
+					sort = "o.pg_owner_email";
+				}
+				else {
 					sort = "up.user_payment_timestamp";  
 				}
 
@@ -513,19 +511,21 @@ public class AdminReportService implements AdminReportImpl{
 			}
 			List<Object[]> results = query.getResultList();
 			List<VendorPayments> vendorPaymentsDto = results.stream().map(row -> {
-				VendorPayments dto = new VendorPayments();
-				dto.setOwnerId((String) row[0]);
-				dto.setOwnerName((String) row[1]);
-				dto.setPgId((String) row[2]);
-				dto.setPgName((String) row[3]);
-				dto.setTotalAmountFromTenants((BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO);
-				dto.setTransactionDate((Timestamp) row[5]);
-				dto.setTransactionNumber((String) row[6]);
-				dto.setPaymentStatus((String) row[7]);
-				dto.setAmountPaidToOwner(BigDecimal.valueOf(0)); 
-				dto.setZoyCommission(BigDecimal.valueOf(0));     
-				return dto;
+			    VendorPayments dto = new VendorPayments();
+			    dto.setOwnerName((String) row[0]);  
+			    dto.setPgName((String) row[1]);    
+			    dto.setTotalAmountFromTenants((BigDecimal) row[2] != null ? (BigDecimal) row[2] : BigDecimal.ZERO); // totalAmountFromTenants
+			    dto.setTransactionDate((Timestamp) row[3]);  
+			    dto.setTransactionNumber((String) row[4]);  
+			    dto.setPaymentStatus((String) row[5]);      
+			    dto.setPgAddress((String) row[7]);  
+			    dto.setOwnerEmail((String) row[8]);  
+			    dto.setAmountPaidToOwner(BigDecimal.valueOf(0));  
+			    dto.setZoyShare(BigDecimal.valueOf(0));  
+			    dto.setOwnerApprovalStatus(null);
+			    return dto;
 			}).collect(Collectors.toList());
+
 
 			return new CommonResponseDTO<>(vendorPaymentsDto, filterCount);
 		}catch (Exception e) {

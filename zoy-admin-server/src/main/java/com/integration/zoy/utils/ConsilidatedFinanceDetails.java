@@ -6,8 +6,8 @@ import java.sql.Timestamp;
 import com.google.gson.annotations.SerializedName;
 
 public class ConsilidatedFinanceDetails {
-	@SerializedName("customerId")
-	private String userId;
+	@SerializedName("payerPayeeType")
+	private String payerPayeeType;
 	
 	@SerializedName("transactionDate")
     private Timestamp userPaymentTimestamp;
@@ -15,21 +15,22 @@ public class ConsilidatedFinanceDetails {
 	@SerializedName("transactionNumber")
     private String userPaymentBankTransactionId;
 	
-	@SerializedName("customerName")
-    private String userPersonalName;
+	@SerializedName("payerPayeeName")
+    private String payerPayeeName;
 	
 	@SerializedName("creditAmount")
-	private BigDecimal totalAmount;
+	private BigDecimal creditAmount;
 	
 	@SerializedName("debitAmount")
 	private BigDecimal debitAmount;
 
-	public String getUserId() {
-		return userId;
+	
+	public String getPayerPayeeType() {
+		return payerPayeeType;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setPayerPayeeType(String payerPayeeType) {
+		this.payerPayeeType = payerPayeeType;
 	}
 
 	public Timestamp getUserPaymentTimestamp() {
@@ -40,20 +41,20 @@ public class ConsilidatedFinanceDetails {
 		this.userPaymentTimestamp = userPaymentTimestamp;
 	}
 
-	public String getUserPersonalName() {
-		return userPersonalName;
+	public String getPayerPayeeName() {
+		return payerPayeeName;
 	}
 
-	public void setUserPersonalName(String userPersonalName) {
-		this.userPersonalName = userPersonalName;
+	public void setPayerPayeeName(String payerPayeeName) {
+		this.payerPayeeName = payerPayeeName;
 	}
 
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
+	public BigDecimal getCreditAmount() {
+		return creditAmount;
 	}
 
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setCreditAmount(BigDecimal creditAmount) {
+		this.creditAmount = creditAmount;
 	}
 
 	public String getUserPaymentBankTransactionId() {
