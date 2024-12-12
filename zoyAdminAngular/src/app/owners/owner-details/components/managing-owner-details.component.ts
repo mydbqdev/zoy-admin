@@ -35,7 +35,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  roomList:Room[]=[]
 	  roomArrayList:any[]=[];
 	  floorInfo:FloorInformation = new FloorInformation();
-	  floorName:string='';
+	  floor_id:string='';
 	  property_id:string='';
 	  property_status:string='';
 
@@ -148,18 +148,18 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  }
 	  
 	  selectProperty(){
-		this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_name == this.property_id);
+		this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_id == this.property_id);
 		this.property_status = this.propertyInfo.status ;
 		if(this.propertyInfo.floor_information.length>0){
 
 			this.floorInfo = this.propertyInfo.floor_information[0];
-			this.floorName = this.floorInfo.floor_name; 
+			this.floor_id = this.floorInfo.floor_id; 
 			this.showRooms();
 		}
 		
 	  }
 	  selectFloor(){
-			this.floorInfo = this.propertyInfo.floor_information.find(f=>f.floor_name == this.floorName);
+			this.floorInfo = this.propertyInfo.floor_information.find(f=>f.floor_id == this.floor_id);
 			this.showRooms();
 	  }
 	 
@@ -190,12 +190,12 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		this.zoyOwnerService.getZoyOwnerDetails(this.owenerId).subscribe(res => {
 		this.pgOwnerData = res?.data ;
 		if(this.pgOwnerData.pg_owner_property_information.length>0){
-			this.property_id =this.pgOwnerData.pg_owner_property_information[0].property_name; 
-			this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_name == this.property_id);
+			this.property_id =this.pgOwnerData.pg_owner_property_information[0].property_id; 
+			this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_id == this.property_id);
 			this.property_status = this.propertyInfo.status ;
 			if(this.propertyInfo.floor_information.length>0){
 				this.floorInfo = this.propertyInfo.floor_information[0];
-				this.floorName = this.floorInfo.floor_name; 
+				this.floor_id = this.floorInfo.floor_id; 
 				this.showRooms();
 			}
 			
