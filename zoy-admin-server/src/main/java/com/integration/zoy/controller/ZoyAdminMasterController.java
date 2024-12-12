@@ -410,8 +410,14 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				ZoyPgShareMaster updated=ownerDBImpl.updateShare(zoyPgShareMasters);
 				
 				//audit history here
-				String historyContent=" has updated the Share Type for, Type from "+oldType+" to "+shareTypeId.getShareType()+" , Occupancy Count from "+oldCount+" to "+shareTypeId.getShareOccupancyCount();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
+				StringBuffer historyContent=new StringBuffer(" has updated the Share Type for ");
+				if(!oldType.equals(shareTypeId.getShareType())) {
+					historyContent.append(", Type from "+oldType+" to "+shareTypeId.getShareType());
+				}
+				if(oldCount!=shareTypeId.getShareOccupancyCount()) {
+					historyContent.append(" , Occupancy Count from "+oldCount+" to "+shareTypeId.getShareOccupancyCount());
+				}				
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
 				
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
