@@ -323,8 +323,7 @@ constantType: { key: string, value: string }[] = [
 	{ key: 'USER_UPDATE', value: 'Update User' },
 	{ key: 'USER_ACTIVE', value: 'Activate User' },
 	{ key: 'USER_INACTIVE', value: 'Deactivate User' },
-	{ key: 'USER_DELETE', value: 'Delete User' },
-	{ key: 'USER_ROLE_ADDED', value: 'Role Added to User' },
+	{ key: 'USER_DELETE', value: 'Delete User' },	
 	{ key: 'USER_ROLE_APPROVED', value: 'Role Approved for User' },
 	{ key: 'USER_ROLE_REJECTED', value: 'Role Rejected for User' },
 	{ key: 'ZOY_CODE_GENERATE', value: 'Generate Zoy Code' },
@@ -333,11 +332,11 @@ constantType: { key: string, value: string }[] = [
 	{ key: 'ADMIN_ROLE_DELETE', value: 'Delete Admin Role' },
 	{ key: 'USER_ROLE_ASSIGN', value: 'Assign Role to User' },
 	{ key: 'ZOY_CODE_RESEND', value: 'Resend Zoy Code' },
-	{ key: 'ADMIN_DB_CONFIG_CREATE',value:'Create DB Configuration'},
-	{ key: 'ADMIN_DB_CONFIG_UPDATE',value:'Update DB Configuration'},
-	{ key: 'ADMIN_MASTER_CONFIG_CREATE',value:'Create Admin Configuration'},
-	{ key: 'ADMIN_MASTER_CONFIG_UPDATE',value:'Update Admin Configuration'},
-	{ key: 'ADMIN_MASTER_CONFIG_DELETE',value:'Delete Admin Configuration'}
+	{ key: 'ADMIN_DB_CONFIG_CREATE',value:'Create Database Configuration'},
+	{ key: 'ADMIN_DB_CONFIG_UPDATE',value:'Update Database Configuration'},
+	{ key: 'ADMIN_MASTER_CONFIG_CREATE',value:'Create Master Configuration'},
+	{ key: 'ADMIN_MASTER_CONFIG_UPDATE',value:'Update Master Configuration'},
+	{ key: 'ADMIN_MASTER_CONFIG_DELETE',value:'Delete Master Configuration'}
 	
   ];
 }
