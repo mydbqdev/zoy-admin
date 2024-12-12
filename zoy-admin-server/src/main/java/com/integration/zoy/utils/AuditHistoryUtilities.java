@@ -232,4 +232,24 @@ public class AuditHistoryUtilities {
 			log.error("Error in audit entry for auditForRoleAssign"+loginEmail+":",e);
 		}
 	}
+	
+	public void auditForCommon(String loginEmail, String history,String operation) {
+		try {
+			String userName="";
+			Optional<AdminUserMaster> user=userMasterRepository.findById(loginEmail);
+			if(user.isPresent()) {
+				userName=user.get().getFirstName()+" "+user.get().getLastName();
+			}
+			String histotyData=	userName+" "+history;
+
+			AuditHistory auditHistory=new AuditHistory();
+			auditHistory.setUserEmail(loginEmail);
+			auditHistory.setOperation(operation);
+			
+			auditHistory.setHistoryData(histotyData);
+			auditHistoryRepository.save(auditHistory);
+		}catch(Exception e) {
+			log.error("Error in audit entry for auditForCommon"+loginEmail+":",e);
+		}
+	}
 }

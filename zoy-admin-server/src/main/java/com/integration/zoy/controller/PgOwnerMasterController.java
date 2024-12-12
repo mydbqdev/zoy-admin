@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +31,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.PgOwnerMaster;
 import com.integration.zoy.entity.UserProfile;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
@@ -53,6 +55,7 @@ import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.ZoyCodeGenerationService;
 import com.integration.zoy.service.ZoyEmailService;
+import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.ResponseBody;
 
 @RestController
@@ -80,7 +83,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 	@Value("${qa.signin.link}")
 	private String qaRegistrationLink;
-
+	@Autowired
+	AuditHistoryUtilities auditHistoryUtilities;
 
 	private static final Gson gson = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -138,9 +142,12 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			user.setUserApplicationName("O");
 			user.setVerifyToken(token);
 			commonDBImpl.registerNewUserAccount(user);
-
+			//audit history here
+			String historyContent=" has generated the zoy code for,"+user.getPropertyOwnerName();
+			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);
 			emailBodyService.sendZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,token);
 
+			
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("ZOY code has been generated & sent successfully.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -168,6 +175,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			UserProfile profile=profileRepository.findRegisterEmail(email).get();
 			emailBodyService.resendPgOwnerDetails(pgOwnerDetails.getEmailId(),pgOwnerDetails.getFirstName(),pgOwnerDetails.getLastName(),pgOwnerDetails.getZoyCode(),profile.getVerifyToken());
 
+			String historyContent=" has resend the zoy code for,"+pgOwnerDetails.getFirstName()+" "+pgOwnerDetails.getLastName();
+			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_RESEND);
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("ZOY code has been sent successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgCancellationDetails;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
@@ -35,6 +37,7 @@ import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
 import com.integration.zoy.model.ZoyShareDetails;
 import com.integration.zoy.service.OwnerDBImpl;
+import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.ZoyAdminConfigDTO;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
@@ -71,6 +74,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
+	
+	@Autowired
+	AuditHistoryUtilities auditHistoryUtilities;
 
 
 	@Override
@@ -84,10 +90,17 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			}
 			ZoyPgTokenDetails tokenDetails = ownerDBImpl.findTokenDetails();
 			if (tokenDetails != null) {
+				final BigDecimal oldFixed=tokenDetails.getFixedToken();
+				final BigDecimal oldVariable=tokenDetails.getVariableToken();
 				// Update the existing token record
 				tokenDetails.setFixedToken(details.getFixedToken() != null ? details.getFixedToken() : BigDecimal.ZERO);
 				tokenDetails.setVariableToken(details.getVariableToken() != null ? details.getVariableToken() : BigDecimal.ZERO);
 				ownerDBImpl.saveToken(tokenDetails);
+				
+				//audit history here
+				String historyContent=" has updated the Token for, Fixed from "+oldFixed+" to "+tokenDetails.getFixedToken()+" ,  Variable from "+oldVariable+" to "+tokenDetails.getVariableToken();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				
 				ZoyPgTokenDetailsDTO dto = convertToDTO(tokenDetails);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -99,6 +112,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newTokenDetails.setFixedToken(details.getFixedToken() != null ? details.getFixedToken() : BigDecimal.ZERO);
 				newTokenDetails.setVariableToken(details.getVariableToken() != null ? details.getVariableToken() : BigDecimal.ZERO);
 				ownerDBImpl.saveToken(newTokenDetails);
+				//audit history here
+				String historyContent=" has created the Token for, Fixed = "+newTokenDetails.getFixedToken()+" , Variable ="+newTokenDetails.getVariableToken();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+				
 				ZoyPgTokenDetailsDTO dto = convertToDTO(newTokenDetails);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -261,6 +278,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			BigDecimal otherGst;
 
 			if (otherCharges != null) {
+				final BigDecimal oldFixed=otherCharges.getOtherGst();
+				final BigDecimal oldVariable=otherCharges.getDocumentCharges();
 				documentCharges = (details.getDocumentCharges() != null) 
 						? details.getDocumentCharges() 
 								: otherCharges.getDocumentCharges();
@@ -273,6 +292,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				otherCharges.setOtherGst(otherGst);
 
 				ownerDBImpl.saveOtherCharges(otherCharges);
+				
+				//audit history here
+				String historyContent=" has updated the Other Changes for, GST from "+oldFixed+" to "+otherCharges.getOtherGst()+" ,  Document from "+oldVariable+" to "+otherCharges.getDocumentCharges();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				
 				ZoyOtherChargesDto dto =convertToDTO(otherCharges);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -294,6 +318,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newOtherCharges.setOtherGst(otherGst);
 
 				ownerDBImpl.saveOtherCharges(newOtherCharges);
+				
+				//audit history here
+				String historyContent=" has created the Other Charges for, GST = "+newOtherCharges.getOtherGst()+" , Document ="+newOtherCharges.getDocumentCharges();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+				
 				ZoyOtherChargesDto dto =convertToDTO(newOtherCharges);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -329,8 +358,14 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			}
 			ZoyDataGrouping group=ownerDBImpl.findZoyDataGroup();
 			if (group != null) {
+				final int oldFixed=group.getConsiderDays();
 				group.setConsiderDays(details.getConsiderDays());
 				ownerDBImpl.saveDataGroup(group);
+				
+				//audit history here
+				String historyContent=" has updated the Data Grouping for, Considering days from "+oldFixed+" to "+details.getConsiderDays();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				
 				ZoyDataGroupingDto dto=convertToDTO(group);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -340,6 +375,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				ZoyDataGrouping newGroup=new ZoyDataGrouping();
 				newGroup.setConsiderDays(details.getConsiderDays());
 				ownerDBImpl.saveDataGroup(newGroup);
+				//audit history here
+				String historyContent=" has created the Data Grouping for, Considering days = "+details.getConsiderDays();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+				
 				ZoyDataGroupingDto dto=convertToDTO(newGroup);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -373,10 +412,17 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			}
 			ZoyPgSecurityDepositDetails limits = ownerDBImpl.findZoySecurityDeposit();      
 			if (limits != null) {
+				final BigDecimal oldFixed=limits.getSecurityDepositMax();
+				final BigDecimal oldVariable=limits.getSecurityDepositMin();
 				// Update the existing record
 				limits.setSecurityDepositMax(details.getMaximumDeposit());
 				limits.setSecurityDepositMin(details.getMinimumDeposit());
 				ownerDBImpl.saveZoySecurityDepositLimits(limits);
+				
+				//audit history here
+				String historyContent=" has updated the Security Deposit Limit for, Max from "+oldFixed+" to "+details.getMaximumDeposit()+" ,  Min from "+oldVariable+" to "+details.getMinimumDeposit();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				
 				ZoyPgSecurityDepositDetailsDTO dto = convertToDTO(limits);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -387,6 +433,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newSecurityLimit.setSecurityDepositMax(details.getMaximumDeposit());
 				newSecurityLimit.setSecurityDepositMin(details.getMinimumDeposit());
 				ownerDBImpl.saveZoySecurityDepositLimits(newSecurityLimit);
+				//audit history here
+				String historyContent=" has created the Security Deposit Limit for, Max = "+details.getMaximumDeposit()+" , Min="+details.getMinimumDeposit();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+				
 				ZoyPgSecurityDepositDetailsDTO dto = convertToDTO(newSecurityLimit);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -425,9 +475,15 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyPgSecurityDepositRefundRule existingRule = ownerDBImpl.findSecurityDepositRefundRuleById();
 
 			if (existingRule != null) {
+				final int oldFixed=existingRule.getMaxDaysForRefund();
+				final BigDecimal oldVariable=existingRule.getPlotformCharges();
 				existingRule.setMaxDaysForRefund(ruleDetails.getMaximumDays());
 				existingRule.setPlotformCharges(ruleDetails.getPlotformCharges());
 				ownerDBImpl.saveSecurityDepositRefundRule(existingRule);
+				//audit history here
+				String historyContent=" has updated the Security Deposit Refund for, Max Days For Refund from "+oldFixed+" to "+ruleDetails.getMaximumDays()+" ,  Plot form Charges from "+oldVariable+" to "+ruleDetails.getPlotformCharges();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				
 				ZoyPgSecurityDepositRefundRuleDto dto =convertToDTO(existingRule);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -438,6 +494,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newRule.setMaxDaysForRefund(ruleDetails.getMaximumDays());
 				newRule.setPlotformCharges(ruleDetails.getPlotformCharges());
 				ownerDBImpl.saveSecurityDepositRefundRule(newRule);
+				
+				//audit history here
+				String historyContent=" has created the Security Deposit Refund for, Max Days For Refund = "+newRule.getMaxDaysForRefund()+" , Plot form Charges="+newRule.getPlotformCharges();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+				
 				ZoyPgSecurityDepositRefundRuleDto dto =convertToDTO(newRule);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
