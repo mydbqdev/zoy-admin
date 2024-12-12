@@ -333,11 +333,11 @@ constantType: { key: string, value: string }[] = [
 	{ key: 'ADMIN_ROLE_DELETE', value: 'Delete Admin Role' },
 	{ key: 'USER_ROLE_ASSIGN', value: 'Assign Role to User' },
 	{ key: 'ZOY_CODE_RESEND', value: 'Resend Zoy Code' },
-	{ key: 'ADMIN_DB_CONFIG_CREATE',value:'DB Configuration Create'},
-	{ key: 'ADMIN_DB_CONFIG_UPDATE',value:'DB Configuration Update'},
-	{ key: 'ADMIN_MASTER_CONFIG_CREATE',value:'Admin Configuration Create'},
-	{ key: 'ADMIN_MASTER_CONFIG_UPDATE',value:'Admin Configuration Update'},
-	{ key: 'ADMIN_MASTER_CONFIG_DELETE',value:'Admin Configuration Delete'}
+	{ key: 'ADMIN_DB_CONFIG_CREATE',value:'Create DB Configuration'},
+	{ key: 'ADMIN_DB_CONFIG_UPDATE',value:'Update DB Configuration'},
+	{ key: 'ADMIN_MASTER_CONFIG_CREATE',value:'Create Admin Configuration'},
+	{ key: 'ADMIN_MASTER_CONFIG_UPDATE',value:'Update Admin Configuration'},
+	{ key: 'ADMIN_MASTER_CONFIG_DELETE',value:'Delete Admin Configuration'}
 	
   ];
 }
