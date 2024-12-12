@@ -35,6 +35,7 @@ export class Profile {
   
   // PG Owner Property Information Model
   export class PgOwnerPropertyInformation {
+    property_id:string;
     property_name: string;
     status: string;
     basic_property_information: BasicPropertyInformation;
@@ -70,6 +71,7 @@ export class Profile {
   
   // Floor Information Model
   export class FloorInformation {
+    floor_id:string
     floor_name: string;
     total_rooms: string;
     total_occupancy: string;
