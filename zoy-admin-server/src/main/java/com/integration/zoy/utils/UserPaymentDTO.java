@@ -43,7 +43,7 @@ public class UserPaymentDTO {
 	@SerializedName("propertyHouseArea")
 	private String propertyHouseArea;
 	
-	@SerializedName("propertyHouseArea")
+	@SerializedName("tenantContactNum")
 	private String tenantContactNum;
 	
 	public Timestamp getUserPaymentTimestamp() {
