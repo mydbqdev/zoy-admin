@@ -118,17 +118,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
         this.paginator.pageIndex=0;
         this.getUserAuditdetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
       }
-       
-	filterData(event){
-        const charCode = (event.which) ? event.which : event.keyCode;
-        const inputValue = event.target.value + String.fromCharCode(charCode);
-        if (inputValue.startsWith(' ')) {
-               return false;
-             }
-		if (charCode === 13) {
-		this.submit();
-	  }
-	}
+
       pageChanged(event:any){
 		this.dataSource=new MatTableDataSource<any>();
 		if(this.lastPageSize!=event.pageSize){
