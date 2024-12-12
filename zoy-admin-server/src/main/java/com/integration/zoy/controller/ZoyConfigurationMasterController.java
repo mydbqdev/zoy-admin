@@ -98,8 +98,14 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				ownerDBImpl.saveToken(tokenDetails);
 				
 				//audit history here
-				String historyContent=" has updated the Token for, Fixed from "+oldFixed+" to "+tokenDetails.getFixedToken()+" ,  Variable from "+oldVariable+" to "+tokenDetails.getVariableToken();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				 StringBuffer historyContent=new StringBuffer(" has updated the Token for");
+				if(oldFixed!=tokenDetails.getFixedToken()) {
+					historyContent.append(", Fixed from "+oldFixed+" to "+tokenDetails.getFixedToken());
+				}
+				if(oldVariable!=tokenDetails.getVariableToken()) {
+					historyContent.append(" , Variable from "+oldVariable+" to "+tokenDetails.getVariableToken());
+				}
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 				
 				ZoyPgTokenDetailsDTO dto = convertToDTO(tokenDetails);
 				response.setStatus(HttpStatus.OK.value());
@@ -155,14 +161,32 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                response.setError("Unable to get before check-in cancellation details");
 	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
 	            }
+	            final int oldFixed=cancelDetails.getDaysBeforeCheckIn();
+	            final BigDecimal oldVariable=cancelDetails.getDeductionPercentages();
 	            cancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
 	            cancelDetails.setDeductionPercentages(details.getDeductionPercentages());
 	            ownerDBImpl.saveBeforeCancellation(cancelDetails);
+	            //audit history here
+	            StringBuffer historyContent=new StringBuffer(" has updated the Cancellation And Refund Policy for");
+				if(oldFixed!=details.getDaysBeforeCheckIn()) {
+					historyContent.append(", Days before check in from "+oldFixed+" to "+details.getDaysBeforeCheckIn());
+				}
+				if(oldVariable!=details.getDeductionPercentages()) {
+					historyContent.append(" , Deduction percentage from "+oldVariable+" to "+details.getDeductionPercentages());
+				}
+
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				
 	        } else {
 	            ZoyPgCancellationDetails newCancelDetails = new ZoyPgCancellationDetails();
 	            newCancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
 	            newCancelDetails.setDeductionPercentages(details.getDeductionPercentages());
 	            ownerDBImpl.saveBeforeCancellation(newCancelDetails);
+	            
+	          //audit history here
+				String historyContent=" has created the Cancellation And Refund Policy for, Days before check in = "+details.getDaysBeforeCheckIn()+" , Deduction percentage ="+details.getDeductionPercentages();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+				
 	        }
 
 	        List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
@@ -294,8 +318,15 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				ownerDBImpl.saveOtherCharges(otherCharges);
 				
 				//audit history here
-				String historyContent=" has updated the Other Changes for, GST from "+oldFixed+" to "+otherCharges.getOtherGst()+" ,  Document from "+oldVariable+" to "+otherCharges.getDocumentCharges();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				StringBuffer historyContent=new StringBuffer(" has updated the Other Changes for");
+				if(oldFixed!=otherCharges.getOtherGst()) {
+					historyContent.append(", GST from "+oldFixed+" to "+otherCharges.getOtherGst());
+				}
+				if(oldVariable!=otherCharges.getDocumentCharges()) {
+					historyContent.append(" ,  Document from "+oldVariable+" to "+otherCharges.getDocumentCharges());
+				}
+
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 				
 				ZoyOtherChargesDto dto =convertToDTO(otherCharges);
 				response.setStatus(HttpStatus.OK.value());
@@ -420,8 +451,15 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				ownerDBImpl.saveZoySecurityDepositLimits(limits);
 				
 				//audit history here
-				String historyContent=" has updated the Security Deposit Limit for, Max from "+oldFixed+" to "+details.getMaximumDeposit()+" ,  Min from "+oldVariable+" to "+details.getMinimumDeposit();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				StringBuffer historyContent=new StringBuffer(" has updated the Security Deposit Limit for");
+				if(oldFixed!=details.getMaximumDeposit()) {
+					historyContent.append(", Max from "+oldFixed+" to "+details.getMaximumDeposit());
+				}
+				if(oldVariable!=details.getMinimumDeposit()) {
+					historyContent.append(" ,  Min from "+oldVariable+" to "+details.getMinimumDeposit());
+				}
+				
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 				
 				ZoyPgSecurityDepositDetailsDTO dto = convertToDTO(limits);
 				response.setStatus(HttpStatus.OK.value());
@@ -481,8 +519,15 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				existingRule.setPlotformCharges(ruleDetails.getPlotformCharges());
 				ownerDBImpl.saveSecurityDepositRefundRule(existingRule);
 				//audit history here
-				String historyContent=" has updated the Security Deposit Refund for, Max Days For Refund from "+oldFixed+" to "+ruleDetails.getMaximumDays()+" ,  Plot form Charges from "+oldVariable+" to "+ruleDetails.getPlotformCharges();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				StringBuffer historyContent=new StringBuffer(" has updated the Security Deposit Refund for");
+				if(oldFixed!=ruleDetails.getMaximumDays()) {
+					historyContent.append(", Max Days For Refund from "+oldFixed+" to "+ruleDetails.getMaximumDays());
+				}
+				if(oldVariable!=ruleDetails.getPlotformCharges()) {
+					historyContent.append(" ,  Plot form Charges from "+oldVariable+" to "+ruleDetails.getPlotformCharges());
+				}
+
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 				
 				ZoyPgSecurityDepositRefundRuleDto dto =convertToDTO(existingRule);
 				response.setStatus(HttpStatus.OK.value());
@@ -573,13 +618,17 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		        }
 
-		        ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(cancellationID.getCancellationId());
+		        final ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(cancellationID.getCancellationId());
 		        if (cancelDetails == null) {
 		            response.setStatus(HttpStatus.NOT_FOUND.value());
 		            response.setError("Cancellation details not found for the given ID");
 		            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 		        }
 		        ownerDBImpl.deleteBeforeCancellation(cancellationID.getCancellationId());
+		      //audit history here
+				String historyContent=" has deleted the Cancellation And Refund Policy for, Days before check in = "+cancelDetails.getDaysBeforeCheckIn()+" , Deduction percentage ="+cancelDetails.getDeductionPercentages();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_DELETE);
+				
 		        List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
 		        List<ZoyBeforeCheckInCancellation> dtoList = cancellationDetails.stream()
 		                .map(this::convertToDTO)
