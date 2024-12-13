@@ -112,6 +112,11 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 	@Query(value = "DELETE from user_temprory WHERE user_email = :user_email", nativeQuery = true)
 	void rejectUser(String user_email);
 	
+	@Query(value="select ar.role_name from user_role ur JOIN app_role ar ON ur.role_id = ar.id WHERE ur.user_email = :user_email",nativeQuery = true)
+	List<String> getRoleAssigned(String user_email);
+	
+	@Query(value="select ar.role_name from user_temprory ur  JOIN app_role ar ON ur.role_id = ar.id WHERE ur.user_email = :user_email",nativeQuery = true)
+	List<String> getRoleTempBeforeApproved(String user_email);
 	
 	@Query(value="select * from user_master where user_email in (:userMails)",nativeQuery = true)
 	List<AdminUserMaster> userdata(String[] userMails);
