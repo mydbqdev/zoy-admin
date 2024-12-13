@@ -406,7 +406,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					appRoleScreensUpdate.add(sc);
 				});
 				//audit here
-				//auditHistoryUtilities.auditForRoleUpdate(SecurityContextHolder.getContext().getAuthentication().getName(),history,gson.toJson(appRoleScreensDb).toString(),gson.toJson(appRoleScreensUpdate).toString());
+				auditHistoryUtilities.auditForRoleUpdate(SecurityContextHolder.getContext().getAuthentication().getName(),history,appRoleScreensDb,appRoleScreensUpdate);
 				
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("Role Updated Successfully");
