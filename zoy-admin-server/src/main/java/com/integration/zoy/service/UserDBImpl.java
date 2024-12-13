@@ -60,6 +60,9 @@ public interface UserDBImpl {
 	
 	//User Name List
 	List<UserNameDTO> getUserNameList() throws WebServiceException;
+	
+	//User Audit Download
+	byte[] generateDynamicReport(OwnerLeadPaginationRequest paginationRequest)  throws WebServiceException;
 
 
 }

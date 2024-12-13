@@ -1,18 +1,29 @@
 package com.integration.zoy.utils;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AuditHistory;
+import com.integration.zoy.entity.RoleScreen;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AuditHistoryRepository;
@@ -23,6 +34,24 @@ public class AuditHistoryUtilities {
 	private AuditHistoryRepository auditHistoryRepository;
 	@Autowired
 	AdminUserMasterRepository userMasterRepository;
+	private static final Gson gson = new GsonBuilder()
+			.setDateFormat("yyyy-MM-dd HH:mm:ss")
+			.registerTypeAdapter(Timestamp.class, (JsonSerializer<Timestamp>) (src, typeOfSrc, context) -> {
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
+				return new JsonPrimitive(dateFormat.format(src)); 
+			})
+			.registerTypeAdapter(Timestamp.class, (JsonDeserializer<Timestamp>) (json, typeOfT, context) -> {
+				try {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
+					return new Timestamp(dateFormat.parse(json.getAsString()).getTime()); 
+				} catch (Exception e) {
+					throw new JsonParseException("Failed to parse Timestamp", e);
+				}
+			})
+			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+			.create();
 	
 	public void auditForUserLoginLogout(String email,boolean islogin) throws WebServiceException {
 		try {
@@ -163,9 +192,14 @@ public class AuditHistoryUtilities {
 	}
 	
 
-	public void auditForRoleUpdate(String email, StringBuffer history, String appRoleScreens,
-			String appRoleScreensnew) {
+	public void auditForRoleUpdate(String email, StringBuffer history, List<com.integration.zoy.model.RoleScreen> appRoleScreensDB,
+			List<com.integration.zoy.model.RoleScreen> appRoleScreensNewUpdate) {
 		try {
+			final List<com.integration.zoy.model.RoleScreen> listOneListDB = appRoleScreensDB.stream().filter(two -> appRoleScreensNewUpdate.stream()
+		              .anyMatch(one -> one.getScreenName().equals(two.getScreenName()))) 
+		              .collect(Collectors.toList());
+			String appRoleScreens=listOneListDB!=null && !listOneListDB.isEmpty() ? gson.toJson(listOneListDB).toString() : "-" ;
+			String appRoleScreensnew=gson.toJson(appRoleScreensNewUpdate).toString();
 			String userName="";
 			Optional<AdminUserMaster> user=userMasterRepository.findById(email);
 			if(user.isPresent()) {

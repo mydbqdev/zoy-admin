@@ -1,6 +1,10 @@
 package com.integration.zoy.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +15,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -304,8 +311,11 @@ public class UserDBService implements UserDBImpl{
 	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
 	        
 			int count=query.getResultList().size();
+			
+			if(null == paginationRequest.getDownloadType() || paginationRequest.getDownloadType().equals("")) {
 			query.setFirstResult(paginationRequest.getPageIndex() * paginationRequest.getPageSize());
 			query.setMaxResults(paginationRequest.getPageSize());
+			}
 
 			List<Object[]> activityLogData = query.getResultList();
 	        List<AuditActivitiesLogDTO> list = new ArrayList<>(activityLogData.size());
@@ -348,6 +358,110 @@ public class UserDBService implements UserDBImpl{
 
 	    return userList;
 	}
+	
+	//User Audit download
+	@Override
+	public byte[] generateDynamicReport(OwnerLeadPaginationRequest paginationRequest ) throws WebServiceException {
+		try {
+			String[] headers= {" USER NAME","CREATED ON","TYPE","HISTORY DATA"};
+			CommonResponseDTO<AuditActivitiesLogDTO> data = getAuditActivitiesLogCount(paginationRequest);
+			
+			if(paginationRequest.getDownloadType().equals("csv")) {
+				return generateCsvFile(data, headers ,paginationRequest.getIsUserActivity() );
+			}else if(paginationRequest.getDownloadType().equals("excel")){
+				return generateExcelFile(data, headers,paginationRequest.getIsUserActivity() );
+			}else {
+				 return new byte[0];
+			}
+			
+		}catch (Exception e) {
+			new ZoyAdminApplicationException(e, "");
+		}
+		return  new byte[0];
+	}
 
+	public byte[] generateExcelFile(CommonResponseDTO<AuditActivitiesLogDTO> data,String[] headers ,boolean isUserActivity) {
+		
+		if (data == null || null == data.getData() || data.getData().size()<1 || data.getCount()<1) {
+	        return new byte[0];
+	    }
+		List <AuditActivitiesLogDTO> reportData = data.getData();
+		
+		try (XSSFWorkbook workbook = new XSSFWorkbook()) {			
+			Sheet sheet = workbook.createSheet("User Audit Report");
+				Row headerRow = sheet.createRow(0);
+				
+				if(isUserActivity) {
+						headerRow.createCell(0).setCellValue("CREATED ON");
+						headerRow.createCell(1).setCellValue("HISTORY DATA");
+								
+					for (int i = 0; i < reportData.size(); i++) {
+						Row dataRow = sheet.createRow(i + 1);
+						dataRow.createCell(0).setCellValue(reportData.get(i).getCreatedOn());
+						dataRow.createCell(1).setCellValue(reportData.get(i).getHistoryData());
+					}
+				}else {
+					for (int i = 0; i < headers.length; i++) {
+						headerRow.createCell(i).setCellValue(headers[i]);
+					}				
+					for (int i = 0; i < reportData.size(); i++) {
+						Row dataRow = sheet.createRow(i + 1);
+						dataRow.createCell(0).setCellValue(reportData.get(i).getUserName());
+						dataRow.createCell(1).setCellValue(reportData.get(i).getCreatedOn());
+						dataRow.createCell(2).setCellValue(reportData.get(i).getType());
+						dataRow.createCell(3).setCellValue(reportData.get(i).getHistoryData());
+					}
+				}
+				
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			workbook.write(outputStream);
+			return outputStream.toByteArray();
+		} catch (Exception e) {
+			throw new RuntimeException("Error generating Excel file", e);
+		}
+	}
+	
+	public byte[] generateCsvFile(CommonResponseDTO<AuditActivitiesLogDTO> data,String[] headers ,boolean isUserActivity ) {
+		
+		if (data == null || null == data.getData() || data.getData().size()<1 || data.getCount()<1) {
+	        return new byte[0];
+	    }
+		List <AuditActivitiesLogDTO> reportData = data.getData();
+	   
+	    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	         PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
+
+	    	if(isUserActivity) {
+	    		 writer.println( "CREATED ON,HISTORY DATA");
+
+		            for (AuditActivitiesLogDTO dto : reportData) {
+		            	writer.printf("\"%s\",\"%s\"%n",
+		            			dto.getCreatedOn(),
+		            			dto.getHistoryData()
+		                       
+		                       );
+		               }
+	               	}else {
+	    	    	 writer.println( String.join(",", headers));
+		            for (AuditActivitiesLogDTO dto : reportData) {
+		            	writer.printf("\"%s\",\"%s\",\"%s\",\"%s\"%n",
+		            			dto.getUserName(),
+		            			dto.getCreatedOn(),
+		            			dto.getType(),
+		            			dto.getHistoryData()
+		                       
+		                       );
+		            }
+	    	}
+	    	
+
+	        writer.flush();
+	        return outputStream.toByteArray();
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("Error generating CSV file", e);
+	    }
+	}
+	
 
 }

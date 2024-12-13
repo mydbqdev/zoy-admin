@@ -33,6 +33,8 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	isExpandSideBar:boolean=true;
 	displayedColumns: string[] = ['created_on','user_name','type','history_data'];
 	public ELEMENT_DATA:UserAuditModel[]=[];
+	reportDataList :any[]=[];
+	reportDataSource: MatTableDataSource<any>=new MatTableDataSource(this.reportDataList);
 	dataSource:MatTableDataSource<UserAuditModel>=new MatTableDataSource<UserAuditModel>();
 	filterActivitiesData: UserAuditModel[] = [];
 	columnSortDirectionsOg: { [key: string]: string | null } = {
@@ -58,6 +60,8 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
     username: string = '';  
     userNameList: UserListModel[] = []; 
     selectedValue: string = '';   
+	reportName:string ='User Audit Report';
+	downloadType :string='';
 	constructor(private userAuditService: UserAuditService, private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
             this.authService.checkLoginUserVlidaate();
@@ -109,21 +113,12 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		this.getUserAuditdetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
 	}
 
+
     submit(): void {
         this.paginator.pageIndex=0;
         this.getUserAuditdetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
       }
-       
-	filterData(event){
-        const charCode = (event.which) ? event.which : event.keyCode;
-        const inputValue = event.target.value + String.fromCharCode(charCode);
-        if (inputValue.startsWith(' ')) {
-               return false;
-             }
-		if (charCode === 13) {
-		this.submit();
-	  }
-	}
+
       pageChanged(event:any){
 		this.dataSource=new MatTableDataSource<any>();
 		if(this.lastPageSize!=event.pageSize){
@@ -159,6 +154,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
         this.filtersRequest.searchText=this.searchText;
         this.filtersRequest.userEmail=this.username;
 		this.filtersRequest.activity=this.selectedValue;
+		this.filtersRequest.downloadType="";
 		this.userAuditService.getUserAuditdetails(this.filtersRequest).subscribe(data => {
 			if(data?.data?.length >0){
 				  this.totalProduct=data.count;
@@ -237,24 +233,101 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
        if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
        }
      });
-}
+	}
 
-      constantType: { key: string, value: string }[] = [
-        { key: 'USER_LOGIN', value: 'User Login' },
-        { key: 'USER_LOGOUT', value: 'User Logout' },
-        { key: 'USER_ADD', value: 'Create User' },
-        { key: 'USER_UPDATE', value: 'Update User' },
-        { key: 'USER_ACTIVE', value: 'Activate User' },
-        { key: 'USER_INACTIVE', value: 'Deactivate User' },
-        { key: 'USER_DELETE', value: 'Delete User' },
-        { key: 'USER_ROLE_ADDED', value: 'Role Added to User' },
-        { key: 'USER_ROLE_APPROVED', value: 'Role Approved for User' },
-        { key: 'USER_ROLE_REJECTED', value: 'Role Rejected for User' },
-        { key: 'ZOY_CODE_GENERATE', value: 'Generate Zoy Code' },
-        { key: 'ADMIN_ROLE_CREATE', value: 'Create Admin Role' },
-        { key: 'ADMIN_ROLE_UPDATE', value: 'Update Admin Role' },
-        { key: 'ADMIN_ROLE_DELETE', value: 'Delete Admin Role' },
-        { key: 'USER_ROLE_ASSIGN', value: 'Assign Role to User' }
-      ];
+	 download(){   
+		this.authService.checkLoginUserVlidaate();
+	    this.filtersRequest.sortActive=this.sortActive;
+		this.filtersRequest.sortDirection=this.sortDirection.toUpperCase();
+		this.filtersRequest.searchText=this.searchText;
+        this.filtersRequest.userEmail=this.username;
+		this.filtersRequest.activity=this.selectedValue;
+		this.filtersRequest.downloadType = this.downloadType;
+		this.userAuditService.downloadReport(this.filtersRequest).subscribe((data) => { 
+	
+			if(data!=null && data!=undefined && data!='' && data.size!=0){ 
+				let extension= 'text/csv';
+				switch (this.downloadType) {
+					
+						case 'excel':
+						extension='application/vnd.ms-excel'
+						this.downloadType='xlsx'
+						break;
+						case 'csv':
+						extension='text/csv'
+						break;
+				
+					default:
+						break;
+				}
+			  var blob = new Blob([data], {type : extension});
+			  var fileURL=URL.createObjectURL(blob);
+			  
+			  const link = document.createElement("a");
+			  link.href = fileURL;
+			  link.target = '_blank';
+			  link.download = this.reportName+'.'+this.downloadType;
+			  document.body.appendChild(link);
+			  link.click();
+			}else{
+			  this.notifyService.showWarning("The record is not available", "");
+			}
+			this.downloadType='';
+		  }, async error => {
+			this.downloadType='';
+			  this.spinner.hide();
+			  if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			}else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			  }else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			  } else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				  this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				  let str;
+				  if (error.status == 400) {
+					str = error.error;
+				  } else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				  }
+				  console.log("Error:" + await str.text());
+				  this.errorMsg =  await new Response(str).text()// or use await str.text();
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			  }
+			});	
+		}
+
+
+constantType: { key: string, value: string }[] = [
+	{ key: 'USER_LOGIN', value: 'User Login' },
+	{ key: 'USER_LOGOUT', value: 'User Logout' },
+	{ key: 'USER_ADD', value: 'Create User' },
+	{ key: 'USER_UPDATE', value: 'Update User' },
+	{ key: 'USER_ACTIVE', value: 'Activate User' },
+	{ key: 'USER_INACTIVE', value: 'Deactivate User' },
+	{ key: 'USER_DELETE', value: 'Delete User' },	
+	{ key: 'USER_ROLE_APPROVED', value: 'Role Approved for User' },
+	{ key: 'USER_ROLE_REJECTED', value: 'Role Rejected for User' },
+	{ key: 'ZOY_CODE_GENERATE', value: 'Generate Zoy Code' },
+	{ key: 'ADMIN_ROLE_CREATE', value: 'Create Admin Role' },
+	{ key: 'ADMIN_ROLE_UPDATE', value: 'Update Admin Role' },
+	{ key: 'ADMIN_ROLE_DELETE', value: 'Delete Admin Role' },
+	{ key: 'USER_ROLE_ASSIGN', value: 'Assign Role to User' },
+	{ key: 'ZOY_CODE_RESEND', value: 'Resend Zoy Code' },
+	{ key: 'DB_CONFIGURATION_CREATE',value:'Create Database Configuration'},
+	{ key: 'DB_CONFIGURATION_UPDATE',value:'Update Database Configuration'},
+	{ key: 'MASTER_CONFIGURATION_CREATE',value:'Create Master Configuration'},
+	{ key: 'MASTER_CONFIGURATION_UPDATE',value:'Update Master Configuration'},
+	{ key: 'MASTER_CONFIGURATION_DELETE',value:'Delete Master Configuration'}
+	
+  ];
 }
 
