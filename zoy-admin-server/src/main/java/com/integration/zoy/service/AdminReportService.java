@@ -97,21 +97,21 @@ public class AdminReportService implements AdminReportImpl{
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterData.getTransactionStatus() != null && !filterData.getTransactionStatus().isEmpty()) {
-				queryBuilder.append(" AND LOWER(up.user_payment_payment_status) LIKE LOWER(:resultStatus)");
-				parameters.put("resultStatus", filterData.getTransactionStatus());
+				queryBuilder.append(" AND LOWER(up.user_payment_payment_status) LIKE LOWER(CONCAT('%', :transactionStatus, '%'))");
+				parameters.put("transactionStatus", filterData.getTransactionStatus());
 			}
 			if (filterData.getModeOfPayment() != null && !filterData.getModeOfPayment().isEmpty()) {
-				queryBuilder.append(" AND up.user_payment_result_method = :paymentMethod");
-				parameters.put("paymentMethod", filterData.getModeOfPayment());
+				 queryBuilder.append(" AND LOWER(up.user_payment_result_method) LIKE LOWER(CONCAT('%', :modeOfPayment, '%'))");
+				parameters.put("modeOfPayment", filterData.getModeOfPayment());
 			}
 			
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-				queryBuilder.append(" AND LOWER(pgt.property_name) LIKE LOWER('%' || :pgPropertyName || '%')");
-				parameters.put("pgPropertyName", filterData.getPgName());
+				queryBuilder.append(" AND LOWER(pgt.property_name) LIKE LOWER('%' || :pgName || '%')");
+				parameters.put("pgName", filterData.getPgName());
 			}
 			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
-				queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:userPersonalName)");
-				parameters.put("userPersonalName", "%" + filterData.getTenantName() + "%");
+				queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:tenantName)");
+				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
 			}
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
 				queryBuilder.append(" AND LOWER(pgt.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
@@ -128,21 +128,22 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
 			}
 
+
 			String sort = "up.user_payment_timestamp";  
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
-				if ("userPaymentBankTransactionId".equalsIgnoreCase(filterRequest.getSortActive())) {
+				if ("transactionNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_bank_transaction_id";
-				} else if ("userPaymentResultStatus".equalsIgnoreCase(filterRequest.getSortActive())) {
+				} else if ("transactionStatus".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_payment_status";
-				} else if ("userPaymentPayableAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
+				} else if ("baseAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_payable_amount";
-				} else if ("userPaymentGst".equalsIgnoreCase(filterRequest.getSortActive())) {
+				} else if ("gstAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_gst";
 				} else if ("totalAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "(up.user_payment_payable_amount + up.user_payment_gst)";
-				} else if ("userPersonalName".equalsIgnoreCase(filterRequest.getSortActive())) {
+				} else if ("customerName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "ud.user_personal_name";
-				} else if ("userPgPropertyName".equalsIgnoreCase(filterRequest.getSortActive())) {
+				} else if ("PgPropertyName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "pgt.property_name";
 				} else if ("bedNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "bd.bed_name";
@@ -152,7 +153,7 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "up.user_payment_result_method";
 				} else if("propertyHouseArea".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "pgt.property_house_area";
-				} else if("tenantContactNum".equalsIgnoreCase(filterRequest.getSortDirection())) {
+				} else if("tenantContactNum".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "ud.user_personal_phone_num";
 				}
 				else {
@@ -247,7 +248,7 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "up.user_payment_timestamp";
 				} else if ("transactionNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_bank_transaction_id";
-				} else if ("customerName".equalsIgnoreCase(filterRequest.getSortActive())) {
+				} else if ("payerPayeeName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "ud.user_personal_name";
 				} else if ("creditAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "(up.user_payment_payable_amount + up.user_payment_gst)";
