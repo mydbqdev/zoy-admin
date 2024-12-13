@@ -33,7 +33,8 @@ export class MenuService {
     { name: "Reports", link: "/report-list", permission: "REPORTS_READ" },
     { name: "Role and Permission", link: "/role-master", permission: "ROLE_AND_PERMISSION_READ" },
     { name: "Settings", link: "/settings", permission: "DEFAULT_PERMISSION" },
-    { name: "Zoy Code", link: "/zoy-code", permission: "ZOYCODES_READ" }
+    { name: "Zoy Code", link: "/zoy-code", permission: "ZOYCODES_READ" },
+    { name: "User Audit", link: "/user-audit", permission: "USER_AUDIT_READ" }
   ];
   
 
