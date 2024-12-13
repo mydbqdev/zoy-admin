@@ -21,39 +21,47 @@
                   <!-- Begin Page Content -->
                   <div class="container-fluid">
                       <!-- Page Heading -->
-                      <div class="d-sm-flex align-items-center justify-content-between mb-3">
-                          <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">User Audit</span></h3> 
-                          <div class="d-flex align-items-center justify-content-between">
-                              <div class="ml-auto mr-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="input-group mr-2">
-                                        <select class="form-select form-select-sm" style="min-width: 150px;"[(ngModel)]="username">
-                                          <option value="" disabled selected>Select User</option>
-                                          <option  value="" >All User</option>
-                                          <option *ngFor="let user of userNameList" [value]="user.useremail">{{ user.username }}</option>
-                                        </select>
-                                      </div>
-                                      <div class="input-group mr-2">
-                                    <select class="form-select form-select-sm" style="min-width: 150px;" [(ngModel)]="selectedValue" >
-                                     <option  value="" disabled selected>Select Type</option>
-                                     <option  value="" >All Type</option>
-                                     <option *ngFor="let constant of constantType" [value]="constant.key">{{ constant.value }}</option> 
-                                  </select>
-                                  </div>
-                                  <!-- Search Input -->
-                                  <div class="position-relative mr-2">
-                                    <input type="text" class="form-control form-control-sm border-1" style="border-radius: 20px; padding-left: 35px; width: 300px;"placeholder="Search by keyword for user audit" [(ngModel)]="searchText" maxlength="30" aria-label="Search" aria-describedby="basic-addon2"/>
-                                  </div>
-                                  <button type="button" class="btn btn-primary btn-sm" (click)="submit()"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                </div>
-                              </div>
-                             <div>
-                                <select class="form-select form-select-sm" [(ngModel)]="downloadType" (ngModelChange)="download()">
-                                  <option value="" disabled > Download </option>
-                                  <option value="excel">As Excel</option>
-                                  <option value="csv">As CSV</option>
-                                </select>
+                      <div class="d-flex mb-1">
+                          <!-- <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">User Audit</span></h3> -->
+                          <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">User</span><span class="text-header-800-blue">Audit</span></h3>  
+                          <div class="ml-auto">
+                            <div class="d-flex justify-content-end">
+                            <!-- Search User -->
+                            <div class="form-group mr-2">
+                              <input class="form-select form-select-sm" style="width: 150px;" type="search" placeholder="Select User" [formControl]="searchControl" aria-label="Select User" [matAutocomplete]="userAuto" formControlName="username" [(ngModel)]="username"/>
+                              <mat-autocomplete #userAuto="matAutocomplete">
+                                <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username" (click)="(user)">
+                                  {{ user.username }}
+                                </mat-option>
+                              </mat-autocomplete>
+                            </div>                          
+                            <!-- Select Type -->
+                            <div class="form-group mr-2">
+                              <select class="form-select form-select-sm" [(ngModel)]="selectedValue" style="width: 150px;">
+                                <option value="" disabled selected>Select Type</option>
+                                <option value="">All Type</option>
+                                <option *ngFor="let constant of constantType" [value]="constant.key">
+                                  {{ constant.value }}
+                                </option>
+                              </select>
+                            </div>                          
+                            <!-- Search by Keyword for user audit -->
+                            <div class="form-group mr-2">
+                              <input type="text" class="form-control form-control-sm" style="width: 250px; border-radius: 20px; padding-left: 15px;" placeholder="Search by keyword for user audit" [(ngModel)]="searchText" maxlength="30" aria-label="Search"/>
                             </div>
+                            <!-- Search Button -->
+                            <div class="form-group mr-2">
+                              <button type="button" class="btn btn-primary btn-sm" (click)="submit()"><i class="fa fa-search"></i></button>
+                            </div>
+                            <!-- Download Options -->
+                            <div class="form-group">
+                              <select class="form-select form-select-sm" [(ngModel)]="downloadType" (ngModelChange)="download()">
+                                <option value="" disabled>Download</option>
+                                <option value="excel">As Excel</option>
+                                <option value="csv">As CSV</option>
+                              </select>
+                            </div>
+                          </div>
                           </div>
                       </div>
   

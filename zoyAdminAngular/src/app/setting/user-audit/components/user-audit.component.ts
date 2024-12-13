@@ -17,7 +17,8 @@ import { UserAuditService } from '../service/user-audit-service';
 import { UserAuditModel } from '../models/user-audit-model';
 import { FormControl } from '@angular/forms';
 import { UserListModel } from '../models/userlist-model';
-
+import { startWith, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
 	selector: 'app-user-audit',
@@ -62,6 +63,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
     selectedValue: string = '';   
 	reportName:string ='User Audit Report';
 	downloadType :string='';
+	filteredUsers: Observable<UserListModel[]>;
 	constructor(private userAuditService: UserAuditService, private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
             this.authService.checkLoginUserVlidaate();
@@ -89,6 +91,11 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		this.dataService.getIsExpandSideBar.subscribe(name=>{
 			this.isExpandSideBar=name;
 		});
+		this.filteredUsers = this.searchControl.valueChanges.pipe(
+			startWith(''),
+			map(value => this.filterNames(value))
+		  );
+		
 	}
 
 	ngOnDestroy() {
@@ -152,7 +159,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 		this.columnSortDirections[sortActive] = sortDirection;
         this.filtersRequest.searchText=this.searchText;
-        this.filtersRequest.userEmail=this.username;
+		this.filtersRequest.userEmail = this.userNameList.find(user => user.username === this.username)?.useremail || '';
 		this.filtersRequest.activity=this.selectedValue;
 		this.filtersRequest.downloadType="";
 		this.userAuditService.getUserAuditdetails(this.filtersRequest).subscribe(data => {
@@ -198,14 +205,27 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	  
 	  }
 
+	  filterNames(value: string): UserListModel[] {
+		const filterValue = value.toLowerCase();
+		const obj = this.userNameList.filter(user => 
+			user.username.toLowerCase().includes(filterValue)
+		  );
+		return obj
+	  }
+
       getUserNameList(){
        this.authService.checkLoginUserVlidaate();
-       this.spinner.show();
        this.userAuditService.getUserNameList().subscribe(data => {
-       this.userNameList=Object.assign([],data);
-       this.spinner.hide();
+		if(data!=null && data!=undefined && data!='' && data.size!=0){ 
+			this.userNameList=Object.assign([],data)
+			}else{
+				this.userNameList=Object.assign([])
+			}	
+			this.filteredUsers = this.searchControl.valueChanges.pipe(
+				startWith(''),
+				map(value => this.filterNames(value))
+			  );
        }, error => {
-       this.spinner.hide();
        if(error.status == 0) {
          this.notifyService.showError("Internal Server Error/Connection not established", "")
         }else if(error.status==401){
@@ -240,7 +260,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	    this.filtersRequest.sortActive=this.sortActive;
 		this.filtersRequest.sortDirection=this.sortDirection.toUpperCase();
 		this.filtersRequest.searchText=this.searchText;
-        this.filtersRequest.userEmail=this.username;
+		this.filtersRequest.userEmail = this.userNameList.find(user => user.username === this.username)?.useremail || '';
 		this.filtersRequest.activity=this.selectedValue;
 		this.filtersRequest.downloadType = this.downloadType;
 		this.userAuditService.downloadReport(this.filtersRequest).subscribe((data) => { 

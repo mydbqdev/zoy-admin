@@ -309,7 +309,6 @@ export class BulkUploadComponent {
 			   				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
 			 		}
 		   			});
-		   			this.getUploadFileDetails();
 		  		}
 		  		}).catch(
 					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
@@ -327,7 +326,6 @@ export class BulkUploadComponent {
 		}
 
 	getOwnerPropertyDetailsList(){
-	    this.spinner.show();
 		this.bulkUploadService.getOwnerPropertyDetailsList().subscribe(data => {
 		if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 			this.ownerPropertyDetailsList=Object.assign([],data)
@@ -338,9 +336,7 @@ export class BulkUploadComponent {
 				startWith(''),
 				map(value => this.filterOwners(value))
 			  );
-		  this.spinner.hide();
 	    },error =>{
-		this.spinner.hide();
 		if(error.status == 0) {
 			this.notifyService.showError("Internal Server Error/Connection not established", "")
 		 }else if(error.status==401){
