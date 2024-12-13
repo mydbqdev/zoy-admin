@@ -200,12 +200,12 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 
       getUserNameList(){
        this.authService.checkLoginUserVlidaate();
-       this.spinner.show();
+    //    this.spinner.show();
        this.userAuditService.getUserNameList().subscribe(data => {
        this.userNameList=Object.assign([],data);
-       this.spinner.hide();
+    //    this.spinner.hide();
        }, error => {
-       this.spinner.hide();
+    //    this.spinner.hide();
        if(error.status == 0) {
          this.notifyService.showError("Internal Server Error/Connection not established", "")
         }else if(error.status==401){
