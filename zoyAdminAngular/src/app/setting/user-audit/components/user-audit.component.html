@@ -30,21 +30,20 @@
                             <div class="form-group mr-2">
                               <input class="form-select form-select-sm" style="width: 150px;" type="search" placeholder="Select User" [formControl]="searchControl" aria-label="Select User" [matAutocomplete]="userAuto" formControlName="username" [(ngModel)]="username"/>
                               <mat-autocomplete #userAuto="matAutocomplete">
-                                <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username" (click)="(user)">
+                                <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username" >
                                   {{ user.username }}
                                 </mat-option>
                               </mat-autocomplete>
                             </div>                          
                             <!-- Select Type -->
                             <div class="form-group mr-2">
-                              <select class="form-select form-select-sm" [(ngModel)]="selectedValue" style="width: 150px;">
-                                <option value="" disabled selected>Select Type</option>
-                                <option value="">All Type</option>
-                                <option *ngFor="let constant of constantType" [value]="constant.key">
-                                  {{ constant.value }}
-                                </option>
-                              </select>
-                            </div>                          
+                              <input class="form-select form-select-sm" style="width: 200px;" type="search" placeholder="Select Type" [formControl]="searchActivitiesControl" aria-label="Select Type" [matAutocomplete]="typeAuto" formControlName="type"  [(ngModel)]="selectedValue"/>
+                              <mat-autocomplete #typeAuto="matAutocomplete">
+                                <mat-option *ngFor="let activities of filteredActivities | async" [value]="activities.value">
+                                  {{ activities.value }}
+                                </mat-option>
+                              </mat-autocomplete>
+                            </div>
                             <!-- Search by Keyword for user audit -->
                             <div class="form-group mr-2">
                               <input type="text" class="form-control form-control-sm" style="width: 250px; border-radius: 20px; padding-left: 15px;" placeholder="Search by keyword for user audit" [(ngModel)]="searchText" maxlength="30" aria-label="Search"/>

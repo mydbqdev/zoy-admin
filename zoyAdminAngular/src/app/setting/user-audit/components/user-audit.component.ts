@@ -37,14 +37,13 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	reportDataList :any[]=[];
 	reportDataSource: MatTableDataSource<any>=new MatTableDataSource(this.reportDataList);
 	dataSource:MatTableDataSource<UserAuditModel>=new MatTableDataSource<UserAuditModel>();
-	filterActivitiesData: UserAuditModel[] = [];
 	columnSortDirectionsOg: { [key: string]: string | null } = {
 		created_on: null,
         user_name:null,
         type:null,
 		history_data: null
 	  };
-	  columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	searchText:string='';
 	@ViewChild(SidebarComponent) sidemenuComp;
 	@ViewChild(MatSort) sort: MatSort;
@@ -57,11 +56,11 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 	sortDirection:string="desc";
 	public rolesArray: string[] = [];
     searchControl = new FormControl();
+	searchActivitiesControl = new FormControl();
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
     username: string = '';  
     userNameList: UserListModel[] = []; 
     selectedValue: string = '';   
-	reportName:string ='User Audit Report';
 	downloadType :string='';
 	filteredUsers: Observable<UserListModel[]>;
 	constructor(private userAuditService: UserAuditService, private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
@@ -95,7 +94,10 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 			startWith(''),
 			map(value => this.filterNames(value))
 		  );
-		
+		  this.filteredActivities = this.searchActivitiesControl.valueChanges.pipe(
+			startWith(''),
+			map(value => this.filterActivities(value || ''))
+		  );
 	}
 
 	ngOnDestroy() {
@@ -119,7 +121,6 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
         this.dataSource.paginator = this.paginator;
 		this.getUserAuditdetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
 	}
-
 
     submit(): void {
         this.paginator.pageIndex=0;
@@ -160,7 +161,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		this.columnSortDirections[sortActive] = sortDirection;
         this.filtersRequest.searchText=this.searchText;
 		this.filtersRequest.userEmail = this.userNameList.find(user => user.username === this.username)?.useremail || '';
-		this.filtersRequest.activity=this.selectedValue;
+		this.filtersRequest.activity = this.filterActivitiesData.find(activities => activities.value === this.selectedValue)?.key || '';
 		this.filtersRequest.downloadType="";
 		this.userAuditService.getUserAuditdetails(this.filtersRequest).subscribe(data => {
 			if(data?.data?.length >0){
@@ -203,6 +204,12 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		}
 	  });
 	  
+	  }
+	  filterActivities(value: string): { key: string, value: string }[] {
+		const filterValue = value.toLowerCase();
+		return this.filterActivitiesData.filter(activities =>
+		  activities.value.toLowerCase().includes(filterValue)
+		);
 	  }
 
 	  filterNames(value: string): UserListModel[] {
@@ -261,7 +268,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.sortDirection=this.sortDirection.toUpperCase();
 		this.filtersRequest.searchText=this.searchText;
 		this.filtersRequest.userEmail = this.userNameList.find(user => user.username === this.username)?.useremail || '';
-		this.filtersRequest.activity=this.selectedValue;
+		this.filtersRequest.activity = this.filterActivitiesData.find(activities => activities.value === this.selectedValue)?.key || '';
 		this.filtersRequest.downloadType = this.downloadType;
 		this.userAuditService.downloadReport(this.filtersRequest).subscribe((data) => { 
 	
@@ -286,7 +293,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 			  const link = document.createElement("a");
 			  link.href = fileURL;
 			  link.target = '_blank';
-			  link.download = this.reportName+'.'+this.downloadType;
+			  link.download = (this.filtersRequest.userEmail == '' ? 'User Audit Report.' : (this.filtersRequest.userEmail +' Audit Report.'))+this.downloadType;
 			  document.body.appendChild(link);
 			  link.click();
 			}else{
@@ -324,30 +331,35 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 			  }
 			});	
 		}
+		constantType: { key: string, value: string }[] = [
+			{ key: 'USER_LOGIN', value: 'User Login' },
+			{ key: 'USER_LOGOUT', value: 'User Logout' },
+			{ key: 'USER_ADD', value: 'Create User' },
+			{ key: 'USER_UPDATE', value: 'Update User' },
+			{ key: 'USER_ACTIVE', value: 'Activate User' },
+			{ key: 'USER_INACTIVE', value: 'Deactivate User' },
+			{ key: 'USER_DELETE', value: 'Delete User' },	
+			{ key: 'USER_ROLE_APPROVED', value: 'Role Approved for User' },
+			{ key: 'USER_ROLE_REJECTED', value: 'Role Rejected for User' },
+			{ key: 'ZOY_CODE_GENERATE', value: 'Generate Zoy Code' },
+			{ key: 'ADMIN_ROLE_CREATE', value: 'Create Admin Role' },
+			{ key: 'ADMIN_ROLE_UPDATE', value: 'Update Admin Role' },
+			{ key: 'ADMIN_ROLE_DELETE', value: 'Delete Admin Role' },
+			{ key: 'USER_ROLE_ASSIGN', value: 'Assign Role to User' },
+			{ key: 'ZOY_CODE_RESEND', value: 'Resend Zoy Code' },
+			{ key: 'DB_CONFIGURATION_CREATE',value:'Create Database Configuration'},
+			{ key: 'DB_CONFIGURATION_UPDATE',value:'Update Database Configuration'},
+			{ key: 'MASTER_CONFIGURATION_CREATE',value:'Create Master Configuration'},
+			{ key: 'MASTER_CONFIGURATION_UPDATE',value:'Update Master Configuration'},
+			{ key: 'MASTER_CONFIGURATION_DELETE',value:'Delete Master Configuration'}
+			
+		  ];
+		  filterActivitiesData: { key: string, value: string }[] = this.constantType.map(activity => ({
+			key: activity.key,
+			value: activity.value
+		  }));
+		  
+		  filteredActivities: Observable<{ key: string, value: string }[]>;
 
-
-constantType: { key: string, value: string }[] = [
-	{ key: 'USER_LOGIN', value: 'User Login' },
-	{ key: 'USER_LOGOUT', value: 'User Logout' },
-	{ key: 'USER_ADD', value: 'Create User' },
-	{ key: 'USER_UPDATE', value: 'Update User' },
-	{ key: 'USER_ACTIVE', value: 'Activate User' },
-	{ key: 'USER_INACTIVE', value: 'Deactivate User' },
-	{ key: 'USER_DELETE', value: 'Delete User' },	
-	{ key: 'USER_ROLE_APPROVED', value: 'Role Approved for User' },
-	{ key: 'USER_ROLE_REJECTED', value: 'Role Rejected for User' },
-	{ key: 'ZOY_CODE_GENERATE', value: 'Generate Zoy Code' },
-	{ key: 'ADMIN_ROLE_CREATE', value: 'Create Admin Role' },
-	{ key: 'ADMIN_ROLE_UPDATE', value: 'Update Admin Role' },
-	{ key: 'ADMIN_ROLE_DELETE', value: 'Delete Admin Role' },
-	{ key: 'USER_ROLE_ASSIGN', value: 'Assign Role to User' },
-	{ key: 'ZOY_CODE_RESEND', value: 'Resend Zoy Code' },
-	{ key: 'DB_CONFIGURATION_CREATE',value:'Create Database Configuration'},
-	{ key: 'DB_CONFIGURATION_UPDATE',value:'Update Database Configuration'},
-	{ key: 'MASTER_CONFIGURATION_CREATE',value:'Create Master Configuration'},
-	{ key: 'MASTER_CONFIGURATION_UPDATE',value:'Update Master Configuration'},
-	{ key: 'MASTER_CONFIGURATION_DELETE',value:'Delete Master Configuration'}
-	
-  ];
 }
 
