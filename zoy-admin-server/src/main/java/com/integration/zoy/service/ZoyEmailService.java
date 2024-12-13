@@ -291,17 +291,17 @@ public class ZoyEmailService {
 
 			email.setSubject("Your Account - [" + user.getUserEmail().toUpperCase() + "] Has Been Deactivated");
 			message = "<p>Dear " + user.getFirstName() +" "+ user.getLastName() + ",</p>"
-					+ "<p>We’re writing to inform you that your account with ZOY Admin Platform has been deactivated as of " + deactivationDate + ". "
-					+ "This means you’ll no longer have access to use ZOY Admin Portal.</p>"
-					+ "<p>If you have questions or need further support, don’t hesitate to contact our admin support team.</p>"
+					+ "<p>We're writing to inform you that your account with ZOY Admin Platform has been deactivated as of " + deactivationDate + ". "
+					+ "This means you'll no longer have access to use ZOY Admin Portal.</p>"
+					+ "<p>If you have questions or need further support, don't hesitate to contact our admin support team.</p>"
 					+ "<p>We hope to see you again soon!</p>"
 					+ "<p>Best regards,<br>ZOY Administrator</p>";
 		}else {
 			email.setSubject("Welcome Back! Your Account - [" + user.getUserEmail().toUpperCase() + "] is Now Active");
 
 			message = "<p>Dear " + user.getFirstName() +" "+ user.getLastName() + ",</p>"
-					+ "<p>We’re excited to welcome you back to the ZOY Admin platform! Your account has been successfully reactivated, "
-					+ "and you’re all set to use the platform as before.</p>"
+					+ "<p>We're excited to welcome you back to the ZOY Admin platform! Your account has been successfully reactivated, "
+					+ "and you're all set to use the platform as before.</p>"
 					+ "<p>If you have any questions or need assistance, contact our admin support team.</p>"
 					+ "<p>Best regards,<br>ZOY Administrator</p>";
 

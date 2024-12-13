@@ -974,7 +974,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			AdminUserMaster master=adminDBImpl.findAdminUserMaster(details.getUserEmail());
 			AdminUserMaster masterOld=new AdminUserMaster(master);
 				adminDBImpl.doUserActiveteDeactivete(details.getUserEmail(),!details.getStatus()); 
-		       //zoyEmailService.sendForUserDoUserActiveteDeactivete(details);
+		        zoyEmailService.sendForUserDoUserActiveteDeactivete(details);
 				
 				//audit here
 				master.setStatus(!details.getStatus());
