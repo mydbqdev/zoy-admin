@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.FieldNamingPolicy;
@@ -23,7 +24,6 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AuditHistory;
-import com.integration.zoy.entity.RoleScreen;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AuditHistoryRepository;
@@ -192,14 +192,18 @@ public class AuditHistoryUtilities {
 	}
 	
 
-	public void auditForRoleUpdate(String email, StringBuffer history, List<com.integration.zoy.model.RoleScreen> appRoleScreensDB,
-			List<com.integration.zoy.model.RoleScreen> appRoleScreensNewUpdate) {
+	public void auditForRoleUpdate(String roleName,StringBuffer history, List<com.integration.zoy.model.RoleScreen> appRoleScreensDB,
+			List<com.integration.zoy.model.RoleScreen> appRoleScreensNewUpdate,List<com.integration.zoy.model.RoleScreen> appRoleScreenDeleted) {
+		final String email=SecurityContextHolder.getContext().getAuthentication().getName();
 		try {
 			final List<com.integration.zoy.model.RoleScreen> listOneListDB = appRoleScreensDB.stream().filter(two -> appRoleScreensNewUpdate.stream()
 		              .anyMatch(one -> one.getScreenName().equals(two.getScreenName()))) 
 		              .collect(Collectors.toList());
-			String appRoleScreens=listOneListDB!=null && !listOneListDB.isEmpty() ? gson.toJson(listOneListDB).toString() : "-" ;
-			String appRoleScreensnew=gson.toJson(appRoleScreensNewUpdate).toString();
+			if(appRoleScreenDeleted !=null && !appRoleScreenDeleted.isEmpty()){
+				listOneListDB.addAll(appRoleScreenDeleted);
+			}
+			String appRoleScreens=(listOneListDB!=null && !listOneListDB.isEmpty()) ? gson.toJson(listOneListDB).toString() : "-" ;
+			String appRoleScreensnew=(appRoleScreensNewUpdate!=null && !appRoleScreensNewUpdate.isEmpty()) ? gson.toJson(appRoleScreensNewUpdate).toString():"-";
 			String userName="";
 			Optional<AdminUserMaster> user=userMasterRepository.findById(email);
 			if(user.isPresent()) {
@@ -219,8 +223,8 @@ public class AuditHistoryUtilities {
 			appRoleScreensnew=appRoleScreensnew.replace("write_prv", "Write");
 			appRoleScreensnew=appRoleScreensnew.replace("\"", "");
 			
-			StringBuffer histotyData=new StringBuffer(userName+" has updated the role for, ");
-			if(!history.isEmpty()) {
+			StringBuffer histotyData=new StringBuffer(userName+" has updated the role ("+roleName+") for, ");
+			if(history!=null && !(String.valueOf(history).isEmpty())) {
 				histotyData.append(history);
 				histotyData.append(", ");
 			}

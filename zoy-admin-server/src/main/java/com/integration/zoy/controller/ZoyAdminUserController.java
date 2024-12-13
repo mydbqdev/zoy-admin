@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.config.JwtUtil;
+import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserLoginDetails;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AdminUserPasswordHistory;
@@ -388,13 +390,16 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 						updatedScreens.add(existingScreen);
 					}
 				});
+
 				obsoleteScreenIds.addAll(appRoleScreenMap.values().stream().map(RoleScreen::getId).collect(Collectors.toList()));
+
 				if(newScreens.size()>0)
 					adminDBImpl.saveAllRoleScreen(newScreens);
 				if(updatedScreens.size()>0)
 					adminDBImpl.saveAllRoleScreen(updatedScreens);
 				if(obsoleteScreenIds.size()>0)
 					adminDBImpl.deleteAllRoleScreen(obsoleteScreenIds);
+				//audit here
 				List<RoleScreen> appRoleScreensnew=new ArrayList<>(newScreens);
 				appRoleScreensnew.addAll(updatedScreens);
 				List<com.integration.zoy.model.RoleScreen> appRoleScreensUpdate=new ArrayList<>();
@@ -405,8 +410,16 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					sc.setWritePrv(role.getWritePrv());
 					appRoleScreensUpdate.add(sc);
 				});
-				//audit here
-				auditHistoryUtilities.auditForRoleUpdate(SecurityContextHolder.getContext().getAuthentication().getName(),history,appRoleScreensDb,appRoleScreensUpdate);
+				List<com.integration.zoy.model.RoleScreen> appRoleScreenDeleted=new ArrayList<>();
+				appRoleScreenMap.values().stream().forEach(deleted ->{
+					com.integration.zoy.model.RoleScreen sc=new com.integration.zoy.model.RoleScreen();
+					sc.setScreenName(deleted.getScreenName());
+					sc.setReadPrv(deleted.getReadPrv());
+					sc.setWritePrv(deleted.getWritePrv());
+					appRoleScreenDeleted.add(sc);
+				});
+				
+				auditHistoryUtilities.auditForRoleUpdate(appRole.getRoleName(),history,appRoleScreensDb,appRoleScreensUpdate,appRoleScreenDeleted);
 				
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("Role Updated Successfully");
@@ -659,14 +672,29 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				response.setError("Invalid status value. Status must be either 'approved' or 'rejected'.");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}else {
-
+				final List<String> existingRole=adminUserMasterRepository.getRoleAssigned(userEmail);
+				final List<String> newTempRole=adminUserMasterRepository.getRoleTempBeforeApproved(userEmail);
+				
 				if(status.equals("approved")) {
 					adminDBImpl.approveUser(userEmail);
 					adminDBImpl.insertUserDetails(userEmail);
 				}        
 
 				// remove record from temporary table after approve /reject
-				adminDBImpl.rejectUser(userEmail);        	
+				adminDBImpl.rejectUser(userEmail);
+				
+				//audit here
+				Optional<AdminUserMaster> user2=adminUserMasterRepository.findById(userEmail);
+				String userNameFor="";
+				if(user2.isPresent()) {
+					userNameFor=user2.get().getFirstName()+" "+user2.get().getLastName();
+				}
+				StringBuffer history=new StringBuffer(" has "+status+" the role assign to "+userNameFor+" for, Roles from ");
+				history.append(existingRole!=null && !existingRole.isEmpty() ? gson.toJson(existingRole).toString(): "-");
+				history.append(" to ");
+				history.append(newTempRole!=null && !newTempRole.isEmpty() ? gson.toJson(newTempRole).toString(): "-");				
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(),history.toString(),status.equals("approved") ? ZoyConstant.ZOY_ADMIN_USER_AUTHORZITION_APPROVE:ZoyConstant.ZOY_ADMIN_USER_AUTHORZITION_REJECTED);
+				
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("The Assigned Role has been " + status + " successfully.");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
