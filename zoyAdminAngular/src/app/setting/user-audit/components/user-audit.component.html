@@ -39,7 +39,7 @@
                             <div class="form-group mr-2">
                               <input class="form-select form-select-sm" style="width: 200px;" type="search" placeholder="Select Type" [formControl]="searchActivitiesControl" aria-label="Select Type" [matAutocomplete]="typeAuto" formControlName="type"  [(ngModel)]="selectedValue"/>
                               <mat-autocomplete #typeAuto="matAutocomplete">
-                                <mat-option *ngFor="let activities of filteredActivities | async" [value]="activities.value" (click)="onActivitySelected(activities)">
+                                <mat-option *ngFor="let activities of filteredActivities | async" [value]="activities.value">
                                   {{ activities.value }}
                                 </mat-option>
                               </mat-autocomplete>

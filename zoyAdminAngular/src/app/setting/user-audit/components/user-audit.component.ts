@@ -211,9 +211,6 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 		  activities.value.toLowerCase().includes(filterValue)
 		);
 	  }
-	  onActivitySelected(activity: { key: string, value: string }): void {
-		this.selectedValue = activity.value;
-	  }
 
 	  filterNames(value: string): UserListModel[] {
 		const filterValue = value.toLowerCase();
