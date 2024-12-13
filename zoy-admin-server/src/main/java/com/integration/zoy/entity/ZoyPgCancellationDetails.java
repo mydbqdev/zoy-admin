@@ -22,10 +22,10 @@ public class ZoyPgCancellationDetails {
     @Column(name = "cancellation_id", nullable = false, length = 36)
     private String cancellationId;
 
-    @Column(name = "before_checkin_days")
+    @Column(name = "cancellation_days")
     private Integer daysBeforeCheckIn;
     
-    @Column(name = "deduction_percentage", precision = 10, scale = 2)
+    @Column(name = "cancellation_variable_charges", precision = 10, scale = 2)
     private BigDecimal deductionPercentages;
     
     @Column(name="create_at")
