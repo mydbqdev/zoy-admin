@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.utils.Email;
 import com.integration.zoy.utils.NotificationRequest;
 
@@ -69,6 +70,7 @@ public class EmailService {
 		}
 		catch(HttpStatusCodeException ex) {
 			log.error(ex.getMessage());
+			new ZoyAdminApplicationException(ex, "");
 		}
 
 	}

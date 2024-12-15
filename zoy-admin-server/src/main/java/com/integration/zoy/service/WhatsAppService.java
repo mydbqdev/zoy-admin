@@ -15,8 +15,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.integration.zoy.utils.NotificationRequest;
 import com.integration.zoy.utils.Whatsapp;
 
@@ -24,7 +22,6 @@ import com.integration.zoy.utils.Whatsapp;
 public class WhatsAppService {
 
 	private static final Logger log = LoggerFactory.getLogger(WhatsAppService.class);
-	private static final Gson gson = new GsonBuilder().create();
 
 	@Autowired
 	WebClient webClient;

@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.exception.ZoyAdminApplicationException;
+
 @Service
 public class ZoyCodeGenerationService {
 	
@@ -20,7 +22,9 @@ public class ZoyCodeGenerationService {
             }
             return "ZOY" +( hashtext.substring(0, 9).toUpperCase());
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+           // throw new RuntimeException(e);
+            new ZoyAdminApplicationException(e, "");
         }
+		return null;
     }
 }

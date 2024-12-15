@@ -124,8 +124,9 @@ public class UserDBService implements UserDBImpl{
 					? ekycType.getUserEkycTypeName() : updatedType.getUserEkycTypeName());
 			return userEkycTypeMasterRepository.save(updatedType);
 		} else {
-			throw new RuntimeException("Ekyc type not found with id: " + ekycType.getUserEkycTypeId());
+			new ZoyAdminApplicationException(new Exception(),"Ekyc type not found with id: " + ekycType.getUserEkycTypeId());
 		}
+		return null;
 	}
 
 	@Override

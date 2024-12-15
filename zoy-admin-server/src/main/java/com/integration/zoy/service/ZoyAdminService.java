@@ -7,6 +7,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -27,7 +29,7 @@ import com.integration.zoy.utils.Whatsapp;
 
 @Service
 public class ZoyAdminService {
-
+	private static final Logger log = LoggerFactory.getLogger(ZoyAdminService.class);
 	@Autowired
 	RestTemplate httpsRestTemplate;
 
@@ -131,7 +133,7 @@ public class ZoyAdminService {
 			jobLauncher.run(propertyProcessJob, jobParameters);
 
 		} catch (Exception e) {
-			System.out.println("error:::"+e);
+			log.error("error:::"+e);
 		}
 	}
 
