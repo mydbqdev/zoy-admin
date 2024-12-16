@@ -13,6 +13,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import { ReportService } from '../service/reportService';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { FilterData, FiltersRequestModel } from '../model/report-filters-model';
+//import { UserGSTPaymentModel } from '../model/user-payment-model';
  
 @Component({
 	selector: 'app-report-list',
@@ -274,13 +275,20 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 				}); 
 			}
 	 	}
-
-	 viewReport(row:any){
-		let data = this.reportService.reportColumnsList.find(n => n.reportName == this.reportName).object;
-		data = Object.assign(row); 
-		this.reportData = Object.assign(data);
+	//	 userGSTPaymentModel:UserGSTPaymentModel=new UserGSTPaymentModel();
+	//  viewReport(row:any){
+	// 	let data = this.reportService.reportColumnsList.find(n => n.reportName == this.reportName).object;
+		
+	// 	if(data == 'new UserGSTPaymentModel()'){
+	// 		this.userGSTPaymentModel = Object.assign(row);
+	// 		data = Object.assign(this.userGSTPaymentModel); 
+	// 	}else{
+	// 		data = Object.assign(row); 
+	// 	}
+		
+	// 	this.reportData = Object.assign(data);
 			
-	 }		 
+	//  }		 
 	
 	onExport(element: any): void {
 		console.log('Export action triggered for:', element);
