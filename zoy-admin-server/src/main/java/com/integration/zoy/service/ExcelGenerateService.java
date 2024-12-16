@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.UserPaymentDTO;
@@ -42,8 +43,10 @@ public class ExcelGenerateService {
 			return outputStream.toByteArray();
 
 		} catch (Exception e) {
-			throw new RuntimeException("Error generating Excel file", e);
+			//throw new RuntimeException("Error generating Excel file", e);
+			new ZoyAdminApplicationException(e, "Error generating Excel file");
 		}
+		return null;
 	}
 
 	private void createExcelHeaderRow(Row row, Object dto, String reportType) {
@@ -236,7 +239,8 @@ public class ExcelGenerateService {
 			break;
 
 		default:
-			throw new IllegalArgumentException("Invalid report type provided: " + reportType);
+			//throw new IllegalArgumentException("Invalid report type provided: " + reportType);
+			new ZoyAdminApplicationException(new Exception() ,"Invalid report type provided: " + reportType);
 		}
 	}
 

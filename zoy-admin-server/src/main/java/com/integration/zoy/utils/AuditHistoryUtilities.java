@@ -25,6 +25,7 @@ import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AuditHistory;
 import com.integration.zoy.exception.WebServiceException;
+import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AuditHistoryRepository;
 @Service
@@ -79,6 +80,7 @@ public class AuditHistoryUtilities {
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for auditForUserLoginLogout"+email+":",e);
+			new ZoyAdminApplicationException(e, "");
 		}
 	}
 	
@@ -104,6 +106,7 @@ public class AuditHistoryUtilities {
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for auditForCreateUserDelete"+email+":",e);
+			new ZoyAdminApplicationException(e, "");
 		}
 	}
 	
@@ -154,6 +157,7 @@ public class AuditHistoryUtilities {
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for auditForCreateUserDelete"+email+":",e);
+			new ZoyAdminApplicationException(e, "");
 		}
 	}
 	
@@ -188,6 +192,7 @@ public class AuditHistoryUtilities {
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for auditForRoleCreate"+email+":",e);
+			new ZoyAdminApplicationException(e, "");
 		}
 	}
 	
@@ -241,6 +246,7 @@ public class AuditHistoryUtilities {
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for auditForRoleUpdate"+email+":",e);
+			new ZoyAdminApplicationException(e, "");
 		}
 	}
 
@@ -268,6 +274,7 @@ public class AuditHistoryUtilities {
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for auditForRoleAssign"+loginEmail+":",e);
+			new ZoyAdminApplicationException(e, "");
 		}
 	}
 	
@@ -288,6 +295,7 @@ public class AuditHistoryUtilities {
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for auditForCommon"+loginEmail+":",e);
+			new ZoyAdminApplicationException(e, "");
 		}
 	}
 }
