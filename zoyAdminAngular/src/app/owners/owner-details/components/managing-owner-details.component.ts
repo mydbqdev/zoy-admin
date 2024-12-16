@@ -112,6 +112,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		{ id: 1, name: 'right1', selected: false },
 		{ id: 2, name: 'right2', selected: false },
 		{ id: 3, name: 'right3', selected: false },
+		{ id: 4, name: 'right4', selected: false },
 	  ];
 	   // Toggle the selected status for a button
 	   collaspeExpandPanel(status: any,side:string): void {
@@ -129,14 +130,22 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
          if(side=='right1' && this.collaspeListRight[0].selected){
 			this.collaspeListRight[1].selected=false;
 			this.collaspeListRight[2].selected=false;
+			this.collaspeListRight[3].selected=false;
 		 }
 		 if(side=='right2' && this.collaspeListRight[1].selected){
 			this.collaspeListRight[0].selected=false;
 			this.collaspeListRight[2].selected=false;
+			this.collaspeListRight[3].selected=false;
 		 }
 		 if(side=='right3' && this.collaspeListRight[2].selected){
 			this.collaspeListRight[0].selected=false;
 			this.collaspeListRight[1].selected=false;
+			this.collaspeListRight[3].selected=false;
+		 }
+		 if(side=='right4' && this.collaspeListRight[3].selected){
+			this.collaspeListRight[0].selected=false;
+			this.collaspeListRight[1].selected=false;
+			this.collaspeListRight[2].selected=false;
 		 }
 	  }
 
