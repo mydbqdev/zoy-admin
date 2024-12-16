@@ -240,4 +240,14 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		});
 	}
 
+	doActiveteDeactiveteOwner(doActiveteDeactiveteOwner:any,status:string,ownerName:string){
+		this.authService.checkLoginUserVlidaate();		
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to '+( status=='Active'?'deactivated':'activated' )+' to the owner - '+ownerName+' ?')
+		.then((confirmed) =>{
+		   if(confirmed){
+			   // backend call here
+			   this.notifyService.showSuccess("Api is not implemented. will do soon", "");   
+			}
+		}).catch(() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')); 
+		}
   }  
