@@ -18,11 +18,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -32,6 +36,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
+import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.PgOwnerMaster;
 import com.integration.zoy.entity.UserProfile;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
@@ -48,13 +53,16 @@ import com.integration.zoy.model.PgOwnerPropertyInformation;
 import com.integration.zoy.model.PgOwnerbasicInformation;
 import com.integration.zoy.model.PgOwnerdetailPortfolio;
 import com.integration.zoy.model.Room;
+import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.PgOwnerMaterRepository;
 import com.integration.zoy.repository.UserProfileRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
+import com.integration.zoy.service.PdfGenerateService;
 import com.integration.zoy.service.ZoyCodeGenerationService;
 import com.integration.zoy.service.ZoyEmailService;
+import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.ResponseBody;
 
@@ -64,9 +72,11 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	private static final Logger log=LoggerFactory.getLogger(PgOwnerMasterController.class);
 	@Autowired
 	private PgOwnerMaterRepository pgOwnerMaterRepository;
-
 	@Autowired
 	private UserProfileRepository profileRepository;
+	@Autowired
+	private AdminUserMasterRepository adminUserMasterRepository;
+	
 	@Autowired
 	ZoyCodeGenerationService zoyCodeGenerationService;
 	@Autowired
@@ -77,12 +87,21 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 	@Autowired
 	ZoyEmailService emailBodyService;
+	
+	@Autowired
+	ZoyS3Service zoyS3Service;
+	
+	@Autowired
+	PdfGenerateService  pdfGenerateService;
 
 	@Autowired
 	CommonDBImpl commonDBImpl;
 
 	@Value("${qa.signin.link}")
 	private String qaRegistrationLink;
+	
+	@Value("${app.minio.user.photos.bucket.name}")
+	private String userPhotoBucketName;
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
 
@@ -448,5 +467,102 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	
+	@Override
+	public ResponseEntity<String> uploadProfilePicture(MultipartFile image) {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+	        String fileName = image.getOriginalFilename();
+
+	        if (fileName == null || fileName.isEmpty()) {
+	            log.error("No file uploaded.");
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setMessage("No file uploaded.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        AdminUserMaster userDetail = adminUserMasterRepository.findById(userEmail)
+	                .orElseThrow(() -> new RuntimeException("User not found"));
+
+	        byte[] profilePictureBase64 = pdfGenerateService.imageToBytes(image.getInputStream());
+	        userDetail.setUserProfilePicture(profilePictureBase64);
+
+	        adminUserMasterRepository.save(userDetail);
+
+	        log.info("Profile picture uploaded successfully for user: {}", userEmail);
+	        response.setStatus(HttpStatus.OK.value());
+	        response.setMessage("Profile picture uploaded successfully.");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+	    } catch (RuntimeException ex) {
+	        log.error("User not found or error occurred while uploading profile picture API:/zoy_admin/uploadProfilePicture.uploadProfilePicture", ex.getMessage());
+	        response.setStatus(HttpStatus.NOT_FOUND.value());
+	        response.setMessage("User not found.");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+
+	    } catch (Exception ex) {
+	        log.error("Unexpected error occurred while uploading the profile picture: {}", ex.getMessage(), ex);
+
+	        try {
+	            new ZoyAdminApplicationException(ex, "");
+	        } catch (Exception e) {
+	            log.error("Error during custom exception handling API:/zoy_admin/uploadProfilePicture.uploadProfilePicture", e.getMessage(), e);
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError(e.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(ex.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+
+	
+	public ResponseEntity<Object> getProfilePicture() {
+	    ResponseBody response = new ResponseBody(); 
+	    try {
+	        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();  
+
+	        byte[] profilePic = adminUserMasterRepository.findProilePhoto(userEmail);  
+
+	        if (profilePic == null || profilePic.length == 0) {
+	            log.error("Profile picture not found for user: {}", userEmail);
+	            response.setStatus(HttpStatus.NOT_FOUND.value());
+	            response.setMessage("Profile picture not found.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND); 
+	        }
+
+	        ByteArrayResource resource = new ByteArrayResource(profilePic);
+
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.IMAGE_JPEG);
+	        headers.setContentLength(profilePic.length);
+
+	        log.info("Profile picture fetched successfully for user: {}", userEmail);
+	        return ResponseEntity.ok().headers(headers).body(resource);  
+
+	    } catch (RuntimeException ex) {
+	        log.error("Error while fetching profile picture for user API:/zoy_admin/getProfilePicture.getProfilePicture", ex.getMessage());
+	        response.setStatus(HttpStatus.NOT_FOUND.value());
+	        response.setMessage("User not found or error occurred.");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND); 
+	    } catch (Exception ex) {
+	        log.error("Unexpected error occurred while fetching the profile picture API:/zoy_admin/getProfilePicture.getProfilePicture", ex);
+	        try {
+	            new ZoyAdminApplicationException(ex, "");
+	        } catch (Exception e) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError(e.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);  
+	        }
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(ex.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+
 
 }

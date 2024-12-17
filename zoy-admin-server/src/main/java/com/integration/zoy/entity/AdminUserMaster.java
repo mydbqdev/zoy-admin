@@ -5,9 +5,11 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "user_master", schema = "pgadmin")
@@ -35,6 +37,19 @@ public class AdminUserMaster {
 	@Column(name = "create_at", nullable = false)
 	@CreationTimestamp
 	private Timestamp ts;
+	
+	@Lob
+	@Type(type="org.hibernate.type.BinaryType")
+    @Column(name = "user_profile_picture", columnDefinition = "bytea")
+    private byte[] userProfilePicture;
+    
+	public byte[] getUserProfilePicture() {
+		return userProfilePicture;
+	}
+
+	public void setUserProfilePicture(byte[] userProfilePicture) {
+		this.userProfilePicture = userProfilePicture;
+	}
 
 	public String getFirstName() {
 		return firstName;
