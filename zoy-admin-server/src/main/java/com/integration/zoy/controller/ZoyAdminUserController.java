@@ -27,11 +27,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.Iterables;
@@ -51,6 +52,7 @@ import com.integration.zoy.entity.AdminUserTemporary;
 import com.integration.zoy.entity.AdminUserTemporaryPK;
 import com.integration.zoy.entity.AppRole;
 import com.integration.zoy.entity.RoleScreen;
+import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.AdminUserDetails;
 import com.integration.zoy.model.AdminUserUpdateDetails;
 import com.integration.zoy.model.ForgotPassword;
@@ -213,6 +215,33 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			response.setError(e.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	@Override
+	public ResponseEntity<String> doUserlogout() {
+		ResponseBody response=new ResponseBody();
+		try {
+			String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+			SecurityContextHolder.getContext().setAuthentication(null);
+			
+			auditHistoryUtilities.auditForUserLoginLogout(userEmail, false);
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("You have logged out successfully.");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		}  catch (DisabledException e) {
+			response.setStatus(HttpStatus.BAD_GATEWAY.value());
+			response.setMessage("User Inactive");
+			log.error("Exception occured while dbq/userlogout: User Inactive" +e);
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_GATEWAY);
+		} catch (BadCredentialsException e) {
+			//throw new InvalidUserCredentialsException("Invalid Credentials");
+			log.error("Exception occured while dbq/userlogout: Invalid Credentials" +e);
+			new ZoyAdminApplicationException(e, "");
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setMessage("Invalid Credentials");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 
 	
@@ -509,7 +538,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 
 	@Override
-	public ResponseEntity<String> zoyAdminUserSendLoginInfo(@RequestParam("userName")String userName) {
+	public ResponseEntity<String> zoyAdminUserSendLoginInfo(String userName) {
 		ResponseBody response=new ResponseBody();
 		try {
 			AdminUserMaster master=adminDBImpl.findAdminUserMaster(userName);
@@ -1019,6 +1048,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
+
 
 
 }

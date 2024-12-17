@@ -294,7 +294,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		console.log('Export action triggered for:', element);
 	}
 	
-	downloadPdf(){   
+	downloadPdf(type:string){   
 		this.authService.checkLoginUserVlidaate();
 		if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
 			return;
@@ -308,7 +308,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.cityLocation = this.cityLocationName;
 		this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 		this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
-		this.filtersRequest.downloadType = this.downloadType;
+		this.filtersRequest.downloadType = type ;//this.downloadType;
 		this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
 	
 			if(data!=null && data!=undefined && data!='' && data.size!=0){ 

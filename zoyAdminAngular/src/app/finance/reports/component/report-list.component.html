@@ -252,13 +252,26 @@
                   </div>
                 </div>
                   <div class="col-sm-2">
-                  <div class="ml-3" style="padding-top:32px;;width: 110px;"> 
-                    <select class="form-select form-select-sm btn-primary-custom" [(ngModel)]="downloadType" (ngModelChange)="downloadPdf()" style=" font-size: 12px;">
+                  <div class="ml-3" style="padding-top:37px;;width: 110px;"> 
+                  
+                  
+                    <div class="dropdown no-arrow">
+                      <button class="btn btn-primary-custom btn-sm"  role="button" id="dropdownMenuDownload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-solid fa-arrow-down-to-bracket"></i>
+                        <span style="font-size: 12px;" >Download</span>
+                      </button>                           
+                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuDownload">
+                        <a class="dropdown-item" href="javascript:void(0)" (click)="downloadPdf('pdf')">As Pdf </a><hr>
+                        <a class="dropdown-item" href="javascript:void(0)" (click)="downloadPdf('excel')"> As Excel</a><hr>
+                        <a class="dropdown-item" href="javascript:void(0)" (click)="downloadPdf('csv')">As CSV</a>   
+                      </div>
+                   </div>
+                    <!-- <select class="form-select form-select-sm btn-primary-custom" [(ngModel)]="downloadType" (ngModelChange)="downloadPdf()" style=" font-size: 12px;">
                       <option value="" disabled > Download </option>
                       <option value="pdf" >As Pdf</option>
                       <option value="excel" >As Excel</option>
                       <option value="csv" >As CSV</option>
-                    </select>
+                    </select> -->
                   </div>
                 </div>
                 </div>

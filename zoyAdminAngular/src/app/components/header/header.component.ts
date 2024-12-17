@@ -28,8 +28,8 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 	searchControl = new FormControl();
 	filteredOptions: Observable<Menu[]>;
   sessionTime:Date= new Date();
-  interval:any;
-  timeoutId: any;
+  interval:any = null;
+  timeoutId: any = null;
   lastActionTime: number = 0;
   nun:number=0
   countdown:number=0;
@@ -146,8 +146,8 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
     startValidateToken() {
         this.timeoutId = setTimeout(() => {
-          this.sessionTime = this.userService.getSessionTime();
-          const diff =  new Date().getTime() - this.sessionTime.getTime();
+          this.sessionTime = this.userService.getSessionTime() || new Date();
+          const diff =  new Date().getTime() - this.sessionTime.getTime() ;
           if(diff>800000){
            this.authService.checkLoginUserVlidaate();
           }
