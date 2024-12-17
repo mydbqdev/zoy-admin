@@ -43,7 +43,7 @@
 
 /* Set styles for the scrollable container */
 .scrollable-container {
-  height: calc(100vh - 410px);  /* Set a max height to enable vertical scrolling */
+  height: calc(100vh - 450px);  /* Set a max height to enable vertical scrolling */
   overflow-y: auto;   /* Enable vertical scrolling */
   overflow-x: auto;  /* Enable horizontal scrolling */
   padding-right: 5px; /* Optional: prevent scrollbar overlap */
