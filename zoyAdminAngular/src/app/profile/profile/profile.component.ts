@@ -38,7 +38,6 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	public rolesArray: string[] = [];
 	userInfo:UserInfo=new UserInfo();
 	userRolePermissions: RoleScreenPrv[] = [];
-	authorisedMe:string[]=[];
 
 	resetPassword: { 'email': string,'oldPassWord': string,'newPassword': string,
 	}={ 'email': '', 'oldPassWord': '', 'newPassword': '', };
@@ -47,7 +46,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userInfo=this.userService.getUserinfo();
-			this.authorisedMe = this.userInfo.privilege ;
+			
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
 		if (userService.getUserinfo() != undefined) {
@@ -253,8 +252,8 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	 
 	   viewAuthorisedMe(): void {   
 		   this.userRolePermissions = [];
-		   if (this.authorisedMe.length>0) {
-			this.authorisedMe.forEach(privilege => {
+		   if (this.userInfo.privilege && this.userInfo.privilege.length>0) {
+			this.userInfo.privilege.forEach(privilege => {
 			  let screenBaseName = privilege.replace(/_READ|_WRITE$/, '').replace(/_/g, ' ').toUpperCase();
 			  let existingPermission = this.userRolePermissions.find(
 				permission => permission.screenName === screenBaseName
