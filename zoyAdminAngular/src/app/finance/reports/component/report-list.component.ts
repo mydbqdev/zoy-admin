@@ -13,6 +13,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import { ReportService } from '../service/reportService';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { FilterData, FiltersRequestModel } from '../model/report-filters-model';
+//import { UserGSTPaymentModel } from '../model/user-payment-model';
  
 @Component({
 	selector: 'app-report-list',
@@ -274,19 +275,26 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 				}); 
 			}
 	 	}
-
-	 viewReport(row:any){
-		let data = this.reportService.reportColumnsList.find(n => n.reportName == this.reportName).object;
-		data = Object.assign(row); 
-		this.reportData = Object.assign(data);
+	//	 userGSTPaymentModel:UserGSTPaymentModel=new UserGSTPaymentModel();
+	//  viewReport(row:any){
+	// 	let data = this.reportService.reportColumnsList.find(n => n.reportName == this.reportName).object;
+		
+	// 	if(data == 'new UserGSTPaymentModel()'){
+	// 		this.userGSTPaymentModel = Object.assign(row);
+	// 		data = Object.assign(this.userGSTPaymentModel); 
+	// 	}else{
+	// 		data = Object.assign(row); 
+	// 	}
+		
+	// 	this.reportData = Object.assign(data);
 			
-	 }		 
+	//  }		 
 	
 	onExport(element: any): void {
 		console.log('Export action triggered for:', element);
 	}
 	
-	downloadPdf(){   
+	downloadPdf(type:string){   
 		this.authService.checkLoginUserVlidaate();
 		if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
 			return;
@@ -300,7 +308,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.cityLocation = this.cityLocationName;
 		this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 		this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
-		this.filtersRequest.downloadType = this.downloadType;
+		this.filtersRequest.downloadType = type ;//this.downloadType;
 		this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
 	
 			if(data!=null && data!=undefined && data!='' && data.size!=0){ 

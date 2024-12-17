@@ -210,8 +210,8 @@
                                                   <input 
                                                   type="text" 
                                                   class="form-control form-control-sm"
-                                                  [(ngModel)]="beforeCheckInCRfModel.deductionPercentages" (keypress)="percentageOnly($event)" maxlength="5"
-                                                  [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && (beforeCheckInCRfModel.deductionPercentages == 0 || !beforeCheckInCRfModel.deductionPercentages) }" 
+                                                  [(ngModel)]="beforeCheckInCRfModel.deductionPercentages" (keypress)="percentageOnlyWithZero($event)" maxlength="5"
+                                                  [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && ( beforeCheckInCRfModel.deductionPercentages == undefined || beforeCheckInCRfModel.deductionPercentages.toString() =='' ) }" 
                                                   style="max-width: 120px !important;"
                                                   />
                                                   <span class="input-group-text">%</span>
@@ -246,8 +246,8 @@
                                               <input 
                                               type="text" 
                                               class="form-control form-control-sm"
-                                              [(ngModel)]="bci.deductionPercentages" (keypress)="percentageOnly($event)" maxlength="5" [disabled]="bci.bcicrDisable"
-                                              [ngClass]="{'is-invalid': !bci.bcicrDisable && (bci.deductionPercentages == 0 || !bci.deductionPercentages) }" 
+                                              [(ngModel)]="bci.deductionPercentages" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="bci.bcicrDisable"
+                                              [ngClass]="{'is-invalid': !bci.bcicrDisable && (bci.deductionPercentages == undefined || bci.deductionPercentages.toString() =='') }" 
                                               style="max-width: 120px !important;"
                                               disabled  value="20"/>
                                               <span class="input-group-text">%</span>

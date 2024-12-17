@@ -51,10 +51,6 @@ export class AppAuthService extends AuthService{
     public getAuthUser(user:User) : Observable<any>{
         const url1=this.basePath +'zoy_admin/login';
         let loginUser : User ={email:user.email,password:this.encryptDecryptHelper.encrypt(user.password)};
-       //let loginUser : User ={email:user.email,password:user.password};
-
-        //let encrypt=this.encryptDecryptHelper.encrypt("pavan1234 ");
-       //console.log("pavan1234 >encrypt:",encrypt);
         return this.httpclient.post<User>(
             url1,
             loginUser,
@@ -71,78 +67,6 @@ export class AppAuthService extends AuthService{
         return this.httpclient.post<any>(
             url1,
             user,
-            {
-                headers:ServiceHelper.buildHeaders(),
-               observe : 'body',
-               withCredentials:true
-            }
-        );
-    }
-
-   /* public checkLoginUserOnServer() : Observable<ApplicationSession>{
-        const url1=this.basePath +'checkLoginUser';
-        let userEmail =this.userService?.getUsername();
-        var res=new MockData().checkLoginUserResponce.filter(d =>d.userEmail == userEmail);
-        const mockData: ApplicationSession = Object.assign(res[0]);
-
-        return of(mockData);
-        // return this.httpclient.post<ApplicationSession>(
-        //     url1,
-        //     '',
-        //     {
-        //         headers:ServiceHelper.buildHeaders(),
-        //        observe : 'body',
-        //        withCredentials:true
-        //     }
-        // );
-    }
-
-    public checkLoginUser() : void{
-        var msg:string;
-        this.sessionSnapshot =null;
-        this.message ='';
-        this.checkLoginUserOnServer().subscribe(
-            (result)=>{
- 
-               this.sessionSnapshot = result;
-               this.sessionSnapshot.username = result.empEmail;
-               this.sessionSnapshot.token = result.token;
-               this.userService.setUsername(result.userEmail);
-               this.userService.setUserinfo(result);
-
-               let resp: ResponseStore={userEmail:result.userEmail,token:result.token};
-               this.setSessionStore(resp);
-               if(!this.sessionSnapshot.username){
-                   this.router.navigateByUrl('/signin');            
-              }else{
-                   this.router.navigateByUrl('/home'); 
-              }
-            },
-            (err) =>{
-               if(err.error && err.error.message){
-                   msg=err.error.message;
-               }else{
-               msg='An error occured while processing your request.Please contact your Help Desk.';
-               }
-               this.message=msg;
-               this.router.navigateByUrl('/signin');
-            },
-            () =>{
-                if(!this.sessionSnapshot){
-                   msg='An error occured while processing your request.Please contact your Help Desk.';
-                   this.message=msg;
-                   this.router.navigateByUrl('/signin');
-                }
-            }
-        );
-       
-    }*/
-
-    public checkLoginUserOnServer1() : Observable<ApplicationSession>{
-        const url1=this.basePath +'checkLoginUser';
-        return this.httpclient.post<ApplicationSession>(
-            url1,
-            '',
             {
                 headers:ServiceHelper.buildHeaders(),
                observe : 'body',
@@ -264,9 +188,9 @@ export class AppAuthService extends AuthService{
         );*/
     }
 
-     public checkLogoutUserOnServer() : Observable<ApplicationSession>{
-        const url1=this.basePath +'userlogout';
-        return this.httpclient.post<ApplicationSession>(
+     public checkLogoutUserOnServer() : Observable<any>{
+        const url1=this.basePath +'zoy_admin/userlogout';
+        return this.httpclient.post<any>(
             url1,
             '',
             {
@@ -279,12 +203,12 @@ export class AppAuthService extends AuthService{
 
      public checkLogout() : void{
         var msg:string;
-        this.sessionSnapshot =null;
         this.message ='';
-        sessionStorage.clear();
         this.checkLogoutUserOnServer().subscribe(
             (result)=>{ 
-                   this.router.navigate(['/signin']); 
+                this.sessionSnapshot =null;
+                sessionStorage.clear();
+                this.router.navigate(['/signin']); 
             },
             (err) =>{
                if(err.error && err.error.message){
