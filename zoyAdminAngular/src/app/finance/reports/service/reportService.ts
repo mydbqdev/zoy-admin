@@ -47,7 +47,7 @@ import { MessageService } from 'src/app/message.service';
       'totalAmount': 'TOTAL AMOUNT',
       'customerName': 'TENANT NAME',//'CUSTOMER NAME',
       'PgPropertyName': 'PG PROPERTY NAME',
-      'PgPropertyId': 'PG PROPERTY ID',
+    //  'PgPropertyId': 'PG PROPERTY ID',
       'bedNumber': 'BED NUMBER',
       'category': 'CATEGORY',
       'paymentMethod': 'PAYMENT METHOD',
@@ -59,18 +59,26 @@ import { MessageService } from 'src/app/message.service';
       'creditAmount': 'CREDIT AMOUNT',
       'debitAmount': 'DEBIT AMOUNT',
       'customerId': 'TENANT ID' ,//'CUSTOMER ID',
-      'basicAmount': 'BASIC AMOUNT'
+      'basicAmount': 'BASIC AMOUNT',
+
+      'tenantContactNum' :'TENANT CONTACT',
+      'propertyHouseArea' :'PG Address',
+      'payerPayeeType':'PAYER/PAYEE TYPE',
+      'ownerEmail':'OWNER EMAIL',
+      'pgAddress':'PG ADDRESS',
+      'zoyShare':'ZOY SHARE',
   };
   
 	  reportColumnsList: { 'reportName': string, 'columns': string[] ,'object': any }[] = [
 		{
 		  'reportName': 'Tenant Transactions Report', //== User Transactions Report
-		  'columns': ['customerName', 'PgPropertyId', 'transactionDate', 'transactionNumber', 'transactionStatus', 'actions'],
+		  'columns': ['transactionDate','customerName', 'tenantContactNum','PgPropertyName','propertyHouseArea','bedNumber',  
+                  'transactionNumber', 'transactionStatus', 'baseAmount','gstAmount','totalAmount','category','paymentMethod'],
       'object':'new UserTransactionReportModel()'
     },
 		{
 		  'reportName': 'Tenant Payments GST Report', //==User Payments GST Report
-		  'columns': ['transactionDate', 'PgPropertyId', 'transactionNumber', 'totalAmount', 'gstAmount', 'actions'],
+		  'columns': ['transactionDate','transactionNumber','customerName','PgPropertyName','propertyHouseArea', 'totalAmount', 'gstAmount', 'gstAmount','paymentMethod'],
       'object':'new UserGSTPaymentModel()'
 		},
     {
@@ -80,22 +88,22 @@ import { MessageService } from 'src/app/message.service';
 		},
     {
 		  'reportName': 'Owner Payments Report', //==Vendor Payments Report
-		  'columns': ['ownerId', 'pgId', 'pgName', 'amountPaidToOwner',  'transactionDate', 'paymentStatus', 'actions'],
+		  'columns': [  'transactionDate','ownerName', 'pgName','ownerEmail','pgAddress','totalAmountFromTenants', 'amountPaidToOwner','zoyShare','transactionNumber', 'paymentStatus'],
      'object':'new VendorPaymentsModel()'
 		},
     {
 		  'reportName': 'Owner Payments Dues Report', //==Vendor Payments Dues Report
-		  'columns': ['ownerId', 'pgId', 'totalAmountPayable', 'totalAmountPaid', 'pendingAmount', 'pendingDueDate', 'actions'],
+		  'columns': ['ownerId', 'pgId', 'totalAmountPayable', 'totalAmountPaid', 'pendingAmount', 'pendingDueDate'],
       'object':'new VendorPaymentsDues()'
-		},
+    },
     {
 		  'reportName': 'Owner Payments Gst Report',// == Vendor Payments Gst Report
-		  'columns': ['transactionDate','transactionNo','pgId','totalAmount','gstAmount','actions'],
+		  'columns': ['transactionDate','transactionNo','pgId','totalAmount','gstAmount'],
       'object':'new VendorPaymentsGst()'
 		},
     {
 		  'reportName': 'Consolidated Finance Report',
-		  'columns': ['transactionDate', 'customerId', 'transactionNumber', 'customerName', 'creditAmount', 'debitAmount', 'actions'],
+		  'columns': ['transactionDate', 'transactionNumber','payerPayeeType', 'customerName', 'creditAmount', 'debitAmount'],
       'object':'new ConsilidatedFinanceDetailsModel()'
 		}
 	  ];
