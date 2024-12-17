@@ -289,7 +289,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	beforeCheckInCRfSave(){
 		this.beforeCheckInCRfSaveVali = true ;
 		this.authService.checkLoginUserVlidaate();
-		if(this.beforeCheckInCRfModel.daysBeforeCheckIn == 0 ||  !this.beforeCheckInCRfModel.daysBeforeCheckIn || this.beforeCheckInCRfModel.deductionPercentages == 0 ||  !this.beforeCheckInCRfModel.deductionPercentages){
+		if(this.beforeCheckInCRfModel.daysBeforeCheckIn == 0 ||  !this.beforeCheckInCRfModel.daysBeforeCheckIn ||  this.beforeCheckInCRfModel.deductionPercentages==undefined || this.beforeCheckInCRfModel.deductionPercentages.toString() ==''){
 			return ;
 		}
 		if(this.configMasterOrg.cancellationDetails.find(c=>c.daysBeforeCheckIn == this.beforeCheckInCRfModel.daysBeforeCheckIn) != undefined){
@@ -339,7 +339,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 
 	beforeCheckInCRfUpDate(i:number){
 		const model =this.configMasterModel.cancellationDetails[i] ;
-		if(model.daysBeforeCheckIn == 0 ||  !model.daysBeforeCheckIn || model.deductionPercentages == 0 ||  !model.deductionPercentages){
+		if(model.daysBeforeCheckIn == 0 ||  !model.daysBeforeCheckIn || model.deductionPercentages == undefined || model.deductionPercentages.toString() ==''	){
 			return ;
 		}
 
@@ -541,7 +541,26 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 
 			return true;
 		  }
+		  percentageOnlyWithZero(event): boolean {
+			const charCode = (event.which) ? event.which : event.keyCode;
+			const inputValue = event.target.value + String.fromCharCode(charCode); 
+
+			if (inputValue.startsWith('.')) {
+				return false;
+			  }
+			
+			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+			  if (charCode !== 46 ) { // Allow decimal point (46) and percent symbol (37)
+				return false;
+			  }
+			}
 		  
+			if ((inputValue.match(/\./g) || []).length> 0 || parseFloat(inputValue) > 100 ) {
+			  return false;
+			}
+
+			return true;
+		  }
 
 		getConfigMasterDetails(){
 			this.authService.checkLoginUserVlidaate();

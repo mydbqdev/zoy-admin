@@ -57,6 +57,17 @@ public interface ZoyAdminUserImpl {
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminUserDetails(@RequestBody Token token);
 	
+	@Operation(summary = "Admin User Logout", description = "Admin User Logout", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/userlogout",
+	produces = { "application/json" })
+	ResponseEntity<String> doUserlogout();
+	
 	
 	@Operation(summary = "Create Admin User", description = "Creating new admin User", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
