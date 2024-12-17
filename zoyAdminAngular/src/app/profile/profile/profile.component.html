@@ -24,7 +24,8 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-3">
                         <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Profile</span></h3> 
                         <div>
-                         </div>
+                          <button class="btn btn-primary-custom btn-sm" data-bs-toggle="offcanvas" data-bs-target="#AuthorisedDetails">Authorised Me</button>
+                        </div>
                     </div>
 
                     <!-- Content Row -->
@@ -193,4 +194,36 @@
         <!-- End of Content Wrapper -->
   </div>
   <!-- End of Page Wrapper -->
+</div>
+
+<!-- Authorised Details -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="AuthorisedDetails" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+  <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasRightLabel">Authorised to me</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <hr class="sidebar-divider my-0">
+  <div class="offcanvas-body">
+              <!-- Authorization Section -->             
+              <div class="mb-4">
+                  <div class="row text-center font-weight-bold" style="font-size: 14px;">
+                      <div class="col-sm-8 text-left">Authorization</div>
+                      <div class="col-sm-2">Read</div>
+                      <div class="col-sm-2">Write</div>
+                  </div>
+                  <!-- Scrollable container for the authorization rows -->
+                  <div class="scrollable-container">
+                      <!--div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-1 ml-1">
+                          <div class="col-sm-8" style="font-size: 13px;" [ngClass]="{'text-danger': !permission.approveStatus }" [title]="!permission.approveStatus?'waiting for approval':''" >{{ permission.screenName }}</div>
+                          <div class="col-sm-2 text-center">
+                              <i [class]="getReadIcon(permission.readPrv)" style="font-size: 13px;"></i>
+                          </div>
+                          <div class="col-sm-2 text-center">
+                              <i [class]="getWriteIcon(permission.writePrv)" style="font-size: 13px;"></i>
+                          </div>
+                      </div-->
+                  </div>
+              </div>          
+          <!-- </div> -->
+  </div>
 </div>
