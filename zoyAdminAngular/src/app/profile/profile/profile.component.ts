@@ -40,9 +40,8 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	userInfo:UserInfo=new UserInfo();
 	userRolePermissions: RoleScreenPrv[] = [];
 	authorization:{ key: string; screen: string; order: number }[]=[];
-	resetPassword: { 'email': string,'oldPassWord': string,'newPassword': string,
-	}={ 'email': '', 'oldPassWord': '', 'newPassword': '', };
-
+	resetPassword: { 'email': string,'oldPassWord': string,'newPassword': string}={ 'email': '', 'oldPassWord': '', 'newPassword': '', };
+	imgeURL2:any="assets/images/NotAvailable.jpg";
 	constructor(private encryptDecryptHelper:AESEncryptDecryptHelper,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private profileService:ProfileService,
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private menuService:MenuService) {
 			this.authService.checkLoginUserVlidaate();
@@ -101,7 +100,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 			  confirmPassword: ['', Validators.required]
 			}, 
 			{ validator: this.passwordsMatch });
-	  
+			this.loadProfilePhoto();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(0);
@@ -210,6 +209,9 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	 resetChange(){
 		 this.previewUrl=false;
 		 this.formPicture.reset();
+		 this.fileUploadSizeStatus=false;
+		 this.submittedPicture=false;
+		 this.fileData = null;
 	 }
 	 preview() {
 		 // Show preview 
@@ -233,17 +235,87 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	 submit(){
 		 this.submittedPicture=true;
 		 var form_data = new FormData();
-	   }
-	    
-	   forValidations(){
 		 if(this.formPicture.invalid){
-		   return;
+			return;
+		  }
+		 form_data.append('image', this.fileData);
+		 if( !this.fileUploadSizeStatus){
+			this.profileService.uploadProfilePicture(form_data).subscribe((res) => {
+				this.router.navigate(['/profile']);
+				this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			}else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error;
+				} else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" + str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+			});
 		 }
+		  
 	   }
+	   loadProfilePhoto(){
+		this.profileService.loadProfilePhoto().subscribe((data) => {
+		 if(data && data.size!=0){ 
+			const reader =new FileReader();
+			reader.readAsDataURL(new Blob([data]));
+			reader.onload=(e)=>this.imgeURL2=e.target.result; 
+		  }else{
+			this.imgeURL2="assets/images/NotAvailable.jpg";
+		  }
+	
+		}, error => {
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			}else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error;
+				} else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" + str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+			});				
+	  }
  
-	   imgeURL2:any="assets/images/NotAvailable.jpg";
-
-	   getReadIcon(readPrv: boolean): string {
+	 getReadIcon(readPrv: boolean): string {
 		return readPrv ? 'fa fa-check text-success' : 'fa fa-times text-danger';
 	  }
 	  
@@ -285,6 +357,8 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 		  }
 		  this.userRolePermissions.sort((a, b) => a.order - b.order);
 	  }	
+
+	 
 			   
 		
 }

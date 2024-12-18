@@ -34,6 +34,27 @@ export class ProfileService {
   );
   }
 
+  public uploadProfilePicture(data:any): Observable<any> {
+    const url = this.basePath + 'zoy_admin/uploadProfilePicture'; 
+    return  this.httpclient.post<any>(
+      url,
+      data,
+      {
+          headers:ServiceHelper.filesHeaders(),
+         observe : 'body',
+         withCredentials:true
+      }
+  );
+  }
+
+  loadProfilePhoto():Observable<any>{
+    const url1=this.basePath +'zoy_admin/getProfilePicture';
+                 return this.httpclient.get<any>(
+                     url1,
+                     { responseType: 'blob' as 'json'}
+                 );
+  }
+
 
 
   private errorHandler(error: HttpErrorResponse) {
