@@ -3,4 +3,5 @@ export class RoleScreenPrv {
     readPrv: boolean;
     writePrv: boolean;
     approveStatus:boolean;
+    order?:number=0;
   }

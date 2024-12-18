@@ -17,6 +17,7 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import {  RoleUpdateModel } from '../models/rolesave-model';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { RoleScreenPrv } from 'src/app/setting/role-master/models/role-screen-model';
+import { MenuService } from 'src/app/components/header/menu.service';
 
 @Component({
   selector: 'app-user-master',
@@ -63,9 +64,9 @@ export class UserMasterComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('editRoleCloseModal') editRoleCloseModal : ElementRef;
   @ViewChild('registerCloseModal') registerCloseModal : ElementRef;
-
+  authorization:{ key: string; screen: string; order: number }[]=[];
   constructor(private userMasterService : UserMasterService,private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private notifyService:NotificationService,
-    private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService){
+    private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService,private menuService:MenuService){
       this.authService.checkLoginUserVlidaate();
       this.userNameSession=this.userService.getUsername();
       if (this.userService.getUserinfo() != undefined) {
@@ -90,6 +91,7 @@ export class UserMasterComponent implements OnInit {
         this.isExpandSideBar=name;
       });
       this.columnSortDirections.fileName= 'asc';
+      this.authorization=this.menuService.getAllAuthorization();
   }
   stopPropagation(event: MouseEvent): void {
 		event.stopPropagation();
@@ -583,8 +585,10 @@ getWriteIcon(writePrv: boolean): string {
         if (role.screens && Array.isArray(role.screens)) {
           role.screens.forEach(privilege => {
             let screenBaseName = privilege.replace(/_READ|_WRITE$/, '').replace(/_/g, ' ').toUpperCase();
+            const authorization = this.authorization.find(auth=>auth.key == screenBaseName);
+            if (authorization) {
             let existingPermission = this.userRolePermissions.find(
-              permission => permission.screenName === screenBaseName
+              permission => permission.screenName === authorization.screen 
             );  
             if (existingPermission) {
               if (privilege.endsWith('_READ')) {
@@ -594,18 +598,21 @@ getWriteIcon(writePrv: boolean): string {
                 existingPermission.writePrv = true;
               }
               existingPermission.approveStatus = role.approveStatus === 'Approved';
+              existingPermission.order = authorization.order ;
             } else {
               this.userRolePermissions.push({
-                screenName: screenBaseName,
+                screenName: authorization.screen,
                 readPrv: privilege.endsWith('_READ'),
                 writePrv: privilege.endsWith('_WRITE'),
-                approveStatus: role.approveStatus === 'Approved'
+                approveStatus: role.approveStatus === 'Approved',
+                order : authorization?.order
               });
-            }
+            }}
           });
         }
       });
     }
+    this.userRolePermissions.sort((a, b) => a.order - b.order);
   }
 
   doUserActiveteDeactivete(user:any){

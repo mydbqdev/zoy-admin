@@ -14,6 +14,7 @@ import { ProfileService } from '../service/profile-service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { AESEncryptDecryptHelper } from 'src/app/common/shared/AESEncryptDecryptHelper';
 import { RoleScreenPrv } from 'src/app/setting/role-master/models/role-screen-model';
+import { MenuService } from 'src/app/components/header/menu.service';
 
 
 
@@ -38,12 +39,12 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	public rolesArray: string[] = [];
 	userInfo:UserInfo=new UserInfo();
 	userRolePermissions: RoleScreenPrv[] = [];
-
+	authorization:{ key: string; screen: string; order: number }[]=[];
 	resetPassword: { 'email': string,'oldPassWord': string,'newPassword': string,
 	}={ 'email': '', 'oldPassWord': '', 'newPassword': '', };
 
 	constructor(private encryptDecryptHelper:AESEncryptDecryptHelper,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private profileService:ProfileService,
-		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
+		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private menuService:MenuService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userInfo=this.userService.getUserinfo();
 			
@@ -77,6 +78,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 					  this.userInfo=name;
 					});
 		  }
+		  this.authorization=this.menuService.getAllAuthorization();
 	}
 
 	ngOnDestroy() {
@@ -255,9 +257,11 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 		   if (this.userInfo.privilege && this.userInfo.privilege.length>0) {
 			this.userInfo.privilege.forEach(privilege => {
 			  let screenBaseName = privilege.replace(/_READ|_WRITE$/, '').replace(/_/g, ' ').toUpperCase();
-			  let existingPermission = this.userRolePermissions.find(
-				permission => permission.screenName === screenBaseName
-			  );  
+			  const authorization = this.authorization.find(auth=>auth.key == screenBaseName);
+              if (authorization) {
+              let existingPermission = this.userRolePermissions.find(
+               permission => permission.screenName === authorization.screen 
+              );  
 			  if (existingPermission) {
 				if (privilege.endsWith('_READ')) {
 				  existingPermission.readPrv = true;
@@ -265,17 +269,21 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 				if (privilege.endsWith('_WRITE')) {
 				  existingPermission.writePrv = true;
 				}
-			//	existingPermission.approveStatus = role.approveStatus === 'Approved';
+			 existingPermission.order = authorization.order ;
+			// 	existingPermission.approveStatus = role.approveStatus === 'Approved';
 			  } else {
 				this.userRolePermissions.push({
-				  screenName: screenBaseName,
+				  screenName: authorization.screen,
 				  readPrv: privilege.endsWith('_READ'),
 				  writePrv: privilege.endsWith('_WRITE'),
-				  approveStatus:true
+				  approveStatus:true,
+				  order : authorization?.order
 				});
 			  }
+			}
 			});
 		  }
+		  this.userRolePermissions.sort((a, b) => a.order - b.order);
 	  }	
 			   
 		
