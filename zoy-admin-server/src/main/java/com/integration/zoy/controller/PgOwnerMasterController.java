@@ -476,6 +476,13 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 	        String fileName = image.getOriginalFilename();
 
+	        long maxSize = 2 * 1024 * 1024; 
+	        if (image.getSize() > maxSize) {
+	            log.error("File size exceeds the maximum limit of 2MB.");
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setMessage("File size exceeds the maximum limit of 2MB.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
 	        if (fileName == null || fileName.isEmpty()) {
 	            log.error("No file uploaded.");
 	            response.setStatus(HttpStatus.BAD_REQUEST.value());
