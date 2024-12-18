@@ -79,7 +79,7 @@ export class AppAuthService extends AuthService{
         let token ={"token":""};
         if(!sessionStorage.getItem("token")){
             this.router.navigateByUrl('/signin');
-            return;
+            return of(null);
         }
          token ={"token":sessionStorage.getItem("token").replace("Bearer ","")}
         return this.httpclient.post<any>(
@@ -99,6 +99,7 @@ export class AppAuthService extends AuthService{
         this.message ='';
         this.checkLoginUserOnServer().subscribe(
             (result)=>{
+              if (result) { 
                this.sessionSnapshot = result;
                this.sessionSnapshot.username = result.userEmail;
                this.sessionSnapshot.token = result.token;
@@ -111,6 +112,9 @@ export class AppAuthService extends AuthService{
                }{
                    this.router.navigateByUrl('/home'); 
               }
+             } else {
+                this.router.navigateByUrl('/signin');
+            }
             },
             (err) =>{
                if(err.error && err.error.message){
