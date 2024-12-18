@@ -216,56 +216,60 @@ public class UploadService {
 
 	private void createWebcheckIn(String ownerId,ZoyPgOwnerBookingDetails booking, List<UserBookings> userBookingDetails, 
 			List<PgOwnerUserStatus> userStatus, List<UserPgDetails> userPgDetails,List<UserPayment> userPayment,List<ZoyPgBedDetails> bedDetails) {
-		ZoyPgRentCycleMaster rentCycle=uploadDBImpl.findRentCycle(booking.getLockInPeriod());
-		if(rentCycle!=null) {
-			UserBookings details=new UserBookings();
-			details.setUserId(booking.getTenantId());
-			details.setUserBookingsTenantId(booking.getTenantId());
-			details.setUserBookingsId(booking.getBookingId());
-			details.setUserBookingsPropertyId(booking.getPropertyId());
-			details.setUserBookingsPgOwnerId(ownerId);
-			details.setUserBookingsWebCheckIn(true);
-			details.setUserBookingsDate(new Timestamp(System.currentTimeMillis()));
-			details.setUserBookingsWebCheckOut(false);
-			details.setUserBookingsIsCancelled(false);
-			userBookingDetails.add(details);
+		try {
+			ZoyPgRentCycleMaster rentCycle=uploadDBImpl.findRentCycle(booking.getLockInPeriod());
+			if(rentCycle!=null) {
+				UserBookings details=new UserBookings();
+				details.setUserId(booking.getTenantId());
+				details.setUserBookingsTenantId(booking.getTenantId());
+				details.setUserBookingsId(booking.getBookingId());
+				details.setUserBookingsPropertyId(booking.getPropertyId());
+				details.setUserBookingsPgOwnerId(ownerId);
+				details.setUserBookingsWebCheckIn(true);
+				details.setUserBookingsDate(new Timestamp(System.currentTimeMillis()));
+				details.setUserBookingsWebCheckOut(false);
+				details.setUserBookingsIsCancelled(false);
+				userBookingDetails.add(details);
 
-			UserPgDetails userPgDetail=new UserPgDetails();
-			userPgDetail.setUserId(booking.getTenantId());
-			userPgDetail.setUserPgBookingId(booking.getBookingId());
-			userPgDetail.setUserPgRentalNeedDetailsIsAgreed(true);
-			userPgDetail.setUserPgRentalNeedDetailsTimestamp(new Timestamp(new Date().getTime()));;
-			userPgDetail.setUserPgTenantId(booking.getTenantId());
-			userPgDetail.setUserPgOwnerId(ownerId);
-			userPgDetail.setUserPgPropertyId(booking.getPropertyId());
-			userPgDetails.add(userPgDetail);
+				UserPgDetails userPgDetail=new UserPgDetails();
+				userPgDetail.setUserId(booking.getTenantId());
+				userPgDetail.setUserPgBookingId(booking.getBookingId());
+				userPgDetail.setUserPgRentalNeedDetailsIsAgreed(true);
+				userPgDetail.setUserPgRentalNeedDetailsTimestamp(new Timestamp(new Date().getTime()));;
+				userPgDetail.setUserPgTenantId(booking.getTenantId());
+				userPgDetail.setUserPgOwnerId(ownerId);
+				userPgDetail.setUserPgPropertyId(booking.getPropertyId());
+				userPgDetails.add(userPgDetail);
 
-			PgOwnerUserStatus ownerUserStatus=new PgOwnerUserStatus();
-			ownerUserStatus.setPgOwnerId(ownerId);
-			ownerUserStatus.setBedId(booking.getSelectedBed());
-			ownerUserStatus.setPropertyId(booking.getPropertyId());
-			ownerUserStatus.setUserBookingsId(booking.getBookingId());
-			ownerUserStatus.setUserId(booking.getTenantId());
-			ownerUserStatus.setPgTenantStatus(true);
-			userStatus.add(ownerUserStatus);
+				PgOwnerUserStatus ownerUserStatus=new PgOwnerUserStatus();
+				ownerUserStatus.setPgOwnerId(ownerId);
+				ownerUserStatus.setBedId(booking.getSelectedBed());
+				ownerUserStatus.setPropertyId(booking.getPropertyId());
+				ownerUserStatus.setUserBookingsId(booking.getBookingId());
+				ownerUserStatus.setUserId(booking.getTenantId());
+				ownerUserStatus.setPgTenantStatus(true);
+				userStatus.add(ownerUserStatus);
 
-			UserPayment payment=new UserPayment();
-			payment.setUserId(booking.getTenantId());
-			payment.setUserPaymentBookingId(booking.getBookingId());
-			if(booking.getPaidDeposit()!=null && !booking.getPaidDeposit().equals(BigDecimal.ZERO))
-				payment.setUserPaymentPayableAmount(booking.getPaidDeposit());
-			else 
-				payment.setUserPaymentPayableAmount(booking.getFixedRent());
-			payment.setUserPaymentPaymentStatus("success");
-			payment.setUserPaymentZoyPaymentMode("Cash");
-			payment.setUserPaymentZoyPaymentType("Deposit");
-			userPayment.add(payment);
+				UserPayment payment=new UserPayment();
+				payment.setUserId(booking.getTenantId());
+				payment.setUserPaymentBookingId(booking.getBookingId());
+				if(booking.getPaidDeposit()!=null && !booking.getPaidDeposit().equals(BigDecimal.ZERO))
+					payment.setUserPaymentPayableAmount(booking.getPaidDeposit());
+				else 
+					payment.setUserPaymentPayableAmount(booking.getFixedRent());
+				payment.setUserPaymentPaymentStatus("success");
+				payment.setUserPaymentZoyPaymentMode("Cash");
+				payment.setUserPaymentZoyPaymentType("Deposit");
+				userPayment.add(payment);
 
-			ZoyPgBedDetails pgBedDetails=ownerDBImpl.getBedsId(booking.getSelectedBed());
-			pgBedDetails.setBedId(booking.getSelectedBed());
-			pgBedDetails.setBedAvailable("occupied");
-			bedDetails.add(pgBedDetails);
-		}
+				ZoyPgBedDetails pgBedDetails=ownerDBImpl.getBedsId(booking.getSelectedBed());
+				pgBedDetails.setBedId(booking.getSelectedBed());
+				pgBedDetails.setBedAvailable("occupied");
+				bedDetails.add(pgBedDetails);
+			}	
+		}catch (Exception e) {
+	        log.error("Unexpected error occurred in createWebcheckIn for bookingId: " + booking.getBookingId(), e);
+	    }
 	}
 
 	private Timestamp getPreviousDate(String inputDate) {

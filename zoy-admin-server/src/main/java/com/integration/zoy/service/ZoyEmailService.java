@@ -11,11 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.hc.core5.http.ContentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserLoginDetails;
 import com.integration.zoy.entity.UserMaster;
@@ -56,6 +60,9 @@ public class ZoyEmailService {
 	@Value("${app.zoy.term.doc}")
 	private String zoyTermDoc;
 
+	private static final Logger log = LoggerFactory.getLogger(EmailService.class);
+	private static final Gson gson = new GsonBuilder().create();
+
 	public void sendForgotEmail(AdminUserLoginDetails user,String otp) throws WebServiceException {
 		Email email = new Email();
 		List<String> to=new ArrayList<>();
@@ -72,9 +79,12 @@ public class ZoyEmailService {
 				+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
 		email.setBody(message);
 		email.setContent("text/html");
-		emailService.sendEmail(email,null);
+		try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Error occurred while sending the registration email to " + zoyAdminMail + ": " + e.getMessage(), e);
+	    }
 	}
-
 	public void sendZoyCode(String owneremail,String firstName,String lastName,String zoyCode,String token) {
 		String verifyLink=emailVerificationUrl + token;
 		Email email = new Email();
@@ -105,7 +115,11 @@ public class ZoyEmailService {
 
 		email.setBody(message);
 		email.setContent("text/html");
-		emailService.sendEmail(email, null);
+		try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Error occurred while sending the registration email to " + owneremail + ": " + e.getMessage(), e);
+	    }
 	}
 
 
@@ -140,12 +154,12 @@ public class ZoyEmailService {
 				+ "<p>Best regards,</p>"
 				+ "<p>ZOY Administrator</p>";
 
-		email.setBody(message);
-		email.setContent("text/html");
-
-		emailService.sendEmail(email, null);
+		try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Error occurred while sending the registration email to " + owneremail + ": " + e.getMessage(), e);
+	    }
 	}
-
 	public void sendRegistrationMail(UserProfile user) {
 		Email email=new Email();
 		email.setFrom("zoyPg@mydbq.com");
@@ -275,7 +289,11 @@ public class ZoyEmailService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		emailService.sendEmail(email, file);
+		try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Error occurred while sending the  email to " + zoyAdminMail + ": " + e.getMessage(), e);
+	    }
 	}
 
 	public void sendForUserDoUserActiveteDeactivete(AdminUserList user) {
@@ -309,9 +327,11 @@ public class ZoyEmailService {
 
 		email.setBody(message);
 		email.setContent("text/html");
-		emailService.sendEmail(email,null);
-
-
+		try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Error occurred while sending the  email to " + zoyAdminMail + ": " + e.getMessage(), e);
+	    }
 	}
-
+	
 }

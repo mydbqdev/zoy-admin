@@ -1,5 +1,6 @@
 package com.integration.zoy.controller;
 
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.integration.zoy.model.PgOwnerFilter;
 import com.integration.zoy.model.PgOwnerMasterModel;
@@ -83,4 +85,32 @@ public interface PgOwnerMasterImpl {
 	@PostMapping(value = "/zoy_admin/ownerdetailsportfolio",
 	produces = { "application/json" })
 	ResponseEntity<String> pgOwnerDetailsPortfolio(@RequestParam("ownerid") String ownerid);
+	
+	
+	
+	@Operation(summary = "Upload and update profile picture", description = "Admin users can upload and update their profile pictures independently.",
+	           security = {@SecurityRequirement(name = "basicAuth")},
+	           tags={ "Admin User & Profile" })
+	@ApiResponses(value = {
+	    @ApiResponse(responseCode = "200", description = "Profile picture uploaded successfully", content = @Content(mediaType = "application/json")),
+	    @ApiResponse(responseCode = "400", description = "Bad Request"),
+	    @ApiResponse(responseCode = "404", description = "Not Found"),
+	    @ApiResponse(responseCode = "500", description = "Internal Server Error")
+	})
+	@PostMapping(value = "/zoy_admin/uploadProfilePicture",
+	             produces = { "application/json"},
+    			consumes = {"multipart/form-data"})
+	ResponseEntity<String> uploadProfilePicture(@RequestParam MultipartFile image);
+	
+	@Operation(summary = "Get user profile photo", description = "To retrieve profile picture of the user", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Pg Owner" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/getProfilePicture",
+	produces = { "application/json" })
+	ResponseEntity<Object> getProfilePicture();
+	
 }

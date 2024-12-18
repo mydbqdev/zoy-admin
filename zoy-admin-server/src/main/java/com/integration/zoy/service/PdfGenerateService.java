@@ -142,4 +142,18 @@ private static final Logger log = LoggerFactory.getLogger(PdfGenerateService.cla
     	}
     	return null;
     }
+    
+    public byte[] imageToBytes(InputStream inputStream) {
+	    try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+	        byte[] buffer = new byte[1024];
+	        int bytesRead;
+	        while ((bytesRead = inputStream.read(buffer)) != -1) {
+	            byteArrayOutputStream.write(buffer, 0, bytesRead);
+	        }
+	        return byteArrayOutputStream.toByteArray();
+	    } catch (IOException e) {
+	        log.error("Error while converting image to bytes: {}", e.getMessage(), e);
+	        throw new RuntimeException("Failed to convert image to bytes", e);
+	    }
+	}
 }
