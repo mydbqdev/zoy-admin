@@ -526,7 +526,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	    try {
 	        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();  
 
-	        byte[] profilePic = adminUserMasterRepository.findProilePhoto(userEmail);  
+	        byte[] profilePic = adminUserMasterRepository.findProfilePhoto(userEmail);  
 
 	        if (profilePic == null || profilePic.length == 0) {
 	            log.error("Profile picture not found for user: {}", userEmail);
