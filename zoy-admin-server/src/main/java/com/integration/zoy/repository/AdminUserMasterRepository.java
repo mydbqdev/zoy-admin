@@ -173,6 +173,9 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 	List<Object[]> getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
 		
 				
+	@Query(value="select user_profile_picture from pgadmin.user_master \r\n"
+			+ "	where user_email =:emailId",nativeQuery = true)
+	byte[] findProilePhoto(String emailId);
 
 	
 }
