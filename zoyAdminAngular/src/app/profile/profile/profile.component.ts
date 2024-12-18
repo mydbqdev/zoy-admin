@@ -13,6 +13,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ProfileService } from '../service/profile-service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { AESEncryptDecryptHelper } from 'src/app/common/shared/AESEncryptDecryptHelper';
+import { RoleScreenPrv } from 'src/app/setting/role-master/models/role-screen-model';
 
 
 
@@ -36,6 +37,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	@ViewChild(SidebarComponent) sidemenuComp;
 	public rolesArray: string[] = [];
 	userInfo:UserInfo=new UserInfo();
+	userRolePermissions: RoleScreenPrv[] = [];
 
 	resetPassword: { 'email': string,'oldPassWord': string,'newPassword': string,
 	}={ 'email': '', 'oldPassWord': '', 'newPassword': '', };
@@ -44,6 +46,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userInfo=this.userService.getUserinfo();
+			
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
 		if (userService.getUserinfo() != undefined) {
@@ -237,4 +240,43 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	   }
  
 	   imgeURL2:any="assets/images/NotAvailable.jpg";
+
+	   getReadIcon(readPrv: boolean): string {
+		return readPrv ? 'fa fa-check text-success' : 'fa fa-times text-danger';
+	  }
+	  
+	  getWriteIcon(writePrv: boolean): string {
+		return writePrv ? 'fa fa-check text-success' : 'fa fa-times text-danger';
+	  }
+
+	 
+	   viewAuthorisedMe(): void {   
+		   this.userRolePermissions = [];
+		   if (this.userInfo.privilege && this.userInfo.privilege.length>0) {
+			this.userInfo.privilege.forEach(privilege => {
+			  let screenBaseName = privilege.replace(/_READ|_WRITE$/, '').replace(/_/g, ' ').toUpperCase();
+			  let existingPermission = this.userRolePermissions.find(
+				permission => permission.screenName === screenBaseName
+			  );  
+			  if (existingPermission) {
+				if (privilege.endsWith('_READ')) {
+				  existingPermission.readPrv = true;
+				}
+				if (privilege.endsWith('_WRITE')) {
+				  existingPermission.writePrv = true;
+				}
+			//	existingPermission.approveStatus = role.approveStatus === 'Approved';
+			  } else {
+				this.userRolePermissions.push({
+				  screenName: screenBaseName,
+				  readPrv: privilege.endsWith('_READ'),
+				  writePrv: privilege.endsWith('_WRITE'),
+				  approveStatus:true
+				});
+			  }
+			});
+		  }
+	  }	
+			   
+		
 }
