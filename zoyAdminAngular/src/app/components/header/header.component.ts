@@ -123,7 +123,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
     getTimeSinceLastAction(): number {
       const time = this.userActivityService.getTimeSinceLastAction();
-      if(time > 720000 && this.nun == 0){
+      if(time > 780000 && this.nun == 0){
         this.nun=this.nun+1;
         this.countdown = 120;
         this.sessionModelOpen.nativeElement.click();   

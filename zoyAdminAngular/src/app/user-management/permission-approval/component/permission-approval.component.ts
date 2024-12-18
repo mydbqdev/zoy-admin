@@ -18,6 +18,7 @@ import { UserDetails } from '../../user-master/models/register-details';
 import { UserMasterService } from '../../user-master/service/user-master.service';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { RoleScreenPrv } from 'src/app/setting/role-master/models/role-screen-model';
+import { MenuService } from 'src/app/components/header/menu.service';
 
 @Component({
   selector: 'app-permission-approval',
@@ -61,7 +62,8 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
   editUserRoleee = { empName: '' };
   userRolePermissions: RoleScreenPrv[] = [];
   isExpandSideBar:boolean=true;
-  constructor(private userMasterService : UserMasterService,private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private notifyService:NotificationService,
+  authorization:{ key: string; screen: string; order: number }[]=[];
+  constructor(private userMasterService : UserMasterService,private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private notifyService:NotificationService,private menuService:MenuService,
     private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService,private alertDialogService: AlertDialogService,private permissionService: PermissionApprovalService){
       this.authService.checkLoginUserVlidaate();
       this.userNameSession=this.userService.getUsername();
@@ -85,6 +87,7 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
       this.dataService.getIsExpandSideBar.subscribe(name=>{
         this.isExpandSideBar=name;
       });
+      this.authorization=this.menuService.getAllAuthorization();
   }
  
   ngOnDestroy() {
@@ -183,9 +186,11 @@ getUserDetais(){
           if (role.screens && Array.isArray(role.screens)) {
             role.screens.forEach(privilege => {
               let screenBaseName = privilege.replace(/_READ|_WRITE$/, '').replace(/_/g, ' ').toUpperCase();
+              const authorization = this.authorization.find(auth=>auth.key == screenBaseName);
+              if (authorization) {
               let existingPermission = this.userRolePermissions.find(
-                permission => permission.screenName === screenBaseName
-              );  
+               permission => permission.screenName === authorization.screen 
+                );   
               if (existingPermission) {
                 if (privilege.endsWith('_READ')) {
                   existingPermission.readPrv = true;
@@ -194,18 +199,22 @@ getUserDetais(){
                   existingPermission.writePrv = true;
                 }
                 existingPermission.approveStatus = role.approveStatus == 'Approved';
+                existingPermission.order = authorization.order ;
               } else {
                 this.userRolePermissions.push({
-                  screenName: screenBaseName,
+                  screenName: authorization.screen,
                   readPrv: privilege.endsWith('_READ'),
                   writePrv: privilege.endsWith('_WRITE'),
-                  approveStatus: role.approveStatus == 'Approved'
+                  approveStatus: role.approveStatus == 'Approved',
+                  order : authorization?.order
                 });
               }
+            }
             });
           }
         });
       }
+      this.userRolePermissions.sort((a, b) => a.order - b.order);
     }
      
 

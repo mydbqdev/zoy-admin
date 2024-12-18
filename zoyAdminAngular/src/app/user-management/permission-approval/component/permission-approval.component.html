@@ -219,7 +219,7 @@
                     <!-- Scrollable container for the authorization rows -->
                    
                     <div class="scrollable-container">
-                        <div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-1 ml-1">
+                        <div *ngFor="let permission of userRolePermissions" class="row align-items-center mb-1 ml-1" style="border-bottom: 1px solid rgb(241, 237, 237);">
                             <div class="col-sm-8" style="font-size: 13px;" [ngClass]="{'text-danger': !permission.approveStatus }" [title]="!permission.approveStatus?'waiting for approval':''" >{{ permission.screenName }}</div>
                             <div class="col-sm-2 text-center">
                                 <i [class]="getReadIcon(permission.readPrv)" style="font-size: 13px;"></i>
