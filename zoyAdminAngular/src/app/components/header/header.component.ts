@@ -36,7 +36,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   nun:number=0
   countdown:number=0;
   errorMsg: any = "";
-  imgeURL:any="assets/images/NotAvailable.jpg";
+  imgeURL:any="";
   @ViewChild('sessionModelOpen') sessionModelOpen: any;
   @ViewChild('sessionModelClose') sessionModelClose: any;
   constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,
@@ -185,7 +185,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         reader.readAsDataURL(new Blob([data]));
         reader.onload=(e)=>this.imgeURL=e.target.result; 
       }else{
-        this.imgeURL="assets/images/NotAvailable.jpg";
+        this.imgeURL="";
       }
 
     }, error => {
