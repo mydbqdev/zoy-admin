@@ -528,39 +528,26 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	}
 
 	
-	public ResponseEntity<Object> getProfilePicture() {
-	    ResponseBody response = new ResponseBody(); 
+	public byte[] getProfilePicture() { 
+	    byte[] profilePic = null ;
 	    try {
 	        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();  
-
-	        byte[] profilePic = adminUserMasterRepository.findProfilePhoto(userEmail);  
+	        profilePic = adminUserMasterRepository.findProfilePhoto(userEmail);  
 
 	        if (profilePic == null || profilePic.length == 0) {
 	            log.error("Profile picture not found for user API:/zoy_admin/getProfilePicture.getProfilePicture", userEmail);
-	            response.setStatus(HttpStatus.NOT_FOUND.value());
-	            response.setMessage("Profile picture not found.");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND); 
+	            return profilePic; 
 	        }
-            return new ResponseEntity<>(gson.toJson(profilePic), HttpStatus.OK); 
-	  
-	    } catch (RuntimeException ex) {
-	        log.error("Error while fetching profile picture for user API:/zoy_admin/getProfilePicture.getProfilePicture", ex.getMessage());
-	        response.setStatus(HttpStatus.NOT_FOUND.value());
-	        response.setMessage("User not found or error occurred.");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND); 
-	    } catch (Exception ex) {
+	        
+	     }catch (Exception ex) {
 	        log.error("Unexpected error occurred while fetching the profile picture API:/zoy_admin/getProfilePicture.getProfilePicture", ex);
 	        try {
 	            new ZoyAdminApplicationException(ex, "");
 	        } catch (Exception e) {
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setError(e.getMessage());
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);  
+	        	log.error("Failed to download Profile Photo API:/zoy_admin/getProfilePicture.getProfilePicture "+ex.getMessage(),ex);
 	        }
-	        response.setStatus(HttpStatus.BAD_REQUEST.value());
-	        response.setError(ex.getMessage());
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
+	    return profilePic ;
 	}
 
 

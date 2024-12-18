@@ -111,6 +111,6 @@ public interface PgOwnerMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@GetMapping(value = "/zoy_admin/getProfilePicture",
 	produces = { "application/json" })
-	ResponseEntity<Object> getProfilePicture();
+	byte[] getProfilePicture();
 	
 }

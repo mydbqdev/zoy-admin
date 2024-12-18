@@ -10,6 +10,8 @@ import { Observable } from 'rxjs';
 import { Menu } from './menu';
 import { MenuService } from './menu.service';
 import { UserActivityService } from 'src/app/user-activity.service';
+import { ProfileService } from 'src/app/profile/service/profile-service';
+import { NotificationService } from 'src/app/common/shared/message/notification.service';
 
 @Component({
   selector: 'app-header',
@@ -33,10 +35,12 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   lastActionTime: number = 0;
   nun:number=0
   countdown:number=0;
+  errorMsg: any = "";
+  imgeURL:any="assets/images/NotAvailable.jpg";
   @ViewChild('sessionModelOpen') sessionModelOpen: any;
   @ViewChild('sessionModelClose') sessionModelClose: any;
   constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,
-    private menuService: MenuService,private userActivityService: UserActivityService,
+    private menuService: MenuService,private userActivityService: UserActivityService,private profileService:ProfileService,private notifyService: NotificationService
     ) {
      
     this.userInfo=this.userService.getUserinfo();
@@ -91,6 +95,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         }, 1000); 
 
         this.startValidateToken();
+        this.loadProfilePhoto();
   }
   ngOnDestroy() {
     if (this.mySubscription) {
@@ -172,6 +177,46 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     this.doSignout();
   }
 
+  
+  loadProfilePhoto(){
+    this.profileService.loadProfilePhoto().subscribe((data) => {
+      if(data && data.size!=0){ 
+        const reader =new FileReader();
+        reader.readAsDataURL(new Blob([data]));
+        reader.onload=(e)=>this.imgeURL=e.target.result; 
+      }else{
+        this.imgeURL="assets/images/NotAvailable.jpg";
+      }
+
+    }, error => {
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			}else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error;
+				} else {
+					str = error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" + str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+			});
+  }
     
 
 }

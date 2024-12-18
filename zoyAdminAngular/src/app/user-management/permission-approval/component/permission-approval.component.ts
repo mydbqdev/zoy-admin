@@ -56,7 +56,6 @@ export class PermissionApprovalComponent implements OnInit,AfterViewInit{
   public userNameSession:string="";
   submitted=false;
 	error: string = '';
-	form: FormGroup;
 	userReg :UserDetails=new UserDetails();
   isPopupVisible: boolean = false;
   editUserRoleee = { empName: '' };
