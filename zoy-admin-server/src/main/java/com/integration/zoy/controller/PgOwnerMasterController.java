@@ -503,7 +503,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 
 	    } catch (Exception ex) {
-	        log.error("Unexpected error occurred while uploading the profile picture: {}", ex.getMessage(), ex);
+	        log.error("Unexpected error occurred while uploading the profile pictureAPI:/zoy_admin/uploadProfilePicture.uploadProfilePicture", ex.getMessage(), ex);
 
 	        try {
 	            new ZoyAdminApplicationException(ex, "");
@@ -529,21 +529,13 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	        byte[] profilePic = adminUserMasterRepository.findProilePhoto(userEmail);  
 
 	        if (profilePic == null || profilePic.length == 0) {
-	            log.error("Profile picture not found for user: {}", userEmail);
+	            log.error("Profile picture not found for user API:/zoy_admin/getProfilePicture.getProfilePicture", userEmail);
 	            response.setStatus(HttpStatus.NOT_FOUND.value());
 	            response.setMessage("Profile picture not found.");
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND); 
 	        }
-
-	        ByteArrayResource resource = new ByteArrayResource(profilePic);
-
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.setContentType(MediaType.IMAGE_JPEG);
-	        headers.setContentLength(profilePic.length);
-
-	        log.info("Profile picture fetched successfully for user: {}", userEmail);
-	        return ResponseEntity.ok().headers(headers).body(resource);  
-
+            return new ResponseEntity<>(gson.toJson(profilePic), HttpStatus.OK); 
+	  
 	    } catch (RuntimeException ex) {
 	        log.error("Error while fetching profile picture for user API:/zoy_admin/getProfilePicture.getProfilePicture", ex.getMessage());
 	        response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -563,6 +555,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
 	}
+
 
 
 }
