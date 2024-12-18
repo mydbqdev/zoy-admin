@@ -56,9 +56,7 @@
 
                                                         <div class="row">
                                                           <div class="col-sm-6">
-                                                            <img src="assets/images/NotAvailable.jpg" width="160px" *ngIf="!(imgeURL2!=null && imgeURL2!=undefined && imgeURL2!='data:')" class="profile-picture" alt="User Image">
-                                                            <img [src]="imgeURL2" *ngIf="(imgeURL2!=null && imgeURL2!=undefined && imgeURL2!='data:')" width="160px" height="160px" class="profile-picture" alt="User Image">
-                                                  
+                                                            <img [src]="imgeURL2" width="160px" height="160px" class="profile-picture" alt="User Image">
                                                             <div style="color:gray;padding: 5px 0px;font-size: 14px;"><i class="fa fa-info-circle"></i>
                                                               <span class="ml-2" > While upload the picture should not be more than 100KB. It's size should not be greater than 180 X 200.</span> </div>
                                                           </div>
@@ -221,7 +219,7 @@
                           <div class="col-sm-2 text-center">
                               <i [class]="getWriteIcon(permission.writePrv)" style="font-size: 13px;"></i>
                           </div>
-                      </div>
+                        </div>
                   </div>
               </div>          
           <!-- </div> -->

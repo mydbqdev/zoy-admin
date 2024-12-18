@@ -30,8 +30,7 @@
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-bell fa-fw mr-3"></i>
               <!-- Counter - Alerts -->
-              <!-- <span class="badge badge-danger badge-counter">3+</span> -->
-              <div class="badge badge-danger badge-counter">{{ getTimeSinceLastAction() / 1000 }}+</div>
+              <span class="badge badge-danger badge-counter">3+</span>
           </a>
           
           <!-- Dropdown - Alerts -->
@@ -84,9 +83,10 @@
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <div class="d-flex mt-2">
                 <div>
-                    <div class="profile-top"> 
-                    {{userInfo?.firstName?.charAt(0).toUpperCase()}}
+                    <div class="profile-top" *ngIf="!imgeURL" > 
+                        {{userInfo?.firstName?.charAt(0).toUpperCase()}} 
                     </div>
+                    <img [src]="imgeURL" *ngIf="imgeURL" class="profile-top" alt="User Image">                        
                 </div>
             <div>
                 <div style="padding-top:5px">    
