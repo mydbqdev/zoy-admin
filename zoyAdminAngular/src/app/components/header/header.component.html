@@ -30,7 +30,8 @@
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-bell fa-fw mr-3"></i>
               <!-- Counter - Alerts -->
-              <span class="badge badge-danger badge-counter">3+</span>
+              <!-- <span class="badge badge-danger badge-counter">3+</span> -->
+              <div class="badge badge-danger badge-counter">{{ getTimeSinceLastAction() / 1000 }}+</div>
           </a>
           
           <!-- Dropdown - Alerts -->
