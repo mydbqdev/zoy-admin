@@ -58,7 +58,7 @@ import { MessageService } from 'src/app/message.service';
       'pendingDueDate': 'PENDING DUE DATE',
       'creditAmount': 'CREDIT AMOUNT',
       'debitAmount': 'DEBIT AMOUNT',
-      'customerId': 'TENANT ID' ,//'CUSTOMER ID',
+     // 'customerId': 'TENANT ID' ,//'CUSTOMER ID',
       'basicAmount': 'BASIC AMOUNT',
 
       'tenantContactNum' :'TENANT CONTACT',
@@ -67,6 +67,8 @@ import { MessageService } from 'src/app/message.service';
       'ownerEmail':'OWNER EMAIL',
       'pgAddress':'PG ADDRESS',
       'zoyShare':'ZOY SHARE',
+      'tenantMobileNum':'TENANT CONTACT',
+      'userPgPropertyAddress':'PG Address'
   };
   
 	  reportColumnsList: { 'reportName': string, 'columns': string[] ,'object': any }[] = [
@@ -83,7 +85,7 @@ import { MessageService } from 'src/app/message.service';
 		},
     {
 		  'reportName': 'Tenant Dues Report',
-		  'columns': ['customerId', 'PgPropertyId', 'bedNumber', 'pendingAmount', 'pendingDueDate', 'actions'],
+		  'columns': ['customerName', 'tenantMobileNum', 'PgPropertyName','userPgPropertyAddress','bedNumber', 'pendingAmount', 'pendingDueDate'],
       'object':'new TenantDuesDetailsModel()'
 		},
     {
@@ -103,7 +105,7 @@ import { MessageService } from 'src/app/message.service';
 		},
     {
 		  'reportName': 'Consolidated Finance Report',
-		  'columns': ['transactionDate', 'transactionNumber','payerPayeeType', 'customerName', 'creditAmount', 'debitAmount'],
+		  'columns': ['transactionDate', 'transactionNumber','payerPayeeType', 'payerPayeeName', 'creditAmount', 'debitAmount'],
       'object':'new ConsilidatedFinanceDetailsModel()'
 		}
 	  ];

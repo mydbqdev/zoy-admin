@@ -82,9 +82,9 @@
         <span>Tenants</span>
         <i class="fas mt-2" [ngClass]="menu7 ? 'fa fa-chevron-down' : 'fa fa-chevron-right'" style="float: right;"></i>
     </a>
-    <div id="collapseTenants" [ngClass]="menu7 ? 'collapse show':'collapse'" *ngIf="rolesArray.includes('TENANTSZOY_READ')"  aria-labelledby="headingTenants" data-parent="#accordionSidebar">
+    <div id="collapseTenants" [ngClass]="menu7 ? 'collapse show':'collapse'" aria-labelledby="headingTenants" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item">Tenant </a>
+            <a class="collapse-item" routerLink="/tenants" *ngIf="defMenu.tenantsSubMenu.tenantzoy && rolesArray.includes('TENANTSZOY_READ')" [ngClass]="{'active':activeSubNenuName=='tenants'}" (click)="setHeaderName('Tenants')" >Tenant </a>
             <div class="p-1"></div>
             <a class="collapse-item" routerLink="/bulk-upload" *ngIf="defMenu.tenantsSubMenu.bulkUpload && rolesArray.includes('BULK_UPLOAD_READ')" [ngClass]="{'active':activeSubNenuName=='bulk-upload'}" (click)="setHeaderName('Bulk Upload')" >Bulk Upload</a>
         </div>
