@@ -9,7 +9,9 @@ import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AppService } from 'src/app/common/service/application.service';
-import { DashboardCardModel } from 'src/app/common/models/dashboard.model';
+import { DashboardCardModel, TopRevenuePG } from 'src/app/common/models/dashboard.model';
+import { MatTableDataSource } from '@angular/material/table';
+import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 
 @Component({
 	selector: 'app-home',
@@ -24,11 +26,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	@ViewChild(SidebarComponent) sidemenuComp;
 	public rolesArray: string[] = [];
 	dashboardCardModel:DashboardCardModel=new DashboardCardModel();
+
+	displayedColumns: string[] = ['sl_no','pg_name','revenue'];
+	public ELEMENT_DATA:TopRevenuePG[]=[];
+	dataSourceTopRevenuePG:MatTableDataSource<TopRevenuePG>=new MatTableDataSource<TopRevenuePG>();
+	userInfo:UserInfo=new UserInfo();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private appService:AppService) {
 		this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
 		if (userService.getUserinfo() != undefined) {
+			this.userInfo=userService.getUserinfo();
 			this.rolesArray = userService.getUserinfo().privilege;
 		}else{
 			this.dataService.getUserDetails.subscribe(name=>{
@@ -67,6 +75,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		this.sidemenuComp.expandMenu(1);
 		this.sidemenuComp.activeMenu(1, 'home');
 		this.dataService.setHeaderName("Dashboard");
+		this.ELEMENT_DATA = Object.assign([],mockData);
+	    this.dataSourceTopRevenuePG =new MatTableDataSource(this.ELEMENT_DATA);
 	}
 
 	test(){
@@ -106,3 +116,32 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		  }
 	
 }
+
+
+const mockData = [
+	{
+        sl_no: "01",
+        pg_name: "John Doe PG",
+        revenue: "+15%"
+	},
+	{
+        sl_no: "02",
+        pg_name: "KK Toy PG",
+        revenue: "+12%"
+	},
+	{
+        sl_no: "03",
+        pg_name: "KK Tog PG",
+        revenue: "+10%"
+    },
+    {
+        sl_no: "04",
+        pg_name: "OYO Toy PG",
+        revenue: "+08%"
+    },
+    {
+        sl_no: "05",
+        pg_name: "YOMU Toy PG",
+        revenue: "-02%"
+	},
+  ];
