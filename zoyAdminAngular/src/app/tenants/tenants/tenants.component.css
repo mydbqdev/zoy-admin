@@ -1,0 +1,95 @@
+/* Registered status button styling - small size */
+.btn-registered {
+    background-color: #86d189;
+    color: white;
+    border: none;
+    padding: 0.25rem 0.5rem; 
+    font-size: 0.75rem; 
+    border-radius: 4px;
+}
+
+/* Pending status button styling - small size */
+.btn-pending {
+    background-color: grey; 
+    color: white;
+    border: none;
+    padding: 0.25rem 0.5rem; 
+    font-size: 0.75rem; 
+    border-radius: 4px;
+}
+.btn-bordered {
+    border: 1px solid grey;
+    background-color: transparent; 
+    color: grey;
+  }
+  .btn-outline-custom{
+    background-color: white;
+  }
+
+  /* Style the scrollbar for vertical and horizontal scrollbars */
+.scrollable-container::-webkit-scrollbar,.scrollable-container-main::-webkit-scrollbar {
+  width: 8px;  /* Width of the vertical scrollbar */
+  height: 8px; /* Height of the horizontal scrollbar */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb ,.scrollable-container-main::-webkit-scrollbar-thumb {
+  background-color: #888;  /* Color of the scrollbar */
+  border-radius: 10px;     /* Rounded corners */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover,.scrollable-container-main::-webkit-scrollbar-thumb:hover {
+  background-color: #555;  /* Darker color on hover */
+}
+
+/* Set styles for the scrollable container */
+.scrollable-container {
+  max-height: calc(100vh - 90px);  /* Set a max height to enable vertical scrolling */
+  overflow-y: auto;   /* Enable vertical scrolling */
+  overflow-x: auto;  /* Enable horizontal scrolling */
+  padding-right: 1px; /* Optional: prevent scrollbar overlap */
+  box-sizing: border-box; /* Prevents padding from affecting width */
+}
+
+/* Set styles for the scrollable container */
+.scrollable-container-main {
+  height: calc(100vh - 210px);  /* Set a max height to enable vertical scrolling */
+  overflow-y: auto;   /* Enable vertical scrolling */
+  overflow-x: auto;   /* Enable horizontal scrolling */
+  padding-right: 1px; /* Optional: prevent scrollbar overlap */
+  box-sizing: border-box; /* Prevents padding from affecting width */
+}
+
+.common-status {
+  width: 100px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.btn-registered {
+  background-color:  #cefbf5;
+  color:  #246359;
+}
+
+.btn-pending {
+  background-color:#e6dff7; 
+    color: #470ecf;
+}
+.custom-dropdown-width {
+  width: 326px;               
+  margin-left: -119px;        
+  background-color: white;    
+  border: 1px solid #ddd;     
+  padding: 10px;              
+  border-radius: 4px;         
+  transform: translate3d(-283px, 35px, 0px);
+  opacity: 1 !important;      
+  background: white !important;  
+  height: 200px;
+}
+
+.btn-sm{
+  border-radius: 8px;
+}
+

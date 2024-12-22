@@ -59,6 +59,9 @@ import { DocumentUploadComponent } from './external/components/document-upload.c
 import { AppDocumentUploadRoutingModule } from './external/document-upload-routing.module';
 import { ConfigurationMasterComponent } from './setting/configuration-master/components/configuration-master.component';
 import { UserAuditComponent } from './setting/user-audit/components/user-audit.component';
+import { LineNgxChartComponent } from './chart/linechart-home-ngx';
+import { AreaNgxChartComponent } from './chart/areachart-home-ngx';
+import { LockedUserComponent } from './user-management/locked-user/component/locked-user.component';
 
 
 const appRoutes: Routes = [
@@ -83,6 +86,7 @@ const appRoutes: Routes = [
     RoleMasterComponent,
     ForgotPasswordComponent,
     PermissionApprovalComponent,
+    LockedUserComponent,
     ZoyCodeComponent,
     ManageOwnerComponent,
     ProfileComponent,
@@ -96,6 +100,8 @@ const appRoutes: Routes = [
     DbMasterConfigurationComponent,
     DoughnutNgxChartComponent,
     BarNgxChartComponent,
+    LineNgxChartComponent,
+    AreaNgxChartComponent,
     DocumentUploadComponent,
     ConfigurationMasterComponent,
     UserAuditComponent

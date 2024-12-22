@@ -12,6 +12,9 @@ export class RoleScreenModel {
     PERMISSION_APPROVAL_READ : boolean = false;
     PERMISSION_APPROVAL_WRITE : boolean = false;
 
+    LOCKED_USER_READ : boolean = false;
+    LOCKED_USER_WRITE : boolean = false;
+
     TENANTSZOY_READ : boolean = false;
     TENANTSZOY_WRITE : boolean = false;
 

@@ -173,4 +173,77 @@ export var single = [
       ]
     }
   ];
+
+  export var singleline = [
+    {
+      "name": "Revenue (INR)",
+      "series": [
+        {
+          "name": "01",
+          "value": "1000"
+        },
+        {
+          "name": "02",
+          "value": "2000"
+        },
+        {
+          "name": "03",
+          "value": "500"
+        },
+        {
+          "name": "04",
+          "value": "3000"
+        },
+        {
+          "name": "05",
+          "value": "1000"
+        },
+        {
+          "name": "06",
+          "value": "2000"
+        },
+        {
+          "name": "07",
+          "value": "500"
+        }
+      ],
+    }
+  ];
+
+  export var singlearea= [
+    {
+      "name": "Stayed",
+      "series": [
+        {
+          "name": "0",
+          "value": "01"
+        },
+        {
+          "name": "100",
+          "value": "2"
+        },
+        {
+          "name": "200",
+          "value": "3"
+        },
+        {
+          "name": "300",
+          "value": "4"
+        },
+        {
+          "name": "400",
+          "value": "5"
+        },
+        {
+          "name": "500",
+          "value": "6"
+        },
+        {
+          "name": "600",
+          "value": "7"
+        }
+      ],
+    }
+  ];
+  
   

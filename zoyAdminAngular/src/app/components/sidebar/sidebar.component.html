@@ -58,7 +58,7 @@
 
 
     <!-- Nav Item - Users Collapse Menu -->
-    <li class="nav-item" [ngClass]="{'active':menu31}" id="menu3" *ngIf="defMenu.users && (rolesArray.includes('MANAGING_USERS_READ') || rolesArray.includes('PERMISSION_APPROVAL_READ'))">
+    <li class="nav-item" [ngClass]="{'active':menu31}" id="menu3" *ngIf="defMenu.users && (rolesArray.includes('MANAGING_USERS_READ') || rolesArray.includes('PERMISSION_APPROVAL_READ')  || rolesArray.includes('LOCKED_USER_READ'))">
         <a [ngClass]="menu3 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(3)" data-target="#collapseUsers"
         [attr.aria-expanded]="!menu3" aria-controls="collapseUsers">
             <i class="fas fa-fw fa-users-cog"></i>
@@ -70,6 +70,8 @@
                 <a class="collapse-item" routerLink="/user-master" [ngClass]="{'active':activeSubNenuName=='user-master'}" *ngIf="rolesArray.includes('MANAGING_USERS_READ')" (click)="setHeaderName('Managing Users')">Managing Users</a>
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/permission-approval" [ngClass]="{'active':activeSubNenuName=='permission-approval'}" *ngIf="rolesArray.includes('PERMISSION_APPROVAL_READ')" (click)="setHeaderName('Permission Approval')">Permission Approval</a>
+                <div class="p-1"></div>
+                <a class="collapse-item" routerLink="/locked-user" [ngClass]="{'active':activeSubNenuName=='locked-user'}" *ngIf="rolesArray.includes('LOCKED_USER_READ')" (click)="setHeaderName('Locked User')">Locked User</a>
             </div>
         </div>
     </li>

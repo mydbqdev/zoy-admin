@@ -540,17 +540,14 @@ menuListEdit:string[]=['ownerse','userse','tenantse','financese','supportse','se
 menuSubMenus: string[] = [
  " ZOYCODES",
   "MANAGING_OWNERS",
-
   "MANAGING_USERS",
   "PERMISSION_APPROVAL",
-
+  "LOCKED_USER",
   "TENANTSZOY",
   "BULK_UPLOAD",
   "REPORTS",
  " PAYMENT_APPROVAL",
-
   "TICKETS",
-
   "ROLE_AND_PERMISSION",
   "DB_MASTER_CONFIGURATION_READ",
   "CONFIGURATION_MASTER_READ",
