@@ -38,7 +38,7 @@ export class AreaNgxChartComponent {
         value: '#45E7E7'
       }];
     public yScaleMax=6;
-      public linearCurve=shape.curveLinear // shape.curveNatural;
+      public linearCurve=shape.curveNatural;
      constructor() {
       Object.assign(this, { singlearea })
     }
