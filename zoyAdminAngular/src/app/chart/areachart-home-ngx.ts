@@ -1,10 +1,12 @@
 import { Component} from '@angular/core';
-import { singleline } from './chart-data';
+import { singlearea } from './chart-data';
+import * as shape from 'd3-shape';
 @Component({
   selector: 'areachart-home-ngx',
   template: `<ngx-charts-area-chart
   [view]="[590, 315]"
-    [results]="singleline"
+    [results]="singlearea"
+    [customColors]="colorScheme"
     [gradient]="gradient"
     [xAxis]="showXAxis"
     [yAxis]="showYAxis"
@@ -13,11 +15,13 @@ import { singleline } from './chart-data';
     [showXAxisLabel]="showXAxisLabel"
     [showYAxisLabel]="showYAxisLabel"
     [xAxisLabel]="xAxisLabel"
+    [curve]="linearCurve"
+    [yScaleMax]="yScaleMax"
     [yAxisLabel]="yAxisLabel">
 </ngx-charts-area-chart>`
 })
 export class AreaNgxChartComponent {
-    singleline: any[];
+  singlearea: any[];
     public showXAxis = true;
     public showYAxis = true;
     public gradient = true;
@@ -29,10 +33,13 @@ export class AreaNgxChartComponent {
     public showYAxisLabel = true;
     public yAxisLabel= "No of Months stayed";
     public graphDataChart: any[];
-    public colorScheme = {
-      domain: ['blue', '#A10A28', '#C7B42C', '#AAAAAA']
-    };
+    public colorScheme =  [{ 
+        name: 'Stayed',
+        value: '#45E7E7'
+      }];
+    public yScaleMax=6;
+      public linearCurve=shape.curveLinear // shape.curveNatural;
      constructor() {
-      Object.assign(this, { singleline })
+      Object.assign(this, { singlearea })
     }
 }
