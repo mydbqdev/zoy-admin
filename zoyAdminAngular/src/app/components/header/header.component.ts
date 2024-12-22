@@ -32,6 +32,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   sessionTime:Date= new Date();
   interval:any = null;
   timeoutId: any = null;
+  timeSinceLastAction:any =null;
   lastActionTime: number = 0;
   nun:number=0
   countdown:number=0;
@@ -88,12 +89,8 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         this.userActivityService.lastActionTime$.subscribe(time => {
           this.lastActionTime = time;
         });
-        setInterval(() => {
-          const timeSinceLastAction = this.userActivityService.getTimeSinceLastAction();
-          if (timeSinceLastAction > 5 * 60 * 1000) {
-          }
-        }, 1000); 
-
+       
+        this.getTimeSinceLastAction();
         this.startValidateToken();
         this.loadProfilePhoto();
   }
@@ -126,18 +123,24 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 		return this.menus.filter(menu => menu.name.toLowerCase().includes(filterValue));
 	  }
 
-    getTimeSinceLastAction(): number {
+    getTimeSinceLastAction() {
+      this.timeSinceLastAction = setInterval(() => {
+        if(!this.userService.getSessionTime()){
+          clearInterval(this.timeSinceLastAction);
+          clearInterval(this.timeoutId);  
+          clearInterval(this.interval); 
+        }
       const time = this.userActivityService.getTimeSinceLastAction();
       if(time > 780000 && this.nun == 0){
         this.nun=this.nun+1;
         this.countdown = 120;
-        this.sessionModelOpen.nativeElement.click();   
+        this.sessionModelOpen.nativeElement.click(); 
         this.startSessionTimeout();
       }
-      return time;
+    }, 1000); 
     }	
 
-  
+ 
   startSessionTimeout() {
     this.interval = setInterval(() => {
       if (this.countdown <= 0) {
@@ -149,32 +152,33 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     }, 1000); 
   }
 
-    startValidateToken() {
-        this.timeoutId = setTimeout(() => {
-          this.sessionTime = this.userService.getSessionTime() || new Date();
-          const diff =  new Date().getTime() - this.sessionTime.getTime() ;
-          if(diff>800000){
-           this.authService.checkLoginUserVlidaate();
-          }
-          this.startValidateToken();
-        }, 60000); 
+  startValidateToken() {
+    this.timeoutId = setInterval(() => {
+      this.sessionTime = this.userService.getSessionTime() || new Date();
+      const diff =  new Date().getTime() - this.sessionTime.getTime() ;
+      if(diff>800000){
+       this.authService.checkLoginUserVlidaate();
       }
+    }, 60000); 
+   }
+    
 
   stay() {
+    this.authService.checkLoginUserVlidaate();
     this.nun=0;
     this.countdown = 120;
     clearInterval(this.interval); 
     this.sessionModelClose.nativeElement.click(); 
-    this.authService.checkLoginUserVlidaate();
   }
 
   logout() {
+    this.doSignout();
     this.nun = 0;
     this.countdown = 120;
-    clearTimeout(this.timeoutId);  
+    clearInterval(this.timeSinceLastAction);
+    clearInterval(this.timeoutId);  
     clearInterval(this.interval); 
     this.sessionModelClose.nativeElement.click(); 
-    this.doSignout();
   }
 
   

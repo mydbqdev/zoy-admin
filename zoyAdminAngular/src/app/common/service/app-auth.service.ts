@@ -141,6 +141,7 @@ export class AppAuthService extends AuthService{
         this.message ='';
         this.checkLoginUserOnServer().subscribe(
             (result)=>{
+             if (result) { 
                this.sessionSnapshot = result;
                this.sessionSnapshot.username = result.userEmail;
                this.sessionSnapshot.token = result.token;
@@ -151,6 +152,10 @@ export class AppAuthService extends AuthService{
                let resp: ResponseStore={userEmail:result.userEmail,token:result.token};
                this.setSessionStore(resp);
                this.dataService.setUserDetails(this.userService.getUserinfo());
+            }else{
+                this.router.navigateByUrl('/signin');
+                this.userService.setSessionTime(null);
+                }
             },
             (err) =>{
                if(err.error && err.error.message){
@@ -160,12 +165,14 @@ export class AppAuthService extends AuthService{
                }
                this.message=msg;
                this.router.navigateByUrl('/signin');
+               this.userService.setSessionTime(null);
             },
             () =>{
                 if(!this.sessionSnapshot){
                    msg='An error occured while processing your request.Please contact your Help Desk.';
                    this.message=msg;
                    this.router.navigateByUrl('/signin');
+                   this.userService.setSessionTime(null);
                 }
             }
         );
@@ -211,6 +218,7 @@ export class AppAuthService extends AuthService{
         this.checkLogoutUserOnServer().subscribe(
             (result)=>{ 
                 this.sessionSnapshot =null;
+                this.userService.setSessionTime(null);
                 sessionStorage.clear();
                 this.router.navigate(['/signin']); 
             },
@@ -222,12 +230,14 @@ export class AppAuthService extends AuthService{
                }
                this.message=msg;
                this.router.navigateByUrl('/signin');
+               this.userService.setSessionTime(null);
             },
             () =>{
                 if(!this.sessionSnapshot){
                    msg='An error occured while processing your request.Please contact your Help Desk.';
                    this.message=msg;
                    this.router.navigateByUrl('/signin');
+                   this.userService.setSessionTime(null);
                 }
             }
         );
