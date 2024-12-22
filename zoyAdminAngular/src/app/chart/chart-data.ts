@@ -220,27 +220,27 @@ export var single = [
         },
         {
           "name": "100",
-          "value": "2"
+          "value": "02"
         },
         {
           "name": "200",
-          "value": "3"
+          "value": "02"
         },
         {
           "name": "300",
-          "value": "4"
+          "value": "01"
         },
         {
           "name": "400",
-          "value": "5"
+          "value": "05"
         },
         {
           "name": "500",
-          "value": "6"
+          "value": "04"
         },
         {
           "name": "600",
-          "value": "7"
+          "value": "02"
         }
       ],
     }

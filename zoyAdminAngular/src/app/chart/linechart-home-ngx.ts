@@ -6,6 +6,7 @@ import { singleline } from './chart-data';
   [view]="[590, 215]"
     [results]="singleline"
     [gradient]="gradient"
+    [customColors]="colorScheme"
     [xAxis]="showXAxis"
     [yAxis]="showYAxis"
     [showGridLines]="showGridLines"
@@ -13,6 +14,7 @@ import { singleline } from './chart-data';
     [showXAxisLabel]="showXAxisLabel"
     [showYAxisLabel]="showYAxisLabel"
     [xAxisLabel]="xAxisLabel"
+    [yScaleMax]="yScaleMax"
     [yAxisLabel]="yAxisLabel">
 </ngx-charts-line-chart>`
 })
@@ -28,9 +30,11 @@ export class LineNgxChartComponent {
     public showGridLines=true;
     public yAxisLabel= "Revenue";
     public graphDataChart: any[];
-    public colorScheme = {
-      domain: ['#A10A28', '#A10A28', '#C7B42C', '#AAAAAA']
-    };
+    public colorScheme =  [{ 
+      name: 'Revenue (INR)',
+      value: '#0EC1C1'
+    }];
+    public yScaleMax=4000;
      constructor() {
       Object.assign(this, { singleline })
     }
