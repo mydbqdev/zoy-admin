@@ -8,6 +8,7 @@ import { singleline } from './chart-data';
     [gradient]="gradient"
     [xAxis]="showXAxis"
     [yAxis]="showYAxis"
+    [showGridLines]="showGridLines"
     [legend]="showLegend"
     [showXAxisLabel]="showXAxisLabel"
     [showYAxisLabel]="showYAxisLabel"
@@ -22,12 +23,13 @@ export class LineNgxChartComponent {
     public gradient = false;
     public showLegend = false;
     public showXAxisLabel = true;
-    public xAxisLabel: "Days";
-    public showYAxisLabel = false;
-    public yAxisLabel: "Revenue";
+    public xAxisLabel= "Days";
+    public showYAxisLabel = true;
+    public showGridLines=true;
+    public yAxisLabel= "Revenue";
     public graphDataChart: any[];
     public colorScheme = {
-      domain: ['blue', '#A10A28', '#C7B42C', '#AAAAAA']
+      domain: ['#A10A28', '#A10A28', '#C7B42C', '#AAAAAA']
     };
      constructor() {
       Object.assign(this, { singleline })
