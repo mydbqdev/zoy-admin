@@ -61,6 +61,7 @@ import { ConfigurationMasterComponent } from './setting/configuration-master/com
 import { UserAuditComponent } from './setting/user-audit/components/user-audit.component';
 import { LineNgxChartComponent } from './chart/linechart-home-ngx';
 import { AreaNgxChartComponent } from './chart/areachart-home-ngx';
+import { LockedUserComponent } from './user-management/locked-user/component/locked-user.component';
 
 
 const appRoutes: Routes = [
@@ -85,6 +86,7 @@ const appRoutes: Routes = [
     RoleMasterComponent,
     ForgotPasswordComponent,
     PermissionApprovalComponent,
+    LockedUserComponent,
     ZoyCodeComponent,
     ManageOwnerComponent,
     ProfileComponent,

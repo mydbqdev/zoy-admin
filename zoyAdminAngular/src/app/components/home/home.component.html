@@ -108,7 +108,7 @@
                       </div>
                   </div>
                       <!-- Super Admin section -->
-                      <div class="row" *ngIf="userInfo?.designation!='Super Admin'">
+                      <div class="row" *ngIf="userInfo?.designation=='Super Admin'">
                           <div class="col-sm-9">
                               <div class="row">
                                   <div class="col-sm-7">
@@ -236,7 +236,7 @@
                       <!-- end Super Admin section -->
   
                       <!-- Finance Admin section -->
-                      <div class="row mb-3"  *ngIf="userInfo?.designation=='Super Admin'">
+                      <div class="row mb-3"  *ngIf="userInfo?.designation=='Finance Admin'">
                           <div class="col-sm-5">
                               <div class="card mb-2">
                                   <div class="card-body">
@@ -286,7 +286,7 @@
                               </div> 
                           </div>
                       </div>
-                      <div class="row">
+                      <div class="row" *ngIf="userInfo?.designation=='Finance Admin'">
                           <div class="col-sm-5">
                               <div class="card mb-2">
                                   <div class="card-body">
