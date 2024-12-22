@@ -9,6 +9,7 @@ import { singleline } from './chart-data';
     [xAxis]="showXAxis"
     [yAxis]="showYAxis"
     [legend]="showLegend"
+    [showGridLines]="showGridLines"
     [showXAxisLabel]="showXAxisLabel"
     [showYAxisLabel]="showYAxisLabel"
     [xAxisLabel]="xAxisLabel"
@@ -19,13 +20,14 @@ export class AreaNgxChartComponent {
     singleline: any[];
     public showXAxis = true;
     public showYAxis = true;
-    public gradient = false;
+    public gradient = true;
     public showLegend = false;
+    public showGridLines=true;
     showLabels: boolean = true;
     public showXAxisLabel = true;
-    public xAxisLabel: "No of Booking";
+    public xAxisLabel= "No of Booking";
     public showYAxisLabel = true;
-    public yAxisLabel: "No of Months stayed";
+    public yAxisLabel= "No of Months stayed";
     public graphDataChart: any[];
     public colorScheme = {
       domain: ['blue', '#A10A28', '#C7B42C', '#AAAAAA']
