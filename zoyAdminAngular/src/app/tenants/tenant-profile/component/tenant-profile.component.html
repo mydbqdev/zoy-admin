@@ -1,0 +1,77 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+    <p style="color: white;">Loading ...</p>
+  </ngx-spinner>
+  <div id="page-top">
+      <!-- Page Wrapper -->
+      <div id="wrapper">    
+        <!-- Sidebar -->
+          <app-sidebar></app-sidebar>
+        <!-- End of Sidebar -->
+  
+          <!-- Content Wrapper -->
+          <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+              <!-- Main Content -->
+              <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+  
+                  <!-- Begin Page Content -->
+                  <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                      <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Tenant</span><span class="text-header-800-blue">Profile</span></h3> 
+                      <div class="ml-auto">  
+                                            
+                      </div> 
+                    </div>
+                      <!-- Content Row -->
+                      <div class="card shadow mb-3">
+                        <div class="card-body" style="display: block;margin: 0px;padding: 2px;height: calc(100vh - 155px)" >
+                            <div class="row m-2 pt-2">
+                              <div class="col-sm-3">
+                                <div class="mr-1"  style="border:1px solid rgb(226, 224, 224);border-radius: 10px;height: calc(100vh - 191px)">
+                                  <div style="text-align: end;padding-right: 20px;margin-top: 10px;"><i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i></div>
+                                  <div style="text-align: center;padding:10px 30%;margin-top: -35px;">
+                                    <div style="height: 100px;width: 100px;border-radius: 50%;border:1px dashed rgb(36, 206, 248);padding: 1px;">
+                                      <div style="height: 96px;width: 96px;border-radius: 50%;background-color:  rgb(36, 206, 248)">
+                                        
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div style="text-align: center;" class="pb-2">Mahendra Kumar</div>
+                                  <div class="pl-3">
+                                    <div style="font-size: 14px;">Contact : 8792557642</div>
+                                    <div style="font-size: 14px;">Email : xyzgmail.com</div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-sm-9">
+                                <div>
+                                  <nav class="nav nav-pills nav-justified" style="background-color: rgb(230, 228, 228);border-radius: 5px;">
+                                    <a class="nav-link active" aria-current="page" >Tenant Profile</a>
+                                    <a class="nav-link">Booking Details</a>
+                                    <a class="nav-link">Payments and Dues History</a>
+                                  </nav>
+                                </div>
+                                <div class="row mt-2">
+                                  <div class="col-sm-12">
+                                    <div style="border:1px solid rgb(226, 224, 224);border-radius: 10px;">
+                                      <div style="background-color: rgb(236, 181, 232);padding:5px 20px;border-top-left-radius:10px ;border-top-right-radius:10px;">Persional Details</div>
+                                      <div style="height: calc(100vh - 275px)">here data</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                       </div>  <!-- End Card Body -->  
+                      </div>
+                  <!-- /.container-fluid -->
+              </div>
+              <!-- End of Main Content -->
+          </div>
+          <!-- End of Content Wrapper -->
+     </div>
+    <!-- End of Page Wrapper -->
+  </div>
