@@ -46,7 +46,6 @@ import { ProfileComponent } from './profile/profile/profile.component';
 import { ActivityLogComponent } from './profile/activity-log/activity-log.component';
 import { SettingsComponent } from './profile/settings/settings.component';
 import { TicketsComponent } from './supports/tickets/tickets.component';
-import { TenantsComponent } from './tenants/tenants/tenants.component';
 import { TenantMenuRoutingModule } from './tenants/tenents-menu-routing.module';
 import { BulkUploadComponent } from './tenants/bulk-upload/component/bulk-upload.component';
 import { PaymentApprovalComponent } from './finance/payment-appoval/component/payment-approval.component';
@@ -62,6 +61,8 @@ import { UserAuditComponent } from './setting/user-audit/components/user-audit.c
 import { LineNgxChartComponent } from './chart/linechart-home-ngx';
 import { AreaNgxChartComponent } from './chart/areachart-home-ngx';
 import { LockedUserComponent } from './user-management/locked-user/component/locked-user.component';
+import { TenantsComponent } from './tenants/tenants/component/tenants.component';
+import { TenantProfileComponent } from './tenants/tenant-profile/component/tenant-profile.component';
 
 
 const appRoutes: Routes = [
@@ -94,6 +95,7 @@ const appRoutes: Routes = [
     SettingsComponent,
     TicketsComponent,
     TenantsComponent,
+    TenantProfileComponent,
     BulkUploadComponent,
     PaymentApprovalComponent,
     OwnerDetailsComponent,
