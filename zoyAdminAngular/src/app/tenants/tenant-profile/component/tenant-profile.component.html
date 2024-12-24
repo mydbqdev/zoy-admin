@@ -41,25 +41,58 @@
                                     </div>
                                   </div>
                                   <div style="text-align: center;" class="pb-2">Mahendra Kumar</div>
-                                  <div class="pl-3">
-                                    <div style="font-size: 14px;">Contact : 8792557642</div>
-                                    <div style="font-size: 14px;">Email : xyzgmail.com</div>
+                                  <div class="pl-3" style="font-size: 14px;color:#707070;">
+                                    <div class="mb-1">Contact : 8792557642</div>
+                                    <div class="mb-1">Email Id : xyzgmail.com</div>
+                                    <div class="mb-1">Member Since : 12/01/2024</div>
+                                    <div class="mb-1">Check In : Srinivas PG </div>
+                                    <div class="mb-1">Status : Active</div>
                                   </div>
                                 </div>
                               </div>
                               <div class="col-sm-9">
                                 <div>
-                                  <nav class="nav nav-pills nav-justified" style="background-color: rgb(230, 228, 228);border-radius: 5px;">
-                                    <a class="nav-link active" aria-current="page" >Tenant Profile</a>
-                                    <a class="nav-link">Booking Details</a>
-                                    <a class="nav-link">Payments and Dues History</a>
+                                  <nav class="nav nav-pills nav-justified" style="background-color:#F9F9FB;border-radius: 5px;border:1px solid #dedee0">
+                                    <a class="nav-link profile-tab" [ngClass]="selectedTab==1?'active':''" aria-current="page" (click)="selectProfile(1,'Persional Details')">Tenant Profile</a>
+                                    <a class="nav-link profile-tab" [ngClass]="selectedTab==2?'active':''" (click)="selectProfile(2,'Active Booking Details')">Booking Details</a>
+                                    <a class="nav-link profile-tab" [ngClass]="selectedTab==3?'active':''" (click)="selectProfile(3,'Payments and Dues History Details')">Payments and Dues History</a>
                                   </nav>
                                 </div>
                                 <div class="row mt-2">
                                   <div class="col-sm-12">
                                     <div style="border:1px solid rgb(226, 224, 224);border-radius: 10px;">
-                                      <div style="background-color: rgb(236, 181, 232);padding:5px 20px;border-top-left-radius:10px ;border-top-right-radius:10px;">Persional Details</div>
-                                      <div style="height: calc(100vh - 275px)">here data</div>
+                                      <div style="background-color: #D6CBEE;padding:5px 20px;border-top-left-radius:10px ;border-top-right-radius:10px;color: #4b2996;">{{sectionTabHeader}}</div>
+                                      <div style="height: calc(100vh - 275px);padding:5px 10px;">
+                                        <div *ngIf="selectedTab==1">
+                                          <div class="pl-3" style="font-size: 14px;color: #707070;">
+                                            <div class="row mb-1"><div class="col-sm-4">Emergency Number</div><div class="col-sm-8"><span class="mr-2">:</span>8792557642</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Alternative Phone Number</div><div class="col-sm-8"><span class="mr-2">:</span>8792557642</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Tenant Type</div><div class="col-sm-8"><span class="mr-2">:</span>Student</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Gender</div><div class="col-sm-8"><span class="mr-2">:</span>Male</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Date of Birth</div><div class="col-sm-8"><span class="mr-2">:</span>12/02/2000</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Blood Group</div><div class="col-sm-8"><span class="mr-2">:</span>O+</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Father's Name</div><div class="col-sm-8"><span class="mr-2">:</span>Srinivash</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Present Address</div><div class="col-sm-8"><span class="mr-2">:</span>BBSR</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Permanent Address</div><div class="col-sm-8"><span class="mr-2">:</span>BBSR</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Nationality</div><div class="col-sm-8"><span class="mr-2">:</span>Indian</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Mother Tongue</div><div class="col-sm-8"><span class="mr-2">:</span>Odia</div></div>
+                                          </div>
+                                        </div>
+                                        <div *ngIf="selectedTab==2">
+                                          <div class="pl-3" style="font-size: 14px;color: #707070;">
+                                            <div class="row mb-1"><div class="col-sm-4">PG Name</div><div class="col-sm-8"><span class="mr-2">:</span>Srinivash PG</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Monthly Rent/Bed</div><div class="col-sm-8"><span class="mr-2">:</span>11,000.00</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Security Deposit</div><div class="col-sm-8"><span class="mr-2">:</span>10,000.00</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Dues</div><div class="col-sm-8"><span class="mr-2">:</span>5,000.00</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Room / Bed No</div><div class="col-sm-8"><span class="mr-2">:</span>1101-A</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Check In</div><div class="col-sm-8"><span class="mr-2">:</span>12/01/2024</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Check Out</div><div class="col-sm-8"><span class="mr-2">:</span>-</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Rent Cycle</div><div class="col-sm-8"><span class="mr-2">:</span>01-01</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Notice Period</div><div class="col-sm-8"><span class="mr-2">:</span>1 month</div></div>
+                                          </div>
+                                        </div>
+                                        <div *ngIf="selectedTab==3">Payments and Dues History</div>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
