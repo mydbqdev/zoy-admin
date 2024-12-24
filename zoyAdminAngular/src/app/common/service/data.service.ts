@@ -1,7 +1,8 @@
 import { Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
+import { OwnerRequestParam } from 'src/app/owners/managing-owner/models/owner-details-request-model';
+import { ZoyOwner } from 'src/app/owners/managing-owner/models/zoy-owner-model';
 import { UserInfo } from '../shared/model/userinfo.service';
-import { SignupDetails } from '../shared/signup-details';
 @Injectable({
     providedIn:'root'
 })
@@ -35,5 +36,23 @@ export class DataService{
      getOwenerId=this.owenerId.asObservable();
      setOwenerId(owenerId:string){
         this.owenerId.next(owenerId);
+     }
+
+     public owenerListFilter=new BehaviorSubject<ZoyOwner[]>([]);
+     getOwenerListFilter=this.owenerListFilter.asObservable();
+     setOwenerListFilter(owenerListFilter:ZoyOwner[]){
+        this.owenerListFilter.next(owenerListFilter);
+     }
+
+     public owenerListFilterTotal=new BehaviorSubject<number>(0);
+     getOwenerListFilterTotal=this.owenerListFilterTotal.asObservable();
+     setOwenerListFilterTotal(owenerListFilterTotal:number){
+        this.owenerListFilterTotal.next(owenerListFilterTotal);
+     }
+
+     public owenerListFilterParam=new BehaviorSubject<OwnerRequestParam>(null);
+     getOwenerListFilterParam=this.owenerListFilterParam.asObservable();
+     setOwenerListFilterParam(owenerListFilterParam:OwnerRequestParam){
+        this.owenerListFilterParam.next(owenerListFilterParam);
      }
 }

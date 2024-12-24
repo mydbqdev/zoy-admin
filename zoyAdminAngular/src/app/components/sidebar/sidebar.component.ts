@@ -327,4 +327,8 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 		}
     this.activeSubNenuName = menuName;
 	}
+
+	setOwnerResetId(){
+		this.dataService.setOwenerId("");
+	}
 }
