@@ -8,22 +8,22 @@ import com.google.gson.annotations.SerializedName;
 public class UserPaymentDTO {
 	
 	@SerializedName("transactionDate")
-    private Timestamp userPaymentTimestamp;
+    private Timestamp transactionDate;
 	
 	@SerializedName("transactionNumber")
-    private String userPaymentBankTransactionId;
+    private String transactionNumber;
 	
 	@SerializedName("transactionStatus")
-    private String userPaymentResultStatus;
+    private String transactionStatus;
 	
 	@SerializedName("baseAmount")
-    private BigDecimal userPaymentPayableAmount;
+    private String dueAmount;
 	
 	@SerializedName("gstAmount")
-    private BigDecimal userPaymentGst;
+    private String gstAmount;
 	
 	@SerializedName("totalAmount")
-	private BigDecimal totalAmount;
+	private String totalAmount;
 	
 	@SerializedName("customerName")
     private String userPersonalName;
@@ -32,100 +32,123 @@ public class UserPaymentDTO {
     private String userPgPropertyName;
 	
 	@SerializedName("bedNumber")
-	private String bedNumber;
+	private String roomBedNumber;
 	
 	@SerializedName("category")
 	private String category;
 	
 	@SerializedName("paymentMethod")
-	private String paymentMethod;
+	private String paymentMode;
 	
 	@SerializedName("propertyHouseArea")
 	private String propertyHouseArea;
 	
 	@SerializedName("tenantContactNum")
 	private String tenantContactNum;
-	
-	public Timestamp getUserPaymentTimestamp() {
-		return userPaymentTimestamp;
-	}
-	public void setUserPaymentTimestamp(Timestamp userPaymentTimestamp) {
-		this.userPaymentTimestamp = userPaymentTimestamp;
-	}
-	public String getUserPaymentBankTransactionId() {
-		return userPaymentBankTransactionId;
-	}
-	public void setUserPaymentBankTransactionId(String userPaymentBankTransactionId) {
-		this.userPaymentBankTransactionId = userPaymentBankTransactionId;
-	}
-	public String getUserPaymentResultStatus() {
-		return userPaymentResultStatus;
-	}
-	public void setUserPaymentResultStatus(String userPaymentResultStatus) {
-		this.userPaymentResultStatus = userPaymentResultStatus;
+
+	public Timestamp getTransactionDate() {
+		return transactionDate;
 	}
 
-	public BigDecimal getUserPaymentPayableAmount() {
-		return userPaymentPayableAmount;
+	public void setTransactionDate(Timestamp transactionDate) {
+		this.transactionDate = transactionDate;
 	}
-	public void setUserPaymentPayableAmount(BigDecimal userPaymentPayableAmount) {
-		this.userPaymentPayableAmount = userPaymentPayableAmount;
+
+	public String getTransactionNumber() {
+		return transactionNumber;
 	}
-	public BigDecimal getUserPaymentGst() {
-		return userPaymentGst;
+
+	public void setTransactionNumber(String transactionNumber) {
+		this.transactionNumber = transactionNumber;
 	}
-	public void setUserPaymentGst(BigDecimal userPaymentGst) {
-		this.userPaymentGst = userPaymentGst;
+
+	public String getTransactionStatus() {
+		return transactionStatus;
 	}
+
+	public void setTransactionStatus(String transactionStatus) {
+		this.transactionStatus = transactionStatus;
+	}
+
+	public String getDueAmount() {
+		return dueAmount;
+	}
+
+	public void setDueAmount(String dueAmount) {
+		this.dueAmount = dueAmount;
+	}
+
+	public String getGstAmount() {
+		return gstAmount;
+	}
+
+	public void setGstAmount(String gstAmount) {
+		this.gstAmount = gstAmount;
+	}
+
+	public String getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(String totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
 	public String getUserPersonalName() {
 		return userPersonalName;
 	}
+
 	public void setUserPersonalName(String userPersonalName) {
 		this.userPersonalName = userPersonalName;
 	}
+
 	public String getUserPgPropertyName() {
 		return userPgPropertyName;
 	}
+
 	public void setUserPgPropertyName(String userPgPropertyName) {
 		this.userPgPropertyName = userPgPropertyName;
 	}
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
+
+	public String getRoomBedNumber() {
+		return roomBedNumber;
 	}
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
+
+	public void setRoomBedNumber(String roomBedNumber) {
+		this.roomBedNumber = roomBedNumber;
 	}
-	public String getBedNumber() {
-		return bedNumber;
-	}
-	public void setBedNumber(String bedNumber) {
-		this.bedNumber = bedNumber;
-	}
+
 	public String getCategory() {
 		return category;
 	}
+
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	public String getPaymentMethod() {
-		return paymentMethod;
+
+	public String getPaymentMode() {
+		return paymentMode;
 	}
-	public void setPaymentMethod(String paymentMethod) {
-		this.paymentMethod = paymentMethod;
+
+	public void setPaymentMode(String paymentMode) {
+		this.paymentMode = paymentMode;
 	}
+
 	public String getPropertyHouseArea() {
 		return propertyHouseArea;
 	}
+
 	public void setPropertyHouseArea(String propertyHouseArea) {
 		this.propertyHouseArea = propertyHouseArea;
 	}
+
 	public String getTenantContactNum() {
 		return tenantContactNum;
 	}
+
 	public void setTenantContactNum(String tenantContactNum) {
 		this.tenantContactNum = tenantContactNum;
 	}
-	
 	
 
 }

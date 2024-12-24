@@ -4,7 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +30,13 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
 @Service
 public class PdfGenerateService {
 private static final Logger log = LoggerFactory.getLogger(PdfGenerateService.class);
@@ -39,33 +49,39 @@ private static final Logger log = LoggerFactory.getLogger(PdfGenerateService.cla
     
     @Value("${zoy.admin.watermark}")
     private String watermarkImagePath;
+    
+    @Value("${zoy.admin.logo}")
+   	private String zoyLogoPath;
 
     @Autowired
     ZoyS3Service s3Service;
     
-    public byte[] generatePdfFile(String templateName, Map<String, Object> data) {
-        List<?> reportData = (List<?>) data.get("reportData");
+    public byte[] generatePdfFile(InputStream reportStream,Map<String, Object> data) throws FileNotFoundException  {
+    	List<?> reportData = (List<?>) data.get("reportData");
         if (data == null || data.isEmpty() || reportData == null || reportData.isEmpty()) {
             return new byte[0]; 
         }
-        Context context = new Context();
-        context.setVariables(data);
-        String htmlContent = templateEngine.process(templateName, context);
+    	
+    	
+        if (reportStream == null) {
+            log.error("Report template not found.");
+            throw new FileNotFoundException("Report template not found.");
+        }
+        
+        JRDataSource dataSource = new JRBeanCollectionDataSource(reportData);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-            ITextRenderer renderer = new ITextRenderer();
-            renderer.setDocumentFromString(htmlContent);
-            renderer.layout();
-            renderer.createPDF(outputStream, false);
-            renderer.finishPDF();
-            
-            // Add watermark
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reportStream, data, dataSource);
+
+            JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+
             byte[] watermarkedPdf = addWatermark(outputStream.toByteArray());
             return watermarkedPdf;
-        } catch (DocumentException e) {
+
+        } catch (JRException e) {
             log.error("Error generating PDF: " + e.getMessage(), e);
-            return new byte[0]; 
+            return new byte[0];  
         }
     }
     

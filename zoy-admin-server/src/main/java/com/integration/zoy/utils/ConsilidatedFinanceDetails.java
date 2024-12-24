@@ -1,6 +1,5 @@
 package com.integration.zoy.utils;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.google.gson.annotations.SerializedName;
@@ -19,10 +18,10 @@ public class ConsilidatedFinanceDetails {
     private String payerPayeeName;
 	
 	@SerializedName("creditAmount")
-	private BigDecimal creditAmount;
+	private String creditAmount;
 	
 	@SerializedName("debitAmount")
-	private BigDecimal debitAmount;
+	private String debitAmount;
 
 	
 	public String getPayerPayeeType() {
@@ -49,14 +48,6 @@ public class ConsilidatedFinanceDetails {
 		this.payerPayeeName = payerPayeeName;
 	}
 
-	public BigDecimal getCreditAmount() {
-		return creditAmount;
-	}
-
-	public void setCreditAmount(BigDecimal creditAmount) {
-		this.creditAmount = creditAmount;
-	}
-
 	public String getUserPaymentBankTransactionId() {
 		return userPaymentBankTransactionId;
 	}
@@ -65,12 +56,20 @@ public class ConsilidatedFinanceDetails {
 		this.userPaymentBankTransactionId = userPaymentBankTransactionId;
 	}
 
-	public BigDecimal getDebitAmount() {
+	public String getCreditAmount() {
+		return creditAmount;
+	}
+
+	public void setCreditAmount(String creditAmount) {
+		this.creditAmount = creditAmount;
+	}
+
+	public String getDebitAmount() {
 		return debitAmount;
 	}
 
-	public void setDebitAmount(BigDecimal debitAmount) {
+	public void setDebitAmount(String debitAmount) {
 		this.debitAmount = debitAmount;
 	}
-	
+
 }

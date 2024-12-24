@@ -24,7 +24,9 @@ public class CsvGenerateService {
         
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
              PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
-
+        	outputStream.write(0xEF);
+            outputStream.write(0xBB);
+            outputStream.write(0xBF);
             if (reportData == null || reportData.isEmpty()) {
                 return new byte[0];
             } else {
@@ -81,15 +83,15 @@ public class CsvGenerateService {
                     safeToString(userPayment.getTenantContactNum()),
                     safeToString(userPayment.getUserPgPropertyName()),
                     safeToString(userPayment.getPropertyHouseArea()),
-                    safeToString(userPayment.getBedNumber()),
-                    safeToString(userPayment.getUserPaymentTimestamp()),
-                    safeToString(userPayment.getUserPaymentBankTransactionId()),
-                    safeToString(userPayment.getUserPaymentResultStatus()),
-                    safeToString(userPayment.getUserPaymentPayableAmount()),
-                    safeToString(userPayment.getUserPaymentGst()),
+                    safeToString(userPayment.getRoomBedNumber()),
+                    safeToString(userPayment.getTransactionDate()),
+                    safeToString(userPayment.getTransactionNumber()),
+                    safeToString(userPayment.getTransactionStatus()),
+                    safeToString(userPayment.getDueAmount()),
+                    safeToString(userPayment.getGstAmount()),
                     safeToString(userPayment.getTotalAmount()),
                     safeToString(userPayment.getCategory()),
-                    safeToString(userPayment.getPaymentMethod()));
+                    safeToString(userPayment.getPaymentMode()));
             }
             break;
 
@@ -97,15 +99,15 @@ public class CsvGenerateService {
             if (dto instanceof UserPaymentDTO) {
                 UserPaymentDTO userPayment = (UserPaymentDTO) dto;
                 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
-                    safeToString(userPayment.getUserPaymentTimestamp()),
-                    safeToString(userPayment.getUserPaymentBankTransactionId()),
+                    safeToString(userPayment.getTransactionDate()),
+                    safeToString(userPayment.getTransactionNumber()),
                     safeToString(userPayment.getUserPersonalName()),
                     safeToString(userPayment.getUserPgPropertyName()),
                     safeToString(userPayment.getPropertyHouseArea()),
                     safeToString(userPayment.getTotalAmount()),
-                    safeToString(userPayment.getUserPaymentGst()),
-                    safeToString(userPayment.getUserPaymentPayableAmount()),
-                    safeToString(userPayment.getPaymentMethod()));
+                    safeToString(userPayment.getGstAmount()),
+                    safeToString(userPayment.getDueAmount()),
+                    safeToString(userPayment.getPaymentMode()));
             }
             break;
 

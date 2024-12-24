@@ -22,7 +22,7 @@ public class TenentDues {
 	private String bedNumber;
 	
 	@SerializedName("pendingAmount")
-	private BigDecimal pendingAmount;
+	private String pendingAmount;
 	
 	@SerializedName("pendingDueDate")
 	private Timestamp pendingDueDate;
@@ -56,11 +56,11 @@ public class TenentDues {
 		this.bedNumber = bedNumber;
 	}
 
-	public BigDecimal getPendingAmount() {
+	public String getPendingAmount() {
 		return pendingAmount;
 	}
 
-	public void setPendingAmount(BigDecimal pendingAmount) {
+	public void setPendingAmount(String pendingAmount) {
 		this.pendingAmount = pendingAmount;
 	}
 
