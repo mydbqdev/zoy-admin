@@ -12,7 +12,10 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 
 	@Query(value = "select email_id, zoy_code from pg_owner_master where email_id = :emailId", nativeQuery = true)
 	List<Object[]> findEmailAndZoyCodeByEmailId(String emailId);
-
+	
+	@Query(value = "select mobile_no from pg_owner_master where mobile_no = :mobile_no", nativeQuery = true)
+	String findPhoneNumber(String mobile_no);
+	
 	@Query(value = "SELECT "
 			+ "    pzm.zoy_code, "
 			+ "    pzm.first_name || ' ' || pzm.last_name AS owner_name, "

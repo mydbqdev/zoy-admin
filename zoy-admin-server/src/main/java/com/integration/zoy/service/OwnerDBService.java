@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
+import com.integration.zoy.entity.ZoyPgAutoCancellationPeriod;
 import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgCancellationDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
@@ -36,6 +37,7 @@ import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
 import com.integration.zoy.repository.ZoyPgAmenetiesMasterRepository;
+import com.integration.zoy.repository.ZoyPgAutoCancellationPeriodRepository;
 import com.integration.zoy.repository.ZoyPgBedDetailsRepository;
 import com.integration.zoy.repository.ZoyPgCancellationDetailsRepository;
 import com.integration.zoy.repository.ZoyPgDueFactorMasterRepository;
@@ -134,6 +136,8 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Autowired
 	private ZoyPgSecurityDepositRefundRuleRepository  zoySecurityDepositRefundRuleRepo;
 
+	@Autowired
+	private ZoyPgAutoCancellationPeriodRepository zoyPgAutoCancellationPeriodRepo;
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -621,11 +625,20 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
+	public ZoyPgAutoCancellationPeriod saveAutoCancellationPeriod(ZoyPgAutoCancellationPeriod cancellationPeriod) throws WebServiceException {
+		return zoyPgAutoCancellationPeriodRepo.save(cancellationPeriod);
+	}
+	
+	@Override
 	public ZoyPgSecurityDepositRefundRule findSecurityDepositRefundRuleById() throws WebServiceException{
 		List<ZoyPgSecurityDepositRefundRule> results= zoySecurityDepositRefundRuleRepo.findAll(PageRequest.of(0, 1)).getContent();;
 		return results.isEmpty() ? null : results.get(0);
 	}
-
+	@Override
+	public ZoyPgAutoCancellationPeriod findAutoCancellationPeriodById() throws WebServiceException{
+		List<ZoyPgAutoCancellationPeriod> results= zoyPgAutoCancellationPeriodRepo.findAll(PageRequest.of(0, 1)).getContent();;
+		return results.isEmpty() ? null : results.get(0);
+	}
 	@Override
 	public ZoyPgRoomDetails findRoomName(String roomId) {
 		return zoyPgRoomDetailsRepository.findRoomNameByRoomId(roomId);

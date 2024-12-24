@@ -50,9 +50,11 @@ import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AdminUserPasswordHistory;
 import com.integration.zoy.entity.AdminUserTemporary;
 import com.integration.zoy.entity.AdminUserTemporaryPK;
+import com.integration.zoy.entity.AdminUsersLock;
 import com.integration.zoy.entity.AppRole;
 import com.integration.zoy.entity.RoleScreen;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
+import com.integration.zoy.model.AdminLockedUsers;
 import com.integration.zoy.model.AdminUserDetails;
 import com.integration.zoy.model.AdminUserUpdateDetails;
 import com.integration.zoy.model.ForgotPassword;
@@ -60,11 +62,14 @@ import com.integration.zoy.model.LoginDetails;
 import com.integration.zoy.model.RoleDetails;
 import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
+import com.integration.zoy.repository.AdminUserLockRepository;
+import com.integration.zoy.repository.AdminUserLoginDetailsRepository;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AdminUserPasswordHistoryRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
+import com.integration.zoy.service.UnlockUserRequest;
 import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.utils.AdminAppRole;
@@ -132,59 +137,142 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
+	
+	@Autowired
+	private AdminUserLockRepository userRepository;
 
+	@Autowired
+	private AdminUserLoginDetailsRepository adminUserLoginDetailsRepository;
 
 	@Value("${qa.signin.link}")
 	private String qaSigninLink;
 
 	@Override
 	public ResponseEntity<String> zoyAdminUserLogin(LoginDetails details) {
-		ResponseBody response=new ResponseBody();
-		Authentication authentication = null;
-		try {
-			AdminUserLoginDetails loginDetails=adminDBImpl.findByEmail(details.getEmail());
-			if(loginDetails!=null) {
-				
-				if(!loginDetails.getIsActive()) {
-					response.setStatus(HttpStatus.NOT_FOUND.value());
-					response.setMessage("Your account has been deactivated. Contact support for assistance. ");
-					return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
-				}
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        AdminUserLoginDetails loginDetails = adminDBImpl.findByEmail(details.getEmail());
 
-				String decryptedStoredPassword = passwordDecoder.decryptedText(details.getPassword()); 
-				String decryptedLoginPassword = passwordDecoder.decryptedText(loginDetails.getPassword()); 
+	        if (loginDetails == null) {
+	            response.setStatus(HttpStatus.NOT_FOUND.value());
+	            response.setMessage("User email not found");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+	        }
 
-				boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
+	        if (!loginDetails.getIsActive()) {
+	            response.setStatus(HttpStatus.NOT_FOUND.value());
+	            response.setMessage("Your account has been deactivated. Contact support for assistance.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+	        }
+	        AdminUsersLock userLock = userRepository.findByUsername(details.getEmail());
 
-				if(isPasswordMatch) {
-					authentication = authenticationManager
-							.authenticate(new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
-					response.setStatus(HttpStatus.OK.value());
-					response.setEmail(details.getEmail());
-					String token = jwtUtil.generateToken(authentication);
-					response.setToken(token);
-					
-					
-					// audit here
-					auditHistoryUtilities.auditForUserLoginLogout(loginDetails.getUserEmail(), true);
-					return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-				} else {
-					response.setStatus(HttpStatus.UNAUTHORIZED.value());
-					response.setMessage("Incorrect password");
-					return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
-				}
-			} else {
-				response.setStatus(HttpStatus.NOT_FOUND.value());
-				response.setMessage("User email not found ");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
-			}
-		} catch (Exception e) {
-			log.error("Error getting ameneties details API:/zoy_admin/login.zoyAdminUserLogin " + e.getMessage(),e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
+	        if (userLock == null) {
+	            userLock = new AdminUsersLock();
+	            userLock.setUsername(details.getEmail());
+	            userLock.setAttemptSequence(0);
+	            userLock.setLockCount(0);
+	            userLock.setLockTime(null);
+	        }
+
+	        if (userLock.getLockCount() == 2) {
+	            response.setStatus(HttpStatus.FORBIDDEN.value());
+	            response.setMessage("Your account has been permanently locked. Please contact Admin Support.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.FORBIDDEN);
+	        }
+	        
+	        if (userLock.getLockCount() == 1 && userLock.getAttemptSequence()==0) {
+	            if (userLock.getLockTime() != null &&
+	                userLock.getLockTime().toLocalDateTime().isAfter(LocalDateTime.now().minusMinutes(15))) {
+	                response.setStatus(HttpStatus.FORBIDDEN.value());
+	                response.setMessage("Your account is locked. It will be unlocked automatically after 15 minutes.");
+	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.FORBIDDEN);
+	            } else {
+	                userLock.setAttemptSequence(0);
+	                adminUserLoginDetailsRepository.unLockUserByEmail(details.getEmail());
+	                userRepository.save(userLock);
+	            }
+	        }
+	        
+	        String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword());
+	        String decryptedLoginPassword = passwordDecoder.decryptedText(details.getPassword());
+
+	        boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
+
+	        if (isPasswordMatch) {
+	            Authentication authentication = authenticationManager.authenticate(
+	                new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
+	            String token = jwtUtil.generateToken(authentication);
+
+	            userLock.setAttemptSequence(0);
+	            userLock.setLockCount(0);
+	            userLock.setLockTime(null);
+	            userRepository.save(userLock);
+
+	            response.setStatus(HttpStatus.OK.value());
+	            response.setEmail(details.getEmail());
+	            response.setToken(token);
+
+	            auditHistoryUtilities.auditForUserLoginLogout(loginDetails.getUserEmail(), true);
+
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	        } else {
+	            userLock.setAttemptSequence(userLock.getAttemptSequence() + 1);
+
+	            if (userLock.getAttemptSequence() == 1 && userLock.getLockCount() == 0) {
+	            	userLock.setAttemptSequence(1);
+	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+	                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+	                response.setMessage("Invalid credentials.");
+	            } else if (userLock.getAttemptSequence() == 2 && userLock.getLockCount() == 0) {
+	            	userLock.setAttemptSequence(2);
+	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+	                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+	                response.setMessage("Invalid credentials. One more failed attempt will lock your account.");
+	            } else if (userLock.getAttemptSequence() == 3 && userLock.getLockCount() == 0) {
+	                userLock.setLockCount(1);
+	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+	                userLock.setAttemptSequence(0);
+	                adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
+	                response.setStatus(HttpStatus.LOCKED.value());
+	                response.setMessage("Your account is locked due to multiple invalid login attempts. Please try again after 15 minutes.");
+	            } else if (userLock.getAttemptSequence() == 1 && userLock.getLockCount() == 1) {
+	            	userLock.setAttemptSequence(1);
+	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+	                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+	                response.setMessage("Invalid credentials.");
+	            } else if (userLock.getAttemptSequence() == 2 && userLock.getLockCount() == 1) {
+	            	userLock.setAttemptSequence(2);
+	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+	                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+	                response.setMessage("Invalid credentials. Provide the correct password or your account will be locked again.");
+	            } else if (userLock.getAttemptSequence() == 3 && userLock.getLockCount() == 1) {
+	            	userLock.setAttemptSequence(3);
+	                userLock.setLockCount(2); // Permanently lock account
+	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+	                adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
+	                response.setStatus(HttpStatus.FORBIDDEN.value());
+	                response.setMessage("Your account has been permanently locked. Please contact Admin Support.");
+	            }
+
+	            userRepository.save(userLock);
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
+	        }
+	    } catch (Exception e) {
+	        log.error("Error in zoyAdminUserLogin: " + e.getMessage(), e);
+	        try {
+	            new ZoyAdminApplicationException(e, "");
+	        } catch (Exception ex) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError(ex.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
+
+
 	@Override
 	public ResponseEntity<String> zoyAdminUserDetails(Token token) {
 		ResponseBody response=new ResponseBody();
@@ -1050,6 +1138,77 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	}
 
 
+	@Override
+	public ResponseEntity<String> zoyAdminUserUnlock(UnlockUserRequest request) {
+		ResponseBody response = new ResponseBody();
+
+		try {
+			AdminUsersLock user = userRepository.findByUsername(request.getUserEmail());
+			if (user == null || user.getUsername() == null) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("User email not found");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+			}
+			userRepository.unlockUser(request.getUserEmail());
+			adminUserLoginDetailsRepository.unLockUserByEmail(request.getUserEmail());
+
+			userRepository.save(user);
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("User has been unlocked successfully.");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception ex) {
+			log.error("Error in zoyAdminUserUnlock API:/zoy_admin/zoyAdminUserUnlock.zoyAdminUserUnlock", ex);
+			 try {
+		            new ZoyAdminApplicationException(ex, "");
+		        } catch (Exception e) {
+		            response.setStatus(HttpStatus.BAD_REQUEST.value());
+		            response.setError(e.getMessage());
+		            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		        }
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(ex.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+
+	@Override
+	public ResponseEntity<String> zoyAdminlockedUsers() {
+		ResponseBody response = new ResponseBody();
+		try {
+
+			List<Object[]> lockedUsersList = userRepository.findLockedUsers();
+
+			List<AdminLockedUsers> adminuserslockedList = new ArrayList<>();
+
+			for (Object[] details : lockedUsersList) {
+				AdminLockedUsers lockedUsers = new AdminLockedUsers();
+
+				lockedUsers.setEmail(details[0] != null ? (String) details[0] : null);
+				lockedUsers.setUserName(details[1] != null ? (String) details[1] : null);
+				lockedUsers.setDesignation(details[2] != null ? (String) details[2] : null);
+				lockedUsers.setStatus(details[3] != null ? (String) details[3] : null);
+
+				adminuserslockedList.add(lockedUsers);
+			}
+
+			return new ResponseEntity<>(gson.toJson(adminuserslockedList), HttpStatus.OK);
+
+		} catch (Exception ex) {
+			log.error("Error getting user list details /zoy_admin/userListNotApprove.zoyAdminNotApprovedRoles", ex);
+			try {
+	            new ZoyAdminApplicationException(ex, "");
+	        } catch (Exception e) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError(e.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(ex.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
 
 }
 

@@ -28,6 +28,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.ZoyDataGrouping;
+import com.integration.zoy.entity.ZoyPgAutoCancellationPeriod;
 import com.integration.zoy.entity.ZoyPgCancellationDetails;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
@@ -35,6 +36,7 @@ import com.integration.zoy.entity.ZoyPgSecurityDepositRefundRule;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
+import com.integration.zoy.model.ZoyPgAutoCancellationPeriodDto;
 import com.integration.zoy.model.ZoyShareDetails;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.utils.AuditHistoryUtilities;
@@ -646,5 +648,71 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		    }
 	}
 
+	@Override
+	public ResponseEntity<String> zoyAdminCreateUpadateConfigAutoCancellationperiod(ZoyPgAutoCancellationPeriodDto autoCancellation) {
+		ResponseBody response = new ResponseBody();
+		try {
+			if (autoCancellation == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Required Auto Cancellation details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+
+			ZoyPgAutoCancellationPeriod cancellationPeriod = ownerDBImpl.findAutoCancellationPeriodById();
+
+			if (cancellationPeriod != null) {
+				final int oldFixed=cancellationPeriod.getDaysToCancel();
+				final BigDecimal oldVariable=cancellationPeriod.getDeductionPercentage();
+				cancellationPeriod.setDaysToCancel(autoCancellation.getDaysToCancel());
+				cancellationPeriod.setDeductionPercentage(autoCancellation.getDeductionPercentage());
+				ownerDBImpl.saveAutoCancellationPeriod(cancellationPeriod);
+				//audit history here
+				StringBuffer historyContent=new StringBuffer(" has updated the auto cancellation period for");
+				if(oldFixed!=autoCancellation.getDaysToCancel()) {
+					historyContent.append(", number of days from "+oldFixed+" to "+autoCancellation.getDaysToCancel());
+				}
+				if(oldVariable!=autoCancellation.getDeductionPercentage()) {
+					historyContent.append(" ,   from "+oldVariable+" to "+autoCancellation.getDeductionPercentage());
+				}
+
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				
+				ZoyPgAutoCancellationPeriodDto dto =convertToDTO(cancellationPeriod);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Updated auto cancellation period");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				ZoyPgAutoCancellationPeriod newCancellationPeriod = new ZoyPgAutoCancellationPeriod();
+				newCancellationPeriod.setDaysToCancel(autoCancellation.getDaysToCancel());
+				newCancellationPeriod.setDeductionPercentage(autoCancellation.getDeductionPercentage());
+
+				ownerDBImpl.saveAutoCancellationPeriod(newCancellationPeriod);
+				//audit history here
+				String historyContent=" has created the autodeduction details for, Max Days For Refund = "+newCancellationPeriod.getDaysToCancel()+" , deduction percentage="+newCancellationPeriod.getDeductionPercentage();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+				
+				ZoyPgAutoCancellationPeriodDto dto =convertToDTO(newCancellationPeriod);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Created new auto cancellation period ");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
+
+		} catch (Exception e) {
+			log.error("Error saving/updating Auto cancellation Period Rule API:/zoy_admin/config/auto-cancellation-period.zoyAdminCreateUpadateConfigAutoCancellationperiod\r\n ", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	private ZoyPgAutoCancellationPeriodDto convertToDTO(ZoyPgAutoCancellationPeriod entity) {
+		ZoyPgAutoCancellationPeriodDto dto = new ZoyPgAutoCancellationPeriodDto();
+	    dto.setAutoCancellationId(entity.getAutoCancellationId());
+	    dto.setDaysToCancel(entity.getDaysToCancel());
+	    dto.setDeductionPercentage(entity.getDeductionPercentage());
+	    return dto;
+	}
 
 }
