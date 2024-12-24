@@ -23,6 +23,8 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	  @ViewChild(SidebarComponent) sidemenuComp;
 	  public rolesArray: string[] = [];
 	  submitted=false;
+	  public selectedTab:number=1;
+	  public sectionTabHeader:string="Persional Details";
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private zoyOwnerService : ZoyOwnerService) {
 			this.authService.checkLoginUserVlidaate();
@@ -67,5 +69,9 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		this.sidemenuComp.expandMenu(7);
 		this.sidemenuComp.activeMenu(7, 'tenants');
 		this.dataService.setHeaderName("Tenant Profile");
+	}
+	selectProfile(selectTab:number,header:string){
+		this.selectedTab=selectTab;
+		this.sectionTabHeader=header;
 	}
 }

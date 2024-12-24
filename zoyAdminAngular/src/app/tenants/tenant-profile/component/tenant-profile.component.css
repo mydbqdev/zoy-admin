@@ -30,3 +30,13 @@
   padding-right: 1px; /* Optional: prevent scrollbar overlap */
   box-sizing: border-box; /* Prevents padding from affecting width */
 }
+
+.nav-pills .nav-link.profile-tab.active,.nav-pills .nav-link.profile-tab:hover{
+  color: #fff;
+  background-color:#603EBB;
+}
+
+.nav-pills .nav-link.profile-tab{
+  color: rgb(41, 40, 40);
+  cursor: pointer;
+}
