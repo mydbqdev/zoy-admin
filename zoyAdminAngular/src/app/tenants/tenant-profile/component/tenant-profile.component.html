@@ -53,9 +53,14 @@
                               <div class="col-sm-9">
                                 <div>
                                   <nav class="nav nav-pills nav-justified" style="background-color:#F9F9FB;border-radius: 5px;border:1px solid #dedee0">
-                                    <a class="nav-link profile-tab" [ngClass]="selectedTab==1?'active':''" aria-current="page" (click)="selectProfile(1,'Persional Details')">Tenant Profile</a>
-                                    <a class="nav-link profile-tab" [ngClass]="selectedTab==2?'active':''" (click)="selectProfile(2,'Active Booking Details')">Booking Details</a>
-                                    <a class="nav-link profile-tab" [ngClass]="selectedTab==3?'active':''" (click)="selectProfile(3,'Payments and Dues History Details')">Payments and Dues History</a>
+                                    <a class="nav-link profile-tab" [ngClass]="selectedTab==1?'active':''" aria-current="page" (click)="selectProfile(1,'Persional Details')" style="border-radius: 0px;">Tenant Profile</a>
+                                    <a class="dropdown nav-link profile-tab" [ngClass]="selectedTab==2?'active':''"  id="dropdownMenuDownload" data-bs-toggle="dropdown" style="border-radius: 0px;border-left:1px solid #dedee0;border-right: 1px solid #dedee0;">Booking Details <i class="fas fa-chevron-down ml-2"></i></a>
+                                    <div class="dropdown-menu shadow animated-fade-in" aria-labelledby="dropdownMenuDownload" style="min-width: 263px !important;text-align: center;">
+                                      <a class="dropdown-item" href="javascript:void(0)" (click)="selectProfile(2,'Active Booking Details')" >Active Bookings </a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
+                                      <a class="dropdown-item" href="javascript:void(0)" (click)="selectProfile(2,'Closed Booking Details')" >Closed Bookings</a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
+                                      <a class="dropdown-item" href="javascript:void(0)" (click)="selectProfile(2,'Upcoming Booking Details')" >Upcoming Bookings</a>   
+                                    </div>
+                                    <a class="nav-link profile-tab" [ngClass]="selectedTab==3?'active':''" (click)="selectProfile(3,'Payments and Dues History Details')" style="border-radius: 0px;">Payments and Dues History</a>
                                   </nav>
                                 </div>
                                 <div class="row mt-2">
@@ -78,7 +83,33 @@
                                             <div class="row mb-1"><div class="col-sm-4">Mother Tongue</div><div class="col-sm-8"><span class="mr-2">:</span>Odia</div></div>
                                           </div>
                                         </div>
-                                        <div *ngIf="selectedTab==2">
+                                        <div *ngIf="selectedTab==2 && sectionTabHeader=='Active Booking Details'">
+                                          <div class="pl-3" style="font-size: 14px;color: #707070;">
+                                            <div class="row mb-1"><div class="col-sm-4">PG Name</div><div class="col-sm-8"><span class="mr-2">:</span>Srinivash PG</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Monthly Rent/Bed</div><div class="col-sm-8"><span class="mr-2">:</span>11,000.00</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Security Deposit</div><div class="col-sm-8"><span class="mr-2">:</span>10,000.00</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Dues</div><div class="col-sm-8"><span class="mr-2">:</span>5,000.00</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Room / Bed No</div><div class="col-sm-8"><span class="mr-2">:</span>1101-A</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Check In</div><div class="col-sm-8"><span class="mr-2">:</span>12/01/2024</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Check Out</div><div class="col-sm-8"><span class="mr-2">:</span>-</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Rent Cycle</div><div class="col-sm-8"><span class="mr-2">:</span>01-01</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Notice Period</div><div class="col-sm-8"><span class="mr-2">:</span>1 month</div></div>
+                                          </div>
+                                        </div>
+                                        <div *ngIf="selectedTab==2 && sectionTabHeader=='Closed Booking Details'">
+                                          <div class="pl-3" style="font-size: 14px;color: #707070;">
+                                            <div class="row mb-1"><div class="col-sm-4">PG Name</div><div class="col-sm-8"><span class="mr-2">:</span>Srinivash PG</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Monthly Rent/Bed</div><div class="col-sm-8"><span class="mr-2">:</span>11,000.00</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Security Deposit</div><div class="col-sm-8"><span class="mr-2">:</span>10,000.00</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Dues</div><div class="col-sm-8"><span class="mr-2">:</span>5,000.00</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Room / Bed No</div><div class="col-sm-8"><span class="mr-2">:</span>1101-A</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Check In</div><div class="col-sm-8"><span class="mr-2">:</span>12/01/2024</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Check Out</div><div class="col-sm-8"><span class="mr-2">:</span>-</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Rent Cycle</div><div class="col-sm-8"><span class="mr-2">:</span>01-01</div></div>
+                                            <div class="row mb-1"><div class="col-sm-4">Notice Period</div><div class="col-sm-8"><span class="mr-2">:</span>1 month</div></div>
+                                          </div>
+                                        </div>
+                                        <div *ngIf="selectedTab==2 && sectionTabHeader=='Upcoming Booking Details'">
                                           <div class="pl-3" style="font-size: 14px;color: #707070;">
                                             <div class="row mb-1"><div class="col-sm-4">PG Name</div><div class="col-sm-8"><span class="mr-2">:</span>Srinivash PG</div></div>
                                             <div class="row mb-1"><div class="col-sm-4">Monthly Rent/Bed</div><div class="col-sm-8"><span class="mr-2">:</span>11,000.00</div></div>
