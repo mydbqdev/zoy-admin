@@ -54,6 +54,9 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 	  pageSizeOptions: number[] = [10, 20, 50]; 
 	  totalProduct: number = 0;
 	  public lastPageSize:number=0;
+	  public tenantIdBackFormDetails:string="";
+	  paramFilterBack:OwnerRequestParam=new OwnerRequestParam();
+	  totalProductFilterBack: number = 0;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private zoyOwnerService : ZoyOwnerService) {
 			this.authService.checkLoginUserVlidaate();
@@ -82,6 +85,20 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		  this.dataService.getIsExpandSideBar.subscribe(name=>{
 			  this.isExpandSideBar=name;
 		  });
+
+		  this.dataService.getTenantId.subscribe(id=>{
+			this.tenantIdBackFormDetails=id;
+		  });
+
+		  this.dataService.getOwenerListFilter.subscribe(data=>{
+			this.orginalFetchData= data;
+		  });
+		  this.dataService.getOwenerListFilterTotal.subscribe(data=>{
+			this.totalProductFilterBack= data;
+		  });
+		  this.dataService.getOwenerListFilterParam.subscribe(data=>{
+			this.paramFilterBack= data;
+		  });
 	}
 
 	ngOnDestroy() {
@@ -98,7 +115,18 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		this.sidemenuComp.expandMenu(7);
 		this.sidemenuComp.activeMenu(7, 'tenants');
 		this.dataService.setHeaderName("Tenants");
-		this.getRetrieveData();
+		if(this.tenantIdBackFormDetails==''){
+			this.getRetrieveData();
+		}else{
+			this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
+			this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+			this.totalProduct=this.totalProductFilterBack;
+			this.columnSortDirections[this.paramFilterBack.sortActive] = this.paramFilterBack.sortDirection;
+			this.paginator.pageIndex=this.paramFilterBack.pageIndex;
+			this.paginator.pageSize=this.paramFilterBack.pageSize;
+			this.lastPageSize=this.paramFilterBack.pageSize;
+			this.param=this.paramFilterBack;
+		}
 	}
 
 	getRetrieveData(){
@@ -112,7 +140,7 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		this.paramFilter.status=null;
 		this.param.filter=this.paramFilter;
 		setTimeout(()=>{
-		  //this.getTenantsList();
+		  this.getTenantsList();
 		 },100);
 		 this.columnSortDirections["owner_name"] = "asc";
 	  }
@@ -123,11 +151,13 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		  this.authService.checkLoginUserVlidaate();
 		  this.spinner.show();
 		  this.lastPageSize=this.param.pageSize;
-		  /*this.zoyOwnerService.getTenantsList(this.param).subscribe(data => {
+		  this.zoyOwnerService.getZoyOwnerList(this.param).subscribe(data => {
 			  this.orginalFetchData=  Object.assign([],data.content);
 			  this.ELEMENT_DATA = Object.assign([],data.content);
 			  this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 			  this.totalProduct=data.total;
+			  this.dataService.setOwenerListFilter(this.orginalFetchData);
+			  this.dataService.setOwenerListFilterTotal(this.totalProduct);
 			  this.spinner.hide();
 		  }, error => {
 		  this.spinner.hide();
@@ -158,7 +188,7 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
 			  //this.notifyService.showError(this.errorMsg, "");
 		  }
-		  });*/
+		  });
 	  }
 	
 	announceSortChange(sortState: Sort): void {
@@ -233,5 +263,11 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		this.param.pageIndex=this.paginator.pageIndex;
 		this.param.pageSize= event.pageSize;
 		this.getTenantsList();
+		}
+		getRecord(id:string){
+			this.dataService.setTenantId(id);
+			localStorage.setItem('tenantInfo', id);
+			this.dataService.setOwenerListFilterParam(this.param);
+			this.router.navigateByUrl('/tenantprofile');
 		}
 }

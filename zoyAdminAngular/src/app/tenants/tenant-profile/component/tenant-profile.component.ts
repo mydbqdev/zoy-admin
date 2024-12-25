@@ -25,6 +25,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	  submitted=false;
 	  public selectedTab:number=1;
 	  public sectionTabHeader:string="Persional Details";
+	  tenantId:string='';
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private zoyOwnerService : ZoyOwnerService) {
 			this.authService.checkLoginUserVlidaate();
@@ -53,6 +54,18 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		  this.dataService.getIsExpandSideBar.subscribe(name=>{
 			  this.isExpandSideBar=name;
 		  });
+
+		  this.dataService.getTenantId.subscribe(id=>{
+			if(id == null || id == undefined || id == ''){
+				if(localStorage.getItem('tenantInfo')){
+					this.tenantId = localStorage.getItem('tenantInfo') ;
+				}else{
+					this.router.navigate(['/tenants']);
+				}
+			}else{
+				this.tenantId=id;
+			}
+		});
 	}
 
 	ngOnDestroy() {

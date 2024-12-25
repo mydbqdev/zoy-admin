@@ -51,11 +51,15 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	  submitted=false;
 	  columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	  private _liveAnnouncer = inject(LiveAnnouncer);
-
+	  param:OwnerRequestParam=new OwnerRequestParam();
+	  paramFilter:Filter=new Filter();
 	  pageSize: number = 10; 
 	  pageSizeOptions: number[] = [10, 20, 50]; 
 	  totalProduct: number = 0;
 	  public lastPageSize:number=0;
+	  public ownerIdBackFormDetails:string="";
+	  paramFilterBack:OwnerRequestParam=new OwnerRequestParam();
+	  totalProductFilterBack: number = 0;
 	  constructor(private zoyOwnerService : ZoyOwnerService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			  this.authService.checkLoginUserVlidaate();
@@ -84,6 +88,20 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		  this.dataService.getIsExpandSideBar.subscribe(name=>{
 			  this.isExpandSideBar=name;
 		  });
+		  this.dataService.getOwenerId.subscribe(id=>{
+			this.ownerIdBackFormDetails=id;
+		  });
+
+		  this.dataService.getOwenerListFilter.subscribe(data=>{
+			this.orginalFetchData= data;
+		  });
+		  this.dataService.getOwenerListFilterTotal.subscribe(data=>{
+			this.totalProductFilterBack= data;
+		  });
+		  this.dataService.getOwenerListFilterParam.subscribe(data=>{
+			this.paramFilterBack= data;
+		  });
+		  
 	  }
 
 	  ngOnDestroy() {
@@ -102,7 +120,18 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		  this.sidemenuComp.expandMenu(2);
 		  this.sidemenuComp.activeMenu(2, 'manage-owner');
 		  this.dataService.setHeaderName("Manage Owner");
-		  this.getRetrieveData();
+		  if(this.ownerIdBackFormDetails==''){
+		  	this.getRetrieveData();
+		  }else{
+			  this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
+			  this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+			  this.totalProduct=this.totalProductFilterBack;
+			  this.columnSortDirections[this.paramFilterBack.sortActive] = this.paramFilterBack.sortDirection;
+			  this.paginator.pageIndex=this.paramFilterBack.pageIndex;
+			  this.paginator.pageSize=this.paramFilterBack.pageSize;
+			  this.lastPageSize=this.paramFilterBack.pageSize;
+			  this.param=this.paramFilterBack;
+		  }
 	  }
 	  
 	  getRetrieveData(){
@@ -121,19 +150,21 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		 this.columnSortDirections["owner_name"] = "asc";
 	  }
 
-	  param:OwnerRequestParam=new OwnerRequestParam();
-	  paramFilter:Filter=new Filter();
+
 	  getZoyOwnerList(){
 		  this.authService.checkLoginUserVlidaate();
 		  this.spinner.show();
 		  this.lastPageSize=this.param.pageSize;
 		  this.zoyOwnerService.getZoyOwnerList(this.param).subscribe(data => {
+			
 			  this.orginalFetchData=  Object.assign([],data.content);
 			  this.ELEMENT_DATA = Object.assign([],data.content);
 			  this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 			  //this.dataSource.sort = this.sort;
 			  //this.dataSource.paginator = this.paginator;
+			  this.dataService.setOwenerListFilter(this.orginalFetchData);
 			  this.totalProduct=data.total;
+			  this.dataService.setOwenerListFilterTotal(this.totalProduct);
 			  this.spinner.hide();
 		  }, error => {
 		  this.spinner.hide();
@@ -253,5 +284,6 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		 setOwnerId(ownerId: string) {
 			this.dataService.setOwenerId(ownerId);
 			localStorage.setItem('ownerInfo', ownerId);
+			this.dataService.setOwenerListFilterParam(this.param);
 		  }
   }  
