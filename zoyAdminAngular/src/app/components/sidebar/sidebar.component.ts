@@ -330,5 +330,9 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 
 	setOwnerResetId(){
 		this.dataService.setOwenerId("");
+		this.dataService.setTenantId("");
+		this.dataService.setOwenerListFilter([]);
+		this.dataService.setOwenerListFilterTotal(0);
+		this.dataService.setOwenerListFilterParam(null);
 	}
 }

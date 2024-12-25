@@ -86,9 +86,7 @@
     </a>
     <div id="collapseTenants" [ngClass]="menu7 ? 'collapse show':'collapse'" aria-labelledby="headingTenants" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" routerLink="/tenants" *ngIf="defMenu.tenantsSubMenu.tenantzoy && rolesArray.includes('TENANTSZOY_READ')" [ngClass]="{'active':activeSubNenuName=='tenants'}" (click)="setHeaderName('Tenants')" >Tenant </a>
-            <div class="p-1"></div>
-            <a class="collapse-item" routerLink="/tenantprofile" *ngIf="defMenu.tenantsSubMenu.tenantzoy && rolesArray.includes('TENANTSZOY_READ')" [ngClass]="{'active':activeSubNenuName=='tenants'}" (click)="setHeaderName('Tenants')" >Tenant Profile </a>
+            <a class="collapse-item" routerLink="/tenants" *ngIf="defMenu.tenantsSubMenu.tenantzoy && rolesArray.includes('TENANTSZOY_READ')" [ngClass]="{'active':activeSubNenuName=='tenants'}" (click)="setHeaderName('Tenants');setOwnerResetId()" >Tenant </a>
             <div class="p-1"></div>
             <a class="collapse-item" routerLink="/bulk-upload" *ngIf="defMenu.tenantsSubMenu.bulkUpload && rolesArray.includes('BULK_UPLOAD_READ')" [ngClass]="{'active':activeSubNenuName=='bulk-upload'}" (click)="setHeaderName('Bulk Upload')" >Bulk Upload</a>
         </div>

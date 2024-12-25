@@ -55,4 +55,10 @@ export class DataService{
      setOwenerListFilterParam(owenerListFilterParam:OwnerRequestParam){
         this.owenerListFilterParam.next(owenerListFilterParam);
      }
+
+     public tenantId=new BehaviorSubject<string>("");
+     getTenantId=this.tenantId.asObservable();
+     setTenantId(tenantId:string){
+        this.tenantId.next(tenantId);
+     }
 }
