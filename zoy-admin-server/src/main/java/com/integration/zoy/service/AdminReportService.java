@@ -4,9 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,8 @@ import com.integration.zoy.utils.VendorPaymentsGst;
 @Service
 public class AdminReportService implements AdminReportImpl{
 	private static final Logger log=LoggerFactory.getLogger(AdminReportService.class);
+	NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "IN"));
+	String rupeeSymbol = "\u20B9";
 	@Autowired
 	private UserPaymentRepository userPaymentRepository;
 
@@ -59,6 +63,9 @@ public class AdminReportService implements AdminReportImpl{
 
 	@Value("${zoy.admin.logo}")
 	private String zoyLogoPath;
+	
+	@Value("${zoy.admin.watermark}")
+    private String watermarkImagePath;
 
 
 	@Override
@@ -86,12 +93,12 @@ public class AdminReportService implements AdminReportImpl{
 				        "pgt.property_house_area, " + 
 				        "ud.user_personal_phone_num " + 
 				        "FROM pgusers.user_payments up " +
-				        "JOIN pgusers.user_details ud ON up.user_id = ud.user_id " +
-				        "JOIN pgowners.zoy_pg_owner_booking_details bkd " +
+				        "LEFT JOIN pgusers.user_details ud ON up.user_id = ud.user_id " +
+				        "LEFT JOIN pgowners.zoy_pg_owner_booking_details bkd " +
 				        "ON up.user_id = bkd.tenant_id " +
 				        "AND up.user_payment_booking_id = bkd.booking_id " +
-				        "JOIN pgowners.zoy_pg_property_details pgt ON pgt.property_id = bkd.property_id " +
-				        "JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id " +
+				        "LEFT JOIN pgowners.zoy_pg_property_details pgt ON pgt.property_id = bkd.property_id " +
+				        "LEFT JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id " +
 				        "WHERE 1=1"
 				);
 			Map<String, Object> parameters = new HashMap<>();
@@ -177,21 +184,21 @@ public class AdminReportService implements AdminReportImpl{
 			List<Object[]> result = query.getResultList();
 			List<UserPaymentDTO> userPaymentDTOs = result.stream().map(row -> {
 			    UserPaymentDTO dto = new UserPaymentDTO();
-			    dto.setUserPaymentTimestamp((Timestamp) row[0]); 
-			    dto.setUserPaymentBankTransactionId((String) row[1]);  
-			    dto.setUserPaymentResultStatus((String) row[2]); 
+			    dto.setTransactionDate((Timestamp) row[0]); 
+			    dto.setTransactionNumber(String.valueOf(row[1]));
+			    dto.setTransactionStatus(String.valueOf(row[2]));
 			    BigDecimal payableAmount = (BigDecimal) row[3] != null ? (BigDecimal) row[3] : BigDecimal.ZERO;  
 			    BigDecimal gst = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;  
-			    dto.setUserPaymentPayableAmount(payableAmount);
-			    dto.setUserPaymentGst(gst);
-			    dto.setUserPersonalName((String) row[5]); 
-			    dto.setUserPgPropertyName((String) row[6]);  
-			    dto.setBedNumber((String) row[7]); 
-			    dto.setTotalAmount(payableAmount.add(gst));  
-			    dto.setCategory((String) row[8]);  
-			    dto.setPaymentMethod((String) row[9]); 
-			    dto.setPropertyHouseArea((String) row[11]);  
-			    dto.setTenantContactNum((String) row[12]);
+			    dto.setDueAmount(rupeeSymbol+numberFormat.format(filterCount));
+			    dto.setGstAmount(rupeeSymbol+numberFormat.format(gst));
+			    dto.setUserPersonalName(String.valueOf(row[5]));
+			    dto.setUserPgPropertyName(String.valueOf(row[6]));
+			    dto.setRoomBedNumber(String.valueOf(row[7]));
+			    dto.setTotalAmount(rupeeSymbol+numberFormat.format(payableAmount.add(gst)));  
+			    dto.setCategory(String.valueOf(row[8]));
+			    dto.setPaymentMode(String.valueOf(row[9]));
+			    dto.setPropertyHouseArea(String.valueOf(row[11]));
+			    dto.setTenantContactNum(String.valueOf(row[12]));
 			    return dto;
 			}).collect(Collectors.toList());
 
@@ -276,14 +283,14 @@ public class AdminReportService implements AdminReportImpl{
 			List<ConsilidatedFinanceDetails> consolidatedFinanceDTOs = result.stream().map(row -> {
 				ConsilidatedFinanceDetails dto = new ConsilidatedFinanceDetails();
 				dto.setUserPaymentTimestamp((Timestamp) row[0]);
-				dto.setUserPaymentBankTransactionId((String) row[1]);
-				dto.setPayerPayeeType((String) row[2]);
-				dto.setPayerPayeeName((String) row[3]);
+				dto.setUserPaymentBankTransactionId(String.valueOf(row[1]));
+				dto.setPayerPayeeType(String.valueOf(row[2]));
+				dto.setPayerPayeeName(String.valueOf(row[3]));
 				BigDecimal payableAmount = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;
 				BigDecimal gst = (BigDecimal) row[5] != null ? (BigDecimal) row[5] : BigDecimal.ZERO;
 				BigDecimal totalAmount = payableAmount.add(gst);
-				dto.setCreditAmount(totalAmount);
-				dto.setDebitAmount(BigDecimal.valueOf(0));
+				dto.setCreditAmount(rupeeSymbol+numberFormat.format(totalAmount));
+				dto.setDebitAmount(rupeeSymbol+numberFormat.format(BigDecimal.valueOf(0)));
 				return dto;
 			}).collect(Collectors.toList());
 
@@ -383,25 +390,25 @@ public class AdminReportService implements AdminReportImpl{
 			List<TenentDues> tenentDuesDto = results.stream().map(row -> {
 			    TenentDues dto = new TenentDues();
 			    
-			    boolean isPresent = userPaymentDueRepository.existsByUserMoneyDueId((String) row[6]);
+			    boolean isPresent = userPaymentDueRepository.existsByUserMoneyDueId(String.valueOf(row[6]));
 			    if (isPresent) {
-			        String userPaymentId = userPaymentDueRepository.findUserPaymentIdByUserMoneyDueId((String) row[6]);
+			        String userPaymentId = userPaymentDueRepository.findUserPaymentIdByUserMoneyDueId(String.valueOf(row[6]));
 			        BigDecimal payableAmount = userPaymentRepository.findUserPaymentPayableAmountByUserPaymentId(userPaymentId);
 			        
 			        if (((BigDecimal) row[0]).subtract(payableAmount).compareTo(BigDecimal.ZERO) > 0) {
-			            dto.setPendingAmount(payableAmount.subtract((BigDecimal) row[0]));
+			            dto.setPendingAmount(rupeeSymbol+numberFormat.format(payableAmount.subtract((BigDecimal) row[0])));
 			        } else {
-			            dto.setPendingAmount((BigDecimal) row[0]);
+			            dto.setPendingAmount(rupeeSymbol+numberFormat.format((BigDecimal) row[0]));
 			        }
 			    } else {
-			        dto.setPendingAmount((BigDecimal) row[0]);
+			        dto.setPendingAmount(rupeeSymbol+numberFormat.format((BigDecimal) row[0]));
 			    }
 			    dto.setPendingDueDate((Timestamp) row[1]);
-			    dto.setUserPersonalName((String) row[2]);
-			    dto.setUserPgPropertyName((String) row[3]);
-			    dto.setUserPgPropertyAddress((String) row[4]); 
-			    dto.setBedNumber((String) row[5]); 
-			    dto.setTenantMobileNum((String) row[8]);
+			    dto.setUserPersonalName(String.valueOf(row[2]));
+			    dto.setUserPgPropertyName(String.valueOf(row[3]));
+			    dto.setUserPgPropertyAddress(String.valueOf(row[4])); 
+			    dto.setBedNumber(String.valueOf(row[5])); 
+			    dto.setTenantMobileNum(String.valueOf(row[8]));
 			    
 			    return dto;
 			}).collect(Collectors.toList());
@@ -513,16 +520,16 @@ public class AdminReportService implements AdminReportImpl{
 			List<Object[]> results = query.getResultList();
 			List<VendorPayments> vendorPaymentsDto = results.stream().map(row -> {
 			    VendorPayments dto = new VendorPayments();
-			    dto.setOwnerName((String) row[0]);  
-			    dto.setPgName((String) row[1]);    
-			    dto.setTotalAmountFromTenants((BigDecimal) row[2] != null ? (BigDecimal) row[2] : BigDecimal.ZERO); // totalAmountFromTenants
+			    dto.setOwnerName(String.valueOf(row[0]));  
+			    dto.setPgName(String.valueOf(row[1]));    
+			    dto.setTotalAmountFromTenants(rupeeSymbol+numberFormat.format((BigDecimal) row[2] != null ? (BigDecimal) row[2] : BigDecimal.ZERO)); 
 			    dto.setTransactionDate((Timestamp) row[3]);  
-			    dto.setTransactionNumber((String) row[4]);  
-			    dto.setPaymentStatus((String) row[5]);      
-			    dto.setPgAddress((String) row[7]);  
-			    dto.setOwnerEmail((String) row[8]);  
-			    dto.setAmountPaidToOwner(BigDecimal.valueOf(0));  
-			    dto.setZoyShare(BigDecimal.valueOf(0));  
+			    dto.setTransactionNumber(String.valueOf(row[4]));  
+			    dto.setPaymentStatus(String.valueOf(row[5]));      
+			    dto.setPgAddress(String.valueOf(row[7]));  
+			    dto.setOwnerEmail(String.valueOf(row[8]));  
+			    dto.setAmountPaidToOwner(rupeeSymbol+numberFormat.format(BigDecimal.valueOf(0)));  
+			    dto.setZoyShare(rupeeSymbol+numberFormat.format(BigDecimal.valueOf(0)));  
 			    dto.setOwnerApprovalStatus(null);
 			    return dto;
 			}).collect(Collectors.toList());
@@ -613,21 +620,26 @@ public class AdminReportService implements AdminReportImpl{
 			}
 			List<?> dataList = reportData.getData();
 			data.put("reportData", dataList);
-			data.put("startDate", Timestamp.valueOf(filterRequest.getFromDate()));
-			data.put("endDate", Timestamp.valueOf(filterRequest.getToDate()));
-			data.put("printDate", new Timestamp(System.currentTimeMillis()));
-
+			data.put("startDate", Timestamp.valueOf(filterRequest.getFromDate()));  
+			data.put("endDate", Timestamp.valueOf(filterRequest.getToDate())); 
 			switch (filterRequest.getDownloadType().toLowerCase()) {
 			case "pdf":
-				//String logoPath = Paths.get(zoyLogoPath).toFile().getPath();
 				try {
-					InputStream inputStreamImg =getClass().getResourceAsStream(zoyLogoPath);
-					if (inputStreamImg == null) {
-						log.error("Logo image not found at the specified path: {}", zoyLogoPath);
-						throw new FileNotFoundException("Logo image not found at the specified path: " + zoyLogoPath);
+					InputStream inputLogoStreamImg = getClass().getResourceAsStream(zoyLogoPath);
+					InputStream inputWaterMarkStreamImg = getClass().getResourceAsStream(watermarkImagePath);
+
+					if (inputLogoStreamImg == null || inputWaterMarkStreamImg == null) {
+					    if (inputLogoStreamImg == null) {
+					        log.error("Logo image not found at the specified path: {}", zoyLogoPath);
+					        throw new FileNotFoundException("Logo image not found at the specified path: " + zoyLogoPath);
+					    }
+					    if (inputWaterMarkStreamImg == null) {
+					        log.error("Watermark image not found at the specified path: {}", watermarkImagePath);
+					        throw new FileNotFoundException("Watermark image not found at the specified path: " + watermarkImagePath);
+					    }
 					}
-					String base64Logo = pdfGenerateService.imageToBase64(inputStreamImg);
-					data.put("appLogo", base64Logo);
+					data.put("LOGO_PATH", inputLogoStreamImg); 
+					data.put("WATERMARK_IMAGE", inputWaterMarkStreamImg);
 				}catch (FileNotFoundException e) {
 					log.error("Logo image not found, PDF generation failed."+e);
 					new ZoyAdminApplicationException(e,"Logo image not found, PDF generation failed.");
@@ -636,7 +648,8 @@ public class AdminReportService implements AdminReportImpl{
 					log.error("Exception in logo for pdf report."+ex);
 					new ZoyAdminApplicationException(ex,"");
 				}
-				return pdfGenerateService.generatePdfFile(filterRequest.getReportType(), data);
+				InputStream reportStream = getClass().getResourceAsStream("/templates/"+filterRequest.getReportType()+".jasper");
+				return pdfGenerateService.generatePdfFile(reportStream,data);
 			case "excel":
 				return excelGenerateService.generateExcelFile(filterRequest.getReportType(), data);  
 			case "csv":

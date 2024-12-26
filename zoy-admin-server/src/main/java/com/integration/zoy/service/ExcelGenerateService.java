@@ -140,29 +140,29 @@ public class ExcelGenerateService {
 				UserPaymentDTO userPayment = (UserPaymentDTO) dto;
 
 				if ("userPaymentGstReport".equals(reportType)) {
-					row.createCell(0).setCellValue(nullSafe(userPayment.getUserPaymentTimestamp()));
-					row.createCell(1).setCellValue(nullSafe(userPayment.getUserPaymentBankTransactionId()));
+					row.createCell(0).setCellValue(nullSafe(userPayment.getTransactionDate()));
+					row.createCell(1).setCellValue(nullSafe(userPayment.getTransactionNumber()));
 					row.createCell(2).setCellValue(nullSafe(userPayment.getUserPersonalName()));
 					row.createCell(3).setCellValue(nullSafe(userPayment.getUserPgPropertyName()));
 					row.createCell(4).setCellValue(nullSafe(userPayment.getPropertyHouseArea()));
 					row.createCell(5).setCellValue(nullSafe(userPayment.getTotalAmount()));
-					row.createCell(6).setCellValue(nullSafe(userPayment.getUserPaymentGst()));
-					row.createCell(7).setCellValue(nullSafe(userPayment.getUserPaymentPayableAmount()));
-					row.createCell(8).setCellValue(nullSafe(userPayment.getPaymentMethod()));
+					row.createCell(6).setCellValue(nullSafe(userPayment.getGstAmount()));
+					row.createCell(7).setCellValue(nullSafe(userPayment.getDueAmount()));
+					row.createCell(8).setCellValue(nullSafe(userPayment.getPaymentMode()));
 				} else {
 					row.createCell(0).setCellValue(nullSafe(userPayment.getUserPersonalName()));
 					row.createCell(1).setCellValue(nullSafe(userPayment.getTenantContactNum()));
 					row.createCell(2).setCellValue(nullSafe(userPayment.getUserPgPropertyName()));
 					row.createCell(3).setCellValue(nullSafe(userPayment.getPropertyHouseArea()));
-					row.createCell(4).setCellValue(nullSafe(userPayment.getBedNumber()));
-					row.createCell(5).setCellValue(nullSafe(userPayment.getUserPaymentTimestamp()));
-					row.createCell(6).setCellValue(nullSafe(userPayment.getUserPaymentBankTransactionId()));
-					row.createCell(7).setCellValue(nullSafe(userPayment.getUserPaymentResultStatus()));
-					row.createCell(8).setCellValue(nullSafe(userPayment.getUserPaymentPayableAmount()));
-					row.createCell(9).setCellValue(nullSafe(userPayment.getUserPaymentGst()));
+					row.createCell(4).setCellValue(nullSafe(userPayment.getRoomBedNumber()));
+					row.createCell(5).setCellValue(nullSafe(userPayment.getTransactionDate()));
+					row.createCell(6).setCellValue(nullSafe(userPayment.getTransactionNumber()));
+					row.createCell(7).setCellValue(nullSafe(userPayment.getTransactionStatus()));
+					row.createCell(8).setCellValue(nullSafe(userPayment.getDueAmount()));
+					row.createCell(9).setCellValue(nullSafe(userPayment.getGstAmount()));
 					row.createCell(10).setCellValue(nullSafe(userPayment.getTotalAmount()));
 					row.createCell(11).setCellValue(nullSafe(userPayment.getCategory()));
-					row.createCell(12).setCellValue(nullSafe(userPayment.getPaymentMethod()));
+					row.createCell(12).setCellValue(nullSafe(userPayment.getPaymentMode()));
 				}
 			}
 			break;

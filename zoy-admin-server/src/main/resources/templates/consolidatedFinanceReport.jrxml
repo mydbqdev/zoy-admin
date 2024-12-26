@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.1.final using JasperReports Library version 6.20.1-7584acb244139816654f64e2fd57a00d3e31921e  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="UserTransactionsReport" pageWidth="1500" pageHeight="595" orientation="Landscape" columnWidth="782" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4c390bf1-74cb-4001-8fb0-3c995d987aca">
+	<parameter name="startDate" class="java.util.Date"/>
+	<parameter name="endDate" class="java.util.Date"/>
+	<parameter name="LOGO_PATH" class="java.io.InputStream"/>
+	<parameter name="WATERMARK_IMAGE" class="java.io.InputStream"/>
+	<field name="userPaymentTimestamp" class="java.util.Date"/>
+	<field name="userPaymentBankTransactionId" class="java.lang.String"/>
+	<field name="payerPayeeType" class="java.lang.String"/>
+	<field name="payerPayeeName" class="java.lang.String"/>
+	<field name="debitAmount" class="java.lang.String"/>
+	<field name="creditAmount" class="java.lang.String"/>
+	<title>
+		<band height="79">
+			<staticText>
+				<reportElement x="540" y="20" width="350" height="40" uuid="e104b4cb-6b59-4054-87d2-bbc41b37241e"/>
+				<textElement textAlignment="Center">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONSOLIDATED Finance REPORT]]></text>
+			</staticText>
+			<image>
+				<reportElement x="20" y="0" width="130" height="79" uuid="f49cf560-cee9-457c-9357-cc4b64a9f1c7"/>
+				<imageExpression><![CDATA[$P{LOGO_PATH}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="25">
+			<textField>
+				<reportElement x="1210" y="2" width="200" height="20" uuid="c0ff8287-8d98-44c4-bb1f-63b3a12a0101"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["Date range: " + new java.text.SimpleDateFormat("yyyy-MM-dd").format($P{startDate})
+                                              + " to " + new java.text.SimpleDateFormat("yyyy-MM-dd").format($P{endDate})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20">
+			<frame>
+				<reportElement x="0" y="0" width="1470" height="20" backcolor="#E0E0E0" uuid="2c727db4-fab7-44a6-b380-ba5ad9648efa"/>
+				<rectangle>
+					<reportElement x="0" y="0" width="1430" height="20" uuid="c1bf86fb-b402-492c-b18a-b8af478d29f0"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="0" y="0" width="180" height="20" uuid="c7bc4ed7-6967-4f51-9ae0-617fccf9e367"/>
+					<box>
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Transaction Date]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="180" y="0" width="170" height="20" uuid="e669f3b2-d49d-4311-8fe3-648df3247323"/>
+					<box>
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Transaction No]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="350" y="0" width="190" height="20" uuid="a7602bc6-da41-42ce-81ed-aee1f8b180f2"/>
+					<box>
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Payer/Payee Type]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="540" y="0" width="300" height="20" uuid="d465e7bb-bd61-423d-bfb7-4533016b51b6"/>
+					<box>
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Name of the Payer/ Payee]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="840" y="0" width="340" height="20" uuid="6298b5ca-e745-422f-a566-7074e1f58152"/>
+					<box>
+						<pen lineStyle="Solid"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Debit]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="1080" y="0" width="350" height="20" uuid="4cfc24c0-4308-466d-b75f-b249759fe4a0"/>
+					<box>
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Credit]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Prevent">
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="1470" height="20" uuid="9dc7b7cb-9317-4c6e-b70f-3467a4589ebb"/>
+				<rectangle>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="1430" height="20" uuid="4ced5eae-5579-4571-be32-0d762ee28d13"/>
+				</rectangle>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="180" height="20" uuid="3bda72c8-8e77-4eba-ab94-e2b5f8fcb555"/>
+					<box leftPadding="5" rightPadding="5">
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[new java.text.SimpleDateFormat(" yyyy-MM-dd HH:mm:ss").format($F{userPaymentTimestamp})]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="180" y="0" width="170" height="20" uuid="1c4263b9-ba6d-4d36-b3e9-edfab617aead"/>
+					<box leftPadding="5" rightPadding="5">
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{userPaymentBankTransactionId}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="350" y="0" width="190" height="20" uuid="4737b71c-8009-465c-b852-d2b84901c106"/>
+					<box leftPadding="5" rightPadding="5">
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{payerPayeeType}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="540" y="0" width="300" height="20" uuid="f3afeaf7-9ec5-4cb2-8d11-a36f282a929d"/>
+					<box leftPadding="5" rightPadding="5">
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{payerPayeeName}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="840" y="0" width="340" height="20" uuid="82a92004-d101-4665-b47d-824e09362808"/>
+					<box leftPadding="5" rightPadding="5">
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{debitAmount}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="1080" y="0" width="350" height="20" uuid="03412bd9-f96b-4a6f-b7f0-9366f2a29b32"/>
+					<box leftPadding="5" rightPadding="5">
+						<rightPen lineWidth="1.0" lineStyle="Solid"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{creditAmount}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="60">
+			<staticText>
+				<reportElement x="1300" y="0" width="30" height="20" uuid="f44a0cba-ccbb-45d7-83a7-b06ff76d001b"/>
+				<text><![CDATA[Page ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1330" y="0" width="100" height="20" uuid="cc478dd9-e151-4480-9f36-e23bb69f9289"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="60" height="20" uuid="e42a1b77-8bbf-45b7-b4c7-3ff07aeecdd8"/>
+				<text><![CDATA[Printed Date: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="60" y="0" width="220" height="20" uuid="81352b28-cd9b-4cbe-a731-014b3a31bc2c"/>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

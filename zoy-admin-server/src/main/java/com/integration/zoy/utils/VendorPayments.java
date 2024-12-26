@@ -20,13 +20,13 @@ public class VendorPayments {
 	private String pgAddress;
 	
 	@SerializedName("totalAmountFromTenants")
-	private BigDecimal totalAmountFromTenants;
+	private String totalAmountFromTenants;
 	
 	@SerializedName("amountPaidToOwner")
-	private BigDecimal amountPaidToOwner;
+	private String amountPaidToOwner;
 	
 	@SerializedName("zoyShare")
-	private BigDecimal zoyShare;
+	private String zoyShare;
 	
 	@SerializedName("transactionDate")
 	private Timestamp transactionDate;
@@ -57,24 +57,25 @@ public class VendorPayments {
 		this.pgName = pgName;
 	}
 
-	
-
-	public BigDecimal getTotalAmountFromTenants() {
+	public String getTotalAmountFromTenants() {
 		return totalAmountFromTenants;
 	}
 
-	public void setTotalAmountFromTenants(BigDecimal totalAmountFromTenants) {
+	public void setTotalAmountFromTenants(String totalAmountFromTenants) {
 		this.totalAmountFromTenants = totalAmountFromTenants;
 	}
 
-	public BigDecimal getAmountPaidToOwner() {
+	public String getAmountPaidToOwner() {
 		return amountPaidToOwner;
 	}
 
-	public void setAmountPaidToOwner(BigDecimal amountPaidToOwner) {
+	public void setAmountPaidToOwner(String amountPaidToOwner) {
 		this.amountPaidToOwner = amountPaidToOwner;
 	}
 
+	public void setZoyShare(String zoyShare) {
+		this.zoyShare = zoyShare;
+	}
 
 	public Timestamp getTransactionDate() {
 		return transactionDate;
@@ -108,12 +109,8 @@ public class VendorPayments {
 		this.pgAddress = pgAddress;
 	}
 
-	public BigDecimal getZoyShare() {
+	public String getZoyShare() {
 		return zoyShare;
-	}
-
-	public void setZoyShare(BigDecimal zoyShare) {
-		this.zoyShare = zoyShare;
 	}
 
 	public String getOwnerApprovalStatus() {
