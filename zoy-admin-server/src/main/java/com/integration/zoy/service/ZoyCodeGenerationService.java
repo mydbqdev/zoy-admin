@@ -39,7 +39,6 @@ public class ZoyCodeGenerationService {
 	            }
 	            return "ZOY@" +firstName+( hashtext.substring(0, 8).toUpperCase());
 	        } catch (NoSuchAlgorithmException e) {
-	           // throw new RuntimeException(e);
 	            new ZoyAdminApplicationException(e, "");
 	        }
 			return null;
