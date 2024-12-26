@@ -134,7 +134,11 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append(" AND LOWER(ud.user_personal_phone_num) LIKE LOWER(:tenantContactNum)");
 				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
 			}
-
+			
+			if (filterData.getTransactionNumber() != null && !filterData.getTransactionNumber().isEmpty()) {
+				queryBuilder.append(" AND LOWER(up.user_payment_bank_transaction_id) LIKE LOWER(:transactionNumber)");
+				parameters.put("transactionNumber", "%" + filterData.getTransactionNumber() + "%");
+			}
 
 			String sort = "up.user_payment_timestamp";  
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
@@ -235,7 +239,7 @@ public class AdminReportService implements AdminReportImpl{
 
 			if (filterData.getPayerName() != null && !filterData.getPayerName().isEmpty()) {
 				queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:userPersonalName)");
-				parameters.put("userPersonalName", "%" + filterData.getTenantName() + "%");
+				parameters.put("userPersonalName", "%" + filterData.getPayerName() + "%");
 			}
 			
 			 if (filterData.getPayerType() != null && !filterData.getPayerType().isEmpty()) {
@@ -246,6 +250,10 @@ public class AdminReportService implements AdminReportImpl{
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
 				queryBuilder.append(" AND LOWER(pgt.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
 				parameters.put("cityLocation", filterRequest.getCityLocation() + "%");
+			}
+			if (filterData.getTransactionNumber() != null && !filterData.getTransactionNumber().isEmpty()) {
+				queryBuilder.append(" AND LOWER(up.user_payment_bank_transaction_id) LIKE LOWER(:transactionNumber)");
+				parameters.put("transactionNumber", "%" + filterData.getTransactionNumber() + "%");
 			}
 			String sort = "up.user_payment_timestamp";  
 
@@ -335,6 +343,11 @@ public class AdminReportService implements AdminReportImpl{
 			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
 				queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:tenantName)");
 				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+			}
+			
+			if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
+				queryBuilder.append(" AND LOWER(bd.bed_name) LIKE LOWER(:bedNumber)");
+				parameters.put("bedNumber", "%" + filterData.getBedNumber() + "%");
 			}
 			
 			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
