@@ -27,4 +27,21 @@ public class ZoyCodeGenerationService {
         }
 		return null;
     }
+	
+	public String autoGeneratePassword(String firstName) {
+		 try {
+	            MessageDigest md = MessageDigest.getInstance("MD5");
+	            byte[] messageDigest = md.digest(firstName.getBytes());
+	            BigInteger no = new BigInteger(1, messageDigest);
+	            String hashtext = no.toString(16); 
+	            while (hashtext.length() < 32) {
+	                hashtext = "0" + hashtext; 
+	            }
+	            return "ZOY@" +firstName+( hashtext.substring(0, 8).toUpperCase());
+	        } catch (NoSuchAlgorithmException e) {
+	           // throw new RuntimeException(e);
+	            new ZoyAdminApplicationException(e, "");
+	        }
+			return null;
+	}
 }
