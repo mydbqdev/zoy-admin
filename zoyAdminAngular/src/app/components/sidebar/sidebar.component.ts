@@ -327,4 +327,12 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 		}
     this.activeSubNenuName = menuName;
 	}
+
+	setOwnerResetId(){
+		this.dataService.setOwenerId("");
+		this.dataService.setTenantId("");
+		this.dataService.setOwenerListFilter([]);
+		this.dataService.setOwenerListFilterTotal(0);
+		this.dataService.setOwenerListFilterParam(null);
+	}
 }
