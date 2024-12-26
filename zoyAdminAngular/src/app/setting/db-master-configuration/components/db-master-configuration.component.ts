@@ -11,6 +11,7 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { DbMasterConfigurationService } from '../services/db-master-configuration.service';
 import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetailsModel } from '../models/db-setting-models';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
 	selector: 'app-db-master-configuration',
@@ -18,7 +19,7 @@ import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetai
 	styleUrls: ['./db-master-configuration.component.css']
 })
 export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
-
+  submittedPicture:boolean=false;
 	public userNameSession: string = ""; 
 	errorMsg: any = "";
 	mySubscription: any;
@@ -36,7 +37,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   dbSettingDataModel :DbSettingDataModel =new DbSettingDataModel();
   columnHeaders = {} ;
   submitDataModel:DbSettingSubmitDataModel=new DbSettingSubmitDataModel();
-    
+  // imgeURL2:any="assets/images/NotAvailable.jpg";
     
   @ViewChild('closeModel') closeModel: ElementRef;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
@@ -100,6 +101,9 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   submitted:boolean= false ;
 
   changeSettingType(){
+    if("settingType == 'Ameneties' "){
+    this.resetChange();
+    }
     this.settingTypeDetails = this.settingTypeObjClmApiDetailsList.find(t=>t.type == this.settingType);
     this.selectedsettingColumns = this.settingTypeDetails.columns ;
     this.getDbSettingDetails() ;
@@ -175,7 +179,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.spinner.show();
       this.dbMasterConfigurationService.submitData(this.submitDataModel,this.isCreated,this.settingTypeDetails.api).subscribe(data => {
       this.closeModel.nativeElement.click(); 
-      this.getDbSettingDetails() 
+      this.getDbSettingDetails();
+      this.resetChange();
       this.spinner.hide();
       }, error => {
       this.spinner.hide();
@@ -303,6 +308,12 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
               }
               break;
           case 'Ameneties':
+            this.submittedPicture=true;
+            var form_data = new FormData();
+            if(this.formPicture.invalid){
+              return;
+              }
+		        form_data.append('image', this.fileData);
               if (this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '') {
                   return false;
               } else {
@@ -317,9 +328,76 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         return true;
       }
 
+      resetChange(){
+        this.previewUrl=false;
+        this.formPicture.reset();
+        this.fileUploadSizeStatus=false;
+        this.submittedPicture=false;
+        this.fileData = null;
+      }
 
-    
-	
+      formPicture = new FormGroup({
+        ImageInput : new FormControl('', [Validators.required]),
+        fileSource : new FormControl('', [Validators.required])
+        });
+   
+        fileData: File = null;
+        previewUrl:any = null;
+        fileUploadProgress: string = null;
+        uploadStatus:boolean=true;
+        fileUploadSize:any;
+        fileUploadSizeStatus:boolean=false;
+        fileWidth:number;
+        fileHeight:number;
+        imgeURL2: string = null;
+       onFileChanged(event) {
+        this.previewUrl=false;
+        if(event.target.files.length>0){
+          const file=event.target.files[0];
+          this.formPicture.patchValue({
+          fileSource:file
+          });
+          this.fileData = <File>event.target.files[0];
+          this.fileUploadSize=file.size/1024;
+          if (this.fileUploadSize <= 50) {
+            const img = new Image();
+            img.onload = () => {
+                this.fileWidth = img.width;
+                this.fileHeight = img.height;
+
+                if (this.fileWidth <= 75 && this.fileHeight <= 75) {
+                    this.fileUploadSizeStatus = false;
+                    this.preview();
+                } else {
+                    this.fileUploadSizeStatus = true;
+                    // alert('Image dimensions must be exactly 50px by 50px.');
+                }
+            };
+            img.src = URL.createObjectURL(file);
+        } else {
+            this.fileUploadSizeStatus = true;
+            // alert('File size must be 50 KB or less.');
+        }
+        }
+      }
+      preview() {
+        // Show preview 
+        var mimeType = this.fileData.type;
+        if (mimeType.match(/image\/*/) == null) {
+          return;
+        }
+        this.uploadStatus=false;
+        var reader = new FileReader();      
+        reader.readAsDataURL(this.fileData); 
+        reader.onload = (_event) => { 
+          this.previewUrl = reader.result; 
+          var img=new Image();
+          img.onload=()=>{
+            this.fileHeight=img.height;
+            this.fileWidth=img.width;
+          }
+        }
+      } 
 }
 
   
