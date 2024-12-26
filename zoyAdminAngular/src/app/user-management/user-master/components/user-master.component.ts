@@ -123,15 +123,8 @@ export class UserMasterComponent implements OnInit {
 		  userEmail: ['', [
 			Validators.required,
 			Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
-		  ]],
-		  password: ['', [
-			Validators.required,
-			Validators.minLength(8),
-			Validators.maxLength(16),
-			Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-		  ]],
-		  repeatPassword: ['', Validators.required]
-    }, { validator: this.passwordsMatch });
+		  ]]
+    });
   }
   ngOnDestroy() {
 		if (this.mySubscription) {
@@ -248,12 +241,7 @@ export class UserMasterComponent implements OnInit {
 });
 
 }
- 
-passwordsMatch(formGroup: FormGroup) {
-  const password = formGroup.get('password')?.value;
-  const repeatPassword = formGroup.get('repeatPassword')?.value;
-  return password === repeatPassword ? null : { passwordsMismatch: true };
-  }
+
   nameValidation(event: any, inputId: string) {
   const clipboardData = event.clipboardData || (window as any).clipboardData;
   const pastedText = clipboardData.getData('text/plain');
@@ -268,13 +256,6 @@ passwordsMatch(formGroup: FormGroup) {
     break;
   }
   }
-  
-  isPasswordVisible:boolean=false;
-
-  togglePasswordVisibility(){
-    this.isPasswordVisible=!this.isPasswordVisible;
-  }
-
   resetForm(isCreate:boolean) {
   this.submitted=false;
   this.createOrUpdate=isCreate;
@@ -284,9 +265,6 @@ passwordsMatch(formGroup: FormGroup) {
   submittUserDetails(){
     this.submitted=true;	
     if (this.form.invalid) {
-      return;
-      }
-      if (this.createOrUpdate && this.userReg.password !== this.userReg.repeatPassword) {
       return;
       }
     if(this.createOrUpdate){
@@ -354,8 +332,7 @@ passwordsMatch(formGroup: FormGroup) {
       this.spinner.hide();
       console.log("error.error",error)
       this.errorMsg = (error.error.error !=undefined?(error.error.error  +"."):"")
-      + (error.error.userEmail!=undefined?(error.error.userEmail+"."):"")
-      +(error.error.password!=undefined?(error.error.password  +"."):"");
+      + (error.error.userEmail!=undefined?(error.error.userEmail+"."):"");
       if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
 			 }else if(error.status==401){
@@ -419,12 +396,7 @@ oldRoles:any=[];
   this.selectedRoleIds.splice(0);
   this.oldRoles.splice(0);
   this.userReg = Object.assign(new UserDetails(),row)  ;
- 
-  // for temporary fixed added below two line
-  this.form.controls["password"].setValue("Zoyadmin$123");
-  this.form.controls["repeatPassword"].setValue("Zoyadmin$123");
-
-  this.selectedItems= this.userReg.roleModel;
+   this.selectedItems= this.userReg.roleModel;
   for(let role of this.userReg.roleModel){
      this.selectedRoleIds.push(role.id);
      this.oldRoles.push(role.id);
