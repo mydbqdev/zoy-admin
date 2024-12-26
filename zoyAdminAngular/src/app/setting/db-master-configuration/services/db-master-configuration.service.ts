@@ -126,6 +126,26 @@ export class DbMasterConfigurationService {
       }
   } 
 
+  public uploadPicture(data:any): Observable<any> {
+    const url = this.basePath + 'zoy_admin/uploadPicture'; 
+    return  this.httpclient.post<any>(
+      url,
+      data,
+      {
+          headers:ServiceHelper.filesHeaders(),
+         observe : 'body',
+         withCredentials:true
+      }
+  );
+  }
+
+  loadPicture():Observable<any>{
+    const url1=this.basePath +'zoy_admin/getProfilePicture';
+                 return this.httpclient.get<any>(
+                     url1,
+                     { responseType: 'blob' as 'json'}
+                 );
+  }
 
 
   private errorHandler(error: HttpErrorResponse) {

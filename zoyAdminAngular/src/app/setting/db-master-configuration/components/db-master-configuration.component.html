@@ -252,7 +252,7 @@
 
     <div *ngIf="settingType == 'Ameneties' ">
       <div  class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="dbSettingDataModel.ameneties_id">
-        <img [src]="imgeURL2">
+        <img [src]="imgeURL2" width="75px" height="75px"  alt="User Image">
       </div>
       <div class="form-group">
         <label for="ameneties_name">Ameneties Name:</label>
@@ -267,8 +267,8 @@
       <form [formGroup]="formPicture">
         <div class="form-group">
            <label for="uploadfile"> Upload Picture:</label> 
-           <input type="file" class="file-upload form-control" name="ImageInput"  id="ImageInput" formControlName="ImageInput"  accept="image/png, image/jpeg"  (change)="onFileChanged($event)" 
-              id="ameneties_upload_id" placeholder="Ameneties Image" required autocomplete="false" 
+           <input type="file" class="file-upload form-control" name="ImageInput"  id="ImageInput" formControlName="ImageInput"   accept="image/jpeg"  (change)="onFileChanged($event)" 
+              id="ameneties_upload_id" placeholder="Ameneties Image" required autocomplete="false"  
                [(ngModel)]="this.dbSettingDataModel.ameneties_upload" autocomplete="off"
                [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.ameneties_upload == null || this.dbSettingDataModel.ameneties_upload == '' )}" />
             <div *ngIf="submitted && (this.dbSettingDataModel.ameneties_upload == null || this.dbSettingDataModel.ameneties_upload == '' )" class="text-danger">
@@ -276,8 +276,14 @@
             </div>
         </div>
          <div *ngIf="fileUploadSizeStatus" style="color: red;">
-             Uploaded Size: {{ fileUploadSize }}KB , File should be maximum 50KB.
+             Uploaded Size: {{ fileUploadSize }}KB, File should be maximum 50KB.
         </div>
+        <div *ngIf="fileDimensionStatus" style="color: red;">
+          Dimensions must not exceed 75px x 75px.
+        </div>
+         <div *ngIf="invalidFileType" style="color: red;">
+          Invalid file type. Only JPG files are allowed.
+      </div>
         <div *ngIf="fileUploadProgress" style="color: green;">
            Upload progress: {{ fileUploadProgress }}
         </div>

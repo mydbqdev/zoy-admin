@@ -12,6 +12,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { DbMasterConfigurationService } from '../services/db-master-configuration.service';
 import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetailsModel } from '../models/db-setting-models';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ProfileService } from 'src/app/profile/service/profile-service';
 
 @Component({
 	selector: 'app-db-master-configuration',
@@ -37,10 +38,10 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   dbSettingDataModel :DbSettingDataModel =new DbSettingDataModel();
   columnHeaders = {} ;
   submitDataModel:DbSettingSubmitDataModel=new DbSettingSubmitDataModel();
-  // imgeURL2:any="assets/images/NotAvailable.jpg";
+  imgeURL2:any="assets/images/NotAvailable.jpg";
     
   @ViewChild('closeModel') closeModel: ElementRef;
-	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
+	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private profileService:ProfileService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,
     private dbMasterConfigurationService:DbMasterConfigurationService) {
     this.authService.checkLoginUserVlidaate();
@@ -89,7 +90,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		//	this.router.navigate(['/']);
 		//}
-      
+      this.loadPicture();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(4);
@@ -313,7 +314,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
             if(this.formPicture.invalid){
               return;
               }
-		        form_data.append('image', this.fileData);
+              form_data.append('image', this.fileData);
               if (this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '') {
                   return false;
               } else {
@@ -347,39 +348,49 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         uploadStatus:boolean=true;
         fileUploadSize:any;
         fileUploadSizeStatus:boolean=false;
+        fileDimensionStatus: boolean = false;
         fileWidth:number;
         fileHeight:number;
-        imgeURL2: string = null;
-       onFileChanged(event) {
-        this.previewUrl=false;
-        if(event.target.files.length>0){
-          const file=event.target.files[0];
-          this.formPicture.patchValue({
-          fileSource:file
-          });
-          this.fileData = <File>event.target.files[0];
-          this.fileUploadSize=file.size/1024;
-          if (this.fileUploadSize <= 50) {
-            const img = new Image();
-            img.onload = () => {
-                this.fileWidth = img.width;
-                this.fileHeight = img.height;
-
-                if (this.fileWidth <= 75 && this.fileHeight <= 75) {
-                    this.fileUploadSizeStatus = false;
-                    this.preview();
-                } else {
+        invalidFileType:boolean = false;
+      
+        onFileChanged(event: any) {
+            this.previewUrl = false;
+            this.fileUploadSizeStatus = false;
+            this.fileDimensionStatus = false;
+            this.invalidFileType = false;
+            if (event.target.files.length > 0) {
+                const file = event.target.files[0];
+                const allowedFileTypes = ['image/jpeg'];
+                // Validate file type
+                if (!allowedFileTypes.includes(file.type)) {
                     this.fileUploadSizeStatus = true;
-                    // alert('Image dimensions must be exactly 50px by 50px.');
+                    console.error('Only JPEG files are allowed.');
+                    return;
                 }
-            };
-            img.src = URL.createObjectURL(file);
-        } else {
-            this.fileUploadSizeStatus = true;
-            // alert('File size must be 50 KB or less.');
+                // Validate file size
+                this.fileUploadSize = file.size / 1024; 
+                if (this.fileUploadSize > 50) {
+                    this.fileUploadSizeStatus = true;
+                    console.error('File size exceeds 50 KB.');
+                    return;
+                }
+                // Check image dimensions
+                const img = new Image();
+                img.onload = () => {
+                    this.fileWidth = img.width;
+                    this.fileHeight = img.height;
+                    // Validate dimensions
+                    if (this.fileWidth > 75 || this.fileHeight > 75) {
+                        this.fileDimensionStatus = true;
+                        console.error('Image dimensions exceed 75x75 pixels.');
+                    } else {
+                        this.previewUrl = URL.createObjectURL(file);
+                    }
+                };
+                img.src = URL.createObjectURL(file);
+            }
         }
-        }
-      }
+        
       preview() {
         // Show preview 
         var mimeType = this.fileData.type;
@@ -398,6 +409,46 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
           }
         }
       } 
+
+      loadPicture(){
+        this.profileService.loadProfilePhoto().subscribe((data) => {
+         if(data && data.size!=0){ 
+          const reader =new FileReader();
+          reader.readAsDataURL(new Blob([data]));
+          reader.onload=(e)=>this.imgeURL2=e.target.result; 
+          }else{
+          this.imgeURL2="assets/images/NotAvailable.jpg";
+          }
+      
+        }, error => {
+          if(error.status == 0) {
+            this.notifyService.showError("Internal Server Error/Connection not established", "")
+          }else if(error.status==401){
+            console.error("Unauthorised");
+          }else if(error.status==403){
+            this.router.navigate(['/forbidden']);
+          }else if (error.error && error.error.message) {
+            this.errorMsg = error.error.message;
+            console.log("Error:" + this.errorMsg);
+            this.notifyService.showError(this.errorMsg, "");
+          } else {
+            if (error.status == 500 && error.statusText == "Internal Server Error") {
+            this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+            } else {
+            let str;
+            if (error.status == 400) {
+              str = error.error;
+            } else {
+              str = error.message;
+              str = str.substring(str.indexOf(":") + 1);
+            }
+            console.log("Error:" + str);
+            this.errorMsg = str;
+            }
+            if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+          }
+          });				
+        }
 }
 
   
