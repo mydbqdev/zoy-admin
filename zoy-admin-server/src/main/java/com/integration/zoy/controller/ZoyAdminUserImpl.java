@@ -276,10 +276,10 @@ public interface ZoyAdminUserImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PutMapping(value = "/zoy_admin/zoyAdminUserUnlock",
+	@PostMapping(value = "/zoy_admin/zoyAdminUserUnlock",
 	produces = { "application/json" },
 	consumes = { "application/json" })
-	ResponseEntity<String> zoyAdminUserUnlock(@RequestBody UnlockUserRequest request);
+	ResponseEntity<String> zoyAdminUserUnlock(@RequestBody AdminUserList request);
 	
 	@Operation(summary = "Get Admin User's who are lock", description = "Getting Admin User who's account is locked", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })

@@ -20,7 +20,28 @@ export class LockedUserService {
     private messageService: MessageService
   ) {}
 
+  public getLockedUserDetais(): Observable<any> {
+    const url = this.basePath + 'zoy_admin/userListlocked'; 
+    return  this.httpclient.get<any>(
+      url,
+      {
+          headers:ServiceHelper.buildHeaders(),
+         observe : 'body',
+         withCredentials:true
+      });
+  }
 
+  public doUnlock(data:any): Observable<any> {
+    const url = this.basePath + 'zoy_admin/zoyAdminUserUnlock'; 
+    return  this.httpclient.post<any>(
+      url,
+      data,
+      {
+          headers:ServiceHelper.buildHeaders(),
+         observe : 'body',
+         withCredentials:true
+      });
+  }
 
   private errorHandler(error: HttpErrorResponse) {
     return of(error.message || "server error");
