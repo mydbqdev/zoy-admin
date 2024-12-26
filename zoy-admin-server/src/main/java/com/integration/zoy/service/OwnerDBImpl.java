@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
+import com.integration.zoy.entity.ZoyPgAutoCancellationPeriod;
 import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgCancellationDetails;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
@@ -120,7 +121,9 @@ public interface OwnerDBImpl {
 	ZoyPgSecurityDepositDetails findZoySecurityDeposit() throws WebServiceException;
 	ZoyPgSecurityDepositDetails saveZoySecurityDepositLimits(ZoyPgSecurityDepositDetails group) throws WebServiceException;
 	ZoyPgSecurityDepositRefundRule findSecurityDepositRefundRuleById() throws WebServiceException;
+	ZoyPgAutoCancellationPeriod findAutoCancellationPeriodById() throws WebServiceException;
 	ZoyPgSecurityDepositRefundRule saveSecurityDepositRefundRule(ZoyPgSecurityDepositRefundRule rule)throws WebServiceException;
-    ZoyPgRoomDetails findRoomName(String roomId);
+	ZoyPgAutoCancellationPeriod saveAutoCancellationPeriod(ZoyPgAutoCancellationPeriod rule)throws WebServiceException;
+	ZoyPgRoomDetails findRoomName(String roomId);
     void deleteBeforeCancellation(String cancellationId);
 }

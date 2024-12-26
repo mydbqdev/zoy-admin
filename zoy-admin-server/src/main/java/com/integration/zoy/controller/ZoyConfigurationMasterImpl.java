@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
+import com.integration.zoy.model.ZoyPgAutoCancellationPeriodDto;
 import com.integration.zoy.model.ZoyShareDetails;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
 import com.integration.zoy.utils.ZoyOtherChargesDto;
@@ -146,5 +147,17 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/admin-configuration-details",
 	produces = { "application/json" })
 	ResponseEntity<String> getAllConfigurationDetails();
+	
+	@Operation(summary = "Admin Configration Auto Cancellation period  ", description = "Getting Admin Configration auto cancellation period", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/auto-cancellation-period",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyAdminCreateUpadateConfigAutoCancellationperiod(@RequestBody ZoyPgAutoCancellationPeriodDto  AutoCancellation);
+
 
 }
