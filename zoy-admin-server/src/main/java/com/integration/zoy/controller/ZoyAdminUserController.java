@@ -54,7 +54,6 @@ import com.integration.zoy.entity.AdminUsersLock;
 import com.integration.zoy.entity.AppRole;
 import com.integration.zoy.entity.RoleScreen;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
-import com.integration.zoy.model.AdminLockedUsers;
 import com.integration.zoy.model.AdminUserDetails;
 import com.integration.zoy.model.AdminUserUpdateDetails;
 import com.integration.zoy.model.ForgotPassword;
@@ -69,7 +68,6 @@ import com.integration.zoy.repository.AdminUserPasswordHistoryRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
-import com.integration.zoy.service.UnlockUserRequest;
 import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.utils.AdminAppRole;
@@ -1139,7 +1137,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 
 	@Override
-	public ResponseEntity<String> zoyAdminUserUnlock(UnlockUserRequest request) {
+	public ResponseEntity<String> zoyAdminUserUnlock(AdminUserList request) {
 		ResponseBody response = new ResponseBody();
 
 		try {
@@ -1180,15 +1178,16 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 			List<Object[]> lockedUsersList = userRepository.findLockedUsers();
 
-			List<AdminLockedUsers> adminuserslockedList = new ArrayList<>();
+			List<AdminUserList> adminuserslockedList = new ArrayList<>();
 
 			for (Object[] details : lockedUsersList) {
-				AdminLockedUsers lockedUsers = new AdminLockedUsers();
+				AdminUserList lockedUsers = new AdminUserList();
 
-				lockedUsers.setEmail(details[0] != null ? (String) details[0] : null);
-				lockedUsers.setUserName(details[1] != null ? (String) details[1] : null);
-				lockedUsers.setDesignation(details[2] != null ? (String) details[2] : null);
-				lockedUsers.setStatus(details[3] != null ? (String) details[3] : null);
+				lockedUsers.setUserEmail(details[0] != null ? (String) details[0] : null);
+				lockedUsers.setFirstName(details[1] != null ? (String) details[1] : null);
+				lockedUsers.setLastName(details[2] != null ? (String) details[2] : null);
+				lockedUsers.setDesignation(details[3] != null ? (String) details[3] : null);
+			//	lockedUsers.setStatus(details[3] != null ? (String) details[3] : null);
 
 				adminuserslockedList.add(lockedUsers);
 			}

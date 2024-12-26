@@ -18,7 +18,7 @@ public interface AdminUserLockRepository extends JpaRepository<AdminUsersLock, L
 
 	@Query(value = "SELECT \r\n"
 			+ "    a.username AS email,\r\n"
-			+ "    umd.first_name || ' ' || umd.last_name AS username,\r\n"
+			+ "    umd.first_name, umd.last_name AS username,\r\n"
 			+ "    umd.designation AS designation,\r\n"
 			+ "    'locked' AS status\r\n"
 			+ "FROM \r\n"

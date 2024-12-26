@@ -77,9 +77,10 @@
                                             </ng-container>       
                                             <ng-container matColumnDef="status">
                                                 <th mat-header-cell *matHeaderCellDef style="font-weight: 600;">
-                                                    STATUS
+                                                    
                                                 </th>
                                                 <td mat-cell data-label="status" *matCellDef="let element;">
+                                                    <button type="button" class="btn btn-primary-custom m-1" (click)="doUnlock(element)">Do Unlock</button>
                                                 </td>
                                             </ng-container>                  
                                             <ng-container matColumnDef="action">

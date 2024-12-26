@@ -16,6 +16,7 @@ import { UserDetails } from '../../user-master/models/register-details';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MenuService } from 'src/app/components/header/menu.service';
 import { PermissionApprovalService } from '../../permission-approval/service/permission-approval.service';
+import { LockedUserService } from '../service/locked-userl.service';
 
 @Component({
   selector: 'app-locked-user',
@@ -51,7 +52,7 @@ export class LockedUserComponent implements OnInit,AfterViewInit{
   isExpandSideBar:boolean=true;
   authorization:{ key: string; screen: string; order: number }[]=[];
   constructor(private route: ActivatedRoute, private router: Router, private userService: UserService,private notifyService:NotificationService,private menuService:MenuService,
-    private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService,private alertDialogService: AlertDialogService,private permissionService: PermissionApprovalService){
+    private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService,private alertDialogService: AlertDialogService,private lockedUserService: LockedUserService){
       this.authService.checkLoginUserVlidaate();
       this.userNameSession=this.userService.getUsername();
       if (this.userService.getUserinfo() != undefined) {
@@ -88,7 +89,7 @@ export class LockedUserComponent implements OnInit,AfterViewInit{
     //    this.router.navigate(['/']); 
     //    }
     // this.authService.checkLoginUserVlidaate();
-    this.getUserDetais();
+    this.getLockedUserDetais();
 
 }
 
@@ -98,10 +99,10 @@ ngAfterViewInit(){
   this.dataService.setHeaderName("Locked User");
 }
  
-getUserDetais(){
+getLockedUserDetais(){
    this.authService.checkLoginUserVlidaate();
    this.spinner.show();
-   this.permissionService.zoyAdminNotApprovedRoles().subscribe(data => {
+   this.lockedUserService.getLockedUserDetais().subscribe(data => {
   if(data !=null && data.length>0){
     this.ELEMENT_DATA = Object.assign([],data);
      this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
@@ -146,15 +147,62 @@ getUserDetais(){
  });
  
  }
-    announceSortChange(sortState: Sort): void {
-      this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
-      this.columnSortDirections[sortState.active] = sortState.direction;
-  
-        if (sortState.direction) {
-          this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-        } else {
-          this._liveAnnouncer.announce('Sorting cleared');
-        }
+
+ announceSortChange(sortState: Sort): void {
+  this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+  this.columnSortDirections[sortState.active] = sortState.direction;
+
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
     }
+}
+
+doUnlock(user:any){
+  this.authService.checkLoginUserVlidaate();
+  this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want to unlock the "'+user.firstName +' '+user.lastName+'" ?')
+  .then(
+    (confirmed) =>{
+     if(confirmed){
+  this.spinner.show();
+  this.lockedUserService.doUnlock(user).subscribe(data => {
+  this.getLockedUserDetais();
+    this.spinner.hide();
+ }, error => {
+  this.spinner.hide();
+  if(error.status == 0) {
+   this.notifyService.showError("Internal Server Error/Connection not established", "")
+  }else if(error.status==401){
+   console.error("Unauthorised");
+ }else if(error.status==403){
+    this.router.navigate(['/forbidden']);
+  }else if (error.error && error.error.message) {
+    this.errorMsg = error.error.message;
+    console.log("Error:" + this.errorMsg);
+    this.notifyService.showError(this.errorMsg, "");
+  } else {
+    if (error.status == 500 && error.statusText == "Internal Server Error") {
+      this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+    } else {
+      let str;
+      if (error.status == 400) {
+        str = error.error;
+      } else {
+        str = error.message;
+        str = str.substring(str.indexOf(":") + 1);
+      }
+      console.log("Error:" + str);
+      this.errorMsg = str;
+    }
+    if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+  }
+});
+
+   }
+  }).catch(
+    () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+    ); 
+  } 
    
 }
