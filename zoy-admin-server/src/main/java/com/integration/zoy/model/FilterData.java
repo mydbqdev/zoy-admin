@@ -36,8 +36,14 @@ public class FilterData {
 	@SerializedName("tenantContactNum")
 	String tenantContactNum;
 	
+	@SerializedName("transactionNumber")
+	String transactionNumber;
+	
 	@SerializedName("ownerEmail")
 	String ownerEmail;
+	
+	@SerializedName("bedNumber")
+	String bedNumber;
 
 	public void setTenantName(String tenantName) {
 		this.tenantName = tenantName;
@@ -117,6 +123,18 @@ public class FilterData {
 	}
 	public void setOwnerEmail(String ownerEmail) {
 		this.ownerEmail = ownerEmail;
+	}
+	public String getTransactionNumber() {
+		return transactionNumber;
+	}
+	public void setTransactionNumber(String transactionNumber) {
+		this.transactionNumber = transactionNumber;
+	}
+	public String getBedNumber() {
+		return bedNumber;
+	}
+	public void setBedNumber(String bedNumber) {
+		this.bedNumber = bedNumber;
 	}
 	
 	
