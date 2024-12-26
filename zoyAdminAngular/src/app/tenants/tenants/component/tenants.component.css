@@ -93,3 +93,8 @@
   border-radius: 8px;
 }
 
+tr.mat-mdc-row:hover {
+  background-color: rgb(247, 212, 241);
+  cursor: pointer;
+}
+
