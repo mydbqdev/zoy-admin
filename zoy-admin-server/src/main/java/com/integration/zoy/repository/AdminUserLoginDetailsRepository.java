@@ -25,4 +25,22 @@ public interface AdminUserLoginDetailsRepository extends JpaRepository<AdminUser
 	@Modifying
 	@Query(value = "UPDATE user_master SET status = :status WHERE user_email = :user_email", nativeQuery = true)
 	void doUserActiveteDeactiveteInuserMaster(String user_email , boolean status);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE pgadmin.user_login_details SET is_lock = true\r\n"
+			+ "WHERE user_email = :email", nativeQuery = true)
+	void lockUserByEmail(String email);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE pgadmin.user_login_details SET is_lock = false WHERE user_email = :email  AND is_active = true", nativeQuery = true)
+	void unLockUserByEmail(String email);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE pgadmin.admin_users_lock SET attempt_sequence = 0 WHERE user_email = :email", nativeQuery = true)
+	void resetAttemptSequence(String email);
+	
+	
 }

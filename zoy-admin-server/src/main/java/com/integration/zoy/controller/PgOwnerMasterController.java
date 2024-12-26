@@ -142,6 +142,13 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				}
 			}
 
+			String phoneNumber= pgOwnerMaterRepository.findPhoneNumber(model.getMobileNo());
+			
+			if (phoneNumber != null && !phoneNumber.isEmpty()) {
+				response.setStatus(HttpStatus.CONFLICT.value());
+				response.setMessage("Phone number " + phoneNumber + " already exists");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+			}	
 			PgOwnerMaster ownerData = new PgOwnerMaster();
 			String zoyCode = zoyCodeGenerationService.generateZoyCode(model.getEmailId());
 			ownerData.setZoyCode(zoyCode);
@@ -535,7 +542,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	        profilePic = adminUserMasterRepository.findProfilePhoto(userEmail);  
 
 	        if (profilePic == null || profilePic.length == 0) {
-	            log.error("Profile picture not found for user API:/zoy_admin/getProfilePicture.getProfilePicture", userEmail);
+	            log.info("Profile picture not found for user API:/zoy_admin/getProfilePicture.getProfilePicture", userEmail);
 	            return profilePic; 
 	        }
 	        

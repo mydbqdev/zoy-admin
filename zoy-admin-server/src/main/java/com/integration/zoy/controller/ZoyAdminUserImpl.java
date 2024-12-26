@@ -16,6 +16,7 @@ import com.integration.zoy.model.LoginDetails;
 import com.integration.zoy.model.RoleDetails;
 import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
+import com.integration.zoy.service.UnlockUserRequest;
 import com.integration.zoy.utils.AdminUserList;
 import com.integration.zoy.utils.ChangePassWord;
 import com.integration.zoy.utils.OtpVerification;
@@ -267,4 +268,29 @@ public interface ZoyAdminUserImpl {
 	consumes = { "application/json"})
 	ResponseEntity<String> doUserActiveteDeactivete(@RequestBody AdminUserList details);
 	
+	
+	@Operation(summary = "Unlock Admin User", description = "Unlock Admin User after being approved", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PutMapping(value = "/zoy_admin/zoyAdminUserUnlock",
+	produces = { "application/json" },
+	consumes = { "application/json" })
+	ResponseEntity<String> zoyAdminUserUnlock(@RequestBody UnlockUserRequest request);
+	
+	@Operation(summary = "Get Admin User's who are lock", description = "Getting Admin User who's account is locked", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/userListlocked",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyAdminlockedUsers();
+	
+
 }

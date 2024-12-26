@@ -54,4 +54,5 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_MASTER_CONFIG_CREATE="MASTER_CONFIGURATION_CREATE";
 	public static final String ZOY_ADMIN_MASTER_CONFIG_UPDATE="MASTER_CONFIGURATION_UPDATE";
 	public static final String ZOY_ADMIN_MASTER_CONFIG_DELETE="MASTER_CONFIGURATION_DELETE";
+	public static final String ZOY_ADMIN_USER_UNLOCK = "USER_UNLOCK";
 }
