@@ -37,7 +37,6 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   dbSettingDataModel :DbSettingDataModel =new DbSettingDataModel();
   columnHeaders = {} ;
   submitDataModel:DbSettingSubmitDataModel=new DbSettingSubmitDataModel();
-  // imgeURL2:any="assets/images/NotAvailable.jpg";
     
   @ViewChild('closeModel') closeModel: ElementRef;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
@@ -155,10 +154,13 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.submitted = false;
       this.isCreated = true;
       this.dbSettingDataModel = new DbSettingDataModel();
+      this.previewUrl=false;
     }
     getElement(row:any){
       this.submitted = false;
       this.isCreated = false;
+      this.previewUrl=false;
+      this.imgeURL2=null;
       const data =  JSON.parse(JSON.stringify(row));
       this.dbSettingDataModel = Object.assign(new DbSettingDataModel(),data);
   
@@ -173,11 +175,18 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     }  
     submitData(){
       this.submitted = true;
-
+      this.withPhoto=false;
      if(this.validation()){      
       this.authService.checkLoginUserVlidaate();
       this.spinner.show();
-      this.dbMasterConfigurationService.submitData(this.submitDataModel,this.isCreated,this.settingTypeDetails.api).subscribe(data => {
+      var form_data = new FormData();
+      if(this.settingTypeDetails.api=='zoy_admin/ameneties' && this.fileData!=null){
+        this.withPhoto=true;     
+        form_data.append('image', this.fileData);
+        form_data.append('ameneties', this.submitDataModel.ameneties);
+        form_data.append('id', this.submitDataModel.id);
+      }
+      this.dbMasterConfigurationService.submitData(this.submitDataModel,this.isCreated,this.settingTypeDetails.api,form_data,this.withPhoto).subscribe(data => {
       this.closeModel.nativeElement.click(); 
       this.getDbSettingDetails();
       this.resetChange();
@@ -222,7 +231,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     }
     return true;
   }
-      
+   
+   withPhoto:boolean=false;
       validation():boolean{
         switch (this.settingType) {
           case 'Share Type':
@@ -308,14 +318,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
               }
               break;
           case 'Ameneties':
-            this.submittedPicture=true;
-            var form_data = new FormData();
-            if(this.formPicture.invalid){
-              return;
-              }
-		        form_data.append('image', this.fileData);
-              if (this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '') {
-                  return false;
+              if (this.fileUploadRatioStatus || this.fileUploadSizeStatus || this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '' || (!this.isCreated && this.imgeURL2==null) || (this.isCreated && (this.dbSettingDataModel.ameneties_upload==null || this.dbSettingDataModel.ameneties_upload==''))) {
+                return false;
               } else {
                   this.submitDataModel.id = this.dbSettingDataModel?.ameneties_id;
                   this.submitDataModel.ameneties = this.dbSettingDataModel.ameneties_name;
@@ -332,13 +336,14 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         this.previewUrl=false;
         this.formPicture.reset();
         this.fileUploadSizeStatus=false;
-        this.submittedPicture=false;
+        this.fileUploadRatioStatus=false;
+        this.submitted=false;
         this.fileData = null;
       }
 
       formPicture = new FormGroup({
-        ImageInput : new FormControl('', [Validators.required]),
-        fileSource : new FormControl('', [Validators.required])
+        ImageInput : new FormControl(''),
+        fileSource : new FormControl('')
         });
    
         fileData: File = null;
@@ -347,12 +352,16 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         uploadStatus:boolean=true;
         fileUploadSize:any;
         fileUploadSizeStatus:boolean=false;
+        fileUploadRatioStatus:boolean=false;
         fileWidth:number;
         fileHeight:number;
         imgeURL2: string = null;
        onFileChanged(event) {
         this.previewUrl=false;
         if(event.target.files.length>0){
+          if(!this.isCreated && this.imgeURL2==null){
+            this.imgeURL2='';
+          }
           const file=event.target.files[0];
           this.formPicture.patchValue({
           fileSource:file
@@ -366,18 +375,25 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
                 this.fileHeight = img.height;
 
                 if (this.fileWidth <= 75 && this.fileHeight <= 75) {
+                    this.fileUploadRatioStatus = false;
                     this.fileUploadSizeStatus = false;
                     this.preview();
                 } else {
-                    this.fileUploadSizeStatus = true;
+                    this.fileUploadRatioStatus = true;
+                    this.fileUploadSizeStatus = false;
                     // alert('Image dimensions must be exactly 50px by 50px.');
                 }
             };
             img.src = URL.createObjectURL(file);
         } else {
             this.fileUploadSizeStatus = true;
+            this.fileUploadRatioStatus = false;
             // alert('File size must be 50 KB or less.');
         }
+        }else{
+          if(!this.isCreated){
+            this.imgeURL2=null;
+          }
         }
       }
       preview() {
