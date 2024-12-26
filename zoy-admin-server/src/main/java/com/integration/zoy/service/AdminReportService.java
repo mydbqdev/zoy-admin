@@ -185,23 +185,22 @@ public class AdminReportService implements AdminReportImpl{
 			List<UserPaymentDTO> userPaymentDTOs = result.stream().map(row -> {
 			    UserPaymentDTO dto = new UserPaymentDTO();
 			    dto.setTransactionDate((Timestamp) row[0]); 
-			    dto.setTransactionNumber(String.valueOf(row[1]));
-			    dto.setTransactionStatus(String.valueOf(row[2]));
+			    dto.setTransactionNumber(row[1] != null ? (String) row[1] : "");
+			    dto.setTransactionStatus(row[2] != null ? (String) row[2] : "");
 			    BigDecimal payableAmount = (BigDecimal) row[3] != null ? (BigDecimal) row[3] : BigDecimal.ZERO;  
 			    BigDecimal gst = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;  
 			    dto.setDueAmount(rupeeSymbol+numberFormat.format(filterCount));
 			    dto.setGstAmount(rupeeSymbol+numberFormat.format(gst));
-			    dto.setUserPersonalName(String.valueOf(row[5]));
-			    dto.setUserPgPropertyName(String.valueOf(row[6]));
-			    dto.setRoomBedNumber(String.valueOf(row[7]));
+			    dto.setUserPersonalName(row[5] != null ? (String) row[5] : ""); 
+			    dto.setUserPgPropertyName(row[6] != null ? (String) row[6] : "");  
+			    dto.setRoomBedNumber(row[7] != null ? (String) row[7] : ""); 
 			    dto.setTotalAmount(rupeeSymbol+numberFormat.format(payableAmount.add(gst)));  
-			    dto.setCategory(String.valueOf(row[8]));
-			    dto.setPaymentMode(String.valueOf(row[9]));
-			    dto.setPropertyHouseArea(String.valueOf(row[11]));
-			    dto.setTenantContactNum(String.valueOf(row[12]));
+			    dto.setCategory(row[8] != null ? (String) row[8] : "");  
+			    dto.setPaymentMode(row[9] != null ? (String) row[9] : ""); 
+			    dto.setPropertyHouseArea(row[11] != null ? (String) row[11] : "");  
+			    dto.setTenantContactNum(row[12] != null ? (String) row[12] : "");
 			    return dto;
 			}).collect(Collectors.toList());
-
 			return new CommonResponseDTO<>(userPaymentDTOs, filterCount);
 		}catch (Exception e) {
 			new ZoyAdminApplicationException(e, "");
@@ -283,9 +282,9 @@ public class AdminReportService implements AdminReportImpl{
 			List<ConsilidatedFinanceDetails> consolidatedFinanceDTOs = result.stream().map(row -> {
 				ConsilidatedFinanceDetails dto = new ConsilidatedFinanceDetails();
 				dto.setUserPaymentTimestamp((Timestamp) row[0]);
-				dto.setUserPaymentBankTransactionId(String.valueOf(row[1]));
-				dto.setPayerPayeeType(String.valueOf(row[2]));
-				dto.setPayerPayeeName(String.valueOf(row[3]));
+				dto.setUserPaymentBankTransactionId(row[1] != null ? (String) row[1] : "");
+				dto.setPayerPayeeType(row[2] != null ? (String) row[2] : "");
+				dto.setPayerPayeeName(row[3] != null ? (String) row[3] : "");
 				BigDecimal payableAmount = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;
 				BigDecimal gst = (BigDecimal) row[5] != null ? (BigDecimal) row[5] : BigDecimal.ZERO;
 				BigDecimal totalAmount = payableAmount.add(gst);
@@ -390,9 +389,9 @@ public class AdminReportService implements AdminReportImpl{
 			List<TenentDues> tenentDuesDto = results.stream().map(row -> {
 			    TenentDues dto = new TenentDues();
 			    
-			    boolean isPresent = userPaymentDueRepository.existsByUserMoneyDueId(String.valueOf(row[6]));
+			    boolean isPresent = userPaymentDueRepository.existsByUserMoneyDueId(row[6] != null ? (String) row[6] : "");
 			    if (isPresent) {
-			        String userPaymentId = userPaymentDueRepository.findUserPaymentIdByUserMoneyDueId(String.valueOf(row[6]));
+			        String userPaymentId = userPaymentDueRepository.findUserPaymentIdByUserMoneyDueId(row[6] != null ? (String) row[6] : "");
 			        BigDecimal payableAmount = userPaymentRepository.findUserPaymentPayableAmountByUserPaymentId(userPaymentId);
 			        
 			        if (((BigDecimal) row[0]).subtract(payableAmount).compareTo(BigDecimal.ZERO) > 0) {
@@ -404,11 +403,11 @@ public class AdminReportService implements AdminReportImpl{
 			        dto.setPendingAmount(rupeeSymbol+numberFormat.format((BigDecimal) row[0]));
 			    }
 			    dto.setPendingDueDate((Timestamp) row[1]);
-			    dto.setUserPersonalName(String.valueOf(row[2]));
-			    dto.setUserPgPropertyName(String.valueOf(row[3]));
-			    dto.setUserPgPropertyAddress(String.valueOf(row[4])); 
-			    dto.setBedNumber(String.valueOf(row[5])); 
-			    dto.setTenantMobileNum(String.valueOf(row[8]));
+			    dto.setUserPersonalName(row[2] != null ? (String) row[2] : "");
+			    dto.setUserPgPropertyName(row[3] != null ? (String) row[3] : "");
+			    dto.setUserPgPropertyAddress(row[4] != null ? (String) row[4] : ""); 
+			    dto.setBedNumber(row[5] != null ? (String) row[5] : ""); 
+			    dto.setTenantMobileNum(row[8] != null ? (String) row[8] : "");
 			    
 			    return dto;
 			}).collect(Collectors.toList());
@@ -520,14 +519,14 @@ public class AdminReportService implements AdminReportImpl{
 			List<Object[]> results = query.getResultList();
 			List<VendorPayments> vendorPaymentsDto = results.stream().map(row -> {
 			    VendorPayments dto = new VendorPayments();
-			    dto.setOwnerName(String.valueOf(row[0]));  
-			    dto.setPgName(String.valueOf(row[1]));    
+			    dto.setOwnerName(row[0] != null ? (String) row[0] : "");  
+			    dto.setPgName(row[1] != null ? (String) row[1] : "");    
 			    dto.setTotalAmountFromTenants(rupeeSymbol+numberFormat.format((BigDecimal) row[2] != null ? (BigDecimal) row[2] : BigDecimal.ZERO)); 
 			    dto.setTransactionDate((Timestamp) row[3]);  
-			    dto.setTransactionNumber(String.valueOf(row[4]));  
-			    dto.setPaymentStatus(String.valueOf(row[5]));      
-			    dto.setPgAddress(String.valueOf(row[7]));  
-			    dto.setOwnerEmail(String.valueOf(row[8]));  
+			    dto.setTransactionNumber(row[4] != null ? (String) row[4] : "");  
+			    dto.setPaymentStatus(row[5] != null ? (String) row[5] : "");      
+			    dto.setPgAddress(row[7] != null ? (String) row[7] : "");  
+			    dto.setOwnerEmail(row[8] != null ? (String) row[8] : "");  
 			    dto.setAmountPaidToOwner(rupeeSymbol+numberFormat.format(BigDecimal.valueOf(0)));  
 			    dto.setZoyShare(rupeeSymbol+numberFormat.format(BigDecimal.valueOf(0)));  
 			    dto.setOwnerApprovalStatus(null);
