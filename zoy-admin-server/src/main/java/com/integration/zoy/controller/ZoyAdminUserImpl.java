@@ -16,7 +16,6 @@ import com.integration.zoy.model.LoginDetails;
 import com.integration.zoy.model.RoleDetails;
 import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
-import com.integration.zoy.service.UnlockUserRequest;
 import com.integration.zoy.utils.AdminUserList;
 import com.integration.zoy.utils.ChangePassWord;
 import com.integration.zoy.utils.OtpVerification;
