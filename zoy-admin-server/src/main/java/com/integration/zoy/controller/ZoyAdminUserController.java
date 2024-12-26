@@ -173,17 +173,17 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	        }
 
 	        if (userLock.getLockCount() == 2) {
-	            response.setStatus(HttpStatus.FORBIDDEN.value());
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
 	            response.setMessage("Your account has been permanently locked. Please contact Admin Support.");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.FORBIDDEN);
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	        }
 	        
 	        if (userLock.getLockCount() == 1 && userLock.getAttemptSequence()==0) {
 	            if (userLock.getLockTime() != null &&
 	                userLock.getLockTime().toLocalDateTime().isAfter(LocalDateTime.now().minusMinutes(15))) {
-	                response.setStatus(HttpStatus.FORBIDDEN.value());
+	                response.setStatus(HttpStatus.BAD_REQUEST.value());
 	                response.setMessage("Your account is locked. It will be unlocked automatically after 15 minutes.");
-	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.FORBIDDEN);
+	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	            } else {
 	                userLock.setAttemptSequence(0);
 	                adminUserLoginDetailsRepository.unLockUserByEmail(details.getEmail());
@@ -248,7 +248,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	                userLock.setLockCount(2); // Permanently lock account
 	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
 	                adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
-	                response.setStatus(HttpStatus.FORBIDDEN.value());
+	                response.setStatus(HttpStatus.BAD_REQUEST.value());
 	                response.setMessage("Your account has been permanently locked. Please contact Admin Support.");
 	            }
 
