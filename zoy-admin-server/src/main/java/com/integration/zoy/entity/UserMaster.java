@@ -1,16 +1,12 @@
 package com.integration.zoy.entity;
 
-import java.sql.Timestamp;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "user_master", schema = "pgusers")
@@ -40,8 +36,11 @@ public class UserMaster {
     @Column(name = "user_last_name")
     private String userLastName;
 
-    @Column(name = "user_notification_mode")
-    private Integer userNotificationMode;
+    @Column(name = "user_ekyc_isekycverified")
+    private Boolean userEkycIsEkycVerified;
+    
+    @Column(name = "user_ekyc_isvideo_verified")
+    private Boolean userEkycIsVideoVerified;
 
     @Column(name = "user_created_at")
     @CreationTimestamp
@@ -53,9 +52,6 @@ public class UserMaster {
     
     @Column(name = "user_gender")
     private String userGender;
-    
-    @Column(name = "user_ekyc_isekycverified")
-    private Boolean userEkycIsEkycVerified;
 
     
     public String getUserId() {
@@ -114,15 +110,15 @@ public class UserMaster {
         this.userLastName = userLastName;
     }
 
-    public Integer getUserNotificationMode() {
-        return userNotificationMode;
-    }
+	public Boolean getUserEkycIsEkycVerified() {
+		return userEkycIsEkycVerified;
+	}
 
-    public void setUserNotificationMode(Integer userNotificationMode) {
-        this.userNotificationMode = userNotificationMode;
-    }
+	public void setUserEkycIsEkycVerified(Boolean userEkycIsEkycVerified) {
+		this.userEkycIsEkycVerified = userEkycIsEkycVerified;
+	}
 
-    public Timestamp getUserCreatedAt() {
+	public Timestamp getUserCreatedAt() {
         return userCreatedAt;
     }
 
@@ -146,22 +142,25 @@ public class UserMaster {
 		this.userGender = userGender;
 	}
 
-	public Boolean getUserEkycIsEkycVerified() {
-		return userEkycIsEkycVerified;
+	public Boolean getUserEkycIsVideoVerified() {
+		return userEkycIsVideoVerified;
 	}
 
-	public void setUserEkycIsEkycVerified(Boolean userEkycIsEkycVerified) {
-		this.userEkycIsEkycVerified = userEkycIsEkycVerified;
+	public void setUserEkycIsVideoVerified(Boolean userEkycIsVideoVerified) {
+		this.userEkycIsVideoVerified = userEkycIsVideoVerified;
 	}
 
 	@Override
 	public String toString() {
 		return "UserMaster [userId=" + userId + ", userMobile=" + userMobile + ", userEmail=" + userEmail + ", userPin="
 				+ userPin + ", userIdEnc=" + userIdEnc + ", userFirstName=" + userFirstName + ", userLastName="
-				+ userLastName + ", userNotificationMode=" + userNotificationMode + ", userCreatedAt=" + userCreatedAt
-				+ ", userModifiedAt=" + userModifiedAt + ", userGender=" + userGender + ", userEkycIsEkycVerified="
-				+ userEkycIsEkycVerified + "]";
+				+ userLastName + ", userEkycIsEkycVerified=" + userEkycIsEkycVerified + ", userEkycIsVideoVerified="
+				+ userEkycIsVideoVerified + ", userCreatedAt=" + userCreatedAt + ", userModifiedAt=" + userModifiedAt
+				+ ", userGender=" + userGender + "]";
 	}
-    
-    
+
+	
+
+	
+
 }
