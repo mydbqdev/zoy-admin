@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -66,6 +67,7 @@ import com.integration.zoy.model.UserNameDTO;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.UserDBImpl;
+import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.DueMaster;
@@ -109,7 +111,13 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
-
+	
+	@Autowired
+	ZoyS3Service zoyS3Service;
+	
+	@Value("${app.minio.Amenities.photos.bucket.name}")
+	private String amenitiesPhotoBucketName;
+	
 	@Override
 	public ResponseEntity<String> zoyAdminAmenities() {
 		ResponseBody response=new ResponseBody();
@@ -129,7 +137,16 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		ResponseBody response=new ResponseBody();
 		try {
 			ZoyPgAmenetiesMaster zoyPgAmenetiesMaster=new ZoyPgAmenetiesMaster();
+
+			if (amenetie.getImage() == null || amenetie.getImage().isEmpty()) { 
+				response.setMessage("No image is provided");
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST); 
+			}
+			
+			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,zoyPgAmenetiesMaster.getAmenetiesId(),amenetie.getImage());
 			zoyPgAmenetiesMaster.setAmenetiesName(amenetie.getAmeneties());
+			zoyPgAmenetiesMaster.setAmenetiesImage(imageUrl);		
 			ZoyPgAmenetiesMaster saved=ownerDBImpl.createAmeneties(zoyPgAmenetiesMaster);
 			
 			//audit history here
@@ -173,6 +190,45 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	}
 
 	//Due Factor
+	@Override
+	public ResponseEntity<String> zoyAdminAmenitiesUpdate(AmenetiesId amenetie) {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        ZoyPgAmenetiesMaster zoyPgAmenetiesMaster = ownerDBImpl.findAmeneties(amenetie.getId());
+	        
+	        if (zoyPgAmenetiesMaster != null) {
+	            final String oldAmenities = zoyPgAmenetiesMaster.getAmenetiesName();
+	            final String oldImage = zoyPgAmenetiesMaster.getAmenetiesImage();
+
+	            zoyPgAmenetiesMaster.setAmenetiesName(amenetie.getAmeneties());
+
+	            if (amenetie.getAmenetiesImage() != null && !amenetie.getAmenetiesImage().isEmpty()) {
+	                String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName, zoyPgAmenetiesMaster.getAmenetiesId(), amenetie.getAmenetiesImage());
+	                zoyPgAmenetiesMaster.setAmenetiesImage(imageUrl);
+	            }
+
+	            ZoyPgAmenetiesMaster updated = ownerDBImpl.createAmeneties(zoyPgAmenetiesMaster);
+
+	            String historyContent = " has updated the Amenities from " + oldAmenities + " to " + amenetie.getAmeneties();
+	            if (amenetie.getAmenetiesImage() != null && !amenetie.getAmenetiesImage().isEmpty()) {
+	                historyContent += ", Image updated from " + oldImage + " to " + amenetie.getAmenetiesImage();
+	            }
+	            auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
+
+	            return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
+	        } else {
+	            response.setStatus(HttpStatus.NOT_FOUND.value());
+	            response.setMessage("No Ameneties found for the given Id " + amenetie.getId());
+	            return new ResponseEntity<>(gson2.toJson(response), HttpStatus.OK);
+	        }
+	    } catch (Exception e) {
+	        log.error("Error updating ameneties details API:/zoy_admin/amenetiesUpdate.zoyAdminAmenitiesUpdate ", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+
 	@Override
 	public ResponseEntity<String> zoyAdminFactor() {
 		ResponseBody response=new ResponseBody();

@@ -3,9 +3,12 @@ package com.integration.zoy.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
@@ -63,8 +66,8 @@ public interface ZoyAdminMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/ameneties",
 	produces = { "application/json" },
-	consumes = { "application/json" })
-	ResponseEntity<String> zoyAdminAmenitiesPost(@RequestBody Amenetie amenetie);
+	consumes = { "multipart/form-data" })
+	ResponseEntity<String> zoyAdminAmenitiesPost(@ModelAttribute Amenetie amenetie);
 
 	@Operation(summary = "Put Ameneties", description = "Updating Ameneties", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
@@ -78,6 +81,18 @@ public interface ZoyAdminMasterImpl {
 	consumes = { "application/json" })
 	ResponseEntity<String> zoyAdminAmenitiesPut(@RequestBody AmenetiesId amenetie);
 
+	@Operation(summary = "Update Ameneties", description = "Updating Ameneties with image", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/amenetiesUpdate",
+	produces = { "application/json" },
+	consumes = { "multipart/form-data" })
+	ResponseEntity<String> zoyAdminAmenitiesUpdate(@ModelAttribute AmenetiesId amenetie);
+	
 	//Due Factor
 	@Operation(summary = "Get Due Factor", description = "Getting Due Factor", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })

@@ -151,130 +151,129 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 	@Override
 	public ResponseEntity<String> zoyAdminUserLogin(LoginDetails details) {
-	    ResponseBody response = new ResponseBody();
-	    try {
-	        AdminUserLoginDetails loginDetails = adminDBImpl.findByEmail(details.getEmail());
+		ResponseBody response = new ResponseBody();
+		try {
+			AdminUserLoginDetails loginDetails = adminDBImpl.findByEmail(details.getEmail());
 
-	        if (loginDetails == null) {
-	            response.setStatus(HttpStatus.NOT_FOUND.value());
-	            response.setMessage("User email not found");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
-	        }
+			if (loginDetails == null) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("User email not found");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+			}
+			if (!loginDetails.getIsActive()) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("Your account has been deactivated. Contact support for assistance.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+			}
 
-	        if (!loginDetails.getIsActive()) {
-	            response.setStatus(HttpStatus.NOT_FOUND.value());
-	            response.setMessage("Your account has been deactivated. Contact support for assistance.");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
-	        }
-	        AdminUsersLock userLock = userRepository.findByUsername(details.getEmail());
+			AdminUsersLock userLock = userRepository.findByUsername(details.getEmail());
+			if (userLock != null) {
+				if (userLock.getLockCount() == 1 && userLock.getAttemptSequence() == 0) {
+					if (userLock.getLockTime() != null
+							&& userLock.getLockTime().toLocalDateTime().isAfter(LocalDateTime.now().minusMinutes(15))) {
+						response.setStatus(HttpStatus.BAD_REQUEST.value());
+						response.setMessage(
+								"Your account is locked. It will be unlocked automatically after 15 minutes.");
+						return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+					} else {
+						userLock.setAttemptSequence(0);
+						adminUserLoginDetailsRepository.unLockUserByEmail(details.getEmail());
+						userRepository.save(userLock);
+					}
+				}
+			}
 
-	        if (userLock == null) {
-	            userLock = new AdminUsersLock();
-	            userLock.setUsername(details.getEmail());
-	            userLock.setAttemptSequence(0);
-	            userLock.setLockCount(0);
-	            userLock.setLockTime(null);
-	        }
+			String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword());
+			String decryptedLoginPassword = passwordDecoder.decryptedText(details.getPassword());
 
-	        if (userLock.getLockCount() == 2) {
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setMessage("Your account has been permanently locked. Please contact Admin Support.");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        }
-	        
-	        if (userLock.getLockCount() == 1 && userLock.getAttemptSequence()==0) {
-	            if (userLock.getLockTime() != null &&
-	                userLock.getLockTime().toLocalDateTime().isAfter(LocalDateTime.now().minusMinutes(15))) {
-	                response.setStatus(HttpStatus.BAD_REQUEST.value());
-	                response.setMessage("Your account is locked. It will be unlocked automatically after 15 minutes.");
-	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	            } else {
-	                userLock.setAttemptSequence(0);
-	                adminUserLoginDetailsRepository.unLockUserByEmail(details.getEmail());
-	                userRepository.save(userLock);
-	            }
-	        }
-	        
-	        String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword());
-	        String decryptedLoginPassword = passwordDecoder.decryptedText(details.getPassword());
+			boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
 
-	        boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
+			if (isPasswordMatch) {
+				Authentication authentication = authenticationManager.authenticate(
+						new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
+				String token = jwtUtil.generateToken(authentication);
+				userRepository.deleteByUsername(details.getEmail());
+				response.setStatus(HttpStatus.OK.value());
+				response.setEmail(details.getEmail());
+				response.setToken(token);
 
-	        if (isPasswordMatch) {
-	            Authentication authentication = authenticationManager.authenticate(
-	                new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
-	            String token = jwtUtil.generateToken(authentication);
+				auditHistoryUtilities.auditForUserLoginLogout(loginDetails.getUserEmail(), true);
 
-	            userLock.setAttemptSequence(0);
-	            userLock.setLockCount(0);
-	            userLock.setLockTime(null);
-	            userRepository.save(userLock);
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
 
-	            response.setStatus(HttpStatus.OK.value());
-	            response.setEmail(details.getEmail());
-	            response.setToken(token);
+				if (userLock == null) {
+					userLock = new AdminUsersLock();
+					userLock.setUsername(details.getEmail());
+					userLock.setAttemptSequence(0);
+					userLock.setLockCount(0);
+					userLock.setLockTime(null);
+				}
 
-	            auditHistoryUtilities.auditForUserLoginLogout(loginDetails.getUserEmail(), true);
+				if (userLock.getLockCount() == 2) {
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
+					response.setMessage("Your account has been permanently locked. Please contact Admin Support.");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+				}
 
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-	        } else {
-	            userLock.setAttemptSequence(userLock.getAttemptSequence() + 1);
+				userLock.setAttemptSequence(userLock.getAttemptSequence() + 1);
 
-	            if (userLock.getAttemptSequence() == 1 && userLock.getLockCount() == 0) {
-	            	userLock.setAttemptSequence(1);
-	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
-	                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-	                response.setMessage("Invalid credentials.");
-	            } else if (userLock.getAttemptSequence() == 2 && userLock.getLockCount() == 0) {
-	            	userLock.setAttemptSequence(2);
-	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
-	                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-	                response.setMessage("Invalid credentials. One more failed attempt will lock your account.");
-	            } else if (userLock.getAttemptSequence() == 3 && userLock.getLockCount() == 0) {
-	                userLock.setLockCount(1);
-	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
-	                userLock.setAttemptSequence(0);
-	                adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
-	                response.setStatus(HttpStatus.LOCKED.value());
-	                response.setMessage("Your account is locked due to multiple invalid login attempts. Please try again after 15 minutes.");
-	            } else if (userLock.getAttemptSequence() == 1 && userLock.getLockCount() == 1) {
-	            	userLock.setAttemptSequence(1);
-	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
-	                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-	                response.setMessage("Invalid credentials.");
-	            } else if (userLock.getAttemptSequence() == 2 && userLock.getLockCount() == 1) {
-	            	userLock.setAttemptSequence(2);
-	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
-	                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-	                response.setMessage("Invalid credentials. Provide the correct password or your account will be locked again.");
-	            } else if (userLock.getAttemptSequence() == 3 && userLock.getLockCount() == 1) {
-	            	userLock.setAttemptSequence(3);
-	                userLock.setLockCount(2); // Permanently lock account
-	                userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
-	                adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
-	                response.setStatus(HttpStatus.BAD_REQUEST.value());
-	                response.setMessage("Your account has been permanently locked. Please contact Admin Support.");
-	            }
+				if (userLock.getAttemptSequence() == 1 && userLock.getLockCount() == 0) {
+					userLock.setAttemptSequence(1);
+					userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
+					response.setMessage("Invalid credentials.");
+				} else if (userLock.getAttemptSequence() == 2 && userLock.getLockCount() == 0) {
+					userLock.setAttemptSequence(2);
+					userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
+					response.setMessage("Invalid credentials. One more failed attempt will lock your account.");
+				} else if (userLock.getAttemptSequence() == 3 && userLock.getLockCount() == 0) {
+					userLock.setLockCount(1);
+					userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+					userLock.setAttemptSequence(0);
+					adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
+					response.setStatus(HttpStatus.LOCKED.value());
+					response.setMessage(
+							"Your account is locked due to multiple invalid login attempts. Please try again after 15 minutes.");
+				} else if (userLock.getAttemptSequence() == 1 && userLock.getLockCount() == 1) {
+					userLock.setAttemptSequence(1);
+					userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
+					response.setMessage("Invalid credentials.");
+				} else if (userLock.getAttemptSequence() == 2 && userLock.getLockCount() == 1) {
+					userLock.setAttemptSequence(2);
+					userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
+					response.setMessage(
+							"Invalid credentials. Provide the correct password or your account will be locked again.");
+				} else if (userLock.getAttemptSequence() == 3 && userLock.getLockCount() == 1) {
+					userLock.setAttemptSequence(3);
+					userLock.setLockCount(2); // Permanently lock account
+					userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
+					adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
+					response.setMessage("Your account has been permanently locked. Please contact Admin Support.");
+				}
 
-	            userRepository.save(userLock);
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
-	        }
-	    } catch (Exception e) {
-	        log.error("Error in zoyAdminUserLogin: " + e.getMessage(), e);
-	        try {
-	            new ZoyAdminApplicationException(e, "");
-	        } catch (Exception ex) {
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setError(ex.getMessage());
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        }
-	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setError(e.getMessage());
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+				userRepository.save(userLock);
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
+			}
+		} catch (Exception e) {
+			log.error("Error in zoyAdminUserLogin: " + e.getMessage(), e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			} catch (Exception ex) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-
-
+	
 	@Override
 	public ResponseEntity<String> zoyAdminUserDetails(Token token) {
 		ResponseBody response=new ResponseBody();
