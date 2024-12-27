@@ -40,3 +40,18 @@
   color: rgb(41, 40, 40);
   cursor: pointer;
 }
+.common-status {
+  width: 100px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+}
+.btn-failed {
+  background-color: #e67e77;
+  color: #fff;
+}
+.btn-success {
+  background-color: #91c8f5; 
+  color: #fff;
+}
