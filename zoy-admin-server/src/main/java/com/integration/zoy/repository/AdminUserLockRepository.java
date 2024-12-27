@@ -36,4 +36,8 @@ public interface AdminUserLockRepository extends JpaRepository<AdminUsersLock, L
 	@Query(value = "UPDATE admin_users_lock SET lock_count = 0, lock_time = NULL, attempt_sequence = 0 WHERE username = :username ", nativeQuery = true)
 	void unlockUser(String username);
 
+	@Transactional
+	@Modifying
+	void deleteByUsername(String email);
+
 }

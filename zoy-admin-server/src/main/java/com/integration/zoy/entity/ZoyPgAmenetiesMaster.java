@@ -14,12 +14,15 @@ public class ZoyPgAmenetiesMaster {
 
 	@Id
 	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "ameneties_id", updatable = false, nullable = false, unique = true, length = 36)
 	private String amenetiesId;
 
 	@Column(name = "ameneties_name", length = 100)
 	private String amenetiesName;
+
+	@Column(name = "ameneties_image")
+	private String amenetiesImage;
 
 	// Constructors
 	public ZoyPgAmenetiesMaster() {
@@ -44,6 +47,14 @@ public class ZoyPgAmenetiesMaster {
 
 	public void setAmenetiesName(String amenetiesName) {
 		this.amenetiesName = amenetiesName;
+	}
+
+	public String getAmenetiesImage() {
+		return amenetiesImage;
+	}
+
+	public void setAmenetiesImage(String amenetiesImage) {
+		this.amenetiesImage = amenetiesImage;
 	}
 
 }
