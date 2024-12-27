@@ -412,6 +412,11 @@ public class OwnerDBService implements OwnerDBImpl{
 		return zoyPgRentCycleMasterRepository.findById(rentCycelId).orElse(null);
 	}
 
+	@Override
+	public String findRentCycleByName(String rentCycelName)throws WebServiceException{
+		return zoyPgRentCycleMasterRepository.getRentCycleId(rentCycelName);
+	}
+	
 	//Pg Time
 	@Override
 	public ZoyPgTimeMaster saveTime(ZoyPgTimeMaster time) throws WebServiceException{

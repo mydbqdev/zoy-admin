@@ -81,7 +81,7 @@ public interface OwnerDBImpl {
 	List<ZoyPgRentCycleMaster> getAllRentCycle()throws WebServiceException;
 	List<String[]> findRentCycleName(String propertyId)throws WebServiceException;
 	ZoyPgRentCycleMaster findRentCycle(String rentCycelId)throws WebServiceException;
-
+	String findRentCycleByName(String rentCycelName)throws WebServiceException;
 	//Pg Time
 	ZoyPgTimeMaster saveTime(ZoyPgTimeMaster time)throws WebServiceException;
 	void deleteTime(String timeId)throws WebServiceException;
