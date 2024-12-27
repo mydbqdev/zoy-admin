@@ -267,16 +267,19 @@
       <form [formGroup]="formPicture">
         <div class="form-group">
            <label for="uploadfile"> Upload Picture:</label> 
-           <input type="file" class="file-upload form-control" name="ImageInput"  id="ImageInput" formControlName="ImageInput"  accept="image/png, image/jpeg"  (change)="onFileChanged($event)" 
+           <input type="file" class="file-upload form-control" name="ImageInput"  id="ImageInput" formControlName="ImageInput"  accept="image/*"  (change)="onFileChanged($event)" 
               id="ameneties_upload_id" placeholder="Ameneties Image" required autocomplete="false" 
                [(ngModel)]="this.dbSettingDataModel.ameneties_upload" autocomplete="off"
-               [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.ameneties_upload == null || this.dbSettingDataModel.ameneties_upload == '' )}" />
-            <div *ngIf="submitted && (this.dbSettingDataModel.ameneties_upload == null || this.dbSettingDataModel.ameneties_upload == '' )" class="text-danger">
-              Ameneties Image is required.
+               [ngClass]="{'is-invalid':submitted && ((isCreated && (this.dbSettingDataModel.ameneties_upload == null || this.dbSettingDataModel.ameneties_upload == '')) || (!isCreated && imgeURL2==null))}" />
+            <div *ngIf="submitted && ((isCreated && (this.dbSettingDataModel.ameneties_upload == null || this.dbSettingDataModel.ameneties_upload == '')) || (!isCreated && imgeURL2==null))" class="text-danger">
+              Ameneties image is required.
             </div>
         </div>
          <div *ngIf="fileUploadSizeStatus" style="color: red;">
              Uploaded Size: {{ fileUploadSize }}KB , File should be maximum 50KB.
+        </div>
+        <div *ngIf="fileUploadRatioStatus" style="color: red;">
+          Picture size should not be greater than 75px width and  75px height
         </div>
         <div *ngIf="fileUploadProgress" style="color: green;">
            Upload progress: {{ fileUploadProgress }}

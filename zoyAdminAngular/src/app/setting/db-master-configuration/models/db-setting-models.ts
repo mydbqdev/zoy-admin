@@ -39,8 +39,6 @@ export class DbSettingDataModel{
 
     ameneties_id ?: string;
     ameneties_name ?: string;
-
-    ameneties_upload_id ?: string;
     ameneties_upload ?: string;
 
 }

@@ -101,19 +101,29 @@ export class DbMasterConfigurationService {
         );
   } 
 
-  submitData(data:any,isCreate:boolean,api:string): Observable<any> {
+  submitData(data:any,isCreate:boolean,api:string,formData:any,isPhoto:boolean): Observable<any> {
     const url1=this.basePath +api;
     if(isCreate){
+      if(isPhoto && api=='zoy_admin/ameneties'){
+        data=formData;
+      }
         return  this.httpclient.post<any>(
-            url1,
-            data,
-            {
-                headers:ServiceHelper.buildHeaders(),
-              observe : 'body',
-              withCredentials:true
-            }
-        );
+          url1,
+          data,
+          {
+              headers:ServiceHelper.buildHeaders(),
+            observe : 'body',
+            withCredentials:true
+          }
+      );
     }else{
+      if(isPhoto && api=='zoy_admin/ameneties'){
+        data=formData;
+      }else if(!isPhoto && api=='zoy_admin/ameneties'){
+        const url1=this.basePath +'zoy_admin/amenetieswithoutphoto';
+      }else{
+        
+      }
         return  this.httpclient.put<any>(
             url1,
             data,
