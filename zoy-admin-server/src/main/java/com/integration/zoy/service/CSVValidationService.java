@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -199,6 +201,17 @@ public class CSVValidationService {
 	private void validateDateFormat(String dateValue, int row, int header, String columnName, List<ErrorDetail> errorDetails) {
 		if (dateValue != null && !dateValue.trim().isEmpty() && !isValidDate(dateValue)) {
 			errorDetails.add(new ErrorDetail(row, header, columnName, "Invalid date format (expected dd-MM-yyyy)"));
+		}
+		if(columnName.equals("Out Date")) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	        LocalDate dateToCheck = LocalDate.parse(dateValue, formatter);
+	        LocalDate currentDate = LocalDate.now();
+	        boolean isSameMonthAndYear = currentDate.getYear() == dateToCheck.getYear() && currentDate.getMonth() == dateToCheck.getMonth();
+	        if(isSameMonthAndYear) {
+	        	errorDetails.add(new ErrorDetail(row, header, columnName, "Out Date cannot be same month, please remove or change the Out Date "+ dateValue ));
+	        } else if(dateToCheck.isBefore(currentDate)) {
+	        	errorDetails.add(new ErrorDetail(row, header, columnName, "Out Date cannot be old date, please remove or change the Out Date "+ dateValue ));
+	        }
 		}
 	}
 

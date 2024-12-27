@@ -15,6 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -32,9 +33,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -72,6 +78,7 @@ import com.integration.zoy.model.PropertyRentalDetails;
 import com.integration.zoy.model.RegisterUser;
 import com.integration.zoy.repository.ZoyPgRoomAmenetiesId;
 import com.integration.zoy.utils.CsvTenantDetails;
+import com.integration.zoy.utils.GeneratePDFRental;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.Whatsapp;
 import com.opencsv.CSVReader;
@@ -107,6 +114,24 @@ public class UploadService {
 
 	@Value("${zoy.admin.logo}")
 	private String zoyLogoPath;
+	
+	@Value("${app.zoy.server.username}")
+	String zoyServerUserName;
+
+	@Value("${app.zoy.server.password}")
+	String zoyServerPassword;
+
+	@Value("${app.zoy.server.url}")
+	String zoyServerUrl;
+
+	@Value("${app.zoy.server.customer.url}")
+	String zoyServerCustomerUrl;
+
+
+	@Autowired
+	RestTemplate restTemplate;
+
+	
 
 	private static final Logger log = LoggerFactory.getLogger(UploadService.class);
 	private static final Gson gson = new GsonBuilder()
@@ -250,17 +275,17 @@ public class UploadService {
 				ownerUserStatus.setPgTenantStatus(true);
 				userStatus.add(ownerUserStatus);
 
-				UserPayment payment=new UserPayment();
-				payment.setUserId(booking.getTenantId());
-				payment.setUserPaymentBookingId(booking.getBookingId());
-				if(booking.getPaidDeposit()!=null && !booking.getPaidDeposit().equals(BigDecimal.ZERO))
-					payment.setUserPaymentPayableAmount(booking.getPaidDeposit());
-				else 
-					payment.setUserPaymentPayableAmount(booking.getFixedRent());
-				payment.setUserPaymentPaymentStatus("success");
-				payment.setUserPaymentZoyPaymentMode("Cash");
-				payment.setUserPaymentZoyPaymentType("Deposit");
-				userPayment.add(payment);
+//				UserPayment payment=new UserPayment();
+//				payment.setUserId(booking.getTenantId());
+//				payment.setUserPaymentBookingId(booking.getBookingId());
+//				if(booking.getPaidDeposit()!=null && !booking.getPaidDeposit().equals(BigDecimal.ZERO))
+//					payment.setUserPaymentPayableAmount(booking.getPaidDeposit());
+//				else 
+//					payment.setUserPaymentPayableAmount(booking.getFixedRent());
+//				payment.setUserPaymentPaymentStatus("success");
+//				payment.setUserPaymentZoyPaymentMode("Cash");
+//				payment.setUserPaymentZoyPaymentType("Deposit");
+//				userPayment.add(payment);
 
 				ZoyPgBedDetails pgBedDetails=ownerDBImpl.getBedsId(booking.getSelectedBed());
 				pgBedDetails.setBedId(booking.getSelectedBed());
@@ -288,6 +313,7 @@ public class UploadService {
 		master.setUserFirstName(tenantDetails.getFirstName());
 		master.setUserLastName(tenantDetails.getLastName());
 		master.setUserEkycIsEkycVerified(false);
+		master.setUserEkycIsVideoVerified(false);
 		uploadDBImpl.saveUser(master);
 		List<NotificationModeMaster> modeMaster=uploadDBImpl.findAllNotificationMode();
 		List<UserNotifications> notifications =new ArrayList<>();
@@ -355,12 +381,13 @@ public class UploadService {
 			rentCycleId=ids.get(0)[8];
 			rentCycleName=ids.get(0)[9];
 		}
+		String cycleId=ownerDBImpl.findRentCycleByName("01-01");
 		ZoyPgOwnerBookingDetails bookingDetails=new ZoyPgOwnerBookingDetails();
 		ZoyPgRoomDetails details=uploadDBImpl.getRoomDetails(roomId);
 		Pair<Timestamp, Timestamp> date=getMonthStartEndDate();
 		bookingDetails.setCalFixedRent(new BigDecimal(details.getRoomDailyRent()));
-		bookingDetails.setCurrMonthEndDate(date.getFirst());
-		bookingDetails.setCurrMonthStartDate(date.getSecond());
+		bookingDetails.setCurrMonthEndDate(date.getSecond());
+		bookingDetails.setCurrMonthStartDate(date.getFirst());
 		bookingDetails.setDue(BigDecimal.ZERO);
 		bookingDetails.setFixedRent(new BigDecimal(details.getRoomMonthlyRent()));
 		bookingDetails.setFloor(floorId);
@@ -369,14 +396,14 @@ public class UploadService {
 		Timestamp currentDate=new Timestamp(System.currentTimeMillis());
 		bookingDetails.setInDate(currentDate);
 		bookingDetails.setIsTermsAccepted(false);
-		bookingDetails.setLockInPeriod(rentCycleId);
+		bookingDetails.setLockInPeriod(cycleId);
 		bookingDetails.setName(tenantDetails.getFirstName()+" "+ tenantDetails.getLastName());
 		long noOfDays=getDiffofTimestamp(currentDate,tenantDetails.getOutDate());
 		bookingDetails.setNoOfDays(String.valueOf(noOfDays));
 		bookingDetails.setOutDate(tenantDetails.getOutDate());
 		bookingDetails.setPhoneNumber(tenantDetails.getPhoneNumber());
 		bookingDetails.setPropertyId(propertyId);
-		//bookingDetails.setRentCycleEndDate(tenantDetails.getRentCycleEndDate());
+		bookingDetails.setRentCycleEndDate(date.getSecond());
 		bookingDetails.setRoom(roomId);
 		bookingDetails.setSecurityDeposit(tenantDetails.getDepositPaid());
 		bookingDetails.setPaidDeposit(tenantDetails.getDepositPaid());
@@ -634,44 +661,88 @@ public class UploadService {
 				rentCycleId=ids.get(0)[8];
 				rentCycleName=ids.get(0)[9];
 			}
-			Map<String, Object> data = new HashMap<>();
-			PropertyRentalDetails details = new PropertyRentalDetails();
-			details.setPgOwnerId(zoyPgOwnerDetails.getPgOwnerId());
-			details.setPgName(propertyDetail.getPropertyName());
-			details.setPgAddress(propertyDetail.getPropertyHouseArea());
-			details.setPropertyId(propertyDetail.getPropertyId());
-			details.setShareType(shareName);
-			details.setCustomerAddress(userDetails.getPersonalPermanentAddress());
+//			Map<String, Object> data = new HashMap<>();
+//			PropertyRentalDetails details = new PropertyRentalDetails();
+//			details.setPgOwnerId(zoyPgOwnerDetails.getPgOwnerId());
+//			details.setPgName(propertyDetail.getPropertyName());
+//			details.setPgAddress(propertyDetail.getPropertyHouseArea());
+//			details.setPropertyId(propertyDetail.getPropertyId());
+//			details.setShareType(shareName);
+//			details.setCustomerAddress(userDetails.getPersonalPermanentAddress());
+//			List<String> propertyAmenities=ownerDBImpl.findPropertyAmenetiesName(propertyDetail.getPropertyId());
+//			ZoyPgTermsMaster zoyPgTermsMaster=ownerDBImpl.findTermMaster(propertyDetail.getPropertyId());
+//			details.setPropertyAmenities(propertyAmenities);
+//			InputStream inputStreamImg =getClass().getResourceAsStream(zoyLogoPath);
+//			String base64Image = pdfGenerateService.imageToBase64(inputStreamImg);
+//			details.setBase64Images(base64Image);
+//			details.setRoom(roomName);
+//			details.setMoveInDate(saveMyBookings.getInDate());
+//			details.setMoveOutDate(saveMyBookings.getOutDate());
+//			details.setNoOfDays(saveMyBookings.getNoOfDays()!=null?Integer.valueOf(saveMyBookings.getNoOfDays()):0);
+//			details.setBookingId(saveMyBookings.getBookingId());
+//			details.setFloor(floorName);
+//			details.setBed(bedName);
+//			details.setFixedRent(saveMyBookings.getFixedRent().intValue());
+//			details.setSecurityDeposit(saveMyBookings.getSecurityDeposit().intValue());
+//			details.setNoticePeriod(zoyPgTermsMaster.getNoticePeriod()); 
+//			details.setTenantName(saveMyBookings.getName());
+//			details.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+//			details.setManagerName(propertyDetail.getPropertyManagerName());
+//			data.put("data", details);
+//			pdfGenerateService.generateRenatalPdfFile("pdfRental", data, master.getUserId(),saveMyBookings.getBookingId());
+//
+//			//Email
+//			InputStream is = zoyS3Service.downloadRentalAgreement(master.getUserId(), saveMyBookings.getBookingId());
+//			zoyEmailService.sendRentalAgreementToTenant(master,propertyDetail.getPropertyName(),is);
+			GeneratePDFRental generatePDFRental=new GeneratePDFRental();
+			generatePDFRental.setPgOwnerId(zoyPgOwnerDetails.getPgOwnerId());
+			generatePDFRental.setPgName(propertyDetail.getPropertyName());
+			generatePDFRental.setPgAddress(propertyDetail.getPropertyHouseArea());
+			generatePDFRental.setPropertyId(propertyDetail.getPropertyId());
+			generatePDFRental.setShareType(shareName);
+			generatePDFRental.setCustomerAddress(userDetails.getPersonalPermanentAddress());
 			List<String> propertyAmenities=ownerDBImpl.findPropertyAmenetiesName(propertyDetail.getPropertyId());
 			ZoyPgTermsMaster zoyPgTermsMaster=ownerDBImpl.findTermMaster(propertyDetail.getPropertyId());
-			details.setPropertyAmenities(propertyAmenities);
-			InputStream inputStreamImg =getClass().getResourceAsStream(zoyLogoPath);
-			String base64Image = pdfGenerateService.imageToBase64(inputStreamImg);
-			details.setBase64Images(base64Image);
-			details.setRoom(roomName);
-			details.setMoveInDate(saveMyBookings.getInDate());
-			details.setMoveOutDate(saveMyBookings.getOutDate());
-			details.setNoOfDays(saveMyBookings.getNoOfDays()!=null?Integer.valueOf(saveMyBookings.getNoOfDays()):0);
-			details.setBookingId(saveMyBookings.getBookingId());
-			details.setFloor(floorName);
-			details.setBed(bedName);
-			details.setFixedRent(saveMyBookings.getFixedRent().intValue());
-			details.setSecurityDeposit(saveMyBookings.getSecurityDeposit().intValue());
-			details.setNoticePeriod(zoyPgTermsMaster.getNoticePeriod()); 
-			details.setTenantName(saveMyBookings.getName());
-			details.setTimeStamp(new Timestamp(System.currentTimeMillis()));
-			details.setManagerName(propertyDetail.getPropertyManagerName());
-			data.put("data", details);
-			pdfGenerateService.generateRenatalPdfFile("pdfRental", data, master.getUserId(),saveMyBookings.getBookingId());
-
-			//Email
-			InputStream is = zoyS3Service.downloadRentalAgreement(master.getUserId(), saveMyBookings.getBookingId());
-			zoyEmailService.sendRentalAgreementToTenant(master,propertyDetail.getPropertyName(),is);
+			generatePDFRental.setPropertyAmenities(propertyAmenities);
+			generatePDFRental.setRoom(roomName);
+			generatePDFRental.setMoveInDate(saveMyBookings.getInDate());
+			generatePDFRental.setMoveOutDate(saveMyBookings.getOutDate());
+			generatePDFRental.setNoOfDays(saveMyBookings.getNoOfDays()!=null?Integer.valueOf(saveMyBookings.getNoOfDays()):0);
+			generatePDFRental.setBookingId(saveMyBookings.getBookingId());
+			generatePDFRental.setFloor(floorName);
+			generatePDFRental.setBed(bedName);
+			generatePDFRental.setFixedRent(saveMyBookings.getFixedRent().intValue());
+			generatePDFRental.setSecurityDeposit(saveMyBookings.getSecurityDeposit().intValue());
+			generatePDFRental.setNoticePeriod(Integer.valueOf(zoyPgTermsMaster.getNoticePeriod().split(" ")[0])); 
+			generatePDFRental.setTenantName(saveMyBookings.getName());
+			generatePDFRental.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+			generatePDFRental.setManagerName(propertyDetail.getPropertyManagerName());
+			
+			processRentalPdf(master.getUserId(),master.getUserEmail(), generatePDFRental);
 
 
 		} catch (Exception e) {
 			log.error("Error occured while generating pdf rental: " + e.getMessage());
 		}
 	}
+	public void processRentalPdf(String userId,String userEmail,GeneratePDFRental generatePDFRental) {
+		try {
+			String url = zoyServerCustomerUrl + userId +"/"+userEmail+"/generatePdfRental";
+			HttpHeaders headers = new HttpHeaders();
+			setZoyServerHeader(headers);
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<GeneratePDFRental> entityReq = new HttpEntity<>(generatePDFRental, headers);
+			ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.POST, entityReq, String.class);
+			log.info(resp.getBody());
+		} catch (Exception e) {
+			log.error("Error in calling/getting generating pdf rental api " + e.getMessage());
+		}
+	}
 
+	private void setZoyServerHeader(HttpHeaders headers) {
+		byte[] credEncoded = Base64.getEncoder().encode((zoyServerUserName+":"+zoyServerPassword).getBytes());
+		String authStringEnc = new String(credEncoded);
+		headers.add("Authorization", "Basic " + authStringEnc);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+	}
 }
