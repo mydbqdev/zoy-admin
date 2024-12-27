@@ -22,16 +22,19 @@ export class FiltersRequestModel{
 }
 
 export class FilterData {
-    tenantId: string ='';
     tenantName: string ='';
     transactionStatus: string ='';
-    modeOfPayment: string ='';
-    zoyCode: string ='';
     ownerName: string ='';
-    pgId: string ='';
     pgName: string ='';
-    payeeId: string ='';
     payeeName: string ='';
-    payerId: string ='';
     payerName: string ='';
+    payerType: string ='';
+    tenantContactNum: string ='';
+    transactionNumber: string ='';
+    ownerEmail: string ='';
+    bedNumber: string ='';
+    ownerApprovalStatus: string ='';
+    bookingId: string ='';
+    refundTitle: string ='';
+    overallRating: string ='';
   }
