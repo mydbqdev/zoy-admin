@@ -49,7 +49,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 
 	reportName:string ='Tenant Transactions Report';
 	downloadType :string='';
-
+	@ViewChild('reviewsModelClose') reviewsModelClose: any;
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
 	public userNameSession: string = "";
 	errorMsg: any = "";
@@ -274,24 +274,14 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 				  }
 				}); 
 			}
-	 	}
-	//	 userGSTPaymentModel:UserGSTPaymentModel=new UserGSTPaymentModel();
-	//  viewReport(row:any){
-	// 	let data = this.reportService.reportColumnsList.find(n => n.reportName == this.reportName).object;
-		
-	// 	if(data == 'new UserGSTPaymentModel()'){
-	// 		this.userGSTPaymentModel = Object.assign(row);
-	// 		data = Object.assign(this.userGSTPaymentModel); 
-	// 	}else{
-	// 		data = Object.assign(row); 
-	// 	}
-		
-	// 	this.reportData = Object.assign(data);
-			
-	//  }		 
+	 	}	 
 	
 	onExport(element: any): void {
 		console.log('Export action triggered for:', element);
+	}
+	
+	viewReviews(element: any): void {
+		console.log('viewReviews action triggered for:', element);
 	}
 	
 	downloadPdf(type:string){   
