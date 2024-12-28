@@ -55,7 +55,7 @@ import { MessageService } from 'src/app/message.service';
       'totalAmountPayable': 'TOTAL AMOUNT PAYABLE',
       'totalAmountPaid': 'TOTAL AMOUNT PAID',
       'pendingAmount': 'PENDING AMOUNT',
-      'pendingDueDate': 'PENDING DUE DATE',
+      'pendingDueDate': 'PAYMENT DUE DATE',
       'creditAmount': 'CREDIT AMOUNT',
       'debitAmount': 'DEBIT AMOUNT',
      // 'customerId': 'TENANT ID' ,//'CUSTOMER ID',
@@ -64,60 +64,74 @@ import { MessageService } from 'src/app/message.service';
       'tenantContactNum' :'TENANT CONTACT',
       'propertyHouseArea' :'PG Address',
       'payerPayeeType':'PAYER/PAYEE TYPE',
+      'payerPayeeName':'PAYER/PAYEE Name',
       'ownerEmail':'OWNER EMAIL',
       'pgAddress':'PG ADDRESS',
       'zoyShare':'ZOY SHARE',
       'tenantMobileNum':'TENANT CONTACT',
-      'userPgPropertyAddress':'PG Address'
+      'userPgPropertyAddress':'PG Address',
+      'ownerApprovalStatus':'OWNER APPROVAL STATUS',
+      'bookingId':'BOOKING ID',
+      'refundTitle':'REFUND TITLE',
+      'refundableAmount':'REFUNDABLE AMOUNT',
+      'amountPaid':'AMOUNT PAID',
+      'cleanliness':'CLEANLINES',
+      'amenities':'AMENITIES',
+      'maintenance':'MAINTENANCE',
+      'valueForMoney':'VALUE FOR MONEY',
+      'overallRating':'OVERALL RATING',
   };
   
-	  reportColumnsList: { 'reportName': string, 'columns': string[] ,'object': any }[] = [
+	  reportColumnsList: { 'reportName': string, 'columns': string[] }[] = [
 		{
 		  'reportName': 'Tenant Transactions Report', //== User Transactions Report
 		  'columns': ['transactionDate','customerName', 'tenantContactNum','PgPropertyName','propertyHouseArea','bedNumber',  
                   'transactionNumber', 'transactionStatus', 'baseAmount','gstAmount','totalAmount','category','paymentMethod'],
-      'object':'new UserTransactionReportModel()'
     },
 		{
 		  'reportName': 'Tenant Payments GST Report', //==User Payments GST Report
-		  'columns': ['transactionDate','transactionNumber','customerName','PgPropertyName','propertyHouseArea', 'totalAmount', 'gstAmount', 'gstAmount','paymentMethod'],
-      'object':'new UserGSTPaymentModel()'
+		  'columns': ['transactionDate','transactionNumber','tenantMobileNum','customerName','PgPropertyName','propertyHouseArea', 'totalAmount', 'gstAmount', 'paymentMethod'],
 		},
     {
 		  'reportName': 'Tenant Dues Report',
-		  'columns': ['customerName', 'tenantMobileNum', 'PgPropertyName','userPgPropertyAddress','bedNumber', 'pendingAmount', 'pendingDueDate'],
-      'object':'new TenantDuesDetailsModel()'
+		  'columns': ['pendingDueDate','customerName', 'tenantMobileNum', 'PgPropertyName','userPgPropertyAddress','bedNumber', 'pendingAmount', ],
+		},
+    {
+		  'reportName': 'Tenant Refunds Report',
+		  'columns': ['pendingDueDate','customerName', 'tenantMobileNum', 'PgPropertyName','userPgPropertyAddress','bookingId', 'refundTitle','refundableAmount','amountPaid','transactionNumber','paymentStatus' ],
 		},
     {
 		  'reportName': 'Owner Payments Report', //==Vendor Payments Report
-		  'columns': [  'transactionDate','ownerName', 'pgName','ownerEmail','pgAddress','totalAmountFromTenants', 'amountPaidToOwner','zoyShare','transactionNumber', 'paymentStatus'],
-     'object':'new VendorPaymentsModel()'
+		  'columns': [  'transactionDate','ownerName', 'pgName','ownerEmail','pgAddress','totalAmountFromTenants', 'amountPaidToOwner','zoyShare','transactionNumber', 'paymentStatus','ownerApprovalStatus'],
 		},
     {
 		  'reportName': 'Owner Payments Dues Report', //==Vendor Payments Dues Report
-		  'columns': ['ownerId', 'pgId', 'totalAmountPayable', 'totalAmountPaid', 'pendingAmount', 'pendingDueDate'],
-      'object':'new VendorPaymentsDues()'
+		  'columns': ['pendingDueDate','ownerName','pgName','ownerEmail','pgAddress', 'totalAmountPayable', 'totalAmountPaid', 'pendingAmount'],
     },
     {
 		  'reportName': 'Owner Payments Gst Report',// == Vendor Payments Gst Report
-		  'columns': ['transactionDate','transactionNo','pgId','totalAmount','gstAmount'],
-      'object':'new VendorPaymentsGst()'
+		  'columns': ['transactionDate','transactionNumber','ownerName','pgName','pgAddress','totalAmount','gstAmount','baseAmount','paymentMethod'],
 		},
     {
 		  'reportName': 'Consolidated Finance Report',
-		  'columns': ['transactionDate', 'transactionNumber','payerPayeeType', 'payerPayeeName', 'creditAmount', 'debitAmount'],
-      'object':'new ConsilidatedFinanceDetailsModel()'
+		  'columns': ['transactionDate', 'transactionNumber','payerPayeeType', 'payerPayeeName', 'creditAmount', 'debitAmount']
+		},
+    {
+		  'reportName': 'Ratings and Reviews Report',
+		  'columns': ['pgName', 'customerName','cleanliness', 'security', 'amenities', 'maintenance','valueForMoney','overallRating','reviews']
 		}
 	  ];
-
+  
     reportNamesList:{'name':string,'key':string}[] = [
       { name: "Tenant Transactions Report", key: "userTransactionReport" },
       { name: "Tenant Payments GST Report", key: "userPaymentGstReport" },
       { name: "Tenant Dues Report", key: "tenantDuesReport" },
+      { name: "Tenant Refunds Report", key: "tenantDuesReport" },
       { name: "Owner Payments Report", key: "vendorPaymentsReport" },
       { name: "Owner Payments Dues Report", key: "vendorPaymentsDuesReport" },
       { name: "Owner Payments Gst Report", key: "vendorPaymentsGstReport" },
       { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
+      { name: "Ratings and Reviews Report", key: "vendorPaymentsReport" },
   
       ];
 
