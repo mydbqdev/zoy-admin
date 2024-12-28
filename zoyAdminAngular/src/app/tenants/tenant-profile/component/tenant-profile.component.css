@@ -15,7 +15,7 @@
 
 /* Set styles for the scrollable container */
 .scrollable-container {
-  max-height: calc(100vh - 90px);  /* Set a max height to enable vertical scrolling */
+  max-height: calc(100vh - 290px);  /* Set a max height to enable vertical scrolling */
   overflow-y: auto;   /* Enable vertical scrolling */
   overflow-x: auto;  /* Enable horizontal scrolling */
   padding-right: 1px; /* Optional: prevent scrollbar overlap */
@@ -39,4 +39,14 @@
 .nav-pills .nav-link.profile-tab{
   color: rgb(41, 40, 40);
   cursor: pointer;
+}
+
+.btn-cancelled {
+  background-color:  #F8D2D4;
+  color:  #ff747b;
+}
+
+.btn-checkout {
+  background-color:  #F8E1D4;
+  color:  #f55e07;
 }

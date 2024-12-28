@@ -9,6 +9,10 @@ import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { ZoyOwnerService } from 'src/app/owners/service/zoy-owner.service';
+import { MatTableDataSource } from '@angular/material/table';
+import { TenantProfile } from '../model/transaction-history-model';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort, Sort } from '@angular/material/sort';
 
 @Component({
 	selector: 'app-tenant-profile',
@@ -26,6 +30,23 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	  public selectedTab:number=1;
 	  public sectionTabHeader:string="Persional Details";
 	  tenantId:string='';
+	  totalRecord:number=0;
+	  pageSizeOptions: number[] = [10, 25, 50];
+	  pageSize = 10;
+	  dataSourceTransaction:MatTableDataSource<TenantProfile>=new MatTableDataSource<TenantProfile>();
+	  displayedColumnsTransaction: string[] = [ 'due_type','payment_date', 'paid_amount', 'payment_mode', 'due_date', 'status','action']; 
+	  columnSortDirectionsOg: { [key: string]: string | null } = {
+		due_type: null,
+		payment_date: null,
+		paid_amount: null,
+		payment_mode: null,
+		due_date:null,
+	  status: null
+	};
+	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+	_liveAnnouncer: any;
+	@ViewChild(MatSort) sort: MatSort;
+	@ViewChild(MatPaginator) paginator: MatPaginator;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private zoyOwnerService : ZoyOwnerService) {
 			this.authService.checkLoginUserVlidaate();
@@ -86,5 +107,33 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	selectProfile(selectTab:number,header:string){
 		this.selectedTab=selectTab;
 		this.sectionTabHeader=header;
+	}
+	announceSortChange(sortState: Sort): void {
+		this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+		this.columnSortDirections[sortState.active] = sortState.direction;
+		  if (sortState.direction) {
+			this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+		  } else {
+			this._liveAnnouncer.announce('Sorting cleared');
+		  }
+		  //this.param.sortActive=sortState.active;
+		  //this.param.sortDirection=sortState.direction!="" ? sortState.direction:"asc";
+		 // this.param.pageIndex=0
+		  //this.paginator.pageIndex=0;
+		  //this.getHistoryReportList();
+	  }
+	  transactionHeader:string="";
+	  transactionHeaderTenantName:string="";
+	  selectTransaction(selectTab:number,header:string,tenantName:string){
+		//this.selectedTab=selectTab;
+		this.transactionHeader=header;
+		this.transactionHeaderTenantName=tenantName;
+		if(header=='Due History'){
+			this.displayedColumnsTransaction = [ 'due_type','payment_date', 'due_date','paid_amount', 'payment_mode']; 
+		}else if(header=='Refund History'){
+			this.displayedColumnsTransaction = ['payment_date', 'due_date', 'paid_amount', 'payment_mode','status','action']; 
+		}else{
+			this.displayedColumnsTransaction = [ 'due_type','payment_date', 'paid_amount', 'payment_mode', 'due_date', 'status','action']; 
+		}
 	}
 }

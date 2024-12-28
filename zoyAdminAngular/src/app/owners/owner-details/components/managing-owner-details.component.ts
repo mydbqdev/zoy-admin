@@ -40,6 +40,9 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  property_status:string='';
 
 	  propertyInfo :PgOwnerPropertyInformation =new PgOwnerPropertyInformation();
+	  totalRecord:number=0;
+	  pageSizeOptions: number[] = [10, 25, 50];
+	  pageSize = 10;
 	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService :ZoyOwnerService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			  this.authService.checkLoginUserVlidaate();
@@ -250,4 +253,10 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			}
 		}).catch(() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')); 
 		}
+
+		transactionHeader:string="";
+	  selectTransaction(selectTab:number,header:string){
+		//this.selectedTab=selectTab;
+		this.transactionHeader=header;
+	}
   }  

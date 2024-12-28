@@ -138,13 +138,13 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		try {
 			ZoyPgAmenetiesMaster zoyPgAmenetiesMaster=new ZoyPgAmenetiesMaster();
 
-			if (amenetie.getImage() == null || amenetie.getImage().isEmpty()) { 
+			if (amenetie.getAmenetiesImage() == null || amenetie.getAmenetiesImage().isEmpty()) { 
 				response.setMessage("No image is provided");
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST); 
 			}
 			
-			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,zoyPgAmenetiesMaster.getAmenetiesId(),amenetie.getImage());
+			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,zoyPgAmenetiesMaster.getAmenetiesId(),amenetie.getAmenetiesImage());
 			zoyPgAmenetiesMaster.setAmenetiesName(amenetie.getAmeneties());
 			zoyPgAmenetiesMaster.setAmenetiesImage(imageUrl);		
 			ZoyPgAmenetiesMaster saved=ownerDBImpl.createAmeneties(zoyPgAmenetiesMaster);

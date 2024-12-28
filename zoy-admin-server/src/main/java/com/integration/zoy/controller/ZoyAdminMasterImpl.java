@@ -88,7 +88,7 @@ public interface ZoyAdminMasterImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PostMapping(value = "/zoy_admin/amenetiesUpdate",
+	@PutMapping(value = "/zoy_admin/amenetiesUpdate",
 	produces = { "application/json" },
 	consumes = { "multipart/form-data" })
 	ResponseEntity<String> zoyAdminAmenitiesUpdate(@ModelAttribute AmenetiesId amenetie);

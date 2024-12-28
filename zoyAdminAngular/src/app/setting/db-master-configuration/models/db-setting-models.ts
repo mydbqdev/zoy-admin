@@ -40,6 +40,7 @@ export class DbSettingDataModel{
     ameneties_id ?: string;
     ameneties_name ?: string;
     ameneties_upload ?: string;
+    ameneties_image ?: string;
 
 }
 
@@ -67,6 +68,5 @@ export class DbSettingSubmitDataModel{
     billingTypeName ?: string;
 
     ameneties ?: string;
-   
 
 }
