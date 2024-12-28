@@ -70,7 +70,7 @@ export class DbMasterConfigurationService {
     },
     {
         'type': 'Ameneties',
-        'columns': ['ameneties_name', 'actions'],
+        'columns': ['ameneties_name','ameneties_image', 'actions'],
         'api': 'zoy_admin/ameneties'
     }
   ]
@@ -86,7 +86,8 @@ export class DbMasterConfigurationService {
     'due_type_name':'DUE TYPE',
     'currency_name': 'CURRENCY NAME',
     'billing_type_name': 'BILLING TYPE NAME',
-    'ameneties_name': 'AMENETIES NAME'
+    'ameneties_name': 'AMENETIES NAME',
+    'ameneties_image':"AMENETIES PICTURE"
   }
 
   getDbSettingDetails(api:string): Observable<any> {
@@ -102,8 +103,9 @@ export class DbMasterConfigurationService {
   } 
 
   submitData(data:any,isCreate:boolean,api:string,formData:any,isPhoto:boolean): Observable<any> {
-    const url1=this.basePath +api;
+    
     if(isCreate){
+      const url1=this.basePath +api;
       if(isPhoto && api=='zoy_admin/ameneties'){
         data=formData;
       }
@@ -117,10 +119,12 @@ export class DbMasterConfigurationService {
           }
       );
     }else{
+      var url1=this.basePath +api;
       if(isPhoto && api=='zoy_admin/ameneties'){
         data=formData;
+         url1=this.basePath +'zoy_admin/amenetiesUpdate';
       }else if(!isPhoto && api=='zoy_admin/ameneties'){
-        const url1=this.basePath +'zoy_admin/amenetieswithoutphoto';
+         url1=this.basePath +'zoy_admin/ameneties';
       }else{
         
       }

@@ -336,7 +336,7 @@
                                         <div class="row">
                                           <div class="col-sm-5" style="font-size: 14px;">Tenant Payment History</div>
                                           <div class="col-sm-6">
-                                            <a class="link-opacity-100-hover" style="font-size: 13px;cursor: pointer;">
+                                            <a class="link-opacity-100-hover" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction(1,'Tenant Payment History')" style="font-size: 13px;cursor: pointer;">
                                             Click Here
                                             </a>
                                            </div>
@@ -344,7 +344,7 @@
                                         <div class="row">
                                           <div class="col-sm-5" style="font-size: 14px;">ZOY to Owner Payment History</div>
                                           <div class="col-sm-6">
-                                            <a class="link-opacity-100-hover" style="font-size: 13px;cursor: pointer;">
+                                            <a class="link-opacity-100-hover" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction(2,'ZOY to Owner Payment History')" style="font-size: 13px;cursor: pointer;">
                                               Click Here
                                               </a>
                                            </div>
@@ -387,3 +387,33 @@
            </div>
         </div>
   </div>
+
+
+  <!------To view Row details PopUp model------->
+<div class="modal fade" id="paymentHistory" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">{{transactionHeader}}</h5>
+        <div>
+          <div class="d-flex pl-5 ">
+            <div class="mr-1 mt-1">Date Range</div>
+            <input type="date" class="form-control" style="width: 130px;font-size: 12px; " id="fromDate"  /> 
+            <div style="padding-top: 3px;"> - </div>
+            <input type="date" class="form-control" style="width: 130px; font-size: 12px;" id="toDate"  />
+            <div class="ml-1"><button class="btn btn-sm btn-primary-custom"><i class="fas fa-search fa-sm"></i></button></div>
+          </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">  
+                                  <div style="text-align: center; min-height: 45px; padding-top: 10px;">
+                                    under construction. live soon..
+                                  </div>
+      </div>
+      <div class="modal-footer p-0">
+        <mat-paginator #paginator [length]="totalRecord" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

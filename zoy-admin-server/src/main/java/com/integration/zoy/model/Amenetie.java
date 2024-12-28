@@ -9,15 +9,15 @@ public class Amenetie {
 	@JsonProperty("ameneties")
 	private String ameneties;
 
-	@JsonProperty("image")
-	private MultipartFile image;
+	@JsonProperty("amenetiesImage")
+	private MultipartFile amenetiesImage;
 
-	public MultipartFile getImage() {
-		return image;
+	public MultipartFile getAmenetiesImage() {
+		return amenetiesImage;
 	}
 
-	public void setImage(MultipartFile image) {
-		this.image = image;
+	public void setAmenetiesImage(MultipartFile image) {
+		this.amenetiesImage = image;
 	}
 
 	public String getAmeneties() {

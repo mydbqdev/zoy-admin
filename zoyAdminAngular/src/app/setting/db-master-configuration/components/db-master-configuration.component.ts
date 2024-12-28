@@ -172,6 +172,10 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
             this.dbSettingDataModel.cycle_second = cycleParts[1];
         }
       } 
+
+      if(this.settingType ==='Ameneties' && this.dbSettingDataModel.ameneties_image){
+        this.imgeURL2=this.dbSettingDataModel.ameneties_image;
+      }
     }  
     submitData(){
       this.submitted = true;
@@ -182,7 +186,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       var form_data = new FormData();
       if(this.settingTypeDetails.api=='zoy_admin/ameneties' && this.fileData!=null){
         this.withPhoto=true;     
-        form_data.append('image', this.fileData);
+        form_data.append('amenetiesImage', this.fileData);
         form_data.append('ameneties', this.submitDataModel.ameneties);
         form_data.append('id', this.submitDataModel.id);
       }
