@@ -50,3 +50,8 @@
   background-color:  #F8E1D4;
   color:  #f55e07;
 }
+th, td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
