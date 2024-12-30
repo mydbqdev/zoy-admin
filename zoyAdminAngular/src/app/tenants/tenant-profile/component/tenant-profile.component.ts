@@ -13,6 +13,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { TenantProfile } from '../model/transaction-history-model';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
+import { FilterData, FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
+import { ReportService } from 'src/app/finance/reports/service/reportService';
 
 @Component({
 	selector: 'app-tenant-profile',
@@ -21,33 +23,37 @@ import { MatSort, Sort } from '@angular/material/sort';
 })
 export class TenantProfileComponent implements OnInit, AfterViewInit {
 	public userNameSession: string = "";
-	  errorMsg: any = "";
-	  mySubscription: any;
-	  isExpandSideBar:boolean=true;
-	  @ViewChild(SidebarComponent) sidemenuComp;
-	  public rolesArray: string[] = [];
-	  submitted=false;
-	  public selectedTab:number=1;
-	  public sectionTabHeader:string="Persional Details";
-	  tenantId:string='';
-	  totalRecord:number=0;
-	  pageSizeOptions: number[] = [10, 25, 50];
-	  pageSize = 10;
-	  dataSourceTransaction:MatTableDataSource<TenantProfile>=new MatTableDataSource<TenantProfile>();
-	  displayedColumnsTransaction: string[] = [ 'due_type','payment_date', 'paid_amount', 'payment_mode', 'due_date', 'status','action']; 
-	  columnSortDirectionsOg: { [key: string]: string | null } = {
-		due_type: null,
-		payment_date: null,
-		paid_amount: null,
-		payment_mode: null,
-		due_date:null,
-	  status: null
-	};
-	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
-	_liveAnnouncer: any;
+	errorMsg: any = "";
+	mySubscription: any;
+	isExpandSideBar:boolean=true;
+	@ViewChild(SidebarComponent) sidemenuComp;
+	public rolesArray: string[] = [];
+	submitted=false;
+	public selectedTab:number=1;
+	public sectionTabHeader:string="Persional Details";
+	tenantId:string='';
+	pageSize = 25;
+	pageSizeOptions: number[] = [25, 50,100,200];
+	fromDate:string='';
+	toDate:string='';
+	reportName:string ='';
+	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
+	public lastPageSize:number=0;
+	public totalProduct:number=0;
+	sortActive:string="transactionDate";
+	sortDirection:string="desc";
+	selectedReportColumns: any[] = this.getColumnsForSelectedReport('Tenant Transactions Report');
+	reportDataList :any[]=[];
+	reportDataSource: MatTableDataSource<any>=new MatTableDataSource(this.reportDataList);
+	displayedColumns: string[] = [];
+	columnHeaders = {} ;
+	reportColumnsList = [] ;
+	reportNamesList = this.reportService.reportNamesList;
+	transactionHeader:string="";
+	transactionHeaderTenantName:string="";
 	@ViewChild(MatSort) sort: MatSort;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
-	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
+	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private reportService : ReportService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private zoyOwnerService : ZoyOwnerService) {
 			this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
@@ -87,6 +93,11 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 				this.tenantId=id;
 			}
 		});
+		this.fromDate=this.getLastMonthDate();
+		this.toDate=this.getCurrentDate();
+		this.reportColumnsList=reportService.reportColumnsList;
+		this.columnHeaders = reportService.columnHeaders;
+
 	}
 
 	ngOnDestroy() {
@@ -108,32 +119,133 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		this.selectedTab=selectTab;
 		this.sectionTabHeader=header;
 	}
-	announceSortChange(sortState: Sort): void {
-		this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
-		this.columnSortDirections[sortState.active] = sortState.direction;
-		  if (sortState.direction) {
-			this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-		  } else {
-			this._liveAnnouncer.announce('Sorting cleared');
-		  }
-		  //this.param.sortActive=sortState.active;
-		  //this.param.sortDirection=sortState.direction!="" ? sortState.direction:"asc";
-		 // this.param.pageIndex=0
-		  //this.paginator.pageIndex=0;
-		  //this.getHistoryReportList();
-	  }
-	  transactionHeader:string="";
-	  transactionHeaderTenantName:string="";
+	
+	  
 	  selectTransaction(selectTab:number,header:string,tenantName:string){
 		//this.selectedTab=selectTab;
 		this.transactionHeader=header;
 		this.transactionHeaderTenantName=tenantName;
 		if(header=='Due History'){
-			this.displayedColumnsTransaction = [ 'due_type','payment_date', 'due_date','paid_amount', 'payment_mode']; 
+			this.sortActive="pendingDueDate";
+			this.reportName = "Tenant Dues Report";
 		}else if(header=='Refund History'){
-			this.displayedColumnsTransaction = ['payment_date', 'due_date', 'paid_amount', 'payment_mode','status','action']; 
+			this.sortActive="pendingDueDate";
+			this.reportName = "Tenant Refunds Report";
 		}else{
-			this.displayedColumnsTransaction = [ 'due_type','payment_date', 'paid_amount', 'payment_mode', 'due_date', 'status','action']; 
+			this.sortActive="transactionDate";
+			this.reportName = "Tenant Transactions Report";
 		}
+
+		this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
+		this.reportDataSource.paginator = this.paginator;
+		this.getReportDetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
+	
 	}
+
+	
+
+	getColumnsForSelectedReport(name:string) {
+		const report = this.reportService.reportColumnsList.find(n => n.reportName === name);
+		return report?report.columns:[];
+	 }
+
+	  getCurrentDate(): string {
+		const today = new Date();
+		return this.formatDate(today);
+	  }
+	
+	  getLastMonthDate(): string {
+		const today = new Date();
+		today.setMonth(today.getMonth() - 1); 
+		return this.formatDate(today);
+	  }
+	
+	  formatDate(date: Date): string {
+		const year = date.getFullYear();
+		const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+		const day = date.getDate().toString().padStart(2, '0');
+		const hours = date.getHours().toString().padStart(2, '0');
+  		const minutes = date.getMinutes().toString().padStart(2, '0');
+
+		return `${year}-${month}-${day}T${hours}:${minutes}`
+	  }	
+
+	  pageChanged(event:any){
+		this.reportDataSource=new MatTableDataSource<any>();
+		if(this.lastPageSize!=event.pageSize){
+			this.paginator.pageIndex=0;
+			event.pageIndex=0;
+		   }
+		 this.pageSize=event.pageSize;
+		 this.getReportDetails(this.paginator.pageIndex , event.pageSize,this.sortActive,this.sortDirection);
+	   }
+
+ 	 onSortData(sort: Sort) {
+		this.sortActive=sort.active;
+		this.sortDirection=sort.direction;
+		this.paginator.pageIndex=0;
+		 this.getReportDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
+	   }
+	getReportDetails(pageIndex:number,pageSize:number,sortActive:string,sortDirection:string){
+		//	this.authService.checkLoginUserVlidaate();
+			if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
+				return;
+			}
+			this.lastPageSize=pageSize;
+			this.filtersRequest.pageIndex=pageIndex;
+			this.filtersRequest.pageSize=pageSize;
+			this.filtersRequest.sortActive=sortActive;
+			this.filtersRequest.sortDirection=sortDirection.toUpperCase();
+			let filterData = new FilterData();
+			filterData.tenantContactNum = '9876543210';
+			this.filtersRequest.filterData = JSON.stringify(filterData) ;
+			this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
+			this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
+			this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
+		
+			this.spinner.show();
+			this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+			  if(data?.data?.length >0){
+					this.totalProduct=data.count;
+					this.reportDataList=Object.assign([],data.data);
+					this.reportDataSource = new MatTableDataSource(this.reportDataList);
+				}else{
+				  this.totalProduct=0;
+				  this.reportDataList=Object.assign([]);
+				  this.reportDataSource =  new MatTableDataSource(this.reportDataList);
+				}
+				this.spinner.hide();
+			},error =>{
+			  this.spinner.hide();
+			  if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			  }else if (error.error && error.error.message) {
+				this.errorMsg =error.error.message;
+				console.log("Error:"+this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+				this.spinner.hide();
+			  } else {
+				this.spinner.hide();
+				if(error.status==500 && error.statusText=="Internal Server Error"){
+				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+				}else{
+				  let str;
+					if(error.status==400){
+					str=error.error;
+					}else{
+					  str=error.message;
+					  str=str.substring(str.indexOf(":")+1);
+					}
+					console.log("Error:"+str);
+					this.errorMsg=str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			  }
+			}); 
+		}
+	 
 }
