@@ -48,7 +48,6 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 
 
 	reportName:string ='Tenant Transactions Report';
-	downloadType :string='';
 	@ViewChild('reviewsModelClose') reviewsModelClose: any;
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
 	public userNameSession: string = "";
@@ -298,23 +297,21 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.cityLocation = this.cityLocationName;
 		this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 		this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
-		this.filtersRequest.downloadType = type ;//this.downloadType;
+		this.filtersRequest.downloadType = type ;
 		this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
-	
 			if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 				let extension= 'application/pdf';
-				switch (this.downloadType) {
+				switch (type) {
 					case 'pdf':
 						extension='application/pdf'
 						break;
 						case 'excel':
 						extension='application/vnd.ms-excel'
-						this.downloadType='xlsx'
+						type='xlsx'
 						break;
 						case 'csv':
 						extension='text/csv'
 						break;
-				
 					default:
 						break;
 				}
@@ -324,15 +321,13 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			  const link = document.createElement("a");
 			  link.href = fileURL;
 			  link.target = '_blank';
-			  link.download = this.reportName+'.'+this.downloadType;
+			  link.download = this.reportName+'.'+type;
 			  document.body.appendChild(link);
 			  link.click();
 			}else{
 			  this.notifyService.showWarning("The record is not available", "");
 			}
-			this.downloadType='';
 		  }, async error => {
-			this.downloadType='';
 			  this.spinner.hide();
 			  if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
