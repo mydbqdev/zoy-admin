@@ -13,6 +13,7 @@ import { MenuService } from 'src/app/components/header/menu.service';
 import { ProfileService } from 'src/app/profile/service/profile-service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { RoleScreenPrv } from 'src/app/setting/role-master/models/role-screen-model';
+import { NotificationModel } from '../model/notification-model';
 
 @Component({
 	selector: 'app-notification',
@@ -25,11 +26,12 @@ export class NotificationComponent implements OnInit {
 	mySubscription: any;
 	isExpandSideBar:boolean=true;
 	@ViewChild(SidebarComponent) sidemenuComp;
+	@ViewChild('modal', { static: false }) modal: any;
 	public rolesArray: string[] = [];
 	userInfo:UserInfo=new UserInfo();
 	userRolePermissions: RoleScreenPrv[] = [];
 	authorization:{ key: string; screen: string; order: number }[]=[];
-	selectedNotification: Notification | null;
+	selectedNotification: NotificationModel = new NotificationModel();
 	constructor(private encryptDecryptHelper:AESEncryptDecryptHelper,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private profileService:ProfileService,
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private menuService:MenuService) {
 		this.authService.checkLoginUserVlidaate();
@@ -81,13 +83,10 @@ export class NotificationComponent implements OnInit {
 		this.sidemenuComp.activeMenu(0, '');
 		this.dataService.setHeaderName("Notification");
 	}
-
-	@ViewChild('modal', { static: false }) modal: any;
-	selectNotification(notification: Notification): void {
+	selectNotification(notification: NotificationModel): void {
 	  this.selectedNotification = notification;
-	  console.log('this.selectedNotification', this.selectedNotification);
 	}
-	notifications: Notification[] = [
+	notifications: NotificationModel[] = [
 		{
 		  id: 1,
 		  date: "December 12, 2019",
@@ -126,10 +125,4 @@ export class NotificationComponent implements OnInit {
 	  ];
 	
 	}
-	interface Notification {
-	  id: number;
-	  date: string;
-	  message: string;
-	  iconClass: string;
-	  bgColor: string;
-	}
+	
