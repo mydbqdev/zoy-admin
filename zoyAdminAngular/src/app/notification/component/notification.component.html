@@ -1,0 +1,102 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+    <p style="color: white;">Loading ...</p>
+  </ngx-spinner>
+  <div id="page-top">
+      <!-- Page Wrapper -->
+      <div id="wrapper">    
+        <!-- Sidebar -->
+          <app-sidebar></app-sidebar>
+        <!-- End of Sidebar -->
+  
+          <!-- Content Wrapper -->
+          <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+              <!-- Main Content -->
+              <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+  
+                  <!-- Begin Page Content -->
+                  <div class="container-fluid">
+                      <!-- Page Heading -->
+                      <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                          <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Notifications </span></h3> 
+                      </div>
+                      <div class="card shadow mb-3">
+                        <div class="card-body" style="display: block;margin: 0px;padding: 2px;height: calc(100vh - 155px)" >
+                       <div class="notification-list">
+                        <div *ngFor="let notification of notifications;" >
+                          <a class="dropdown-item d-flex align-items-center notification-item" href="javascript:void(0)" (click)="selectNotification(notification)" data-bs-toggle="modal" data-bs-target="#NotificationAll">
+                            <div class="mr-3">
+                              <div class="icon-circle" [ngClass]="notification.bgColor">
+                                <i class="{{ notification.iconClass }} text-white"></i>
+                              </div>
+                            </div>
+                            <div>
+                              <div class="small text-gray-500">{{ notification.date }}</div>
+                              <span 
+                            *ngIf="notification.message.length > 100" 
+                            class="font-weight-bold" 
+                            style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                            {{ notification.message | slice: 0:100 }}...
+                          </span>
+                          
+                          <span 
+                            *ngIf="notification.message.length <= 100" 
+                            class="font-weight-bold" 
+                            style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                            {{ notification.message }}
+                          </span>
+                          
+                            </div>
+                            </a>
+                        </div>
+                        </div>
+                       </div>
+                       </div>                 
+                  </div>
+                  <!-- /.container-fluid -->
+              </div>
+              <!-- End of Main Content -->
+          </div>
+          <!-- End of Content Wrapper -->
+      </div>
+    <!-- End of Page Wrapper -->
+  
+  </div>
+ <!------To view  PopUp model------->
+<div class="modal fade" id="NotificationAll" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Notifications </h5>
+        <div>
+          
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div *ngIf="selectedNotification" class="notification-list">
+          <div class="d-flex align-items-center notification-item">
+            <div class="mr-3">
+              <div class="icon-circle" [ngClass]="selectedNotification.bgColor">
+                <i class="{{ selectedNotification.iconClass }} text-white"></i>
+              </div>
+            </div>
+            <div>
+                <div class="d-flex">
+                    <span class="small text-gray-500">
+                      {{ selectedNotification.date }}
+                    </span>
+                  </div>
+                <div class="small text-gray-500 font-weight-bold">{{ selectedNotification.message }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+   
+    </div>
+  </div>

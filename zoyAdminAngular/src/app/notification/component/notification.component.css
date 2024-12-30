@@ -1,0 +1,15 @@
+.notification-list {
+    padding: 4px; 
+}
+
+.notification-item {
+    padding: 3px 7px; 
+    margin-bottom: 4px; 
+    border-radius: 5px; 
+    background-color: #f8f9fa; 
+    text-decoration: none; 
+}
+
+.notification-item:hover {
+    background-color: #e9ecef; 
+}

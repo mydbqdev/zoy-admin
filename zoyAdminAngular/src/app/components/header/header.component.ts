@@ -18,6 +18,7 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
+
 export class HeaderComponent implements OnInit,AfterViewInit {
   userNameSession: any;
   mySubscription: any;
@@ -40,6 +41,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   imgeURL:any="";
   @ViewChild('sessionModelOpen') sessionModelOpen: any;
   @ViewChild('sessionModelClose') sessionModelClose: any;
+  selectedNotification: Notification | null;
   constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,
     private menuService: MenuService,private userActivityService: UserActivityService,private profileService:ProfileService,private notifyService: NotificationService
     ) {
@@ -93,6 +95,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         this.getTimeSinceLastAction();
         this.startValidateToken();
         this.loadProfilePhoto();
+        // this.truncateMultiple(".font-weight-bold", 100);
   }
   ngOnDestroy() {
     if (this.mySubscription) {
@@ -221,6 +224,81 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 			}
 			});
   }
-    
+
+  // truncateMultiple = (selector: string, maxChars: number): void => {
+  //   const elements = document.querySelectorAll<HTMLElement>(selector);
+  //   elements.forEach((element) => {
+  //     if (element.textContent) {
+  //       if (element.textContent.length > maxChars) {
+  //         element.textContent = element.textContent.slice(0, maxChars) + "...";
+  //       }
+  //       element.style.display = "-webkit-box";
+  //       element.style.webkitLineClamp = "2";
+  //       element.style.webkitBoxOrient = "vertical";
+  //       element.style.overflow = "hidden";
+  //       element.style.textOverflow = "ellipsis";
+  //     }
+  //   });
+  // };
+  @ViewChild('modal', { static: false }) modal: any;
+  selectNotification(notification: Notification): void {
+    this.selectedNotification = notification;
+    console.log('this.selectedNotification', this.selectedNotification);
+  }
+   notifications: Notification[] = [
+    {
+      id: 1,
+      title:"monthly report",
+      date: "December 12, 2019",
+      message: "A new monthly report is ready to download!",
+      iconClass: "fas fa-file-alt",
+      bgColor: "bg-primary",
+    },
+    {
+      id: 2,
+      title:"December report",
+      date: "December 7, 2019",
+      message: "$290.29 has been deposited into your account!",
+      iconClass: "fas fa-donate",
+      bgColor: "bg-success",
+    },
+    {
+      id: 3,
+      title:"Spending Alert",
+      date: "December 2, 2019",
+      message: "Spending Alert: We've noticed unusually high spending for your account.",
+      iconClass: "fas fa-exclamation-triangle",
+      bgColor: "bg-warning",
+    },
+    {
+      id: 4,
+      title:"December report",
+      date: "December 7, 2019",
+      message: "$290.29 has been deposited into your account!",
+      iconClass: "fas fa-donate",
+      bgColor: "bg-success",
+    },
+    {
+      id: 5,
+      title:"Spending Alert",
+      date: "December 2, 2019",
+      message: "Spending Alert: We've noticed unusually high spending for your account.",
+      iconClass: "fas fa-exclamation-triangle",
+      bgColor: "bg-warning",
+    },
+  ];
 
 }
+
+
+
+interface Notification {
+  id: number;
+  title: string;
+  date: string;
+  message: string;
+  iconClass: string;
+  bgColor: string;
+}
+
+
