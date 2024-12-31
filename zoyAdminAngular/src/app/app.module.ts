@@ -63,6 +63,8 @@ import { AreaNgxChartComponent } from './chart/areachart-home-ngx';
 import { LockedUserComponent } from './user-management/locked-user/component/locked-user.component';
 import { TenantsComponent } from './tenants/tenants/component/tenants.component';
 import { TenantProfileComponent } from './tenants/tenant-profile/component/tenant-profile.component';
+import { AlertNotificationComponent } from './alert-notification/component/alert-notification.component';
+import { AppNotificationRoutingModule } from './alert-notification/notification-routing.module';
 
 
 const appRoutes: Routes = [
@@ -106,7 +108,8 @@ const appRoutes: Routes = [
     AreaNgxChartComponent,
     DocumentUploadComponent,
     ConfigurationMasterComponent,
-    UserAuditComponent
+    UserAuditComponent,
+    AlertNotificationComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -130,6 +133,7 @@ const appRoutes: Routes = [
     TenantMenuRoutingModule,
     NgxChartsModule,
     AppDocumentUploadRoutingModule,
+    AppNotificationRoutingModule
     ],
   providers: [
     {
