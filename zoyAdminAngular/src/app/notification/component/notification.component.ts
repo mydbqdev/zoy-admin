@@ -89,6 +89,7 @@ export class NotificationComponent implements OnInit {
 	notifications: NotificationModel[] = [
 		{
 		  id: 1,
+		  title:"Mothly report",
 		  date: "December 12, 2019",
 		  message: "A new monthly report is ready to download!",
 		  iconClass: "fas fa-file-alt",
@@ -96,6 +97,7 @@ export class NotificationComponent implements OnInit {
 		},
 		{
 		  id: 2,
+		  title:"Mothly report",
 		  date: "December 7, 2019",
 		  message: "$290.29 has been deposited into your account!",
 		  iconClass: "fas fa-donate",
@@ -103,13 +105,15 @@ export class NotificationComponent implements OnInit {
 		},
 		{
 		  id: 3,
+		  title:"Mothly report",
 		  date: "December 2, 2019",
-		  message: "Spending Alert: We've noticed unusually high spending for your account. Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account ",
+		  message: "Spending Alert: We've noticed unusually high spending for your account. Spending Alert: We've noticed unusually  high spending for your account.Spending Alert: We've noticed unusually high spending for your account",
 		  iconClass: "fas fa-exclamation-triangle",
 		  bgColor: "bg-warning",
 		},
 		{
 		  id: 4,
+		  title:"Mothly report",
 		  date: "December 7, 2019",
 		  message: "$290.29 has been deposited into your account!",
 		  iconClass: "fas fa-donate",
@@ -117,6 +121,7 @@ export class NotificationComponent implements OnInit {
 		},
 		{
 		  id: 5,
+		  title:"Yearly report",
 		  date: "December 2, 2019",
 		  message: "Spending Alert: We've noticed unusually high spending for your account.",
 		  iconClass: "fas fa-exclamation-triangle",

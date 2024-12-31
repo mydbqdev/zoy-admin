@@ -37,14 +37,14 @@
                             <div>
                               <div class="small text-gray-500">{{ notification.date }}</div>
                               <span 
-                            *ngIf="notification.message.length > 100" 
+                            *ngIf="notification.message.length > 500" 
                             class="font-weight-bold" 
                             style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                            {{ notification.message | slice: 0:100 }}...
+                            {{ notification.message | slice: 0:500 }}...
                           </span>
                           
                           <span 
-                            *ngIf="notification.message.length <= 100" 
+                            *ngIf="notification.message.length <= 500" 
                             class="font-weight-bold" 
                             style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
                             {{ notification.message }}
@@ -77,23 +77,26 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-0">
-        <div *ngIf="selectedNotification" class="notification-list">
-          <div class="d-flex align-items-center notification-item">
-            <div class="mr-3">
-              <div class="icon-circle" [ngClass]="selectedNotification.bgColor">
-                <i class="{{ selectedNotification.iconClass }} text-white"></i>
-              </div>
-            </div>
-            <div>
-                <div class="d-flex">
-                    <span class="small text-gray-500">
-                      {{ selectedNotification.date }}
-                    </span>
-                  </div>
-                <div class="small text-gray-500 font-weight-bold">{{ selectedNotification.message }}</div>
+        <div *ngIf="selectedNotification" class="notification-list w-100">
+            <div class="d-flex align-items-center notification-item w-100">
+                <div class="mr-3">
+                    <div class="icon-circle" [ngClass]="selectedNotification.bgColor">
+                        <i class="{{ selectedNotification.iconClass }} text-white"></i>
+                    </div>
+                </div>
+                <div class="w-100">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <span class="text-truncate" style="max-width: 75%;">
+                            {{ selectedNotification.title }}
+                        </span>
+                        <span class="small text-gray-500" style="white-space: nowrap;">
+                            {{ selectedNotification.date }}
+                        </span>
+                    </div>
+                    <div class="small text-gray-500">{{ selectedNotification.message }}</div>
+                </div>
             </div>
           </div>
-        </div>
        </div>
       </div>
     </div>

@@ -233,6 +233,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
    notifications: NotificationModel[] = [
     {
       id: 1,
+      title:"Mothly report",
       date: "December 12, 2019",
       message: "A new monthly report is ready to download!",
       iconClass: "fas fa-file-alt",
@@ -240,6 +241,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     },
     {
       id: 2,
+      title:"Mothly report",
       date: "December 7, 2019",
       message: "$290.29 has been deposited into your account!",
       iconClass: "fas fa-donate",
@@ -247,6 +249,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     },
     {
       id: 3,
+      title:"Mothly report",
       date: "December 2, 2019",
       message: "Spending Alert: We've noticed unusually high spending for your account.",
       iconClass: "fas fa-exclamation-triangle",
@@ -254,6 +257,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     },
     {
       id: 4,
+      title:"Quaterly report",
       date: "December 7, 2019",
       message: "$290.29 has been deposited into your account!",
       iconClass: "fas fa-donate",
@@ -261,6 +265,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     },
     {
       id: 5,
+      title:"Year report",
       date: "December 2, 2019",
       message: "Spending Alert: We've noticed unusually high spending for your account.",
       iconClass: "fas fa-exclamation-triangle",

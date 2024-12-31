@@ -151,24 +151,27 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-0">
-            <div *ngIf="selectedNotification" class="notification-list">
-              <div class="d-flex align-items-center notification-item">
-                <div class="mr-3">
-                  <div class="icon-circle" [ngClass]="selectedNotification.bgColor">
-                    <i class="{{ selectedNotification.iconClass }} text-white"></i>
-                  </div>
-                </div>
-                <div>
-                    <div class="d-flex text-align-center">
-                        <span class="small text-gray-500" style="white-space: nowrap;">
-                          {{ selectedNotification.date }}
-                        </span>
-                      </div>
-                    <div class="small text-gray-500">{{ selectedNotification.message }}</div>
+            <div *ngIf="selectedNotification" class="notification-list w-100">
+                <div class="d-flex align-items-center notification-item w-100">
+                    <div class="mr-3">
+                        <div class="icon-circle" [ngClass]="selectedNotification.bgColor">
+                            <i class="{{ selectedNotification.iconClass }} text-white"></i>
+                        </div>
+                    </div>
+                    <div class="w-100">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <span class="text-truncate" style="max-width: 75%;">
+                                {{ selectedNotification.title }}
+                            </span>
+                            <span class="small text-gray-500" style="white-space: nowrap;">
+                                {{ selectedNotification.date }}
+                            </span>
+                        </div>
+                        <div class="small text-gray-500">{{ selectedNotification.message }}</div>
+                    </div>
                 </div>
               </div>
-            </div>
-          </div>
+           </div>
       </div>
     </div>
   </div>
