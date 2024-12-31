@@ -71,7 +71,7 @@ import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.DueMaster;
-import com.integration.zoy.utils.OwnerLeadPaginationRequest;
+import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
 
 @RestController
@@ -877,7 +877,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	}
 
 	@Override
-	public ResponseEntity<String> zoyPgOwnerDetails(OwnerLeadPaginationRequest paginationRequest) {
+	public ResponseEntity<String> zoyPgOwnerDetails(PaginationRequest paginationRequest) {
 		ResponseBody response = new ResponseBody();
 		try {
 			Page<OwnerPropertyDTO> ownerPropertyList = userDBImpl.findAllOwnerWithPropertyCount( paginationRequest);
@@ -898,7 +898,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	
 	   //my Audit Activities log Details
 		@Override
-		public ResponseEntity<String> zoyAuditActivitiesLogDetails(OwnerLeadPaginationRequest paginationRequest) {
+		public ResponseEntity<String> zoyAuditActivitiesLogDetails(PaginationRequest paginationRequest) {
 			ResponseBody response = new ResponseBody();
 			try {
 				CommonResponseDTO<AuditActivitiesLogDTO> auditActivitiesLogList = userDBImpl.getAuditActivitiesLogCount(paginationRequest);
@@ -929,7 +929,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				
 	        //User Audit reports Download
 				@Override
-				public ResponseEntity<byte[]> downloadUserAuditReport(OwnerLeadPaginationRequest paginationRequest) {
+				public ResponseEntity<byte[]> downloadUserAuditReport(PaginationRequest paginationRequest) {
 					byte[] fileData=null;
 					String fileName ="";
 					MediaType contentType = null;

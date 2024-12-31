@@ -5,6 +5,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +48,8 @@ import com.integration.zoy.repository.UserEkycTypeMasterRepository;
 import com.integration.zoy.repository.UserMasterRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
 import com.integration.zoy.utils.CommonResponseDTO;
-import com.integration.zoy.utils.OwnerLeadPaginationRequest;
+import com.integration.zoy.utils.PaginationRequest;
+import com.integration.zoy.utils.TenantDetails;
 
 @Service
 public class UserDBService implements UserDBImpl{
@@ -68,12 +71,15 @@ public class UserDBService implements UserDBImpl{
 
 	@Autowired
 	private ZoyPgOwnerDetailsRepository zoyPgOwnerDetailsRepository;
-	
+
 	@Autowired
 	private UserMasterRepository masterRepository;
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	@Autowired
+	private UserMasterRepository userRepo;
 
 
 	//Notification Mode	
@@ -240,7 +246,7 @@ public class UserDBService implements UserDBImpl{
 	}
 
 	@Override
-	public Page<OwnerPropertyDTO> findAllOwnerWithPropertyCount(OwnerLeadPaginationRequest paginationRequest) {
+	public Page<OwnerPropertyDTO> findAllOwnerWithPropertyCount(PaginationRequest paginationRequest) {
 		Map<String, String> sortFieldMapping = new HashMap<>();
 		sortFieldMapping.put("owner_name", "pg_owner_name");
 		sortFieldMapping.put("owner_email", "pg_owner_email");
@@ -248,8 +254,8 @@ public class UserDBService implements UserDBImpl{
 		sortFieldMapping.put("number_of_properties", "numberOfProperties");
 		String sortColumn = sortFieldMapping.getOrDefault(paginationRequest.getSortActive(), "pg_owner_name");
 		Sort sort = Sort.by(Sort.Order.by(sortColumn)
-			    .with(Sort.Direction.fromString(paginationRequest.getSortDirection()))
-			    .ignoreCase());
+				.with(Sort.Direction.fromString(paginationRequest.getSortDirection()))
+				.ignoreCase());
 
 		Pageable pageable = PageRequest.of(paginationRequest.getPageIndex(), paginationRequest.getPageSize(), sort);
 
@@ -272,109 +278,109 @@ public class UserDBService implements UserDBImpl{
 		return masterRepository.findById(userId).orElse(null);
 	}
 
-	
-	
-	
+
+
+
 	@Override
-	public CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) throws WebServiceException{
-			StringBuilder queryBuilder = new StringBuilder();
-	       try {
-			  queryBuilder.append("select concat(um.first_name,' ',um.last_name )as userName, ah.created_on, ah.history_data, ah.operation , ah.user_email  FROM audit_history ah\r\n"
-	        		+ "	join user_master um  on ah.user_email = um.user_email Where 1=1 ");
-	        
-	        if(!"".equals(paginationRequest.getUserEmail()) && null != paginationRequest.getUserEmail()) {
-	        	 queryBuilder.append("AND um.user_email = '"+paginationRequest.getUserEmail()+"' ");
-	        }
-	        
-	        if(!"".equals(paginationRequest.getActivity()) && null != paginationRequest.getActivity()) {
-	           	 queryBuilder.append("AND ah.operation = '"+paginationRequest.getActivity()+"' ");
-	        }
-	        
-	        if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
-    		    queryBuilder.append(" AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) "
-    		 		+ " or (LOWER( concat(um.first_name,' ',um.last_name )) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.operation) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
-	         }	     
-	            
-	        if("created_on".equals(paginationRequest.getSortActive())) {
-	         	queryBuilder.append(" order by ah.created_on "+paginationRequest.getSortDirection());
-	        	
-	        }else if("history_data".equals(paginationRequest.getSortActive())) {
-	        	queryBuilder.append(" order by ah.history_data "+paginationRequest.getSortDirection());
-	        
-	       }else if ("user_name".equals(paginationRequest.getSortActive())) {
-	    	     queryBuilder.append(" order by concat(um.first_name, ' ', um.last_name) " + paginationRequest.getSortDirection());
-	    	} else if ("type".equals(paginationRequest.getSortActive())) {
-	    		 queryBuilder.append(" order by ah.operation " + paginationRequest.getSortDirection());
-	    	} else {
-	    		queryBuilder.append(" order by ah.created_on DESC ");
-	    	}
-	        
-	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
-	        
+	public CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(PaginationRequest paginationRequest) throws WebServiceException{
+		StringBuilder queryBuilder = new StringBuilder();
+		try {
+			queryBuilder.append("select concat(um.first_name,' ',um.last_name )as userName, ah.created_on, ah.history_data, ah.operation , ah.user_email  FROM audit_history ah\r\n"
+					+ "	join user_master um  on ah.user_email = um.user_email Where 1=1 ");
+
+			if(!"".equals(paginationRequest.getUserEmail()) && null != paginationRequest.getUserEmail()) {
+				queryBuilder.append("AND um.user_email = '"+paginationRequest.getUserEmail()+"' ");
+			}
+
+			if(!"".equals(paginationRequest.getActivity()) && null != paginationRequest.getActivity()) {
+				queryBuilder.append("AND ah.operation = '"+paginationRequest.getActivity()+"' ");
+			}
+
+			if(!"".equals(paginationRequest.getSearchText()) && null != paginationRequest.getSearchText()) {
+				queryBuilder.append(" AND ((concat(' ',ah.created_on) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.history_data) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) "
+						+ " or (LOWER( concat(um.first_name,' ',um.last_name )) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' ) or (LOWER(ah.operation) LIKE '%"+paginationRequest.getSearchText().toLowerCase() +"%' )  ) ");
+			}	     
+
+			if("created_on".equals(paginationRequest.getSortActive())) {
+				queryBuilder.append(" order by ah.created_on "+paginationRequest.getSortDirection());
+
+			}else if("history_data".equals(paginationRequest.getSortActive())) {
+				queryBuilder.append(" order by ah.history_data "+paginationRequest.getSortDirection());
+
+			}else if ("user_name".equals(paginationRequest.getSortActive())) {
+				queryBuilder.append(" order by concat(um.first_name, ' ', um.last_name) " + paginationRequest.getSortDirection());
+			} else if ("type".equals(paginationRequest.getSortActive())) {
+				queryBuilder.append(" order by ah.operation " + paginationRequest.getSortDirection());
+			} else {
+				queryBuilder.append(" order by ah.created_on DESC ");
+			}
+
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+
 			int count=query.getResultList().size();
-			
+
 			if(null == paginationRequest.getDownloadType() || paginationRequest.getDownloadType().equals("")) {
-			query.setFirstResult(paginationRequest.getPageIndex() * paginationRequest.getPageSize());
-			query.setMaxResults(paginationRequest.getPageSize());
+				query.setFirstResult(paginationRequest.getPageIndex() * paginationRequest.getPageSize());
+				query.setMaxResults(paginationRequest.getPageSize());
 			}
 
 			List<Object[]> activityLogData = query.getResultList();
-	        List<AuditActivitiesLogDTO> list = new ArrayList<>(activityLogData.size());
+			List<AuditActivitiesLogDTO> list = new ArrayList<>(activityLogData.size());
 
-	        for (Object[] details : activityLogData) {
-	            AuditActivitiesLogDTO auditActivityData = new AuditActivitiesLogDTO();
-	            auditActivityData.setUserName(String.valueOf(details[0]));
-	            auditActivityData.setCreatedOn(String.valueOf(details[1]));
-	            auditActivityData.setHistoryData(String.valueOf(details[2]));
-	            auditActivityData.setType(String.valueOf(details[3]));
-	            list.add(auditActivityData);
-	        }
-	        return new CommonResponseDTO<>(list, count);
-	       }catch (Exception e) {
-	    	   log.error("Error in getAuditActivitiesLogCount() service :"+e);
-				new ZoyAdminApplicationException(e, "");
-		   }
-	       return null;
+			for (Object[] details : activityLogData) {
+				AuditActivitiesLogDTO auditActivityData = new AuditActivitiesLogDTO();
+				auditActivityData.setUserName(String.valueOf(details[0]));
+				auditActivityData.setCreatedOn(String.valueOf(details[1]));
+				auditActivityData.setHistoryData(String.valueOf(details[2]));
+				auditActivityData.setType(String.valueOf(details[3]));
+				list.add(auditActivityData);
+			}
+			return new CommonResponseDTO<>(list, count);
+		}catch (Exception e) {
+			log.error("Error in getAuditActivitiesLogCount() service :"+e);
+			new ZoyAdminApplicationException(e, "");
+		}
+		return null;
 	}
-	
+
 
 	//User name List 
 	@Override
 	public List<UserNameDTO> getUserNameList() throws WebServiceException {
-	    List<UserNameDTO> userList = new ArrayList<>();
-	      try {
-	        List<Object[]> list = masterRepository.getUsersNameList();
+		List<UserNameDTO> userList = new ArrayList<>();
+		try {
+			List<Object[]> list = masterRepository.getUsersNameList();
 
-	       for (Object[] row : list) {
-	           String username = (String) row[0];  
-	           String useremail = (String) row[1]; 
- 
-	           UserNameDTO userNameDTO = new UserNameDTO(username, useremail);
-  	           userList.add(userNameDTO);
-	        }
-	     } catch(Exception e) {
-	    	 	log.error("Error in getUserNameList() service :"+e);
-				new ZoyAdminApplicationException(e, "");
-		   }
+			for (Object[] row : list) {
+				String username = (String) row[0];  
+				String useremail = (String) row[1]; 
 
-	    return userList;
+				UserNameDTO userNameDTO = new UserNameDTO(username, useremail);
+				userList.add(userNameDTO);
+			}
+		} catch(Exception e) {
+			log.error("Error in getUserNameList() service :"+e);
+			new ZoyAdminApplicationException(e, "");
+		}
+
+		return userList;
 	}
-	
+
 	//User Audit download
 	@Override
-	public byte[] generateDynamicReport(OwnerLeadPaginationRequest paginationRequest ) throws WebServiceException {
+	public byte[] generateDynamicReport(PaginationRequest paginationRequest ) throws WebServiceException {
 		try {
 			String[] headers= {" USER NAME","CREATED ON","TYPE","HISTORY DATA"};
 			CommonResponseDTO<AuditActivitiesLogDTO> data = getAuditActivitiesLogCount(paginationRequest);
-			
+
 			if(paginationRequest.getDownloadType().equals("csv")) {
 				return generateCsvFile(data, headers ,paginationRequest.getIsUserActivity() );
 			}else if(paginationRequest.getDownloadType().equals("excel")){
 				return generateExcelFile(data, headers,paginationRequest.getIsUserActivity() );
 			}else {
-				 return new byte[0];
+				return new byte[0];
 			}
-			
+
 		}catch (Exception e) {
 			new ZoyAdminApplicationException(e, "");
 		}
@@ -382,38 +388,38 @@ public class UserDBService implements UserDBImpl{
 	}
 
 	public byte[] generateExcelFile(CommonResponseDTO<AuditActivitiesLogDTO> data,String[] headers ,boolean isUserActivity) {
-		
+
 		if (data == null || null == data.getData() || data.getData().size()<1 || data.getCount()<1) {
-	        return new byte[0];
-	    }
+			return new byte[0];
+		}
 		List <AuditActivitiesLogDTO> reportData = data.getData();
-		
+
 		try (XSSFWorkbook workbook = new XSSFWorkbook()) {			
 			Sheet sheet = workbook.createSheet("User Audit Report");
-				Row headerRow = sheet.createRow(0);
-				
-				if(isUserActivity) {
-						headerRow.createCell(0).setCellValue("CREATED ON");
-						headerRow.createCell(1).setCellValue("HISTORY DATA");
-								
-					for (int i = 0; i < reportData.size(); i++) {
-						Row dataRow = sheet.createRow(i + 1);
-						dataRow.createCell(0).setCellValue(reportData.get(i).getCreatedOn());
-						dataRow.createCell(1).setCellValue(reportData.get(i).getHistoryData());
-					}
-				}else {
-					for (int i = 0; i < headers.length; i++) {
-						headerRow.createCell(i).setCellValue(headers[i]);
-					}				
-					for (int i = 0; i < reportData.size(); i++) {
-						Row dataRow = sheet.createRow(i + 1);
-						dataRow.createCell(0).setCellValue(reportData.get(i).getUserName());
-						dataRow.createCell(1).setCellValue(reportData.get(i).getCreatedOn());
-						dataRow.createCell(2).setCellValue(reportData.get(i).getType());
-						dataRow.createCell(3).setCellValue(reportData.get(i).getHistoryData());
-					}
+			Row headerRow = sheet.createRow(0);
+
+			if(isUserActivity) {
+				headerRow.createCell(0).setCellValue("CREATED ON");
+				headerRow.createCell(1).setCellValue("HISTORY DATA");
+
+				for (int i = 0; i < reportData.size(); i++) {
+					Row dataRow = sheet.createRow(i + 1);
+					dataRow.createCell(0).setCellValue(reportData.get(i).getCreatedOn());
+					dataRow.createCell(1).setCellValue(reportData.get(i).getHistoryData());
 				}
-				
+			}else {
+				for (int i = 0; i < headers.length; i++) {
+					headerRow.createCell(i).setCellValue(headers[i]);
+				}				
+				for (int i = 0; i < reportData.size(); i++) {
+					Row dataRow = sheet.createRow(i + 1);
+					dataRow.createCell(0).setCellValue(reportData.get(i).getUserName());
+					dataRow.createCell(1).setCellValue(reportData.get(i).getCreatedOn());
+					dataRow.createCell(2).setCellValue(reportData.get(i).getType());
+					dataRow.createCell(3).setCellValue(reportData.get(i).getHistoryData());
+				}
+			}
+
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			workbook.write(outputStream);
 			return outputStream.toByteArray();
@@ -421,48 +427,89 @@ public class UserDBService implements UserDBImpl{
 			throw new RuntimeException("Error generating Excel file", e);
 		}
 	}
-	
+
 	public byte[] generateCsvFile(CommonResponseDTO<AuditActivitiesLogDTO> data,String[] headers ,boolean isUserActivity ) {
-		
+
 		if (data == null || null == data.getData() || data.getData().size()<1 || data.getCount()<1) {
-	        return new byte[0];
-	    }
+			return new byte[0];
+		}
 		List <AuditActivitiesLogDTO> reportData = data.getData();
-	   
-	    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	         PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
 
-	    	if(isUserActivity) {
-	    		 writer.println( "CREATED ON,HISTORY DATA");
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
 
-		            for (AuditActivitiesLogDTO dto : reportData) {
-		            	writer.printf("\"%s\",\"%s\"%n",
-		            			dto.getCreatedOn(),
-		            			dto.getHistoryData()
-		                       
-		                       );
-		               }
-	               	}else {
-	    	    	 writer.println( String.join(",", headers));
-		            for (AuditActivitiesLogDTO dto : reportData) {
-		            	writer.printf("\"%s\",\"%s\",\"%s\",\"%s\"%n",
-		            			dto.getUserName(),
-		            			dto.getCreatedOn(),
-		            			dto.getType(),
-		            			dto.getHistoryData()
-		                       
-		                       );
-		            }
-	    	}
-	    	
+			if(isUserActivity) {
+				writer.println( "CREATED ON,HISTORY DATA");
 
-	        writer.flush();
-	        return outputStream.toByteArray();
+				for (AuditActivitiesLogDTO dto : reportData) {
+					writer.printf("\"%s\",\"%s\"%n",
+							dto.getCreatedOn(),
+							dto.getHistoryData()
 
-	    } catch (Exception e) {
-	        throw new RuntimeException("Error generating CSV file", e);
-	    }
+							);
+				}
+			}else {
+				writer.println( String.join(",", headers));
+				for (AuditActivitiesLogDTO dto : reportData) {
+					writer.printf("\"%s\",\"%s\",\"%s\",\"%s\"%n",
+							dto.getUserName(),
+							dto.getCreatedOn(),
+							dto.getType(),
+							dto.getHistoryData()
+
+							);
+				}
+			}
+
+
+			writer.flush();
+			return outputStream.toByteArray();
+
+		} catch (Exception e) {
+			throw new RuntimeException("Error generating CSV file", e);
+		}
 	}
-	
+
+	@Override
+	public Page<TenantDetails> findAllTenantDetails(PaginationRequest paginationRequest) {
+		String sortColumn = paginationRequest.getSortActive() != null ? paginationRequest.getSortActive() : "user_created_at";
+		String sortDirection = paginationRequest.getSortDirection() != null ? paginationRequest.getSortDirection().toUpperCase() : "ASC";
+
+		if (sortColumn == null || sortColumn.isEmpty()) {
+			sortColumn = "user_created_at"; 
+		}
+
+		Sort sort;
+		if (sortColumn.equals("user_created_at")) {
+			sort = Sort.by(Sort.Order.by(sortColumn).with(Sort.Direction.fromString(sortDirection)));
+		} else {
+			sort = Sort.by(Sort.Order.by(sortColumn).with(Sort.Direction.fromString(sortDirection)).ignoreCase());
+		}
+
+		Pageable pageable = PageRequest.of(paginationRequest.getPageIndex(), paginationRequest.getPageSize(), sort);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			Page<Object[]> results = userRepo.getTenantDetails(
+					pageable, 
+					Optional.ofNullable(paginationRequest.getFilter().getSearchText()).orElse(""), 
+					Optional.ofNullable(paginationRequest.getFilter().getStartDate()).orElse("1970-01-01 00:00:00"), 
+					Optional.ofNullable(paginationRequest.getFilter().getEndDate()).orElse("9999-12-31 23:59:59"),
+					Optional.ofNullable(paginationRequest.getFilter().getStatus()).orElse(null)
+					);
+			return results.map(result -> new TenantDetails(
+					result[0] != null ? (String) result[0] : "",
+					result[1] != null ? (String) result[1] : "",
+					result[2] != null ? (String) result[2] : "",
+					result[3] != null ? (String) result[3] : "",
+					result[4] != null ? (String) result[4] : "",
+					result[5] != null ? (String) result[5] : "",
+					result[6] != null ? dateFormat.format((Timestamp) result[6]) : null
+					));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Page.empty();
+		}
+	}
+
 
 }

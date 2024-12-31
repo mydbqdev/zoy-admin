@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
@@ -32,7 +30,7 @@ import com.integration.zoy.model.RoomType;
 import com.integration.zoy.model.RoomTypeId;
 import com.integration.zoy.model.ShareType;
 import com.integration.zoy.model.ShareTypeId;
-import com.integration.zoy.utils.OwnerLeadPaginationRequest;
+import com.integration.zoy.utils.PaginationRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -461,7 +459,7 @@ public interface ZoyAdminMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/manage-owners",
 	produces = { "application/json" })
-	ResponseEntity<String> zoyPgOwnerDetails(@RequestBody OwnerLeadPaginationRequest paginationRequest);
+	ResponseEntity<String> zoyPgOwnerDetails(@RequestBody PaginationRequest paginationRequest);
 	
 	
 	@Operation(summary = "audit activities log details", description = "getting audit activities log details", security = {
@@ -473,7 +471,7 @@ public interface ZoyAdminMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/audit-activitieslog",
 	produces = { "application/json" })
-	ResponseEntity<String> zoyAuditActivitiesLogDetails(@RequestBody OwnerLeadPaginationRequest paginationRequest);
+	ResponseEntity<String> zoyAuditActivitiesLogDetails(@RequestBody PaginationRequest paginationRequest);
 	
 	@Operation(summary = "user name list details", description = "getting user name list details", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
@@ -494,7 +492,7 @@ public interface ZoyAdminMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/download_user_audit_report",
 	produces = { "application/json" })
-	ResponseEntity<byte[]> downloadUserAuditReport(@RequestBody OwnerLeadPaginationRequest paginationRequest);
+	ResponseEntity<byte[]> downloadUserAuditReport(@RequestBody PaginationRequest paginationRequest);
 
 }
 
