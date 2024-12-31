@@ -1,0 +1,146 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+    <p style="color: white;">Loading ...</p>
+  </ngx-spinner>
+  <div id="page-top">
+      <!-- Page Wrapper -->
+      <div id="wrapper">    
+        <!-- Sidebar -->
+          <app-sidebar></app-sidebar>
+        <!-- End of Sidebar -->
+  
+          <!-- Content Wrapper -->
+          <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+              <!-- Main Content -->
+              <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+  
+                  <!-- Begin Page Content -->
+                  <div class="container-fluid">
+                      <!-- Page Heading -->
+                      <div class="d-flex mb-3">
+                          <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Alert </span><span class="text-header-800-blue">& Notification</span></h3>  
+                          <div class="ml-auto">
+                           
+                          </div>
+                      </div>
+  
+                      <!-- Content Row -->
+                          <div class="row">
+                              <div class="col-xl-12 col-md-12 mb-2">                               
+                                  <div>
+                                      <div class="card">
+                                          <div class="card-body" style="padding:2px; margin:0px;">
+                                              <div style="max-height: calc(100vh - 202px); overflow: auto;">
+                                                  <div class="desc-inner" style="height: calc(100vh - 202px);">
+                                                    <div class="p-2">
+                                                    <!-- for loop with below div -->
+                                                    <div >  
+                                                    <div class="d-flex w-100 m-2">
+                                                      <div class="mr-3">
+                                                        <div class="icon-circle bg-primary ml-1">
+                                                          <i class="fas fa-file-alt text-white"></i>
+                                                        </div>
+                                                      </div>
+                                                      <div class="w-100">
+                                                          <div class="d-flex">
+                                                            <div class="text-gray-500">Title</div>
+                                                            <div class="small ml-auto mr-2" style="font-style: italic;">December 12, 2019</div>
+                                                          </div>
+                                                          <div class="small">A new monthly report is ready to download!</div>
+                                                      </div>
+                                                    </div>
+                                                    <hr>
+                                                    </div>
+
+                                                    <div >  
+                                                      <div class="d-flex w-100 m-2">
+                                                        <div class="mr-3">
+                                                          <div class="icon-circle bg-success ml-1">
+                                                            <i class="fas fa-donate text-white"></i>
+                                                          </div>
+                                                        </div>
+                                                        <div class="w-100">
+                                                            <div class="d-flex">
+                                                              <div class="text-gray-500">Title</div>
+                                                              <div class="small ml-auto mr-2" style="font-style: italic;">December 7, 2019</div>
+                                                            </div>
+                                                            <div class="small">$290.29 has been deposited into your account!</div>
+                                                        </div>
+                                                      </div>
+                                                      <hr>
+                                                    </div>
+
+                                                    <div >  
+                                                      <div class="d-flex w-100 m-2">
+                                                        <div class="mr-3">
+                                                          <div class="icon-circle bg-warning ml-1">
+                                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                                          </div>
+                                                        </div>
+                                                        <div class="w-100">
+                                                            <div class="d-flex">
+                                                              <div class="text-gray-500">Title</div>
+                                                              <div class="small ml-auto mr-2" style="font-style: italic;">December 2, 2019</div>
+                                                            </div>
+                                                            <div class="small">Spending Alert: We've noticed unusually high spending for your account. <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#NotificationAll">more</a></div>
+                                                        </div>
+                                                      </div>
+                                                      <hr>
+                                                    </div>
+                                                    
+                                                  </div>
+                                                  </div>
+                                              </div>                                      
+                                              <!-- Paginator -->
+                                              <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
+                                          </div>                                                                         
+                                      </div>
+                                  </div>
+                              </div>  
+                           </div>   
+                     </div>
+                  <!-- /.container-fluid -->
+              </div>
+              <!-- End of Main Content -->
+          </div>
+          <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+  </div>
+
+
+  <!------To view  PopUp model------->
+<div class="modal fade" id="NotificationAll" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Alert & Notifications Details </h5>
+        <div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div >
+            <div class="d-flex w-100">
+                <div class="mr-3">
+                  <div class="icon-circle bg-warning ml-1">
+                    <i class="fas fa-exclamation-triangle text-white"></i>
+                  </div>
+                </div>
+                <div class="w-100">
+                    <div class="d-flex">
+                        <div class="text-gray-500">Title</div>
+                        <div class="small ml-auto mr-2" style="font-style: italic;">December 2, 2019</div>
+                    </div>
+                    <div class="small mr-2">text description.....</div>
+                </div>
+            </div>
+          </div>
+       </div>
+      </div>
+    </div>
+  </div>
