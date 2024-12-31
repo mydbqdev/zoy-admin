@@ -47,13 +47,13 @@
                                                         </div>
                                                         <div class="w-100">
                                                           <div class="d-flex">
-                                                            <div class="text-gray-500"> {{ notification.title }}</div>
+                                                            <div class="text-gray-500 font-weight-bold"> {{ notification.title }}</div>
                                                             <div class="small ml-auto mr-2" style="font-style: italic;">{{ notification.date }}</div>
                                                           </div>
-                                                          <div *ngIf="notification.message.length > 100" class="font-weight-bold small text-gray-500">
+                                                          <div *ngIf="notification.message.length > 100" class="small">
                                                             {{ notification.message | slice: 0:100 }} ...<a href="javascript:void(0)" (click)="selectNotification(notification)"  data-bs-toggle="modal" data-bs-target="#NotificationAll">more</a>
                                                           </div>
-                                                          <div *ngIf="notification.message.length <= 100" class="font-weight-bold small text-gray-500">
+                                                          <div *ngIf="notification.message.length <= 100" class="small">
                                                             {{ notification.message }}
                                                           </div>
                                                         </div>
