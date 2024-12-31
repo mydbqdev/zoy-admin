@@ -120,12 +120,20 @@ export class BulkUploadComponent {
 		this.filevali=false;
 		this.upfile=event.target.files[0]; 
 		const fileType = this.upfile.type;
-		if (this.bulkUpload.category=='Tenant' && fileType !== 'text/csv') {
+		if (this.bulkUpload.category=='Tenant'){
+		 if(fileType !== 'text/csv') {
 			this.filevali=true;
-	    }
-		if (this.bulkUpload.category=='PG Property' && (fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && fileType !== 'application/vnd.ms-excel')) {
-		  this.filevali=true;
-	   	}    
+		 }else{
+			this.filevali=false;
+		 }
+		}
+		if (this.bulkUpload.category=='PG Property' ){
+			if(fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && fileType !== 'application/vnd.ms-excel') {
+		  	this.filevali=true;
+			}else{
+				this.filevali=false;
+			}
+	    }    
 	}
   
 	getUploadFileDetails() {

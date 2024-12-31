@@ -1,4 +1,4 @@
-First Name,Last Name,Phone Number,eMail,Date Of Birth,Gender,Permanent Address,Out Date,Floor,Room,Bed Number,Rent Cycle, Deposit Paid 
-20- Alphabets,20- Alphabets,10 Digits,25 Charectes,DD-MM-YYYY,Male/ Female / Transgender,200 Charecters,DD-MM-YYYY,20 Charecters,20 Charecters,,"01-01 , 10-10, 15-15", Amount 
-Rajesh,T,9089765431,rajesh@gmail.com,01-01-1991,Male,Karnataka,01-10-2025,First Floor,Room 201,201-A,01-01,10000
-Rajendran,M,7866875642,rajendran@gmail.com,01-01-1991,Male,Karnataka,01-10-2025,Secound Floor,Room 201,201-B,10-10,10000
+First Name,Last Name,Phone Number,eMail,Date Of Birth,Gender,Permanent Address,Out Date,Floor,Room,Bed Number 
+20- Alphabets,20- Alphabets,10 Digits,25 Charectes,DD-MM-YYYY,Male/ Female / Transgender,200 Charecters,DD-MM-YYYY,20 Charecters,20 Charecters,
+Rajesh,T,9089765431,rajesh@gmail.com,01-01-1991,Male,Karnataka,01-10-2025,First Floor,Room 201,201-A
+Rajendran,M,7866875642,rajendran@gmail.com,01-01-1991,Male,Karnataka,01-10-2025,Secound Floor,Room 201,201-B
