@@ -12,6 +12,7 @@ import { MenuService } from './menu.service';
 import { UserActivityService } from 'src/app/user-activity.service';
 import { ProfileService } from 'src/app/profile/service/profile-service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
+import { AlertNotificationModel } from 'src/app/alert-notification/model/alert-notification-model';
 
 @Component({
   selector: 'app-header',
@@ -40,6 +41,8 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   imgeURL:any="";
   @ViewChild('sessionModelOpen') sessionModelOpen: any;
   @ViewChild('sessionModelClose') sessionModelClose: any;
+  @ViewChild('modal', { static: false }) modal: any;
+  selectedNotification: AlertNotificationModel = new AlertNotificationModel();
   constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,
     private menuService: MenuService,private userActivityService: UserActivityService,private profileService:ProfileService,private notifyService: NotificationService
     ) {
@@ -222,5 +225,51 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 			});
   }
     
+
+  selectNotification(notification: AlertNotificationModel): void {
+    this.selectedNotification = notification;
+  }
+   notifications: AlertNotificationModel[] = [
+    {
+      id: 1,
+      title:"Mothly report",
+      date: "December 12, 2019",
+      message: "A new monthly report is ready to download!",
+      iconClass: "fas fa-file-alt",
+      bgColor: "bg-primary",
+    },
+    {
+      id: 2,
+      title:"Mothly report",
+      date: "December 7, 2019",
+      message: "$290.29 has been deposited into your account!",
+      iconClass: "fas fa-donate",
+      bgColor: "bg-success",
+    },
+    {
+      id: 3,
+      title:"Mothly report",
+      date: "December 2, 2019",
+      message: "Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting",
+      iconClass: "fas fa-exclamation-triangle",
+      bgColor: "bg-warning",
+    },
+    {
+      id: 4,
+      title:"Quaterly report",
+      date: "December 7, 2019",
+      message: "$290.29 has been deposited into your account!",
+      iconClass: "fas fa-donate",
+      bgColor: "bg-success",
+    },
+    {
+      id: 5,
+      title:"Year report",
+      date: "December 2, 2019",
+      message: "Spending Alert: We've noticed unusually high spending for your account.",
+      iconClass: "fas fa-exclamation-triangle",
+      bgColor: "bg-warning",
+    },
+  ];
 
 }
