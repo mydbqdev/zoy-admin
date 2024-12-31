@@ -38,65 +38,33 @@
                                                   <div class="desc-inner" style="height: calc(100vh - 202px);">
                                                     <div class="p-2">
                                                     <!-- for loop with below div -->
-                                                    <div >  
-                                                    <div class="d-flex w-100 m-2">
-                                                      <div class="mr-3">
-                                                        <div class="icon-circle bg-primary ml-1">
-                                                          <i class="fas fa-file-alt text-white"></i>
+                                                    <div *ngFor="let notification of dataSource.data">
+                                                      <div class="d-flex w-100 m-2">
+                                                        <div class="mr-3">
+                                                          <div class="icon-circle" [ngClass]="notification.bgColor">
+                                                            <i class="{{ notification.iconClass }} text-white"></i>
+                                                          </div>
                                                         </div>
-                                                      </div>
-                                                      <div class="w-100">
+                                                        <div class="w-100">
                                                           <div class="d-flex">
-                                                            <div class="text-gray-500">Title</div>
-                                                            <div class="small ml-auto mr-2" style="font-style: italic;">December 12, 2019</div>
+                                                            <div class="text-gray-500"> {{ notification.title }}</div>
+                                                            <div class="small ml-auto mr-2" style="font-style: italic;">{{ notification.date }}</div>
                                                           </div>
-                                                          <div class="small">A new monthly report is ready to download!</div>
-                                                      </div>
-                                                    </div>
-                                                    <hr>
-                                                    </div>
-
-                                                    <div >  
-                                                      <div class="d-flex w-100 m-2">
-                                                        <div class="mr-3">
-                                                          <div class="icon-circle bg-success ml-1">
-                                                            <i class="fas fa-donate text-white"></i>
+                                                          <div *ngIf="notification.message.length > 100" class="font-weight-bold small text-gray-500">
+                                                            {{ notification.message | slice: 0:100 }} ...<a href="javascript:void(0)" (click)="selectNotification(notification)"  data-bs-toggle="modal" data-bs-target="#NotificationAll">more</a>
                                                           </div>
-                                                        </div>
-                                                        <div class="w-100">
-                                                            <div class="d-flex">
-                                                              <div class="text-gray-500">Title</div>
-                                                              <div class="small ml-auto mr-2" style="font-style: italic;">December 7, 2019</div>
-                                                            </div>
-                                                            <div class="small">$290.29 has been deposited into your account!</div>
+                                                          <div *ngIf="notification.message.length <= 100" class="font-weight-bold small text-gray-500">
+                                                            {{ notification.message }}
+                                                          </div>
                                                         </div>
                                                       </div>
                                                       <hr>
                                                     </div>
-
-                                                    <div >  
-                                                      <div class="d-flex w-100 m-2">
-                                                        <div class="mr-3">
-                                                          <div class="icon-circle bg-warning ml-1">
-                                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                                          </div>
-                                                        </div>
-                                                        <div class="w-100">
-                                                            <div class="d-flex">
-                                                              <div class="text-gray-500">Title</div>
-                                                              <div class="small ml-auto mr-2" style="font-style: italic;">December 2, 2019</div>
-                                                            </div>
-                                                            <div class="small">Spending Alert: We've noticed unusually high spending for your account. <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#NotificationAll">more</a></div>
-                                                        </div>
-                                                      </div>
-                                                      <hr>
-                                                    </div>
-                                                    
                                                   </div>
                                                   </div>
                                               </div>                                      
                                               <!-- Paginator -->
-                                              <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
+                                              <mat-paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
                                           </div>                                                                         
                                       </div>
                                   </div>
@@ -124,19 +92,19 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-0">
-        <div >
-            <div class="d-flex w-100">
+        <div *ngIf="selectedNotification">
+            <div class="d-flex w-100 p-2">
                 <div class="mr-3">
-                  <div class="icon-circle bg-warning ml-1">
-                    <i class="fas fa-exclamation-triangle text-white"></i>
-                  </div>
+                  <div class="icon-circle" [ngClass]="selectedNotification.bgColor">
+                    <i class="{{ selectedNotification.iconClass }} text-white"></i>
+                </div>
                 </div>
                 <div class="w-100">
                     <div class="d-flex">
-                        <div class="text-gray-500">Title</div>
-                        <div class="small ml-auto mr-2" style="font-style: italic;">December 2, 2019</div>
+                        <div class="text-gray-500">{{ selectedNotification.title }}</div>
+                        <div class="small ml-auto mr-2" style="font-style: italic;"> {{ selectedNotification.date }}</div>
                     </div>
-                    <div class="small mr-2">text description.....</div>
+                    <div class="small mr-2">{{ selectedNotification.message }}</div>
                 </div>
             </div>
           </div>
