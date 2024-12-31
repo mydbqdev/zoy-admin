@@ -68,14 +68,18 @@ export class UserMasterComponent implements OnInit {
   constructor(private userMasterService : UserMasterService,private formBuilder: FormBuilder,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private notifyService:NotificationService,
     private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService,private menuService:MenuService){
       this.authService.checkLoginUserVlidaate();
-      this.userNameSession=this.userService.getUsername();
+      
       if (this.userService.getUserinfo() != undefined) {
         this.rolesArray = this.userService.getUserinfo().privilege;
+        this.userNameSession=this.userService.getUsername();
       }else{
         this.dataService.getUserDetails.subscribe(name=>{
           if(name?.privilege){
 				this.rolesArray =Object.assign([],name.privilege);
 				}
+        if(name?.userEmail){
+        this.userNameSession=name?.userEmail;
+        }
         });
       }
 		this.router.routeReuseStrategy.shouldReuseRoute = function () {

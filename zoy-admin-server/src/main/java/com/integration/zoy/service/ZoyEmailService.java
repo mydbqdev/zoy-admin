@@ -50,6 +50,9 @@ public class ZoyEmailService {
 
 	@Value("${zoy.support.toMail}")
 	private String zoySupportMail;
+	
+	@Value("${zoy.support.phone.number}")
+	private String zoySupportPhoneNumber;
 
 	@Value("${app.zoy.email.verification.url}")
 	String emailVerificationUrl;
@@ -59,6 +62,7 @@ public class ZoyEmailService {
 
 	@Value("${app.zoy.term.doc}")
 	private String zoyTermDoc;
+	
 
 	private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 	private static final Gson gson = new GsonBuilder().create();
@@ -331,6 +335,44 @@ public class ZoyEmailService {
 	        emailService.sendEmail(email, null);
 	    } catch (Exception e) {
 	        log.error("Error occurred while sending the  email to " + zoyAdminMail + ": " + e.getMessage(), e);
+	    }
+	}
+	
+	public void sendPasswordChangeWarningMails(String[] user) {
+		Email email = new Email();
+		List<String> to=new ArrayList<>();
+		email.setFrom(zoyAdminMail);
+		to.add(user[0]);
+		email.setTo(to);
+		String message ="";
+		email.setSubject("Reminder: Update Your Password for Enhanced Security");
+		message = "<p>Dear " + user[1] + ",</p>"
+		        + "<p>We hope this message finds you well.</p>"
+		        + "<p>As part of our ongoing commitment to ensuring the security of your account, we remind you to update your password regularly. "
+		        + "To maintain optimal account safety as per our security policy, we recommend changing your password every 45 days.</p>"
+		        + "<p>It has been " + user[2] + " days since your last password update. Kindly take a moment to update your password by following these simple steps:</p>"
+		        + "<ol>"
+		        + "<li>Log in to your account at <a href='"+ qaSigninLink +"'>"+ qaSigninLink +"</a></li>"
+		        + "<li>Navigate to the  <b>Profile Settings </b> section.</li>"
+		        + "<li>Select <b>Change Password </b> and follow the instructions provided.</li>"
+		        + "</ol>"
+		        + "<p>When setting your new password, please ensure it is unique and meets the following criteria:</p>"
+		        + "<ul>"
+		        + "<li>A minimum of 8-16 characters.</li>"
+		        + "<li>Includes at least one uppercase letter, one lowercase letter, one number, and one special character.</li>"
+		        + "</ul>"
+		        + "<p>If you need any assistance or experience any issues during the process, our support team is here to help. "
+		        + "You can reach us at "+zoySupportMail+" or "+zoySupportPhoneNumber+".</p>"
+		        + "<p>Thank you for your attention to this important matter. Taking this small step will significantly enhance the security of your account.</p>"
+		        + "<p>Best regards,<br>ZOY Administrator</p>";
+			
+
+		email.setBody(message);
+		email.setContent("text/html");
+		try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Error occurred while sending the Password Change Warning Mails to " + zoyAdminMail + ": " + e.getMessage(), e);
 	    }
 	}
 	
