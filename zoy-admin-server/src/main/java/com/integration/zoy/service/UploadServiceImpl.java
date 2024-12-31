@@ -277,4 +277,8 @@ public class UploadServiceImpl {
 		return zoyPgBedDetailsRepository.saveAll(bedDetails);
 	}
 
+	public List<String[]> findFloorRoomBedIdsByPropertyName(String propertyId, String room, String selectedBed) {
+		return zoyPgOwnerBookingDetailsRepository.findFloorRoomBedIdsByPropertyName(propertyId, room, selectedBed);
+	}
+
 }

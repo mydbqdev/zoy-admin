@@ -367,7 +367,7 @@ public class UploadService {
 
 	private void createUserBooking(CsvTenantDetails tenantDetails, String userId, String propertyId,
 			List<ZoyPgOwnerBookingDetails> zoyPgOwnerBookingDetails) {
-		List<String[]> ids=uploadDBImpl.findFloorRoomBedIdsByPropertyName(propertyId,tenantDetails.getRoom(),tenantDetails.getBedNumber(),tenantDetails.getRentCycle());
+		List<String[]> ids=uploadDBImpl.findFloorRoomBedIdsByPropertyName(propertyId,tenantDetails.getRoom(),tenantDetails.getBedNumber());
 		String floorId = "" , floorName="",roomId ="", roomName="",bedId="",bedName="",shareId="",shareName="",rentCycleName="",rentCycleId="";
 		if(ids.size()>0) {
 			floorId=ids.get(0)[0];
@@ -405,8 +405,8 @@ public class UploadService {
 		bookingDetails.setPropertyId(propertyId);
 		bookingDetails.setRentCycleEndDate(date.getSecond());
 		bookingDetails.setRoom(roomId);
-		bookingDetails.setSecurityDeposit(tenantDetails.getDepositPaid());
-		bookingDetails.setPaidDeposit(tenantDetails.getDepositPaid());
+		bookingDetails.setSecurityDeposit(BigDecimal.ZERO);
+		//bookingDetails.setPaidDeposit(tenantDetails.getDepositPaid());
 		bookingDetails.setSelectedBed(bedId);
 		bookingDetails.setShare(shareId);
 		bookingDetails.setBookingMode("Offline");
