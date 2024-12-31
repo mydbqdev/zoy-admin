@@ -11,6 +11,7 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
+import { AlertNotificationModel } from '../model/alert-notification-model';
 
 @Component({
 	selector: 'app-alert-notification',
@@ -28,6 +29,9 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 	@ViewChild(SidebarComponent) sidemenuComp;
 	@ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
+	@ViewChild('modal', { static: false }) modal: any;
+	
+	selectedNotification: AlertNotificationModel = new AlertNotificationModel();
 	public lastPageSize:number=0;
 	public totalProduct:number=0;
 	pageSize:number=10;
@@ -74,21 +78,211 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 		
 	}
 	ngAfterViewInit() {
-		this.sidemenuComp.expandMenu(4);
-		this.sidemenuComp.activeMenu(4, 'alert-notification');
+		this.sidemenuComp.expandMenu(0);
+		this.sidemenuComp.activeMenu(0, 'alert-notification');
 		this.dataService.setHeaderName("Alert & Notification");
 		
-        this.dataSource.paginator = this.paginator;
-
+		this.totalProduct = this.notifications.length; 
+		this.pageSize = this.pageSizeOptions[0]; 
+		this.updatePageData();
 	}
 
-      pageChanged(event:any){
-		this.dataSource=new MatTableDataSource<any>();
-		if(this.lastPageSize!=event.pageSize){
-			this.paginator.pageIndex=0;
-			event.pageIndex=0;
-		   }
-		 this.pageSize=event.pageSize;
-	   }    
-}
+	pageChanged(event: any) {
+		if (this.lastPageSize !== event.pageSize) {
+		  this.paginator.pageIndex = 0;
+		  event.pageIndex = 0;
+		}
+		this.pageSize = event.pageSize;
+		this.updatePageData(); 
+	  }
+	  updatePageData() {
+		this.lastPageSize = this.pageSize;
+		const startIndex = this.paginator.pageIndex * this.pageSize;
+		const endIndex = startIndex + this.pageSize;
+		this.dataSource.data = this.notifications.slice(startIndex, endIndex); 
+	  }
+		  
+	   selectNotification(notification: AlertNotificationModel): void {
+		this.selectedNotification = notification;
+	  }
+	  notifications: AlertNotificationModel[] = [
+		  {
+			id: 1,
+			title:"Mothly report",
+			date: "July 12, 2021",
+			message: "A new monthly report is ready to download!",
+			iconClass: "fas fa-file-alt",
+			bgColor: "bg-primary",
+		  },
+		  {
+			id: 2,
+			title:"2 Years report",
+			date: "December 7, 2012",
+			message: "$290.29 has been deposited into your account!",
+			iconClass: "fas fa-donate",
+			bgColor: "bg-success",
+		  },
+		  {
+			id: 3,
+			title:"Mothly report",
+			date: "October 2, 2019",
+			message: "Spending Alert: We've noticed unusually high spending for your account. Spending Alert: We've noticed unusually high spending for your account.",
+			iconClass: "fas fa-exclamation-triangle",
+			bgColor: "bg-warning",
+		  },
+		  {
+			id: 4,
+			title:"Mothly report",
+			date: "May 7, 2019",
+			message: "$290.29 has been deposited into your account!",
+			iconClass: "fas fa-donate",
+			bgColor: "bg-success",
+		  },
+		  {
+			id: 5,
+			title:"Yearly report",
+			date: "December 31, 2024",
+			message: "Spending Alert: We've noticed unusually high spending for your account.",
+			iconClass: "fas fa-exclamation-triangle",
+			bgColor: "bg-warning",
+		  },
+		  {
+			id: 6,
+			title:"Mothly report",
+			date: "May 7, 2019",
+			message: "$290.29 has been deposited into your account!",
+			iconClass: "fas fa-donate",
+			bgColor: "bg-success",
+		  },
+		  {
+			id: 7,
+			title:"Yearly report",
+			date: "December 31, 2024",
+			message: "Spending Alert: We've noticed unusually high spending for your account.",
+			iconClass: "fas fa-exclamation-triangle",
+			bgColor: "bg-warning",
+		  },
+		  {
+			id: 8,
+			title:"Mothly report",
+			date: "May 7, 2019",
+			message: "$290.29 has been deposited into your account!",
+			iconClass: "fas fa-donate",
+			bgColor: "bg-success",
+		  },
+		  {
+			id: 9,
+			title:"Yearly report",
+			date: "December 31, 2024",
+			message: "Spending Alert: We've noticed unusually high spending for your account.",
+			iconClass: "fas fa-exclamation-triangle",
+			bgColor: "bg-warning",
+		  },
+		  {
+			id: 10,
+			title:"Mothly report",
+			date: "May 7, 2019",
+			message: "$290.29 has been deposited into your account!",
+			iconClass: "fas fa-donate",
+			bgColor: "bg-success",
+		  },
+		  {
+			id: 11,
+			title:"Yearly report",
+			date: "December 31, 2024",
+			message: "Spending Alert: We've noticed unusually high spending for your account.",
+			iconClass: "fas fa-exclamation-triangle",
+			bgColor: "bg-warning",
+		  },
+		  {
+			id: 12,
+			title:"Mothly report",
+			date: "July 12, 2021",
+			message: "A new monthly report is ready to download!",
+			iconClass: "fas fa-file-alt",
+			bgColor: "bg-primary",
+		  },
+		  {
+			id: 13,
+			title:"2 Years report",
+			date: "December 7, 2012",
+			message: "$290.29 has been deposited into your account!",
+			iconClass: "fas fa-donate",
+			bgColor: "bg-success",
+		  },
+		  {
+			id: 14,
+			title:"Mothly report",
+			date: "October 2, 2019",
+			message: "Spending Alert: We've noticed unusually high spending for your account. Spending Alert: We've noticed unusually high spending for your account.",
+			iconClass: "fas fa-exclamation-triangle",
+			bgColor: "bg-warning",
+		  },
+		  {
+			id: 15,
+			title:"Mothly report",
+			date: "May 7, 2019",
+			message: "$290.29 has been deposited into your account!",
+			iconClass: "fas fa-donate",
+			bgColor: "bg-success",
+		  },
+		  {
+			id: 16,
+			title:"Yearly report",
+			date: "December 31, 2024",
+			message: "Spending Alert: We've noticed unusually high spending for your account.",
+			iconClass: "fas fa-exclamation-triangle",
+			bgColor: "bg-warning",
+		  },
+		  {
+			id: 17,
+			title:"Mothly report",
+			date: "May 7, 2019",
+			message: "$290.29 has been deposited into your account!",
+			iconClass: "fas fa-donate",
+			bgColor: "bg-success",
+		  },
+		  {
+			id: 18,
+			title:"Yearly report",
+			date: "December 31, 2024",
+			message: "Spending Alert: We've noticed unusually high spending for your account.",
+			iconClass: "fas fa-exclamation-triangle",
+			bgColor: "bg-warning",
+		  },
+		  {
+			id: 19,
+			title:"Mothly report",
+			date: "May 7, 2019",
+			message: "$290.29 has been deposited into your account!",
+			iconClass: "fas fa-donate",
+			bgColor: "bg-success",
+		  },
+		  {
+			id: 20,
+			title:"Yearly report",
+			date: "December 31, 2024",
+			message: "Spending Alert: We've noticed unusually high spending for your account.",
+			iconClass: "fas fa-exclamation-triangle",
+			bgColor: "bg-warning",
+		  },
+		  {
+			id: 21,
+			title:"Mothly report",
+			date: "May 7, 2019",
+			message: "$290.29 has been deposited into your account!",
+			iconClass: "fas fa-donate",
+			bgColor: "bg-success",
+		  },
+		  {
+			id: 22,
+			title:"Yearly report",
+			date: "December 31, 2024",
+			message: "Spending Alert: We've noticed unusually high spending for your account.",
+			iconClass: "fas fa-exclamation-triangle",
+			bgColor: "bg-warning",
+		  },
+		];
+	  
+	  }
 

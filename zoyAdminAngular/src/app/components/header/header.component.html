@@ -40,39 +40,24 @@
               <h6 class="dropdown-header">
                   Alerts Center
               </h6>
-              <a class="dropdown-item d-flex align-items-center" href="javascript:void(0)">
-                  <div class="mr-3">
-                      <div class="icon-circle bg-primary">
-                          <i class="fas fa-file-alt text-white"></i>
+                <a *ngFor="let notification of notifications; let i = index">
+                    <div *ngIf="i < 3" class="dropdown-item d-flex align-items-center notification-item" href="javascript:void(0)" (click)="selectNotification(notification)" data-bs-toggle="modal" data-bs-target="#alertNotification">
+                      <div class="mr-3">
+                        <div class="icon-circle" [ngClass]="notification.bgColor">
+                          <i class="{{ notification.iconClass }} text-white"></i>
+                        </div>
                       </div>
-                  </div>
-                  <div>
-                      <div class="small text-gray-500">December 12, 2019</div>
-                      <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                  </div>
-              </a>
-              <a class="dropdown-item d-flex align-items-center" href="javascript:void(0)">
-                  <div class="mr-3">
-                      <div class="icon-circle bg-success">
-                          <i class="fas fa-donate text-white"></i>
+                      <div>
+                        <div class="small text-gray-500">{{ notification.date }}</div>
+                        <span *ngIf="notification.message.length > 60" class="font-weight-bold" style="display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                        {{ notification.message.slice(0, 60) }} ...
+                      </span>
+                      <span *ngIf="notification.message.length <= 60" class="font-weight-bold" style="display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                        {{ notification.message }}
+                      </span>
                       </div>
-                  </div>
-                  <div>
-                      <div class="small text-gray-500">December 7, 2019</div>
-                      $290.29 has been deposited into your account!
-                  </div>
-              </a>
-              <a class="dropdown-item d-flex align-items-center" href="javascript:void(0)">
-                  <div class="mr-3">
-                      <div class="icon-circle bg-warning">
-                          <i class="fas fa-exclamation-triangle text-white"></i>
-                      </div>
-                  </div>
-                  <div>
-                      <div class="small text-gray-500">December 2, 2019</div>
-                      Spending Alert: We've noticed unusually high spending for your account.
-                  </div>
-              </a>
+                    </div>
+                </a>
               <a class="dropdown-item text-center small text-gray-500" href="javascript:void(0)" routerLink="/alert-notification">Show All Alerts</a>
           </div>
       </li>
@@ -149,3 +134,37 @@
       </div>
     </div>
   </div>
+
+
+
+  <!------To view  PopUp model------->
+<div class="modal fade" id="alertNotification" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel">Alert & Notifications Details </h5>
+          <div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div *ngIf="selectedNotification">
+              <div class="d-flex w-100 p-2">
+                  <div class="mr-3">
+                    <div class="icon-circle" [ngClass]="selectedNotification.bgColor">
+                      <i class="{{ selectedNotification.iconClass }} text-white"></i>
+                  </div>
+                  </div>
+                  <div class="w-100">
+                      <div class="d-flex">
+                          <div class="text-gray-500">{{ selectedNotification.title }}</div>
+                          <div class="small ml-auto mr-2" style="font-style: italic;"> {{ selectedNotification.date }}</div>
+                      </div>
+                      <div class="small mr-2">{{ selectedNotification.message }}</div>
+                  </div>
+              </div>
+            </div>
+         </div>
+        </div>
+      </div>
+    </div>
