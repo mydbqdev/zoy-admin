@@ -136,7 +136,6 @@ export class ForgotPasswordComponent implements OnInit {
 		this.updateTimerDisplay();
 		} else {
 		clearInterval(this.timerInterval);
-		alert('Timeout for OTP');
 		}
 	}, 1000);
 	}
