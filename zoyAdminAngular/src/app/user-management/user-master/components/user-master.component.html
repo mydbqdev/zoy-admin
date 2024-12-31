@@ -216,11 +216,11 @@
                                                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                                         <div class="dropdown-header">Action</div>
                                                         <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#viewUserDetails"  (click)="viewUser(element)">View User Details</a>
-                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#userModel"  (click)="editRole(element)">Edit User</a>
-                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#updateRoleModel" (click)="editRole(element)" >Update role</a>
-                                                        <a class="dropdown-item" href="javascript:void(0)" (click)="sendInfo(element.userEmail)">Send Info</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#userModel"  (click)="editRole(element)" *ngIf="userNameSession != element.userEmail">Edit User</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#updateRoleModel" (click)="editRole(element)" *ngIf="userNameSession != element.userEmail" >Update role</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" (click)="sendInfo(element.userEmail)" *ngIf="userNameSession != element.userEmail" >Send Info </a>
                                                         <!-- <a class="dropdown-item" href="javascript:void(0)">Delete</a> -->
-                                                        <a class="dropdown-item" href="javascript:void(0)" (click)="doUserActiveteDeactivete(element)" >{{element.status?'Do Deactivate':'Do Activate'}}</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)" (click)="doUserActiveteDeactivete(element)" *ngIf="userNameSession != element.userEmail" >{{element.status?'Do Deactivate':'Do Activate'}}</a>
                                                     </div>
                                                 </td>
                                             </ng-container>
