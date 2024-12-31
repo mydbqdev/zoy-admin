@@ -14,7 +14,8 @@ import com.integration.zoy.model.AuditActivitiesLogDTO;
 import com.integration.zoy.model.OwnerPropertyDTO;
 import com.integration.zoy.model.UserNameDTO;
 import com.integration.zoy.utils.CommonResponseDTO;
-import com.integration.zoy.utils.OwnerLeadPaginationRequest;
+import com.integration.zoy.utils.PaginationRequest;
+import com.integration.zoy.utils.TenantDetails;
 
 public interface UserDBImpl {
 
@@ -53,16 +54,17 @@ public interface UserDBImpl {
 	UserCurrencyMaster updateUserCurrency(UserCurrencyMaster currency);
 	List<UserCurrencyMaster> findAllUserCurrency();
 	UserCurrencyMaster findCurrency(String currencyId);
-	Page<OwnerPropertyDTO> findAllOwnerWithPropertyCount(OwnerLeadPaginationRequest paginationRequest);
+	Page<OwnerPropertyDTO> findAllOwnerWithPropertyCount(PaginationRequest paginationRequest);
+	Page<TenantDetails> findAllTenantDetails(PaginationRequest paginationRequest);
 	
 	//Audit Activities Log
-	CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(OwnerLeadPaginationRequest paginationRequest) throws WebServiceException;
+	CommonResponseDTO<AuditActivitiesLogDTO> getAuditActivitiesLogCount(PaginationRequest paginationRequest) throws WebServiceException;
 	
 	//User Name List
 	List<UserNameDTO> getUserNameList() throws WebServiceException;
 	
 	//User Audit Download
-	byte[] generateDynamicReport(OwnerLeadPaginationRequest paginationRequest)  throws WebServiceException;
+	byte[] generateDynamicReport(PaginationRequest paginationRequest)  throws WebServiceException;
 
 
 }

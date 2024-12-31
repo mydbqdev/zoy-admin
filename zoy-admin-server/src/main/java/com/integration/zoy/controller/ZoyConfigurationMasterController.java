@@ -167,7 +167,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            final BigDecimal oldVariable=cancelDetails.getDeductionPercentages();
 	            cancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
 	            cancelDetails.setDeductionPercentages(details.getDeductionPercentages());
-	            ownerDBImpl.saveBeforeCancellation(cancelDetails);
+	            //ownerDBImpl.saveBeforeCancellation(cancelDetails);
 	            //audit history here
 	            StringBuffer historyContent=new StringBuffer(" has updated the Cancellation And Refund Policy for");
 				if(oldFixed!=details.getDaysBeforeCheckIn()) {
@@ -177,17 +177,17 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					historyContent.append(" , Deduction percentage from "+oldVariable+" to "+details.getDeductionPercentages());
 				}
 
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				//auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 				
 	        } else {
 	            ZoyPgCancellationDetails newCancelDetails = new ZoyPgCancellationDetails();
 	            newCancelDetails.setDaysBeforeCheckIn(details.getDaysBeforeCheckIn());
 	            newCancelDetails.setDeductionPercentages(details.getDeductionPercentages());
-	            ownerDBImpl.saveBeforeCancellation(newCancelDetails);
+	            //ownerDBImpl.saveBeforeCancellation(newCancelDetails);
 	            
 	          //audit history here
 				String historyContent=" has created the Cancellation And Refund Policy for, Days before check in = "+details.getDaysBeforeCheckIn()+" , Deduction percentage ="+details.getDeductionPercentages();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+				//auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
 				
 	        }
 
@@ -626,10 +626,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		            response.setError("Cancellation details not found for the given ID");
 		            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 		        }
-		        ownerDBImpl.deleteBeforeCancellation(cancellationID.getCancellationId());
+		        //ownerDBImpl.deleteBeforeCancellation(cancellationID.getCancellationId());
 		      //audit history here
 				String historyContent=" has deleted the Cancellation And Refund Policy for, Days before check in = "+cancelDetails.getDaysBeforeCheckIn()+" , Deduction percentage ="+cancelDetails.getDeductionPercentages();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_DELETE);
+				//auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_DELETE);
 				
 		        List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
 		        List<ZoyBeforeCheckInCancellation> dtoList = cancellationDetails.stream()
