@@ -67,7 +67,6 @@ import com.integration.zoy.repository.AdminUserLoginDetailsRepository;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AdminUserPasswordHistoryRepository;
 import com.integration.zoy.service.AdminDBImpl;
-import com.integration.zoy.service.AdminDBService;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.ZoyAdminService;
@@ -153,9 +152,6 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	
 	@Value("${spring.jackson.time-zone}")
 	private String currentTimeZone;
-	
-	@Autowired
-	private AdminDBService adminDBService;
 	
 
 	@Override
