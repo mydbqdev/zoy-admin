@@ -42,11 +42,11 @@ public class CsvTenantDetails {
     @CsvBindByPosition(position = 10)
     private String bedNumber;
 
-    @CsvBindByPosition(position = 11)
-    private String rentCycle;
-
-    @CsvBindByPosition(position = 12)
-    private BigDecimal depositPaid;
+//    @CsvBindByPosition(position = 11)
+//    private String rentCycle;
+//
+//    @CsvBindByPosition(position = 12)
+//    private BigDecimal depositPaid;
 
     public String getFirstName() {
         return firstName;
@@ -136,27 +136,26 @@ public class CsvTenantDetails {
         this.bedNumber = bedNumber;
     }
 
-    public String getRentCycle() {
-        return rentCycle;
-    }
-
-    public void setRentCycle(String rentCycle) {
-        this.rentCycle = rentCycle;
-    }
-
-    public BigDecimal getDepositPaid() {
-        return depositPaid;
-    }
-
-    public void setDepositPaid(BigDecimal depositPaid) {
-        this.depositPaid = depositPaid;
-    }
+//    public String getRentCycle() {
+//        return rentCycle;
+//    }
+//
+//    public void setRentCycle(String rentCycle) {
+//        this.rentCycle = rentCycle;
+//    }
+//
+//    public BigDecimal getDepositPaid() {
+//        return depositPaid;
+//    }
+//
+//    public void setDepositPaid(BigDecimal depositPaid) {
+//        this.depositPaid = depositPaid;
+//    }
 
     @Override
     public String toString() {
         return "CsvTenantDetails [firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
                 + ", email=" + email + ", dob=" + dob + ", gender=" + gender + ", permanentAddress=" + permanentAddress
-                + ", outDate=" + outDate + ", floor=" + floor + ", room=" + room + ", bedNumber=" + bedNumber
-                + ", rentCycle=" + rentCycle + ", depositPaid=" + depositPaid + "]";
+                + ", outDate=" + outDate + ", floor=" + floor + ", room=" + room + ", bedNumber=" + bedNumber + "]";
     }
 }

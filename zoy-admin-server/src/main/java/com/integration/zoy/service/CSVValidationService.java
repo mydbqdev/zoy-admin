@@ -134,13 +134,13 @@ public class CSVValidationService {
 			validateLength(value, row, header, columnName, 20, errorDetails);
 			validateTable(value, row, header, columnName, 20, errorDetails);
 			break;
-		case "Rent Cycle":
-			validateRentCycle(value, row, header, columnName, errorDetails);
-			validateTable(value, row, header, columnName, 20, errorDetails);
-			break;
-		case "Deposit Paid":
-			validateNumericValue(value, row, header, columnName, errorDetails);
-			break;
+//		case "Rent Cycle":
+//			validateRentCycle(value, row, header, columnName, errorDetails);
+//			validateTable(value, row, header, columnName, 20, errorDetails);
+//			break;
+//		case "Deposit Paid":
+//			validateNumericValue(value, row, header, columnName, errorDetails);
+//			break;
 		default:
 			break;
 		}
@@ -163,14 +163,14 @@ public class CSVValidationService {
 			if(bedDetails.size()==0) 
 				errorDetails.add(new ErrorDetail(row, header, columnName, columnName+" is not available for the property"));
 			break;
-		case "Rent Cycle":
-			ZoyPgRentCycleMaster rentCycle =ownerDBImpl.findRentCycleName(propertyId,value);
-			if(rentCycle==null) {
-				List<String[]> cycleName =ownerDBImpl.findRentCycleName(propertyId);
-				String result = cycleName.size() > 0 ? cycleName.stream().map(data -> data[1]).collect(Collectors.joining(",")) : "";
-				errorDetails.add(new ErrorDetail(row, header, columnName, columnName+" is not available please select from "+result));
-			}
-			break;
+//		case "Rent Cycle":
+//			ZoyPgRentCycleMaster rentCycle =ownerDBImpl.findRentCycleName(propertyId,value);
+//			if(rentCycle==null) {
+//				List<String[]> cycleName =ownerDBImpl.findRentCycleName(propertyId);
+//				String result = cycleName.size() > 0 ? cycleName.stream().map(data -> data[1]).collect(Collectors.joining(",")) : "";
+//				errorDetails.add(new ErrorDetail(row, header, columnName, columnName+" is not available please select from "+result));
+//			}
+//			break;
 		default:
 			break;
 		}
