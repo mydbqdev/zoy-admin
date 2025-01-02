@@ -7,8 +7,6 @@ public class TenantDetailPortfolio {
 	private TenantProfile profile;
 	@SerializedName("activeBookings")
 	private ActiveBookings activeBookings;	
-//	private List<ClosedBookings> closedBookings;
-//	private List<UpComingBookings> upComingBookings;
 	public TenantProfile getProfile() {
 		return profile;
 	}
