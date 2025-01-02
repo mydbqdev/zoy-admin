@@ -254,7 +254,7 @@ export class BulkUploadComponent {
 			   } else {
 				 let str;
 				 if (error.status == 400) {
-				   str = error.error;
+				   str = error.error.error;
 				 } else {
 				   str = error.message;
 				   str = str.substring(str.indexOf(":") + 1);
@@ -306,7 +306,7 @@ export class BulkUploadComponent {
 							} else {
 				 				let str;
 								if (error.status == 400) {
-								str = error.error;
+								str = error.error.error;
 								} else {
 								str = error.message;
 								str = str.substring(str.indexOf(":") + 1);

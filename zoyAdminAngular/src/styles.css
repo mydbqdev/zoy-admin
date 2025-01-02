@@ -135,6 +135,32 @@ ngb-modal-backdrop.modal-backdrop {
   line-height: 55px;  
 }
 
+.tenant-profile-top {
+  width: 85px;
+  height: 85px;
+  background-color: #925fe2;
+  font-weight: 500;
+  font-size: 20px;
+  text-align: center;
+  line-height: 10px;
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;  
+}
+
+.tenant-profile-top img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;  
+  object-fit: cover;   
+}
+
+.tenant-profile-top span {
+  display: inline-block;
+  line-height: 55px;  
+}
+
 
 .mat-mdc-header-row {
   -moz-osx-font-smoothing: grayscale;
@@ -156,3 +182,12 @@ ngb-modal-backdrop.modal-backdrop {
   font-size: 13px !important;
   font-weight: var(--mat-table-row-item-label-text-weight, var(--mat-app-body-medium-weight));
 }
+
+.modal {
+  overflow: visible !important;
+}
+ 
+.cdk-overlay-container {
+  z-index: 1050; 
+}
+ 
