@@ -24,13 +24,13 @@ import { Filter, OwnerRequestParam } from '../models/owner-details-request-model
   styleUrl: './managing-owner.component.css'
 })
 export class ManageOwnerComponent implements OnInit, AfterViewInit {
-	displayedColumns: string[] = ['owner_id', 'owner_name', 'owner_email', 'owner_contact','number_of_properties', 'status','action'];
+	displayedColumns: string[] = [ 'owner_name', 'owner_email', 'owner_contact','number_of_properties', 'status'];
 	public ELEMENT_DATA:ZoyOwner[]=[];
 	orginalFetchData:ZoyOwner[]=[];
 	searchText:string='';
 	dataSource:MatTableDataSource<ZoyOwner>=new MatTableDataSource<ZoyOwner>();
 	columnSortDirectionsOg: { [key: string]: string | null } = {
-		owner_id: null,
+		// owner_id: null,
 	  owner_name: null,
 	  owner_email: null,
 	  number_of_properties: null,
@@ -285,5 +285,6 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 			this.dataService.setOwenerId(ownerId);
 			localStorage.setItem('ownerInfo', ownerId);
 			this.dataService.setOwenerListFilterParam(this.param);
+			this.router.navigateByUrl('/manage-owner-details');
 		  }
   }  

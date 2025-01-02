@@ -503,7 +503,8 @@ public class UserDBService implements UserDBImpl{
 					result[3] != null ? (String) result[3] : "",
 					result[4] != null ? (String) result[4] : "",
 					result[5] != null ? (String) result[5] : "",
-					result[6] != null ? dateFormat.format((Timestamp) result[6]) : null
+					result[6] != null ? dateFormat.format((Timestamp) result[6]) : null,
+					result[7] != null ? (String) result[7] : ""
 					));
 		} catch (Exception e) {
 			e.printStackTrace();
