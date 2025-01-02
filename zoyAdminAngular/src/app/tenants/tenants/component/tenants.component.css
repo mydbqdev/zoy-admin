@@ -1,22 +1,37 @@
 /* Registered status button styling - small size */
 .btn-registered {
-    background-color: #86d189;
-    color: white;
+    background-color:  #ccf0eb;
+    color:  #00b69b;
+    /* background-color: #86d189;
+    color: white; */
     border: none;
     padding: 0.25rem 0.5rem; 
-    font-size: 0.75rem; 
+    font-weight: 600; 
     border-radius: 4px;
 }
 
 /* Pending status button styling - small size */
 .btn-pending {
-    background-color: grey; 
-    color: white;
+    background-color: #fce6d4;
+    color: #ef8026;
+    /* background-color: grey; 
+    color: white; */
     border: none;
     padding: 0.25rem 0.5rem; 
-    font-size: 0.75rem; 
+    font-weight: 600; 
     border-radius: 4px;
 }
+
+/* Registered status button styling - small size */
+.btn-partially {
+  background-color: #cce0fa;
+  color: #0064e5;
+  border: none;
+  padding: 0.25rem 0.5rem; 
+  font-weight: 600; 
+  border-radius: 4px;
+}
+
 .btn-bordered {
     border: 1px solid grey;
     background-color: transparent; 
@@ -60,24 +75,16 @@
 }
 
 .common-status {
-  width: 100px;
+  width: 110px;
   display: inline-block;
   text-align: center;
   border-radius: 5px;
   padding: 5px;
 }
 
-.btn-registered {
-  background-color:  #cefbf5;
-  color:  #246359;
-}
 
-.btn-pending {
-  background-color:#e6dff7; 
-  color: #470ecf;
-}
 .custom-dropdown-width {
-  width: 326px;               
+  width: auto;               
   margin-left: -119px;        
   background-color: white;    
   border: 1px solid #ddd;     
@@ -86,7 +93,7 @@
   transform: translate3d(-283px, 35px, 0px);
   opacity: 1 !important;      
   background: white !important;  
-  height: 200px;
+  height: auto;
 }
 
 .btn-sm{
@@ -94,7 +101,11 @@
 }
 
 tr.mat-mdc-row:hover {
-  background-color: rgb(247, 212, 241);
+  background-color: #eae6f6;
   cursor: pointer;
 }
-
+/* th, td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+} */
