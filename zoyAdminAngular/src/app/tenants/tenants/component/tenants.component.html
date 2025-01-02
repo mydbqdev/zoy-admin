@@ -24,7 +24,7 @@
                       <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Manage</span><span class="text-header-800-blue">Tenants</span></h3> 
                       <div class="input-group ml-4 w-75" >
                         <div  class="d-flex" style="border: 1px solid #dbd8d8;border-radius: 5px;">  
-                        <div class="p-1 pl-2" style="border-right: 1px solid #dbd8d8;padding-top: 5px;"><i class="fas fa-filter mr-2"></i> Filter By :</div> 
+                        <div class="p-1 pl-2" style="border-right: 1px solid #dbd8d8;padding-top: 5px;"><i class="fas fa-filter mr-2"></i> </div> 
                         <div style="border-right: 1px solid #dbd8d8;">
                             <button type="button" class="btn" style="color:rgb(56, 56, 56);font-size: 14px;border: 0px;background-color: #F7F8FB;" id="menuLink"
                             data-toggle="dropdown">Status<i class="fas fa-chevron-down ml-2"></i></button>
@@ -53,22 +53,27 @@
                         </div> 
                         <div style="border-right: 1px solid #dbd8d8;">
                           <button type="button" class="btn" style="color:rgb(56, 56, 56);font-size: 14px;border: 0px;background-color: #F7F8FB;" id="menuLinkForDateFilter"
-                          data-toggle="dropdown">Date<i class="fas fa-chevron-down ml-2"></i></button>
+                          data-toggle="dropdown" (click)="fromDate='';toDate=''" >Date<i class="fas fa-chevron-down ml-2"></i></button>
                           <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width" aria-labelledby="menuLinkForDateFilter" data-bs-auto-close="false" (click)="stopPropagation($event)">
                               <div class="dropdown-header" style="margin-left: -21px;">Select date range to filter</div>
                               <!-- Buttons in one row -->
                               <div class="d-flex justify-content-between mb-2 mt-2">
                                 <div class="d-flex">
-                                  <input type="date" class="form-control form-control-sm" style="width: 130px;font-size: 12px; " id="fromDate"  /> 
+                                 
+                                  <input type="datetime-local" class="form-control form-control-sm" style="width: 160px;font-size: 12px; " id="fromDate" [(ngModel)]="fromDate" 
+                                        [ngClass]="{'is-invalid': ((!fromDate && toDate ) ||(fromDate>toDate && toDate))}" 
+                                        [title]="!fromDate && toDate? 'From Date is required':((fromDate>toDate && toDate)?'Invalid date range':'') " /> 
                                   <div class="m-1">-</div>  
-                                  <input type="date" class="form-control form-control-sm" style="width: 130px; font-size: 12px;" id="toDate"  />
+                                  <input type="datetime-local" class="form-control form-control-sm" style="width: 160px; font-size: 12px;" id="toDate"  [(ngModel)]="toDate" 
+                                        [ngClass]="{'is-invalid': ((!toDate && fromDate) ||(fromDate>toDate && fromDate ))}" 
+                                        [title]="!toDate && fromDate ? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
                                 </div> 
                               </div>
                               <!-- Divider -->
                               <hr class="my-2 mt-2">
                               <!-- Apply Now button -->
                               <div class="d-flex justify-content-center align-items-center mt-2">
-                                  <button class="btn btn-sm" [ngClass]="selectedStatuses.length==0 ?'btn-light':'btn-primary-custom'" (click)="applyStatuses()" [disabled]="selectedStatuses.length==0">Apply Now</button>
+                                  <button class="btn btn-sm" [ngClass]="(!fromDate || !toDate) ?'btn-light':'btn-primary-custom'" (click)="applyDates()" [disabled]="!fromDate || !toDate">Apply Now</button>
                               </div>
                            </div>
                       </div>
@@ -89,51 +94,60 @@
                             <div class="scrollable-container-main">
                                <div>
                                 <table mat-table [dataSource]="dataSource" matSort  
-                                  (matSortChange)="announceSortChange($event)" matSortActive="owner_name" matSortDirection="asc"  >
+                                  (matSortChange)="announceSortChange($event)" matSortActive="registeredDate" matSortDirection="asc"  >
                                     <!-- Zoy Code Column -->
-                                    <ng-container matColumnDef="owner_id">
+                                    <ng-container matColumnDef="registeredDate">
                                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 120px;" title="REGISTERED DATE">DATE
                                         <span style="margin-left: 2px;">
-                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_id'] === 'asc' }"></i>
-                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_id'] === 'desc'}"></i>
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['registeredDate'] === 'asc' }"></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['registeredDate'] === 'desc'}"></i>
                                         </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element" style="width: 120px;"> {{ element.owner_id }} </td>
+                                      <td mat-cell *matCellDef="let element" style="width: 120px;"> {{ element.registeredDate }} </td>
                                     </ng-container>
 
                                     <!-- Owner Name Column -->
-                                    <ng-container matColumnDef="owner_name">
+                                    <ng-container matColumnDef="tenantName">
                                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 200px;"> TENANT NAME 
                                         <span style="margin-left: 2px;">
-                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'asc' }"></i>
-                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'desc'}"></i>
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['tenantName'] === 'asc' }"></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['tenantName'] === 'desc'}"></i>
                                         </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element" style="width: 200px;"> {{ element.owner_name }} </td>
+                                      <td mat-cell *matCellDef="let element" style="width: 200px;"> {{ element.tenantName }} </td>
                                     </ng-container>
                                      <!-- Contact Column -->
-                                     <ng-container matColumnDef="owner_contact">
-                                        <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> CONTACT </th>
-                                        <td mat-cell *matCellDef="let element"> {{ element.owner_contact }} </td>
+                                     <ng-container matColumnDef="contactNumber">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> CONTACT 
+                                          <span style="margin-left: 2px;">
+                                            <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['contactNumber'] === 'asc' }"></i>
+                                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['contactNumber'] === 'desc'}"></i>
+                                          </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element"> {{ element.contactNumber }} </td>
                                       </ng-container>
 
                                     <!-- Email Column -->
-                                    <ng-container matColumnDef="owner_email">
+                                    <ng-container matColumnDef="userEmail">
                                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> EMAIL ID
                                         <span style="margin-left: 2px;">
-                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_email'] === 'asc' }"></i>
-                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_email'] === 'desc'}"></i>
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['userEmail'] === 'asc' }"></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['userEmail'] === 'desc'}"></i>
                                         </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element">{{ element.owner_email }} </td>
+                                      <td mat-cell *matCellDef="let element">{{ element.userEmail }} </td>
                                     </ng-container>
 
                                 
                                     <!-- Date Column -->
-                                    <ng-container matColumnDef="number_of_properties">
-                                      <th mat-header-cell *matHeaderCellDef style="font-weight: 600;width: 100px;" title="NO OF PROPERTIES">APP USER
+                                    <ng-container matColumnDef="appUser">
+                                      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 100px;" title="NO OF PROPERTIES">APP USER
+                                        <span style="margin-left: 2px;">
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['appUser'] === 'asc' }"></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['appUser'] === 'desc'}"></i>
+                                        </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element" style="width: 100px;"> {{ element.number_of_properties}} </td>
+                                      <td mat-cell *matCellDef="let element" style="width: 100px;"> {{ element.appUser}} </td>
                                     </ng-container>
 
                                     <!-- Status Column with Conditional Button Styling -->
@@ -145,31 +159,25 @@
                                         </span>
                                       </th>
                                       <td mat-cell *matCellDef="let element" style="padding: 4px;width: 120px;">
-                                        <span
-                                          class="common-status"
-                                          [ngClass]="element.status === 'pending' ? 'btn-pending' : 'btn-registered'"
-                                        >
-                                          <span *ngIf="element.status === 'pending'">Inactive</span>
-                                          <span *ngIf="element.status !== 'pending'">Active</span>
+                                        <span class="common-status"
+                                              [ngClass]="element.status === 'inactive' ? 'btn-pending' : 'btn-registered'" >
+                                          {{element.status}}
                                         </span>
                                       </td>
                                       
                                     </ng-container>
                                     <!-- Status Column with Conditional Button Styling -->
-                                    <ng-container matColumnDef="action">
+                                    <ng-container matColumnDef="ekycStatus">
                                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> eKYC STATUS 
                                           <span style="margin-left: 2px;">
-                                            <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['status'] === 'asc' }"></i>
-                                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['status'] === 'desc'}"></i>
+                                            <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['ekycStatus'] === 'asc' }"></i>
+                                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['ekycStatus'] === 'desc'}"></i>
                                           </span>
                                         </th>
                                         <td mat-cell *matCellDef="let element" style="padding: 4px;">
-                                          <span
-                                            class="common-status"
-                                            [ngClass]="element.status === 'pending' ? 'btn-pending' : 'btn-registered'"
-                                          >
-                                            <span *ngIf="element.status === 'pending'">Inactive</span>
-                                            <span *ngIf="element.status !== 'pending'">Active</span>
+                                          <span class="common-status"
+                                               [ngClass]="element.ekycStatus === 'Pending' ? 'btn-pending' : ( element.ekycStatus === 'Partially Verified' ?  'btn-partially' : 'btn-registered')" >
+                                            {{element.ekycStatus}}
                                           </span>
                                         </td>
                                         
@@ -177,7 +185,7 @@
                                     <!-- Header Row -->
                                     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
                                     <!-- Data Row -->
-                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="getRecord(row.owner_id)"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="getRecord(row.tenantId)"></tr>
                                   </table>
                                   <div style="text-align: center;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>                                
                                </div>

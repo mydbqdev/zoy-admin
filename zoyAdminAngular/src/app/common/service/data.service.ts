@@ -3,6 +3,7 @@ import {BehaviorSubject} from 'rxjs';
 import { OwnerRequestParam } from 'src/app/owners/managing-owner/models/owner-details-request-model';
 import { ZoyOwner } from 'src/app/owners/managing-owner/models/zoy-owner-model';
 import { UserInfo } from '../shared/model/userinfo.service';
+import { ManageTenant } from 'src/app/tenants/tenant-profile/model/manage.tenant';
 @Injectable({
     providedIn:'root'
 })
@@ -60,5 +61,23 @@ export class DataService{
      getTenantId=this.tenantId.asObservable();
      setTenantId(tenantId:string){
         this.tenantId.next(tenantId);
+     }
+
+     public tenantListFilter=new BehaviorSubject<ManageTenant[]>([]);
+     getTenantListFilter=this.tenantListFilter.asObservable();
+     setTenantListFilter(tenantListFilter:ManageTenant[]){
+        this.tenantListFilter.next(tenantListFilter);
+     }
+
+     public tenantListFilterTotal=new BehaviorSubject<number>(0);
+     getTenantListFilterTotal=this.owenerListFilterTotal.asObservable();
+     setTenantListFilterTotal(tenantListFilterTotal:number){
+        this.owenerListFilterTotal.next(tenantListFilterTotal);
+     }
+
+     public tenantListFilterParam=new BehaviorSubject<OwnerRequestParam>(null);
+     getTenantListFilterParam=this.tenantListFilterParam.asObservable();
+     setTenantListFilterParam(tenantListFilterParam:OwnerRequestParam){
+        this.tenantListFilterParam.next(tenantListFilterParam);
      }
 }

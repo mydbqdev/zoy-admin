@@ -14,7 +14,9 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { OwnerRequestParam, Filter } from 'src/app/owners/managing-owner/models/owner-details-request-model';
 import { ZoyOwner } from 'src/app/owners/managing-owner/models/zoy-owner-model';
-import { ZoyOwnerService } from 'src/app/owners/service/zoy-owner.service';
+import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
+import { TenantService } from '../../tenant.service';
+import { ManageTenant } from '../../tenant-profile/model/manage.tenant';
 
 @Component({
 	selector: 'app-tenants',
@@ -22,22 +24,23 @@ import { ZoyOwnerService } from 'src/app/owners/service/zoy-owner.service';
 	styleUrls: ['./tenants.component.css']
 })
 export class TenantsComponent implements OnInit, AfterViewInit {
-	displayedColumns: string[] = ['owner_id', 'owner_name', 'owner_contact', 'owner_email','number_of_properties', 'status','action'];
-	public ELEMENT_DATA:ZoyOwner[]=[];
-	orginalFetchData:ZoyOwner[]=[];
+	displayedColumns: string[] = ['registeredDate', 'tenantName', 'contactNumber', 'userEmail','appUser', 'status','ekycStatus'];
+	public ELEMENT_DATA:ManageTenant[]=[];
+	orginalFetchData:ManageTenant[]=[];
 	searchText:string='';
-	dataSource:MatTableDataSource<ZoyOwner>=new MatTableDataSource<ZoyOwner>();
+	dataSource:MatTableDataSource<ManageTenant>=new MatTableDataSource<ManageTenant>();
 	columnSortDirectionsOg: { [key: string]: string | null } = {
-		owner_id: null,
-	  owner_name: null,
-	  owner_email: null,
-	  number_of_properties: null,
-	  status: null
+		registeredDate: null,
+		tenantName: null,
+		contactNumber: null,
+		userEmail: null,
+		appUser: null,
+		status: null,
+		ekycStatus: null
 	};
 	stopPropagation(event: MouseEvent): void {
 		event.stopPropagation();
 	  }
-	generateZCode : ZoyOwner=new ZoyOwner();
 	public userNameSession: string = "";
 	  errorMsg: any = "";
 	  mySubscription: any;
@@ -57,8 +60,13 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 	  public tenantIdBackFormDetails:string="";
 	  paramFilterBack:OwnerRequestParam=new OwnerRequestParam();
 	  totalProductFilterBack: number = 0;
+
+	  filtersRequestModel:FiltersRequestModel=new FiltersRequestModel();
+	  fromDate:string='';
+	  toDate:string='';
+
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private zoyOwnerService : ZoyOwnerService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private tenantService : TenantService) {
 			this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
 		  //this.defHomeMenu=defMenuEnable;
@@ -90,13 +98,13 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 			this.tenantIdBackFormDetails=id;
 		  });
 
-		  this.dataService.getOwenerListFilter.subscribe(data=>{
+		  this.dataService.getTenantListFilter.subscribe(data=>{
 			this.orginalFetchData= data;
 		  });
-		  this.dataService.getOwenerListFilterTotal.subscribe(data=>{
+		  this.dataService.getTenantListFilterTotal.subscribe(data=>{
 			this.totalProductFilterBack= data;
 		  });
-		  this.dataService.getOwenerListFilterParam.subscribe(data=>{
+		  this.dataService.getTenantListFilterParam.subscribe(data=>{
 			this.paramFilterBack= data;
 		  });
 	}
@@ -135,14 +143,14 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		this.param.pageIndex=this.paginator.pageIndex;
 		this.param.pageSize= this.paginator.pageSize;
 		this.param.sortDirection="asc";
-		this.param.sortActive="owner_name";
+		this.param.sortActive="registeredDate";
 		this.paramFilter.searchText=null;
 		this.paramFilter.status=null;
 		this.param.filter=this.paramFilter;
 		setTimeout(()=>{
 		  this.getTenantsList();
 		 },100);
-		 this.columnSortDirections["owner_name"] = "asc";
+		 this.columnSortDirections["registeredDate"] = "asc";
 	  }
 
 	  param:OwnerRequestParam=new OwnerRequestParam();
@@ -151,13 +159,13 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		  this.authService.checkLoginUserVlidaate();
 		  this.spinner.show();
 		  this.lastPageSize=this.param.pageSize;
-		  this.zoyOwnerService.getZoyOwnerList(this.param).subscribe(data => {
+		  this.tenantService.getTenantsList(this.param).subscribe(data => {
 			  this.orginalFetchData=  Object.assign([],data.content);
 			  this.ELEMENT_DATA = Object.assign([],data.content);
 			  this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 			  this.totalProduct=data.total;
-			  this.dataService.setOwenerListFilter(this.orginalFetchData);
-			  this.dataService.setOwenerListFilterTotal(this.totalProduct);
+			  this.dataService.setTenantListFilter(this.orginalFetchData);
+			  this.dataService.setTenantListFilterTotal(this.totalProduct);
 			  this.spinner.hide();
 		  }, error => {
 		  this.spinner.hide();
@@ -223,20 +231,21 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 	}
 	resetFilter(){
 		this.searchText='';
-		this.paramFilter.searchText=null;
-		this.paramFilter.status=null;
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
-		this.param.filter=this.paramFilter;
+		this.param.filter=new Filter();
 		this.getTenantsList();
 		this.statuses.filter(data=>data.selected=false);
 		this. selectedFilterStatus();
 	}
 
 	statuses = [
-		{ id: 1, name: 'Active', selected: false },
-		{ id: 2, name: 'Inactive', selected: false },
-		{ id: 3, name: 'Blocked', selected: false }
+		{ id: 1, name: 'Blocked', selected: false },
+		{ id: 2, name: 'Checked-In', selected: false },
+		{ id: 3, name: 'Checked-Out', selected: false },
+		{ id: 4, name: 'Open', selected: false },
+		{ id: 5, name: 'Cancelled', selected: false },
+		
 	  ];
 	  selectedStatuses:string[]=[]; 
 	   // Toggle the selected status for a button
@@ -251,11 +260,20 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 	  }
 	  // Apply and process the selected statuses
 	  applyStatuses(): void {
-		//console.log('Selected Statuses:', this.selectedStatuses);
+		console.log('Selected Statuses:', this.selectedStatuses);
+	  }
+	  applyDates(): void {
+		this.param.pageIndex=0
+		this.paginator.pageIndex=0;
+		this.param.filter.startDate=  (this.fromDate.replace('T',' '))+':00';
+		this.param.filter.endDate=  (this.toDate.replace('T',' '))+':00';
+		console.log(this.fromDate,this.fromDate);
+
+		this.getTenantsList();
 	  }
 
 	  pageChanged(event:any){
-		this.dataSource=new MatTableDataSource<ZoyOwner>();
+		this.dataSource=new MatTableDataSource<ManageTenant>();
 		if(this.lastPageSize!=event.pageSize){
 		this.paginator.pageIndex=0;
 		event.pageIndex=0;
@@ -267,7 +285,7 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		getRecord(id:string){
 			this.dataService.setTenantId(id);
 			localStorage.setItem('tenantInfo', id);
-			this.dataService.setOwenerListFilterParam(this.param);
+			this.dataService.setTenantListFilterParam(this.param);
 			this.router.navigateByUrl('/tenantprofile');
 		}
 }

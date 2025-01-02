@@ -8,13 +8,13 @@ import { AuthService } from 'src/app/common/service/auth.service';
 import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
-import { ZoyOwnerService } from 'src/app/owners/service/zoy-owner.service';
 import { MatTableDataSource } from '@angular/material/table';
-import { TenantProfile } from '../model/transaction-history-model';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { FilterData, FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
 import { ReportService } from 'src/app/finance/reports/service/reportService';
+import { TenantService } from '../../tenant.service';
+import { TenantDetailPortfolio } from '../model/tenant-details';
 
 @Component({
 	selector: 'app-tenant-profile',
@@ -53,8 +53,9 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	transactionHeaderTenantName:string="";
 	@ViewChild(MatSort) sort: MatSort;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
+	tdpf : TenantDetailPortfolio = new TenantDetailPortfolio();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private reportService : ReportService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private zoyOwnerService : ZoyOwnerService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private tenantService : TenantService) {
 			this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
 		  //this.defHomeMenu=defMenuEnable;
@@ -114,11 +115,62 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		this.sidemenuComp.expandMenu(7);
 		this.sidemenuComp.activeMenu(7, 'tenants');
 		this.dataService.setHeaderName("Tenant Profile");
+
+		this.getTenantsDetails();
 	}
 	selectProfile(selectTab:number,header:string){
 		this.selectedTab=selectTab;
 		this.sectionTabHeader=header;
 	}
+
+	getTenantsDetails(){
+		this.spinner.show();
+		this.tenantService.getTenantsDetails(this.tenantId).subscribe((data) => {
+		if(data?.data){
+			this.tdpf = data.data;
+		  }else{
+			this.tdpf = new TenantDetailPortfolio();
+		  }
+		this.spinner.hide();
+		},error =>{
+			console.log("Error:",error);
+			console.log("Error.status:",error.status);
+				console.log("Error.error:",error.error);
+				console.log("error.error.error:",error.error.error);
+		  this.spinner.hide();
+		  this.router.navigate(['/tenants']);
+		  if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		 }else if(error.status==401){
+			console.error("Unauthorised");
+		}else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		  }else if (error.error && error.error.message) {
+			this.errorMsg =error.error.message;
+			console.log("Error:"+this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+			this.spinner.hide();
+		  } else {
+			this.spinner.hide();
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			  let str;
+				if(error.status==400){
+					console.log("error",error)
+				str=error.error.error;
+				}else{
+				  str=error.message;
+				  str=str.substring(str.indexOf(":")+1);
+				}
+				console.log("Error:"+str);
+				this.errorMsg=str;
+			}
+		
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  }
+		}); 	
+	 }
 	
 	  
 	  selectTransaction(selectTab:number,header:string,tenantName:string){
@@ -186,6 +238,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		this.paginator.pageIndex=0;
 		 this.getReportDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
 	   }
+
 	getReportDetails(pageIndex:number,pageSize:number,sortActive:string,sortDirection:string){
 		//	this.authService.checkLoginUserVlidaate();
 			if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
@@ -240,9 +293,11 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 					  str=error.message;
 					  str=str.substring(str.indexOf(":")+1);
 					}
+					
 					console.log("Error:"+str);
 					this.errorMsg=str;
 				}
+			
 				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
 			  }
 			}); 
