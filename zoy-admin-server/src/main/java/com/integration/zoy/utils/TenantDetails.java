@@ -17,9 +17,11 @@ public class TenantDetails {
     private String ekycStatus;
 	@SerializedName("registeredDate")
     private String registeredDate;
+	@SerializedName("tenantId")
+	private String tenantId;
 	
 	public TenantDetails(String tenantName, String contactNumber, String userEmail, String status, String appUser,
-			String ekycStatus, String registeredDate) {
+			String ekycStatus, String registeredDate,String tenantId) {
 		super();
 		this.tenantName = tenantName;
 		this.contactNumber = contactNumber;
@@ -28,6 +30,7 @@ public class TenantDetails {
 		this.appUser = appUser;
 		this.ekycStatus = ekycStatus;
 		this.registeredDate =  registeredDate;
+		this.tenantId=tenantId;
 	}
 	
 	public String getTenantName() {
@@ -73,6 +76,14 @@ public class TenantDetails {
 
 	public void setRegisteredDate(String registeredDate) {
 		this.registeredDate = registeredDate;
+	}
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
 	}
 	
 
