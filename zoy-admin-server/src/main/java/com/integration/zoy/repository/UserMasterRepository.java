@@ -37,7 +37,8 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
 	        "    WHEN um.user_ekyc_isekycverified = true AND (um.user_ekyc_isvideo_verified = false OR um.user_ekyc_isvideo_verified IS NULL) THEN 'Partially Verified' " +
 	        "    ELSE 'Pending' " +
 	        "END AS ekycStatus, " +
-	        "um.user_created_at AS registeredDate " +
+	        "um.user_created_at AS registeredDate, " +
+	        "um.user_id AS tenantId " +
 	        "FROM pgusers.user_master um " +
 	        "WHERE (:searchText IS NULL OR " +
 	        "LOWER(CAST(CONCAT(um.user_first_name, ' ', um.user_last_name) AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
