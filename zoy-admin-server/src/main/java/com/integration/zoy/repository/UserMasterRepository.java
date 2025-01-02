@@ -143,4 +143,65 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
             "AND ub.user_bookings_web_check_out = false " +
             "AND ub.user_bookings_is_cancelled = false", nativeQuery = true)
 	List<String[]> fetchTenantDetails(@Param("userId") String userId);
+	
+	@Query(value = "SELECT " +
+            "ub.user_bookings_id AS bookingId, " +
+            "ub.user_bookings_date AS bookingDate, " +
+            "p.property_name AS propertyName, " +
+            "p.property_city AS propertyCity, " +
+            "p.property_pincode AS propertyPincode, " +
+            "p.property_contact_number AS propertyContactNumber, " +
+            "b.bed_name AS bedNumber, " +
+            "ob.fixed_rent AS monthlyRent, " +
+            "ob.security_deposit AS securityDeposit, " +
+            "CASE " +
+            "    WHEN ub.user_bookings_is_cancelled = true THEN 'Cancelled' " +
+            "    WHEN ub.user_bookings_web_check_in = true AND ub.user_bookings_web_check_out = true THEN 'Checked Out' " +
+            "END AS bookingStatus, " +
+            "ucd.cancellation_timestamp AS cancellationTimestamp " +
+            "FROM " +
+            "pgusers.user_bookings ub " +
+            "LEFT JOIN " +
+            "pgowners.zoy_pg_property_details p ON ub.user_bookings_property_id = p.property_id " +
+            "LEFT JOIN " +
+            "pgowners.zoy_pg_owner_booking_details ob ON ub.user_bookings_id = ob.booking_id " +
+            "LEFT JOIN " +
+            "pgowners.zoy_pg_bed_details b ON ob.selected_bed = b.bed_id " +
+            "LEFT JOIN " +
+            "pgusers.user_cancellation_details ucd ON ub.user_bookings_id = ucd.booking_id " +
+            "WHERE " +
+            "ub.user_bookings_tenant_id = :tenantId " +
+            "AND (ub.user_bookings_is_cancelled = true OR (ub.user_bookings_web_check_in = true AND ub.user_bookings_web_check_out = true))", nativeQuery = true)
+List<String[]> fetchCancelBookingDetails(@Param("tenantId") String tenantId);
+
+@Query(value = "SELECT " +
+        "ub.user_bookings_id AS bookingId, " +
+        "ub.user_bookings_date AS bookingDate, " +
+        "p.property_name AS propertyName, " +
+        "p.property_city AS propertyCity, " +
+        "p.property_pincode AS propertyPincode, " +
+        "p.property_contact_number AS propertyContactNumber, " +
+        "b.bed_name AS bedNumber, " +
+        "ob.fixed_rent AS monthlyRent, " +
+        "ob.security_deposit AS securityDeposit, " +
+        "CASE " +
+        "    WHEN (SELECT SUM(up.user_payment_payable_amount) " +
+        "          FROM pgusers.user_payments up " +
+        "          JOIN pgowners.zoy_pg_owner_booking_details zpobd ON zpobd.booking_id = up.user_payment_booking_id " +
+        "          WHERE zpobd.booking_id = ub.user_bookings_id " +
+        "          GROUP BY zpobd.booking_id) > ob.security_deposit THEN 'Paid' " +
+        "    ELSE 'Pending' " +
+        "END AS securityDepositStatus " +
+        "FROM " +
+        "pgusers.user_bookings ub " +
+        "JOIN " +
+        "pgowners.zoy_pg_property_details p ON ub.user_bookings_property_id = p.property_id " +
+        "JOIN " +
+        "pgowners.zoy_pg_owner_booking_details ob ON ub.user_bookings_id = ob.booking_id " +
+        "JOIN " +
+        "pgowners.zoy_pg_bed_details b ON ob.selected_bed = b.bed_id " +
+        "WHERE " +
+        "ub.user_bookings_tenant_id = :tenantId " +
+        "AND (ub.user_bookings_is_cancelled = false AND ub.user_bookings_web_check_in = false AND ub.user_bookings_web_check_out = false)", nativeQuery = true)
+List<String[]> fetchUpcomingBookingDetails(@Param("tenantId") String tenantId);
 }

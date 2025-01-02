@@ -38,6 +38,7 @@ import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.ActiveBookings;
 import com.integration.zoy.model.BasicPropertyInformation;
 import com.integration.zoy.model.Bed;
+import com.integration.zoy.model.CancellationDetails;
 import com.integration.zoy.model.FloorInformation;
 import com.integration.zoy.model.PgOwnerAdditionalInfo;
 import com.integration.zoy.model.PgOwnerBusinessInfo;
@@ -48,6 +49,7 @@ import com.integration.zoy.model.PgOwnerdetailPortfolio;
 import com.integration.zoy.model.Room;
 import com.integration.zoy.model.TenantDetailPortfolio;
 import com.integration.zoy.model.TenantProfile;
+import com.integration.zoy.model.UpcomingBookingDetails;
 import com.integration.zoy.repository.UserMasterRepository;
 import com.integration.zoy.service.UserDBImpl;
 import com.integration.zoy.utils.PaginationRequest;
@@ -78,32 +80,32 @@ public class TenantMasterController implements TenantMasterImpl{
 			.create();
 	private static final Gson gson2 = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
-	
-	
+
+
 	@Autowired
 	UserDBImpl userDBImpl;
-	
+
 	@Autowired
 	private UserMasterRepository userRepo;
-	
+
 	@Override
 	public ResponseEntity<String> zoyTenantManagement(PaginationRequest paginationRequest) {
-	    ResponseBody response = new ResponseBody();
+		ResponseBody response = new ResponseBody();
 		try {
 			Page<TenantDetails> ownerPropertyList = userDBImpl.findAllTenantDetails( paginationRequest);
-	            return new ResponseEntity<>(gson2.toJson(ownerPropertyList), HttpStatus.OK);
- 		}catch (DataAccessException dae) {
-	        log.error("Database error occurred while fetching Tenant details: " + dae.getMessage(), dae);
-	        response.setStatus(HttpStatus.BAD_REQUEST.value());
-	        response.setError("Database error: Unable to fetch Tenant details");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        
-	    }catch (Exception e) {
-	        log.error("Unexpected error occurredAPI:/zoy_admin/manage-tenants", e);
-	        response.setStatus(HttpStatus.BAD_REQUEST.value());
-	        response.setError(e.getMessage());
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	    }
+			return new ResponseEntity<>(gson2.toJson(ownerPropertyList), HttpStatus.OK);
+		}catch (DataAccessException dae) {
+			log.error("Database error occurred while fetching Tenant details: " + dae.getMessage(), dae);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Database error: Unable to fetch Tenant details");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+
+		}catch (Exception e) {
+			log.error("Unexpected error occurredAPI:/zoy_admin/manage-tenants", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
 
 	}
 
@@ -114,9 +116,9 @@ public class TenantMasterController implements TenantMasterImpl{
 		try {
 			List<String[]> tenantDetails = userRepo.fetchTenantDetails(tenantid);
 			if (tenantDetails == null || tenantDetails.isEmpty()) {
-			    response.setStatus(HttpStatus.BAD_REQUEST.value());
-			    response.setError("Tenant details not found.");
-			    return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Tenant details not found.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
 
 			String[] details = tenantDetails.get(0);
@@ -178,5 +180,95 @@ public class TenantMasterController implements TenantMasterImpl{
 		}
 	}
 
+	@Override
+	public ResponseEntity<String> TenantClosedBookingDetails(String tenantid) {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<String[]> tenantCancelBookingDetails = userRepo.fetchCancelBookingDetails(tenantid);
+			if (tenantCancelBookingDetails == null || tenantCancelBookingDetails.isEmpty()) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Tenant Cancellation Details not found.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			List<CancellationDetails> bookingDetailsList = new ArrayList<>();
+	        for (String[] details : tenantCancelBookingDetails) {
+	            CancellationDetails bookingDetails = new CancellationDetails();
+	            bookingDetails.setBookingId(details[0] != null ? (String) details[0] : "");
+	            bookingDetails.setBookingDate(details[1] != null ? Timestamp.valueOf(details[1]) : null);
+	            bookingDetails.setPropertyName(details[2] != null ? (String) details[2] : "");
+	            bookingDetails.setPropertyAddress((details[3] != null ? (String) details[3] : "") + "-" + (details[4] != null ? (String) details[4] : ""));
+	            bookingDetails.setPropertyContactNumber(details[5] != null ? (String) details[5] : "");
+	            bookingDetails.setBedNumber(details[6] != null ? (String) details[6] : "");
+	            bookingDetails.setMonthlyRent(details[7] != null ? (String) details[7] : "");
+	            bookingDetails.setSecurityDeposit(details[8] != null ? (String) details[8] : "");
+	            bookingDetails.setBookingStatus(details[9] != null ? (String) details[9] : "");
+	            bookingDetails.setCancellationDate(details[10] != null ? Timestamp.valueOf(details[10]) : null);
+	            bookingDetailsList.add(bookingDetails);
+	        }
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(bookingDetailsList);
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error fetching Tenant Cancellation Details API:/zoy_admin/closed-booking-details", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
+	@Override
+	public ResponseEntity<String> TenantUpcomingBookingDetails(String tenantId) {
+	    ResponseBody response = new ResponseBody();
+
+	    try {
+	        List<String[]> tenantActiveBookingDetails = userRepo.fetchUpcomingBookingDetails(tenantId);
+	        if (tenantActiveBookingDetails == null || tenantActiveBookingDetails.isEmpty()) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError("Tenant Upcoming Booking Details not found.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        List<UpcomingBookingDetails> bookingDetailsList = new ArrayList<>();
+	        for (String[] details : tenantActiveBookingDetails) {
+	        	UpcomingBookingDetails bookingDetails = new UpcomingBookingDetails();
+	            bookingDetails.setBookingId(details[0] != null ? details[0] : "");
+	            bookingDetails.setBookingDate(details[1] != null ? Timestamp.valueOf(details[1]) : null);
+	            bookingDetails.setPropertyName(details[2] != null ? details[2] : "");
+	            bookingDetails.setPropertyAddress((details[3] != null ? details[3] : "") + "-" + (details[4] != null ? details[4] : ""));
+	            bookingDetails.setPropertyContactNumber(details[5] != null ? details[5] : "");
+	            bookingDetails.setBedNumber(details[6] != null ? details[6] : "");
+	            bookingDetails.setMonthlyRent(details[7] != null ? details[7] : "");
+	            bookingDetails.setSecurityDeposit(details[8] != null ? details[8] : "");
+	            bookingDetails.setSecurityDepositStatus(details[9] != null ? details[9] : "");
+	            bookingDetailsList.add(bookingDetails);
+	        }
+
+	        response.setStatus(HttpStatus.OK.value());
+	        response.setData(bookingDetailsList);
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error fetching Tenant Upcoming Booking Details API:/zoy_admin/upcoming-booking-details", e);
+	        try {
+	            new ZoyAdminApplicationException(e, "");
+	        } catch (Exception ex) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError(ex.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
 
 }
