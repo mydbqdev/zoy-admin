@@ -67,4 +67,80 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
 	                "AND (:status IS NULL OR LOWER(CAST(CASE WHEN um.user_pin IS NOT NULL THEN 'active' ELSE 'inactive' END AS text)) = LOWER(CAST(:status AS text)))",
 	    nativeQuery = true)
 	Page<Object[]> getTenantDetails(Pageable pageable, @Param("searchText") String searchText, @Param("startDate") String startDate, @Param("endDate") String endDate, @Param("status") String status);
+
+	@Query(value = "SELECT " +
+            "CONCAT(um.user_first_name, ' ', um.user_last_name) AS tenantName, " +
+            "um.user_mobile AS contactNumber, " +
+            "um.user_email AS userEmail, " +
+            "CASE " +
+            "    WHEN um.user_pin IS NOT NULL THEN 'Active' " +
+            "    ELSE 'Inactive' " +
+            "END AS status, " +
+            "CASE " +
+            "    WHEN um.user_ekyc_isekycverified = true AND um.user_ekyc_isvideo_verified = true THEN 'Verified' " +
+            "    WHEN um.user_ekyc_isekycverified = true AND (um.user_ekyc_isvideo_verified = false OR um.user_ekyc_isvideo_verified IS NULL) THEN 'Partially Verified' " +
+            "    ELSE 'Pending' " +
+            "END AS ekycStatus, " +
+            "um.user_created_at AS registeredDate, " +
+            "p.property_name AS currentPropertyName, " +
+            "ud.emergency_contactnumber AS emergencyContactNumber, " +
+            "ud.user_personal_alt_phone AS alternatePhone, " +
+            "ud.user_personal_tenant_type AS tenantType, " +
+            "ud.user_personal_gender AS gender, " +
+            "ud.user_personal_dob AS dateOfBirth, " +
+            "ud.user_personal_blood_group AS bloodGroup, " +
+            "ud.user_family_father_name AS fatherName, " +
+            "ud.user_personal_curr_address AS currentAddress, " +
+            "ud.user_personal_permanant_address AS permanentAddress, " +
+            "ud.user_personal_nationality AS nationality, " +
+            "ud.user_personal_mother_tounge AS motherTongue, " +
+            "ud.user_profile_image AS userProfile, " +
+            "ob.fixed_rent AS fixedRent, " +
+            "ob.security_deposit AS securityDeposit, " +
+            "ob.in_date AS checkInDate, " +
+            "ob.out_date AS checkOutDate, " +
+            "r.room_name AS roomName, " +
+            "b.bed_name AS bedName, " +
+            "rc.cycle_name AS rentCycle, " +
+            "tm.notice_period AS noticePeriod, " +
+            "(SELECT SUM(CASE " +
+            "            WHEN up.user_payment_payable_amount IS NOT NULL " +
+            "            THEN ABS(up.user_payment_payable_amount - ud.user_money_due_amount) " +
+            "            ELSE ud.user_money_due_amount " +
+            "        END) " +
+            " FROM pgusers.user_dues ud " +
+            " LEFT JOIN pgusers.user_payment_due upd1 ON upd1.user_money_due_id = ud.user_money_due_id " +
+            " LEFT JOIN pgusers.user_payments up ON up.user_payment_id = upd1.user_payment_id " +
+            " JOIN pgusers.user_pg_details upd ON upd.user_id = ud.user_id " +
+            " JOIN pgcommon.pg_owner_user_status pous ON pous.user_id = ud.user_id " +
+            "     AND upd.user_pg_booking_id = pous.user_bookings_id " +
+            "     AND upd.user_pg_property_id = pous.property_id " +
+            "     AND pous.pg_tenant_status = true " +
+            " WHERE ud.user_id = um.user_id) AS totalDueAmount " +
+            "FROM " +
+            "pgusers.user_master um " +
+            "LEFT JOIN " +
+            "pgusers.user_bookings ub ON um.user_id = ub.user_id " +
+            "LEFT JOIN " +
+            "pgowners.zoy_pg_property_details p ON ub.user_bookings_property_id = p.property_id " +
+            "LEFT JOIN " +
+            "pgusers.user_details ud ON um.user_id = ud.user_id " +
+            "LEFT JOIN " +
+            "pgowners.zoy_pg_owner_booking_details ob ON ub.user_bookings_id = ob.booking_id " +
+            "LEFT JOIN " +
+            "pgowners.zoy_pg_room_details r ON ob.room = r.room_id " +
+            "LEFT JOIN " +
+            "pgowners.zoy_pg_bed_details b ON ob.selected_bed = b.bed_id AND b.bed_status = true " +
+            "LEFT JOIN " +
+            "pgowners.zoy_pg_rent_cycle_master rc ON ob.lock_in_period = rc.cycle_id " +
+            "LEFT JOIN " +
+            "pgowners.zoy_pg_property_terms_conditions ptc ON ob.property_id = ptc.property_id " +
+            "LEFT JOIN " +
+            "pgowners.zoy_pg_terms_master tm ON ptc.term_id = tm.term_id " +
+            "WHERE " +
+            "um.user_id = :userId " +
+            "AND ub.user_bookings_web_check_in = true " +
+            "AND ub.user_bookings_web_check_out = false " +
+            "AND ub.user_bookings_is_cancelled = false", nativeQuery = true)
+	List<String[]> fetchTenantDetails(@Param("userId") String userId);
 }
