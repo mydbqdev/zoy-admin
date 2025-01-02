@@ -110,43 +110,44 @@ public class TenantMasterController implements TenantMasterImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> zoyTenantManagementDetails(String tenantid) {
-		ResponseBody response = new ResponseBody();
+	public ResponseEntity<String> zoyTenantManagementDetails(String tenantId) {
+	    ResponseBody response = new ResponseBody();
 
-		try {
-			List<String[]> tenantDetails = userRepo.fetchTenantDetails(tenantid);
-			if (tenantDetails == null || tenantDetails.isEmpty()) {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Tenant details not found.");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
+	    try {
+	        // Fetch tenant profile details
+	        List<String[]> tenantDetails = userRepo.fetchTenantDetails(tenantId);
+	        if (tenantDetails == null || tenantDetails.isEmpty()) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError("Tenant details not found.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
 
-			String[] details = tenantDetails.get(0);
+	        String[] details = tenantDetails.get(0);
 
-			// Mapping tenant profile details
-			TenantProfile profile = new TenantProfile();
-			profile.setTenantName(details[0] != null ? details[0] : "");
-			profile.setContactNumber(details[1] != null ? details[1] : "");
-			profile.setUserEmail(details[2] != null ? details[2] : "");
-			profile.setStatus(details[3] != null ? details[3] : "");
-			profile.setEkycStatus(details[4] != null ? details[4] : "");
-			profile.setRegisteredDate(details[5] != null ? Timestamp.valueOf(details[5]) : null);
-			profile.setCurrentPropertyName(details[6] != null ? details[6] : "");
-			profile.setEmergencyContactNumber(details[7] != null ? details[7] : "");
-			profile.setAlternatePhone(details[8] != null ? details[8] : "");
-			profile.setTenantType(details[9] != null ? details[9] : "");
-			profile.setGender(details[10] != null ? details[10] : "");
-			profile.setDateOfBirth(details[11] != null ? Timestamp.valueOf(details[11]) : null);
-			profile.setBloodGroup(details[12] != null ? details[12] : "");
-			profile.setFatherName(details[13] != null ? details[13] : "");
-			profile.setCurrentAddress(details[14] != null ? details[14] : "");
-			profile.setPermanentAddress(details[15] != null ? details[15] : "");
-			profile.setNationality(details[16] != null ? details[16] : "");
-			profile.setMotherTongue(details[17] != null ? details[17] : "");
-			profile.setUserProfile(details[18] != null ? details[18] : "");
+	        // Mapping tenant profile details
+	        TenantProfile profile = new TenantProfile();
+	        profile.setTenantName(details[0] != null ? details[0] : "");
+	        profile.setContactNumber(details[1] != null ? details[1] : "");
+	        profile.setUserEmail(details[2] != null ? details[2] : "");
+	        profile.setStatus(details[3] != null ? details[3] : "");
+	        profile.setEkycStatus(details[4] != null ? details[4] : "");
+	        profile.setRegisteredDate(details[5] != null ? Timestamp.valueOf(details[5]) : null);
+	        profile.setCurrentPropertyName(details[6] != null ? details[6] : "");
+	        profile.setEmergencyContactNumber(details[7] != null ? details[7] : "");
+	        profile.setAlternatePhone(details[8] != null ? details[8] : "");
+	        profile.setTenantType(details[9] != null ? details[9] : "");
+	        profile.setGender(details[10] != null ? details[10] : "");
+	        profile.setDateOfBirth(details[11] != null ? Timestamp.valueOf(details[11]) : null);
+	        profile.setBloodGroup(details[12] != null ? details[12] : "");
+	        profile.setFatherName(details[13] != null ? details[13] : "");
+	        profile.setCurrentAddress(details[14] != null ? details[14] : "");
+	        profile.setPermanentAddress(details[15] != null ? details[15] : "");
+	        profile.setNationality(details[16] != null ? details[16] : "");
+	        profile.setMotherTongue(details[17] != null ? details[17] : "");
+	        profile.setUserProfile(details[18] != null ? details[18] : "");
 
-			// Mapping active bookings details
-			ActiveBookings activeBookings = new ActiveBookings();
+	        // Fetch active bookings details
+	        ActiveBookings activeBookings = new ActiveBookings();
 			activeBookings.setPgName(details[6] != null ? details[6] : ""); 
 			activeBookings.setMonthlyRent(details[19] != null ? new BigDecimal(details[19]) : BigDecimal.ZERO);
 			activeBookings.setSecurityDeposit(details[20] != null ? new BigDecimal(details[20]) : BigDecimal.ZERO);
@@ -157,107 +158,53 @@ public class TenantMasterController implements TenantMasterImpl{
 			activeBookings.setNoticePeriod(details[26] != null ? details[26] : "");
 			activeBookings.setTotalDueAmount(details[27] != null ? new BigDecimal(details[27]) : BigDecimal.ZERO);
 
-			TenantDetailPortfolio root = new TenantDetailPortfolio();
-			root.setProfile(profile);
-			root.setActiveBookings(activeBookings);
-
-			response.setStatus(HttpStatus.OK.value());
-			response.setData(root);
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-
-		} catch (Exception e) {
-			log.error("Error fetching PG Owner details portfolio API:/zoy_admin/ownerdetailsportfolio.pgOwnerDetailsPortfolio", e);
-			try {
-				new ZoyAdminApplicationException(e, "");
-			}catch(Exception ex){
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError(ex.getMessage());
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@Override
-	public ResponseEntity<String> TenantClosedBookingDetails(String tenantid) {
-		ResponseBody response = new ResponseBody();
-		try {
-			List<String[]> tenantCancelBookingDetails = userRepo.fetchCancelBookingDetails(tenantid);
-			if (tenantCancelBookingDetails == null || tenantCancelBookingDetails.isEmpty()) {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Tenant Cancellation Details not found.");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
-			List<CancellationDetails> bookingDetailsList = new ArrayList<>();
-	        for (String[] details : tenantCancelBookingDetails) {
-	            CancellationDetails bookingDetails = new CancellationDetails();
-	            bookingDetails.setBookingId(details[0] != null ? (String) details[0] : "");
-	            bookingDetails.setBookingDate(details[1] != null ? Timestamp.valueOf(details[1]) : null);
-	            bookingDetails.setPropertyName(details[2] != null ? (String) details[2] : "");
-	            bookingDetails.setPropertyAddress((details[3] != null ? (String) details[3] : "") + "-" + (details[4] != null ? (String) details[4] : ""));
-	            bookingDetails.setPropertyContactNumber(details[5] != null ? (String) details[5] : "");
-	            bookingDetails.setBedNumber(details[6] != null ? (String) details[6] : "");
-	            bookingDetails.setMonthlyRent(details[7] != null ? (String) details[7] : "");
-	            bookingDetails.setSecurityDeposit(details[8] != null ? (String) details[8] : "");
-	            bookingDetails.setBookingStatus(details[9] != null ? (String) details[9] : "");
-	            bookingDetails.setCancellationDate(details[10] != null ? Timestamp.valueOf(details[10]) : null);
-	            bookingDetailsList.add(bookingDetails);
-	        }
-			response.setStatus(HttpStatus.OK.value());
-			response.setData(bookingDetailsList);
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-
-		} catch (Exception e) {
-			log.error("Error fetching Tenant Cancellation Details API:/zoy_admin/closed-booking-details", e);
-			try {
-				new ZoyAdminApplicationException(e, "");
-			}catch(Exception ex){
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError(ex.getMessage());
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-
-	}
-
-	@Override
-	public ResponseEntity<String> TenantUpcomingBookingDetails(String tenantId) {
-	    ResponseBody response = new ResponseBody();
-
-	    try {
-	        List<String[]> tenantActiveBookingDetails = userRepo.fetchUpcomingBookingDetails(tenantId);
-	        if (tenantActiveBookingDetails == null || tenantActiveBookingDetails.isEmpty()) {
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setError("Tenant Upcoming Booking Details not found.");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        // Fetch closed bookings details
+	        List<String[]> tenantCancelBookingDetails = userRepo.fetchCancelBookingDetails(tenantId);
+	        List<CancellationDetails> closedBookingsList = new ArrayList<>();
+	        for (String[] cancelDetails : tenantCancelBookingDetails) {
+	            CancellationDetails closedBooking = new CancellationDetails();
+	            closedBooking.setBookingId(cancelDetails[0] != null ? cancelDetails[0] : "");
+	            closedBooking.setBookingDate(cancelDetails[1] != null ? Timestamp.valueOf(cancelDetails[1]) : null);
+	            closedBooking.setPropertyName(cancelDetails[2] != null ? cancelDetails[2] : "");
+	            closedBooking.setPropertyAddress((cancelDetails[3] != null ? cancelDetails[3] : "") + "-" + (cancelDetails[4] != null ? cancelDetails[4] : ""));
+	            closedBooking.setPropertyContactNumber(cancelDetails[5] != null ? cancelDetails[5] : "");
+	            closedBooking.setBedNumber(cancelDetails[6] != null ? cancelDetails[6] : "");
+	            closedBooking.setMonthlyRent(cancelDetails[7] != null ? cancelDetails[7] : "");
+	            closedBooking.setSecurityDeposit(cancelDetails[8] != null ? cancelDetails[8] : "");
+	            closedBooking.setBookingStatus(cancelDetails[9] != null ? cancelDetails[9] : "");
+	            closedBooking.setCancellationDate(cancelDetails[10] != null ? Timestamp.valueOf(cancelDetails[10]) : null);
+	            closedBookingsList.add(closedBooking);
 	        }
 
-	        List<UpcomingBookingDetails> bookingDetailsList = new ArrayList<>();
-	        for (String[] details : tenantActiveBookingDetails) {
-	        	UpcomingBookingDetails bookingDetails = new UpcomingBookingDetails();
-	            bookingDetails.setBookingId(details[0] != null ? details[0] : "");
-	            bookingDetails.setBookingDate(details[1] != null ? Timestamp.valueOf(details[1]) : null);
-	            bookingDetails.setPropertyName(details[2] != null ? details[2] : "");
-	            bookingDetails.setPropertyAddress((details[3] != null ? details[3] : "") + "-" + (details[4] != null ? details[4] : ""));
-	            bookingDetails.setPropertyContactNumber(details[5] != null ? details[5] : "");
-	            bookingDetails.setBedNumber(details[6] != null ? details[6] : "");
-	            bookingDetails.setMonthlyRent(details[7] != null ? details[7] : "");
-	            bookingDetails.setSecurityDeposit(details[8] != null ? details[8] : "");
-	            bookingDetails.setSecurityDepositStatus(details[9] != null ? details[9] : "");
-	            bookingDetailsList.add(bookingDetails);
+	        // Fetch upcoming bookings details
+	        List<String[]> tenantUpcomingBookingDetails = userRepo.fetchUpcomingBookingDetails(tenantId);
+	        List<UpcomingBookingDetails> upcomingBookingsList = new ArrayList<>();
+	        for (String[] upcomingDetails : tenantUpcomingBookingDetails) {
+	            UpcomingBookingDetails upcomingBooking = new UpcomingBookingDetails();
+	            upcomingBooking.setBookingId(upcomingDetails[0] != null ? upcomingDetails[0] : "");
+	            upcomingBooking.setBookingDate(upcomingDetails[1] != null ? Timestamp.valueOf(upcomingDetails[1]) : null);
+	            upcomingBooking.setPropertyName(upcomingDetails[2] != null ? upcomingDetails[2] : "");
+	            upcomingBooking.setPropertyAddress((upcomingDetails[3] != null ? upcomingDetails[3] : "") + "-" + (upcomingDetails[4] != null ? upcomingDetails[4] : ""));
+	            upcomingBooking.setPropertyContactNumber(upcomingDetails[5] != null ? upcomingDetails[5] : "");
+	            upcomingBooking.setBedNumber(upcomingDetails[6] != null ? upcomingDetails[6] : "");
+	            upcomingBooking.setMonthlyRent(upcomingDetails[7] != null ? upcomingDetails[7] : "");
+	            upcomingBooking.setSecurityDeposit(upcomingDetails[8] != null ? upcomingDetails[8] : "");
+	            upcomingBooking.setSecurityDepositStatus(upcomingDetails[9] != null ? upcomingDetails[9] : "");
+	            upcomingBookingsList.add(upcomingBooking);
 	        }
+
+	        TenantDetailPortfolio root = new TenantDetailPortfolio();
+	        root.setProfile(profile);
+	        root.setActiveBookings(activeBookings);
+	        root.setClosedBookings(closedBookingsList);
+	        root.setUpcomingBookings(upcomingBookingsList);
 
 	        response.setStatus(HttpStatus.OK.value());
-	        response.setData(bookingDetailsList);
+	        response.setData(root);
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 	    } catch (Exception e) {
-	        log.error("Error fetching Tenant Upcoming Booking Details API:/zoy_admin/upcoming-booking-details", e);
+	        log.error("Error fetching Tenant Management Details API:/zoy_admin/tenant-management-details", e);
 	        try {
 	            new ZoyAdminApplicationException(e, "");
 	        } catch (Exception ex) {

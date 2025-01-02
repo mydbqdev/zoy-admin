@@ -194,11 +194,11 @@ List<String[]> fetchCancelBookingDetails(@Param("tenantId") String tenantId);
         "END AS securityDepositStatus " +
         "FROM " +
         "pgusers.user_bookings ub " +
-        "JOIN " +
+        "LEFT JOIN " +
         "pgowners.zoy_pg_property_details p ON ub.user_bookings_property_id = p.property_id " +
-        "JOIN " +
+        "LEFT JOIN " +
         "pgowners.zoy_pg_owner_booking_details ob ON ub.user_bookings_id = ob.booking_id " +
-        "JOIN " +
+        "LEFT JOIN " +
         "pgowners.zoy_pg_bed_details b ON ob.selected_bed = b.bed_id " +
         "WHERE " +
         "ub.user_bookings_tenant_id = :tenantId " +
