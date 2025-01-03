@@ -27,7 +27,7 @@ export class ForgotPasswordComponent implements OnInit {
 	email: string = '';
 	viewPassword:boolean=false;
 	passwordResetSuccess: boolean = false;
-	remaining: number = 300;
+	remaining: number = 60;
 	timerDisplay: string = ''; 
 	timerInterval: any; 
 
@@ -80,6 +80,7 @@ export class ForgotPasswordComponent implements OnInit {
 		if(this.email=='' || null==this.email){
 			return;
 		}
+		this.resetTimer();
 		this.forgotPasswordRequest.email=this.email;
 		this.spinner.show;
 		this.sending=true;
@@ -122,7 +123,7 @@ export class ForgotPasswordComponent implements OnInit {
 	}
 	
 	resetTimer(){
-		this.remaining=300;
+		this.remaining=60;
 		this.timerDisplay = '';
 		clearInterval(this.timerInterval);
 		this.startTimer();
