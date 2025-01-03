@@ -27,7 +27,7 @@ export class ForgotPasswordComponent implements OnInit {
 	email: string = '';
 	viewPassword:boolean=false;
 	passwordResetSuccess: boolean = false;
-	remaining: number = 300;
+	remaining: number = 180;
 	timerDisplay: string = ''; 
 	timerInterval: any; 
 
@@ -80,6 +80,7 @@ export class ForgotPasswordComponent implements OnInit {
 		if(this.email=='' || null==this.email){
 			return;
 		}
+		this.resetTimer();
 		this.forgotPasswordRequest.email=this.email;
 		this.spinner.show;
 		this.sending=true;
@@ -108,9 +109,9 @@ export class ForgotPasswordComponent implements OnInit {
 			} else {
 				let str;
 				if (error.status == 400) {
-				str = error.error;
+				str = error.error.error;
 				} else {
-				str = error.message;
+				str = error.error.message;
 				str = str.substring(str.indexOf(":") + 1);
 				}
 				console.log("Error:" + str);
@@ -122,7 +123,7 @@ export class ForgotPasswordComponent implements OnInit {
 	}
 	
 	resetTimer(){
-		this.remaining=300;
+		this.remaining=180;
 		this.timerDisplay = '';
 		clearInterval(this.timerInterval);
 		this.startTimer();
@@ -212,9 +213,9 @@ export class ForgotPasswordComponent implements OnInit {
 			 this.spinner.hide();
 			  let str;
 			  if(error.status==400){
-			  str=error.error;
+			  str=error.error.error;
 			  }else{
-				str=error.message;
+				str=error.error.message;
 				str=str.substring(str.indexOf(":")+1);
 			  }
 			  console.log("Error:"+str);
@@ -265,9 +266,9 @@ export class ForgotPasswordComponent implements OnInit {
 			   this.spinner.hide();
 				let str;
 				if(error.status==400){
-				str=error.error;
+				str=error.error.error;
 				}else{
-				  str=error.message;
+				  str=error.error.message;
 				  str=str.substring(str.indexOf(":")+1);
 				}
 				console.log("Error:"+str);
