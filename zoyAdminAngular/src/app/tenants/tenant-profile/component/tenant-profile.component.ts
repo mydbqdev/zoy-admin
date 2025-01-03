@@ -50,7 +50,6 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	reportColumnsList = [] ;
 	reportNamesList = this.reportService.reportNamesList;
 	transactionHeader:string="";
-	transactionHeaderTenantName:string="";
 	@ViewChild(MatSort) sort: MatSort;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	tdpf : TenantDetailPortfolio = new TenantDetailPortfolio();
@@ -173,10 +172,8 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	 }
 	
 	  
-	  selectTransaction(selectTab:number,header:string,tenantName:string){
-		//this.selectedTab=selectTab;
+	  selectTransaction(header:string){
 		this.transactionHeader=header;
-		this.transactionHeaderTenantName=tenantName;
 		if(header=='Due History'){
 			this.sortActive="pendingDueDate";
 			this.reportName = "Tenant Dues Report";
@@ -188,10 +185,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 			this.reportName = "Tenant Transactions Report";
 		}
 
-		this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
-		this.reportDataSource.paginator = this.paginator;
-		this.getReportDetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
-	
+		this.getReportSearchBy();
 	}
 
 	
@@ -239,68 +233,74 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		 this.getReportDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
 	   }
 
+	getReportSearchBy(){
+		this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
+		this.reportDataSource.paginator = this.paginator;
+		this.getReportDetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
+	}
+
 	getReportDetails(pageIndex:number,pageSize:number,sortActive:string,sortDirection:string){
-		//	this.authService.checkLoginUserVlidaate();
-			if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
-				return;
-			}
-			this.lastPageSize=pageSize;
-			this.filtersRequest.pageIndex=pageIndex;
-			this.filtersRequest.pageSize=pageSize;
-			this.filtersRequest.sortActive=sortActive;
-			this.filtersRequest.sortDirection=sortDirection.toUpperCase();
-			let filterData = new FilterData();
-			filterData.tenantContactNum = '9876543210';
-			this.filtersRequest.filterData = JSON.stringify(filterData) ;
-			this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
-			this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
-			this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
-		
-			this.spinner.show();
-			this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
-			  if(data?.data?.length >0){
-					this.totalProduct=data.count;
-					this.reportDataList=Object.assign([],data.data);
-					this.reportDataSource = new MatTableDataSource(this.reportDataList);
-				}else{
-				  this.totalProduct=0;
-				  this.reportDataList=Object.assign([]);
-				  this.reportDataSource =  new MatTableDataSource(this.reportDataList);
-				}
-				this.spinner.hide();
-			},error =>{
-			  this.spinner.hide();
-			  if(error.status == 0) {
-				this.notifyService.showError("Internal Server Error/Connection not established", "")
-			 }else if(error.status==401){
-				console.error("Unauthorised");
-			}else if(error.status==403){
-				this.router.navigate(['/forbidden']);
-			  }else if (error.error && error.error.message) {
-				this.errorMsg =error.error.message;
-				console.log("Error:"+this.errorMsg);
-				this.notifyService.showError(this.errorMsg, "");
-				this.spinner.hide();
-			  } else {
-				this.spinner.hide();
-				if(error.status==500 && error.statusText=="Internal Server Error"){
-				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-				}else{
-				  let str;
-					if(error.status==400){
-					str=error.error.error;
-					}else{
-					  str=error.error.message;
-					  str=str.substring(str.indexOf(":")+1);
-					}
-					
-					console.log("Error:",str);
-					this.errorMsg=str;
-				}
-			
-				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			  }
-			}); 
+		this.authService.checkLoginUserVlidaate();
+		if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
+			return;
 		}
+		this.lastPageSize=pageSize;
+		this.filtersRequest.pageIndex=pageIndex;
+		this.filtersRequest.pageSize=pageSize;
+		this.filtersRequest.sortActive=sortActive;
+		this.filtersRequest.sortDirection=sortDirection.toUpperCase();
+		let filterData = new FilterData();
+		filterData.tenantContactNum = this.tdpf.profile.contactNumber;
+		this.filtersRequest.filterData = JSON.stringify(filterData) ;
+		this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
+		this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
+		this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
+	
+		this.spinner.show();
+		this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+		  if(data?.data?.length >0){
+				this.totalProduct=data.count;
+				this.reportDataList=Object.assign([],data.data);
+				this.reportDataSource = new MatTableDataSource(this.reportDataList);
+			}else{
+			  this.totalProduct=0;
+			  this.reportDataList=Object.assign([]);
+			  this.reportDataSource =  new MatTableDataSource(this.reportDataList);
+			}
+			this.spinner.hide();
+		},error =>{
+		  this.spinner.hide();
+		  if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		 }else if(error.status==401){
+			console.error("Unauthorised");
+		}else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		  }else if (error.error && error.error.message) {
+			this.errorMsg =error.error.message;
+			console.log("Error:"+this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+			this.spinner.hide();
+		  } else {
+			this.spinner.hide();
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			  let str;
+				if(error.status==400){
+				str=error.error.error;
+				}else{
+				  str=error.error.message;
+				  str=str.substring(str.indexOf(":")+1);
+				}
+				
+				console.log("Error:",str);
+				this.errorMsg=str;
+			}
+		
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  }
+		}); 
+	}
 	 
 }
