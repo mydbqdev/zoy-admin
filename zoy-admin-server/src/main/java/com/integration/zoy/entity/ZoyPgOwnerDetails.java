@@ -1,14 +1,11 @@
 package com.integration.zoy.entity;
 
-import java.sql.Timestamp;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -36,10 +33,20 @@ public class ZoyPgOwnerDetails {
     @Column(name = "pg_owner_encrypted_aadhar")
     private String pgOwnerEncryptedAadhar;
     
-    @Column(name = "create_at", nullable = false)
-	@CreationTimestamp
-	private Timestamp ts;
-
+    @Column(name = "pg_owner_profile_image")
+    private String pgOwnerProfileImage;
+    
+    @Column(name = "pg_owner_pin")
+    private Integer pgOwnerPin;
+    
+    @Column(name = "pg_owner_bio_metric", nullable = false)
+    private Boolean pgOwnerBioMetric = false;
+    
+    @Column(name = "pg_owner_ekyc_isekycverified")
+    private Boolean pgOwnerEkycIsEkycVerified = false;
+    
+    @Column(name = "pg_owner_ekyc_isvideo_verified")
+    private Boolean pgOwnerEkycIsVideoVerified = false;
 
     public String getPgOwnerId() {
         return pgOwnerId;
@@ -89,13 +96,47 @@ public class ZoyPgOwnerDetails {
 		this.pgOwnerEncryptedAadhar = pgOwnerEncryptedAadhar;
 	}
 
-	public Timestamp getTs() {
-		return ts;
+	public String getPgOwnerProfileImage() {
+		return pgOwnerProfileImage;
 	}
 
-	public void setTs(Timestamp ts) {
-		this.ts = ts;
+	public void setPgOwnerProfileImage(String pgOwnerProfileImage) {
+		this.pgOwnerProfileImage = pgOwnerProfileImage;
 	}
+
+	public Integer getPgOwnerPin() {
+		return pgOwnerPin;
+	}
+
+	public void setPgOwnerPin(Integer pgOwnerPin) {
+		this.pgOwnerPin = pgOwnerPin;
+	}
+
+	public Boolean getPgOwnerEkycIsEkycVerified() {
+		return pgOwnerEkycIsEkycVerified;
+	}
+
+	public void setPgOwnerEkycIsEkycVerified(Boolean pgOwnerEkycIsEkycVerified) {
+		this.pgOwnerEkycIsEkycVerified = pgOwnerEkycIsEkycVerified;
+	}
+
+	public Boolean getPgOwnerEkycIsVideoVerified() {
+		return pgOwnerEkycIsVideoVerified;
+	}
+
+	public void setPgOwnerEkycIsVideoVerified(Boolean pgOwnerEkycIsVideoVerified) {
+		this.pgOwnerEkycIsVideoVerified = pgOwnerEkycIsVideoVerified;
+	}
+
+	public Boolean getPgOwnerBioMetric() {
+		return pgOwnerBioMetric;
+	}
+
+	public void setPgOwnerBioMetric(Boolean pgOwnerBioMetric) {
+		this.pgOwnerBioMetric = pgOwnerBioMetric;
+	}
+    
+    
     
 }
 
