@@ -23,31 +23,17 @@
                     <div>
                     <div class="d-flex mb-1">
                       <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Bulk</span><span class="text-header-800-blue">Upload</span></h3> 
-                      <div class="ml-auto">
-                      <div class="d-flex justify-content-end">
-                        <!-- Instructions Button -->
-                         <a  href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#sampleFileDownload"  class="btn btn-primary mr-2">Instructions</a>
-                          <!-- Sample Files Dropdown -->
-                           <div class="dropdown no-arrow">
-                             <a class="dropdown-toggle btn btn-secondary" href="javascript:void(0)" role="button" id="dropdownMenuSample" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Sample Files</span>
-                              <i class="fas fa-angle-down ml-2 mt-1"></i> </a>                           
-                             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuSample">
-                              <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('Tenent_sample_File.csv')" >Tenant</a>
-                              <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('PG_properties_sample_file.xlsx')">PG Properties</a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      
                     </div>
                     <div class="row mt-2 mb-0" style="padding:10px 10px 0px;">
-                      <div style="border:1px solid#dbdbdb;border-radius: 5px;">
+                      <div style="border:1px solid#dbdbdb;border-radius: 5px;" class="col-lg-10">
                       <form [formGroup]="form">                 
-                        <div class="pl-3 row">
-                          <div class="col-sm-2">
+                        <div class="pl-2 row">
+                          <div class="col-sm-2" style="margin-left:-6px">
                             <div class="form-group">
-                              <label for="fileName" class="col-form-label">Owner Name</label>
+                              <label for="fileName" class="col-form-label" style="font-size: 13px;" >Owner Name</label>
                                 <input 
-                                  class="form-control form-select" 
+                                  class="form-select form-select-sm" 
                                   type="search" 
                                   placeholder="Search Owner" 
                                   [formControl]="ownerSearchControl" 
@@ -55,7 +41,7 @@
                                   matInput 
                                   [matAutocomplete]="ownerAuto"
                                   formControlName="ownerName"
-                                  [ngClass]="{'is-invalid':submitted && selectedOwner == null}" />
+                                  [ngClass]="{'is-invalid':submitted && selectedOwner == null}"  style="font-size: 12px;" />
                             
                               <mat-autocomplete #ownerAuto="matAutocomplete">
                                 <mat-option *ngFor="let owner of filteredOwners | async" [value]="owner.ownerName" (click)="selectOwner(owner)">
@@ -65,16 +51,16 @@
 
                                </div>
                             <div style="height: 30px;margin-top:-15px;"> 
-                              <div style="font-size: 13px;" *ngIf="submitted && selectedOwner == null" class="text-danger">
+                              <div style="font-size: 12px;" *ngIf="submitted && selectedOwner == null" class="text-danger">
                                   Owner Name is required
                                 </div>
                             </div>
                           </div>
-                          <div class="col-sm-2">
+                          <div class="col-sm-2"  style="margin-left:-17px">
                             <div class="form-group">
-                              <label for="fileName" class="col-form-label">Property Name</label>
+                              <label for="fileName" class="col-form-label" style="font-size: 13px;">Property Name</label>
                             
-                                <select class="form-select" (change)="selectProperty($event)" [disabled] ="!selectedOwner" 
+                                <select class="form-select form-select-sm" (change)="selectProperty($event)" [disabled] ="!selectedOwner"  style="font-size: 12px;"
                                 formControlName="propertyname" [ngClass]="{'is-invalid':submitted && selectedProperty == null}">
                                   <option value="" disabled selected>Select Property</option>
                                   <option *ngFor="let property of selectedOwner?.property_details" [value]="property.propertyId">
@@ -84,15 +70,15 @@
                           
                                 </div>
                             <div style="height: 30px;margin-top:-15px;"> 
-                              <div style="font-size: 13px;" *ngIf="submitted && selectedProperty == null" class="text-danger">
+                              <div style="font-size: 12px;" *ngIf="submitted && selectedProperty == null" class="text-danger">
                                   Property Name is required
                                 </div>
                             </div>
                           </div>
-                          <div class="col-sm-2">
+                          <div class="col-sm-2"  style="margin-left:-17px">
                                 <div class="form-group">
-                                  <label for="category" class="col-form-label">Category</label>
-                                  <select class="form-select" [(ngModel)]="bulkUpload.category" id="category" formControlName="category" 
+                                  <label for="category" class="col-form-label" style="font-size: 13px;">Category</label>
+                                  <select class="form-select form-select-sm" [(ngModel)]="bulkUpload.category" id="category" formControlName="category"  style="font-size: 12px;"
                                   [ngClass]="{'is-invalid':submitted && form.controls.category.errors}">                                             
                                     <option value="Tenant">Tenant</option>
                                     <option value="PG Property">PG Property</option>
@@ -100,16 +86,16 @@
                                 </div>
                                <div style="height: 30px;margin-top:-15px;"> 
                                 <div *ngIf="submitted && form.controls.category.errors" class="text-danger">
-                                <div style="font-size: 13px;" *ngIf="submitted && form.controls.category.errors.required">
+                                <div style="font-size: 12px;" *ngIf="submitted && form.controls.category.errors.required">
                                   Category is required
                                 </div>
                                 </div>
                               </div>
                           </div>                            
-                            <div class="col-sm-4">
+                            <div class="col-sm-4" style="margin-left:-17px">
                               <div class="form-group">                                             
-                                <div class="input-group"  style="padding-top:37px ;">                                    
-                                  <input class="form-control" id="formFile" type="file" (change)="onFileChange($event)"
+                                <div class="input-group"  style="padding-top:32px ;">                                    
+                                  <input class="form-control form-control-sm" id="formFile" type="file" (change)="onFileChange($event)" style="font-size: 12px;"
                                   formControlName="reqDocument" 
                                       [ngClass]="{'is-invalid':submitted && (form.controls.reqDocument.errors || filevali)}">
                                   <!-- <label for="formFile"class="btn btn-secondary">Browse</label> -->
@@ -117,18 +103,34 @@
                               </div>
                               <div style="height: 30px;margin-top:-15px;">  
                                 <p style="color: rgb(194, 5, 178);font-size: 12px;" *ngIf="!filevali">(Allows only csv file for tenant/excel file for property )</p> 
-                                <div  style="font-size: 12px;" *ngIf="submitted && filevali " class="text-danger">
+                                <div  style="font-size: 13px;" *ngIf="submitted && filevali " class="text-danger"  style="font-size: 12px;">
                                   File format is inavalid <span *ngIf="bulkUpload.category=='Tenant'">, Allows only csv file</span> <span *ngIf="bulkUpload.category=='PG Property'">, Allows only excel file</span>
                                 </div>
                               </div>
                              </div>                                      
-                              <div class="col-sm-1" style="padding-top: 37px;">                                            
-                                <button type="submit" class="btn btn-primary-custom" (click)="submitUploadFile()"  *ngIf="rolesArray.includes('BULK_UPLOAD_WRITE')">Submit</button>
+                              <div class="col-sm-1" style="padding-top: 32px; margin-left: -13px;" >                                            
+                                <button type="submit" class="btn btn-primary-custom btn-sm" (click)="submitUploadFile()"  *ngIf="rolesArray.includes('BULK_UPLOAD_WRITE')"  style="font-size: 12px;">Submit</button>
                               </div>
-                           
                           </div>
                       </form>
                       </div>
+                     <div class="col-lg-2">
+                      <div class="col">
+                        <div class="d-flex" style="margin-top: 30px;">
+                          <!-- Instructions Button -->
+                           <a  href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#sampleFileDownload"  class="btn btn-primary btn-sm mr-2"  style="font-size: 12px;">Instructions</a>
+                            <!-- Sample Files Dropdown -->
+                             <div class="dropdown no-arrow">
+                               <a class="dropdown-toggle btn btn-secondary btn-sm" href="javascript:void(0)" role="button" id="dropdownMenuSample" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="font-size: 12px;"><span>Sample Files</span>
+                                <i class="fas fa-angle-down ml-2 mt-1"></i> </a>                           
+                               <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuSample">
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('Tenent_sample_File.csv')" >Tenant</a>
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('PG_properties_sample_file.xlsx')">PG Properties</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                     </div>
                     </div>
               
                     </div>
