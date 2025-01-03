@@ -45,7 +45,7 @@
                                         </div>
                                       </div>
                                     </div> -->
-                                    <div style="height: 100px;width: 100px;border-radius: 50%;border:1px dashed rgb(36, 206, 248);padding: 2px;">
+                                    <div style="height: 100px;width: 100px;border-radius: 50%;border:2px dashed rgb(36, 206, 248);padding: 3px;">
                                         <div class="tenant-profile-top"> 
                                           <img [src]="tdpf.profile.userProfile" *ngIf="tdpf.profile.userProfile?.includes('/')" >
                                            <span *ngIf="!tdpf.profile.userProfile?.includes('/') || !tdpf.profile.userProfile  " >{{tdpf.profile?.tenantName[0]?.toUpperCase()}}</span>
@@ -118,53 +118,38 @@
                                         </div>
                                         <div *ngIf="selectedTab==2 && sectionTabHeader=='Closed Booking Details'">
                                           <div class="scrollable-container">
-                                          <div class="p-3" style="font-size: 14px;color: #525151;">
-                                            <div class="p-2" style="border:1px solid #603ebb;background-color: #faf9ff ;border-radius: 7px;">
-                                            <div class="d-flex mb-1"><div style="font-size: 20px;color: #4108ad;margin-right: 10px;">Srinivash PG </div><div style="padding-top:5px"><i class="fas fa-circle mr-1" style="font-size: 8px;"></i> Bed No. 104-C</div><div class="ml-auto" style="padding-top:5px"><span class="mr-2">Booking Id : 4561-4561-7894</span></div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Booking Date</div><div><span class="mr-2">:</span>12/01/2024</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Cancellation Date</div><div><span class="mr-2">:</span>12/01/2024</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Monthly Rent</div><div><span class="mr-2">:</span>11,000.00</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Security Deposit</div><div><span class="mr-2">:</span>10,000.00</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Address</div><div><span class="mr-2">:</span>Hyderbad-456123</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Contact</div><div><span class="mr-2">:</span>8795641235</div><div class="ml-auto"><a class="btn btn-sm btn-cancelled mr-2">Cancelled</a></div></div>
-                                            </div>
-                                          </div>
-                                          <div class="p-3" style="font-size: 14px;color: #525151;">
-                                            <div class="p-2" style="border:1px solid rgb(169, 3, 175);background-color: rgb(247, 247, 247);border-radius: 7px;">
-                                            <div class="d-flex mb-1"><div style="font-size: 20px;color: #4108ad;margin-right: 10px;">Srinivash PG </div><div style="padding-top:5px"><i class="fas fa-circle mr-1" style="font-size: 8px;"></i> Bed No. 104-C</div><div class="ml-auto" style="padding-top:5px"><span class="mr-2">Booking Id : 4561-4561-7894</span></div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Booking Date</div><div><span class="mr-2">:</span>12/01/2024</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Cancellation Date</div><div><span class="mr-2">:</span>12/01/2024</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Monthly Rent</div><div><span class="mr-2">:</span>11,000.00</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Security Deposit</div><div><span class="mr-2">:</span>10,000.00</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Address</div><div><span class="mr-2">:</span>Hyderbad-456123</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Contact</div><div><span class="mr-2">:</span>8795641235</div><div class="ml-auto"><a class="btn btn-sm btn-checkout mr-2">Check-out</a></div></div>
-                                            </div>
-                                          </div>
-                                          </div>
+                                          <div  *ngFor="let cbs of tdpf.closedBookings"> 
+                                              <div class="p-3" style="font-size: 14px;color: #525151;">
+                                                <div class="p-2" style="border:1px solid #603ebb;background-color: #faf9ff ;border-radius: 7px;">
+                                                <div class="d-flex mb-1"><div style="font-size: 20px;color: #4108ad;margin-right: 10px;">{{cbs.propertyName}} </div><div style="padding-top:5px"><i class="fas fa-circle mr-1" style="font-size: 8px;"></i> Bed No. {{cbs.bedNumber}}</div><div class="ml-auto" style="padding-top:5px"><span class="mr-2">Booking Id : {{cbs.bookingId}}</span></div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;">Booking Date</div><div><span class="mr-2">:</span>{{cbs.bookingDate}}</div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;">Cancellation Date</div><div><span class="mr-2">:</span>{{cbs.cancellationDate}}</div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;">Monthly Rent</div><div><span class="mr-2">:</span>{{cbs.monthlyRent}}</div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;">Security Deposit</div><div><span class="mr-2">:</span>{{cbs.securityDeposit}}</div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;">Address</div><div><span class="mr-2">:</span>{{cbs.propertyAddress}}</div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;">Contact</div><div><span class="mr-2">:</span>{{cbs.propertyContactNumber}}</div><div class="ml-auto"><a class="btn btn-sm btn-cancelled mr-2">{{cbs.bookingStatus}}</a></div></div>
+                                                </div>
+                                              </div>
+                                         </div>
+                                         <div style="text-align: center; padding-top:15px;" *ngIf="tdpf.closedBookings.length == 0 ">No data found. </div>
+                                        </div>
                                         </div>
                                         <div *ngIf="selectedTab==2 && sectionTabHeader=='Upcoming Booking Details'">
                                           <div class="scrollable-container">
-                                          <div class="p-3" style="font-size: 14px;color: #525151;">
-                                            <div class="p-2" style="border:1px solid rgb(169, 3, 175);background-color: rgb(247, 247, 247);border-radius: 7px;">
-                                            <div class="d-flex mb-1"><div style="font-size: 20px;color: #4108ad;margin-right: 10px;">Srinivash PG </div><div style="padding-top:5px"><i class="fas fa-circle mr-1" style="font-size: 8px;"></i> Bed No. 104-C</div><div class="ml-auto" style="padding-top:5px"><span class="mr-2">Booking Id : 4561-4561-7894</span></div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Booking Date</div><div><span class="mr-2">:</span>12/01/2024</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Monthly Rent</div><div><span class="mr-2">:</span>11,000.00</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Security Deposit</div><div><span class="mr-2">:</span>10,000.00</div><div class="ml-2" style="color: rgb(236, 136, 136);"><i class="fas fa-circle mr-1" style="font-size: 5px;"></i>Pending</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Address</div><div><span class="mr-2">:</span>Hyderbad-456123</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Contact</div><div><span class="mr-2">:</span>8795641235</div></div>
+                                            <div  *ngFor="let ubs of tdpf.upcomingBookings"> 
+                                            <div class="p-3" style="font-size: 14px;color: #525151;">
+                                              <div class="p-2" style="border:1px solid rgb(169, 3, 175);background-color: rgb(247, 247, 247);border-radius: 7px;">
+                                              <div class="d-flex mb-1"><div style="font-size: 20px;color: #4108ad;margin-right: 10px;">{{ubs.propertyName}} </div><div style="padding-top:5px"><i class="fas fa-circle mr-1" style="font-size: 8px;"></i> Bed No. {{ubs.bedNumber}}</div><div class="ml-auto" style="padding-top:5px"><span class="mr-2">Booking Id : {{ubs.bookingId}}</span></div></div>
+                                              <div class="d-flex mb-1"><div style="width: 130px;">Booking Date</div><div><span class="mr-2">:</span>{{ubs.bookingDate}}</div></div>
+                                              <div class="d-flex mb-1"><div style="width: 130px;">Monthly Rent</div><div><span class="mr-2">:</span>{{ubs.monthlyRent}}</div></div>
+                                              <div class="d-flex mb-1"><div style="width: 130px;">Security Deposit</div><div><span class="mr-2">:</span>{{ubs.securityDeposit}}</div><div class="ml-2" style="color: rgb(236, 136, 136);"><i class="fas fa-circle mr-1" style="font-size: 5px;"></i>{{ubs.securityDepositStatus}}</div></div>
+                                              <div class="d-flex mb-1"><div style="width: 130px;">Address</div><div><span class="mr-2">:</span>{{ubs.propertyAddress}}</div></div>
+                                              <div class="d-flex mb-1"><div style="width: 130px;">Contact</div><div><span class="mr-2">:</span>{{ubs.propertyContactNumber}}</div></div>
+                                              </div>
                                             </div>
-                                          </div>
-                                          <div class="p-3" style="font-size: 14px;color: #525151;">
-                                            <div class="p-2" style="border:1px solid rgb(169, 3, 175);background-color: rgb(247, 247, 247);border-radius: 7px;">
-                                            <div class="d-flex mb-1"><div style="font-size: 20px;color: #4108ad;margin-right: 10px;">Srinivash PG </div><div style="padding-top:5px"><i class="fas fa-circle mr-1" style="font-size: 8px;"></i> Bed No. 104-C</div><div class="ml-auto" style="padding-top:5px"><span class="mr-2">Booking Id : 4561-4561-7894</span></div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Booking Date</div><div><span class="mr-2">:</span>12/01/2024</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Monthly Rent</div><div><span class="mr-2">:</span>11,000.00</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Security Deposit</div><div><span class="mr-2">:</span>10,000.00</div><div class="ml-2" style="color: rgb(7, 161, 167);"><i class="fas fa-circle mr-1" style="font-size: 5px;"></i>Paid</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Address</div><div><span class="mr-2">:</span>Hyderbad-456123</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Contact</div><div><span class="mr-2">:</span>8795641235</div></div>
                                             </div>
-                                          </div>
-                                          </div>
+                                          <div style="text-align: center; padding-top:15px;" *ngIf="tdpf.upcomingBookings.length == 0 ">No data found. </div>
+                                           </div>
                                         </div>
                                         <div *ngIf="selectedTab==3"></div>
                                       </div>
