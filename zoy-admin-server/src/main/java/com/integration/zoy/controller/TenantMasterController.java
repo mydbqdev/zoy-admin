@@ -115,7 +115,7 @@ public class TenantMasterController implements TenantMasterImpl{
 
 	    try {
 	        // Fetch tenant profile details
-	        List<String[]> tenantDetails = userRepo.fetchTenantDetails(tenantId);
+	        List<String[]> tenantDetails = userRepo.fetchTenantProfileDetails(tenantId);
 	        if (tenantDetails == null || tenantDetails.isEmpty()) {
 	            response.setStatus(HttpStatus.BAD_REQUEST.value());
 	            response.setError("Tenant details not found.");
@@ -145,18 +145,21 @@ public class TenantMasterController implements TenantMasterImpl{
 	        profile.setNationality(details[16] != null ? details[16] : "");
 	        profile.setMotherTongue(details[17] != null ? details[17] : "");
 	        profile.setUserProfile(details[18] != null ? details[18] : "");
-
-	        // Fetch active bookings details
+	        
+	        List<String[]> activeBookingDetails = userRepo.fetchActiveBookingDetails(tenantId);
 	        ActiveBookings activeBookings = new ActiveBookings();
-			activeBookings.setPgName(details[6] != null ? details[6] : ""); 
-			activeBookings.setMonthlyRent(details[19] != null ? new BigDecimal(details[19]) : BigDecimal.ZERO);
-			activeBookings.setSecurityDeposit(details[20] != null ? new BigDecimal(details[20]) : BigDecimal.ZERO);
-			activeBookings.setCheckInDate(details[21] != null ? Timestamp.valueOf(details[21]) : null);
-			activeBookings.setCheckOutDate(details[22] != null ? Timestamp.valueOf(details[22]) : null);
-			activeBookings.setRoomBedName((details[23] != null ? details[23] : "") + "/" + (details[24] != null ? details[24] : "")); 
-			activeBookings.setRentCycle(details[25] != null ? details[25] : "");
-			activeBookings.setNoticePeriod(details[26] != null ? details[26] : "");
-			activeBookings.setTotalDueAmount(details[27] != null ? new BigDecimal(details[27]) : BigDecimal.ZERO);
+	        if (activeBookingDetails != null && !activeBookingDetails.isEmpty()) {
+	            String[] bookingDetails = activeBookingDetails.get(0);
+	            activeBookings.setPgName(bookingDetails[0] != null ? bookingDetails[0] : ""); 
+	            activeBookings.setMonthlyRent(bookingDetails[1] != null ? new BigDecimal(bookingDetails[1]) : BigDecimal.ZERO);
+	            activeBookings.setSecurityDeposit(bookingDetails[2] != null ? new BigDecimal(bookingDetails[2]) : BigDecimal.ZERO);
+	            activeBookings.setCheckInDate(bookingDetails[3] != null ? Timestamp.valueOf(bookingDetails[3]) : null);
+	            activeBookings.setCheckOutDate(bookingDetails[4] != null ? Timestamp.valueOf(bookingDetails[4]) : null);
+	            activeBookings.setRoomBedName((bookingDetails[5] != null ? bookingDetails[5] : "") + "/" + (bookingDetails[6] != null ? bookingDetails[6] : "")); 
+	            activeBookings.setRentCycle(bookingDetails[7] != null ? bookingDetails[7] : "");
+	            activeBookings.setNoticePeriod(bookingDetails[8] != null ? bookingDetails[8] : "");
+	            activeBookings.setTotalDueAmount(bookingDetails[9] != null ? new BigDecimal(bookingDetails[9]) : BigDecimal.ZERO);
+	        }
 
 	        // Fetch closed bookings details
 	        List<String[]> tenantCancelBookingDetails = userRepo.fetchCancelBookingDetails(tenantId);

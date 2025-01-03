@@ -1,6 +1,5 @@
 package com.integration.zoy.repository;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,7 +81,13 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
             "    ELSE 'Pending' " +
             "END AS ekycStatus, " +
             "um.user_created_at AS registeredDate, " +
-            "p.property_name AS currentPropertyName, " +
+            "CASE " +
+            "    WHEN ub.user_bookings_web_check_in = true " +
+            "        AND ub.user_bookings_web_check_out = false " +
+            "        AND ub.user_bookings_is_cancelled = false " +
+            "    THEN p.property_name " +
+            "    ELSE '' " +
+            "END AS currentPropertyName, " +
             "ud.emergency_contactnumber AS emergencyContactNumber, " +
             "ud.user_personal_alt_phone AS alternatePhone, " +
             "ud.user_personal_tenant_type AS tenantType, " +
@@ -94,56 +99,68 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
             "ud.user_personal_permanant_address AS permanentAddress, " +
             "ud.user_personal_nationality AS nationality, " +
             "ud.user_personal_mother_tounge AS motherTongue, " +
-            "ud.user_profile_image AS userProfile, " +
-            "ob.fixed_rent AS fixedRent, " +
-            "ob.security_deposit AS securityDeposit, " +
-            "ob.in_date AS checkInDate, " +
-            "ob.out_date AS checkOutDate, " +
-            "r.room_name AS roomName, " +
-            "b.bed_name AS bedName, " +
-            "rc.cycle_name AS rentCycle, " +
-            "tm.notice_period AS noticePeriod, " +
-            "(SELECT SUM(CASE " +
-            "            WHEN up.user_payment_payable_amount IS NOT NULL " +
-            "            THEN ABS(up.user_payment_payable_amount - ud.user_money_due_amount) " +
-            "            ELSE ud.user_money_due_amount " +
-            "        END) " +
-            " FROM pgusers.user_dues ud " +
-            " LEFT JOIN pgusers.user_payment_due upd1 ON upd1.user_money_due_id = ud.user_money_due_id " +
-            " LEFT JOIN pgusers.user_payments up ON up.user_payment_id = upd1.user_payment_id " +
-            " JOIN pgusers.user_pg_details upd ON upd.user_id = ud.user_id " +
-            " JOIN pgcommon.pg_owner_user_status pous ON pous.user_id = ud.user_id " +
-            "     AND upd.user_pg_booking_id = pous.user_bookings_id " +
-            "     AND upd.user_pg_property_id = pous.property_id " +
-            "     AND pous.pg_tenant_status = true " +
-            " WHERE ud.user_id = um.user_id) AS totalDueAmount " +
+            "ud.user_profile_image AS userProfile " +
             "FROM " +
             "pgusers.user_master um " +
+            "LEFT JOIN " +
+            "pgusers.user_details ud ON um.user_id = ud.user_id " +
             "LEFT JOIN " +
             "pgusers.user_bookings ub ON um.user_id = ub.user_id " +
             "LEFT JOIN " +
             "pgowners.zoy_pg_property_details p ON ub.user_bookings_property_id = p.property_id " +
-            "LEFT JOIN " +
-            "pgusers.user_details ud ON um.user_id = ud.user_id " +
-            "LEFT JOIN " +
-            "pgowners.zoy_pg_owner_booking_details ob ON ub.user_bookings_id = ob.booking_id " +
-            "LEFT JOIN " +
-            "pgowners.zoy_pg_room_details r ON ob.room = r.room_id " +
-            "LEFT JOIN " +
-            "pgowners.zoy_pg_bed_details b ON ob.selected_bed = b.bed_id AND b.bed_status = true " +
-            "LEFT JOIN " +
-            "pgowners.zoy_pg_rent_cycle_master rc ON ob.lock_in_period = rc.cycle_id " +
-            "LEFT JOIN " +
-            "pgowners.zoy_pg_property_terms_conditions ptc ON ob.property_id = ptc.property_id " +
-            "LEFT JOIN " +
-            "pgowners.zoy_pg_terms_master tm ON ptc.term_id = tm.term_id " +
             "WHERE " +
-            "um.user_id = :userId " +
-            "AND ub.user_bookings_web_check_in = true " +
-            "AND ub.user_bookings_web_check_out = false " +
-            "AND ub.user_bookings_is_cancelled = false", nativeQuery = true)
-	List<String[]> fetchTenantDetails(@Param("userId") String userId);
-	
+            "um.user_id = :userId", nativeQuery = true)
+List<String[]> fetchTenantProfileDetails(@Param("userId") String userId);
+
+@Query(value = "SELECT " +
+        "p.property_name AS currentPropertyName, " +
+        "ob.fixed_rent AS fixedRent, " +
+        "ob.security_deposit AS securityDeposit, " +
+        "ob.in_date AS checkInDate, " +
+        "ob.out_date AS checkOutDate, " +
+        "r.room_name AS roomName, " +
+        "b.bed_name AS bedName, " +
+        "rc.cycle_name AS rentCycle, " +
+        "tm.notice_period AS noticePeriod, " +
+        "(SELECT SUM(CASE " +
+        "            WHEN up.user_payment_payable_amount IS NOT NULL " +
+        "            THEN ABS(up.user_payment_payable_amount - ud.user_money_due_amount) " +
+        "            ELSE ud.user_money_due_amount " +
+        "        END) " +
+        " FROM pgusers.user_dues ud " +
+        " LEFT JOIN pgusers.user_payment_due upd1 ON upd1.user_money_due_id = ud.user_money_due_id " +
+        " LEFT JOIN pgusers.user_payments up ON up.user_payment_id = upd1.user_payment_id " +
+        " JOIN pgusers.user_pg_details upd ON upd.user_id = ud.user_id " +
+        " JOIN pgcommon.pg_owner_user_status pous ON pous.user_id = ud.user_id " +
+        "     AND upd.user_pg_booking_id = pous.user_bookings_id " +
+        "     AND upd.user_pg_property_id = pous.property_id " +
+        "     AND pous.pg_tenant_status = true " +
+        " WHERE ud.user_id = um.user_id) AS totalDueAmount " +
+        "FROM " +
+        "pgusers.user_master um " +
+        "LEFT JOIN " +
+        "pgusers.user_bookings ub ON um.user_id = ub.user_id " +
+        "LEFT JOIN " +
+        "pgowners.zoy_pg_property_details p ON ub.user_bookings_property_id = p.property_id " +
+        "LEFT JOIN " +
+        "pgowners.zoy_pg_owner_booking_details ob ON ub.user_bookings_id = ob.booking_id " +
+        "LEFT JOIN " +
+        "pgowners.zoy_pg_room_details r ON ob.room = r.room_id " +
+        "LEFT JOIN " +
+        "pgowners.zoy_pg_bed_details b ON ob.selected_bed = b.bed_id AND b.bed_status = true " +
+        "LEFT JOIN " +
+        "pgowners.zoy_pg_rent_cycle_master rc ON ob.lock_in_period = rc.cycle_id " +
+        "LEFT JOIN " +
+        "pgowners.zoy_pg_property_terms_conditions ptc ON ob.property_id = ptc.property_id " +
+        "LEFT JOIN " +
+        "pgowners.zoy_pg_terms_master tm ON ptc.term_id = tm.term_id " +
+        "WHERE " +
+        "um.user_id = :userId " +
+        "AND ub.user_bookings_web_check_in = true " +
+        "AND ub.user_bookings_web_check_out = false " +
+        "AND ub.user_bookings_is_cancelled = false", nativeQuery = true)
+List<String[]> fetchActiveBookingDetails(@Param("userId") String userId);
+            
 	@Query(value = "SELECT " +
             "ub.user_bookings_id AS bookingId, " +
             "ub.user_bookings_date AS bookingDate, " +
