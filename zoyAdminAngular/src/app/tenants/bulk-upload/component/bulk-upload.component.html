@@ -25,11 +25,11 @@
                       <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Bulk</span><span class="text-header-800-blue">Upload</span></h3> 
                       
                     </div>
-                    <div class="row mt-2 mb-0" style="padding:10px 10px 0px;">
-                      <div style="border:1px solid#dbdbdb;border-radius: 5px;" class="col-lg-10">
+                    <div class="d-flex mt-2 mb-0" style="padding: 10px 10px 0px 0px;">
+                      <div style="border:1px solid#dbdbdb;border-radius: 5px; padding:5px" class="w-100">
                       <form [formGroup]="form">                 
                         <div class="pl-2 row">
-                          <div class="col-sm-2" style="margin-left:-6px">
+                          <div class="col-sm-3">
                             <div class="form-group">
                               <label for="fileName" class="col-form-label" style="font-size: 13px;" >Owner Name</label>
                                 <input 
@@ -56,7 +56,7 @@
                                 </div>
                             </div>
                           </div>
-                          <div class="col-sm-2"  style="margin-left:-17px">
+                          <div class="col-sm-2"  style="margin-left:-15px;">
                             <div class="form-group">
                               <label for="fileName" class="col-form-label" style="font-size: 13px;">Property Name</label>
                             
@@ -75,7 +75,7 @@
                                 </div>
                             </div>
                           </div>
-                          <div class="col-sm-2"  style="margin-left:-17px">
+                          <div class="col-sm-2" style="margin-left:-15px">
                                 <div class="form-group">
                                   <label for="category" class="col-form-label" style="font-size: 13px;">Category</label>
                                   <select class="form-select form-select-sm" [(ngModel)]="bulkUpload.category" id="category" formControlName="category"  style="font-size: 12px;"
@@ -92,9 +92,9 @@
                                 </div>
                               </div>
                           </div>                            
-                            <div class="col-sm-4" style="margin-left:-17px">
+                            <div class="col-sm-4" style="margin-left:-15px">
                               <div class="form-group">                                             
-                                <div class="input-group"  style="padding-top:32px ;">                                    
+                                <div class="input-group"  style="padding-top:32px;">                                    
                                   <input class="form-control form-control-sm" id="formFile" type="file" (change)="onFileChange($event)" style="font-size: 12px;"
                                   formControlName="reqDocument" 
                                       [ngClass]="{'is-invalid':submitted && (form.controls.reqDocument.errors || filevali)}">
@@ -108,27 +108,23 @@
                                 </div>
                               </div>
                              </div>                                      
-                              <div class="col-sm-1" style="padding-top: 32px; margin-left: -13px;" >                                            
+                              <div class="col-sm-1" style="padding-top: 32px;" >                                            
                                 <button type="submit" class="btn btn-primary-custom btn-sm" (click)="submitUploadFile()"  *ngIf="rolesArray.includes('BULK_UPLOAD_WRITE')"  style="font-size: 12px;">Submit</button>
                               </div>
                           </div>
                       </form>
                       </div>
-                     <div class="col-lg-2">
-                      <div class="col">
-                        <div class="d-flex" style="margin-top: 30px;">
-                          <!-- Instructions Button -->
-                           <a  href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#sampleFileDownload"  class="btn btn-primary btn-sm mr-2"  style="font-size: 12px;">Instructions</a>
-                            <!-- Sample Files Dropdown -->
+                     <div class="ml-auto" style="width:100px;padding-left: 10px;">
+                        <div style="margin-top: 12px;">
+                           <a  href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#sampleFileDownload"  class="btn btn-primary btn-sm mr-2 mb-1"  style="font-size: 12px;width: 100px;">Instructions</a>
                              <div class="dropdown no-arrow">
-                               <a class="dropdown-toggle btn btn-secondary btn-sm" href="javascript:void(0)" role="button" id="dropdownMenuSample" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="font-size: 12px;"><span>Sample Files</span>
+                               <a class="dropdown-toggle btn btn-secondary btn-sm mt-1" href="javascript:void(0)" role="button" id="dropdownMenuSample" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="font-size: 12px;"><span>Sample Files</span>
                                 <i class="fas fa-angle-down ml-2 mt-1"></i> </a>                           
                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuSample">
                                 <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('Tenent_sample_File.csv')" >Tenant</a>
                                 <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('PG_properties_sample_file.xlsx')">PG Properties</a>
                               </div>
                             </div>
-                          </div>
                         </div>
                      </div>
                     </div>
