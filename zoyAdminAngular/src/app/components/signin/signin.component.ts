@@ -69,9 +69,9 @@ export class SigninComponent implements OnInit {
 				   	} else {
 					 let str;
 					 if (error.status == 400) {
-					   str = error.error;
+					   str = error.error.error;
 					 } else{
-					   str = error.message;
+					   str = error.error.message;
 					   str = str.substring(str.indexOf(":") + 1);
 					 }
 					 this.error = str;

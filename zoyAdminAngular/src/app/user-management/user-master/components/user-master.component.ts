@@ -182,12 +182,12 @@ export class UserMasterComponent implements OnInit {
        }else{
          let str;
            if(error.status==400){
-           str=error.error;
+           str=error.error.error;
            }else{
-             str=error.message;
+             str=error.error.message;
              str=str.substring(str.indexOf(":")+1);
            }
-           console.log("Error:"+str);
+           console.log("Error:",str);
            this.errorMsg=str;
        }
        if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
@@ -232,12 +232,12 @@ export class UserMasterComponent implements OnInit {
     } else {
       let str;
       if (error.status == 400) {
-        str = error.error;
+        str = error.error.error;
       } else {
-        str = error.message;
+        str = error.error.message;
         str = str.substring(str.indexOf(":") + 1);
       }
-      console.log("Error:" + str);
+      console.log("Error:" ,str);
       this.errorMsg = str;
     }
     if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
@@ -309,12 +309,12 @@ export class UserMasterComponent implements OnInit {
       //  this.spinner.hide();
         let str;
         if(error.status==400){
-        str=error.error;
+        str=error.error.error;
         }else{
-          str=error.message;
+          str=error.error.message;
           str=str.substring(str.indexOf(":")+1);
         }
-        console.log("Error:"+str);
+        console.log("Error:",str);
         this.errorMsg=str;
       }
     	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
@@ -356,12 +356,12 @@ export class UserMasterComponent implements OnInit {
       //  this.spinner.hide();
         let str;
         if(error.status==400){
-        str=error.error;
+        str=error.error.error;
         }else{
-          str=error.message;
+          str=error.error.message;
           str=str.substring(str.indexOf(":")+1);
         }
-        console.log("Error:"+str);
+        console.log("Error:",str);
         this.errorMsg=str;
       }
     	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
@@ -443,12 +443,12 @@ oldRoles:any=[];
       } else {
         let str;
         if (error.status == 400) {
-          str = error.error;
+          str = error.error.error;
         } else {
-          str = error.message;
+          str = error.error.message;
           str = str.substring(str.indexOf(":") + 1);
         }
-        console.log("Error:" + str);
+        console.log("Error:" ,str);
         this.errorMsg = str;
       }
       if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
@@ -487,12 +487,12 @@ oldRoles:any=[];
       } else {
         let str;
         if (error.status == 400) {
-          str = error.error;
+          str = error.error.error;
         } else {
-          str = error.message;
+          str = error.error.message;
           str = str.substring(str.indexOf(":") + 1);
         }
-        console.log("Error:" + str);
+        console.log("Error:" ,str);
         this.errorMsg = str;
       }
       if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
@@ -621,12 +621,12 @@ getWriteIcon(writePrv: boolean): string {
         } else {
           let str;
           if (error.status == 400) {
-            str = error.error;
+            str = error.error.error;
           } else {
-            str = error.message;
+            str = error.error.message;
             str = str.substring(str.indexOf(":") + 1);
           }
-          console.log("Error:" + str);
+          console.log("Error:" ,str);
           this.errorMsg = str;
         }
         if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}

@@ -160,10 +160,10 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 					console.log("error",error)
 				str=error.error.error;
 				}else{
-				  str=error.message;
+				  str=error.error.message;
 				  str=str.substring(str.indexOf(":")+1);
 				}
-				console.log("Error:"+str);
+				console.log("Error:",str);
 				this.errorMsg=str;
 			}
 		
@@ -288,13 +288,13 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 				}else{
 				  let str;
 					if(error.status==400){
-					str=error.error;
+					str=error.error.error;
 					}else{
-					  str=error.message;
+					  str=error.error.message;
 					  str=str.substring(str.indexOf(":")+1);
 					}
 					
-					console.log("Error:"+str);
+					console.log("Error:",str);
 					this.errorMsg=str;
 				}
 			

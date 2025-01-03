@@ -32,7 +32,7 @@
                              <a class="dropdown-toggle btn btn-secondary" href="javascript:void(0)" role="button" id="dropdownMenuSample" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Sample Files</span>
                               <i class="fas fa-angle-down ml-2 mt-1"></i> </a>                           
                              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuSample">
-                              <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('Tenent_sample_File.csv')" >Tenent</a>
+                              <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('Tenent_sample_File.csv')" >Tenant</a>
                               <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('PG_properties_sample_file.xlsx')">PG Properties</a>
                             </div>
                           </div>
@@ -252,10 +252,10 @@
             <br>
             <div>
               <div style="display: flex; flex-direction: row; align-items: center;  ">
-                <h5 style="flex:1;">Tenent</h5>
+                <h5 style="flex:1;">Tenant</h5>
                 <button mat-mini-fab  color="accent" class="mr-1" title="Click to download the file" [disabled]="'Tenent_sample_File.csv' === downloading" (click)="downloadSamples('Tenent_sample_File.csv')"><i class="fa fa-download"></i></button>
               </div>
-            <div style="justify-content: start; text-justify: auto;"><p>Tenent Details upload sheet consists of the First Name,Last Name, Phone Number,Tenent eMail Id, Date Of Birth, Gender, Permanent Address, Out Date, Floor Name, Room Name, Bed Number, Rent Cycle, Deposite paid in .csv format. Follow the instructions on fields strength and data validation given in the row-2. For successfull upload avoid changing the file format, column headers(First Two Rows) or their order to prevent upload errors.</p></div>
+            <div style="justify-content: start; text-justify: auto;"><p>Tenant Details upload sheet consists of the First Name,Last Name, Phone Number,Tenant eMail Id, Date Of Birth, Gender, Permanent Address, Out Date, Floor Name, Room Name, Bed Number, Rent Cycle, Deposite paid in .csv format. Follow the instructions on fields strength and data validation given in the row-2. For successfull upload avoid changing the file format, column headers(First Two Rows) or their order to prevent upload errors.</p></div>
            </div>
           <div>
             <div style="display: flex; flex-direction: row; align-items: center;">
