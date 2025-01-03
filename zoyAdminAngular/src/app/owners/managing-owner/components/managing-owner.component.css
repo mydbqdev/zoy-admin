@@ -92,4 +92,8 @@
 .btn-sm{
   border-radius: 8px;
 }
+tr.mat-mdc-row:hover {
+  background-color: #eae6f6;
+  cursor: pointer;
+}
 
