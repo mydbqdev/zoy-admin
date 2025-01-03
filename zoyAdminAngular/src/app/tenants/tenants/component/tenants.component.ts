@@ -13,7 +13,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { OwnerRequestParam, Filter } from 'src/app/owners/managing-owner/models/owner-details-request-model';
-import { ZoyOwner } from 'src/app/owners/managing-owner/models/zoy-owner-model';
 import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
 import { TenantService } from '../../tenant.service';
 import { ManageTenant } from '../../tenant-profile/model/manage.tenant';
@@ -42,28 +41,28 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		event.stopPropagation();
 	  }
 	public userNameSession: string = "";
-	  errorMsg: any = "";
-	  mySubscription: any;
-	  isExpandSideBar:boolean=true;
-	  @ViewChild(SidebarComponent) sidemenuComp;
-	  @ViewChild(MatSort) sort: MatSort;
-	  @ViewChild(MatPaginator) paginator: MatPaginator;
-	  public rolesArray: string[] = [];
-	  submitted=false;
-	  columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
-	  private _liveAnnouncer = inject(LiveAnnouncer);
-
-	  pageSize: number = 10; 
-	  pageSizeOptions: number[] = [10, 20, 50]; 
-	  totalProduct: number = 0;
-	  public lastPageSize:number=0;
-	  public tenantIdBackFormDetails:string="";
-	  paramFilterBack:OwnerRequestParam=new OwnerRequestParam();
-	  totalProductFilterBack: number = 0;
-
-	  filtersRequestModel:FiltersRequestModel=new FiltersRequestModel();
-	  fromDate:string='';
-	  toDate:string='';
+	errorMsg: any = "";
+	mySubscription: any;
+	isExpandSideBar:boolean=true;
+	@ViewChild(SidebarComponent) sidemenuComp;
+	@ViewChild(MatSort) sort: MatSort;
+	@ViewChild(MatPaginator) paginator: MatPaginator;
+	public rolesArray: string[] = [];
+	submitted=false;
+	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+	private _liveAnnouncer = inject(LiveAnnouncer);
+	pageSize: number = 10; 
+	pageSizeOptions: number[] = [10, 20, 50]; 
+	totalProduct: number = 0;
+	public lastPageSize:number=0;
+	public tenantIdBackFormDetails:string="";
+	paramFilterBack:OwnerRequestParam=new OwnerRequestParam();
+	totalProductFilterBack: number = 0;
+	filtersRequestModel:FiltersRequestModel=new FiltersRequestModel();
+	fromDate:string='';
+	toDate:string='';
+	param:OwnerRequestParam=new OwnerRequestParam();
+	paramFilter:Filter=new Filter();
 
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private tenantService : TenantService) {
@@ -153,8 +152,6 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		 this.columnSortDirections["registeredDate"] = "asc";
 	  }
 
-	  param:OwnerRequestParam=new OwnerRequestParam();
-	  paramFilter:Filter=new Filter();
 	  getTenantsList(){
 		  this.authService.checkLoginUserVlidaate();
 		  this.spinner.show();

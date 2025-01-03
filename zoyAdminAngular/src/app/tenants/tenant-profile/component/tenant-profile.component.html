@@ -76,9 +76,9 @@
                                     </div>
                                     <a class="nav-link profile-tab" [ngClass]="selectedTab==3?'active':''" id="dropdownMenuReport" data-bs-toggle="dropdown"  style="border-radius: 0px;">Transaction Details </a>
                                     <div class="dropdown-menu shadow animated-fade-in" aria-labelledby="dropdownMenuReport" style="min-width: 263px !important;text-align: center;">
-                                      <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction(3,'Payment History','Mahendra Kumar')" >Payment History </a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
-                                      <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction(3,'Due History','Mahendra Kumar')" >Due History</a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
-                                      <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction(3,'Refund History','Mahendra Kumar')" >Refund History</a>   
+                                      <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction('Payment History')" >Payment History </a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
+                                      <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction('Due History')" >Due History</a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
+                                      <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction('Refund History')" >Refund History</a>   
                                     </div>
                                   </nav>
                                 </div>
@@ -174,7 +174,7 @@
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">{{transactionHeader}} - [<span style="color: rgb(173, 5, 159);">{{transactionHeaderTenantName}}</span>]</h5>
+        <h5 class="modal-title" id="modalLabel">{{transactionHeader}} - [<span style="color: rgb(173, 5, 159);">{{tdpf.profile.tenantName}}</span>]</h5>
         <div>
           <div class="d-flex pl-5 ">
             <div class="mr-1 mt-1">Date Range</div>
@@ -189,7 +189,7 @@
                                     [title]="!toDate? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
                             
             <!-- <input type="datetime-local" class="form-control" style="width: 130px; font-size: 12px;" id="toDate"  /> -->
-            <div class="ml-1"><button class="btn btn-sm btn-primary-custom"><i class="fas fa-search fa-sm"></i></button></div>
+            <div class="ml-1"><button class="btn btn-sm btn-primary-custom" (click)="getReportSearchBy()" ><i class="fas fa-search fa-sm"></i></button></div>
           </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
