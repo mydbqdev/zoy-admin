@@ -136,17 +136,17 @@ ngb-modal-backdrop.modal-backdrop {
 }
 
 .tenant-profile-top {
-  width: 85px;
-  height: 85px;
+  width: 90px;
+  height: 90px;
   background-color: #925fe2;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 40px;
   text-align: center;
   line-height: 10px;
   color: #fff;
   border-radius: 50%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  position: relative;  
+  position: relative; 
 }
 
 .tenant-profile-top img {
@@ -158,7 +158,7 @@ ngb-modal-backdrop.modal-backdrop {
 
 .tenant-profile-top span {
   display: inline-block;
-  line-height: 55px;  
+  line-height: 95px;  
 }
 
 

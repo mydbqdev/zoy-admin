@@ -1,7 +1,8 @@
 export class TenantDetailPortfolio{
     profile : Profile = new Profile();
     activeBookings :ActiveBooking = new ActiveBooking();
-
+    closedBookings :ClosedAndUpcomingBookings[] = [];
+    upcomingBookings :ClosedAndUpcomingBookings[] = [];
 }
 
 class Profile {
@@ -36,4 +37,18 @@ class ActiveBooking {
     checkOutDate: string = '';
     rentCycle: string = '';
     noticePeriod: string = '';
+}
+
+class ClosedAndUpcomingBookings{
+    bookingId: string = '';
+    propertyName: string = '';
+    bedNumber: string = '';
+    bookingDate: string = '';
+    cancellationDate: string = '';
+    monthlyRent: string = '';
+    securityDeposit: string = '';
+    propertyAddress: string = '';
+    propertyContactNumber: string = '';
+    bookingStatus: string = '';
+    securityDepositStatus : string = '';
 }

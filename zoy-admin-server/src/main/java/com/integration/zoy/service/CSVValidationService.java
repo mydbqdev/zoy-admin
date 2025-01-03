@@ -202,7 +202,7 @@ public class CSVValidationService {
 		if (dateValue != null && !dateValue.trim().isEmpty() && !isValidDate(dateValue)) {
 			errorDetails.add(new ErrorDetail(row, header, columnName, "Invalid date format (expected dd-MM-yyyy)"));
 		}
-		if(columnName.equals("Out Date")) {
+		if(columnName.equals("Out Date") && isValidDate(dateValue)) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	        LocalDate dateToCheck = LocalDate.parse(dateValue, formatter);
 	        LocalDate currentDate = LocalDate.now();
