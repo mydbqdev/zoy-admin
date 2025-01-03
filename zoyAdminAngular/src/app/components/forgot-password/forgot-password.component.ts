@@ -27,7 +27,7 @@ export class ForgotPasswordComponent implements OnInit {
 	email: string = '';
 	viewPassword:boolean=false;
 	passwordResetSuccess: boolean = false;
-	remaining: number = 300;
+	remaining: number = 600;
 	timerDisplay: string = ''; 
 	timerInterval: any; 
 
@@ -122,7 +122,7 @@ export class ForgotPasswordComponent implements OnInit {
 	}
 	
 	resetTimer(){
-		this.remaining=300;
+		this.remaining=600;
 		this.timerDisplay = '';
 		clearInterval(this.timerInterval);
 		this.startTimer();
@@ -212,12 +212,12 @@ export class ForgotPasswordComponent implements OnInit {
 			 this.spinner.hide();
 			  let str;
 			  if(error.status==400){
-			  str=error.error;
+			  str=error.error.error;
 			  }else{
-				str=error.message;
+				str=error.error.message;
 				str=str.substring(str.indexOf(":")+1);
 			  }
-			  console.log("Error:"+str);
+			  console.log("Error:",str);
 			  this.errorMsg=str;
 			}
 		  //	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
@@ -265,12 +265,12 @@ export class ForgotPasswordComponent implements OnInit {
 			   this.spinner.hide();
 				let str;
 				if(error.status==400){
-				str=error.error;
+				str=error.error.error;
 				}else{
-				  str=error.message;
+				  str=error.error.message;
 				  str=str.substring(str.indexOf(":")+1);
 				}
-				console.log("Error:"+str);
+				console.log("Error:",str);
 				this.errorMsg=str;
 			  }
 			//	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
