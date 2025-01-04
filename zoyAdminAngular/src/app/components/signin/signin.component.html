@@ -55,8 +55,8 @@
                                                 <a class="small alert-link" style="font-weight: 400;" routerLink="/forgot-password">Forgot Password?</a>
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary-custom btn-block">
-                                            Login
+                                        <button type="submit" class="btn btn-primary-custom btn-block" [disabled]="sending">
+                                              {{sending ? 'Logining...':'Login'}}
                                         </button>
                                     </form>
                                 </div>
