@@ -13,6 +13,8 @@ import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { ConfigMasterService } from '../service/config-master-serive';
 import { BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, SecurityDepositLimitsModel, SecurityDepositRefundModel, TokenDetailsModel } from '../models/config-master-model';
+import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 
 
 @Component({
@@ -40,6 +42,17 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  securityDepositRefundDisabled: boolean = true;
 	  configMasterModel :ConfigMasterModel =new ConfigMasterModel();
 	  configMasterOrg :ConfigMasterModel =new ConfigMasterModel();
+
+	  conditions : string[]=['==','>=','<=','>','<','!='];
+	  triggerOn : string[]=['PaidAmount','Rent','PaidAmount & Rent']; 
+
+	  displayedColumns: string[] = ['condName', 'daysBeforeCheckIn','triggerOn','deductionPercentages','action'];
+	  dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>([]);
+	  @ViewChild(CdkDropListGroup) listGroup: CdkDropListGroup<HTMLElement[]>;
+	  items: BeforeCheckInCancellationRefundModel[] = [];
+	  backUpAnnexureTypeList:BeforeCheckInCancellationRefundModel[]=[];
+	  canSubmit:boolean = true;
+	  @ViewChild('table', { static: true }) table: MatTable<BeforeCheckInCancellationRefundModel>;
 
 	  constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService, private configMasterService :ConfigMasterService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
@@ -85,12 +98,123 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  //}
 		 
 		  this.getConfigMasterDetails();
+		  this.loadInitialData();
 	  }
 	  ngAfterViewInit() {
 		  this.sidemenuComp.expandMenu(4);
 		  this.sidemenuComp.activeMenu(4, 'configuration-master');
 		  this.dataService.setHeaderName("Configuration Master");
 	  }
+
+	  drop(event: CdkDragDrop<BeforeCheckInCancellationRefundModel[]>) {
+		if (!this.dataSource || !this.dataSource.data) {
+		  return; 
+		}
+		const previousIndex = event.previousIndex;
+		const currentIndex = event.currentIndex;
+	   const data = this.dataSource.data[previousIndex];
+		if (event.container === event.previousContainer ) {
+		  moveItemInArray(this.items, previousIndex, currentIndex);
+		  let i=1;
+		   this.dataSource.data.forEach(element => {
+			  element.sequenceOrder = i++;
+			});
+			this.canSubmit=false;
+		} 
+		this.table.renderRows();
+	  }
+
+	  mockCancellationDetails = [
+		{
+		  cancellationId: 'CANC-001',
+		  daysBeforeCheckIn: 10,
+		  deductionPercentages: 5,
+		  bcicrDisable: true,
+		  triggerOn: 'Payment Made',
+		  condName: '==',
+		  sequenceOrder: 1
+		},
+		{
+		  cancellationId: 'CANC-002',
+		  daysBeforeCheckIn: 5,
+		  deductionPercentages: 10,
+		  bcicrDisable: true,
+		  triggerOn: 'Booking Confirmed',
+		  condName: '==',
+		  sequenceOrder: 2
+		},
+		{
+		  cancellationId: 'CANC-003',
+		  daysBeforeCheckIn: 7,
+		  deductionPercentages: 8,
+		  bcicrDisable: true,
+		  triggerOn: 'Amount Paid',
+		  condName: '<=',
+		  sequenceOrder: 3
+		},
+		{
+		  cancellationId: 'CANC-004',
+		  daysBeforeCheckIn: 3,
+		  deductionPercentages: 15,
+		  bcicrDisable: true,
+		  triggerOn: 'Deposit Received',
+		  condName: '<=',
+		  sequenceOrder: 4
+		},
+		{
+		  cancellationId: 'CANC-005',
+		  daysBeforeCheckIn: 15,
+		  deductionPercentages: 12,
+		  bcicrDisable: true,
+		  triggerOn: 'Full Payment',
+		  condName: '>',
+		  sequenceOrder: 5
+		}
+	  ];
+
+	  loadInitialData(){
+		this.backUpAnnexureTypeList = this.mockCancellationDetails.map(element => ({ ...element }));
+		  this.items=this.mockCancellationDetails;
+		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.items);
+		  return;
+		this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
+		this.configMasterService.getConfigMasterDetails().subscribe((data) => {
+		  this.backUpAnnexureTypeList = data.map(element => ({ ...element }));
+		  this.items=data;
+		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.items);
+		  
+		  setTimeout(()=>{
+			this.spinner.hide();
+		   },100);
+		},error =>{
+		  this.spinner.hide();
+		  if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		  }else if (error.error && error.error.message) {
+			this.errorMsg =error.error.message;
+			console.log("Error:"+this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+		  } else {
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			  let str;
+				if(error.status==400){
+				str=error.error;
+				}else{
+				  str=error.message;
+				  str=str.substring(str.indexOf(":")+1);
+				}
+				console.log("Error:"+str);
+				this.errorMsg=str;
+			}
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  }
+		}
+		);
+	  }
+	  
 
 	  collaspeListRight = [
 		{ id: 1, name: 'right1', selected: false },
@@ -333,11 +457,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		
 	}
 
-	beforeCheckInCRfReset(i:number) {
-		this.configMasterModel.cancellationDetails[i] = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails[i]));
+	beforeCheckInCRfReset(item:BeforeCheckInCancellationRefundModel) {
+		//this.configMasterModel.cancellationDetails[i] = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails[i]));
+		console.log("this.dataSource.data",this.dataSource.data)
 	}
 
 	beforeCheckInCRfUpDate(i:number){
+
+	console.log("this.items",this.items)
+		return;
 		const model =this.configMasterModel.cancellationDetails[i] ;
 		if(model.daysBeforeCheckIn == 0 ||  !model.daysBeforeCheckIn || model.deductionPercentages == undefined || model.deductionPercentages.toString() ==''	){
 			return ;

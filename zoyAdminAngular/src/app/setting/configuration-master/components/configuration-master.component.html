@@ -193,13 +193,8 @@
                                         <div class="col-sm-2">
                                           <div>Condition</div>
                                           <div class="input-group input-group-sm">
-                                            <select 
-                                            class="form-select form-select-sm"
-                                            style="max-width: 100px !important;"
-                                            >
-                                            <option value="==">==</option>
-                                            <option value="==">>=</option>
-                                            <option value="=="><=</option>
+                                            <select class="form-select form-select-sm" style="max-width: 100px !important;" >
+                                            <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
                                             </select>
                                           </div>
                                         </div>
@@ -220,12 +215,8 @@
                                             <div class="col-sm-3">
                                               <div>Deduction Type</div>
                                               <div class="input-group input-group-sm">
-                                                <select 
-                                                class="form-select form-select-sm"
-                                                >
-                                                <option value="PaidAmount">Paid Amount</option>
-                                                <option value="Rent">Rent</option>
-                                                <option value="PaidAmount & Rent">Paid Amount & Rent</option>
+                                                <select class="form-select form-select-sm">
+                                                <option *ngFor="let trigger of triggerOn" [value]="trigger">{{trigger}}</option>
                                                 </select>
                                               </div>
                                             </div>
@@ -251,18 +242,16 @@
                                             </div>
                                         </div>
                                       </div>
-                                      <hr class="solid">
-                                      <div class="p-2 m-2">
-                                        <div class="row mb-1" *ngFor="let bci of configMasterModel.cancellationDetails ; let n=index;" >
+                                      <div >
+                                        <!-- <div class="row mb-1" *ngFor="let bci of mockCancellationDetails ; let n=index;"
+                                        cdkDrag class="draggable-row" cdkDropList (cdkDropListDropped)="onDrop($event)">
                                           <div class="col-sm-2">
-                                            <div class="input-group input-group-sm">
-                                              <select [disabled]="bci.bcicrDisable"
-                                              class="form-select form-select-sm"
-                                              style="max-width: 100px !important;"
-                                              >
-                                              <option value="==">==</option>
-                                              <option value="==">>=</option>
-                                              <option value="=="><=</option>
+                                            <div class="input-group input-group-sm" *ngIf="bci.bcicrDisable">
+                                              <input type="text" class="form-control form-control-sm" value="==" [disabled]="bci.bcicrDisable" /> 
+                                            </div> 
+                                            <div class="input-group input-group-sm" *ngIf="!bci.bcicrDisable">
+                                              <select class="form-select form-select-sm" style="max-width: 100px !important;">
+                                              <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
                                               </select>
                                             </div>
                                           </div>
@@ -279,18 +268,16 @@
                                             </div>
                                            </div>
                                            <div class="col-sm-3">
-                                            <div class="input-group input-group-sm" style="color:gray;padding-top:5px;" *ngIf="bci.bcicrDisable">Paid Amount</div>
+                                            <div class="input-group input-group-sm" *ngIf="bci.bcicrDisable">
+                                              <input type="text" class="form-control form-control-sm" value="PaidAmount & Rent" [disabled]="bci.bcicrDisable" /> 
+                                            </div>
                                             <div class="input-group input-group-sm" *ngIf="!bci.bcicrDisable">
-                                              <select 
-                                              class="form-select form-select-sm"
-                                              >
-                                              <option value="PaidAmount">Paid Amount</option>
-                                              <option value="Rent">Rent</option>
-                                              <option value="PaidAmount & Rent">Paid Amount & Rent</option>
+                                              <select class="form-select form-select-sm">
+                                              <option *ngFor="let trigger of triggerOn" [value]="trigger">{{trigger}}</option>
                                               </select>
                                             </div>
                                           </div>
-                                           <div class="col-sm-3">                                              
+                                           <div class="col-sm-3">                   
                                              <div class="input-group input-group-sm">
                                               <input 
                                               type="text" 
@@ -329,8 +316,113 @@
                                                 </div>
                                                </div>
                                              </div>
-                                         </div>
+                                         </div> -->
                                        </div>
+                                     <!-- <div class="chart-area"> -->
+                                        <div class="table-responsive">
+                                          <mat-table [dataSource]="dataSource"
+                                                      #table
+                                                      class="example-list"
+                                                      cdkDropList
+                                                      [cdkDropListData]="dataSource.data"
+                                                      (cdkDropListDropped)="drop($event)">
+                          
+                                            <ng-container matColumnDef="condName">
+                                              <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
+                                              <mat-cell data-label="name"  class="example-box" *matCellDef="let element" style="max-width: 140px;"  >
+                                                {{ element.sequenceOrder }}
+                                                <div class="input-group input-group-sm ml-2" *ngIf="element.bcicrDisable" >
+                                                  <input type="text" class="form-control form-control-sm" [value]="element.condName" [disabled]="element.bcicrDisable" style="max-width: 100px !important;" /> 
+                                                </div> 
+                                                <div class="input-group input-group-sm ml-2" *ngIf="!element.bcicrDisable" >
+                                                  <select class="form-select form-select-sm" style="max-width: 100px !important;"  [value]="element.condName">
+                                                  <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
+                                                  </select>
+                                                </div>
+                                               </mat-cell>
+                                            </ng-container>
+                                          
+                                            <ng-container matColumnDef="daysBeforeCheckIn">
+                                              <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
+                                              <mat-cell data-label="Type" class="example-box" *matCellDef="let element"  > 
+                                                <div class="d-flex input-group input-group-sm">
+                                                  <input type="text" 
+                                                          class="form-control form-control-sm"
+                                                          [(ngModel)]="element.daysBeforeCheckIn" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.bcicrDisable"
+                                                          [ngClass]="{'is-invalid': !element.bcicrDisable && (element.daysBeforeCheckIn == 0 || !element.daysBeforeCheckIn) }" 
+                                                          style="max-width: 50px !important;" />
+                                                  <span class="input-group-text">Days</span>
+                                                </div>
+                                                </mat-cell>
+                                            </ng-container>
+                                            
+                                            <ng-container matColumnDef="triggerOn">
+                                              <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
+                                              <mat-cell data-label="requirePayslip" class="example-box" *matCellDef="let element"  style="max-width: 200px;"  > 
+                                                <div class="input-group input-group-sm" *ngIf="element.bcicrDisable">
+                                                  <input type="text" class="form-control form-control-sm" [value]="element.triggerOn" [disabled]="element.bcicrDisable" /> 
+                                                </div>
+                                                <div class="input-group input-group-sm" *ngIf="!element.bcicrDisable" >
+                                                  <select class="form-select form-select-sm" [value]="element.triggerOn" style="max-width: 200px !important;" >
+                                                  <option *ngFor="let trigger of triggerOn" [value]="trigger">{{trigger}}</option>
+                                                  </select>
+                                                </div>
+                                              </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="deductionPercentages">
+                                              <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
+                                              <mat-cell data-label="requirePayslip" class="example-box" *matCellDef="let element"  > 
+                                                <div class="d-flex input-group input-group-sm">
+                                                  <input  type="text" 
+                                                          class="form-control form-control-sm"
+                                                          [(ngModel)]="element.deductionPercentages" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.bcicrDisable"
+                                                          [ngClass]="{'is-invalid': !element.bcicrDisable && (element.deductionPercentages == undefined || element.deductionPercentages.toString() =='') }" 
+                                                          style="max-width: 50px !important;"
+                                                          disabled />
+                                                  <span class="input-group-text">%</span>
+                                                 </div>
+                                               
+                                              </mat-cell>
+                                            </ng-container>
+                                          
+                                            <ng-container matColumnDef="action">
+                                              <!-- <mat-header-cell *matHeaderCellDef></mat-header-cell> -->
+                                              <mat-cell class="example-box" data-label="action" *matCellDef="let element "  >
+                                                <div class="input-group">
+                                                  <div class="btn-group">
+                                                    <button 
+                                                      class="btn btn-sm btn-outline-secondary" 
+                                                      *ngIf="element.bcicrDisable"
+                                                      (click)="element.bcicrDisable = false">
+                                                      <i class="fas fa-edit"></i>
+                                                    </button>
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="element.bcicrDisable" (click)="deleteRefundRule(element)">
+                                                    <i class="fas fa-trash" style="color: red;"></i>
+                                                  </button>
+                                                    <button 
+                                                      class="btn btn-sm btn-outline-secondary" 
+                                                      *ngIf="!element.bcicrDisable"
+                                                      (click)="beforeCheckInCRfUpDate(element)">
+                                                      <i class="fas fa-check"></i>
+                                                    </button>
+                                                    <button 
+                                                      class="btn btn-sm btn-outline-secondary" 
+                                                      *ngIf="!element.bcicrDisable"
+                                                      (click)="element.bcicrDisable=!element.bcicrDisable;beforeCheckInCRfReset(element)">
+                                                      <i class="fas fa-redo" style="color: red;"></i>
+                                                    </button>
+                                                  </div>
+                                                 </div>
+                                              </mat-cell>
+                                              
+                                            </ng-container>          
+                                            <!-- <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row> -->
+                                            <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
+                                          </mat-table>
+                                        <!-- </div> -->
+                                          <div cdkDropList [cdkDropListData]="dataSource.data" (cdkDropListDropped)="drop($event)"></div>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -383,13 +475,12 @@
                               <div class="row">
                                 <div class="col-sm-2">
                                   <div>Condition</div>
-                                  <div class="input-group input-group-sm">
-                                    <select 
-                                    class="form-select form-select-sm" [disabled]="securityDepositRefundDisabled"
-                                    >
-                                    <option value="==">==</option>
-                                    <option value="==">>=</option>
-                                    <option value="=="><=</option>
+                                  <div class="input-group input-group-sm" *ngIf="securityDepositRefundDisabled">
+                                    <input type="text" class="form-control form-control-sm" value="==" [disabled]="securityDepositRefundDisabled" /> 
+                                  </div> 
+                                  <div class="input-group input-group-sm" *ngIf="!securityDepositRefundDisabled">
+                                    <select class="form-select form-select-sm">
+                                      <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
                                     </select>
                                   </div>
                                  </div>
@@ -410,7 +501,15 @@
                                 </div>
                                 <div class="col-sm-3">
                                   <div>Deduction Type</div>
-                                  <div class="input-group input-group-sm" style="padding-top:5px;color:gray;" *ngIf="securityDepositRefundDisabled">Paid Amount & Rent</div>
+                                  <div class="input-group input-group-sm" *ngIf="securityDepositRefundDisabled">
+                                    <input type="text" class="form-control form-control-sm" value="PaidAmount & Rent" [disabled]="securityDepositRefundDisabled" /> 
+                                  </div>
+                                  <div class="input-group input-group-sm" *ngIf="!securityDepositRefundDisabled">
+                                    <select class="form-select form-select-sm">
+                                    <option *ngFor="let trigger of triggerOn" [value]="trigger">{{trigger}}</option>
+                                    </select>
+                                  </div>
+                                  <!-- <div class="input-group input-group-sm" style="padding-top:5px;color:gray;" *ngIf="securityDepositRefundDisabled">Paid Amount & Rent</div>
                                   <div class="input-group input-group-sm" *ngIf="!securityDepositRefundDisabled">
                                     <select 
                                     class="form-select form-select-sm" 
@@ -419,7 +518,7 @@
                                     <option value="Rent">Rent</option>
                                     <option value="PaidAmount & Rent">Paid Amount & Rent</option>
                                     </select>
-                                  </div>
+                                  </div> -->
                                 </div>
                                 <div class="col-sm-3">
                                   <div>Platform charges</div>
