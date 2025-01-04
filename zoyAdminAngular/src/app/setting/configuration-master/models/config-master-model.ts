@@ -23,6 +23,9 @@ export class BeforeCheckInCancellationRefundModel{
     daysBeforeCheckIn : number ;
     deductionPercentages : number ;
     bcicrDisable : boolean = true ;
+    triggerOn : string ;
+    condName : string ;
+    sequenceOrder: number ;
 }
 
 export class SecurityDepositRefundModel{
