@@ -253,8 +253,20 @@
                                       </div>
                                       <hr class="solid">
                                       <div class="p-2 m-2">
-                                        <div class="row m-1" *ngFor="let bci of configMasterModel.cancellationDetails ; let n=index;" >
-                                         <div class="col-sm-3">
+                                        <div class="row mb-1" *ngFor="let bci of configMasterModel.cancellationDetails ; let n=index;" >
+                                          <div class="col-sm-2">
+                                            <div class="input-group input-group-sm">
+                                              <select [disabled]="bci.bcicrDisable"
+                                              class="form-select form-select-sm"
+                                              style="max-width: 100px !important;"
+                                              >
+                                              <option value="==">==</option>
+                                              <option value="==">>=</option>
+                                              <option value="=="><=</option>
+                                              </select>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-3">
                                            <div class="input-group input-group-sm">
                                               <input 
                                                 type="text" 
@@ -266,7 +278,19 @@
                                                 <span class="input-group-text">Days</span>
                                             </div>
                                            </div>
-                                           <div class="col-sm-4">                                              
+                                           <div class="col-sm-3">
+                                            <div class="input-group input-group-sm" style="color:gray;padding-top:5px;" *ngIf="bci.bcicrDisable">Paid Amount</div>
+                                            <div class="input-group input-group-sm" *ngIf="!bci.bcicrDisable">
+                                              <select 
+                                              class="form-select form-select-sm"
+                                              >
+                                              <option value="PaidAmount">Paid Amount</option>
+                                              <option value="Rent">Rent</option>
+                                              <option value="PaidAmount & Rent">Paid Amount & Rent</option>
+                                              </select>
+                                            </div>
+                                          </div>
+                                           <div class="col-sm-3">                                              
                                              <div class="input-group input-group-sm">
                                               <input 
                                               type="text" 
@@ -274,11 +298,11 @@
                                               [(ngModel)]="bci.deductionPercentages" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="bci.bcicrDisable"
                                               [ngClass]="{'is-invalid': !bci.bcicrDisable && (bci.deductionPercentages == undefined || bci.deductionPercentages.toString() =='') }" 
                                               style="max-width: 120px !important;"
-                                              disabled  value="20"/>
+                                              disabled />
                                               <span class="input-group-text">%</span>
                                              </div>
                                            </div>
-                                           <div class="col-sm-2">
+                                           <div class="col-sm-1" style="margin-left:-25px ;">
                                              <div class="input-group">
                                                 <div class="btn-group">
                                                   <button 
@@ -287,7 +311,7 @@
                                                     (click)="bci.bcicrDisable = false">
                                                     <i class="fas fa-edit"></i>
                                                   </button>
-                                                <button class="btn btn-sm btn-outline-secondary" (click)="deleteRefundRule(bci)">
+                                                <button class="btn btn-sm btn-outline-secondary" *ngIf="bci.bcicrDisable" (click)="deleteRefundRule(bci)">
                                                   <i class="fas fa-trash" style="color: red;"></i>
                                                 </button>
                                                   <button 
@@ -361,7 +385,7 @@
                                   <div>Condition</div>
                                   <div class="input-group input-group-sm">
                                     <select 
-                                    class="form-select form-select-sm"
+                                    class="form-select form-select-sm" [disabled]="securityDepositRefundDisabled"
                                     >
                                     <option value="==">==</option>
                                     <option value="==">>=</option>
@@ -386,9 +410,10 @@
                                 </div>
                                 <div class="col-sm-3">
                                   <div>Deduction Type</div>
-                                  <div class="input-group input-group-sm">
+                                  <div class="input-group input-group-sm" style="padding-top:5px;color:gray;" *ngIf="securityDepositRefundDisabled">Paid Amount & Rent</div>
+                                  <div class="input-group input-group-sm" *ngIf="!securityDepositRefundDisabled">
                                     <select 
-                                    class="form-select form-select-sm"
+                                    class="form-select form-select-sm" 
                                     >
                                     <option value="PaidAmount">Paid Amount</option>
                                     <option value="Rent">Rent</option>
