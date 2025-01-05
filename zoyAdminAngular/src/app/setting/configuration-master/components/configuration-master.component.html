@@ -20,7 +20,7 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                  <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                  <div class="d-sm-flex align-items-center justify-content-between mb-0">
                     <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Master</span><span class="text-header-800-blue">Configuration</span></h3> 
                     <div>
                     </div>
@@ -188,17 +188,18 @@
                                 <div class="collapse show" id="collapseExampleRight0">
                                   <div class="card card-body m-0 p-0">
                                     <div>
-                                      <div class="p-2 m-2">
-                                       <div class="row">
-                                        <div class="col-sm-2">
+                                      <div class="pt-2 pb-2">
+                                       <div class="d-flex">
+                                        <div style="width: 40px;"></div>
+                                        <div class="mr-3" style="width: 80px;">
                                           <div>Condition</div>
                                           <div class="input-group input-group-sm">
-                                            <select class="form-select form-select-sm" style="max-width: 100px !important;" >
+                                            <select class="form-select form-select-sm" style="max-width: 80px !important;" >
                                             <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
                                             </select>
                                           </div>
                                         </div>
-                                            <div class="col-sm-3">
+                                            <div class="mr-3" style="width: 155px;">
                                               <div>Days before check in</div>
                                               <div class="input-group input-group-sm">
                                                 <input 
@@ -210,9 +211,9 @@
                                                 />
                                                 <span class="input-group-text">Days</span>
                                               </div>
-                                              <p class="small" style="font-size: 12px;color: gray">Enter days before check in.</p>
+                                              <p class="small" style="font-size: 12px;color: gray">Enter maximum days before check in.</p>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="mr-3" style="width: 190px;">
                                               <div>Deduction Type</div>
                                               <div class="input-group input-group-sm">
                                                 <select class="form-select form-select-sm">
@@ -220,7 +221,7 @@
                                                 </select>
                                               </div>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div style="width: 160px;">
                                                 <div>Deduction (%)</div>
                                                 <div class="input-group input-group-sm">
                                                   <input 
@@ -234,7 +235,7 @@
                                                  </div>
                                                 <p class="small" style="font-size: 12px;color: gray">Percentage of booking amount to deduct.</p>
                                             </div>
-                                            <div class="col-sm-1">
+                                            <div class="ml-1">
                                               <div style="height: 23px;"></div>
                                               <div>
                                                 <button type="submit" class="btn btn-sm btn-primary" (click)="beforeCheckInCRfSave()" >Save</button>
@@ -318,8 +319,12 @@
                                              </div>
                                          </div> -->
                                        </div>
-                                     <!-- <div class="chart-area"> -->
-                                        <div class="table-responsive">
+                                        
+                                        <div>
+                                          <div class="d-flex mb-1" style="margin-top:-30px;">
+                                            <div></div>
+                                            <div class="ml-auto mr-4" style="padding-right: 15px;"><button type="button" class="btn btn-sm btn-primary" disabled>Update</button></div>
+                                          </div>
                                           <mat-table [dataSource]="dataSource"
                                                       #table
                                                       class="example-list"
@@ -329,13 +334,13 @@
                           
                                             <ng-container matColumnDef="condName">
                                               <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
-                                              <mat-cell data-label="name"  class="example-box" *matCellDef="let element" style="max-width: 140px;"  >
+                                              <mat-cell data-label="condName"  class="example-box" *matCellDef="let element" style="width: 120px;flex:none;padding-right: 0px;"  >
                                                 {{ element.sequenceOrder }}
-                                                <div class="input-group input-group-sm ml-2" *ngIf="element.bcicrDisable" >
-                                                  <input type="text" class="form-control form-control-sm" [value]="element.condName" [disabled]="element.bcicrDisable" style="max-width: 100px !important;" /> 
+                                                <div class="ml-1" *ngIf="element.bcicrDisable" >
+                                                  <input type="text" class="form-control form-control-sm" [value]="element.condName" [disabled]="element.bcicrDisable" style="width: 80px !important;" /> 
                                                 </div> 
-                                                <div class="input-group input-group-sm ml-2" *ngIf="!element.bcicrDisable" >
-                                                  <select class="form-select form-select-sm" style="max-width: 100px !important;"  [value]="element.condName">
+                                                <div class="ml-1" *ngIf="!element.bcicrDisable" >
+                                                  <select class="form-select form-select-sm" style="width: 80px !important;"  [value]="element.condName">
                                                   <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
                                                   </select>
                                                 </div>
@@ -344,13 +349,13 @@
                                           
                                             <ng-container matColumnDef="daysBeforeCheckIn">
                                               <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
-                                              <mat-cell data-label="Type" class="example-box" *matCellDef="let element"  > 
+                                              <mat-cell data-label="daysBeforeCheckIn" class="example-box" *matCellDef="let element" style="width: 170px;flex: none;padding-right: 0px;" > 
                                                 <div class="d-flex input-group input-group-sm">
                                                   <input type="text" 
                                                           class="form-control form-control-sm"
                                                           [(ngModel)]="element.daysBeforeCheckIn" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.bcicrDisable"
                                                           [ngClass]="{'is-invalid': !element.bcicrDisable && (element.daysBeforeCheckIn == 0 || !element.daysBeforeCheckIn) }" 
-                                                          style="max-width: 50px !important;" />
+                                                          style="max-width: 100px !important;" />
                                                   <span class="input-group-text">Days</span>
                                                 </div>
                                                 </mat-cell>
@@ -358,12 +363,12 @@
                                             
                                             <ng-container matColumnDef="triggerOn">
                                               <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
-                                              <mat-cell data-label="requirePayslip" class="example-box" *matCellDef="let element"  style="max-width: 200px;"  > 
-                                                <div class="input-group input-group-sm" *ngIf="element.bcicrDisable">
-                                                  <input type="text" class="form-control form-control-sm" [value]="element.triggerOn" [disabled]="element.bcicrDisable" /> 
+                                              <mat-cell data-label="requirePayslip" class="example-box" *matCellDef="let element"  style="width: 210px;padding-right: 0px;flex: none;"  > 
+                                                <div *ngIf="element.bcicrDisable">
+                                                  <input type="text" class="form-control form-control-sm" [value]="element.triggerOn" [disabled]="element.bcicrDisable" style="width: 190px !important;"/> 
                                                 </div>
-                                                <div class="input-group input-group-sm" *ngIf="!element.bcicrDisable" >
-                                                  <select class="form-select form-select-sm" [value]="element.triggerOn" style="max-width: 200px !important;" >
+                                                <div *ngIf="!element.bcicrDisable" >
+                                                  <select class="form-select form-select-sm" [value]="element.triggerOn" style="width: 190px !important;" >
                                                   <option *ngFor="let trigger of triggerOn" [value]="trigger">{{trigger}}</option>
                                                   </select>
                                                 </div>
@@ -372,23 +377,22 @@
 
                                             <ng-container matColumnDef="deductionPercentages">
                                               <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
-                                              <mat-cell data-label="requirePayslip" class="example-box" *matCellDef="let element"  > 
+                                              <mat-cell data-label="requirePayslip" class="example-box" *matCellDef="let element"  style="width: 180px !important;flex:none;padding-right: 0px;"> 
                                                 <div class="d-flex input-group input-group-sm">
                                                   <input  type="text" 
                                                           class="form-control form-control-sm"
                                                           [(ngModel)]="element.deductionPercentages" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.bcicrDisable"
                                                           [ngClass]="{'is-invalid': !element.bcicrDisable && (element.deductionPercentages == undefined || element.deductionPercentages.toString() =='') }" 
-                                                          style="max-width: 50px !important;"
+                                                          style="max-width: 120px !important;"
                                                           disabled />
                                                   <span class="input-group-text">%</span>
-                                                 </div>
-                                               
+                                                 </div>                                              
                                               </mat-cell>
                                             </ng-container>
                                           
                                             <ng-container matColumnDef="action">
                                               <!-- <mat-header-cell *matHeaderCellDef></mat-header-cell> -->
-                                              <mat-cell class="example-box" data-label="action" *matCellDef="let element "  >
+                                              <mat-cell class="example-box" data-label="action" *matCellDef="let element "  style="padding-left:0px;flex:none;">
                                                 <div class="input-group">
                                                   <div class="btn-group">
                                                     <button 
