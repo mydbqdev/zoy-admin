@@ -46,7 +46,7 @@
                           <!--Total Advance section-->
                           <div class="row p-3 align-items-center marginRow">
                             <div class="col-sm-3">
-                              <div><span style="font-size: 16px;">Total Advance (%)</span></div>
+                              <div><span style="font-size: 16px;">Toten Advance (%)</span></div>
                               <div><p class="small" style="font-size: 12px;color: gray">Specify the percentage of the total amount to be collected as a token advance during booking.</p></div>
                             </div>
                             
@@ -560,251 +560,278 @@
                                  </div>
                           </div>
                         </div>
-                        <div hidden>
-                          <div class="row p-3 marginRow" >
-                            <div class="col-sm-3">
-                              <span style="font-size: 16px;">Security Deposite Refund rules</span>
-                              <p class="small" style="font-size: 12px;color: gray">Set the refund percentage based on the number of notice Period days served.</p>
-                            </div>
-                            <div class="col-sm-9">
-                              <div style="background-color: #c1a1f3;padding: 5px;" >
-                                  <i class="far mr-2 ml-2" [ngClass]="collaspeListNoticePeriod[0].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collaspeListNoticePeriod0" aria-expanded="false" aria-controls="collaspeListNoticePeriod0" (click)="collaspeExpandNoticePeriod(collaspeListNoticePeriod[0],'right1')"></i> Noticed Period Not Served
-                                </div>
-                                <div class="collapse show"  id="collaspeListNoticePeriod0">
-                                  <div class="card card-body m-0 p-0">
-                                    <div>
-                                      <div class="p-2 m-2">
-                                        <div class="row">
-                                         <div class="col-sm-4">
-                                           <div>Notice period Served</div>
-                                           <div class="input-group input-group-sm">
-                                             <input 
-                                                type="text" 
-                                                class="form-control form-control-sm"
-                                                style="max-width: 60px !important;"
-                                                />
-                                                <span class="input-group-text">Days</span>
-                                           </div>
-                                           <p class="small" style="font-size: 12px;color: gray">Enter the number days served.</p>
-                                           </div>
-                                           <div class="col-sm-6">
-                                             <div style="text-align: center;">Deduction Configuration</div>
-                                             <div class="row">
-                                              <div class="col-sm-5">
-                                                <div class="input-group input-group-sm">
-                                                  <input 
-                                                type="text" 
-                                                class="form-control form-control-sm"
-                                                style="max-width: 60px !important;"
-                                                />
-                                                <span class="input-group-text">%</span>
-                                                </div>
-                                                <p class="small" style="font-size: 12px;color: gray">Enter the deduction percentage.</p>
-                                              </div>
-                                              <div class="col-auto mb-2">
-                                                <span style="color: gray;">or</span>
-                                              </div>
-                                              <div class="col-sm-5">
-                                                <div class="input-group input-group-sm">
-                                                  <input 
-                                                type="text" 
-                                                class="form-control form-control-sm"
-                                                style="max-width: 60px !important;"
-                                                />
-                                                <span class="input-group-text">Days</span>
-                                                </div>
-                                                <p class="small" style="font-size: 12px;color: gray">Enter the number of days rent to be deducted.</p>
-                                              </div>
-                                            </div>
-                                           </div>
-                                           <div class="col-auto">
-                                             <div>Actions</div>
-                                             <div>
-                                               <button type="submit" class="btn btn-sm btn-primary">Save</button>
-                                             </div>
-                                           </div>
-                                        </div>
-                                       </div>
-                                       <hr class="solid">
-                                        <div class="p-2 m-2">
-                                          <div class="row">
-                                           <div class="col-sm-4">
-                                             <div class="input-group input-group-sm">
-                                              <input 
-                                              type="text" 
-                                              class="form-control form-control-sm"
-                                              style="max-width: 100px !important;"
-                                              value="20" disabled/>
-                                              <span class="input-group-text">Days</span>
-                                             </div>
-                                             <p class="small" style="font-size: 12px;color: gray" [hidden]="true">Enter the number days served.</p>
-                                             </div>
-                                             <div class="col-sm-6">
-                                               <div class="row">
-                                                <div class="col-sm-5">
-                                                  <div class="input-group input-group-sm">
-                                                    <input 
-                                                type="text" 
-                                                class="form-control form-control-sm"
-                                                style="max-width: 60px !important;"
-                                                value="20" disabled/>
-                                                <span class="input-group-text">%</span>
-                                                  </div>
-                                                  <p class="small" style="font-size: 12px;color: gray" [hidden]="true">Enter the deduction percentage.</p>
-                                                </div>
-                                                <div class="col-auto mb-2">
-                                                  <span style="color: gray;">or</span>
-                                                </div>
-                                                <div class="col-sm-5">
-                                                  <div class="input-group input-group-sm">
-                                                    <input 
-                                                type="text" 
-                                                class="form-control form-control-sm"
-                                                style="max-width: 60px !important;"
-                                                value="20" disabled/>
-                                                <span class="input-group-text">Days</span>
-                                                  </div>
-                                                  <p class="small" style="font-size: 12px;color: gray" [hidden]="true">Enter the number of days rent to be deducted.</p>
-                                                </div>
-                                              </div>
-                                             </div>
-                                             <div class="col-auto">
-                                               <div class="input-group">
-                                                <div class="btn-group">
-                                                  <button class="btn btn-sm btn-outline-secondary">
-                                                    <i class="fas fa-edit"></i>
-                                                  </button>
-                                                  <button class="btn btn-sm btn-outline-secondary">
-                                                    <i class="fa fa-trash" style="color: red;"></i>
-                                                  </button>
-                                                </div>
-                                               </div>
-                                             </div>
-                                          </div>
-                                        </div>
-                                    </div>
+                      
+                            <hr class="solid"> 
+                            <div>
+                              <!--Auto-Cancellation Period-->
+                              <div class="row p-3 align-items-center marginRow">
+                                <div class="col-sm-3">
+                                  <div><span style="font-size: 16px;">Auto-Cancellation Period </span></div>
+                                  <div>
+                                    <p class="small" style="font-size: 12px; color: gray;">
+                                      Configure the number of days after the check-in date to automatically cancel bookings if tenants fail to check-in.
+                                    </p>
                                   </div>
                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <!-- <hr class="solid"> -->
-                        <!--Other Charges-->
-                          <div hidden>
-                             <div class="row p-3 marginRow">
-                                 <div class="col-sm-3">
-                                    <span style="font-size: 16px;">Other Charges</span>
-                                    <p class="small" style="font-size: 12px;color: gray">Configure GST Percentage and Documentation Charges</p>
-                                 </div>
-                                 <div class="col-sm-9">
+                                <div class="col-sm-9">
                                   <div class="row">
-                                    <div class="col-sm-4">
-                                      <div>GST (%)</div>
+                                    <!-- Auto-Cancellation after Check-in Dates -->
+                                    <div class="col-sm-5">
+                                      <div>Auto-Cancellation after Check-in Dates</div>
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="text" 
-                                          class="form-control form-control-sm" 
-                                          [(ngModel)]="tempGSTValue" 
-                                          style="max-width: 50px !important;" [disabled]="gstHidden" />
-                                        <span class="input-group-text">%</span>
+                                          class="form-control form-control-sm"
+                                          [(ngModel)]="configMasterModel.depositDetails.minimumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="9"
+                                           [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.minimumDeposit == 0 || !configMasterModel.depositDetails.minimumDeposit) }" 
+                                          style="max-width: 140px !important;" />
+                                          <span class="input-group-text">Days</span>
                                       </div>
+                                      <p class="small" style="font-size: 12px; color: gray;">
+                                        Set the days to cancel if not checked in.
+                                      </p>
                                     </div>
-                                    <div class="col-sm-8 mt-4">
-                                      <div *ngIf="gstHidden">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="editGST()">
+                                    <!-- Deduction Percentage -->
+                                    <div class="col-sm-5">
+                                      <div>Deduction Percentage</div>
+                                      <div class="input-group input-group-sm">
+                                    
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm"
+                                          [(ngModel)]="configMasterModel.depositDetails.maximumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="8"
+                                           [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.maximumDeposit == 0 || !configMasterModel.depositDetails.maximumDeposit) }" 
+                                          style="max-width: 140px !important;"/>
+                                          <span class="input-group-text">%</span>
+                                      </div>
+                                      <p class="small" style="font-size: 12px; color: gray;">
+                                        Percentage of paid amount to deduct.
+                                      </p>
+                                    </div>
+                                    <!-- Action Button -->
+                                    <div class="col-sm-1 mt-4">
+                                      <div class="btn-group">
+                                        <button 
+                                          class="btn btn-sm btn-outline-secondary" 
+                                          *ngIf="securityDepositLimitsDisabled"
+                                          (click)="securityDepositLimitsDisabled = false">
                                           <i class="fas fa-edit"></i>
                                         </button>
-                                      </div>
-                                      <div class="btn-group" *ngIf="!gstHidden">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="submitGST()">
+                                        <button 
+                                          class="btn btn-sm btn-outline-secondary" 
+                                          *ngIf="!securityDepositLimitsDisabled"
+                                          (click)="securityDepositLimitsSubmit()">
                                           <i class="fas fa-check"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="resetGST()">
+                                        <button 
+                                          class="btn btn-sm btn-outline-secondary" 
+                                          *ngIf="!securityDepositLimitsDisabled"
+                                          (click)="securityDepositLimitsReset()">
                                           <i class="fas fa-redo" style="color: red;"></i>
                                         </button>
                                       </div>
                                     </div>
                                   </div>
-                                    <p class="small mt-1" style="font-size: 12px;color: gray">Enter the Total GST applicable on Owner payments.</p>
-                                    <div class="mt-2">
-                                      <span>Documentation charges for Owners</span>
+                                </div>
+                              </div>
+                              
+                            </div>
+                            <hr class="solid"> 
+                            <div>
+                              <!--Security Deposite Deadline-->
+                              <div class="row p-3 align-items-center marginRow">
+                                <div class="col-sm-3">
+                                  <div><span style="font-size: 16px;">Security Deposite Deadline</span></div>
+                                  <div>
+                                    <p class="small" style="font-size: 12px; color: gray;">
+                                      Configure the number of days to collect security deposite amount before check-in date to avoid auto cancellation.
+                                    </p>
+                                  </div>
+                                </div>
+                                <div class="col-sm-9">
+                                  <div class="row">
+                                    <!-- Auto-Cancellation after Check-in Dates -->
+                                    <div class="col-sm-5">
+                                      <div>Auto-Cancellation after Check-in Dates</div>
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm"
+                                          [(ngModel)]="configMasterModel.depositDetails.minimumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="9"
+                                           [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.minimumDeposit == 0 || !configMasterModel.depositDetails.minimumDeposit) }" 
+                                          style="max-width: 140px !important;" />
+                                          <span class="input-group-text">Days</span>
+                                      </div>
+                                      <p class="small" style="font-size: 12px; color: gray;">
+                                        Set the days to collect deposite before auto cancellation.
+                                      </p>
                                     </div>
+                                    <!-- Deduction Percentage -->
+                                    <div class="col-sm-5">
+                                      <div>Deduction Percentage</div>
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm"
+                                          [(ngModel)]="configMasterModel.depositDetails.maximumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="8"
+                                           [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.maximumDeposit == 0 || !configMasterModel.depositDetails.maximumDeposit) }" 
+                                          style="max-width: 140px !important;"/>
+                                          <span class="input-group-text">%</span>
+                                      </div>
+                                      <p class="small" style="font-size: 12px; color: gray;">
+                                        Percentage of paid amount to deduct.
+                                      </p>
+                                    </div>
+                                    <!-- Action Button -->
+                                    <div class="col-sm-1 mt-4">
+                                      <div class="btn-group">
+                                        <button 
+                                          class="btn btn-sm btn-outline-secondary" 
+                                          *ngIf="securityDepositLimitsDisabled"
+                                          (click)="securityDepositLimitsDisabled = false">
+                                          <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button 
+                                          class="btn btn-sm btn-outline-secondary" 
+                                          *ngIf="!securityDepositLimitsDisabled"
+                                          (click)="securityDepositLimitsSubmit()">
+                                          <i class="fas fa-check"></i>
+                                        </button>
+                                        <button 
+                                          class="btn btn-sm btn-outline-secondary" 
+                                          *ngIf="!securityDepositLimitsDisabled"
+                                          (click)="securityDepositLimitsReset()">
+                                          <i class="fas fa-redo" style="color: red;"></i>
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <hr class="solid">
+                            <!--Other Charges-->
+                            <div>
+                              <div class="row p-3 align-items-center marginRow">
+                                  <div class="col-sm-3">
+                                    <span style="font-size: 16px;">Other Charges</span>
+                                    <p class="small" style="font-size: 12px;color: gray">Configure documentation charges for Owners and Tenants.</p>
+                                  </div>
+                                  <div class="col-sm-9">
                                     <div class="row">
-                                      <div class="col-sm-4">
+                                      <!-- GST Section -->
+                                      <div class="col-sm-6">
+                                        <div>Documentation Charges for Owners</div>
                                         <div class="input-group input-group-sm">
                                           <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                           <input 
                                             type="text" 
                                             class="form-control form-control-sm" 
-                                            [(ngModel)]="tempAmountValue" 
-                                            style="max-width: 60px !important;"  [disabled]="amountHidden" />
+                                            [(ngModel)]="tempGSTValue" 
+                                            style="max-width: 100px !important;" 
+                                            [disabled]="gstHidden" />
+                                          <div class="pl-4">
+                                            <div *ngIf="gstHidden">
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="editGST()">
+                                                <i class="fas fa-edit"></i>
+                                              </button>
+                                            </div>
+                                            <div class="btn-group" *ngIf="!gstHidden">
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="submitGST()">
+                                                <i class="fas fa-check"></i>
+                                              </button>
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="resetGST()">
+                                                <i class="fas fa-redo" style="color: red;"></i>
+                                              </button>
+                                            </div>
+                                          </div>
                                         </div>
+                                        <p class="small mt-1" style="font-size: 12px; color: gray;">
+                                          Enter the one time amount to be charged to Owners for documentation purpose.
+                                        </p>
                                       </div>
-                                      <div class="col-sm-8">
-                                        <div *ngIf="amountHidden">
-                                          <button class="btn btn-sm btn-outline-secondary" (click)="editAmount()">
-                                            <i class="fas fa-edit"></i>
-                                          </button>
+                                      <!-- Documentation Charges Section -->
+                                      <div class="col-sm-6">
+                                        <div>Documentation Charges for Tenants</div>
+                                        <div class="input-group input-group-sm">
+                                          <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                          <input 
+                                            type="text" 
+                                            class="form-control form-control-sm" 
+                                            [(ngModel)]="tempGSTValue" 
+                                            style="max-width: 100px !important;" 
+                                            [disabled]="gstHidden" />
+                                           
+                                          <div class="pl-4">
+                                            <div *ngIf="gstHidden">
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="editGST()">
+                                                <i class="fas fa-edit"></i>
+                                              </button>
+                                            </div>
+                                            <div class="btn-group" *ngIf="!gstHidden">
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="submitGST()">
+                                                <i class="fas fa-check"></i>
+                                              </button>
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="resetGST()">
+                                                <i class="fas fa-redo" style="color: red;"></i>
+                                              </button>
+                                            </div>
+                                          </div>
                                         </div>
-                                        <div class="btn-group" *ngIf="!amountHidden">
-                                          <button class="btn btn-sm btn-outline-secondary" (click)="submitAmount()">
-                                            <i class="fas fa-check"></i>
-                                          </button>
-                                          <button class="btn btn-sm btn-outline-secondary" (click)="resetAmount()">
-                                            <i class="fas fa-redo" style="color: red;"></i>
-                                          </button>
-                                        </div>
+                                        <p class="small mt-1" style="font-size: 12px; color: gray;">
+                                          Enter the one time amount to be charged to Tenants for documentation purpose.
+                                        </p>
                                       </div>
                                     </div>
-                                    <p class="small mt-1" style="font-size: 12px;color: gray">Enter the Total GST applicable on Owner payments.</p>
-                                 </div>                       
-                                </div>
-                            </div>
-                            <hr class="solid">
-                            <!--Data Grouping-->
-                            <div>
-                              <div class="row p-3 align-items-center marginRow">
-                                <div class="col-sm-3">
-                                  <span style="font-size: 16px;">Data Grouping</span>
-                                </div>
-                                <div class="col-sm-9">
-                                 <div class="row">
-                                    <span>Trending PG Configuration</span>
-                                    <div class="col-sm-4">
-                                    <div class="input-group input-group-sm">
-                                      <input 
-                                      type="text" 
-                                      class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.dataGrouping.considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
-                                      [ngClass]="{'is-invalid': !dataGroupingDisabled && (configMasterModel.dataGrouping.considerDays == 0 || !configMasterModel.dataGrouping.considerDays) }" 
-                                      style="max-width: 70px !important;" />
-                                      <span class="input-group-text">Days</span>
-                                    </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                      <div *ngIf="dataGroupingDisabled">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="dataGroupingDisabled = false">
-                                          <i class="fas fa-edit"></i>
-                                        </button>
-                                      </div>
-                                      <div class="btn-group" *ngIf="!dataGroupingDisabled">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGSubmit()">
-                                          <i class="fas fa-check"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGReset()">
-                                          <i class="fas fa-redo" style="color: red;"></i>
-                                        </button>
-                                      </div>
                                   </div>
-                                    </div>
-                                 <div>
-                                  <p class="small" style="font-size: 12px;color: gray">Specify the number of days that is to be considered for showing trending PG's to Tenents .</p>
                                 </div>
-                                </div>
-                                
-                              </div>
                             </div>
-                        <!--hr class="solid" -->
+                    
+                        <hr class="solid">
+                        <!--Data Grouping-->
+                        <div>
+                          <div class="row p-3 align-items-center marginRow">
+                            <div class="col-sm-3">
+                              <span style="font-size: 16px;">Data Grouping</span>
+                            </div>
+                            <div class="col-sm-9">
+                             <div class="row">
+                                <span>Trending PG Configuration</span>
+                                <div class="col-sm-4">
+                                <div class="input-group input-group-sm">
+                                  <input 
+                                  type="text" 
+                                  class="form-control form-control-sm"
+                                  [(ngModel)]="configMasterModel.dataGrouping.considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
+                                  [ngClass]="{'is-invalid': !dataGroupingDisabled && (configMasterModel.dataGrouping.considerDays == 0 || !configMasterModel.dataGrouping.considerDays) }" 
+                                  style="max-width: 70px !important;" />
+                                  <span class="input-group-text">Days</span>
+                                </div>
+                                </div>
+                                <div class="col-sm-3">
+                                  <div *ngIf="dataGroupingDisabled">
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="dataGroupingDisabled = false">
+                                      <i class="fas fa-edit"></i>
+                                    </button>
+                                  </div>
+                                  <div class="btn-group" *ngIf="!dataGroupingDisabled">
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGSubmit()">
+                                      <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGReset()">
+                                      <i class="fas fa-redo" style="color: red;"></i>
+                                    </button>
+                                  </div>
+                              </div>
+                                </div>
+                             <div>
+                              <p class="small" style="font-size: 12px;color: gray">Specify the number of days that is to be considered for showing trending PG's to Tenents .</p>
+                            </div>
+                            </div>
+                            
+                          </div>
+                        </div>
+                        <!-- <hr class="solid"> -->
                         <!--Promotions and Codes-->
                         <!--div>
                           <div class="row p-3 marginRow">
