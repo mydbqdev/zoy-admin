@@ -29,7 +29,9 @@ import com.integration.zoy.repository.UserPaymentRepository;
 import com.integration.zoy.repository.ZoyPgPropertyDetailsRepository;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
+import com.integration.zoy.utils.RatingsAndReviewsReport;
 import com.integration.zoy.utils.TenentDues;
+import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentDTO;
 import com.integration.zoy.utils.UserPaymentFilterRequest;
 import com.integration.zoy.utils.VendorPayments;
@@ -55,6 +57,9 @@ public class AdminReportService implements AdminReportImpl{
 	@Autowired
 	private CsvGenerateService csvGenerateService;
 
+	@Autowired
+	private ZoyPgPropertyDetailsRepository zoyPgPropertyDetailsRepository;
+	
 	@Autowired
 	EntityManager entityManager;
 
@@ -463,33 +468,33 @@ public class AdminReportService implements AdminReportImpl{
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND up.user_payment_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				queryBuilder.append("AND up.user_payment_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
 
 			if (filterData.getOwnerName() != null && !filterData.getOwnerName().isEmpty()) {
-				queryBuilder.append(" AND LOWER(o.pg_owner_name) LIKE LOWER(:ownerName)");
+				queryBuilder.append("AND LOWER(o.pg_owner_name) LIKE LOWER(:ownerName)");
 				parameters.put("ownerName", "%" + filterData.getOwnerName() + "%");
 			}
 
 			if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
-				queryBuilder.append(" AND LOWER(o.pg_owner_email) LIKE LOWER(:ownerName)");
+				queryBuilder.append("AND LOWER(o.pg_owner_email) LIKE LOWER(:ownerName)");
 				parameters.put("ownerEmail", "%" + filterData.getOwnerEmail() + "%");
 			}
 			
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-				queryBuilder.append(" AND LOWER(pd.property_name) LIKE LOWER(:pgName)");
+				queryBuilder.append("AND LOWER(pd.property_name) LIKE LOWER(:pgName)");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
 			}
 
 			if (filterData.getTransactionStatus() != null && !filterData.getTransactionStatus().isEmpty()) {
-				queryBuilder.append(" AND up.user_payment_payment_status = :paymentStatus");
+				queryBuilder.append("AND up.user_payment_payment_status = :paymentStatus");
 				parameters.put("paymentStatus", filterData.getTransactionStatus());
 			}
 
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-				queryBuilder.append(" AND LOWER(pd.property_city) LIKE LOWER('%' || :cityLocation || '%')");
+				queryBuilder.append("AND LOWER(pd.property_city) LIKE LOWER('%' || :cityLocation || '%')");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
 
@@ -623,10 +628,13 @@ public class AdminReportService implements AdminReportImpl{
 			case "vendorPaymentsDuesReport":
 				reportData = getVendorPaymentDuesDetails(filterRequest.getFromDate(), filterRequest.getToDate());
 				break;
-			case "vendorPaymentsGstReport":
-				reportData = getVendorPaymentGstDetails(filterRequest.getFromDate(), filterRequest.getToDate());
+			case "tenantRefundReport":
+				reportData = getTenantRefunds(filterRequest, filterData,applyPagination);
 				break;
-
+			case "reviewsAndRatingReport":
+				reportData = getRatingsAndReviewsDetails(filterRequest, filterData,applyPagination);
+				break;
+	
 			default:
 				throw new IllegalArgumentException("Invalid template name provided.");
 			}
@@ -678,5 +686,287 @@ public class AdminReportService implements AdminReportImpl{
 	public String[] getDistinctCities() {
 		return propertyDetailsRepository.findDistinctCities();
 	}
+
+	
+	public CommonResponseDTO<TenentRefund> getTenantRefunds(UserPaymentFilterRequest filterRequest,
+	        FilterData filterData, Boolean applyPagination) throws WebServiceException {
+	    try {
+	        StringBuilder queryBuilder = new StringBuilder("SELECT "
+	                + "um.user_first_name || ' ' || um.user_last_name AS username, "
+	                + "um.user_mobile AS usermobile_number, "
+	                + "zppd.property_name AS PG_name, "
+	                + "zppd.property_house_area AS Pg_address, "
+	                + "urd.booking_id AS booking_ID, "
+	                + "ub.user_cancellation_reason AS refund_title, "
+	                + "urd.refund_amount AS refund_amount, "
+	                + "urd.refund_process_status AS Status, "
+	            	+ "urd.refund_created_timestamp "
+	                + "FROM pgcommon.user_refund_details urd "
+	                + "JOIN pgusers.user_master um ON urd.user_id = um.user_id "
+	                + "JOIN pgowners.zoy_pg_property_details zppd ON urd.property_id = zppd.property_id "
+	                + "LEFT JOIN pgusers.user_bookings ub ON urd.booking_id = ub.user_bookings_id "
+	                + "WHERE 1 = 1 ");
+
+	        Map<String, Object> parameters = new HashMap<>();
+	        
+	        if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND urd.refund_updated_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
+	        if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
+	            queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
+	            parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+	        }
+
+	        if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+	            queryBuilder.append(" AND um.user_mobile LIKE :tenantContactNum ");
+	            parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
+	        }
+
+	        if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+	            queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:pgName) ");
+	            parameters.put("pgName", "%" + filterData.getPgName() + "%");
+	        }
+
+	        if (filterData.getPgAddress() != null && !filterData.getPgAddress().isEmpty()) {
+	            queryBuilder.append(" AND LOWER(zppd.property_house_area) LIKE LOWER(:pgAddress) ");
+	            parameters.put("pgAddress", "%" + filterData.getPgAddress() + "%");
+	        }
+
+	        if (filterData.getBookinId() != null && !filterData.getBookinId().isEmpty()) {
+	            queryBuilder.append(" AND urd.booking_id LIKE :bookinId ");
+	            parameters.put("bookinId", "%" + filterData.getBookinId() + "%");
+	        }
+
+	        if (filterData.getRefundTitle() != null && !filterData.getRefundTitle().isEmpty()) {
+	            queryBuilder.append(" AND LOWER(ub.user_cancellation_reason) LIKE LOWER(:refundTitle) ");
+	            parameters.put("refundTitle", "%" + filterData.getRefundTitle() + "%");
+	        }
+
+	        if (filterData.getRefundAmount() != null && !filterData.getRefundAmount().isEmpty()) {
+	            try {
+	                queryBuilder.append(" AND urd.refund_amount = :refundAmount ");
+	                parameters.put("refundAmount", new BigDecimal(filterData.getRefundAmount()));
+	            } catch (NumberFormatException e) {
+	                throw new WebServiceException("Invalid refund amount: " + filterData.getRefundAmount());
+	            }
+	        }
+
+	        if (filterData.getTransactionStatus() != null && !filterData.getTransactionStatus().isEmpty()) {
+	            queryBuilder.append(" AND urd.refund_process_status = :paymentStatus ");
+	            parameters.put("paymentStatus", Boolean.parseBoolean(filterData.getTransactionStatus()));
+	        }
+
+	        if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+	                && filterRequest.getSortActive() != null) {
+	            String sort = "";
+	            switch (filterRequest.getSortActive()) {
+	                case "tenantName":
+	                    sort = "um.user_first_name || ' ' || um.user_last_name";
+	                    break;
+	                case "tenantContactNum":
+	                    sort = "um.user_mobile";
+	                    break;
+	                case "pgName":
+	                    sort = "zppd.property_name";
+	                    break;
+	                case "pgAddress":
+	                    sort = "zppd.property_house_area";
+	                    break;
+	                case "bookinId":
+	                    sort = "urd.booking_id";
+	                    break;
+	                case "refundTitle":
+	                    sort = "ub.user_cancellation_reason";
+	                    break;
+	                case "refundAmount":
+	                    sort = "urd.refund_amount";
+	                    break;
+	                default:
+	                    sort = "urd.refund_updated_timestamp";
+	            }
+	            String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+	            queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+	        } else {
+	            queryBuilder.append(" ORDER BY urd.refund_date DESC");
+	        }
+
+	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
+	        parameters.forEach(query::setParameter);
+
+	        int filterCount = query.getResultList().size();
+
+	        if (applyPagination) {
+	            query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+	            query.setMaxResults(filterRequest.getPageSize());
+	        }
+
+	        List<Object[]> results = query.getResultList();
+	        List<TenentRefund> tenentRefundDto = results.stream().map(row -> {
+	            TenentRefund dto = new TenentRefund();
+	            dto.setCustomerName(row[0] != null ? (String) row[0] : "");
+	            dto.setTenantMobileNum(row[1] != null ? (String) row[1] : "");
+	            dto.setPgPropertyName(row[2] != null ? (String) row[2] : "");
+	            dto.setUserPgPropertyAddress(row[3] != null ? (String) row[3] : "");
+	            dto.setBookingId(row[4] != null ? (String) row[4] : "");
+	            dto.setRefundTitle(row[5] != null ? (String) row[5] : "");
+	            dto.setRefundableAmount(rupeeSymbol+numberFormat.format((BigDecimal) row[6] != null ? (BigDecimal) row[6] : BigDecimal.ZERO));
+	            dto.setPaymentStatus("-");
+	            dto.setTransactionNumber("-");
+	            dto.setAmountPaid(new BigDecimal("0"));
+	            dto.setPaymentDate("-");
+	            return dto;
+	        }).collect(Collectors.toList());
+
+	        return new CommonResponseDTO<>(tenentRefundDto, filterCount);
+	    } catch (Exception e) {
+	        throw new WebServiceException("Error retrieving tenant refunds: " + e.getMessage());
+	    }
+	}
+	
+	@Override
+	public CommonResponseDTO<RatingsAndReviewsReport> getRatingsAndReviewsDetails(
+			UserPaymentFilterRequest filterRequest, FilterData filterData, Boolean applyPagination)
+			throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+					"   select rr.rating_id, rr.partner_id, rr.written_review, rr.overall_rating, rr.customer_id, rr.property_id,   \r\n"
+					+ "STRING_AGG(DISTINCT rating_master.review_type_id || ':' || rating_master.review_type || ':' || rrt.rating, ',') as ratingData,  \r\n"
+					+ "rr.timestamp, rr.booking_id, zpbd.bed_name, zppd.property_name, STRING_AGG(DISTINCT zpim.image_url, ',') as image_urls, \r\n"
+					+ "zppd.property_house_area ,um.user_first_name ||' '||um.user_last_name ,ud.user_profile_image,um.user_mobile,MAX(CASE WHEN rating_master.review_type = 'cleanliness' THEN rrt.rating ELSE NULL END) AS cleanliness,\r\n"
+					+ "    MAX(CASE WHEN rating_master.review_type = 'amenities' THEN rrt.rating ELSE NULL END) AS amenities_rating,\r\n"
+					+ "    MAX(CASE WHEN rating_master.review_type = 'price' THEN rrt.rating ELSE NULL END) AS value_for_money_rating,\r\n"
+					+ "    MAX(CASE WHEN rating_master.review_type = 'maintainance' THEN rrt.rating ELSE NULL END) AS maintainance,\r\n"
+					+ "    MAX(CASE WHEN rating_master.review_type = 'accomodation' THEN rrt.rating ELSE NULL END) AS accomodation  \r\n"
+					+ "from pgcommon.review_ratings rr   \r\n"
+					+ "left join pgcommon.review_ratings_types rrt on rr.rating_id = rrt.rating_id   \r\n"
+					+ "left join pgcommon.review_ratings_master rating_master on rrt.review_type_id = rating_master.review_type_id   \r\n"
+					+ "left join pgowners.zoy_pg_owner_booking_details zpobd on zpobd.booking_id = rr.booking_id   \r\n"
+					+ "left join pgowners.zoy_pg_bed_details zpbd on zpbd.bed_id = zpobd.selected_bed   \r\n"
+					+ "left join pgowners.zoy_pg_property_details zppd on zppd.property_id = rr.property_id   \r\n"
+					+ "left join pgowners.zoy_pg_properties_images zppi on zppi.property_id = zppd.property_id   \r\n"
+					+ "left join pgowners.zoy_pg_image_master zpim on zpim.image_id = zppi.image_id  \r\n"
+					+ "left join pgusers.user_master um on um.user_id =rr.customer_id  \r\n"
+					+ "left join pgusers.user_details ud on ud.user_id =um.user_id"
+					+ " WHERE 1 = 1");
+
+			Map<String, Object> parameters = new HashMap<>();
+
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND rr.timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
+
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+			    queryBuilder.append(" AND zppd.property_name IS NOT NULL AND LOWER(zppd.property_name) LIKE LOWER(:pgName)");
+			    parameters.put("pgName", "%" + filterData.getPgName() + "%");
+			}
+
+			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+			    queryBuilder.append(" AND um.user_mobile IS NOT NULL AND LOWER(um.user_mobile) LIKE LOWER(:tenantContactNum)");
+			    parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
+			}
+
+			if (filterData.getOverallRating() != null && !filterData.getOverallRating().isEmpty()) {
+			    queryBuilder.append(" AND rr.overall_rating IS NOT NULL AND CAST(rr.overall_rating AS text) LIKE :overallRating");
+			    parameters.put("overallRating", "%" +filterData.getOverallRating()+ "%");
+			}
+			
+			 if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+		                && filterRequest.getSortActive() != null) {
+		            String sort = "";
+		            switch (filterRequest.getSortActive()) {
+		                case "reviewDate":
+		                    sort = "rr.timestamp";
+		                    break;
+		                case "tenantName":
+		                    sort = "um.user_first_name || ' ' || um.user_last_name";
+		                    break;
+		                case "pgName":
+		                    sort = "zppd.property_name";
+		                    break;
+		                case "tenantContactNum":
+		                    sort = "um.user_mobile";
+		                    break;
+		                case "Cleanliness":
+		                    sort = "MAX(CASE WHEN rating_master.review_type = 'cleanliness' THEN rrt.rating ELSE NULL END)";
+		                    break;
+		                case "Accommodation":
+		                    sort = "";
+		                    break;
+		                case "Amenities":
+		                    sort = "MAX(CASE WHEN rating_master.review_type = 'amenities' THEN rrt.rating ELSE NULL END)";
+		                    break;
+		                case "Maintenance":
+		                    sort = "MAX(CASE WHEN rating_master.review_type = 'maintainance' THEN rrt.rating ELSE NULL END)";
+		                    break;
+		                case "valueForMoney":
+		                    sort = "MAX(CASE WHEN rating_master.review_type = 'price' THEN rrt.rating ELSE NULL END)";
+		                    break;    
+		                case "overallRating":
+		                    sort = "MAX(CASE WHEN rating_master.review_type = 'accomodation' THEN rrt.rating ELSE NULL END)";
+		                    break; 
+		                default:
+		                    sort = "rr.timestamp";
+		            }
+		            queryBuilder.append(" group by rr.rating_id,rr.partner_id,rr.written_review,rr.overall_rating,rr.customer_id,rr.property_id, "+ 
+		            					"rr.timestamp,zpbd.bed_name,zppd.property_id,um.user_id,ud.user_profile_image,um.user_mobile " );
+
+
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY zppd.property_name, rr.timestamp DESC");
+			}
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
+			int filterCount = query.getResultList().size();
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
+			List<Object[]> results = query.getResultList();
+
+			List<RatingsAndReviewsReport> ratingsAndReviewsDto = results.stream().map(row -> {
+			    RatingsAndReviewsReport model = new RatingsAndReviewsReport();
+				model.setReviewDate(row[7] != null ? Timestamp.valueOf(String.valueOf(row[7])) : null);
+				model.setWrittenReview(row[2] != null ? row[2].toString() : "");
+				model.setOverallRating(row[3] != null ? row[3].toString() : "");
+				model.setPropertyName(row[10] != null ? row[10].toString() : "");
+				model.setCustomerName(row[13] != null ? row[13].toString() : "");
+				model.setCustomerImage(row[14] != null ? row[14].toString() : "");
+				model.setCustomerMobileNo(row[15] != null ? row[15].toString() : "");
+				model.setCleanliness(row[16] != null ? row[16].toString() : "");
+				model.setAmenities(row[17] != null ? row[17].toString() : "");
+				model.setValueForMoney(row[18] != null ? row[18].toString() : "");
+				model.setMaintenance(row[19] != null ? row[19].toString() : "");
+				model.setAccommodation(row[20] != null ? row[20].toString() : "");
+		
+				String replies=row[0] != null ? row[0].toString() : "";
+
+				List<String[]> reviewReplies = zoyPgPropertyDetailsRepository.findAllReviewsReplies(replies);
+
+				model.setThreads(reviewReplies != null ? reviewReplies.stream()
+						.map(parts -> new RatingsAndReviewsReport.ReviewReplies(parts[0], parts[1], parts[2], parts[3],
+								parts[4], parts[5], parts[6], parts[7] != null ? Timestamp.valueOf(parts[7]) : null,
+								parts[8] != null ? Boolean.valueOf(parts[8]) : false,
+								parts[9] != null ? Boolean.valueOf(parts[9]) : false,
+								parts[10] != null ? parts[10] : "", parts[11] != null ? parts[11] : ""))
+						.collect(Collectors.toList()) : new ArrayList<>());
+
+				return model;
+			}).collect(Collectors.toList());
+
+			return new CommonResponseDTO<>(ratingsAndReviewsDto, filterCount);
+		} catch (Exception e) {
+			new ZoyAdminApplicationException(e, "");
+		}
+		return null;
+	}
+
+
 
 }

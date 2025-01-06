@@ -10,7 +10,9 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
+import com.integration.zoy.utils.RatingsAndReviewsReport;
 import com.integration.zoy.utils.TenentDues;
+import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentDTO;
 import com.integration.zoy.utils.VendorPayments;
 import com.integration.zoy.utils.VendorPaymentsDues;
@@ -68,6 +70,12 @@ public class CsvGenerateService {
             case "vendorPaymentsGstReport":
                 writer.println("Transaction Date,Transaction No,Property ID,Property Name,Total Amount,GST Amount,Basic Amount,Payment Method");
                 break;
+            case "tenantRefundReport":
+                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,Booking ID,Refund Title,Refundable Amount,Amount Paid,Payment Date,Transaction Number,Status");
+                break;    
+            case "reviewsAndRatingReport":
+                writer.println("Review Date,Tenant Name,PG Name,Tenant Contact,Cleanliness,Accommodation,Aminities,Maintenance,Value For Money,Overall Rating");
+                break;       
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }
@@ -185,6 +193,42 @@ public class CsvGenerateService {
                             safeToString(vendorGst.getPaymentMethod()));
                 }
                 break;
+            
+            case "tenantRefundReport":
+                if (dto instanceof TenentRefund) {
+                    TenentRefund tenentRefund = (TenentRefund) dto;
+                    writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(tenentRefund.getCustomerName()),
+                            safeToString(tenentRefund.getTenantMobileNum()),
+                            safeToString(tenentRefund.getPgPropertyName()),
+                            safeToString(tenentRefund.getUserPgPropertyAddress()),
+                            safeToString(tenentRefund.getBookingId()),
+                            safeToString(tenentRefund.getRefundTitle()),
+                            safeToString(tenentRefund.getRefundableAmount()),
+                            safeToString(tenentRefund.getAmountPaid()),
+                            safeToString(tenentRefund.getPaymentDate()),
+                            safeToString(tenentRefund.getTransactionNumber()),
+                            safeToString(tenentRefund.getPaymentStatus()));
+                }
+                break;
+
+            case "reviewsAndRatingReport":
+                if (dto instanceof RatingsAndReviewsReport) {
+                	RatingsAndReviewsReport ratingsAndReviews = (RatingsAndReviewsReport) dto;
+                   writer.printf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
+                            safeToString(ratingsAndReviews.getReviewDate()),
+                            safeToString(ratingsAndReviews.getCustomerName()),
+                            safeToString(ratingsAndReviews.getPropertyName()),
+                            safeToString(ratingsAndReviews.getCustomerMobileNo()),
+                            safeToString(ratingsAndReviews.getCleanliness()),
+                            safeToString(ratingsAndReviews.getAccommodation()),
+                            safeToString(ratingsAndReviews.getAmenities()),
+                            safeToString(ratingsAndReviews.getMaintenance()),
+                    		safeToString(ratingsAndReviews.getValueForMoney()),
+                            safeToString(ratingsAndReviews.getOverallRating()));
+                }
+                break;    
+                
 
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
