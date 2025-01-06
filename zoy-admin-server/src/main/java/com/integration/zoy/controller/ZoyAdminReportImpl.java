@@ -121,4 +121,29 @@ public interface ZoyAdminReportImpl {
 	@GetMapping(value = "/zoy_admin/city_list",
 	produces = { "application/json" })
 	ResponseEntity<String[]> zoyCityList();
+	
+	@Operation(summary = "Get User refund Details", description = "Getting  User refund Transfer Details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/user_refund_details",
+	produces = { "application/json" })
+	ResponseEntity<String> getUserRefundDetailsByDateRange(@RequestBody UserPaymentFilterRequest filterRequest);
+	
+	@Operation(summary = "Get Users reviews and ratings Details", description = "Getting  User reviews and ratings Details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/user_reviews_ratings_details",
+	produces = { "application/json" })
+	ResponseEntity<String> getUserReviewsAndRatingsDetailsByDateRange(@RequestBody UserPaymentFilterRequest filterRequest);
+	
+	
+	
 }

@@ -26,8 +26,10 @@ import com.integration.zoy.model.FilterData;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
+import com.integration.zoy.utils.RatingsAndReviewsReport;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.TenentDues;
+import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentDTO;
 import com.integration.zoy.utils.UserPaymentFilterRequest;
 import com.integration.zoy.utils.VendorPayments;
@@ -228,5 +230,35 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		}
 	}
 
+	@Override
+	public ResponseEntity<String> getUserRefundDetailsByDateRange(@RequestBody UserPaymentFilterRequest filterRequest) {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+	        boolean applyPagination = true;
+	        CommonResponseDTO<TenentRefund> refundDetails = adminReportImpl.getTenantRefunds(filterRequest, filterData, applyPagination);
+	        return new ResponseEntity<>(gson.toJson(refundDetails), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error in API /zoy_admin/user_refund_details.getUserRefundDetailsByDateRange", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+	@Override
+	public ResponseEntity<String> getUserReviewsAndRatingsDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+	        boolean applyPagination = true;
+	        CommonResponseDTO<RatingsAndReviewsReport> refundDetails = adminReportImpl.getRatingsAndReviewsDetails(filterRequest, filterData, applyPagination);
+	        return new ResponseEntity<>(gson.toJson(refundDetails), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error in API:/zoy_admin/user_reviews_ratings_details.getUserReviewsAndRatingsDetailsByDateRange", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
 
 }

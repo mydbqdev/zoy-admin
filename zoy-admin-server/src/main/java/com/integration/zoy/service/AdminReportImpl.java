@@ -4,7 +4,9 @@ import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
+import com.integration.zoy.utils.RatingsAndReviewsReport;
 import com.integration.zoy.utils.TenentDues;
+import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentDTO;
 import com.integration.zoy.utils.UserPaymentFilterRequest;
 import com.integration.zoy.utils.VendorPayments;
@@ -16,8 +18,10 @@ public interface AdminReportImpl {
 	CommonResponseDTO<ConsilidatedFinanceDetails> getConsolidatedFinanceDetails( UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<TenentDues> getTenentDuesDetails( UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<VendorPayments> getVendorPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException;
+	CommonResponseDTO<TenentRefund> getTenantRefunds(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination)throws WebServiceException;
 	CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails( String fromDate, String toDate) throws WebServiceException;
 	CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails( String fromDate, String toDate) throws WebServiceException;
+	CommonResponseDTO<RatingsAndReviewsReport> getRatingsAndReviewsDetails(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	byte[] generateDynamicReport(UserPaymentFilterRequest filterRequest, FilterData filterData,Boolean applyPagination)  throws WebServiceException;
 	String[] getDistinctCities() throws WebServiceException;
 	

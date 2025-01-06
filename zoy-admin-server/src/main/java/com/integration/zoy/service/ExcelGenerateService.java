@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
+import com.integration.zoy.utils.RatingsAndReviewsReport;
 import com.integration.zoy.utils.TenentDues;
+import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentDTO;
 import com.integration.zoy.utils.VendorPayments;
 import com.integration.zoy.utils.VendorPaymentsDues;
@@ -127,6 +129,31 @@ public class ExcelGenerateService {
 			row.createCell(6).setCellValue("Basic Amount");
 			row.createCell(7).setCellValue("Payment Method");
 			break;
+		case "tenantRefundReport":
+			row.createCell(0).setCellValue("Tenant Name");
+			row.createCell(1).setCellValue("Tenant Mobile Number");
+			row.createCell(2).setCellValue("PG Name");
+			row.createCell(3).setCellValue("PG Address");
+			row.createCell(4).setCellValue("Booking ID");
+			row.createCell(5).setCellValue("Refund Title");
+			row.createCell(6).setCellValue("Refundable Amount");
+			row.createCell(7).setCellValue("Amount Paid");
+			row.createCell(8).setCellValue("Payment Date");
+			row.createCell(9).setCellValue("Transaction Number");
+			row.createCell(10).setCellValue("Status");
+			break;	
+		case "reviewsAndRatingReport":
+			row.createCell(0).setCellValue("Review Date");
+			row.createCell(1).setCellValue("Tenant Name");
+			row.createCell(2).setCellValue("PG Name");
+			row.createCell(3).setCellValue("Tenant Contact");
+			row.createCell(4).setCellValue("Cleanliness");
+			row.createCell(5).setCellValue("Accommodation");
+			row.createCell(6).setCellValue("Aminities");
+			row.createCell(7).setCellValue("Maintenance");
+			row.createCell(8).setCellValue("Value For Money");
+			row.createCell(9).setCellValue("Overall Rating");
+			break;	
 		default:
 			throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 		}
@@ -237,6 +264,38 @@ public class ExcelGenerateService {
 				row.createCell(7).setCellValue(nullSafe(vendorGst.getPaymentMethod()));
 			}
 			break;
+			
+		case "tenantRefundReport":
+			if (dto instanceof TenentRefund) {
+				TenentRefund tenentRefund = (TenentRefund) dto;
+				row.createCell(0).setCellValue(nullSafe(tenentRefund.getCustomerName()));
+				row.createCell(1).setCellValue(nullSafe(tenentRefund.getTenantMobileNum()));
+				row.createCell(2).setCellValue(nullSafe(tenentRefund.getPgPropertyName()));
+				row.createCell(3).setCellValue(nullSafe(tenentRefund.getUserPgPropertyAddress()));
+				row.createCell(4).setCellValue(nullSafe(tenentRefund.getBookingId()));
+				row.createCell(5).setCellValue(nullSafe(tenentRefund.getRefundTitle()));
+				row.createCell(6).setCellValue(nullSafe(tenentRefund.getRefundableAmount()));
+				row.createCell(7).setCellValue(nullSafe(tenentRefund.getPaymentDate()));
+				row.createCell(8).setCellValue(nullSafe(tenentRefund.getTransactionNumber()));
+				row.createCell(9).setCellValue(nullSafe(tenentRefund.getPaymentStatus()));
+			}
+			break;	
+			
+		case "reviewsAndRatingReport":
+			if (dto instanceof RatingsAndReviewsReport) {
+				RatingsAndReviewsReport ratingsAndReviews = (RatingsAndReviewsReport) dto;
+				row.createCell(0).setCellValue(nullSafe(ratingsAndReviews.getReviewDate()));
+				row.createCell(1).setCellValue(nullSafe(ratingsAndReviews.getCustomerName()));
+				row.createCell(2).setCellValue(nullSafe(ratingsAndReviews.getPropertyName()));
+				row.createCell(3).setCellValue(nullSafe(ratingsAndReviews.getCustomerMobileNo()));
+				row.createCell(4).setCellValue(nullSafe(ratingsAndReviews.getCleanliness()));
+				row.createCell(5).setCellValue(nullSafe(ratingsAndReviews.getAccommodation()));
+				row.createCell(6).setCellValue(nullSafe(ratingsAndReviews.getAmenities()));
+				row.createCell(7).setCellValue(nullSafe(ratingsAndReviews.getMaintenance()));
+				row.createCell(8).setCellValue(nullSafe(ratingsAndReviews.getValueForMoney()));
+				row.createCell(9).setCellValue(nullSafe(ratingsAndReviews.getOverallRating()));
+			}
+			break;		
 
 		default:
 			//throw new IllegalArgumentException("Invalid report type provided: " + reportType);
