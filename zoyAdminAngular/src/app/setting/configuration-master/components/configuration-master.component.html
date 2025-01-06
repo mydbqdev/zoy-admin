@@ -46,8 +46,8 @@
                           <!--Total Advance section-->
                           <div class="row p-3 align-items-center marginRow">
                             <div class="col-sm-3">
-                              <div><span style="font-size: 16px;">Toten Advance (%)</span></div>
-                              <div><p class="small" style="font-size: 12px;color: gray">Specify the percentage of the total amount to be collected as a token advance during booking.</p></div>
+                              <div><span style="font-size: 16px;">Token Advance (%)</span></div>
+                              <div><p class="small text-muted " style="font-size: 12px;"><em>Specify the percentage of the total amount to be collected as a token advance during booking.</em></p></div>
                             </div>
                             
                             <div class="col-sm-9">
@@ -62,8 +62,8 @@
                                        [ngClass]="{'is-invalid': !tokenAdvancDisabled && (configMasterModel.tokenDetails.fixedToken == 0 || !configMasterModel.tokenDetails.fixedToken) }" 
                                       style="max-width: 70px !important;" />
                                   </div>
-                                  <p class="small" style="font-size: 12px; color: gray;">
-                                    Fixed amount of the token advance required during booking.
+                                  <p class="small text-muted " style="font-size: 12px;">
+                                    <em>Fixed amount of the token advance required during booking.</em>
                                   </p>
                                 </div>
                                 <div class="col-sm-4">
@@ -76,7 +76,7 @@
                                           style="max-width: 70px !important;" [disabled]="tokenAdvancDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
-                                  <p class="small" style="font-size: 12px;color: gray">Percentage of the token advance required during booking.</p>
+                                  <p class="small text-muted " style="font-size: 12px;"><em>Percentage of the token advance required during booking.</em></p>
                       
                                 </div>
                                 <div class="col-sm-3">
@@ -105,8 +105,8 @@
                             <div class="col-sm-3">
                               <div><span style="font-size: 16px;">Security Deposit Limits</span></div>
                               <div>
-                                <p class="small" style="font-size: 12px; color: gray;">
-                                  Configure the minimum and maximum security deposit limits that owners are allowed to collect from tenants.
+                                <p class="small text-muted " style="font-size: 12px;">
+                                <em>Configure the minimum and maximum security deposit limits that owners are allowed to collect from tenants.</em>
                                 </p>
                               </div>
                             </div>
@@ -124,8 +124,8 @@
                                        [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.minimumDeposit == 0 || !configMasterModel.depositDetails.minimumDeposit) }" 
                                       style="max-width: 140px !important;" />
                                   </div>
-                                  <p class="small" style="font-size: 12px; color: gray;">
-                                    Set the minimum allowed deposit amount.
+                                  <p class="small text-muted" style="font-size: 12px;">
+                                  <em>Set the minimum allowed deposit amount.</em>
                                   </p>
                                 </div>
                                 <!-- Maximum Security Deposit -->
@@ -140,8 +140,8 @@
                                        [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.maximumDeposit == 0 || !configMasterModel.depositDetails.maximumDeposit) }" 
                                       style="max-width: 140px !important;"/>
                                   </div>
-                                  <p class="small" style="font-size: 12px; color: gray;">
-                                    Set the maximum allowed deposit amount.
+                                  <p class="small text-muted" style="font-size: 12px;">
+                                  <em>Set the maximum allowed deposit amount.</em>
                                   </p>
                                 </div>
                                 <!-- Action Button -->
@@ -178,7 +178,7 @@
                           <div class="row p-3 marginRow">
                             <div class="col-sm-3">
                               <span style="font-size: 16px;">Cancellation And Refund Policy</span>
-                              <p class="small" style="font-size: 12px;color: gray">Define the deduction percentage and time frame for cancellation before check in..</p>
+                              <p class="small text-muted" style="font-size: 12px;"><em>Define the deduction percentage and time frame for cancellation before check in.</em></p>
                             </div>
                             <div class="col-sm-9">
                               <div style="background-color: #c1a1f3; padding: 5px;">
@@ -200,7 +200,7 @@
                                           </div>
                                         </div>
                                             <div class="mr-3" style="width: 155px;">
-                                              <div>Days before check in</div>
+                                              <div>Before check in</div>
                                               <div class="input-group input-group-sm">
                                                 <input 
                                                 type="text" 
@@ -211,7 +211,7 @@
                                                 />
                                                 <span class="input-group-text">Days</span>
                                               </div>
-                                              <p class="small" style="font-size: 12px;color: gray">Enter maximum days before check in.</p>
+                                              <p class="small text-muted" style="font-size: 12px;"><em>Enter maximum days before check in.</em></p>
                                             </div>
                                             <div class="mr-3" style="width: 190px;">
                                               <div>Deduction Type</div>
@@ -222,18 +222,18 @@
                                               </div>
                                             </div>
                                             <div style="width: 160px;">
-                                                <div>Deduction (%)</div>
+                                                <div>Deduction</div>
                                                 <div class="input-group input-group-sm">
                                                   <input 
                                                   type="text" 
                                                   class="form-control form-control-sm"
                                                   [(ngModel)]="beforeCheckInCRfModel.deductionPercentages" (keypress)="percentageOnlyWithZero($event)" maxlength="5"
                                                   [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && ( beforeCheckInCRfModel.deductionPercentages == undefined || beforeCheckInCRfModel.deductionPercentages.toString() =='' ) }" 
-                                                  style="max-width: 120px !important;"
+                                                  style="max-width: 100px !important;"
                                                   />
                                                   <span class="input-group-text">%</span>
                                                  </div>
-                                                <p class="small" style="font-size: 12px;color: gray">Percentage of booking amount to deduct.</p>
+                                                <p class="small text-muted" style="font-size: 12px;"><em>Percentage of booking amount to deduct.</em></p>
                                             </div>
                                             <div class="ml-1">
                                               <div style="height: 23px;"></div>
@@ -475,7 +475,7 @@
                           <div class="row p-3 align-items-center marginRow">
                             <div class="col-sm-3">
                               <div><span style="font-size: 16px;">Early Check-out Rules</span></div>
-                              <div><p class="small" style="font-size: 12px;color: gray">The Maximim Number of days allowing tenants to get refund of rent amount in prorate basis if not happy with the current PG</p></div>
+                              <div><p class="small text-muted" style="font-size: 12px;"><em>The Maximim Number of days allowing tenants to get refund of rent amount in prorate basis if not happy with the current PG.</em></p></div>
                             </div>
                             
                             <div class="col-sm-9">
@@ -502,8 +502,8 @@
                                       style="max-width: 70px !important;" />
                                       <span class="input-group-text">Days</span>
                                   </div>
-                                  <p class="small" style="font-size: 12px; color: gray;">
-                                    Enter maximum days for refund
+                                  <p class="small text-muted" style="font-size: 12px;">
+                                  <em>Enter maximum days for refund.</em>
                                   </p>
                                 </div>
                                 <div class="col-sm-3">
@@ -538,7 +538,7 @@
                                           style="max-width: 70px !important;" [disabled]="securityDepositRefundDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
-                                  <p class="small" style="font-size: 12px;color: gray">Enter deduction percentage from security deposit</p>
+                                  <p class="small text-muted" style="font-size: 12px;"><em>Enter deduction percentage from security deposit.</em></p>
                       
                                 </div>
                                 <div class="col-sm-1 mt-4" style="margin-left:-14px ;">
@@ -568,16 +568,27 @@
                                 <div class="col-sm-3">
                                   <div><span style="font-size: 16px;">Auto-Cancellation Period </span></div>
                                   <div>
-                                    <p class="small" style="font-size: 12px; color: gray;">
-                                      Configure the number of days after the check-in date to automatically cancel bookings if tenants fail to check-in.
+                                    <p class="small text-muted" style="font-size: 12px;">
+                                    <em>Configure the number of days after the check-in date to automatically cancel bookings if tenants fail to check-in.</em>
                                     </p>
                                   </div>
                                 </div>
                                 <div class="col-sm-9">
                                   <div class="row">
                                     <!-- Auto-Cancellation after Check-in Dates -->
-                                    <div class="col-sm-5">
-                                      <div>Auto-Cancellation after Check-in Dates</div>
+                                    <div class="col-sm-2">
+                                      <div>Condition</div>
+                                      <div class="input-group input-group-sm" *ngIf="securityDepositLimitsDisabled">
+                                        <input type="text" class="form-control form-control-sm" value="==" [disabled]="securityDepositRefundDisabled" /> 
+                                      </div> 
+                                      <div class="input-group input-group-sm" *ngIf="!securityDepositLimitsDisabled">
+                                        <select class="form-select form-select-sm">
+                                          <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
+                                        </select>
+                                      </div>
+                                     </div>
+                                    <div class="col-sm-3">
+                                      <div>Auto-Cancellation Dates</div>
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="text" 
@@ -587,25 +598,35 @@
                                           style="max-width: 140px !important;" />
                                           <span class="input-group-text">Days</span>
                                       </div>
-                                      <p class="small" style="font-size: 12px; color: gray;">
-                                        Set the days to cancel if not checked in.
+                                      <p class="small text-muted" style="font-size: 12px;">
+                                      <em>Set the days to cancel if not checked in.</em>
                                       </p>
                                     </div>
+                                    <div class="col-sm-3">
+                                      <div>Deduction Type</div>
+                                      <div class="input-group input-group-sm" *ngIf="securityDepositLimitsDisabled">
+                                        <input type="text" class="form-control form-control-sm" value="PaidAmount & Rent" [disabled]="securityDepositRefundDisabled" /> 
+                                      </div>
+                                      <div class="input-group input-group-sm" *ngIf="!securityDepositLimitsDisabled">
+                                        <select class="form-select form-select-sm">
+                                        <option *ngFor="let trigger of triggerOn" [value]="trigger">{{trigger}}</option>
+                                        </select>
+                                      </div>
+                                    </div>
                                     <!-- Deduction Percentage -->
-                                    <div class="col-sm-5">
-                                      <div>Deduction Percentage</div>
+                                    <div class="col-sm-2">
+                                      <div>Deduction</div>
                                       <div class="input-group input-group-sm">
-                                    
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm"
                                           [(ngModel)]="configMasterModel.depositDetails.maximumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="8"
                                            [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.maximumDeposit == 0 || !configMasterModel.depositDetails.maximumDeposit) }" 
-                                          style="max-width: 140px !important;"/>
+                                          style="max-width: 70px !important;"/>
                                           <span class="input-group-text">%</span>
                                       </div>
-                                      <p class="small" style="font-size: 12px; color: gray;">
-                                        Percentage of paid amount to deduct.
+                                      <p class="small text-muted" style="font-size: 12px;">
+                                      <em>Percentage of paid amount to deduct.</em>
                                       </p>
                                     </div>
                                     <!-- Action Button -->
@@ -643,16 +664,27 @@
                                 <div class="col-sm-3">
                                   <div><span style="font-size: 16px;">Security Deposite Deadline</span></div>
                                   <div>
-                                    <p class="small" style="font-size: 12px; color: gray;">
-                                      Configure the number of days to collect security deposite amount before check-in date to avoid auto cancellation.
+                                    <p class="small text-muted" style="font-size: 12px;">
+                                    <em>Configure the number of days to collect security deposite amount before check-in date to avoid auto cancellation.</em>
                                     </p>
                                   </div>
                                 </div>
                                 <div class="col-sm-9">
                                   <div class="row">
                                     <!-- Auto-Cancellation after Check-in Dates -->
-                                    <div class="col-sm-5">
-                                      <div>Auto-Cancellation after Check-in Dates</div>
+                                    <div class="col-sm-2">
+                                      <div>Condition</div>
+                                      <div class="input-group input-group-sm" *ngIf="securityDepositLimitsDisabled">
+                                        <input type="text" class="form-control form-control-sm" value="==" [disabled]="securityDepositRefundDisabled" /> 
+                                      </div> 
+                                      <div class="input-group input-group-sm" *ngIf="!securityDepositLimitsDisabled">
+                                        <select class="form-select form-select-sm">
+                                          <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
+                                        </select>
+                                      </div>
+                                     </div>
+                                    <div class="col-sm-3">
+                                      <div>Auto-Cancellation Dates</div>
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="text" 
@@ -662,26 +694,38 @@
                                           style="max-width: 140px !important;" />
                                           <span class="input-group-text">Days</span>
                                       </div>
-                                      <p class="small" style="font-size: 12px; color: gray;">
-                                        Set the days to collect deposite before auto cancellation.
+                                      <p class="small text-muted" style="font-size: 12px;">
+                                      <em>Set the days to collect deposite before auto cancellation.</em>
                                       </p>
                                     </div>
-                                    <!-- Deduction Percentage -->
-                                    <div class="col-sm-5">
-                                      <div>Deduction Percentage</div>
+                                    <div class="col-sm-3">
+                                      <div>Deduction Type</div>
+                                      <div class="input-group input-group-sm" *ngIf="securityDepositLimitsDisabled">
+                                        <input type="text" class="form-control form-control-sm" value="PaidAmount & Rent" [disabled]="securityDepositRefundDisabled" /> 
+                                      </div>
+                                      <div class="input-group input-group-sm" *ngIf="!securityDepositLimitsDisabled">
+                                        <select class="form-select form-select-sm">
+                                        <option *ngFor="let trigger of triggerOn" [value]="trigger">{{trigger}}</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                     <!-- Deduction Percentage -->
+                                     <div class="col-sm-2">
+                                      <div>Deduction</div>
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm"
                                           [(ngModel)]="configMasterModel.depositDetails.maximumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="8"
                                            [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.maximumDeposit == 0 || !configMasterModel.depositDetails.maximumDeposit) }" 
-                                          style="max-width: 140px !important;"/>
+                                          style="max-width: 70px !important;"/>
                                           <span class="input-group-text">%</span>
                                       </div>
-                                      <p class="small" style="font-size: 12px; color: gray;">
-                                        Percentage of paid amount to deduct.
+                                      <p class="small text-muted" style="font-size: 12px;">
+                                      <em>Percentage of paid amount to deduct.</em>
                                       </p>
                                     </div>
+                                   
                                     <!-- Action Button -->
                                     <div class="col-sm-1 mt-4">
                                       <div class="btn-group">
@@ -715,12 +759,12 @@
                               <div class="row p-3 align-items-center marginRow">
                                   <div class="col-sm-3">
                                     <span style="font-size: 16px;">Other Charges</span>
-                                    <p class="small" style="font-size: 12px;color: gray">Configure documentation charges for Owners and Tenants.</p>
+                                    <p class="small text-muted" style="font-size: 12px;"><em>Configure documentation charges for Owners and Tenants.</em></p>
                                   </div>
                                   <div class="col-sm-9">
                                     <div class="row">
                                       <!-- GST Section -->
-                                      <div class="col-sm-6">
+                                      <div class="col-sm-5">
                                         <div>Documentation Charges for Owners</div>
                                         <div class="input-group input-group-sm">
                                           <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
@@ -746,12 +790,12 @@
                                             </div>
                                           </div>
                                         </div>
-                                        <p class="small mt-1" style="font-size: 12px; color: gray;">
-                                          Enter the one time amount to be charged to Owners for documentation purpose.
+                                        <p class="small text-muted mt-1" style="font-size: 12px;">
+                                        <em>Enter the one time amount to be charged to Owners for documentation purpose.</em>
                                         </p>
                                       </div>
                                       <!-- Documentation Charges Section -->
-                                      <div class="col-sm-6">
+                                      <div class="col-sm-5">
                                         <div>Documentation Charges for Tenants</div>
                                         <div class="input-group input-group-sm">
                                           <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
@@ -778,8 +822,8 @@
                                             </div>
                                           </div>
                                         </div>
-                                        <p class="small mt-1" style="font-size: 12px; color: gray;">
-                                          Enter the one time amount to be charged to Tenants for documentation purpose.
+                                        <p class="small text-muted mt-1" style="font-size: 12px;">
+                                        <em>Enter the one time amount to be charged to Tenants for documentation purpose.</em>
                                         </p>
                                       </div>
                                     </div>
@@ -808,7 +852,7 @@
                                   <span class="input-group-text">Days</span>
                                 </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                   <div *ngIf="dataGroupingDisabled">
                                     <button class="btn btn-sm btn-outline-secondary" (click)="dataGroupingDisabled = false">
                                       <i class="fas fa-edit"></i>
@@ -825,329 +869,11 @@
                               </div>
                                 </div>
                              <div>
-                              <p class="small" style="font-size: 12px;color: gray">Specify the number of days that is to be considered for showing trending PG's to Tenents .</p>
+                              <p class="small text-muted" style="font-size: 12px;"><em>Specify the number of days that is to be considered for showing trending PG's to Tenants.</em></p>
                             </div>
                             </div>
-                            
                           </div>
                         </div>
-                        <!-- <hr class="solid"> -->
-                        <!--Promotions and Codes-->
-                        <!--div>
-                          <div class="row p-3 marginRow">
-                            <div class="col-sm-3">
-                              <span style="font-size: 16px;">Promotions and Codes</span>
-                              <p class="small" style="font-size: 12px;color: gray">Cashbacks for long-term booking.</p>
-                            </div>
-                            <div class="col-sm-9">
-                              <div style="background-color: #c1a1f3;padding: 5px;margin-top:-20px;" class="mb-2">
-                                  <i class="far mr-2 ml-2" [ngClass]="collaspeListPromoCode[0].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collaspeExpandPromoCode0" aria-expanded="false" aria-controls="collaspeExpandPromoCode0" (click)="collaspeExpandPromoCode(collaspeListPromoCode[0],'right1')"></i>  Discounts
-                                  <span style="float: right; cursor: pointer;">
-                                    <i class="fa fa-plus" style="margin-right: 4px;"></i>Add
-                                  </span>
-                                </div>
-                                <div class="collapse" [ngClass]="collaspeListPromoCode[0].selected ? 'show':''" id="collaspeExpandPromoCode0">
-                                  <div class="card card-body m-2 p-2">
-                                    <div class="scrollable-container pl-3 pr-3">
-                                      <div class="col-sm-12">
-                                        <div class="row">
-                                         <div class="col-sm-4">
-                                           <div>Discount</div>
-                                           <div class="input-group">
-                                             <span class="form-control form-control-sm">2</span>
-                                             <span class="form-control form-control-sm">%</span>
-                                           </div>
-                                           <p class="small" style="font-size: 12px;color: gray">Set discount percentage for payments.</p>
-                                           </div>
-                                           <div class="col-sm-6">
-                                             <div style="text-align: center;">Validity Period</div>
-                                             <div class="row">
-                                              <div class="col-sm-5">
-                                                <div class="input-group">
-                                                  <input type="date" class="form-control form-control-sm" placeholder="from Date" id="fromDate" />
-                                                </div>
-                                              </div>
-                                              <div class="col-auto">
-                                                <span>-</span>
-                                              </div>
-                                              <div class="col-sm-5">
-                                                <div class="input-group">
-                                                  <input type="date" class="form-control form-control-sm" placeholder="to Date" id="toDate" />
-                                                </div>
-                                              </div>
-                                              <p class="small" style="font-size: 12px;color: gray">Set the discount offer validity.</p>
-                                            </div>
-                                           </div>
-                                           <div class="col-sm-2">
-                                             <div>Actions</div>
-                                             <div class="input-group">
-                                               <button type="submit" class="btn-sm btn-primary">Save</button>
-                                             </div>
-                                             <p></p>
-                                           </div>
-                                        </div>
-                                       </div>
-                                       <hr class="solid">
-                                        <div class="col-sm-12">
-                                          <div class="row">
-                                           <div class="col-sm-4">
-                                             <div class="input-group">
-                                               <span class="form-control form-control-sm">20</span>
-                                               <span class="form-control form-control-sm">%</span>
-                                             </div>
-                                            
-                                             </div>
-                                             <div class="col-sm-6">
-                                              <div class="row align-items-center">
-                                               <div class="col-sm-5">
-                                                 <div class="input-group">
-                                                   <input type="text" class="form-control form-control-sm" placeholder="from Date" value="04/12/2024" id="fromDate" />
-                                                 </div>
-                                               </div>
-                                               <div class="col-auto">
-                                                 <span>-</span>
-                                               </div>
-                                               <div class="col-sm-5">
-                                                 <div class="input-group">
-                                                   <input type="text" class="form-control form-control-sm" placeholder="to Date"  value="04/12/2024" id="toDate" />
-                                                 </div>
-                                               </div>
-                                             </div>
-                                            </div>
-                                             <div class="col-sm-2">
-                                               <div class="input-group">
-                                                <div class="btn-group">
-                                                  <button class="btn btn-sm btn-outline-secondary">
-                                                    <i class="fas fa-edit"></i>
-                                                  </button>
-                                                  <button class="btn btn-sm btn-outline-secondary">
-                                                    <i class="fa fa-trash" style="color: red;"></i>
-                                                  </button>
-                                                </div>
-                                               </div>
-                                               <p></p>
-                                             </div>
-                                          </div>
-                                        </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" >
-                                  <i class="far mr-2 ml-2" [ngClass]="collaspeListPromoCode[1].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collaspeExpandPromoCode1" aria-expanded="false" aria-controls="collaspeExpandPromoCode1" (click)="collaspeExpandPromoCode(collaspeListPromoCode[1],'right2')"></i> Cashback offers 
-                                </div>
-                                <div class="collapse" [ngClass]="collaspeListPromoCode[1].selected ? 'show':''" id="collaspeExpandPromoCode1">
-                                  <div class="card card-body m-2 p-2 ">
-                                    <div class="scrollable-container pl-3 pr-3">
-                                      <div class="col-sm-12">
-                                        <div class="row">
-                                         <div class="col-sm-4">
-                                           <div>Rent Discount</div>
-                                           <div class="input-group">
-                                             <span class="form-control form-control-sm">20</span>
-                                             <span class="form-control form-control-sm">Days</span>
-                                           </div>
-                                           <p class="small" style="font-size: 12px;color: gray">Enter the rent discount in days.</p>
-                                           </div>
-                                           <div class="col-sm-4">
-                                             <div>Duration in Months</div>
-                                             <div class="input-group">
-                                               <span class="form-control form-control-sm">20</span>
-                                               <span class="form-control form-control-sm">Days</span>
-                                             </div>
-                                             <p class="small" style="font-size: 12px;color: gray">Specify the duration in months.</p>
-                                           </div>
-                                           <div class="col-sm-4">
-                                             <div>Actions</div>
-                                             <div class="input-group">
-                                               <button type="submit" class="btn-sm btn-primary">Save</button>
-                                             </div>
-                                             <p></p>
-                                           </div>
-                                        </div>
-                                       </div>
-                                       <hr class="solid">
-                                       <div class="col-sm-12">
-                                         <div class="row">
-                                          <div class="col-sm-4">
-                                            <div class="input-group">
-                                              <span class="form-control form-control-sm">20</span>
-                                              <span class="form-control form-control-sm">Days</span>
-                                            </div>
-                                            </div>
-                                            <div class="col-sm-4">                                              
-                                              <div class="input-group">
-                                                <span class="form-control form-control-sm">20</span>
-                                                <span class="form-control form-control-sm">Days</span>
-                                              </div>
-                                            </div>
-                                            <div class="col-sm-4">
-                                              <div class="input-group">
-                                                 <div class="btn-group">
-                                                   <button class="btn btn-sm btn-outline-secondary">
-                                                     <i class="fas fa-check"></i>
-                                                   </button>
-                                                   <button class="btn btn-sm btn-outline-secondary">
-                                                     <i class="fas fa-redo" style="color: red;"></i>
-                                                   </button>
-                                                 </div>
-                                                </div>
-                                              </div>
-                                          </div>
-                                        </div>
-                                     </div>
-                                  </div>
-                                </div>
-                                <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" >
-                                  <i class="far mr-2 ml-2" [ngClass]="collaspeListPromoCode[2].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collaspeExpandPromoCode2" aria-expanded="false" aria-controls="collaspeExpandPromoCode2" (click)="collaspeExpandPromoCode(collaspeListPromoCode[2],'right3')"></i> Promocodes 
-                                  <span style="float: right; cursor: pointer;">
-                                    <i class="fa fa-plus" style="margin-right: 4px;"></i>Add
-                                  </span>
-                                </div>
-                                <div class="collapse" [ngClass]="collaspeListPromoCode[2].selected ? 'show':''" id="collaspeExpandPromoCode2">
-                                  <div class="card card-body m-1 p-1 ">
-                                    <div class="scrollable-container pl-2 pr-2">
-                                     <div class="col-sm-12 mt-2">
-                                      <div class="row">
-                                        <div class="col-sm-7">
-                                            <div class="col-sm-12">
-                                              <div class="row">
-                                                <div class="col-sm-3">
-                                              <div>Promocode ID</div>
-                                              <div class="input-group">
-                                                <span class="form-control form-control-sm">2</span>
-                                                <span class="form-control form-control-sm">%</span>
-                                              </div>
-                                              <p class="small" style="font-size: 12px;color: gray">Enter the unique Promo ID for the offer.</p>
-                                              </div>
-                                              <div class="col-sm-5" style="margin-left:-13px">
-                                                <div>Discount Ammount</div>
-                                                <div class="input-group">
-                                                  <span class="form-control form-control-sm"><i class="fa fa-rupee"></i></span>
-                                                  <span class="form-control form-control-sm">10</span>
-                                                </div>
-                                                <p class="small" style="font-size: 12px;color: gray">Enetr the discount amount in currency.</p>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                  <div>Discount (%)</div>
-                                                  <div class="input-group">
-                                                    <span class="form-control form-control-sm"></span>
-                                                    <span class="form-control form-control-sm">%</span>
-                                                  </div>
-                                                  <p class="small" style="font-size: 12px;color: gray">Enetr the discount percentage.</p>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                        </div>
-                                        <div class="col-sm-5">
-                                          <div class="row">
-                                            <div class="col-sm-12">
-                                              <div class="row">
-                                               <div class="col-sm-9">
-                                                <div style="text-align: center;">Validity Period</div>
-                                                <div class="row">
-                                                  <div class="col-sm-5">
-                                                    <div class="input-group">
-                                                      <input type="date" class="form-control form-control-sm" placeholder="from Date" id="fromDate" />
-                                                    </div>
-                                                  </div>
-                                                <div class="col-auto">
-                                              <span>-</span>
-                                            </div>
-                                            <div class="col-sm-5" >
-                                              <div class="input-group">
-                                                <input type="date" class="form-control form-control-sm" placeholder="to Date" id="toDate" />
-                                              </div>
-                                            </div>
-                                            <p class="small" style="font-size: 12px;color: gray">Set the discount offer validity.</p>
-                                            </div>
-                                               </div>
-                                             <div class="col-sm-3">
-                                              <div>Actions</div>
-                                              <div class="input-group">
-                                                <button type="submit" class="btn-sm btn-primary">Save</button>
-                                              </div>
-                                             <p></p>
-                                           </div>
-                                          </div>
-                                         </div>
-                                         </div>
-                                         </div>
-                                      </div>
-                                     </div>
-                                     <hr class="solid">
-                                     <div class="col-sm-12">
-                                      <div class="row">
-                                        <div class="col-sm-7">
-                                            <div class="col-sm-12">
-                                              <div class="row">
-                                          <div class="col-sm-3">
-                                         <div class="input-group">
-                                           <span class="form-control form-control-sm">2</span>
-                                           <span class="form-control form-control-sm">%</span>
-                                         </div>
-                                         </div>
-                                         <div class="col-sm-5" style="margin-left:-13px">
-                                          <div class="input-group">
-                                            <span class="form-control form-control-sm"><i class="fa fa-rupee"></i></span>
-                                            <span class="form-control form-control-sm">10</span>
-                                          </div>
-                                          </div>
-                                          <div class="col-sm-4">
-                                            <div class="input-group">
-                                              <span class="form-control form-control-sm"></span>
-                                              <span class="form-control form-control-sm">%</span>
-                                            </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        </div>
-                                        <div class="col-sm-5">
-                                          <div class="row">
-                                            <div class="col-sm-12">
-                                              <div class="row">
-                                               <div class="col-sm-9">
-                                           <div class="row">
-                                            <div class="col-sm-5">
-                                              <div class="input-group">
-                                                <input type="date" class="form-control form-control-sm" value="01/12/2024" placeholder="from Date" id="fromDate" />
-                                              </div>
-                                            </div>
-                                            <div class="col-auto">
-                                              <span>-</span>
-                                            </div>
-                                            <div class="col-sm-5">
-                                              <div class="input-group">
-                                                  <input type="date" class="form-control form-control-sm" value="01/12/2024" placeholder="to Date" id="toDate" />
-                                              </div>
-                                              </div>
-                                             </div>
-                                             </div>
-                                               <div class="col-sm-3">
-                                               <div class="input-group">
-                                                 <div class="btn-group">
-                                                   <button class="btn btn-sm btn-outline-secondary">
-                                                     <i class="fas fa-check"></i>
-                                                   </button>
-                                                   <button class="btn btn-sm btn-outline-secondary">
-                                                     <i class="fas fa-redo" style="color: red;"></i>
-                                                   </button>
-                                                 </div>
-                                                </div>
-                                               <p></p>
-                                             </div>
-                                            </div>
-                                           </div>
-                                         </div>
-                                         </div>
-                                      </div>
-                                     </div>
-                                     </div>
-                                  </div>
-                                </div>
-                             </div>
-                           </div>
-                        </div -->
-                         <!-- end Promotions and Codes-->
                    </div>
                   </div>
                 <!-- /.container-fluid -->
