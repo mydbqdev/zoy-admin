@@ -132,6 +132,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
           clearInterval(this.timeSinceLastAction);
           clearInterval(this.timeoutId);  
           clearInterval(this.interval); 
+          return;
         }
       const time = this.userActivityService.getTimeSinceLastAction();
       if(time > 780000 && this.nun == 0){
@@ -159,7 +160,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     this.timeoutId = setInterval(() => {
       this.sessionTime = this.userService.getSessionTime() || new Date();
       const diff =  new Date().getTime() - this.sessionTime.getTime() ;
-      if(diff>800000){
+      if(diff>800000 && this.userService.getSessionTime()){
        this.authService.checkLoginUserVlidaate();
       }
     }, 60000); 
