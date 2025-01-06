@@ -130,7 +130,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  daysBeforeCheckIn: 10,
 		  deductionPercentages: 5,
 		  bcicrDisable: true,
-		  triggerOn: 'Payment Made',
+		  triggerOn: 'PaymentAmount',
 		  condName: '==',
 		  sequenceOrder: 1
 		},
@@ -139,7 +139,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  daysBeforeCheckIn: 5,
 		  deductionPercentages: 10,
 		  bcicrDisable: true,
-		  triggerOn: 'Booking Confirmed',
+		  triggerOn: 'Rent',
 		  condName: '==',
 		  sequenceOrder: 2
 		},
@@ -148,7 +148,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  daysBeforeCheckIn: 7,
 		  deductionPercentages: 8,
 		  bcicrDisable: true,
-		  triggerOn: 'Amount Paid',
+		  triggerOn: 'PaymentAmount & Rent',
 		  condName: '<=',
 		  sequenceOrder: 3
 		},
@@ -157,7 +157,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  daysBeforeCheckIn: 3,
 		  deductionPercentages: 15,
 		  bcicrDisable: true,
-		  triggerOn: 'Deposit Received',
+		  triggerOn: 'PaymentAmount',
 		  condName: '<=',
 		  sequenceOrder: 4
 		},
@@ -166,7 +166,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  daysBeforeCheckIn: 15,
 		  deductionPercentages: 12,
 		  bcicrDisable: true,
-		  triggerOn: 'Full Payment',
+		  triggerOn: 'PaymentAmount & Rent',
 		  condName: '>',
 		  sequenceOrder: 5
 		}
