@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { ConfigMasterService } from '../service/config-master-serive';
-import { BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, SecurityDepositLimitsModel, SecurityDepositRefundModel, TokenDetailsModel } from '../models/config-master-model';
+import { BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, SecurityDepositDeadLineModel, SecurityDepositLimitsModel, SecurityDepositRefundModel, TokenDetailsModel} from '../models/config-master-model';
 import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 
@@ -42,6 +42,10 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  securityDepositRefundDisabled: boolean = true;
 	  configMasterModel :ConfigMasterModel =new ConfigMasterModel();
 	  configMasterOrg :ConfigMasterModel =new ConfigMasterModel();
+
+	  securityDepositDeadLineModel:SecurityDepositDeadLineModel = new SecurityDepositDeadLineModel();
+	  securityDepositDeadLineSaveVali:boolean=false;
+	  securityDepositDeadLineDisabled: boolean = true;
 
 	  conditions : string[]=['==','>=','<=','>','<','!='];
 	  triggerOn : string[]=['PaidAmount','Rent','PaidAmount & Rent']; 

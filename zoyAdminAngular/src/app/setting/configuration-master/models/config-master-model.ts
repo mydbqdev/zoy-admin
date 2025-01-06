@@ -4,6 +4,7 @@ export class ConfigMasterModel{
     cancellationDetails : BeforeCheckInCancellationRefundModel[] =[];
     refundRules : SecurityDepositRefundModel= new SecurityDepositRefundModel() ;
     dataGrouping : DataGroupingModel = new DataGroupingModel() ;
+    autoCancellationDetails : AutoCancellationModel[] = [];
 }
 
 export class TokenDetailsModel{
@@ -32,9 +33,26 @@ export class SecurityDepositRefundModel{
     refundId : string ;
     maximumDays : number ;
     plotformCharges : number ;
+    triggerOn : string ;
+    condName : string ;
 }
 
 export class DataGroupingModel{
     id : string ;
     considerDays : number ;
+}
+
+export class AutoCancellationModel{
+    refundId : string ;
+    maximumDays : number ;
+    platformCharges : number ;
+    triggerOn : string ;
+    condName : string ;
+}
+export class SecurityDepositDeadLineModel{
+    refundId : string ;
+    maximumDays : number ;
+    platformCharges : number ;
+    triggerOn : string ;
+    condName : string ;
 }

@@ -207,7 +207,7 @@
                                                 class="form-control form-control-sm"
                                                 [(ngModel)]="beforeCheckInCRfModel.daysBeforeCheckIn" (keypress)="numberOnly($event)" maxlength="3"
                                                 [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && (beforeCheckInCRfModel.daysBeforeCheckIn == 0 || !beforeCheckInCRfModel.daysBeforeCheckIn) }" 
-                                                style="max-width: 100px !important;"
+                                                style="max-width: 84px !important;"
                                                 />
                                                 <span class="input-group-text">Days</span>
                                               </div>
@@ -229,7 +229,7 @@
                                                   class="form-control form-control-sm"
                                                   [(ngModel)]="beforeCheckInCRfModel.deductionPercentages" (keypress)="percentageOnlyWithZero($event)" maxlength="5"
                                                   [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && ( beforeCheckInCRfModel.deductionPercentages == undefined || beforeCheckInCRfModel.deductionPercentages.toString() =='' ) }" 
-                                                  style="max-width: 100px !important;"
+                                                  style="max-width: 90px !important;"
                                                   />
                                                   <span class="input-group-text">%</span>
                                                  </div>
@@ -358,7 +358,7 @@
                                                           class="form-control form-control-sm"
                                                           [(ngModel)]="element.daysBeforeCheckIn" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.bcicrDisable"
                                                           [ngClass]="{'is-invalid': !element.bcicrDisable && (element.daysBeforeCheckIn == 0 || !element.daysBeforeCheckIn) }" 
-                                                          style="max-width: 100px !important;" />
+                                                          style="max-width: 80px !important;" />
                                                   <span class="input-group-text">Days</span>
                                                 </div>
                                                 </mat-cell>
@@ -386,7 +386,7 @@
                                                           class="form-control form-control-sm"
                                                           [(ngModel)]="element.deductionPercentages" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.bcicrDisable"
                                                           [ngClass]="{'is-invalid': !element.bcicrDisable && (element.deductionPercentages == undefined || element.deductionPercentages.toString() =='') }" 
-                                                          style="max-width: 120px !important;"
+                                                          style="max-width: 80px !important;"
                                                           disabled />
                                                   <span class="input-group-text">%</span>
                                                  </div>                                              
@@ -595,7 +595,7 @@
                                           class="form-control form-control-sm"
                                           [(ngModel)]="configMasterModel.depositDetails.minimumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="9"
                                            [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.minimumDeposit == 0 || !configMasterModel.depositDetails.minimumDeposit) }" 
-                                          style="max-width: 140px !important;" />
+                                          style="max-width: 70px !important;" />
                                           <span class="input-group-text">Days</span>
                                       </div>
                                       <p class="small text-muted" style="font-size: 12px;">
@@ -691,7 +691,7 @@
                                           class="form-control form-control-sm"
                                           [(ngModel)]="configMasterModel.depositDetails.minimumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="9"
                                            [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.minimumDeposit == 0 || !configMasterModel.depositDetails.minimumDeposit) }" 
-                                          style="max-width: 140px !important;" />
+                                          style="max-width: 70px !important;" />
                                           <span class="input-group-text">Days</span>
                                       </div>
                                       <p class="small text-muted" style="font-size: 12px;">
@@ -841,7 +841,7 @@
                             <div class="col-sm-9">
                              <div class="row">
                                 <span>Trending PG Configuration</span>
-                                <div class="col-sm-4">
+                                <div class="col-sm-2">
                                 <div class="input-group input-group-sm">
                                   <input 
                                   type="text" 
