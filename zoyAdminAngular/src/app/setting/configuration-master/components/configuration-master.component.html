@@ -469,6 +469,7 @@
                            </div>
                         </div>
                         <hr class="solid">
+                        <!--Security Deposite Refund rules-->
                         <div>
                           <!--Total Advance section-->
                           <div class="row p-3 align-items-center marginRow">
@@ -556,9 +557,10 @@
                                     </div>
                                 </div>
                               </div>
-                            </div>
+                                 </div>
                           </div>
                         </div>
+                      
                             <hr class="solid"> 
                             <div>
                               <!--Auto-Cancellation Period-->
@@ -607,7 +609,7 @@
                                       </p>
                                     </div>
                                     <!-- Action Button -->
-                                    <div class="col-sm-2 mt-4">
+                                    <div class="col-sm-1 mt-4">
                                       <div class="btn-group">
                                         <button 
                                           class="btn btn-sm btn-outline-secondary" 
@@ -635,8 +637,8 @@
                               
                             </div>
                             <hr class="solid"> 
-                             <!--Security Deposite Deadline-->
                             <div>
+                              <!--Security Deposite Deadline-->
                               <div class="row p-3 align-items-center marginRow">
                                 <div class="col-sm-3">
                                   <div><span style="font-size: 16px;">Security Deposite Deadline</span></div>
@@ -681,7 +683,7 @@
                                       </p>
                                     </div>
                                     <!-- Action Button -->
-                                    <div class="col-sm-2 mt-4">
+                                    <div class="col-sm-1 mt-4">
                                       <div class="btn-group">
                                         <button 
                                           class="btn btn-sm btn-outline-secondary" 
@@ -711,128 +713,124 @@
                             <!--Other Charges-->
                             <div>
                               <div class="row p-3 align-items-center marginRow">
-                                <div class="col-sm-3">
-                                  <span style="font-size: 16px;">Other Charges</span>
-                                  <p class="small" style="font-size: 12px; color: gray;">
-                                    Configure documentation charges for Owners and Tenants.
-                                  </p>
-                                </div>
-                                <div class="col-sm-9">
-                                  <div class="row">
-                                    <!-- Documentation Charges for Owners -->
-                                    <div class="col-sm-5">
-                                      <div>Documentation Charges for Owners</div>
-                                      <div class="input-group input-group-sm">
-                                        <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                                        <input 
-                                          type="text" 
-                                          class="form-control form-control-sm" 
-                                          [(ngModel)]="tempGSTValue" 
-                                          style="max-width: 100px !important;" 
-                                          [disabled]="gstHidden" />
+                                  <div class="col-sm-3">
+                                    <span style="font-size: 16px;">Other Charges</span>
+                                    <p class="small" style="font-size: 12px;color: gray">Configure documentation charges for Owners and Tenants.</p>
+                                  </div>
+                                  <div class="col-sm-9">
+                                    <div class="row">
+                                      <!-- GST Section -->
+                                      <div class="col-sm-6">
+                                        <div>Documentation Charges for Owners</div>
+                                        <div class="input-group input-group-sm">
+                                          <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                          <input 
+                                            type="text" 
+                                            class="form-control form-control-sm" 
+                                            [(ngModel)]="tempGSTValue" 
+                                            style="max-width: 100px !important;" 
+                                            [disabled]="gstHidden" />
+                                          <div class="pl-4">
+                                            <div *ngIf="gstHidden">
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="editGST()">
+                                                <i class="fas fa-edit"></i>
+                                              </button>
+                                            </div>
+                                            <div class="btn-group" *ngIf="!gstHidden">
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="submitGST()">
+                                                <i class="fas fa-check"></i>
+                                              </button>
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="resetGST()">
+                                                <i class="fas fa-redo" style="color: red;"></i>
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <p class="small mt-1" style="font-size: 12px; color: gray;">
+                                          Enter the one time amount to be charged to Owners for documentation purpose.
+                                        </p>
                                       </div>
-                                      <p class="small mt-1" style="font-size: 12px; color: gray;">
-                                        Enter the one-time amount to be charged to Owners for documentation purpose.
-                                      </p>
-                                    </div>
-                                    <div class="col-sm-1 mt-4">
-                                      <!-- Buttons for Owners -->
-                                      <div *ngIf="gstHidden">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="editGST()">
-                                          <i class="fas fa-edit"></i>
-                                        </button>
-                                      </div>
-                                      <div class="btn-group" *ngIf="!gstHidden">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="submitGST()">
-                                          <i class="fas fa-check"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="resetGST()">
-                                          <i class="fas fa-redo" style="color: red;"></i>
-                                        </button>
-                                      </div>
-                                    </div>
-                            
-                                    <!-- Documentation Charges for Tenants -->
-                                    <div class="col-sm-5">
-                                      <div>Documentation Charges for Tenants</div>
-                                      <div class="input-group input-group-sm">
-                                        <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                                        <input 
-                                          type="text" 
-                                          class="form-control form-control-sm" 
-                                          [(ngModel)]="tempAmountValue" 
-                                          style="max-width: 100px !important;" 
-                                          [disabled]="amountHidden" />
-                                      </div>
-                                      <p class="small mt-1" style="font-size: 12px; color: gray;">
-                                        Enter the one-time amount to be charged to Tenants for documentation purpose.
-                                      </p>
-                                    </div>
-                                    <div class="col-sm-1 mt-4">
-                                      <!-- Buttons for Tenants -->
-                                      <div *ngIf="amountHidden">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="editAmount()">
-                                          <i class="fas fa-edit"></i>
-                                        </button>
-                                      </div>
-                                      <div class="btn-group" *ngIf="!amountHidden">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="submitAmount()">
-                                          <i class="fas fa-check"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="resetAmount()">
-                                          <i class="fas fa-redo" style="color: red;"></i>
-                                        </button>
+                                      <!-- Documentation Charges Section -->
+                                      <div class="col-sm-6">
+                                        <div>Documentation Charges for Tenants</div>
+                                        <div class="input-group input-group-sm">
+                                          <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                          <input 
+                                            type="text" 
+                                            class="form-control form-control-sm" 
+                                            [(ngModel)]="tempGSTValue" 
+                                            style="max-width: 100px !important;" 
+                                            [disabled]="gstHidden" />
+                                           
+                                          <div class="pl-4">
+                                            <div *ngIf="gstHidden">
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="editGST()">
+                                                <i class="fas fa-edit"></i>
+                                              </button>
+                                            </div>
+                                            <div class="btn-group" *ngIf="!gstHidden">
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="submitGST()">
+                                                <i class="fas fa-check"></i>
+                                              </button>
+                                              <button class="btn btn-sm btn-outline-secondary" (click)="resetGST()">
+                                                <i class="fas fa-redo" style="color: red;"></i>
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <p class="small mt-1" style="font-size: 12px; color: gray;">
+                                          Enter the one time amount to be charged to Tenants for documentation purpose.
+                                        </p>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
+                            </div>
+                    
+                        <hr class="solid">
+                        <!--Data Grouping-->
+                        <div>
+                          <div class="row p-3 align-items-center marginRow">
+                            <div class="col-sm-3">
+                              <span style="font-size: 16px;">Data Grouping</span>
+                            </div>
+                            <div class="col-sm-9">
+                             <div class="row">
+                                <span>Trending PG Configuration</span>
+                                <div class="col-sm-4">
+                                <div class="input-group input-group-sm">
+                                  <input 
+                                  type="text" 
+                                  class="form-control form-control-sm"
+                                  [(ngModel)]="configMasterModel.dataGrouping.considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
+                                  [ngClass]="{'is-invalid': !dataGroupingDisabled && (configMasterModel.dataGrouping.considerDays == 0 || !configMasterModel.dataGrouping.considerDays) }" 
+                                  style="max-width: 70px !important;" />
+                                  <span class="input-group-text">Days</span>
+                                </div>
+                                </div>
+                                <div class="col-sm-3">
+                                  <div *ngIf="dataGroupingDisabled">
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="dataGroupingDisabled = false">
+                                      <i class="fas fa-edit"></i>
+                                    </button>
+                                  </div>
+                                  <div class="btn-group" *ngIf="!dataGroupingDisabled">
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGSubmit()">
+                                      <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGReset()">
+                                      <i class="fas fa-redo" style="color: red;"></i>
+                                    </button>
+                                  </div>
                               </div>
+                                </div>
+                             <div>
+                              <p class="small" style="font-size: 12px;color: gray">Specify the number of days that is to be considered for showing trending PG's to Tenents .</p>
+                            </div>
                             </div>
                             
-                            <hr class="solid">
-                            <!--Data Grouping-->
-                            <div>
-                              <div class="row p-3 align-items-center marginRow">
-                                <div class="col-sm-3">
-                                  <span style="font-size: 16px;">Data Grouping</span>
-                                </div>
-                                <div class="col-sm-9">
-                                 <div class="row">
-                                    <span>Trending PG Configuration</span>
-                                    <div class="col-sm-4">
-                                    <div class="input-group input-group-sm">
-                                      <input 
-                                      type="text" 
-                                      class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.dataGrouping.considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
-                                      [ngClass]="{'is-invalid': !dataGroupingDisabled && (configMasterModel.dataGrouping.considerDays == 0 || !configMasterModel.dataGrouping.considerDays) }" 
-                                      style="max-width: 70px !important;" />
-                                      <span class="input-group-text">Days</span>
-                                    </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                      <div *ngIf="dataGroupingDisabled">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="dataGroupingDisabled = false">
-                                          <i class="fas fa-edit"></i>
-                                        </button>
-                                      </div>
-                                      <div class="btn-group" *ngIf="!dataGroupingDisabled">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGSubmit()">
-                                          <i class="fas fa-check"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGReset()">
-                                          <i class="fas fa-redo" style="color: red;"></i>
-                                        </button>
-                                      </div>
-                                  </div>
-                                    </div>
-                                 <div>
-                                  <p class="small" style="font-size: 12px;color: gray">Specify the number of days that is to be considered for showing trending PG's to Tenents .</p>
-                                </div>
-                                </div>
-                                
-                              </div>
-                            </div>
+                          </div>
+                        </div>
                         <!-- <hr class="solid"> -->
                         <!--Promotions and Codes-->
                         <!--div>
