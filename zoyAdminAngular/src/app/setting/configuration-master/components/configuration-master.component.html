@@ -174,7 +174,7 @@
                         </div>
                         <hr class="solid"> 
                          <!--Cancellation And Refund Policy-->
-                        <div>
+                         <div>
                           <div class="row p-3 marginRow">
                             <div class="col-sm-3">
                               <span style="font-size: 16px;">Cancellation And Refund Policy</span>
@@ -194,7 +194,8 @@
                                         <div class="mr-3" style="width: 80px;">
                                           <div>Condition</div>
                                           <div class="input-group input-group-sm">
-                                            <select class="form-select form-select-sm" style="max-width: 80px !important;" >
+                                            <select class="form-select form-select-sm" style="max-width: 80px !important;"  [(ngModel)]="beforeCheckInCRfModel.condName"
+                                            [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.condName}" >
                                             <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
                                             </select>
                                           </div>
@@ -206,7 +207,7 @@
                                                 type="text" 
                                                 class="form-control form-control-sm"
                                                 [(ngModel)]="beforeCheckInCRfModel.daysBeforeCheckIn" (keypress)="numberOnly($event)" maxlength="3"
-                                                [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && (beforeCheckInCRfModel.daysBeforeCheckIn == 0 || !beforeCheckInCRfModel.daysBeforeCheckIn) }" 
+                                                [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.daysBeforeCheckIn }" 
                                                 style="max-width: 84px !important;"
                                                 />
                                                 <span class="input-group-text">Days</span>
@@ -216,7 +217,8 @@
                                             <div class="mr-3" style="width: 190px;">
                                               <div>Deduction Type</div>
                                               <div class="input-group input-group-sm">
-                                                <select class="form-select form-select-sm">
+                                                <select class="form-select form-select-sm" [(ngModel)]="beforeCheckInCRfModel.triggerOn" 
+                                                [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.triggerOn}" >
                                                 <option *ngFor="let trigger of triggerOn" [value]="trigger">{{trigger}}</option>
                                                 </select>
                                               </div>
@@ -238,7 +240,7 @@
                                             <div class="ml-1">
                                               <div style="height: 23px;"></div>
                                               <div>
-                                                <button type="button" class="btn btn-sm btn-primary" (click)="beforeCheckInCRfSave()" >Add</button>
+                                                <button type="button" class="btn btn-sm btn-primary" (click)="beforeCheckInCRfAdd()" >Add</button>
                                               </div>
                                             </div>
                                         </div>
@@ -319,117 +321,115 @@
                                              </div>
                                          </div> -->
                                        </div>
-                                        
-                                        <div>
-                                          <div class="d-flex mb-1" style="margin-top:-30px;">
-                                            <div></div>
-                                            <div class="ml-auto mr-1">
-                                              <button type="button" class="btn btn-sm btn-primary" disabled>Update</button>
-                                              <button class="btn btn-sm btn-outline-secondary ml-1" disabled><i class="fas fa-redo" style="color: red;"></i></button>
-                                            </div>
+                                       <div>
+                                        <div class="d-flex mb-1" style="margin-top:-30px;">
+                                          <div style="margin-left: 250px; color: red; font-size: 14px; margin-top: 15px;" >{{!canSubmit ? 'Data will be saved to the database only after clicking the update button.':''}}</div>
+                                          <div class="ml-auto mr-1">
+                                            <button type="button" class="btn btn-sm btn-primary" [disabled]="canSubmit" (click)="beforeCheckInCRfUpDate()">Update</button>
+                                            <button class="btn btn-sm btn-outline-secondary ml-1" (click)="beforeCheckInCRDatafReset()"  ><i class="fas fa-redo" style="color: red;"></i></button>
                                           </div>
-                                          <mat-table [dataSource]="dataSource"
-                                                      #table
-                                                      class="example-list"
-                                                      cdkDropList
-                                                      [cdkDropListData]="dataSource.data"
-                                                      (cdkDropListDropped)="drop($event)">
-                          
-                                            <ng-container matColumnDef="condName">
-                                              <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
-                                              <mat-cell data-label="condName"  class="example-box" *matCellDef="let element" style="width: 120px;flex:none;padding-right: 0px;"  >
-                                                {{ element.sequenceOrder }}
-                                                <div class="ml-1" *ngIf="element.bcicrDisable" >
-                                                  <input type="text" class="form-control form-control-sm" [value]="element.condName" [disabled]="element.bcicrDisable" style="width: 80px !important;" /> 
-                                                </div> 
-                                                <div class="ml-1" *ngIf="!element.bcicrDisable" >
-                                                  <select class="form-select form-select-sm" style="width: 80px !important;"  [value]="element.condName">
-                                                  <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
-                                                  </select>
-                                                </div>
-                                               </mat-cell>
-                                            </ng-container>
-                                          
-                                            <ng-container matColumnDef="daysBeforeCheckIn">
-                                              <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
-                                              <mat-cell data-label="daysBeforeCheckIn" class="example-box" *matCellDef="let element" style="width: 170px;flex: none;padding-right: 0px;" > 
-                                                <div class="d-flex input-group input-group-sm">
-                                                  <input type="text" 
-                                                          class="form-control form-control-sm"
-                                                          [(ngModel)]="element.daysBeforeCheckIn" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.bcicrDisable"
-                                                          [ngClass]="{'is-invalid': !element.bcicrDisable && (element.daysBeforeCheckIn == 0 || !element.daysBeforeCheckIn) }" 
-                                                          style="max-width: 80px !important;" />
-                                                  <span class="input-group-text">Days</span>
-                                                </div>
-                                                </mat-cell>
-                                            </ng-container>
-                                            
-                                            <ng-container matColumnDef="triggerOn">
-                                              <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
-                                              <mat-cell data-label="requirePayslip" class="example-box" *matCellDef="let element"  style="width: 210px;padding-right: 0px;flex: none;"  > 
-                                                <div *ngIf="element.bcicrDisable">
-                                                  <input type="text" class="form-control form-control-sm" [value]="element.triggerOn" [disabled]="element.bcicrDisable" style="width: 190px !important;"/> 
-                                                </div>
-                                                <div *ngIf="!element.bcicrDisable" >
-                                                  <select class="form-select form-select-sm" [value]="element.triggerOn" style="width: 190px !important;" >
-                                                  <option *ngFor="let trigger of triggerOn" [value]="trigger">{{trigger}}</option>
-                                                  </select>
-                                                </div>
+                                        </div>
+                                        <mat-table [dataSource]="dataSource"
+                                                    #table
+                                                    class="example-list"
+                                                    cdkDropList
+                                                    [cdkDropListData]="dataSource.data"
+                                                    (cdkDropListDropped)="drop($event)">
+                        
+                                          <ng-container matColumnDef="condName" class="example-box">
+                                            <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
+                                            <mat-cell data-label="condName" *matCellDef="let element" style="width: 120px;flex:none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'"  >
+                                            <span > {{ element.sequenceOrder }} </span> 
+                                              <div class="ml-1" *ngIf="!element.isEdit || element.isDelete" >
+                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.condName" [disabled]="!element.isEdit || element.isDelete" style="width: 80px !important;" /> 
+                                              </div> 
+                                              <div class="ml-1" *ngIf="!element.isDelete && element.isEdit" >
+                                                <select class="form-select form-select-sm" style="width: 80px !important;"  [(ngModel)]="element.condName">
+                                                <option *ngFor="let cond of conditions" [value]="cond">{{cond}}</option>
+                                                </select>
+                                              </div>
+                                             </mat-cell>
+                                          </ng-container>
+                                        
+                                          <ng-container matColumnDef="daysBeforeCheckIn" class="example-box">
+                                            <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
+                                            <mat-cell data-label="daysBeforeCheckIn" *matCellDef="let element" style="width: 170px;flex: none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'" > 
+                                              <div class="d-flex input-group input-group-sm">
+                                                <input type="text" 
+                                                        class="form-control form-control-sm"
+                                                        [(ngModel)]="element.daysBeforeCheckIn" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.isDelete || !element.isEdit"
+                                                        [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && (element.daysBeforeCheckIn == 0 || !element.daysBeforeCheckIn) }" 
+                                                        style="max-width: 100px !important;" />
+                                                <span class="input-group-text">Days</span>
+                                              </div>
                                               </mat-cell>
-                                            </ng-container>
+                                          </ng-container>
+                                          
+                                          <ng-container matColumnDef="triggerOn" class="example-box">
+                                            <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
+                                            <mat-cell data-label="requirePayslip" *matCellDef="let element"  style="width: 210px;padding-right: 0px;flex: none;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'" > 
+                                              <div *ngIf="!element.isEdit || element.isDelete">
+                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.triggerOn" [disabled]="!element.isEdit || element.isDelete" style="width: 190px !important;"/> 
+                                              </div>
+                                              <div *ngIf="!element.isDelete && element.isEdit" >
+                                                <select class="form-select form-select-sm" [(ngModel)]="element.triggerOn" style="width: 190px !important;" >
+                                                <option *ngFor="let trigger of triggerOn" [value]="trigger">{{trigger}}</option>
+                                                </select>
+                                              </div>
+                                            </mat-cell>
+                                          </ng-container>
 
-                                            <ng-container matColumnDef="deductionPercentages">
-                                              <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
-                                              <mat-cell data-label="requirePayslip" class="example-box" *matCellDef="let element"  style="width: 180px !important;flex:none;padding-right: 0px;"> 
-                                                <div class="d-flex input-group input-group-sm">
-                                                  <input  type="text" 
-                                                          class="form-control form-control-sm"
-                                                          [(ngModel)]="element.deductionPercentages" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.bcicrDisable"
-                                                          [ngClass]="{'is-invalid': !element.bcicrDisable && (element.deductionPercentages == undefined || element.deductionPercentages.toString() =='') }" 
-                                                          style="max-width: 80px !important;"
-                                                          disabled />
-                                                  <span class="input-group-text">%</span>
-                                                 </div>                                              
-                                              </mat-cell>
-                                            </ng-container>
-                                          
-                                            <ng-container matColumnDef="action">
-                                              <!-- <mat-header-cell *matHeaderCellDef></mat-header-cell> -->
-                                              <mat-cell class="example-box" data-label="action" *matCellDef="let element "  style="padding-left:0px;flex:none;">
-                                                <div class="input-group">
-                                                  <div class="btn-group">
-                                                    <button 
-                                                      class="btn btn-sm btn-outline-secondary" 
-                                                      *ngIf="element.bcicrDisable"
-                                                      (click)="element.bcicrDisable = false">
-                                                      <i class="fas fa-edit"></i>
-                                                    </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="element.bcicrDisable" (click)="deleteRefundRule(element)">
-                                                    <i class="fas fa-trash" style="color: red;"></i>
+                                          <ng-container matColumnDef="deductionPercentages" class="example-box">
+                                            <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
+                                            <mat-cell data-label="requirePayslip" *matCellDef="let element"  style="width: 180px !important;flex:none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'"> 
+                                              <div class="d-flex input-group input-group-sm">
+                                                <input  type="text" 
+                                                        class="form-control form-control-sm"
+                                                        [(ngModel)]="element.deductionPercentages" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.isDelete || !element.isEdit"
+                                                        [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && (element.deductionPercentages == undefined || element.deductionPercentages.toString() =='') }" 
+                                                        style="max-width: 120px !important;"
+                                                        disabled />
+                                                <span class="input-group-text">%</span>
+                                               </div>                                              
+                                            </mat-cell>
+                                          </ng-container>
+                                        
+                                          <ng-container matColumnDef="action" class="example-box">
+                                            <!-- <mat-header-cell *matHeaderCellDef></mat-header-cell> -->
+                                            <mat-cell data-label="action" *matCellDef="let element ;let i=index"  style="padding-left:0px;flex:none;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'">
+                                              <div class="input-group">
+                                                <div class="btn-group">
+                                                  <button class="btn btn-sm btn-outline-secondary"  *ngIf="!element.isDelete && !element.isEdit"
+                                                    (click)="element.isEdit = true;" title="Edit The Item"> 
+                                                     <i class="fas fa-edit"></i>
                                                   </button>
-                                                    <button 
-                                                      class="btn btn-sm btn-outline-secondary" 
-                                                      *ngIf="!element.bcicrDisable"
-                                                      (click)="beforeCheckInCRfUpDate(element)">
-                                                      <i class="fas fa-check"></i>
-                                                    </button>
-                                                    <button 
-                                                      class="btn btn-sm btn-outline-secondary" 
-                                                      *ngIf="!element.bcicrDisable"
-                                                      (click)="element.bcicrDisable=!element.bcicrDisable;beforeCheckInCRfReset(element)">
-                                                      <i class="fas fa-redo" style="color: red;"></i>
-                                                    </button>
-                                                  </div>
-                                                 </div>
-                                              </mat-cell>
-                                              
-                                            </ng-container>          
-                                            <!-- <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row> -->
-                                            <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
-                                          </mat-table>
-                                        <!-- </div> -->
-                                          <div cdkDropList [cdkDropListData]="dataSource.data" (cdkDropListDropped)="drop($event)"></div>
-                                      </div>
+                                                <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && !element.isEdit" 
+                                                    (click)="beforeCheckInCRfDelete(element,i)" title="Delete The Item"> 
+                                                    <i class="fas fa-trash" style="color: red;"></i>
+                                                </button>
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isEdit"
+                                                    (click)="beforeCheckInCRfModify(element)" title="Edit The Item">
+                                                     <i class="fas fa-check"></i>
+                                                  </button>
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isEdit"
+                                                    (click)="undoEditItem(element,i)" title="Undo Edit Item">
+                                                    <i class="fas fa-redo" style="color: red;"></i>
+                                                  </button>
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete"
+                                                    (click)="undoDelete(element)" title="Undo Delete Item">
+                                                    <i class="fas fa-redo" style="color: red;" ></i>
+                                                  </button>
+                                                </div>
+                                               </div>
+                                            </mat-cell>
+                                            
+                                          </ng-container>          
+                                          <!-- <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row> -->
+                                          <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
+                                        </mat-table>
+                                      <!-- </div> -->
+                                        <div cdkDropList [cdkDropListData]="dataSource.data" (cdkDropListDropped)="drop($event)"></div>
+                                    </div>
                                     </div>
                                   </div>
                                 </div>
