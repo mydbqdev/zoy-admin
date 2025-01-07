@@ -812,10 +812,10 @@ public class AdminReportService implements AdminReportImpl{
 	            dto.setBookingId(row[4] != null ? (String) row[4] : "");
 	            dto.setRefundTitle(row[5] != null ? (String) row[5] : "");
 	            dto.setRefundableAmount(rupeeSymbol+numberFormat.format((BigDecimal) row[6] != null ? (BigDecimal) row[6] : BigDecimal.ZERO));
-	            dto.setPaymentStatus("-");
-	            dto.setTransactionNumber("-");
-	            dto.setAmountPaid(new BigDecimal("0"));
-	            dto.setPaymentDate("-");
+	            dto.setPaymentStatus("");
+	            dto.setTransactionNumber("");
+	            dto.setAmountPaid("");
+	            dto.setPaymentDate("");
 	            return dto;
 	        }).collect(Collectors.toList());
 
