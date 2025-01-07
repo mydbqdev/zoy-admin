@@ -14,7 +14,7 @@ public class TenentRefund {
 	@SerializedName("tenantMobileNum")
 	private String tenantMobileNum;
 
-	@SerializedName("pgPropertyName")
+	@SerializedName("PgPropertyName")
 	private String pgPropertyName;
 
 	@SerializedName("userPgPropertyAddress")
@@ -30,14 +30,13 @@ public class TenentRefund {
 	private String refundableAmount;
 
 	@SerializedName("amountPaid")
-	private BigDecimal amountPaid;
+	private String amountPaid;
 
 	@SerializedName("transactionNumber")
 	private String transactionNumber;
 
 	@SerializedName("paymentStatus")
 	private String paymentStatus;
-
 
 	public String getRefundableAmount() {
 		return refundableAmount;
@@ -103,11 +102,11 @@ public class TenentRefund {
 		this.refundTitle = refundTitle;
 	}
 
-	public BigDecimal getAmountPaid() {
+	public String getAmountPaid() {
 		return amountPaid;
 	}
 
-	public void setAmountPaid(BigDecimal amountPaid) {
+	public void setAmountPaid(String amountPaid) {
 		this.amountPaid = amountPaid;
 	}
 

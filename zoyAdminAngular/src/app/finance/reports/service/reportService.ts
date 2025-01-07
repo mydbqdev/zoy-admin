@@ -27,7 +27,9 @@ import { MessageService } from 'src/app/message.service';
       'tenantDuesReport':'tenant-dues-report_details',
       'vendorPaymentsReport':'vendor-payment-report_details',
       // 'vendorPaymentsDuesReport':'vendor-payment-dues-report',
-      // 'vendorPaymentsGstReport':'vendor-payment-gst-report'
+      // 'vendorPaymentsGstReport':'vendor-payment-gst-report',
+      'tenantRefundReport':'user_refund_details',
+      'reviewsAndRatingReport':'user_reviews_ratings_details'
     };
     
     columnHeaders = {
@@ -56,6 +58,7 @@ import { MessageService } from 'src/app/message.service';
       'totalAmountPaid': 'TOTAL AMOUNT PAID',
       'pendingAmount': 'PENDING AMOUNT',
       'pendingDueDate': 'PAYMENT DUE DATE',
+      'paymentDate': 'PAYMENT DUE DATE',
       'creditAmount': 'CREDIT AMOUNT',
       'debitAmount': 'DEBIT AMOUNT',
      // 'customerId': 'TENANT ID' ,//'CUSTOMER ID',
@@ -80,6 +83,7 @@ import { MessageService } from 'src/app/message.service';
       'maintenance':'MAINTENANCE',
       'valueForMoney':'VALUE FOR MONEY',
       'overallRating':'OVERALL RATING',
+      'accommodation':'ACCOMMODATION'
   };
   
 	  reportColumnsList: { 'reportName': string, 'columns': string[] }[] = [
@@ -98,7 +102,7 @@ import { MessageService } from 'src/app/message.service';
 		},
     {
 		  'reportName': 'Tenant Refunds Report',
-		  'columns': ['pendingDueDate','customerName', 'tenantMobileNum', 'PgPropertyName','userPgPropertyAddress','bookingId', 'refundTitle','refundableAmount','amountPaid','transactionNumber','paymentStatus' ],
+		  'columns': ['paymentDate','customerName', 'tenantMobileNum', 'PgPropertyName','userPgPropertyAddress','bookingId', 'refundTitle','refundableAmount','amountPaid','transactionNumber','paymentStatus' ],
 		},
     {
 		  'reportName': 'Owner Payments Report', //==Vendor Payments Report
@@ -118,7 +122,7 @@ import { MessageService } from 'src/app/message.service';
 		},
     {
 		  'reportName': 'Ratings and Reviews Report',
-		  'columns': ['pgName', 'customerName','cleanliness', 'security', 'amenities', 'maintenance','valueForMoney','overallRating','reviews']
+		  'columns': ['pgName', 'customerName','cleanliness', 'accommodation', 'amenities', 'maintenance','valueForMoney','overallRating','reviews']
 		}
 	  ];
   
@@ -126,12 +130,12 @@ import { MessageService } from 'src/app/message.service';
       { name: "Tenant Transactions Report", key: "userTransactionReport" },
       { name: "Tenant Payments GST Report", key: "userPaymentGstReport" },
       { name: "Tenant Dues Report", key: "tenantDuesReport" },
-      { name: "Tenant Refunds Report", key: "tenantDuesReport" },
+      { name: "Tenant Refunds Report", key: "tenantRefundReport" },
       { name: "Owner Payments Report", key: "vendorPaymentsReport" },
       { name: "Owner Payments Dues Report", key: "vendorPaymentsDuesReport" },
       { name: "Owner Payments Gst Report", key: "vendorPaymentsGstReport" },
       { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
-      { name: "Ratings and Reviews Report", key: "vendorPaymentsReport" },
+      { name: "Ratings and Reviews Report", key: "reviewsAndRatingReport" },
   
       ];
 
