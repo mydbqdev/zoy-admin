@@ -17,6 +17,9 @@ import com.integration.zoy.entity.AdminUserTemporary;
 import com.integration.zoy.entity.AppRole;
 import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.entity.RoleScreen;
+import com.integration.zoy.entity.TriggeredCond;
+import com.integration.zoy.entity.TriggeredOn;
+import com.integration.zoy.entity.TriggeredValue;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.repository.AdminUserLoginDetailsRepository;
 import com.integration.zoy.repository.AdminUserMasterRepository;
@@ -24,6 +27,9 @@ import com.integration.zoy.repository.AdminUserTemporaryRepository;
 import com.integration.zoy.repository.AppRoleRepository;
 import com.integration.zoy.repository.BulkUploadDetailsRepository;
 import com.integration.zoy.repository.RoleScreenRepository;
+import com.integration.zoy.repository.TriggeredCondRepository;
+import com.integration.zoy.repository.TriggeredOnRepository;
+import com.integration.zoy.repository.TriggeredValueRepository;
 
 @Service
 public  class AdminDBService implements AdminDBImpl {
@@ -45,15 +51,22 @@ public  class AdminDBService implements AdminDBImpl {
 
 	@Autowired
 	BulkUploadDetailsRepository bulkUploadDetailsRepository;
-	
 
+	@Autowired
+	TriggeredCondRepository triggeredCondRepository;
+	
+	@Autowired
+	TriggeredOnRepository triggeredOnRepository;
+	
+	@Autowired
+	TriggeredValueRepository triggeredValueRepository;
 
 	@Override
 	public AdminUserMaster saveAdminUser(AdminUserMaster master) throws WebServiceException {
 		return userMasterRepository.save(master);
 	}
-	
-	
+
+
 
 	@Override
 	public AdminUserLoginDetails saveAdminLoginDetails(AdminUserLoginDetails adminUserLoginDetails) throws WebServiceException{
@@ -243,11 +256,32 @@ public  class AdminDBService implements AdminDBImpl {
 	public List<Object[]> findSuperAdminCardsDetails() throws WebServiceException {
 		return userMasterRepository.getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
 	}
-	
+
 	@Override
 	public void doUserActiveteDeactivete(String user_email,boolean status)throws WebServiceException {
 		userLoginDetailsRepository.doUserActiveteDeactiveteInUserLoginDetails(user_email ,status);
 		userLoginDetailsRepository.doUserActiveteDeactiveteInuserMaster(user_email ,status);
 
+	}
+
+
+
+	@Override
+	public List<TriggeredCond> findTriggeredCond() {
+		return triggeredCondRepository.findAll();
+	}
+
+
+
+	@Override
+	public List<TriggeredOn> findTriggeredOn() {
+		return triggeredOnRepository.findAll();
+	}
+
+
+
+	@Override
+	public List<TriggeredValue> findTriggeredValue() {
+		return triggeredValueRepository.findAll();
 	}
 }
