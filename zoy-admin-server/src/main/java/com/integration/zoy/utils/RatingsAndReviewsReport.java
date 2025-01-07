@@ -43,7 +43,7 @@ public class RatingsAndReviewsReport {
 	@SerializedName("accommodation")
 	public String accommodation;
 
-	@SerializedName("threads")
+	@SerializedName("reviews")
 	public List<ReviewReplies> threads;
 
 	public String getCleanliness() {
