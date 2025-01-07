@@ -1,50 +1,43 @@
 package com.integration.zoy.model;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
-import com.google.gson.annotations.SerializedName;
+import javax.persistence.Column;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ZoyBeforeCheckInCancellation {
 
-	@SerializedName("cancellationId")
-	String cancellationId;
+	@JsonProperty("cancellation_id")
+	private String cancellationId;
 
-	@SerializedName("daysBeforeCheckIn")
-	int daysBeforeCheckIn;
-	
-	@SerializedName("deductionPercentages")
-	BigDecimal deductionPercentages;
-	
-	@SerializedName("bcicrDisable")
-	boolean bcicrDisable = true ;
+	@JsonProperty("priority")
+	private Integer priority;
 
+	@JsonProperty("trigger_on")
+	private String triggerOn;
 
-	public int getDaysBeforeCheckIn() {
-		return daysBeforeCheckIn;
-	}
+	@JsonProperty("trigger_condition")
+	private String triggerCondition;
 
-	public void setDaysBeforeCheckIn(int daysBeforeCheckIn) {
-		this.daysBeforeCheckIn = daysBeforeCheckIn;
-	}
+	@JsonProperty("before_checkin_days")
+	private Integer beforeCheckinDays;
 
-	public BigDecimal getDeductionPercentages() {
-		return deductionPercentages;
-	}
+	@JsonProperty("deduction_percentage")
+	private BigDecimal deductionPercentage;
 
-	public void setDeductionPercentages(BigDecimal deductionPercentages) {
-		this.deductionPercentages = deductionPercentages;
-	}
+	@JsonProperty("cond")
+	private String cond;
 
-	
+	@JsonProperty("trigger_value")
+	private String triggerValue;
 
-	public String getCancellationId() {
-		return cancellationId;
-	}
-
-	public void setCancellationId(String cancellationId) {
-		this.cancellationId = cancellationId;
-	}
-
-	
-
+	@JsonProperty("create_at")
+	private Timestamp createAt;
 }

@@ -9,11 +9,11 @@ public class ZoyOtherChargesDto {
 	@SerializedName("otherChargesId")
 	private String otherChargesId;
 
-	@SerializedName("otherGst")
-	private BigDecimal otherGst;
+	@SerializedName("ownerDocumentCharges")
+	private BigDecimal ownerDocumentCharges;
 
-	@SerializedName("documentCharges")
-	private BigDecimal documentCharges;
+	@SerializedName("tenantDocumentCharges")
+	private BigDecimal tenantDocumentCharges;
 
 	public String getOtherChargesId() {
 		return otherChargesId;
@@ -23,22 +23,23 @@ public class ZoyOtherChargesDto {
 		this.otherChargesId = otherChargesId;
 	}
 
-	public BigDecimal getOtherGst() {
-		return otherGst;
+	public BigDecimal getOwnerDocumentCharges() {
+		return ownerDocumentCharges;
 	}
 
-	public void setOtherGst(BigDecimal otherGst) {
-		this.otherGst = otherGst;
+	public void setOwnerDocumentCharges(BigDecimal ownerDocumentCharges) {
+		this.ownerDocumentCharges = ownerDocumentCharges;
 	}
 
-	public BigDecimal getDocumentCharges() {
-		return documentCharges;
+	public BigDecimal getTenantDocumentCharges() {
+		return tenantDocumentCharges;
 	}
 
-	public void setDocumentCharges(BigDecimal documentCharges) {
-		this.documentCharges = documentCharges;
+	public void setTenantDocumentCharges(BigDecimal tenantDocumentCharges) {
+		this.tenantDocumentCharges = tenantDocumentCharges;
 	}
 
+	
 
 
 }

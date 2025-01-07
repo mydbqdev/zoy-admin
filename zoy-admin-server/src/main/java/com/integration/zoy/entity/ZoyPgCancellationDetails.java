@@ -16,61 +16,115 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "zoy_pg_cancellation_details", schema = "pgowners")
 public class ZoyPgCancellationDetails {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "cancellation_id", nullable = false, length = 36)
-    private String cancellationId;
+	@Id
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@Column(name = "cancellation_id", nullable = false, length = 36)
+	private String cancellationId;
 
-    @Column(name = "before_checkin_days")
-    private Integer daysBeforeCheckIn;
-    
-    @Column(name = "deduction_percentage", precision = 10, scale = 2)
-    private BigDecimal deductionPercentages;
-    
-    @Column(name="create_at")
-    @CreationTimestamp
-    private Timestamp createdAt;
+	@Column(name = "priority")
+	private Integer priority;
 
-    public String getCancellationId() {
-        return cancellationId;
-    }
+	@Column(name = "trigger_on", length = 100)
+	private String triggerOn;
 
-    public void setCancellationId(String cancellationId) {
-        this.cancellationId = cancellationId;
-    }
+	@Column(name = "trigger_condition", length = 10)
+	private String triggerCondition;
 
-	public Integer getDaysBeforeCheckIn() {
-		return daysBeforeCheckIn;
+	@Column(name = "before_checkin_days")
+	private Integer beforeCheckinDays;
+
+	@Column(name = "deduction_percentage", precision = 10, scale = 2)
+	private BigDecimal deductionPercentage;
+
+	@Column(name = "cond", length = 100)
+	private String cond;
+
+	@Column(name = "trigger_value", length = 100)
+	private String triggerValue;
+
+	@Column(name = "create_at")
+	private Timestamp createAt;
+
+	public String getCancellationId() {
+		return cancellationId;
 	}
 
-	public void setDaysBeforeCheckIn(Integer daysBeforeCheckIn) {
-		this.daysBeforeCheckIn = daysBeforeCheckIn;
+	public void setCancellationId(String cancellationId) {
+		this.cancellationId = cancellationId;
 	}
 
-	public BigDecimal getDeductionPercentages() {
-		return deductionPercentages;
+	public Integer getPriority() {
+		return priority;
 	}
 
-	public void setDeductionPercentages(BigDecimal deductionPercentages) {
-		this.deductionPercentages = deductionPercentages;
-	}
-	
-	public Timestamp getCreatedAt() {
-		return createdAt;
+	public void setPriority(Integer priority) {
+		this.priority = priority;
 	}
 
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
+	public String getTriggerOn() {
+		return triggerOn;
+	}
+
+	public void setTriggerOn(String triggerOn) {
+		this.triggerOn = triggerOn;
+	}
+
+	public String getTriggerCondition() {
+		return triggerCondition;
+	}
+
+	public void setTriggerCondition(String triggerCondition) {
+		this.triggerCondition = triggerCondition;
+	}
+
+	public Integer getBeforeCheckinDays() {
+		return beforeCheckinDays;
+	}
+
+	public void setBeforeCheckinDays(Integer beforeCheckinDays) {
+		this.beforeCheckinDays = beforeCheckinDays;
+	}
+
+	public BigDecimal getDeductionPercentage() {
+		return deductionPercentage;
+	}
+
+	public void setDeductionPercentage(BigDecimal deductionPercentage) {
+		this.deductionPercentage = deductionPercentage;
+	}
+
+	public String getCond() {
+		return cond;
+	}
+
+	public void setCond(String cond) {
+		this.cond = cond;
+	}
+
+	public String getTriggerValue() {
+		return triggerValue;
+	}
+
+	public void setTriggerValue(String triggerValue) {
+		this.triggerValue = triggerValue;
+	}
+
+	public Timestamp getCreateAt() {
+		return createAt;
+	}
+
+	public void setCreateAt(Timestamp createAt) {
+		this.createAt = createAt;
 	}
 
 	@Override
 	public String toString() {
-		return "ZoyPgCancellationDetails [cancellationId=" + cancellationId + ", daysBeforeCheckIn=" + daysBeforeCheckIn
-				+ ", deductionPercentages=" + deductionPercentages + ", createdAt=" + createdAt + "]";
+		return "ZoyPgCancellationDetails [cancellationId=" + cancellationId + ", priority=" + priority + ", triggerOn="
+				+ triggerOn + ", triggerCondition=" + triggerCondition + ", beforeCheckinDays=" + beforeCheckinDays
+				+ ", deductionPercentage=" + deductionPercentage + ", cond=" + cond + ", triggerValue=" + triggerValue
+				+ ", createAt=" + createAt + "]";
 	}
 
-	
 
-  
 }

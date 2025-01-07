@@ -20,11 +20,11 @@ public class ZoyPgOtherCharges {
 	@Column(name = "other_charges_id", updatable = false, nullable = false, unique = true, length = 36)
 	private String otherChargesId;
 
-	@Column(name = "other_gst", nullable = false, precision = 10, scale = 2)
-	private BigDecimal otherGst;
+	@Column(name = "owner_document_charges", nullable = false, precision = 10, scale = 2)
+	private BigDecimal ownerDocumentCharges;
 
-	@Column(name = "document_charges", nullable = false, precision = 10, scale = 2)
-	private BigDecimal documentCharges;
+	@Column(name = "tenant_document_charges", nullable = false, precision = 10, scale = 2)
+	private BigDecimal tenantDocumentCharges;
 
 	// Getters and Setters
 
@@ -36,19 +36,21 @@ public class ZoyPgOtherCharges {
 		this.otherChargesId = otherChargesId;
 	}
 
-	public BigDecimal getOtherGst() {
-		return otherGst;
+	public BigDecimal getOwnerDocumentCharges() {
+		return ownerDocumentCharges;
 	}
 
-	public void setOtherGst(BigDecimal otherGst) {
-		this.otherGst = otherGst;
+	public void setOwnerDocumentCharges(BigDecimal ownerDocumentCharges) {
+		this.ownerDocumentCharges = ownerDocumentCharges;
 	}
 
-	public BigDecimal getDocumentCharges() {
-		return documentCharges;
+	public BigDecimal getTenantDocumentCharges() {
+		return tenantDocumentCharges;
 	}
 
-	public void setDocumentCharges(BigDecimal documentCharges) {
-		this.documentCharges = documentCharges;
+	public void setTenantDocumentCharges(BigDecimal tenantDocumentCharges) {
+		this.tenantDocumentCharges = tenantDocumentCharges;
 	}
+
+	
 }
