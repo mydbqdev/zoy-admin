@@ -13,7 +13,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import { ReportService } from '../service/reportService';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { FilterData, FiltersRequestModel } from '../model/report-filters-model';
-//import { UserGSTPaymentModel } from '../model/user-payment-model';
+import { ReviewsModel } from '../model/reviews-model';
  
 @Component({
 	selector: 'app-report-list',
@@ -45,8 +45,6 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	cityLocationName:string='';
 	fromDate:string='';
 	toDate:string='';
-
-
 	reportName:string ='Tenant Transactions Report';
 	@ViewChild('reviewsModelClose') reviewsModelClose: any;
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
@@ -55,6 +53,8 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	mySubscription: any;
 	rolesArray:string[]=[];
 	isExpandSideBar:boolean=true;
+	reviewsReplyDetails:ReviewsModel=new ReviewsModel();
+
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : ReportService) {
 			this.authService.checkLoginUserVlidaate();
@@ -279,10 +279,6 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		console.log('Export action triggered for:', element);
 	}
 	
-	viewReviews(element: any): void {
-		console.log('viewReviews action triggered for:', element);
-	}
-	
 	downloadProgress:boolean=false;
 	downloadPdf(type:string){   
 		this.authService.checkLoginUserVlidaate();
@@ -363,6 +359,9 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			});	
 		}
 		  
+ viweReviewsReplyDetails(element: any): void {
+	this.reviewsReplyDetails = element;	
+}
 
 		  
 }
