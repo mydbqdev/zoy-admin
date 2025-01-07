@@ -27,6 +27,8 @@ export class BeforeCheckInCancellationRefundModel{
     triggerOn : string ;
     condName : string ;
     sequenceOrder: number ;
+    isDelete:boolean = false;
+    isEdit:boolean = false;
 }
 
 export class SecurityDepositRefundModel{

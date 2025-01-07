@@ -53,8 +53,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  displayedColumns: string[] = ['condName', 'daysBeforeCheckIn','triggerOn','deductionPercentages','action'];
 	  dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>([]);
 	  @ViewChild(CdkDropListGroup) listGroup: CdkDropListGroup<HTMLElement[]>;
-	  items: BeforeCheckInCancellationRefundModel[] = [];
-	  backUpAnnexureTypeList:BeforeCheckInCancellationRefundModel[]=[];
+	  beforeCheckInCRDetails: BeforeCheckInCancellationRefundModel[] = [];
+	  backUpBeforeCheckInCRList:BeforeCheckInCancellationRefundModel[]=[];
 	  canSubmit:boolean = true;
 	  @ViewChild('table', { static: true }) table: MatTable<BeforeCheckInCancellationRefundModel>;
 
@@ -102,123 +102,13 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  //}
 		 
 		  this.getConfigMasterDetails();
-		  this.loadInitialData();
+		  this.getBeforeCheckInCRData();
 	  }
 	  ngAfterViewInit() {
 		  this.sidemenuComp.expandMenu(4);
 		  this.sidemenuComp.activeMenu(4, 'configuration-master');
 		  this.dataService.setHeaderName("Configuration Master");
 	  }
-
-	  drop(event: CdkDragDrop<BeforeCheckInCancellationRefundModel[]>) {
-		if (!this.dataSource || !this.dataSource.data) {
-		  return; 
-		}
-		const previousIndex = event.previousIndex;
-		const currentIndex = event.currentIndex;
-	   const data = this.dataSource.data[previousIndex];
-		if (event.container === event.previousContainer ) {
-		  moveItemInArray(this.items, previousIndex, currentIndex);
-		  let i=1;
-		   this.dataSource.data.forEach(element => {
-			  element.sequenceOrder = i++;
-			});
-			this.canSubmit=false;
-		} 
-		this.table.renderRows();
-	  }
-
-	  mockCancellationDetails = [
-		{
-		  cancellationId: 'CANC-001',
-		  daysBeforeCheckIn: 10,
-		  deductionPercentages: 5,
-		  bcicrDisable: true,
-		  triggerOn: 'PaymentAmount',
-		  condName: '==',
-		  sequenceOrder: 1
-		},
-		{
-		  cancellationId: 'CANC-002',
-		  daysBeforeCheckIn: 5,
-		  deductionPercentages: 10,
-		  bcicrDisable: true,
-		  triggerOn: 'Rent',
-		  condName: '==',
-		  sequenceOrder: 2
-		},
-		{
-		  cancellationId: 'CANC-003',
-		  daysBeforeCheckIn: 7,
-		  deductionPercentages: 8,
-		  bcicrDisable: true,
-		  triggerOn: 'PaymentAmount & Rent',
-		  condName: '<=',
-		  sequenceOrder: 3
-		},
-		{
-		  cancellationId: 'CANC-004',
-		  daysBeforeCheckIn: 3,
-		  deductionPercentages: 15,
-		  bcicrDisable: true,
-		  triggerOn: 'PaymentAmount',
-		  condName: '<=',
-		  sequenceOrder: 4
-		},
-		{
-		  cancellationId: 'CANC-005',
-		  daysBeforeCheckIn: 15,
-		  deductionPercentages: 12,
-		  bcicrDisable: true,
-		  triggerOn: 'PaymentAmount & Rent',
-		  condName: '>',
-		  sequenceOrder: 5
-		}
-	  ];
-
-	  loadInitialData(){
-		this.backUpAnnexureTypeList = this.mockCancellationDetails.map(element => ({ ...element }));
-		  this.items=this.mockCancellationDetails;
-		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.items);
-		  return;
-		this.authService.checkLoginUserVlidaate();
-		this.spinner.show();
-		this.configMasterService.getConfigMasterDetails().subscribe((data) => {
-		  this.backUpAnnexureTypeList = data.map(element => ({ ...element }));
-		  this.items=data;
-		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.items);
-		  
-		  setTimeout(()=>{
-			this.spinner.hide();
-		   },100);
-		},error =>{
-		  this.spinner.hide();
-		  if(error.status==403){
-			this.router.navigate(['/forbidden']);
-		  }else if (error.error && error.error.message) {
-			this.errorMsg =error.error.message;
-			console.log("Error:"+this.errorMsg);
-			this.notifyService.showError(this.errorMsg, "");
-		  } else {
-			if(error.status==500 && error.statusText=="Internal Server Error"){
-			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-			}else{
-			  let str;
-				if(error.status==400){
-				str=error.error;
-				}else{
-				  str=error.message;
-				  str=str.substring(str.indexOf(":")+1);
-				}
-				console.log("Error:"+str);
-				this.errorMsg=str;
-			}
-			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-		  }
-		}
-		);
-	  }
-	  
 
 	  collaspeListRight = [
 		{ id: 1, name: 'right1', selected: false },
@@ -461,61 +351,338 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		
 	}
 
-	beforeCheckInCRfReset(item:BeforeCheckInCancellationRefundModel) {
-		//this.configMasterModel.cancellationDetails[i] = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails[i]));
-		console.log("this.dataSource.data",this.dataSource.data)
-	}
-
-	beforeCheckInCRfUpDate(i:number){
-
-	console.log("this.items",this.items)
-		return;
-		const model =this.configMasterModel.cancellationDetails[i] ;
-		if(model.daysBeforeCheckIn == 0 ||  !model.daysBeforeCheckIn || model.deductionPercentages == undefined || model.deductionPercentages.toString() ==''	){
-			return ;
+	drop(event: CdkDragDrop<BeforeCheckInCancellationRefundModel[]>) {
+		if (!this.dataSource || !this.dataSource.data) {
+		  return; 
 		}
+		const previousIndex = event.previousIndex;
+		const currentIndex = event.currentIndex;
+	   const data = this.dataSource.data[previousIndex];
+		if (event.container === event.previousContainer && (data.isDelete === undefined ? true :!data.isDelete)) {
+		  moveItemInArray(this.beforeCheckInCRDetails, previousIndex, currentIndex);
+		  let i=1;
+		   this.dataSource.data.forEach(element => {
+			  if(element.isDelete){
+				return ;
+			  }
+			  element.sequenceOrder = i++;
+			});
+			this.canSubmit=false;
+		} 
+		this.table.renderRows();
+	  }
 
-		if(this.configMasterOrg.cancellationDetails.find(c=>c.daysBeforeCheckIn == model.daysBeforeCheckIn && c.cancellationId != model.cancellationId ) != undefined){
-			this.notifyService.showInfo('This Cancellation and Refund Policy is already available for '+model.daysBeforeCheckIn+' days.',"");
-			return;
+
+	  mockCancellationDetails:BeforeCheckInCancellationRefundModel[] = [
+		{
+		  cancellationId: 'CANC-001',
+		  daysBeforeCheckIn: 10,
+		  deductionPercentages: 5,
+		  bcicrDisable: true,
+		  triggerOn: 'PaymentAmount',
+		  condName: '==',
+		  sequenceOrder: 1,
+		  isDelete:false,
+		  isEdit:false,
+		},
+		{
+		  cancellationId: 'CANC-002',
+		  daysBeforeCheckIn: 5,
+		  deductionPercentages: 10,
+		  bcicrDisable: true,
+		  triggerOn: 'Rent',
+		  condName: '==',
+		  sequenceOrder: 2,
+		  isEdit:false,
+		  isDelete:false
+		},
+		{
+		  cancellationId: 'CANC-003',
+		  daysBeforeCheckIn: 7,
+		  deductionPercentages: 8,
+		  bcicrDisable: true,
+		  triggerOn: 'PaymentAmount & Rent',
+		  condName: '<=',
+		  sequenceOrder: 3,
+		  isEdit:false,
+		  isDelete:false
+		},
+		{
+		  cancellationId: 'CANC-004',
+		  daysBeforeCheckIn: 3,
+		  deductionPercentages: 15,
+		  bcicrDisable: true,
+		  triggerOn: 'PaymentAmount',
+		  condName: '<=',
+		  sequenceOrder: 4,
+		  isEdit:false,
+		  isDelete:false
+		},
+		{
+		  cancellationId: 'CANC-005',
+		  daysBeforeCheckIn: 15,
+		  deductionPercentages: 12,
+		  bcicrDisable: true,
+		  triggerOn: 'PaymentAmount & Rent',
+		  condName: '>',
+		  sequenceOrder: 5,
+		  isEdit:false,
+		  isDelete:false
 		}
-	
+	  ];
+
+	  getBeforeCheckInCRData(){
+		this.backUpBeforeCheckInCRList = this.mockCancellationDetails.map(element => ({ ...element }));
+		  this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
+		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
+		  return;
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
-		this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
-			this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
-			this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
+		this.configMasterService.getConfigMasterDetails().subscribe((data) => {
+		  this.backUpBeforeCheckInCRList = data.map(element => ({ ...element }));
+		  this.beforeCheckInCRDetails=data;
+		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
+		  
+		  setTimeout(()=>{
 			this.spinner.hide();
-			}, error => {
-			this.spinner.hide();
-			if(error.status == 0) {
-			  this.notifyService.showError("Internal Server Error/Connection not established", "")
-		   }else if(error.status==403){
-				this.router.navigate(['/forbidden']);
-			}else if (error.error && error.error.message) {
-				this.errorMsg = error.error.message;
-				console.log("Error:" + this.errorMsg);
-				this.notifyService.showError(this.errorMsg, "");
-			} else {
-				if (error.status == 500 && error.statusText == "Internal Server Error") {
-				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-				} else {
-				let str;
-				if (error.status == 400) {
-					str = error.error.error;
-				} else {
-					str = error.error.message;
-					str = str.substring(str.indexOf(":") + 1);
+		   },100);
+		},error =>{
+		  this.spinner.hide();
+		  if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		  }else if (error.error && error.error.message) {
+			this.errorMsg =error.error.message;
+			console.log("Error:"+this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+		  } else {
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			  let str;
+				if(error.status==400){
+				str=error.error;
+				}else{
+				  str=error.message;
+				  str=str.substring(str.indexOf(":")+1);
 				}
-				console.log("Error:" ,str);
-				this.errorMsg = str;
-				}
-				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-				//this.notifyService.showError(this.errorMsg, "");
+				console.log("Error:"+str);
+				this.errorMsg=str;
 			}
-			});						
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  }
+		}
+		);
+	  }
+	  beforeCheckInCRDatafReset(){
+		this.beforeCheckInCRfSaveVali = false ;
+		this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
+		this.canSubmit=true;
+		this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
+		this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
+	  }
+	  		
+	  checkDuplicateBCCR(row):boolean{
+		const model= this.beforeCheckInCRDetails.filter(data=>
+			data.cancellationId != row.cancellationId 
+			&& data.condName == row.condName 
+			&& data.daysBeforeCheckIn == row.daysBeforeCheckIn 
+			&& data.triggerOn == row.triggerOn 
+			&& data.deductionPercentages == row.deductionPercentages 
+		)
+		if(model.length>0){
+			this.notifyService.showInfo("This Refund Policy is already available.","");
+			return true;
+		}else{
+			return false;
+		}
+
+	  }
+	beforeCheckInCRfAdd(){
+		this.beforeCheckInCRfSaveVali = true ;
+		if(!this.beforeCheckInCRfModel.condName ||  !this.beforeCheckInCRfModel.daysBeforeCheckIn ||  !this.beforeCheckInCRfModel.triggerOn ||  !this.beforeCheckInCRfModel.deductionPercentages){
+			return ;
+		}
+		if(this.checkDuplicateBCCR(this.beforeCheckInCRfModel)){
+			return;
+		}
+		this.canSubmit=false;
+		this.beforeCheckInCRDetails.push(JSON.parse(JSON.stringify(this.beforeCheckInCRfModel)));
+		this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
+		this.beforeCheckInCRfSaveVali = false ;
+		this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
+	}  
+
+beforeCheckInCRfUpDate(){
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+		.then(
+		   (confirmed) =>{
+			if(confirmed){
+			  console.log("this.backUpBeforeCheckInCRList",this.backUpBeforeCheckInCRList);
+			  console.log("this.beforeCheckInCRDetails submit data:",this.beforeCheckInCRDetails);
+
+			  const duplicateBCCR = this.beforeCheckInCRDetails.reduce((acc, data, index, self) => {
+				const duplicateIndex = self.findIndex((policy) =>
+					policy.condName == data.condName &&
+					policy.daysBeforeCheckIn == data.daysBeforeCheckIn &&
+					policy.triggerOn == data.triggerOn &&
+					policy.deductionPercentages == data.deductionPercentages
+				);
+	
+				if (duplicateIndex != index && !acc.includes(index)) {
+					acc.push(index); 
+				}
+	
+				return acc;
+			}, []);
+			if (duplicateBCCR.length > 0) {
+				const indexs = duplicateBCCR.join(', '); 
+				this.notifyService.showError("Order "+indexs+" are duplicate roles, please check.","");
+				return
+			}
+		// 	this.authService.checkLoginUserVlidaate();
+		// this.spinner.show();
+		// this.configMasterService.submitBeforeCheckInCRfDetails(this.beforeCheckInCRDetails).subscribe(res => {
+		// 	this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
+		// 	this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
+		// 	this.spinner.hide();
+		// 	}, error => {
+		// 	this.spinner.hide();
+		// 	if(error.status == 0) {
+		// 	  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		//    }else if(error.status==403){
+		// 		this.router.navigate(['/forbidden']);
+		// 	}else if (error.error && error.error.message) {
+		// 		this.errorMsg = error.error.message;
+		// 		console.log("Error:" + this.errorMsg);
+		// 		this.notifyService.showError(this.errorMsg, "");
+		// 	} else {
+		// 		if (error.status == 500 && error.statusText == "Internal Server Error") {
+		// 		this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+		// 		} else {
+		// 		let str;
+		// 		if (error.status == 400) {
+		// 			str = error.error.error;
+		// 		} else {
+		// 			str = error.error.message;
+		// 			str = str.substring(str.indexOf(":") + 1);
+		// 		}
+		// 		console.log("Error:" ,str);
+		// 		this.errorMsg = str;
+		// 		}
+		// 		if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		// 		//this.notifyService.showError(this.errorMsg, "");
+		// 	}
+		// 	});	
+	 	}
+		}).catch(
+			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+		);	
+
 	}
-		
+
+	beforeCheckInCRfModify(row:any){
+		if(this.checkDuplicateBCCR(row)){
+			return;
+		}
+		row.isEdit = false;
+		this.dataSource.data = this.beforeCheckInCRDetails;
+		this.canSubmit=false;
+	}
+
+	// beforeCheckInCRfModify(row:any){
+	// console.log("this.items",this.beforeCheckInCRDetails)
+	// 	return;
+	// 	const model =row//this.configMasterModel.cancellationDetails[i] ;
+	// 	if(model.daysBeforeCheckIn == 0 ||  !model.daysBeforeCheckIn || model.deductionPercentages == undefined || model.deductionPercentages.toString() ==''	){
+	// 		return ;
+	// 	}
+
+	// 	if(this.configMasterOrg.cancellationDetails.find(c=>c.daysBeforeCheckIn == model.daysBeforeCheckIn && c.cancellationId != model.cancellationId ) != undefined){
+	// 		this.notifyService.showInfo('This Cancellation and Refund Policy is already available for '+model.daysBeforeCheckIn+' days.',"");
+	// 		return;
+	// 	}
+	
+	// 	this.authService.checkLoginUserVlidaate();
+	// 	this.spinner.show();
+	// 	this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
+	// 		this.configMasterOrg.cancellationDetails = Object.assign([], res.data );
+	// 		this.configMasterModel.cancellationDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationDetails));
+	// 		this.spinner.hide();
+	// 		}, error => {
+	// 		this.spinner.hide();
+	// 		if(error.status == 0) {
+	// 		  this.notifyService.showError("Internal Server Error/Connection not established", "")
+	// 	   }else if(error.status==403){
+	// 			this.router.navigate(['/forbidden']);
+	// 		}else if (error.error && error.error.message) {
+	// 			this.errorMsg = error.error.message;
+	// 			console.log("Error:" + this.errorMsg);
+	// 			this.notifyService.showError(this.errorMsg, "");
+	// 		} else {
+	// 			if (error.status == 500 && error.statusText == "Internal Server Error") {
+	// 			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+	// 			} else {
+	// 			let str;
+	// 			if (error.status == 400) {
+	// 				str = error.error.error;
+	// 			} else {
+	// 				str = error.error.message;
+	// 				str = str.substring(str.indexOf(":") + 1);
+	// 			}
+	// 			console.log("Error:" ,str);
+	// 			this.errorMsg = str;
+	// 			}
+	// 			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+	// 			//this.notifyService.showError(this.errorMsg, "");
+	// 		}
+	// 		});						
+	// }
+
+	undoEditItem(row: BeforeCheckInCancellationRefundModel,i:number) {
+		const data = this.backUpBeforeCheckInCRList.filter((d)=>d.cancellationId === row.cancellationId ).map(element => ({ ...element }));;
+		if(data !=null && data.length >0 ){
+			row.cancellationId= data[0].cancellationId;
+			row.condName = data[0].condName;
+			row.daysBeforeCheckIn =data[0].daysBeforeCheckIn;
+			row.deductionPercentages =data[0].deductionPercentages;
+			row.sequenceOrder =data[0].sequenceOrder;
+			row.triggerOn = data[0].triggerOn;
+			row.isDelete = false;
+		}
+		row.isEdit = false;
+		this.beforeCheckInCRDetails[i] = row ;
+		this.dataSource.data[i] = row;
+		this.canSubmit=false;
+	  }
+
+	beforeCheckInCRfDelete(row: BeforeCheckInCancellationRefundModel,n:number) {
+		row.isDelete = true;
+		if(!row.cancellationId){
+			this.beforeCheckInCRDetails.splice(n, 1)
+		}
+		this.dataSource.data = this.beforeCheckInCRDetails;
+		let i=1;
+		this.dataSource.data.forEach(element => {
+		  if(element.isDelete){
+			return ;
+		  }
+		  element.sequenceOrder = i++;
+		});
+		this.canSubmit=false;
+	  }
+	
+	undoDelete(item: BeforeCheckInCancellationRefundModel) {
+		item.isDelete = false;
+		this.dataSource.data = this.beforeCheckInCRDetails;
+		let i=1;
+		this.dataSource.data.forEach(element => {
+		  if(element.isDelete){
+			return ;
+		  }
+		  element.sequenceOrder = i++;
+		});
+		this.canSubmit=false;
+	  }
 	deleteRefundRule(data:any){
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want delete ?')
 		.then(
@@ -687,7 +854,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  }
 			}
 		  
-			if ((inputValue.match(/\./g) || []).length> 0 || parseFloat(inputValue) > 100 ) {
+			if ((inputValue.match(/\./g) || []).length> 1 || parseFloat(inputValue) > 100 ) {
 			  return false;
 			}
 
