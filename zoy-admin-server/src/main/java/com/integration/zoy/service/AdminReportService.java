@@ -733,7 +733,6 @@ public class AdminReportService implements AdminReportImpl{
 	            queryBuilder.append(" AND LOWER(zppd.property_house_area) LIKE LOWER(:pgAddress) ");
 	            parameters.put("pgAddress", "%" + filterData.getPgAddress() + "%");
 	        }
-	        System.out.println("filterData.getBookinId()"+filterData.getBookinId());
 	        if (filterData.getBookinId() != null && !filterData.getBookinId().isEmpty()) {
 	            queryBuilder.append(" AND LOWER(urd.booking_id) LIKE LOWER(:bookingId)");
 	            parameters.put("bookingId", "%" + filterData.getBookinId() + "%");
