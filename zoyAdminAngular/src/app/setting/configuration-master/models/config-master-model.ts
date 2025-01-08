@@ -1,10 +1,12 @@
 export class ConfigMasterModel{
     tokenDetails :TokenDetailsModel = new TokenDetailsModel() ;
     depositDetails : SecurityDepositLimitsModel = new SecurityDepositLimitsModel ();
-    cancellationDetails : BeforeCheckInCancellationRefundModel[] =[];
-    refundRules : SecurityDepositRefundModel= new SecurityDepositRefundModel() ;
     dataGrouping : DataGroupingModel = new DataGroupingModel() ;
-    autoCancellationDetails : AutoCancellationModel[] = [];
+    cancellationBeforeCheckInDetails : BeforeCheckInCancellationRefundModel[]=[];
+    earlyCheckOutRuleDetails:EarlyCheckOutRuleDetails=new EarlyCheckOutRuleDetails();
+    cancellationAfterCheckInDetails:SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
+    securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
+    otherCharges : OtherChargesModel=new OtherChargesModel();
 }
 
 export class TokenDetailsModel{
@@ -14,29 +16,31 @@ export class TokenDetailsModel{
 }
 
 export class SecurityDepositLimitsModel{
-    depositId : string ;
+    depositId : string ='';
     minimumDeposit : number ;
     maximumDeposit : number ;
 }
 
-export class BeforeCheckInCancellationRefundModel{
-    cancellationId : string ;
-    daysBeforeCheckIn : number ;
-    deductionPercentages : number ;
-    bcicrDisable : boolean = true ;
-    triggerOn : string ;
-    condName : string ;
-    sequenceOrder: number ;
-    isDelete:boolean = false;
-    isEdit:boolean = false;
+export class EarlyCheckOutRuleDetails{
+    early_check_out_id : string ='';
+    trigger_on : string ="WebCheckOut";
+    trigger_condition : string ;
+    check_out_day : number ;
+    deduction_percentage: number ;
+    trigger_value : string ;
 }
 
-export class SecurityDepositRefundModel{
-    refundId : string ;
-    maximumDays : number ;
-    plotformCharges : number ;
-    triggerOn : string ;
-    condName : string ;
+export class BeforeCheckInCancellationRefundModel{
+    cancellation_id : string ='';
+    before_checkin_days : number ;
+    deduction_percentage : number ;
+    trigger_value : string ;
+    trigger_on : string  ="WebCheckIn";
+    trigger_condition : string ;
+    priority: number ;
+    bcicrDisable : boolean = true ;
+    isDelete:boolean = false;
+    isEdit:boolean = false;
 }
 
 export class DataGroupingModel{
@@ -44,17 +48,18 @@ export class DataGroupingModel{
     considerDays : number ;
 }
 
-export class AutoCancellationModel{
-    refundId : string ;
-    maximumDays : number ;
-    platformCharges : number ;
-    triggerOn : string ;
-    condName : string ;
+export class SecurityDepositDeadLineAndAutoCancellationModel{
+    auto_cancellation_id : string ='';
+    trigger_on : string ;
+    trigger_condition : string ;
+    auto_cancellation_day : number ;
+    deduction_percentage : number ;
+    cond : string ;
+    trigger_value : string ;
 }
-export class SecurityDepositDeadLineModel{
-    refundId : string ;
-    maximumDays : number ;
-    platformCharges : number ;
-    triggerOn : string ;
-    condName : string ;
+
+export class OtherChargesModel{
+    otherChargesId : string ='';
+    ownerDocumentCharges  : number ;
+    tenantDocumentCharges : number ;
 }
