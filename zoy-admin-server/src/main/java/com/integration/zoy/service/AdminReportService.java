@@ -715,8 +715,8 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("toDate", filterRequest.getToDate());
 			}
 	        if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
-	            parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+	            queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:pgName) ");
+	            parameters.put("pgName", "%" + filterData.getTenantName() + "%");
 	        }
 
 	        if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
@@ -725,19 +725,20 @@ public class AdminReportService implements AdminReportImpl{
 	        }
 
 	        if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:pgName) ");
-	            parameters.put("pgName", "%" + filterData.getPgName() + "%");
+	            queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:PgPropertyName) ");
+	            parameters.put("PgPropertyName", "%" + filterData.getPgName() + "%");
 	        }
 
 	        if (filterData.getPgAddress() != null && !filterData.getPgAddress().isEmpty()) {
 	            queryBuilder.append(" AND LOWER(zppd.property_house_area) LIKE LOWER(:pgAddress) ");
 	            parameters.put("pgAddress", "%" + filterData.getPgAddress() + "%");
 	        }
-
+	        System.out.println("filterData.getBookinId()"+filterData.getBookinId());
 	        if (filterData.getBookinId() != null && !filterData.getBookinId().isEmpty()) {
-	            queryBuilder.append(" AND urd.booking_id LIKE :bookinId ");
-	            parameters.put("bookinId", "%" + filterData.getBookinId() + "%");
+	            queryBuilder.append(" AND LOWER(urd.booking_id) LIKE LOWER(:bookingId)");
+	            parameters.put("bookingId", "%" + filterData.getBookinId() + "%");
 	        }
+	        
 
 	        if (filterData.getRefundTitle() != null && !filterData.getRefundTitle().isEmpty()) {
 	            queryBuilder.append(" AND LOWER(ub.user_cancellation_reason) LIKE LOWER(:refundTitle) ");
@@ -746,8 +747,8 @@ public class AdminReportService implements AdminReportImpl{
 
 	        if (filterData.getRefundAmount() != null && !filterData.getRefundAmount().isEmpty()) {
 	            try {
-	                queryBuilder.append(" AND urd.refund_amount = :refundAmount ");
-	                parameters.put("refundAmount", new BigDecimal(filterData.getRefundAmount()));
+	                queryBuilder.append(" AND urd.refund_amount = :refundableAmount ");
+	                parameters.put("refundableAmount", new BigDecimal(filterData.getRefundAmount()));
 	            } catch (NumberFormatException e) {
 	                throw new WebServiceException("Invalid refund amount: " + filterData.getRefundAmount());
 	            }
@@ -762,25 +763,25 @@ public class AdminReportService implements AdminReportImpl{
 	                && filterRequest.getSortActive() != null) {
 	            String sort = "";
 	            switch (filterRequest.getSortActive()) {
-	                case "tenantName":
+	                case "customerName":
 	                    sort = "um.user_first_name || ' ' || um.user_last_name";
 	                    break;
-	                case "tenantContactNum":
+	                case "tenantMobileNum":
 	                    sort = "um.user_mobile";
 	                    break;
-	                case "pgName":
+	                case "PgPropertyName":
 	                    sort = "zppd.property_name";
 	                    break;
-	                case "pgAddress":
+	                case "userPgPropertyAddress":
 	                    sort = "zppd.property_house_area";
 	                    break;
-	                case "bookinId":
+	                case "bookingId":
 	                    sort = "urd.booking_id";
 	                    break;
 	                case "refundTitle":
 	                    sort = "ub.user_cancellation_reason";
 	                    break;
-	                case "refundAmount":
+	                case "refundableAmount":
 	                    sort = "urd.refund_amount";
 	                    break;
 	                default:
@@ -864,6 +865,11 @@ public class AdminReportService implements AdminReportImpl{
 			    parameters.put("pgName", "%" + filterData.getPgName() + "%");
 			}
 
+			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
+			    queryBuilder.append(" AND um.user_first_name || ' ' || um.user_last_name IS NOT NULL AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName)");
+			    parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+			}
+
 			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
 			    queryBuilder.append(" AND um.user_mobile IS NOT NULL AND LOWER(um.user_mobile) LIKE LOWER(:tenantContactNum)");
 			    parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
@@ -881,7 +887,7 @@ public class AdminReportService implements AdminReportImpl{
 		                case "reviewDate":
 		                    sort = "rr.timestamp";
 		                    break;
-		                case "tenantName":
+		                case "customerName":
 		                    sort = "um.user_first_name || ' ' || um.user_last_name";
 		                    break;
 		                case "pgName":
@@ -890,23 +896,23 @@ public class AdminReportService implements AdminReportImpl{
 		                case "tenantContactNum":
 		                    sort = "um.user_mobile";
 		                    break;
-		                case "Cleanliness":
+		                case "cleanliness":
 		                    sort = "MAX(CASE WHEN rating_master.review_type = 'cleanliness' THEN rrt.rating ELSE NULL END)";
 		                    break;
-		                case "Accommodation":
-		                    sort = "";
+		                case "accommodation":
+		                    sort = "MAX(CASE WHEN rating_master.review_type = 'accomodation' THEN rrt.rating ELSE NULL END)";
 		                    break;
-		                case "Amenities":
+		                case "amenities":
 		                    sort = "MAX(CASE WHEN rating_master.review_type = 'amenities' THEN rrt.rating ELSE NULL END)";
 		                    break;
-		                case "Maintenance":
+		                case "maintenance":
 		                    sort = "MAX(CASE WHEN rating_master.review_type = 'maintainance' THEN rrt.rating ELSE NULL END)";
 		                    break;
 		                case "valueForMoney":
 		                    sort = "MAX(CASE WHEN rating_master.review_type = 'price' THEN rrt.rating ELSE NULL END)";
 		                    break;    
 		                case "overallRating":
-		                    sort = "MAX(CASE WHEN rating_master.review_type = 'accomodation' THEN rrt.rating ELSE NULL END)";
+		                    sort = "rr.overall_rating";
 		                    break; 
 		                default:
 		                    sort = "rr.timestamp";

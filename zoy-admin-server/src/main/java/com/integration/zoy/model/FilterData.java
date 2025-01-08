@@ -48,7 +48,7 @@ public class FilterData {
 	@SerializedName("pgAddress")
 	String pgAddress;
 
-	@SerializedName("bookinId")
+	@SerializedName("bookingId")
 	String bookinId;
 
 	@SerializedName("refundTitle")
