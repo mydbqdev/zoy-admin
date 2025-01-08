@@ -79,7 +79,7 @@ import { MessageService } from 'src/app/message.service';
             }
         );
     }
-    public updatesecurityDepositRefundDetails(data:any): Observable<any> {
+    public updateEarlyCheckOutRulesdDetails(data:any): Observable<any> {
         const url1=this.basePath +"zoy_admin/config/early-checkout-rules";
         return  this.httpclient.post<any>(
             url1,
@@ -91,19 +91,53 @@ import { MessageService } from 'src/app/message.service';
             }
         );
     } 
-    public deleteRefundRule(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/config/deleteCancellationRefundRule";
-        return  this.httpclient.delete<any>(
+    public updateAutoCancellationDetails(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/after-check-in";
+        return  this.httpclient.post<any>(
             url1,
+            data,
             {
-                body: data,
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    } 
+    public updateOtherChargesDetails(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/other-charges";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
                 headers:ServiceHelper.buildHeaders(),
                 observe : 'body',
                 withCredentials:true
             }
         );
     }
-
+    
+    public getTriggeredCond(): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/triggered-cond";
+        return  this.httpclient.get<any>(
+            url1,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    }
+    public getTriggerOn(): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/triggered-on";
+        return  this.httpclient.get<any>(
+            url1,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    }
 
       private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");    
