@@ -54,6 +54,18 @@ import { MessageService } from 'src/app/message.service';
             }
         );
     }    
+    public updateSecurityDepositDeadLineDetails(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/security-deposit-deadline";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    } 
     public updateDataGroupingDetails(data:any): Observable<any> {
         const url1=this.basePath +"zoy_admin/config/data-grouping";
         return  this.httpclient.post<any>(
