@@ -331,7 +331,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.securityDepositDeadLineDetails).subscribe(res => {
 			this.configMasterOrg.securityDepositDeadLineDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
 			this.configMasterModel.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositDeadLineDetails));
-			this.securityDepositLimitsDisabled = true;
+			this.securityDepositDeadLineDisabled = true;
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -743,7 +743,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.configMasterService.updateEarlyCheckOutRulesdDetails(this.configMasterModel.earlyCheckOutRuleDetails).subscribe(res => {
 					this.configMasterOrg.earlyCheckOutRuleDetails = Object.assign(new EarlyCheckOutRuleDetails(), res.data );
 					this.configMasterModel.earlyCheckOutRuleDetails = JSON.parse(JSON.stringify(this.configMasterOrg.earlyCheckOutRuleDetails));
-					this.securityDepositRefundDisabled = true;
+					this.earlyCheckOutRulesDisabled = true;
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();

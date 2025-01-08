@@ -24,7 +24,7 @@
   } */
 
   .mat-mdc-table .mat-mdc-row:hover {
-    background:rgb(226, 248, 248);
+    background:rgb(255, 255, 255);
     cursor: pointer;
   }
   .thead-dark{
