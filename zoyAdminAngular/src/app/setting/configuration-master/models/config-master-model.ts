@@ -38,7 +38,6 @@ export class BeforeCheckInCancellationRefundModel{
     trigger_on : string  ="WebCheckIn";
     trigger_condition : string ;
     priority: number ;
-    bcicrDisable : boolean = true ;
     isDelete:boolean = false;
     isEdit:boolean = false;
 }
