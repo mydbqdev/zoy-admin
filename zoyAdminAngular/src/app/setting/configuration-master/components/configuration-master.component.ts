@@ -327,6 +327,10 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		if(!this.configMasterModel.securityDepositDeadLineDetails.auto_cancellation_day || !this.configMasterModel.securityDepositDeadLineDetails.deduction_percentage || !this.configMasterModel.securityDepositDeadLineDetails.trigger_condition|| !this.configMasterModel.securityDepositDeadLineDetails.trigger_value ){
 			return ;
 		}
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+		.then(
+		   (confirmed) =>{
+			if(confirmed){
 		this.spinner.show();
 		this.configMasterService.updateSecurityDepositDeadLineDetails(this.configMasterModel.securityDepositDeadLineDetails).subscribe(res => {
 			this.configMasterOrg.securityDepositDeadLineDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
@@ -360,7 +364,10 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
 				//this.notifyService.showError(this.errorMsg, "");
 			}
-			});								
+			});	
+		}}).catch(
+			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+		);							
 	  }
 	securityDepositDeadLineReset() {
 		this.configMasterModel.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositDeadLineDetails));
