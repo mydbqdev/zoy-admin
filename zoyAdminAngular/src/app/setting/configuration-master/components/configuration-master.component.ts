@@ -572,7 +572,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		 
 		  this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
 		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
-	  }
+		  this.table.renderRows();
+		}
 
 	  beforeCheckInCRDatafReset(){
 		this.beforeCheckInCRfSaveVali = false ;
@@ -644,8 +645,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
 			this.configMasterService.submitBeforeCheckInCRfDetails(this.beforeCheckInCRDetails).subscribe(res => {
+			this.configMasterOrg.cancellationBeforeCheckInDetails = res.data;
+			this.canSubmit = true;
 			this.getBeforeCheckInCRData();
-			this.canSubmit =true;
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -830,14 +832,10 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}	
 		
 		
-		getTriggerCondition(){
-			 this.spinner.show();		     
+		getTriggerCondition(){		     
 			 this.configMasterService.getTriggeredCond().subscribe(res => {
 			 this.triggerCondition = Object.assign([],res );
-			 this.spinner.hide();
 		   },error =>{
-			 this.spinner.hide();
-			 console.log("error.error",error)
 			 if(error.status == 0) {
 				 this.notifyService.showError("Internal Server Error/Connection not established", "")
 			  }else if(error.status==403){
@@ -867,11 +865,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 						 
 		 }
 		
-		 getTriggerOn(){
-			this.spinner.show();		     
+	getTriggerOn(){
 			this.configMasterService.getTriggerOn().subscribe(res => {
 			this.triggerOn = Object.assign([],res );
-			this.spinner.hide();
 		  },error =>{
 			this.spinner.hide();
 			console.log("error.error",error)
