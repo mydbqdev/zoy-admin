@@ -328,7 +328,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			return ;
 		}
 		this.spinner.show();
-		this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.securityDepositDeadLineDetails).subscribe(res => {
+		this.configMasterService.updateSecurityDepositDeadLineDetails(this.configMasterModel.securityDepositDeadLineDetails).subscribe(res => {
 			this.configMasterOrg.securityDepositDeadLineDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
 			this.configMasterModel.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositDeadLineDetails));
 			this.securityDepositDeadLineDisabled = true;
