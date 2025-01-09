@@ -12,7 +12,9 @@ import com.integration.zoy.entity.ZoyPgPropertyDetails;
 @Repository
 public interface ZoyPgPropertyDetailsRepository extends JpaRepository<ZoyPgPropertyDetails, String> {
 	
-	@Query(value ="SELECT DISTINCT zppd.property_city FROM pgowners.zoy_pg_property_details zppd", nativeQuery = true)
+	@Query(value ="SELECT DISTINCT zppd.property_city \r\n"
+			+ "FROM pgowners.zoy_pg_property_details zppd \r\n"
+			+ "ORDER BY zppd.property_city ASC", nativeQuery = true)
 	String[] findDistinctCities();
 
 
