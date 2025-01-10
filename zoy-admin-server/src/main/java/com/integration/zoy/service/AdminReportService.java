@@ -109,8 +109,11 @@ public class AdminReportService implements AdminReportImpl{
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterData.getTransactionStatus() != null && !filterData.getTransactionStatus().isEmpty()) {
-				queryBuilder.append(" AND LOWER(up.user_payment_payment_status) LIKE LOWER(CONCAT('%', :transactionStatus, '%'))");
-				parameters.put("transactionStatus", filterData.getTransactionStatus());
+			    queryBuilder.append(" AND LOWER(CASE " +
+			                        "    WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' " +
+			                        "    ELSE up.user_payment_payment_status " +
+			                        "END) LIKE LOWER(CONCAT('%', :transactionStatus, '%'))");
+			    parameters.put("transactionStatus", filterData.getTransactionStatus());
 			}
 			if (filterData.getModeOfPayment() != null && !filterData.getModeOfPayment().isEmpty()) {
 				 queryBuilder.append(" AND LOWER(up.user_payment_result_method) LIKE LOWER(CONCAT('%', :modeOfPayment, '%'))");
