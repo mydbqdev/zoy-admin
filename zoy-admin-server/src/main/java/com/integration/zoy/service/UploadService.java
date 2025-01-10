@@ -314,6 +314,7 @@ public class UploadService {
 		master.setUserLastName(tenantDetails.getLastName());
 		master.setUserEkycIsEkycVerified(false);
 		master.setUserEkycIsVideoVerified(false);
+		master.setUserEkycPaid(false);
 		uploadDBImpl.saveUser(master);
 		List<NotificationModeMaster> modeMaster=uploadDBImpl.findAllNotificationMode();
 		List<UserNotifications> notifications =new ArrayList<>();
