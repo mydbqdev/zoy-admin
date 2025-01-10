@@ -12,6 +12,9 @@ public class TriggeredCond {
 
 	@Column(name = "cond_name", nullable = false, length = 10)
 	private String condName;
+	
+	@Column(name = "cond_desc")
+	private String condDesc;
 
 	// Getters and Setters
 	public Long getId() {
@@ -29,5 +32,15 @@ public class TriggeredCond {
 	public void setCondName(String condName) {
 		this.condName = condName;
 	}
+
+	public String getCondDesc() {
+		return condDesc;
+	}
+
+	public void setCondDesc(String condDesc) {
+		this.condDesc = condDesc;
+	}
+	
+	
 }
 

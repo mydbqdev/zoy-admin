@@ -62,17 +62,17 @@ public interface ZoyConfigurationMasterImpl {
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(@RequestBody List<ZoyBeforeCheckInCancellation> details);
 
-	@Operation(summary = "Delete Admin Configuration Before Check In", description = "Deletes Admin Configuration Before Check In by cancellationId", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
-	@ApiResponses(value = { 
-			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
-			@ApiResponse(responseCode = "400", description = "Bad Request"),
-			@ApiResponse(responseCode = "404", description = "Not Found"),
-			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@DeleteMapping(value = "/zoy_admin/config/deleteCancellationRefundRule",
-	produces = { "application/json" },
-	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigDeleteBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellation cancellationID);
+//	@Operation(summary = "Delete Admin Configuration Before Check In", description = "Deletes Admin Configuration Before Check In by cancellationId", security = {
+//			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+//	@ApiResponses(value = { 
+//			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+//			@ApiResponse(responseCode = "400", description = "Bad Request"),
+//			@ApiResponse(responseCode = "404", description = "Not Found"),
+//			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+//	@DeleteMapping(value = "/zoy_admin/config/deleteCancellationRefundRule",
+//	produces = { "application/json" },
+//	consumes = { "application/json"})
+//	ResponseEntity<String> zoyAdminConfigDeleteBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellation cancellationID);
 
 	@Operation(summary = "Admin Configration Early check out Rules ", description = "Create/Update Admin Configration Early check out Rules", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })

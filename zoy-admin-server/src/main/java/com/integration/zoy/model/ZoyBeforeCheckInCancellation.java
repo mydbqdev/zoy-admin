@@ -40,4 +40,10 @@ public class ZoyBeforeCheckInCancellation {
 
 	@JsonProperty("create_at")
 	private Timestamp createAt;
+	
+	@JsonProperty("isDelete")
+	private Boolean isDelete;
+	
+	@JsonProperty("isEdit")
+	private Boolean isEdit;
 }
