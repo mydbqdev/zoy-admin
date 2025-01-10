@@ -40,7 +40,7 @@ public class UserMaster {
     private Boolean userEkycIsEkycVerified;
     
     @Column(name = "user_ekyc_isvideo_verified")
-    private Boolean userEkycIsVideoVerified;
+    private Boolean userEkycIsVideoVerified = false;
 
     @Column(name = "user_created_at")
     @CreationTimestamp
@@ -53,6 +53,8 @@ public class UserMaster {
     @Column(name = "user_gender")
     private String userGender;
 
+    @Column(name = "user_ekyc_paid")
+    private Boolean userEkycPaid = false;
     
     public String getUserId() {
         return userId;
@@ -150,17 +152,22 @@ public class UserMaster {
 		this.userEkycIsVideoVerified = userEkycIsVideoVerified;
 	}
 
+	public Boolean getUserEkycPaid() {
+		return userEkycPaid;
+	}
+
+	public void setUserEkycPaid(Boolean userEkycPaid) {
+		this.userEkycPaid = userEkycPaid;
+	}
+
 	@Override
 	public String toString() {
 		return "UserMaster [userId=" + userId + ", userMobile=" + userMobile + ", userEmail=" + userEmail + ", userPin="
 				+ userPin + ", userIdEnc=" + userIdEnc + ", userFirstName=" + userFirstName + ", userLastName="
 				+ userLastName + ", userEkycIsEkycVerified=" + userEkycIsEkycVerified + ", userEkycIsVideoVerified="
 				+ userEkycIsVideoVerified + ", userCreatedAt=" + userCreatedAt + ", userModifiedAt=" + userModifiedAt
-				+ ", userGender=" + userGender + "]";
+				+ ", userGender=" + userGender + ", userEkycPaid=" + userEkycPaid + "]";
 	}
 
-	
-
-	
 
 }
