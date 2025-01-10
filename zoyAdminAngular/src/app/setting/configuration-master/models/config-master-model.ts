@@ -7,6 +7,9 @@ export class ConfigMasterModel{
     cancellationAfterCheckInDetails:SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
     securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
     otherCharges : OtherChargesModel=new OtherChargesModel();
+    forceCheckout :ForceCheckoutModel = new ForceCheckoutModel();
+    checkoutDeductionDetails: CheckoutDeductionDetailsModel = new CheckoutDeductionDetailsModel();
+    rentSlabModel :RentSlabModel = new RentSlabModel();
 }
 
 export class TokenDetailsModel{
@@ -62,3 +65,26 @@ export class OtherChargesModel{
     ownerDocumentCharges  : number ;
     tenantDocumentCharges : number ;
 }
+
+
+export class ForceCheckoutModel{
+    forceCheckoutDaysId : string ='';
+    forceCheckoutDays  : number ;
+}
+
+export class CheckoutDeductionDetailsModel {
+    checkout_deduction_Id : string ='';
+    trigger_condition: string ;
+    notice_period_days: number ;
+    deduction_percentage: number ;
+    trigger_value : string ;
+  }
+
+  export class RentSlabModel  {
+    rentSlabId: string ;
+    slabFrom: number ;
+    slabTo: number ;
+    rentPercentage: number ;
+    isEdit:boolean = false;
+    isDelete:boolean = false;
+  };
