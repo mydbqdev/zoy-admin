@@ -168,31 +168,45 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			}
 			for(ZoyBeforeCheckInCancellation details:zoyBeforeCheckInCancellations) {
 				if (details.getCancellationId() != null && !details.getCancellationId().isEmpty()) {
-					ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(details.getCancellationId());
-					if (cancelDetails == null) {
-						response.setStatus(HttpStatus.CONFLICT.value());
-						response.setError("Unable to get before check-in cancellation details");
-						return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+					if(details.getIsEdit()) {
+						ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(details.getCancellationId());
+						if (cancelDetails == null) {
+							response.setStatus(HttpStatus.CONFLICT.value());
+							response.setError("Unable to get before check-in cancellation details");
+							return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+						}
+						final int oldFixed=cancelDetails.getBeforeCheckinDays();
+						final BigDecimal oldVariable=cancelDetails.getDeductionPercentage();
+						cancelDetails.setPriority(details.getPriority());
+						cancelDetails.setTriggerOn(details.getTriggerOn());
+						cancelDetails.setTriggerCondition(details.getTriggerCondition());
+						cancelDetails.setBeforeCheckinDays(details.getBeforeCheckinDays());
+						cancelDetails.setDeductionPercentage(details.getDeductionPercentage());
+						cancelDetails.setCond(details.getTriggerOn() +" "+ details.getTriggerCondition() +" "+ details.getBeforeCheckinDays());
+						cancelDetails.setTriggerValue(details.getTriggerValue());
+						ownerDBImpl.saveBeforeCancellation(cancelDetails);
+						//audit history here
+						StringBuffer historyContent=new StringBuffer(" has updated the Cancellation And Refund Policy for");
+						if(oldFixed!=details.getBeforeCheckinDays()) {
+							historyContent.append(", Days before check in from "+oldFixed+" to "+details.getBeforeCheckinDays());
+						}
+						if(oldVariable!=details.getDeductionPercentage()) {
+							historyContent.append(" , Deduction percentage from "+oldVariable+" to "+details.getDeductionPercentage());
+						}
+						auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+					} else if (details.getIsDelete()) {
+						ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(details.getCancellationId());
+						if (cancelDetails == null) {
+							response.setStatus(HttpStatus.NOT_FOUND.value());
+							response.setError("Cancellation details not found for the given ID");
+							return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+						}
+						ownerDBImpl.deleteBeforeCancellation(cancelDetails.getCancellationId());
+						//audit history here
+						String historyContent=" has deleted the Cancellation And Refund Policy for, Days before check in = "+cancelDetails.getBeforeCheckinDays()+" , Deduction percentage ="+cancelDetails.getDeductionPercentage();
+						auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_DELETE);
+
 					}
-					final int oldFixed=cancelDetails.getBeforeCheckinDays();
-					final BigDecimal oldVariable=cancelDetails.getDeductionPercentage();
-					cancelDetails.setPriority(details.getPriority());
-					cancelDetails.setTriggerOn(details.getTriggerOn());
-					cancelDetails.setTriggerCondition(details.getTriggerCondition());
-					cancelDetails.setBeforeCheckinDays(details.getBeforeCheckinDays());
-					cancelDetails.setDeductionPercentage(details.getDeductionPercentage());
-					cancelDetails.setCond(details.getTriggerOn() +" "+ details.getTriggerCondition() +" "+ details.getBeforeCheckinDays());
-					cancelDetails.setTriggerValue(details.getTriggerValue());
-					ownerDBImpl.saveBeforeCancellation(cancelDetails);
-					//audit history here
-					StringBuffer historyContent=new StringBuffer(" has updated the Cancellation And Refund Policy for");
-					if(oldFixed!=details.getBeforeCheckinDays()) {
-						historyContent.append(", Days before check in from "+oldFixed+" to "+details.getBeforeCheckinDays());
-					}
-					if(oldVariable!=details.getDeductionPercentage()) {
-						historyContent.append(" , Deduction percentage from "+oldVariable+" to "+details.getDeductionPercentage());
-					}
-					auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 				} else {
 					ZoyPgCancellationDetails newCancelDetails = new ZoyPgCancellationDetails();
 					newCancelDetails.setPriority(details.getPriority());
@@ -547,44 +561,44 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	
 
-	@Override
-	@Transactional
-	public ResponseEntity<String> zoyAdminConfigDeleteBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellation cancellationID) {
-		ResponseBody response = new ResponseBody();
-		try {
-			if (cancellationID.getCancellationId() == null || cancellationID.getCancellationId().isEmpty()) {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Cancellation ID is required");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
-
-			final ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(cancellationID.getCancellationId());
-			if (cancelDetails == null) {
-				response.setStatus(HttpStatus.NOT_FOUND.value());
-				response.setError("Cancellation details not found for the given ID");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
-			}
-			ownerDBImpl.deleteBeforeCancellation(cancellationID.getCancellationId());
-			//audit history here
-			String historyContent=" has deleted the Cancellation And Refund Policy for, Days before check in = "+cancelDetails.getBeforeCheckinDays()+" , Deduction percentage ="+cancelDetails.getDeductionPercentage();
-			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_DELETE);
-
-			List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
-			List<ZoyBeforeCheckInCancellationDto> dtoList = cancellationDetails.stream()
-					.map(this::convertToDTO)
-					.collect(Collectors.toList());
-			response.setStatus(HttpStatus.OK.value());
-			response.setData(dtoList);
-			response.setMessage("Cancellation details successfully deleted");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-
-		} catch (Exception e) {
-			log.error("Error deleting cancellation details API: /zoy_admin/config/before-check-in/{cancellationId}", e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+//	@Override
+//	@Transactional
+//	public ResponseEntity<String> zoyAdminConfigDeleteBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellation cancellationID) {
+//		ResponseBody response = new ResponseBody();
+//		try {
+//			if (cancellationID.getCancellationId() == null || cancellationID.getCancellationId().isEmpty()) {
+//				response.setStatus(HttpStatus.BAD_REQUEST.value());
+//				response.setError("Cancellation ID is required");
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//			}
+//
+//			final ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(cancellationID.getCancellationId());
+//			if (cancelDetails == null) {
+//				response.setStatus(HttpStatus.NOT_FOUND.value());
+//				response.setError("Cancellation details not found for the given ID");
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+//			}
+//			ownerDBImpl.deleteBeforeCancellation(cancellationID.getCancellationId());
+//			//audit history here
+//			String historyContent=" has deleted the Cancellation And Refund Policy for, Days before check in = "+cancelDetails.getBeforeCheckinDays()+" , Deduction percentage ="+cancelDetails.getDeductionPercentage();
+//			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_DELETE);
+//
+//			List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
+//			List<ZoyBeforeCheckInCancellationDto> dtoList = cancellationDetails.stream()
+//					.map(this::convertToDTO)
+//					.collect(Collectors.toList());
+//			response.setStatus(HttpStatus.OK.value());
+//			response.setData(dtoList);
+//			response.setMessage("Cancellation details successfully deleted");
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+//
+//		} catch (Exception e) {
+//			log.error("Error deleting cancellation details API: /zoy_admin/config/before-check-in/{cancellationId}", e);
+//			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//			response.setError("Internal server error");
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
 
 	private ZoyAfterCheckInCancellationDto convertToDTO(ZoyPgAutoCancellationAfterCheckIn entity) {
 		ZoyAfterCheckInCancellationDto dto = new ZoyAfterCheckInCancellationDto();
