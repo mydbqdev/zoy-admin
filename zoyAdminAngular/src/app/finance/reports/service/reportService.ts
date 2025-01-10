@@ -36,13 +36,13 @@ import { MessageService } from 'src/app/message.service';
       'ownerId': 'OWNER ID',
       'ownerName': 'OWNER NAME',
       'pgId': 'PG ID',
-      'pgName': 'PG NAME',
+      'pgName': 'PG PROPERTY NAME',
       'totalAmountFromTenants': 'TOTAL AMOUNT FROM TENANTS',
       'amountPaidToOwner': 'AMOUNT PAID TO OWNER',
       'zoyCommission': 'ZOY COMMISSION',
       'transactionDate': 'TRANSACTION DATE',
       'transactionNumber': 'TRANSACTION NUMBER',
-      'paymentStatus': 'PAYMENT STATUS',
+      'paymentStatus': 'TRANSACTION STATUS',
       'transactionStatus': 'TRANSACTION STATUS',
       'baseAmount': 'BASE AMOUNT',
       'gstAmount': 'GST AMOUNT',
@@ -114,7 +114,7 @@ import { MessageService } from 'src/app/message.service';
     },
     {
 		  'reportName': 'Owner Payments Gst Report',// == Vendor Payments Gst Report
-		  'columns': ['transactionDate','transactionNumber','ownerName','pgName','pgAddress','totalAmount','gstAmount','baseAmount','paymentMethod'],
+		  'columns': ['transactionDate','transactionNumber','ownerName','ownerEmail','pgName','pgAddress','totalAmount','gstAmount','baseAmount','paymentMethod'],
 		},
     {
 		  'reportName': 'Consolidated Finance Report',
