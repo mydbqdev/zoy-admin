@@ -68,7 +68,6 @@ import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AdminUserPasswordHistoryRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.EmailService;
-import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.service.ZoyCodeGenerationService;
