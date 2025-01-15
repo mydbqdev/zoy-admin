@@ -13,6 +13,7 @@ export class UserService {
   public dbquser:boolean;
   public userinfo:UserInfo;
   public sessionTime:Date = null;
+  public loggedOut:boolean;
   
 
   getUsername(){
@@ -33,10 +34,17 @@ export class UserService {
 
   getSessionTime(){
     return this.sessionTime;
-}
+  }
 
-setSessionTime(sessionTime:Date){
+  setSessionTime(sessionTime:Date){
     this.sessionTime=sessionTime;
-}
+  }
 
+  isLoggedOut(){
+    return this.loggedOut;
+  }
+
+  setLoggedOut(loggedOut:boolean){
+    this.loggedOut=loggedOut;
+  }  
 }

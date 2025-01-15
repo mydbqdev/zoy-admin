@@ -160,7 +160,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     this.timeoutId = setInterval(() => {
       this.sessionTime = this.userService.getSessionTime() || new Date();
       const diff =  new Date().getTime() - this.sessionTime.getTime() ;
-      if(diff>800000 && this.userService.getSessionTime()){
+      if(diff>800000 && !this.userService.isLoggedOut() && this.userService.getSessionTime()){
        this.authService.checkLoginUserVlidaate();
       }
     }, 60000); 

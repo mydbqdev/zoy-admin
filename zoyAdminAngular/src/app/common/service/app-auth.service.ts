@@ -110,6 +110,7 @@ export class AppAuthService extends AuthService{
                if(!this.sessionSnapshot.username){
                    this.router.navigateByUrl('/signin');
                }{
+                this.userService.setLoggedOut(false);
                    this.router.navigateByUrl('/home'); 
               }
              } else {
@@ -180,7 +181,9 @@ export class AppAuthService extends AuthService{
     }
 
      public checkLoginUserVlidaate() : void{
+        if(!this.userService.isLoggedOut()){
         this.getUserDetails();
+        }
         //var msg:string;
        // this.sessionSnapshot =null;
         /*this.message ='';
@@ -217,10 +220,12 @@ export class AppAuthService extends AuthService{
         this.message ='';
         this.checkLogoutUserOnServer().subscribe(
             (result)=>{ 
+                this.userService.setLoggedOut(true);
                 this.sessionSnapshot =null;
                 this.userService.setSessionTime(null);
                 sessionStorage.clear();
                 this.router.navigate(['/signin']); 
+                
             },
             (err) =>{
                if(err.error && err.error.message){
