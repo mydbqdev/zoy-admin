@@ -661,13 +661,13 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				String message = "<p>Hi "+master.getFirstName()+" "+master.getLastName()+",</p>"
 						+ "<p>Welcome to Zoy Admin Portal, We are excited to have you as part of our community! "
 						+ "Below are your sign-in credentials for accessing your account.</p>"
-						+ "<p>Username: "+ login.getUserEmail()+"</p>"
-						+ "Password: "+ passwordDecoder.decryptedText(login.getPassword())+"</p>"
+						+ "<p>Username: "+ login.getUserEmail()
+						+ "<br>Password: <b>"+ passwordDecoder.decryptedText(login.getPassword())+"</b><br>"
 						+ "Zoy Admin Portal Sign-in Link : <a href='"+ qaSigninLink +"'>"+ qaSigninLink +"</a></p>"
 						+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
 				email.setBody(message);
 				email.setContent("text/html");
-				emailService.sendEmail(email,null);
+				emailService.sendEmail(email,null); 
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("Signin Details sent successfully");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
