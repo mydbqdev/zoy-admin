@@ -703,7 +703,8 @@ public class AdminReportService implements AdminReportImpl{
 	                + "ub.user_cancellation_reason AS refund_title, "
 	                + "urd.refund_amount AS refund_amount, "
 	                + "urd.refund_process_status AS Status, "
-	            	+ "urd.refund_created_timestamp "
+	            	+ "urd.refund_created_timestamp, "
+					+ "zppd.property_city \r\n" 
 	                + "FROM pgcommon.user_refund_details urd "
 	                + "JOIN pgusers.user_master um ON urd.user_id = um.user_id "
 	                + "JOIN pgowners.zoy_pg_property_details zppd ON urd.property_id = zppd.property_id "
@@ -761,6 +762,11 @@ public class AdminReportService implements AdminReportImpl{
 	            parameters.put("paymentStatus", Boolean.parseBoolean(filterData.getTransactionStatus()));
 	        }
 
+	        if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
+				parameters.put("cityLocation", filterRequest.getCityLocation());
+			}
+	        
 	        if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 	                && filterRequest.getSortActive() != null) {
 	            String sort = "";
@@ -841,7 +847,8 @@ public class AdminReportService implements AdminReportImpl{
 					+ "    MAX(CASE WHEN rating_master.review_type = 'amenities' THEN rrt.rating ELSE NULL END) AS amenities_rating,\r\n"
 					+ "    MAX(CASE WHEN rating_master.review_type = 'price' THEN rrt.rating ELSE NULL END) AS value_for_money_rating,\r\n"
 					+ "    MAX(CASE WHEN rating_master.review_type = 'maintainance' THEN rrt.rating ELSE NULL END) AS maintainance,\r\n"
-					+ "    MAX(CASE WHEN rating_master.review_type = 'accomodation' THEN rrt.rating ELSE NULL END) AS accomodation  \r\n"
+					+ "    MAX(CASE WHEN rating_master.review_type = 'accomodation' THEN rrt.rating ELSE NULL END) AS accomodation,\r\n"
+					+ "zppd.property_city \r\n" 
 					+ "from pgcommon.review_ratings rr   \r\n"
 					+ "left join pgcommon.review_ratings_types rrt on rr.rating_id = rrt.rating_id   \r\n"
 					+ "left join pgcommon.review_ratings_master rating_master on rrt.review_type_id = rating_master.review_type_id   \r\n"
@@ -880,6 +887,10 @@ public class AdminReportService implements AdminReportImpl{
 			if (filterData.getOverallRating() != null && !filterData.getOverallRating().isEmpty()) {
 			    queryBuilder.append(" AND rr.overall_rating IS NOT NULL AND CAST(rr.overall_rating AS text) LIKE :overallRating");
 			    parameters.put("overallRating", "%" +filterData.getOverallRating()+ "%");
+			}
+			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
+				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
 			
 			 if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
