@@ -547,8 +547,8 @@
                               </div>
                               
                             </div>
-                            <hr class="solid"> 
-                            <div>
+                            <hr class="solid" hidden> 
+                            <div hidden>
                               <div class="row p-3 align-items-center marginRow">
                                 <div class="col-sm-3">
                                   <div><span style="font-size: 16px;">Checkout Deduction </span></div>
@@ -912,6 +912,187 @@
                               </div>
                               
                             </div>
+                            <hr class="solid" hidden> 
+                            <div hidden>
+                              <div class="row p-3 marginRow">
+                                <div class="col-sm-3">
+                                  <span style="font-size: 16px;">GST Slabs </span>
+                                  <p class="small text-muted" style="font-size: 12px;">
+                                    <em>Define the rent percentage based on the tenant's stay duration (less than 1 month).</em>
+                                  </p>
+                                </div>
+                              
+                                <div class="col-sm-9">
+                                    <div class="card card-body m-0 p-0">
+                                      <div class="pt-2 pb-2">
+                                        <div class="d-flex">
+                                          <input type="checkbox" class="form-check-input" (change)="onCheckboxChange($event)" *ngIf="showInputBox">
+                                          <!-- Slab From -->
+                                          <div class="mr-3">
+                                            <div>Slab From</div>
+                                            <div class="input-group input-group-sm">
+                                              
+                                              <ng-container *ngIf="!showInputBox; else inputBoxTemplate">
+                                                <select  class="form-control" 
+                                                [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.slabFrom}" 
+                                               [(ngModel)]="rentSlabModel.slabFrom" (change)="onDropdownChange($event)">
+                                                  <option value="Upto">Upto</option>
+                                                  <option value="Above">Above</option>
+                                                  <option value="Input">Provide Input</option>
+                                                </select>
+                                              </ng-container>
+                                              <ng-template #inputBoxTemplate>
+                                                <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                                <input type="text" 
+                                                     class="form-control form-control-sm"
+                                                     [(ngModel)]="rentSlabModel.slabFrom" maxlength="7"
+                                                     (keypress)="numberOnly($event)" 
+                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.slabFrom}" 
+                                                     style="max-width: 70px !important;" />
+                                               
+                                                <!-- <div *ngIf="submitted && form.controls.fromIncomeSlab.errors?.required" class="text-danger">
+                                                  From Income Slab is required
+                                                </div> -->
+                                              </ng-template>
+                                              
+                                            </div>
+                                          </div>
+                              
+                                          <!-- Slab To -->
+                                          <div class="mr-3">
+                                            <div>Slab To</div>
+                                            <div class="input-group input-group-sm">
+                                              <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                              <input type="text" 
+                                                     class="form-control form-control-sm"
+                                                     [(ngModel)]="rentSlabModel.slabTo" 
+                                                     (keypress)="numberOnly($event)" maxlength="7"
+                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.slabTo}" 
+                                                     style="max-width: 70px !important;" />
+                                            </div>
+                                          </div>
+                              
+                                          <!-- Rent Percentage -->
+                                          <div class="mr-3" >
+                                            <div>Rent Percentage</div>
+                                            <div class="input-group input-group-sm">
+                                              <input type="number" 
+                                                     class="form-control form-control-sm"
+                                                     [(ngModel)]="rentSlabModel.rentPercentage" 
+                                                     (keypress)="percentageOnlyWithZero($event)" 
+                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.rentPercentage}" 
+                                                     style="max-width: 70px !important;" />
+                                              <span class="input-group-text">%</span>
+                                            </div>
+                                          </div>
+                              
+                                          <!-- Add Button -->
+                                          <div class="ml-1">
+                                            <div style="height: 23px;"></div>
+                                            <button type="button" class="btn btn-sm btn-primary" (click)="addRentSlab()">Add</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                              
+                                      <!-- Rent Slabs Table -->
+                                      <div  >
+                                        <mat-table [dataSource]="rentSlabsdataSource" class="example-list">
+                                          <!-- Slab From Column -->
+                                          <ng-container matColumnDef="slabFrom">
+                                            <!-- <mat-header-cell *matHeaderCellDef> Slab From </mat-header-cell> -->
+                                            <mat-cell *matCellDef="let element" style="width: 120px;" [ngClass]="element.isDelete ? 'example-box row-strike' : 'example-box'">
+                                              <div class="d-flex input-group input-group-sm">
+                                                <input 
+                                                  type="text"
+                                                  class="form-control form-control-sm"
+                                                  [(ngModel)]="element.slabFrom"
+                                                  (keypress)="numberOnly($event)" maxlength="7"
+                                                  [disabled]="element.isDelete || !element.isEdit"
+                                                  [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.slabFrom)}"
+                                                  style="max-width: 84px !important;" />
+                                                <span class="input-group-text">Days</span>
+                                              </div>
+                                            </mat-cell>
+                                          </ng-container>
+                                        
+                                          <!-- Slab To Column -->
+                                          <ng-container matColumnDef="slabTo">
+                                            <!-- <mat-header-cell *matHeaderCellDef> Slab To </mat-header-cell> -->
+                                            <mat-cell *matCellDef="let element" style="width: 120px;" [ngClass]="element.isDelete ? 'example-box row-strike' : 'example-box'">
+                                              <div class="d-flex input-group input-group-sm">
+                                                <input 
+                                                  type="text"
+                                                  class="form-control form-control-sm"
+                                                  [(ngModel)]="element.slabTo"
+                                                  (keypress)="numberOnly($event)"maxlength="7"
+                                                  [disabled]="element.isDelete || !element.isEdit"
+                                                  [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.slabTo)}"
+                                                  style="max-width: 70px !important;" />
+                                                <span class="input-group-text">Days</span>
+                                              </div>
+                                            </mat-cell>
+                                          </ng-container>
+                                        
+                                          <!-- Rent Percentage Column -->
+                                          <ng-container matColumnDef="rentPercentage">
+                                            <!-- <mat-header-cell *matHeaderCellDef> Rent Percentage </mat-header-cell> -->
+                                            <mat-cell *matCellDef="let element" style="width: 120px;" [ngClass]="element.isDelete ? 'example-box row-strike' : 'example-box'">
+                                              <div class="d-flex input-group input-group-sm">
+                                                <input 
+                                                  type="text"
+                                                  class="form-control form-control-sm"
+                                                  [(ngModel)]="element.rentPercentage"
+                                                  (keypress)="percentageOnlyWithZero($event)"
+                                                  [disabled]="element.isDelete || !element.isEdit"
+                                                  [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.rentPercentage)}"
+                                                  style="max-width: 70px !important;" />
+                                                <span class="input-group-text">%</span>
+                                              </div>
+                                            </mat-cell>
+                                          </ng-container>
+                                        
+                                          <!-- Action Column -->
+                                          <ng-container matColumnDef="action">
+                                            <!-- <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell> -->
+                                            <mat-cell *matCellDef="let element; let i = index" style="padding-left:0px;flex:none;" [ngClass]="element.isDelete ? 'example-box row-strike' : 'example-box'">
+                                              <div class="input-group">
+                                                <div class="btn-group">
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && !element.isEdit"
+                                                          (click)="element.isEdit = true;" title="Edit The Item">
+                                                    <i class="fas fa-edit"></i>
+                                                  </button>
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && !element.isEdit"
+                                                          (click)="removeRentSlab(element, i)" title="Delete The Item">
+                                                    <i class="fas fa-trash" style="color: red;"></i>
+                                                  </button>
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isEdit"
+                                                          (click)="modifyRentSlab(element)" title="Save Changes">
+                                                    <i class="fas fa-check"></i>
+                                                  </button>
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isEdit"
+                                                          (click)="undoEditRentSlabItem(element)" title="Undo Edit">
+                                                    <i class="fas fa-redo" style="color: red;"></i>
+                                                  </button>
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete"
+                                                          (click)="undoRentSlabDelete(element)" title="Undo Delete">
+                                                    <i class="fas fa-redo" style="color: red;"></i>
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            </mat-cell>
+                                          </ng-container>
+                                        
+                                          <!-- <mat-header-row *matHeaderRowDef="rentSlabsDisplayedColumns"></mat-header-row> -->
+                                          <mat-row *matRowDef="let row; columns: rentSlabsDisplayedColumns;"></mat-row>
+                                        </mat-table>
+                                        
+                                      </div>
+                                    </div>
+                                </div>
+                              </div>
+                              
+                            </div>
+                            
                             <hr class="solid">
                             <!--Other Charges-->
                             <div>
@@ -1022,8 +1203,8 @@
                             </div>
                           </div>
                         </div>
-                        <hr class="solid">
-                        <div>
+                        <hr class="solid" hidden>
+                        <div hidden>
                           <div class="row p-3 align-items-center marginRow">
                             <div class="col-sm-3">
                               <span style="font-size: 16px;">Force Checkout </span>
