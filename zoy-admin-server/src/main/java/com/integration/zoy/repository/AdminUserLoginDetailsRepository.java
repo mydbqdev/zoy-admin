@@ -49,7 +49,7 @@ public interface AdminUserLoginDetailsRepository extends JpaRepository<AdminUser
 	@Modifying
 	@Query(value = "DELETE FROM admin_users_lock \n"
 			+ "where username in (select user_email from user_login_details \n"
-			+ "where (:curdt > (last_change_on + INTERVAL '45 days' )\n"
+			+ "where (:curdt >= (last_change_on + INTERVAL '45 days' )\n"
 			+ "and is_active = true and is_lock = false)) ",nativeQuery = true)
 	void deleteDataInAdminUsersLockDetails(Timestamp curdt);
 	
@@ -57,7 +57,7 @@ public interface AdminUserLoginDetailsRepository extends JpaRepository<AdminUser
 	@Modifying
 	@Query(value = "UPDATE \n"
 			+ "user_login_details SET is_lock = true\n"
-			+ "WHERE (:curdt > (last_change_on + INTERVAL '45 days')  ) \n"
+			+ "WHERE (:curdt >= (last_change_on + INTERVAL '45 days')  ) \n"
 			+ "	       AND is_active = true AND is_lock = false ",nativeQuery = true)
 	void doLockAfterPWExpired(Timestamp curdt);
 	

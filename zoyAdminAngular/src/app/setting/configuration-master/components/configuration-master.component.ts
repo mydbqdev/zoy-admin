@@ -1070,5 +1070,24 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			slab.isEdit = false;
 		  }
 	
+		  showInputBox = false;
+		  onCheckboxChange(event: Event) {
+			const checkboxElement = event.target as HTMLInputElement;
+			if (checkboxElement.checked) {
+			  this.showInputBox = false;
+			  this.rentSlabModel.slabFrom='';
+			}
+		  }
 
+		  onDropdownChange(event: Event) {
+			const selectElement = event.target as HTMLSelectElement;
+		console.log("selectElement.value",selectElement.value)
+			if (selectElement.value == 'Input') {
+				this.showInputBox = true;
+				this.rentSlabModel.slabFrom=''
+			//  this.form.get('fromIncomeSlab')?.setValue(selectElement.value, { emitEvent: false });
+			}else{
+				
+			}
+		  }
   }  
