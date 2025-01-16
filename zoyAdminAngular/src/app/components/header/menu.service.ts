@@ -68,7 +68,7 @@ getAllMenus(): Menu[] {
     { key: "PAYMENT APPROVAL", screen: "Payment Approval" ,order:4.2 },
     { key: "TICKETS", screen: "Tickets" ,order:5.1 },
     { key: "ROLE AND PERMISSION", screen: "Role & Permission" ,order:6.1 },
-    { key: "DB MASTER CONFIGURATION", screen: "Database Configuration" ,order:6.2 },
+    { key: "DB MASTER CONFIGURATION", screen: "Initial Configuration" ,order:6.2 },
     { key: "CONFIGURATION MASTER", screen: "Master Configuration" ,order:6.3 },
     { key: "USER AUDIT", screen: "User Audit" ,order:6.4 }
   ];

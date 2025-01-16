@@ -347,8 +347,8 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 			{ key: 'ADMIN_ROLE_DELETE', value: 'Delete Admin Role' },
 			{ key: 'USER_ROLE_ASSIGN', value: 'Assign Role to User' },
 			{ key: 'ZOY_CODE_RESEND', value: 'Resend Zoy Code' },
-			{ key: 'DB_CONFIGURATION_CREATE',value:'Create Database Configuration'},
-			{ key: 'DB_CONFIGURATION_UPDATE',value:'Update Database Configuration'},
+			{ key: 'DB_CONFIGURATION_CREATE',value:'Create Initial Configuration'},
+			{ key: 'DB_CONFIGURATION_UPDATE',value:'Update Initial Configuration'},
 			{ key: 'MASTER_CONFIGURATION_CREATE',value:'Create Master Configuration'},
 			{ key: 'MASTER_CONFIGURATION_UPDATE',value:'Update Master Configuration'},
 			{ key: 'MASTER_CONFIGURATION_DELETE',value:'Delete Master Configuration'}

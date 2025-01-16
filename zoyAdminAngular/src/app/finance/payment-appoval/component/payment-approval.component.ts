@@ -115,7 +115,7 @@ export class PaymentApprovalComponent  implements OnInit,AfterViewInit{
   }
 
   getPaymentApproval(){
-	this.ELEMENT_DATA = Object.assign([],mockData);
+	this.ELEMENT_DATA = [];// Object.assign([],mockData);
 	this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 	this.dataSource.sort = this.sort;
 	this.dataSource.paginator = this.paginator;
