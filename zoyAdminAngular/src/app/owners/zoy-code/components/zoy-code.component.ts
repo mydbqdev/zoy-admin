@@ -142,7 +142,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
 			 }else if(error.status==409){
-				this.confirmationDialogService.confirm('Confirmation!!', 'A Zoycode has already been generated for this email Id, Would you like to resend the code?')
+				this.confirmationDialogService.confirm('Confirmation!!', 'A Zoycode has already been generated for this email Id/Mobile number, Would you like to resend the code?')
 				.then(
 				  (confirmed) =>{
 				   if(confirmed){
