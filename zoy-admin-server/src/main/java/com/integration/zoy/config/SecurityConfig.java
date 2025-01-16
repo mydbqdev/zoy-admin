@@ -87,8 +87,8 @@ public class SecurityConfig {
 
 	private CorsConfiguration buildConfig() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		corsConfiguration.addAllowedOrigin("*"); 
-		//corsConfiguration.addAllowedOrigin(origin);
+		//corsConfiguration.addAllowedOrigin("*"); 
+		corsConfiguration.addAllowedOrigin(origin);
 		corsConfiguration.addAllowedHeader("*"); 
 		corsConfiguration.addAllowedMethod("*"); 
 		return corsConfiguration;
@@ -97,8 +97,8 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		final CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(ImmutableList.of("*"));
-//		configuration.setAllowedOrigins(ImmutableList.of(origin));  
+	//	configuration.setAllowedOrigins(ImmutableList.of("*"));
+		configuration.setAllowedOrigins(ImmutableList.of(origin));  
 		configuration.setAllowedMethods(ImmutableList.of("HEAD","GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"));
 		configuration.setAllowCredentials(true);
 		configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
