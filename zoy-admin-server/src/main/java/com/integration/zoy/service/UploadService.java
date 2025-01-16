@@ -379,8 +379,8 @@ public class UploadService {
 			bedName=ids.get(0)[5];
 			shareId=ids.get(0)[6];
 			shareName=ids.get(0)[7];
-			rentCycleId=ids.get(0)[8];
-			rentCycleName=ids.get(0)[9];
+			//rentCycleId=ids.get(0)[8];
+			//rentCycleName=ids.get(0)[9];
 		}
 		String cycleId=ownerDBImpl.findRentCycleByName("01-01");
 		ZoyPgOwnerBookingDetails bookingDetails=new ZoyPgOwnerBookingDetails();
