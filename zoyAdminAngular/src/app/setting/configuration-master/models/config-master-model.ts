@@ -10,6 +10,9 @@ export class ConfigMasterModel{
     forceCheckout :ForceCheckoutModel = new ForceCheckoutModel();
     checkoutDeductionDetails: CheckoutDeductionDetailsModel = new CheckoutDeductionDetailsModel();
     rentSlabModel :RentSlabModel = new RentSlabModel();
+    gstSlabModel :GstSlabModel[] = [];
+    shortTermRentingDuration :ShortTermRentingDuratioModel = new ShortTermRentingDuratioModel();
+    
 }
 
 export class TokenDetailsModel{
@@ -62,8 +65,10 @@ export class SecurityDepositDeadLineAndAutoCancellationModel{
 
 export class OtherChargesModel{
     otherChargesId : string ='';
+    ownerEKYCCharges : number ;
     ownerDocumentCharges  : number ;
-    tenantDocumentCharges : number ;
+    tenantEKYCCharges : number ;
+    tenantDocumentCharges : number ;   
 }
 
 
@@ -82,9 +87,25 @@ export class CheckoutDeductionDetailsModel {
 
   export class RentSlabModel  {
     rentSlabId: string ;
-    slabFrom: number ;
-    slabTo: number ;
+    slabFrom: string ;
+    slabTo: string ;
     rentPercentage: number ;
     isEdit:boolean = false;
     isDelete:boolean = false;
   };
+
+  export class GstSlabModel  {
+    rentSlabId: string ;
+    slabFrom: string ;
+    slabTo: string ;
+    gstPercentage: number ;
+    isEdit:boolean = false;
+    isDelete:boolean = false;
+    showInputBox:boolean = false;
+  };
+
+  export class ShortTermRentingDuratioModel{
+    shortTermRentingDurationID : string ='';
+    shortTermRentingDuration  : number ;
+}
+
