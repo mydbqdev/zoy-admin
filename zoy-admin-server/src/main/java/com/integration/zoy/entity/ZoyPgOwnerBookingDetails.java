@@ -1,24 +1,21 @@
 package com.integration.zoy.entity;
 
 
+import javax.persistence.*;
+
 import java.math.BigDecimal;
+import java.security.MessageDigest;
 import java.sql.Timestamp;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
+import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "zoy_pg_owner_booking_details", schema = "pgowners")
 public class ZoyPgOwnerBookingDetails {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
+    //@GeneratedValue(generator = "UUID")
+	//@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "booking_id", updatable = false, nullable = false, unique = true, length = 36)
     private String bookingId;
 
@@ -104,7 +101,12 @@ public class ZoyPgOwnerBookingDetails {
     
     @Column(name = "paid_deposit")
     private BigDecimal paidDeposit;
+    
+    @Column(name = "deposit_paid")
+    private Boolean depositPaid = false;
 
+    @Column(name = "include_current_month")
+    private Boolean includeCurrentMonth;
 
 	public String getBookingId() {
 		return bookingId;
@@ -322,6 +324,56 @@ public class ZoyPgOwnerBookingDetails {
 		this.paidDeposit = paidDeposit;
 	}
 
-    
+	public Boolean getIncludeCurrentMonth() {
+		return includeCurrentMonth;
+	}
+
+	public void setIncludeCurrentMonth(Boolean includeCurrentMonth) {
+		this.includeCurrentMonth = includeCurrentMonth;
+	}
+
+	public Boolean getDepositPaid() {
+		return depositPaid;
+	}
+
+	public void setDepositPaid(Boolean depositPaid) {
+		this.depositPaid = depositPaid;
+	}
+
+	@PrePersist
+    private void generateBookingId() {
+        if (this.bookingId == null || this.bookingId.isEmpty()) {
+            String prefix = "BKG_ZOY";
+            String uniquePart = generateUniquePartSafe();
+            String formattedDate = String.format("%1$tY%1$tm%1$td", new Timestamp(System.currentTimeMillis())); 
+            this.bookingId = prefix + formattedDate + uniquePart.toUpperCase();
+        }
+    }
+	private String generateUniquePartSafe() {
+        try {
+            String nanoTimestamp = String.valueOf(Instant.now().toEpochMilli()) + System.nanoTime();
+            String uuidPart = UUID.randomUUID().toString();
+            String rawId = nanoTimestamp + uuidPart;
+            return hashWithSHA256Safe(rawId).substring(0, 8);
+        } catch (Exception e) {
+            return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        }
+    }
+
+    private String hashWithSHA256Safe(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(input.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hashBytes) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (Exception e) {
+            return input.substring(0, Math.min(8, input.length()));
+        }
+    }
 }
 
