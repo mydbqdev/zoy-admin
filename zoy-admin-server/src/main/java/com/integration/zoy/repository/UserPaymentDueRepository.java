@@ -19,7 +19,7 @@ public interface UserPaymentDueRepository extends JpaRepository<UserPaymentDue, 
 	
 	@Query(value = "SELECT upd.user_payment_id " +
             "FROM pgusers.user_payment_due upd " +
-            "WHERE upd.user_money_due_id = :userMoneyDueId", nativeQuery = true)
+            "WHERE upd.user_money_due_id = :userMoneyDueId limit 1", nativeQuery = true)
 String findUserPaymentIdByUserMoneyDueId(@Param("userMoneyDueId") String userMoneyDueId);
 
 }
