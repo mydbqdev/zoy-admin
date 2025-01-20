@@ -181,11 +181,11 @@
                               <p class="small text-muted" style="font-size: 12px;"><em>Define the deduction percentage and time frame for cancellation before check in.</em></p>
                             </div>
                             <div class="col-sm-9">
-                              <div style="background-color: #c1a1f3; padding: 5px;">
+                              <!-- <div style="background-color: #c1a1f3; padding: 5px;">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[0].selected ? 'fa fa-angle-down':'fa fa-angle-up'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight0" aria-expanded="false" aria-controls="collapseExampleRight0" (click)="collaspeExpandPanelRight(collaspeListRight[0],'right1')"> </i>
                                     Before Check in
-                                </div>
-                                <div class="collapse show" id="collapseExampleRight0">
+                                </div> -->
+                                <!-- <div class="collapse show" id="collapseExampleRight0"> -->
                                   <div class="card card-body m-0 p-0">
                                     <div>
                                       <div class="pt-2 pb-2">
@@ -362,7 +362,7 @@
                                     </div>
                                     </div>
                                   </div>
-                                </div>
+                                <!-- </div> -->
                                </div>
                            </div>
                         </div>
@@ -912,253 +912,307 @@
                               </div>
                               
                             </div>
-                            <hr class="solid" hidden> 
-                            <div hidden>
-                              <div class="row p-3 marginRow">
+                            <hr class="solid"> 
+                           
+                            <div>
+                              <div class="row pl-3 align-items-center">
                                 <div class="col-sm-3">
-                                  <span style="font-size: 16px;">GST Slabs </span>
+                                  <span style="font-size: 16px;">GST Slabs</span>
                                   <p class="small text-muted" style="font-size: 12px;">
-                                    <em>Define the rent percentage based on the tenant's stay duration (less than 1 month).</em>
+                                    <em>Define the GST percentage based on the monthly rent. Slabs will help determine the GST when rent exceeds certain thresholds.</em>
                                   </p>
                                 </div>
-                              
+                            
                                 <div class="col-sm-9">
-                                    <div class="card card-body m-0 p-0">
-                                      <div class="pt-2 pb-2">
-                                        <div class="d-flex">
-                                          <input type="checkbox" class="form-check-input" (change)="onCheckboxChange($event)" *ngIf="showInputBox">
-                                          <!-- Slab From -->
-                                          <div class="mr-3">
-                                            <div>Slab From</div>
-                                            <div class="input-group input-group-sm">
-                                              
-                                              <ng-container *ngIf="!showInputBox; else inputBoxTemplate">
-                                                <select  class="form-control" 
-                                                [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.slabFrom}" 
-                                               [(ngModel)]="rentSlabModel.slabFrom" (change)="onDropdownChange($event)">
-                                                  <option value="Upto">Upto</option>
-                                                  <option value="Above">Above</option>
-                                                  <option value="Input">Provide Input</option>
-                                                </select>
-                                              </ng-container>
-                                              <ng-template #inputBoxTemplate>
-                                                <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                                                <input type="text" 
-                                                     class="form-control form-control-sm"
-                                                     [(ngModel)]="rentSlabModel.slabFrom" maxlength="7"
-                                                     (keypress)="numberOnly($event)" 
-                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.slabFrom}" 
-                                                     style="max-width: 70px !important;" />
-                                               
-                                                <!-- <div *ngIf="submitted && form.controls.fromIncomeSlab.errors?.required" class="text-danger">
-                                                  From Income Slab is required
-                                                </div> -->
-                                              </ng-template>
-                                              
-                                            </div>
+                                  <div class="card card-body">
+                                    <div class="row">
+                                      <div class="d-flex">
+                                        <!-- Slab From -->
+                                        <div class="col-sm-3">
+                                          <div>Slab From
+                                            <a (click)="gstSlabModel.showInputBox = !gstSlabModel.showInputBox; gstSlabModel.slabFrom='';" *ngIf="gstSlabModel.showInputBox" 
+                                            title="Provide a custom value."><i class="fas fa-redo" style="color: red;"></i>
+                                          </a>
                                           </div>
-                              
-                                          <!-- Slab To -->
-                                          <div class="mr-3">
-                                            <div>Slab To</div>
-                                            <div class="input-group input-group-sm">
+                                          <div class="input-group input-group-sm">
+                                            <ng-container *ngIf="!gstSlabModel.showInputBox; else inputBoxTemplate">
+                                              <select class="form-control" style="max-width: 120px !important;"
+                                                      [ngClass]="{'is-invalid': gstSlabSaveVali && !gstSlabModel.slabFrom}"
+                                                      [(ngModel)]="gstSlabModel.slabFrom" (change)="onDropdownChange(gstSlabModel)">
+                                                <option value="Upto">Upto</option>
+                                                <option value="Above">Above</option>
+                                                <option value="Input">Provide Input</option>
+                                              </select>
+                                            </ng-container>
+                                            <ng-template #inputBoxTemplate>
                                               <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                                              <input type="text" 
+                                              <input type="text"
                                                      class="form-control form-control-sm"
-                                                     [(ngModel)]="rentSlabModel.slabTo" 
-                                                     (keypress)="numberOnly($event)" maxlength="7"
-                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.slabTo}" 
-                                                     style="max-width: 70px !important;" />
-                                            </div>
+                                                     [(ngModel)]="gstSlabModel.slabFrom" maxlength="7"
+                                                     (keypress)="numberOnly($event)"
+                                                     [ngClass]="{'is-invalid': gstSlabSaveVali && !gstSlabModel.slabFrom}"
+                                                     style="max-width: 90px !important;" />
+                                            </ng-template>
                                           </div>
-                              
-                                          <!-- Rent Percentage -->
-                                          <div class="mr-3" >
-                                            <div>Rent Percentage</div>
-                                            <div class="input-group input-group-sm">
-                                              <input type="number" 
-                                                     class="form-control form-control-sm"
-                                                     [(ngModel)]="rentSlabModel.rentPercentage" 
-                                                     (keypress)="percentageOnlyWithZero($event)" 
-                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.rentPercentage}" 
-                                                     style="max-width: 70px !important;" />
-                                              <span class="input-group-text">%</span>
-                                            </div>
+                                          <p class="small text-muted" style="font-size: 12px;">
+                                            <em>Define the minimum amount for this slab, or select a range based on rent duration.</em>
+                                          </p>
+                                        </div>
+                                    
+                                        <!-- Slab To -->
+                                        <div class="col-sm-3">
+                                          <div>Slab To</div>
+                                          <div class="input-group input-group-sm">
+                                            <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                            <input type="text"
+                                                   class="form-control form-control-sm"
+                                                   [(ngModel)]="gstSlabModel.slabTo"
+                                                   (keypress)="numberOnly($event)" maxlength="7"
+                                                   [ngClass]="{'is-invalid': gstSlabSaveVali && !gstSlabModel.slabTo}"
+                                                   style="max-width: 90px !important;" />
                                           </div>
-                              
-                                          <!-- Add Button -->
-                                          <div class="ml-1">
-                                            <div style="height: 23px;"></div>
-                                            <button type="button" class="btn btn-sm btn-primary" (click)="addRentSlab()">Add</button>
+                                          <p class="small text-muted" style="font-size: 12px;">
+                                            <em>Define the maximum value for the slab (daily rent or range). This will be used for GST calculation.</em>
+                                          </p>
+                                        </div>
+                                    
+                                        <!-- Rent Percentage -->
+                                        <div class="col-sm-3">
+                                          <div>GST </div>
+                                          <div class="input-group input-group-sm">
+                                            <input type="text"
+                                                   class="form-control form-control-sm"
+                                                   [(ngModel)]="gstSlabModel.gstPercentage"
+                                                   (keypress)="percentageOnlyWithZero($event)"
+                                                   [ngClass]="{'is-invalid': gstSlabSaveVali && !gstSlabModel.gstPercentage}"
+                                                   style="max-width: 90px !important;" />
+                                            <span class="input-group-text">%</span>
+                                          </div>
+                                          <p class="small text-muted" style="font-size: 12px;">
+                                            <em>Enter the GST percentage that should be applied on rent exceeding the slab amount.</em>
+                                          </p>
+                                        </div>
+                                    
+                                        <!-- Add Button -->
+                                        <div class="col-sm-3">
+                                          <div style="height: 23px;"></div>
+                                          <button type="button" class="btn btn-sm btn-primary" (click)="addGSTSlab()">Add</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                    <!-- Rent Slabs List -->
+                                    <div>
+                                      <hr class="solid">
+                                      <div *ngFor="let slab of configMasterModel.gstSlabModel; let i = index" class="row p-2">
+                                        <div class="col-sm-3">
+                                          <div class="input-group input-group-sm">
+                                            <ng-container *ngIf="!slab.showInputBox && isNotValidNumber(slab.slabFrom); else inputBoxTemplate">
+                                              <select class="form-control"
+                                                      [ngClass]="{'is-invalid':!slab.isDelete && slab.isEdit }"
+                                                      [disabled]="slab.isDelete || !slab.isEdit"
+                                                      style="max-width: 120px !important;" 
+                                                      [(ngModel)]="slab.slabFrom" (change)="onDropdownChange(slab)">
+                                                <option value="Upto">Upto</option>
+                                                <option value="Above">Above</option>
+                                                <option value="Input">Provide Input</option>
+                                              </select>
+                                            </ng-container>
+                                            <ng-template #inputBoxTemplate>
+                                              <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                              <input type="text"
+                                                   class="form-control form-control-sm"
+                                                   [(ngModel)]="slab.slabFrom"
+                                                   (keypress)="numberOnly($event)" maxlength="7"
+                                                   [disabled]="slab.isDelete || !slab.isEdit"
+                                                   [ngClass]="{'is-invalid': !slab.isDelete && slab.isEdit && isNotValidNumber(slab.slabFrom)}"
+                                                   style="max-width: 90px !important;" />
+                                              <a (click)="slab.showInputBox = !slab.showInputBox; slab.slabFrom='';" *ngIf="slab.showInputBox" 
+                                                   title="Provide a custom value."><i class="fas fa-redo p-2" style="color: red;"></i>
+                                               </a>
+                                            </ng-template>
+                                          </div>
+                                         
+                                        </div>
+                            
+                                        <div class="col-sm-3">
+                                          <div class="input-group input-group-sm">
+                                            <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                            <input type="text"
+                                                   class="form-control form-control-sm"
+                                                   [(ngModel)]="slab.slabTo"
+                                                   (keypress)="numberOnly($event)" maxlength="7"
+                                                   [disabled]="slab.isDelete || !slab.isEdit"
+                                                   [ngClass]="{'is-invalid': !slab.isDelete && slab.isEdit && isNotValidNumber(slab.slabTo)}"
+                                                   style="max-width: 90px !important;" />
+                                          </div>
+                                        </div>
+                            
+                                        <div class="col-sm-3">
+                                          <div class="input-group input-group-sm">
+                                            <input type="text"
+                                                   class="form-control form-control-sm"
+                                                   [(ngModel)]="slab.gstPercentage"
+                                                   (keypress)="percentageOnlyWithZero($event)"
+                                                   [disabled]="slab.isDelete || !slab.isEdit"
+                                                   [ngClass]="{'is-invalid': !slab.isDelete && slab.isEdit && isNotValidNumber(slab.gstPercentage)}"
+                                                   style="max-width: 90px !important;" />
+                                            <span class="input-group-text">%</span>
+                                          </div>
+                                        </div>
+                            
+                                        <div class="col-sm-3">
+                                          <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-secondary" *ngIf="!slab.isDelete && !slab.isEdit"
+                                                    (click)="slab.isEdit = true;" title="Edit The Item">
+                                              <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" *ngIf="!slab.isDelete && !slab.isEdit"
+                                                    (click)="removeRentSlab(slab, i)" title="Delete The Item">
+                                              <i class="fas fa-trash" style="color: red;"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" *ngIf="!slab.isDelete && slab.isEdit"
+                                                    (click)="modifyRentSlab(slab)" title="Save Changes">
+                                              <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" *ngIf="!slab.isDelete && slab.isEdit"
+                                                    (click)="undoEditRentSlabItem(slab)" title="Undo Edit">
+                                              <i class="fas fa-redo" style="color: red;"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" *ngIf="slab.isDelete"
+                                                    (click)="undoRentSlabDelete(slab)" title="Undo Delete">
+                                              <i class="fas fa-redo" style="color: red;"></i>
+                                            </button>
                                           </div>
                                         </div>
                                       </div>
-                              
-                                      <!-- Rent Slabs Table -->
-                                      <div  >
-                                        <mat-table [dataSource]="rentSlabsdataSource" class="example-list">
-                                          <!-- Slab From Column -->
-                                          <ng-container matColumnDef="slabFrom">
-                                            <!-- <mat-header-cell *matHeaderCellDef> Slab From </mat-header-cell> -->
-                                            <mat-cell *matCellDef="let element" style="width: 120px;" [ngClass]="element.isDelete ? 'example-box row-strike' : 'example-box'">
-                                              <div class="d-flex input-group input-group-sm">
-                                                <input 
-                                                  type="text"
-                                                  class="form-control form-control-sm"
-                                                  [(ngModel)]="element.slabFrom"
-                                                  (keypress)="numberOnly($event)" maxlength="7"
-                                                  [disabled]="element.isDelete || !element.isEdit"
-                                                  [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.slabFrom)}"
-                                                  style="max-width: 84px !important;" />
-                                                <span class="input-group-text">Days</span>
-                                              </div>
-                                            </mat-cell>
-                                          </ng-container>
-                                        
-                                          <!-- Slab To Column -->
-                                          <ng-container matColumnDef="slabTo">
-                                            <!-- <mat-header-cell *matHeaderCellDef> Slab To </mat-header-cell> -->
-                                            <mat-cell *matCellDef="let element" style="width: 120px;" [ngClass]="element.isDelete ? 'example-box row-strike' : 'example-box'">
-                                              <div class="d-flex input-group input-group-sm">
-                                                <input 
-                                                  type="text"
-                                                  class="form-control form-control-sm"
-                                                  [(ngModel)]="element.slabTo"
-                                                  (keypress)="numberOnly($event)"maxlength="7"
-                                                  [disabled]="element.isDelete || !element.isEdit"
-                                                  [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.slabTo)}"
-                                                  style="max-width: 70px !important;" />
-                                                <span class="input-group-text">Days</span>
-                                              </div>
-                                            </mat-cell>
-                                          </ng-container>
-                                        
-                                          <!-- Rent Percentage Column -->
-                                          <ng-container matColumnDef="rentPercentage">
-                                            <!-- <mat-header-cell *matHeaderCellDef> Rent Percentage </mat-header-cell> -->
-                                            <mat-cell *matCellDef="let element" style="width: 120px;" [ngClass]="element.isDelete ? 'example-box row-strike' : 'example-box'">
-                                              <div class="d-flex input-group input-group-sm">
-                                                <input 
-                                                  type="text"
-                                                  class="form-control form-control-sm"
-                                                  [(ngModel)]="element.rentPercentage"
-                                                  (keypress)="percentageOnlyWithZero($event)"
-                                                  [disabled]="element.isDelete || !element.isEdit"
-                                                  [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.rentPercentage)}"
-                                                  style="max-width: 70px !important;" />
-                                                <span class="input-group-text">%</span>
-                                              </div>
-                                            </mat-cell>
-                                          </ng-container>
-                                        
-                                          <!-- Action Column -->
-                                          <ng-container matColumnDef="action">
-                                            <!-- <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell> -->
-                                            <mat-cell *matCellDef="let element; let i = index" style="padding-left:0px;flex:none;" [ngClass]="element.isDelete ? 'example-box row-strike' : 'example-box'">
-                                              <div class="input-group">
-                                                <div class="btn-group">
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && !element.isEdit"
-                                                          (click)="element.isEdit = true;" title="Edit The Item">
-                                                    <i class="fas fa-edit"></i>
-                                                  </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && !element.isEdit"
-                                                          (click)="removeRentSlab(element, i)" title="Delete The Item">
-                                                    <i class="fas fa-trash" style="color: red;"></i>
-                                                  </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isEdit"
-                                                          (click)="modifyRentSlab(element)" title="Save Changes">
-                                                    <i class="fas fa-check"></i>
-                                                  </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isEdit"
-                                                          (click)="undoEditRentSlabItem(element)" title="Undo Edit">
-                                                    <i class="fas fa-redo" style="color: red;"></i>
-                                                  </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete"
-                                                          (click)="undoRentSlabDelete(element)" title="Undo Delete">
-                                                    <i class="fas fa-redo" style="color: red;"></i>
-                                                  </button>
-                                                </div>
-                                              </div>
-                                            </mat-cell>
-                                          </ng-container>
-                                        
-                                          <!-- <mat-header-row *matHeaderRowDef="rentSlabsDisplayedColumns"></mat-header-row> -->
-                                          <mat-row *matRowDef="let row; columns: rentSlabsDisplayedColumns;"></mat-row>
-                                        </mat-table>
-                                        
-                                      </div>
                                     </div>
+                                  </div>
                                 </div>
                               </div>
-                              
                             </div>
                             
                             <hr class="solid">
                             <!--Other Charges-->
                             <div>
-                              <div class="row p-3 align-items-center marginRow">
+                                 <div class="row pl-3 align-items-center">
                                   <div class="col-sm-3">
                                     <span style="font-size: 16px;">Other Charges</span>
-                                    <p class="small text-muted" style="font-size: 12px;"><em>Configure documentation charges for Owners and Tenants.</em></p>
+                                    <p class="small text-muted" style="font-size: 12px;">
+                                      <em>Configure eKYC and documentation charges for Owners and Tenants.</em>
+                                    </p>
                                   </div>
-                                  <div class="col-sm-9">
+                                
+                                  <div class="col-sm-8">
+                                    <div class="card card-body">
                                     <div class="row">
-                                      <!-- GST Section -->
-                                      <div class="col-sm-5">
-                                        <div>Documentation Charges for Owners</div>
+                                      <!-- eKYC Charges for Owners -->
+                                      <div class="col-sm-6">
+                                        <label for="ownerEKYCCharges" class="form-label">eKYC Charges for Owners</label>
                                         <div class="input-group input-group-sm">
                                           <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                                          <input 
-                                            type="text" 
-                                            class="form-control form-control-sm" (keypress)="numberOnly($event)"  maxlength="7"
-                                            [(ngModel)]="configMasterModel.otherCharges.ownerDocumentCharges" 
-                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.ownerDocumentCharges}" 
-                                            style="max-width: 100px !important;" 
-                                            [disabled]="otherChargesDisabled" />
+                                          <input
+                                            type="text"
+                                            id="ownerEKYCCharges"
+                                            class="form-control form-control-sm"
+                                            (keypress)="numberOnly($event)"
+                                            maxlength="7"  style="max-width: 100px !important;" 
+                                            [(ngModel)]="configMasterModel.otherCharges.ownerEKYCCharges"
+                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.ownerEKYCCharges}"
+                                            [disabled]="otherChargesDisabled"
+                                          />
                                         </div>
                                         <p class="small text-muted mt-1" style="font-size: 12px;">
-                                        <em>Enter the one time amount to be charged to Owners for documentation purpose.</em>
+                                          <em>Enter the one-time eKYC charge to be charged to Owners.</em>
                                         </p>
                                       </div>
-                                      <!-- Documentation Charges Section -->
-                                      <div class="col-sm-5">
-                                        <div>Documentation Charges for Tenants</div>
+                                
+                                      <!-- eKYC Charges for Tenants -->
+                                      <div class="col-sm-6">
+                                        <label for="tenantEKYCCharges" class="form-label">eKYC Charges for Tenants</label>
                                         <div class="input-group input-group-sm">
                                           <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                                          <input 
-                                            type="text" 
-                                            class="form-control form-control-sm"  (keypress)="numberOnly($event)"  maxlength="7"
-                                            [(ngModel)]="configMasterModel.otherCharges.tenantDocumentCharges" 
-                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.tenantDocumentCharges }" 
-                                            style="max-width: 100px !important;" 
-                                            [disabled]="otherChargesDisabled" />
-                                           
-                                          
+                                          <input
+                                            type="text"
+                                            id="tenantEKYCCharges"
+                                            class="form-control form-control-sm"
+                                            (keypress)="numberOnly($event)"
+                                            maxlength="7"  style="max-width: 100px !important;" 
+                                            [(ngModel)]="configMasterModel.otherCharges.tenantEKYCCharges"
+                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.tenantEKYCCharges}"
+                                            [disabled]="otherChargesDisabled"
+                                          />
                                         </div>
                                         <p class="small text-muted mt-1" style="font-size: 12px;">
-                                        <em>Enter the one time amount to be charged to Tenants for documentation purpose.</em>
+                                          <em>Enter the one-time eKYC charge to be charged to Tenants.</em>
                                         </p>
                                       </div>
-                                      <div class="col-sm-1 mt-4">
-                                        <div *ngIf="otherChargesDisabled">
-                                          <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesDisabled = false">
-                                            <i class="fas fa-edit"></i>
-                                          </button>
+                                    </div>
+                                
+                                    <div class="row">
+                                      <!-- Documentation Charges for Owners -->
+                                      <div class="col-sm-6">
+                                        <label for="ownerDocumentCharges" class="form-label">Documentation Charges for Owners</label>
+                                        <div class="input-group input-group-sm">
+                                          <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                          <input
+                                            type="text"
+                                            id="ownerDocumentCharges"
+                                            class="form-control form-control-sm"
+                                            (keypress)="numberOnly($event)"
+                                            maxlength="7"  style="max-width: 100px !important;" 
+                                            [(ngModel)]="configMasterModel.otherCharges.ownerDocumentCharges"
+                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.ownerDocumentCharges}"
+                                            [disabled]="otherChargesDisabled"
+                                          />
                                         </div>
-                                        <div class="btn-group" *ngIf="!otherChargesDisabled">
-                                          <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesSubmit()">
-                                            <i class="fas fa-check"></i>
-                                          </button>
-                                          <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesReset()">
-                                            <i class="fas fa-redo" style="color: red;"></i>
-                                          </button>
+                                        <p class="small text-muted mt-1" style="font-size: 12px;">
+                                          <em>Enter the one-time amount to be charged to Owners for documentation.</em>
+                                        </p>
+                                      </div>
+                                
+                                      <!-- Documentation Charges for Tenants -->
+                                      <div class="col-sm-6">
+                                        <label for="tenantDocumentCharges" class="form-label">Documentation Charges for Tenants</label>
+                                        <div class="input-group input-group-sm">
+                                          <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                          <input
+                                            type="text"
+                                            id="tenantDocumentCharges"
+                                            class="form-control form-control-sm"
+                                            (keypress)="numberOnly($event)"
+                                            maxlength="7"  style="max-width: 100px !important;" 
+                                            [(ngModel)]="configMasterModel.otherCharges.tenantDocumentCharges"
+                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.tenantDocumentCharges}"
+                                            [disabled]="otherChargesDisabled"
+                                          />
                                         </div>
+                                        <p class="small text-muted mt-1" style="font-size: 12px;">
+                                          <em>Enter the one-time amount to be charged to Tenants for documentation.</em>
+                                        </p>
                                       </div>
                                     </div>
                                   </div>
-                                  
                                 </div>
-                            </div>
+                                <div class="col-sm-1">
+                                  <div *ngIf="otherChargesDisabled">
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesDisabled = false">
+                                      <i class="fas fa-edit"></i>
+                                    </button>
+                                  </div>
+                                  <div class="btn-group" *ngIf="!otherChargesDisabled">
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesSubmit()">
+                                      <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesReset()">
+                                      <i class="fas fa-redo" style="color: red;"></i>
+                                    </button>
+                                  </div>
+                                </div>  
+                                </div>
+                                
+                            
+                              </div>
                     
                         <hr class="solid">
                         <!--Data Grouping-->
@@ -1203,8 +1257,8 @@
                             </div>
                           </div>
                         </div>
-                        <hr class="solid" hidden>
-                        <div hidden>
+                        <hr class="solid">
+                        <div>
                           <div class="row p-3 align-items-center marginRow">
                             <div class="col-sm-3">
                               <span style="font-size: 16px;">Force Checkout </span>
@@ -1245,6 +1299,48 @@
                           </div>
                           
                         </div>
+                        <hr class="solid">
+                        <div>
+                          <div class="row p-3 align-items-center marginRow">
+                            <div class="col-sm-3">
+                              <span style="font-size: 16px;">Short Term Renting Duration</span>
+                            </div>
+                            <div class="col-sm-9">
+                              <div class="row">
+                                <span>Configure Short Term Renting Duration Up to</span>
+                                <div class="col-sm-3">
+                                  <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control form-control-sm" style="max-width: 70px !important;" 
+                                      [(ngModel)]="configMasterModel.shortTermRentingDuration.shortTermRentingDuration" 
+                                      (keypress)="numberOnly($event)" maxlength="3"
+                                      [ngClass]="{'is-invalid': !shortTermRentingDisabled && (configMasterModel.shortTermRentingDuration.shortTermRentingDuration == 0 || !configMasterModel.shortTermRentingDuration.shortTermRentingDuration)}"
+                                      [disabled]="shortTermRentingDisabled" />
+                                    <span class="input-group-text">Months</span>
+                                  </div>
+                                </div>
+                                <div class="col-sm-2">
+                                  <div *ngIf="shortTermRentingDisabled">
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDisabled = false;">
+                                      <i class="fas fa-edit"></i>
+                                    </button>
+                                  </div>
+                                  <div class="btn-group" *ngIf="!shortTermRentingDisabled">
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingSubmit()">
+                                      <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingReset()">
+                                      <i class="fas fa-redo" style="color: red;"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                              <p class="small text-muted" style="font-size: 12px;">
+                                <em>Specify the number of months up to which the short-term renting option can be configured.</em>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        
                    </div>
                   </div>
                 <!-- /.container-fluid -->
