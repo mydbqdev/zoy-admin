@@ -21,6 +21,7 @@ import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
+import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
@@ -47,6 +48,7 @@ import com.integration.zoy.repository.ZoyPgDueFactorMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueTypeMasterRepository;
 import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
+import com.integration.zoy.repository.ZoyPgGstChargesRepository;
 import com.integration.zoy.repository.ZoyPgOtherChargesRepository;
 import com.integration.zoy.repository.ZoyPgOwnerBookingDetailsRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
@@ -135,6 +137,9 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Autowired
 	private ZoyPgOtherChargesRepository zoyPgOtherChargesRepo;
+	
+	@Autowired
+	private ZoyPgGstChargesRepository zoyPgGstChargesRepo;
 
 	@Autowired
 	private ZoyPgEarlyCheckOutRepository zoyPgEarlyCheckOutRepository;
@@ -596,11 +601,23 @@ public class OwnerDBService implements OwnerDBImpl{
 		List<ZoyPgOtherCharges> results =zoyPgOtherChargesRepo.findAll(PageRequest.of(0, 1)).getContent();
 		return results.isEmpty() ? null : results.get(0);
 	}
+	
+	@Override
+	public ZoyPgGstCharges findZoyGstCharges() throws WebServiceException {
+		List<ZoyPgGstCharges> results =zoyPgGstChargesRepo.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
+	}
 
 	@Override
 	public ZoyPgOtherCharges saveOtherCharges(ZoyPgOtherCharges other) throws WebServiceException{
 		return zoyPgOtherChargesRepo.save(other);
 	}
+	
+	@Override
+	public ZoyPgGstCharges saveGstCharges(ZoyPgGstCharges gst) throws WebServiceException {
+		return zoyPgGstChargesRepo.save(gst);
+	}
+
 
 	@Override
 	public ZoyDataGrouping findZoyDataGroup() throws WebServiceException{
@@ -684,5 +701,7 @@ public class OwnerDBService implements OwnerDBImpl{
 	public ZoyPgAutoCancellationMaster saveSecurityDepositDeadLine(ZoyPgAutoCancellationMaster autoCancellationMaster) throws WebServiceException {
 		return zoyPgAutoCancellationMasterRepository.save(autoCancellationMaster);
 	}
+
+	
 
 }

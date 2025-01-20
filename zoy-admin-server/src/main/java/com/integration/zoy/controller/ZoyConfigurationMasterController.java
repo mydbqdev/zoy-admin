@@ -35,6 +35,7 @@ import com.integration.zoy.entity.ZoyPgAutoCancellationAfterCheckIn;
 import com.integration.zoy.entity.ZoyPgAutoCancellationMaster;
 import com.integration.zoy.entity.ZoyPgCancellationDetails;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
+import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
@@ -50,6 +51,7 @@ import com.integration.zoy.utils.ZoyAdminConfigDTO;
 import com.integration.zoy.utils.ZoyAfterCheckInCancellationDto;
 import com.integration.zoy.utils.ZoyBeforeCheckInCancellationDto;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
+import com.integration.zoy.utils.ZoyGstChargesDto;
 import com.integration.zoy.utils.ZoyOtherChargesDto;
 import com.integration.zoy.utils.ZoyPgEarlyCheckOutRuleDto;
 import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
@@ -327,20 +329,27 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				ownerCharges = (details.getOwnerDocumentCharges() != null) 
 						? details.getOwnerDocumentCharges() 
 								: BigDecimal.ZERO;
-
+				ownerEkycCharges = (details.getOwnerEkycCharges() != null) 
+						? details.getOwnerEkycCharges() 
+								: BigDecimal.ZERO;
 				tenantCharges = (details.getTenantDocumentCharges() != null) 
 						? details.getTenantDocumentCharges() 
+								: BigDecimal.ZERO;
+				tenantEkycCharges = (details.getTenantEkycCharges() != null) 
+						? details.getTenantEkycCharges() 
 								: BigDecimal.ZERO;
 
 
 				ZoyPgOtherCharges newOtherCharges = new ZoyPgOtherCharges();
 				newOtherCharges.setOwnerDocumentCharges(ownerCharges);
 				newOtherCharges.setTenantDocumentCharges(tenantCharges);
+				newOtherCharges.setOwnerEkycCharges(ownerEkycCharges);
+				newOtherCharges.setTenantEkycCharges(tenantEkycCharges);
 
 				ownerDBImpl.saveOtherCharges(newOtherCharges);
 
 				//audit history here
-				String historyContent=" has created the Other Charges for, Owner Document Charges = "+newOtherCharges.getOwnerDocumentCharges()+" , Tenant Document Charges ="+newOtherCharges.getTenantDocumentCharges();
+				String historyContent=" has created the Other Charges for, Owner Document Charges = "+newOtherCharges.getOwnerDocumentCharges()+" , Tenant Document Charges ="+newOtherCharges.getTenantDocumentCharges()+" , Tenant Ekyc Charges ="+newOtherCharges.getTenantEkycCharges()+" , Owner Ekyc Charges ="+newOtherCharges.getOwnerEkycCharges();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
 
 				ZoyOtherChargesDto dto =convertToDTO(newOtherCharges);
@@ -356,6 +365,88 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@Override
+	public ResponseEntity<String> zoyAdminConfigCreateUpdateGstCharges(ZoyGstChargesDto details) {
+		ResponseBody response = new ResponseBody();
+		try {
+			if (details == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Required GST Charges details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			ZoyPgGstCharges gstCharges = ownerDBImpl.findZoyGstCharges();
+
+			BigDecimal gstPercentage;
+			BigDecimal monthlyRent;
+			if (gstCharges != null) {
+				final BigDecimal oldGstPercentage=gstCharges.getGstPecrentage();
+				final BigDecimal oldMonthlyRent=gstCharges.getMonthlyRent();
+				
+				gstPercentage = (details.getGstPercentage() != null) 
+						? details.getGstPercentage() 
+								: gstCharges.getGstPecrentage();
+				
+				monthlyRent = (details.getMonthlyRent() != null) 
+						? details.getMonthlyRent() 
+								: gstCharges.getMonthlyRent();
+								
+				gstCharges.setGstPecrentage(gstPercentage);
+				gstCharges.setMonthlyRent(monthlyRent);
+				gstCharges.setComponentName("RENT");
+				ownerDBImpl.saveGstCharges(gstCharges);
+
+				//audit history here
+				StringBuffer historyContent=new StringBuffer(" has updated the Gst Changes for");
+				if(oldGstPercentage!=gstCharges.getGstPecrentage()) {
+					historyContent.append(", GST percentage charges from "+oldGstPercentage+" to "+gstCharges.getGstPecrentage());
+				}
+				if(oldMonthlyRent!=gstCharges.getMonthlyRent()) {
+					historyContent.append(", monthly Rent charges from "+oldMonthlyRent+" to "+gstCharges.getMonthlyRent());
+				}
+
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				
+				ZoyGstChargesDto dto =convertToDTO(gstCharges);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Updated GST Charges details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+			} else {
+				gstPercentage = (details.getGstPercentage() != null) 
+						? details.getGstPercentage() 
+								: BigDecimal.ZERO;
+				monthlyRent = (details.getMonthlyRent() != null) 
+						? details.getMonthlyRent() 
+								: BigDecimal.ZERO;
+
+				ZoyPgGstCharges newGstCharges = new ZoyPgGstCharges();
+				
+				newGstCharges.setGstPecrentage(gstPercentage);
+				newGstCharges.setMonthlyRent(monthlyRent);
+				newGstCharges.setComponentName("RENT");
+
+				ownerDBImpl.saveGstCharges(newGstCharges);
+
+				//audit history here
+				String historyContent=" has created the GST Charges for, GST Charges = "+newGstCharges.getGstPecrentage()+" , Monthly Rent ="+newGstCharges.getMonthlyRent();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+
+				ZoyGstChargesDto dto =convertToDTO(newGstCharges);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Saved GST Charges details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			log.error("Error saving/creating GST Charges details API:/zoy_admin/config/gst-charges.zoyAdminConfigCreateUpdateGstCharges ", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
 
 
 	private ZoyOtherChargesDto convertToDTO(ZoyPgOtherCharges entity) {
@@ -368,6 +459,13 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		return dto;
 	}
 
+	private ZoyGstChargesDto convertToDTO(ZoyPgGstCharges entity) {
+		ZoyGstChargesDto dto = new ZoyGstChargesDto();
+		dto.setRentId(entity.getRentId());
+		dto.setGstPercentage(entity.getGstPecrentage());
+		dto.setMonthlyRent(entity.getMonthlyRent());
+		return dto;
+	}
 
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateDataGrouping(ZoyDataGroupingDto details) {
@@ -864,4 +962,5 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		}
 	}
 
+	
 }
