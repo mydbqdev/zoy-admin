@@ -359,18 +359,18 @@ public class AdminReportService implements AdminReportImpl{
 			}
 			
 			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
-				queryBuilder.append(" AND ud.user_personal_phone_num = :tenantMobileNum");
-				parameters.put("tenantMobileNum", "%" + filterData.getTenantContactNum() + "%");
+			    queryBuilder.append(" AND ud.user_personal_phone_num IS NOT NULL AND LOWER(ud.user_personal_phone_num) LIKE LOWER(:tenantContactNum)");
+			    parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
 			}
 
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-				queryBuilder.append(" AND LOWER(pgd.user_pg_propertyname) LIKE LOWER(:pgPropertyName)");
-				parameters.put("pgPropertyName", filterData.getPgName());
+				queryBuilder.append(" AND LOWER(pgt.property_name) LIKE LOWER(:pgName)");
+				parameters.put("pgName","%" +filterData.getPgName() +"%");
 			}
 
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
 				queryBuilder.append(" AND LOWER(pgt.property_city) LIKE LOWER(:cityLocation)");
-				parameters.put("cityLocation", filterRequest.getCityLocation());
+				parameters.put("cityLocation", "%" +filterRequest.getCityLocation()+ "%");
 			}
 
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
