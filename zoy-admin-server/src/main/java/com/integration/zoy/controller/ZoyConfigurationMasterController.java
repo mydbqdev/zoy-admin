@@ -271,21 +271,33 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			BigDecimal ownerCharges;
 			BigDecimal tenantCharges;
-
+			BigDecimal tenantEkycCharges;
+			BigDecimal ownerEkycCharges;
 			if (otherCharges != null) {
 				final BigDecimal oldOwnerCharges=otherCharges.getOwnerDocumentCharges();
 				final BigDecimal oldTenantChares=otherCharges.getTenantDocumentCharges();
+				final BigDecimal oldOwnerEkycCharges=otherCharges.getOwnerEkycCharges();
+				final BigDecimal oldTenantEkycCharges=otherCharges.getTenantEkycCharges();
 				ownerCharges = (details.getOwnerDocumentCharges() != null) 
 						? details.getOwnerDocumentCharges() 
 								: otherCharges.getOwnerDocumentCharges();
+				
+				ownerEkycCharges = (details.getOwnerEkycCharges() != null) 
+						? details.getOwnerEkycCharges() 
+								: otherCharges.getOwnerEkycCharges();
 
 				tenantCharges = (details.getTenantDocumentCharges() != null) 
 						? details.getTenantDocumentCharges() 
 								: otherCharges.getTenantDocumentCharges();
 
+				tenantEkycCharges = (details.getTenantEkycCharges() != null) 
+						? details.getTenantEkycCharges() 
+								: otherCharges.getTenantEkycCharges();
+				
 				otherCharges.setOwnerDocumentCharges(ownerCharges);
 				otherCharges.setTenantDocumentCharges(tenantCharges);
-
+				otherCharges.setOwnerEkycCharges(ownerEkycCharges);
+				otherCharges.setTenantEkycCharges(tenantEkycCharges);
 				ownerDBImpl.saveOtherCharges(otherCharges);
 
 				//audit history here
@@ -293,12 +305,18 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				if(oldOwnerCharges!=otherCharges.getOwnerDocumentCharges()) {
 					historyContent.append(", owner document charges from "+oldOwnerCharges+" to "+otherCharges.getOwnerDocumentCharges());
 				}
+				if(oldOwnerCharges!=otherCharges.getOwnerEkycCharges()) {
+					historyContent.append(", owner Ekyc charges from "+oldOwnerEkycCharges+" to "+otherCharges.getOwnerEkycCharges());
+				}
 				if(oldTenantChares!=otherCharges.getTenantDocumentCharges()) {
 					historyContent.append(" ,  tenant document charges from "+oldTenantChares+" to "+otherCharges.getTenantDocumentCharges());
 				}
+				if(oldTenantChares!=otherCharges.getTenantEkycCharges()) {
+					historyContent.append(" ,  tenant Ekyc charges from "+oldTenantEkycCharges+" to "+otherCharges.getTenantEkycCharges());
+				}
 
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
-
+				
 				ZoyOtherChargesDto dto =convertToDTO(otherCharges);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -345,6 +363,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setOtherChargesId(entity.getOtherChargesId());
 		dto.setOwnerDocumentCharges(entity.getOwnerDocumentCharges());
 		dto.setTenantDocumentCharges(entity.getTenantDocumentCharges());
+		dto.setTenantEkycCharges(entity.getTenantEkycCharges());
+		dto.setOwnerEkycCharges(entity.getOwnerEkycCharges());
 		return dto;
 	}
 
