@@ -15,6 +15,7 @@ import { FilterData, FiltersRequestModel } from 'src/app/finance/reports/model/r
 import { ReportService } from 'src/app/finance/reports/service/reportService';
 import { TenantService } from '../../tenant.service';
 import { TenantDetailPortfolio } from '../model/tenant-details';
+import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
 	selector: 'app-tenant-profile',
@@ -53,7 +54,8 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	@ViewChild(MatSort) sort: MatSort;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	tdpf : TenantDetailPortfolio = new TenantDetailPortfolio();
-	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private reportService : ReportService,
+	reason :string ='';
+	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private reportService : ReportService,private confirmationDialogService:ConfirmationDialogService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private tenantService : TenantService) {
 			this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
@@ -302,5 +304,54 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		  }
 		}); 
 	}
-	 
+	
+	doDeactivateActivate(): void {
+		this.submitted =true;
+		if(!this.reason){
+			return ;
+		}
+		this.tdpf.profile.resoan = this.reason ;
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want to '+(this.tdpf.profile.status == 'Active' ? 'Deactivate' : 'Activate') + ' '+this.tdpf.profile.tenantName+' ?')
+		.then(
+		   (confirmed) =>{
+			if(confirmed){
+				this.authService.checkLoginUserVlidaate();
+				this.spinner.show();
+				this.tenantService.doDeactivateActivate(this.tdpf.profile).subscribe(res => {
+
+				this.submitted =false;
+				this.spinner.hide();
+				}, error => {
+				 this.spinner.hide();
+				if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "")
+				}else if(error.status==403){
+						this.router.navigate(['/forbidden']);
+					}else if (error.error && error.error.message) {
+						this.errorMsg = error.error.message;
+						console.log("Error:" + this.errorMsg);
+						this.notifyService.showError(this.errorMsg, "");
+					} else {
+						if (error.status == 500 && error.statusText == "Internal Server Error") {
+						this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+						} else {
+						let str;
+						if (error.status == 400) {
+							str = error.error.error;
+						} else {
+							str = error.error.message;
+							str = str.substring(str.indexOf(":") + 1);
+						}
+						console.log("Error:" ,str);
+						this.errorMsg = str;
+						}
+						if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+						//this.notifyService.showError(this.errorMsg, "");
+					}
+					});
+				}
+			}).catch(
+				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+			);
+	  }
 }

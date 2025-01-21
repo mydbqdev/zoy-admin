@@ -35,7 +35,14 @@
                             <div class="row m-2 pt-2">
                               <div class="col-sm-3">
                                 <div class="mr-1"  style="border:1px solid rgb(226, 224, 224);border-radius: 10px;height: calc(100vh - 191px)">
-                                  <div style="text-align: end;padding-right: 20px;margin-top: 10px;"><i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i></div>
+                                  <div style="text-align: end;padding-right: 20px;margin-top: 10px;">
+                                  <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                </a>
+                                  <div class="dropdown-menu dropdown-menu-left shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                      <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="reason='';submitted=false" >{{tdpf.profile.status == 'Active' ? 'Deactivate' : 'Activate'}}</a>
+                                  </div>
+                                </div>
                                   <div class="d-flex justify-content-center" style="margin-top: -25px;">
                                     <div style="width: 55px;"></div>
                                     <!-- <div style="height: 100px;width: 100px;border-radius: 50%;border:1px dashed rgb(36, 206, 248);padding: 2px;">
@@ -222,6 +229,29 @@
              <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" 
              [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)">
             </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!------To give the reason for Deactivate/Activate details PopUp model------->
+<div class="modal fade" id="reactivateReason" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-small ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel"><span style="color: rgb(173, 5, 159);">{{tdpf.profile.status == 'Active' ? 'Deactivate' : 'Activate'}}  {{tdpf.profile.tenantName}}</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-3">
+        <div>Reason:</div>
+        <textarea id="txtArea" rows="7" cols="52" [(ngModel)]="reason" maxlength="1000" title="Please give me the reason"
+               [ngClass]="{'is-invalid': submitted && !reason}"></textarea>
+        <div *ngIf="submitted && !reason" class="text-danger" >
+          Reason is required.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary-custom me-2" (click)="doDeactivateActivate()" >{{tdpf.profile.status == 'Active' ? 'Deactivate' : 'Activate'}}</button>
       </div>
     </div>
   </div>

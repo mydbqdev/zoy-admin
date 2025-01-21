@@ -25,6 +25,8 @@ class Profile {
     nationality: string = '';
     motherTongue: string = '';
     userProfile: string = '';
+
+    resoan: string = '';
 }
 
 class ActiveBooking {
