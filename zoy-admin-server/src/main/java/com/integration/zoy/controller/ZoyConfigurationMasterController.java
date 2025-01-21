@@ -811,6 +811,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyPgAutoCancellationMaster securityDepositDeadLine = ownerDBImpl.findSecurityDepositDeadLine();
 			ZoyDataGrouping dataGrouping=ownerDBImpl.findZoyDataGroup();
 			ZoyPgOtherCharges otherCharges = ownerDBImpl.findZoyOtherCharges();
+			ZoyPgGstCharges gstCharges=ownerDBImpl.findZoyGstCharges();
 
 			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
 			configDTO.setTokenDetails(convertToDTO(tokenDetails));
@@ -821,6 +822,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			configDTO.setSecurityDepositDeadLineDetails(convertToDTO(securityDepositDeadLine));
 			configDTO.setDataGrouping(convertToDTO(dataGrouping));
 			configDTO.setOtherCharges(convertToDTO(otherCharges));
+			configDTO.setGstCharges(convertToDTO(gstCharges));
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(configDTO);
