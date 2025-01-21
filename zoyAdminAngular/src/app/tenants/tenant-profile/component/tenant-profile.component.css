@@ -55,3 +55,6 @@ th, td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.is-invalid {
+  border: 1px solid red;
+}

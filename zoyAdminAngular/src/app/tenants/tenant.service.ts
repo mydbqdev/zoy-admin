@@ -41,6 +41,17 @@ import { MessageService } from 'src/app/message.service';
               }
           );
     }  
+    public doDeactivateActivate(tenantId:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/manage-tenants-details?tenantid="+tenantId;
+          return  this.httpclient.get<any>(
+              url1,
+              {
+                 headers:ServiceHelper.buildHeaders(),
+                 observe : 'body',
+                 withCredentials:true
+              }
+          );
+    } 
 
     
     private errorHandler(error:HttpErrorResponse){
