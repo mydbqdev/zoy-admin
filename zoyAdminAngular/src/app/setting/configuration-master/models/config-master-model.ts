@@ -12,6 +12,7 @@ export class ConfigMasterModel{
     rentSlabModel :RentSlabModel = new RentSlabModel();
     gstSlabModel :GstSlabModel[] = [];
     shortTermRentingDuration :ShortTermRentingDuratioModel = new ShortTermRentingDuratioModel();
+    gstCharges : GstChargesModel = new GstChargesModel();
     
 }
 
@@ -65,9 +66,9 @@ export class SecurityDepositDeadLineAndAutoCancellationModel{
 
 export class OtherChargesModel{
     otherChargesId : string ='';
-    ownerEKYCCharges : number ;
+    ownerEkycCharges : number ;
     ownerDocumentCharges  : number ;
-    tenantEKYCCharges : number ;
+    tenantEkycCharges : number ;
     tenantDocumentCharges : number ;   
 }
 
@@ -109,3 +110,8 @@ export class CheckoutDeductionDetailsModel {
     shortTermRentingDuration  : number ;
 }
 
+ export class GstChargesModel{
+    rentId: string ;
+    gstPercentage: number ;
+    monthlyRent: number ;
+}

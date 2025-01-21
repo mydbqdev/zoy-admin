@@ -48,6 +48,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  checkoutDeductionDisabled: boolean = true;
 	  forceCheckoutDisabled: boolean = true;
 	  shortTermRentingDisabled : boolean = true;
+	  gstChargesDisabled : boolean = true;
 
 	  triggerCondition : {'id':number,'cond_name':string}[] = []; //['==','>=','<=','>','<','!='];
 	  triggerOn : {'id':number,'trigger_on':string}[]=[];//['PaidAmount','Rent','PaidAmount & Rent']; 
@@ -112,6 +113,51 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  this.sidemenuComp.activeMenu(4, 'configuration-master');
 		  this.dataService.setHeaderName("Configuration Master");
 	  }
+	  getConfigMasterDetails(){
+		this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
+		this.configMasterService.getConfigMasterDetails().subscribe(res => {
+		this.configMasterOrg = new ConfigMasterModel();
+		const keys = Object.keys(this.configMasterOrg);
+		keys.forEach(key => {
+			if (res.data[key]) {
+				this.configMasterOrg[key] = res.data[key];
+			}
+		});
+		this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
+		this.getBeforeCheckInCRData();
+		this.rentSlabsdataSource = new MatTableDataSource<RentSlabModel>(this.rentSlabs);
+		this.spinner.hide();
+		}, error => {
+		this.spinner.hide();
+		if(error.status == 0) {
+		  this.notifyService.showError("Internal Server Error/Connection not established", "")
+	   }else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+			this.errorMsg = error.error.message;
+			console.log("Error:" + this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+		} else {
+			if (error.status == 500 && error.statusText == "Internal Server Error") {
+			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+			} else {
+			let str;
+			if (error.status == 400) {
+				str = error.error.error;
+			} else {
+				str = error.eror.message;
+				str = str.substring(str.indexOf(":") + 1);
+			}
+			console.log("Error:" ,str);
+			this.errorMsg = str;
+			}
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			//this.notifyService.showError(this.errorMsg, "");
+		}
+		});
+	}	
+	
 
 	  isNotValidNumber(value: any): boolean {
 		return value == null || isNaN(value);
@@ -321,10 +367,63 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			);								
 	  	}
 		
-		securityDepositLimitsReset() {
-			this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
-			this.securityDepositLimitsDisabled = true;
+	securityDepositLimitsReset() {
+		this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
+		this.securityDepositLimitsDisabled = true;
+	}
+
+	gstChargesSubmit() {
+		if( !this.configMasterModel.gstCharges.monthlyRent || !this.configMasterModel.gstCharges.gstPercentage ){
+			return
 		}
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+		.then(
+		   (confirmed) =>{
+			if(confirmed){
+		this.spinner.show();
+		this.authService.checkLoginUserVlidaate();
+		this.configMasterService.updategstChargesDetails(this.configMasterModel.gstCharges).subscribe(res => {
+			this.configMasterOrg.gstCharges = Object.assign(new TokenDetailsModel(), res.data );
+			this.configMasterModel.gstCharges = JSON.parse(JSON.stringify(this.configMasterOrg.gstCharges));
+			this.gstChargesDisabled = true;
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});	}	
+		}).catch(
+			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+		);					
+	  }
+	
+	  gstChargesReset() {
+		this.configMasterModel.gstCharges = JSON.parse(JSON.stringify(this.configMasterOrg.gstCharges));
+		this.gstChargesDisabled = true;
+	  }
 	securityDepositDeadLineSubmit() {
 		this.authService.checkLoginUserVlidaate();
 		if(!this.configMasterModel.securityDepositDeadLineDetails.auto_cancellation_day || !this.configMasterModel.securityDepositDeadLineDetails.deduction_percentage || !this.configMasterModel.securityDepositDeadLineDetails.trigger_condition|| !this.configMasterModel.securityDepositDeadLineDetails.trigger_value ){
@@ -430,7 +529,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}	
 	otherChargesSubmit() {
 		
-		if(!this.configMasterModel.otherCharges.ownerDocumentCharges || !this.configMasterModel.otherCharges.tenantDocumentCharges || !this.configMasterModel.otherCharges.ownerEKYCCharges || !this.configMasterModel.otherCharges.tenantEKYCCharges ){
+		if(!this.configMasterModel.otherCharges.ownerDocumentCharges || !this.configMasterModel.otherCharges.tenantDocumentCharges || !this.configMasterModel.otherCharges.ownerEkycCharges || !this.configMasterModel.otherCharges.tenantEkycCharges ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -903,50 +1002,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.checkoutDeductionDisabled = true;
 	}
 
-		getConfigMasterDetails(){
-			this.authService.checkLoginUserVlidaate();
-			this.spinner.show();
-			this.configMasterService.getConfigMasterDetails().subscribe(res => {
-			this.configMasterOrg = new ConfigMasterModel();
-			const keys = Object.keys(this.configMasterOrg);
-			keys.forEach(key => {
-				if (res.data[key]) {
-					this.configMasterOrg[key] = res.data[key];
-				}
-			});
-			this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
-			this.getBeforeCheckInCRData();
-			this.rentSlabsdataSource = new MatTableDataSource<RentSlabModel>(this.rentSlabs);
-			this.spinner.hide();
-			}, error => {
-			this.spinner.hide();
-			if(error.status == 0) {
-			  this.notifyService.showError("Internal Server Error/Connection not established", "")
-		   }else if(error.status==403){
-				this.router.navigate(['/forbidden']);
-			}else if (error.error && error.error.message) {
-				this.errorMsg = error.error.message;
-				console.log("Error:" + this.errorMsg);
-				this.notifyService.showError(this.errorMsg, "");
-			} else {
-				if (error.status == 500 && error.statusText == "Internal Server Error") {
-				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-				} else {
-				let str;
-				if (error.status == 400) {
-					str = error.error.error;
-				} else {
-					str = error.eror.message;
-					str = str.substring(str.indexOf(":") + 1);
-				}
-				console.log("Error:" ,str);
-				this.errorMsg = str;
-				}
-				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-				//this.notifyService.showError(this.errorMsg, "");
-			}
-			});
-		}	
 		
 		
 		getTriggerCondition(){		     

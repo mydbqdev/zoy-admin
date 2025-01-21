@@ -42,6 +42,18 @@ import { MessageService } from 'src/app/message.service';
                 }
             );
     } 
+    public updategstChargesDetails(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/gst-charges";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    } 
     public updatesecurityDepositLimitsDetails(data:any): Observable<any> {
         const url1=this.basePath +"zoy_admin/config/security-deposit-limits";
         return  this.httpclient.post<any>(

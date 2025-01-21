@@ -53,6 +53,7 @@
                             <div class="col-sm-9">
                               <div class="row">
                                 <div class="col-sm-4">
+                                  <div>Fixed amount</div>
                                   <div class="input-group input-group-sm">
                                     <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                     <input 
@@ -60,13 +61,14 @@
                                       class="form-control form-control-sm" 
                                       [(ngModel)]="configMasterModel.tokenDetails.fixedToken" [disabled]="tokenAdvancDisabled" (keypress)="numberOnly($event)" maxlength="7"
                                        [ngClass]="{'is-invalid': !tokenAdvancDisabled && (configMasterModel.tokenDetails.fixedToken == 0 || !configMasterModel.tokenDetails.fixedToken) }" 
-                                      style="max-width: 70px !important;" />
+                                      style="max-width: 90px !important;" />
                                   </div>
                                   <p class="small text-muted " style="font-size: 12px;">
                                     <em>Fixed amount of the token advance required during booking.</em>
                                   </p>
                                 </div>
                                 <div class="col-sm-4">
+                                  <div>Percentage</div>
                                       <div class="input-group input-group-sm" >
                                         <input 
                                           type="text" 
@@ -171,6 +173,65 @@
                             </div>
                           </div>
                           
+                        </div>
+                        <hr class="solid"> 
+                        <div>
+                          <!--Total Advance section-->
+                          <div class="row p-3 align-items-center marginRow">
+                            <div class="col-sm-3">
+                              <div><span style="font-size: 16px;">GST Charges</span></div>
+                              <div><p class="small text-muted " style="font-size: 12px;"><em>Specify the GST percentage to be applied.</em></p></div>
+                            </div>
+                            
+                            <div class="col-sm-9">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <div>Monthly Rent</div>
+                                  <div class="input-group input-group-sm">
+                                    <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                    <input 
+                                      type="text" 
+                                      class="form-control form-control-sm" 
+                                      [(ngModel)]="configMasterModel.gstCharges.monthlyRent" [disabled]="gstChargesDisabled" (keypress)="numberOnly($event)" maxlength="7"
+                                       [ngClass]="{'is-invalid': !gstChargesDisabled && !configMasterModel.gstCharges.monthlyRent }" 
+                                      style="max-width: 90px !important;" />
+                                  </div>
+                                  <p class="small text-muted " style="font-size: 12px;">
+                                    <em>Monthly rent value for calculating GST.</em>
+                                  </p>
+                                </div>
+                                <div class="col-sm-4">
+                                  <div>GST</div>
+                                      <div class="input-group input-group-sm" >
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm" 
+                                          [(ngModel)]="configMasterModel.gstCharges.gstPercentage"  (keypress)="percentageOnly($event)" maxlength="5"
+                                          [ngClass]="{'is-invalid': !gstChargesDisabled && !configMasterModel.gstCharges.gstPercentage}" 
+                                          style="max-width: 70px !important;" [disabled]="gstChargesDisabled" />
+                                         <span class="input-group-text">%</span>
+                                  </div>
+                                  <p class="small text-muted " style="font-size: 12px;"><em>GST percentage to be applied on the total amount.</em></p>
+                      
+                                </div>
+                                <div class="col-sm-3">
+                                    <div *ngIf="gstChargesDisabled">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="gstChargesDisabled = false">
+                                        <i class="fas fa-edit"></i>
+                                      </button>
+                                    </div>
+                                    <div class="btn-group" *ngIf="!gstChargesDisabled">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="gstChargesSubmit()">
+                                        <i class="fas fa-check"></i>
+                                      </button>
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="gstChargesReset()">
+                                        <i class="fas fa-redo" style="color: red;"></i>
+                                      </button>
+                                    </div>
+                                </div>
+                              </div>
+                                 </div>
+                          </div>
                         </div>
                         <hr class="solid"> 
                          <!--Cancellation And Refund Policy-->
@@ -912,9 +973,9 @@
                               </div>
                               
                             </div>
-                            <hr class="solid"> 
+                            <hr class="solid" hidden> 
                            
-                            <div>
+                            <div hidden>
                               <div class="row pl-3 align-items-center">
                                 <div class="col-sm-3">
                                   <span style="font-size: 16px;">GST Slabs</span>
@@ -1108,17 +1169,17 @@
                                     <div class="row">
                                       <!-- eKYC Charges for Owners -->
                                       <div class="col-sm-6">
-                                        <label for="ownerEKYCCharges" class="form-label">eKYC Charges for Owners</label>
+                                        <label for="ownerEkycCharges" class="form-label">eKYC Charges for Owners </label>
                                         <div class="input-group input-group-sm">
                                           <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                           <input
                                             type="text"
-                                            id="ownerEKYCCharges"
+                                            id="ownerEkycCharges"
                                             class="form-control form-control-sm"
                                             (keypress)="numberOnly($event)"
                                             maxlength="7"  style="max-width: 100px !important;" 
-                                            [(ngModel)]="configMasterModel.otherCharges.ownerEKYCCharges"
-                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.ownerEKYCCharges}"
+                                            [(ngModel)]="configMasterModel.otherCharges.ownerEkycCharges"
+                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.ownerEkycCharges}"
                                             [disabled]="otherChargesDisabled"
                                           />
                                         </div>
@@ -1129,17 +1190,17 @@
                                 
                                       <!-- eKYC Charges for Tenants -->
                                       <div class="col-sm-6">
-                                        <label for="tenantEKYCCharges" class="form-label">eKYC Charges for Tenants</label>
+                                        <label for="tenantEkycCharges" class="form-label">eKYC Charges for Tenants</label>
                                         <div class="input-group input-group-sm">
                                           <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                           <input
                                             type="text"
-                                            id="tenantEKYCCharges"
+                                            id="tenantEkycCharges"
                                             class="form-control form-control-sm"
                                             (keypress)="numberOnly($event)"
                                             maxlength="7"  style="max-width: 100px !important;" 
-                                            [(ngModel)]="configMasterModel.otherCharges.tenantEKYCCharges"
-                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.tenantEKYCCharges}"
+                                            [(ngModel)]="configMasterModel.otherCharges.tenantEkycCharges"
+                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.tenantEkycCharges}"
                                             [disabled]="otherChargesDisabled"
                                           />
                                         </div>
