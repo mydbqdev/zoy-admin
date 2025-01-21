@@ -168,21 +168,21 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     
 
   stay() {
+	clearInterval(this.interval);
     this.authService.checkLoginUserVlidaate();
+    this.sessionModelClose.nativeElement.click(); 
     this.nun=0;
     this.countdown = 120;
-    clearInterval(this.interval); 
-    this.sessionModelClose.nativeElement.click(); 
   }
 
   logout() {
+	clearInterval(this.timeSinceLastAction);
+	clearInterval(this.timeoutId);  
+	clearInterval(this.interval); 
     this.doSignout();
+    this.sessionModelClose.nativeElement.click(); 
     this.nun = 0;
     this.countdown = 120;
-    clearInterval(this.timeSinceLastAction);
-    clearInterval(this.timeoutId);  
-    clearInterval(this.interval); 
-    this.sessionModelClose.nativeElement.click(); 
   }
 
   

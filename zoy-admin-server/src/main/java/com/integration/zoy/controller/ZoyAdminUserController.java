@@ -186,19 +186,17 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 						userRepository.save(userLock);
 					}
 				}
-			}else if(loginDetails.getIsLock()) {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setMessage("Your password has been expired. Please create a new one or use the 'Forgot Password' link to reset it.");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-				
 			}
-
+			
 			String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword());
 			String decryptedLoginPassword = passwordDecoder.decryptedText(details.getPassword());
 
 			boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
 
 			if (isPasswordMatch) {
+				
+				
+
 				Authentication authentication = authenticationManager.authenticate(
 						new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
 				String token = jwtUtil.generateToken(authentication);
@@ -206,10 +204,17 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				response.setStatus(HttpStatus.OK.value());
 				response.setEmail(details.getEmail());
 				response.setToken(token);
+				
+				if(loginDetails.getIsLock()) {
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
+					response.setMessage("Your password has been expired.");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
+				}else {
+					auditHistoryUtilities.auditForUserLoginLogout(loginDetails.getUserEmail(), true);
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+				}
 
-				auditHistoryUtilities.auditForUserLoginLogout(loginDetails.getUserEmail(), true);
-
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+				
 			} else {
 
 				if (userLock == null) {
@@ -301,8 +306,14 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					adminUserList.setContactNumber(user.get(0)[3]);
 					adminUserList.setDesignation(user.get(0)[4]);
 					adminUserList.setPrivilege(user.get(0)[6]!=null?Arrays.asList(user.get(0)[6].split(",")):new ArrayList<>());
-				}	
-				return new ResponseEntity<>(gson.toJson(adminUserList), HttpStatus.OK);
+				
+					return new ResponseEntity<>(gson.toJson(adminUserList), HttpStatus.OK);
+				}else {
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
+					response.setMessage("Your password has been expired");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
+				}
+				
 			} else {
 				response.setStatus(HttpStatus.BAD_GATEWAY.value());
 				response.setMessage("Token is invalid");
