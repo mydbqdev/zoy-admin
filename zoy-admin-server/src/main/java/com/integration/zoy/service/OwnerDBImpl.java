@@ -12,6 +12,7 @@ import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
+import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
@@ -115,7 +116,9 @@ public interface OwnerDBImpl {
 	ZoyShareMaster saveZoyShare(ZoyShareMaster shareDetails)throws WebServiceException;
 	List<ZoyShareMaster> findAllZoyShare() throws WebServiceException;
 	ZoyPgOtherCharges findZoyOtherCharges() throws WebServiceException;
+	ZoyPgGstCharges findZoyGstCharges() throws WebServiceException;
 	ZoyPgOtherCharges saveOtherCharges(ZoyPgOtherCharges other) throws WebServiceException;
+	ZoyPgGstCharges saveGstCharges(ZoyPgGstCharges other) throws WebServiceException;
 	ZoyDataGrouping findZoyDataGroup() throws WebServiceException;
 	ZoyDataGrouping saveDataGroup(ZoyDataGrouping group) throws WebServiceException;
 	List<ZoyDataGrouping> findAllDataGroup()throws WebServiceException;

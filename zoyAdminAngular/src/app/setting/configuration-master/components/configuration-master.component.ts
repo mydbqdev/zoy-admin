@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { ConfigMasterService } from '../service/config-master-serive';
-import { BeforeCheckInCancellationRefundModel, CheckoutDeductionDetailsModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, OtherChargesModel, RentSlabModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, TokenDetailsModel} from '../models/config-master-model';
+import { BeforeCheckInCancellationRefundModel, CheckoutDeductionDetailsModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstSlabModel, OtherChargesModel, RentSlabModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermRentingDuratioModel, TokenDetailsModel} from '../models/config-master-model';
 import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 
@@ -47,6 +47,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  otherChargesDisabled: boolean = true;
 	  checkoutDeductionDisabled: boolean = true;
 	  forceCheckoutDisabled: boolean = true;
+	  shortTermRentingDisabled : boolean = true;
 
 	  triggerCondition : {'id':number,'cond_name':string}[] = []; //['==','>=','<=','>','<','!='];
 	  triggerOn : {'id':number,'trigger_on':string}[]=[];//['PaidAmount','Rent','PaidAmount & Rent']; 
@@ -429,7 +430,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}	
 	otherChargesSubmit() {
 		
-		if(!this.configMasterModel.otherCharges.ownerDocumentCharges || !this.configMasterModel.otherCharges.tenantDocumentCharges ){
+		if(!this.configMasterModel.otherCharges.ownerDocumentCharges || !this.configMasterModel.otherCharges.tenantDocumentCharges || !this.configMasterModel.otherCharges.ownerEKYCCharges || !this.configMasterModel.otherCharges.tenantEKYCCharges ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -1017,8 +1018,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}
 
 		rentSlabs :RentSlabModel[] = [
-			{ rentSlabId:"1", slabFrom: 0, slabTo: 5, rentPercentage: 10, isEdit: false, isDelete: false },
-			{ rentSlabId:"2",slabFrom: 6, slabTo: 10, rentPercentage: 12, isEdit: false, isDelete: false },
+			{ rentSlabId:"1", slabFrom: 'Upto', slabTo: '1000', rentPercentage: 10, isEdit: false, isDelete: false },
+			{ rentSlabId:"2",slabFrom: '1001', slabTo: '10000', rentPercentage: 18, isEdit: false, isDelete: false },
+			{ rentSlabId:"3",slabFrom: 'Above', slabTo: '10000', rentPercentage: 25, isEdit: false, isDelete: false },
 		
 		  ];
 		
@@ -1049,6 +1051,30 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.rentSlabSaveVali = true;
 			  }
 		  }
+
+		  gstSlabModel : GstSlabModel=new GstSlabModel();
+		  gstSlabSaveVali :boolean = false;
+
+		  addGSTSlab() {
+			if (this.gstSlabModel.slabFrom && this.gstSlabModel.slabTo && this.gstSlabModel.gstPercentage) {
+				const newSlab = { 
+				  rentSlabId:'',
+				  slabFrom: this.gstSlabModel.slabFrom,
+				  slabTo: this.gstSlabModel.slabTo,
+				  gstPercentage: this.gstSlabModel.gstPercentage,
+				  isEdit: false,
+				  isDelete: false,
+				  showInputBox: false
+				};
+				this.configMasterModel.gstSlabModel.push(newSlab);
+				this.gstSlabModel = new GstSlabModel();
+				this.gstSlabSaveVali = false;
+			  } else {
+				this.gstSlabSaveVali = true;
+			  }
+		  }
+
+		  
 		
 		  modifyRentSlab(slab) {
 			console.log("slab",slab)
@@ -1071,23 +1097,73 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  }
 	
 		  showInputBox = false;
-		  onCheckboxChange(event: Event) {
-			const checkboxElement = event.target as HTMLInputElement;
-			if (checkboxElement.checked) {
-			  this.showInputBox = false;
-			  this.rentSlabModel.slabFrom='';
-			}
+		//   onCheckboxChange(event: Event) {
+		// 	const checkboxElement = event.target as HTMLInputElement;
+		// 	if (checkboxElement.checked) {
+		// 	  this.showInputBox = false;
+		// 	  this.rentSlabModel.slabFrom='';
+		// 	}
+		//   }
+
+		  onDropdownChange(slab:any) {
+			if (slab.slabFrom === 'Input') {
+				slab.showInputBox = true;  
+			  } else {
+				slab.showInputBox = false;   
+			  }
 		  }
 
-		  onDropdownChange(event: Event) {
-			const selectElement = event.target as HTMLSelectElement;
-		console.log("selectElement.value",selectElement.value)
-			if (selectElement.value == 'Input') {
-				this.showInputBox = true;
-				this.rentSlabModel.slabFrom=''
-			//  this.form.get('fromIncomeSlab')?.setValue(selectElement.value, { emitEvent: false });
-			}else{
-				
+		  shortTermRentingReset(): void {
+			this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
+			this.shortTermRentingDisabled = true;
+		  }
+
+		  shortTermRentingSubmit(): void {
+			if(!this.configMasterModel.shortTermRentingDuration.shortTermRentingDuration || this.configMasterModel.shortTermRentingDuration.shortTermRentingDuration == 0){
+				return ;
 			}
+			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+			.then(
+			   (confirmed) =>{
+				if(confirmed){
+					this.authService.checkLoginUserVlidaate();
+					this.spinner.show();
+					this.configMasterService.updateShortTermRentingDuratioDetails(this.configMasterModel.cancellationAfterCheckInDetails).subscribe(res => {
+						this.configMasterOrg.shortTermRentingDuration = Object.assign(new ShortTermRentingDuratioModel(), res.data );
+						this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
+						this.shortTermRentingDisabled = true;
+						this.spinner.hide();
+						}, error => {
+						this.spinner.hide();
+						if(error.status == 0) {
+						this.notifyService.showError("Internal Server Error/Connection not established", "")
+					}else if(error.status==403){
+							this.router.navigate(['/forbidden']);
+						}else if (error.error && error.error.message) {
+							this.errorMsg = error.error.message;
+							console.log("Error:" + this.errorMsg);
+							this.notifyService.showError(this.errorMsg, "");
+						} else {
+							if (error.status == 500 && error.statusText == "Internal Server Error") {
+							this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+							} else {
+							let str;
+							if (error.status == 400) {
+								str = error.error.error;
+							} else {
+								str = error.error.message;
+								str = str.substring(str.indexOf(":") + 1);
+							}
+							console.log("Error:" ,str);
+							this.errorMsg = str;
+							}
+							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+							//this.notifyService.showError(this.errorMsg, "");
+						}
+						});
+					}
+				}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				);
 		  }
   }  

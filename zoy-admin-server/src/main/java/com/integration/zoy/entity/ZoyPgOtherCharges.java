@@ -25,6 +25,13 @@ public class ZoyPgOtherCharges {
 
 	@Column(name = "tenant_document_charges", nullable = false, precision = 10, scale = 2)
 	private BigDecimal tenantDocumentCharges;
+	
+	@Column(name = "owner_ekyc_charges", nullable = false, precision = 10, scale = 2)
+	private BigDecimal ownerEkycCharges;
+	
+	@Column(name = "tenant_ekyc_charges", nullable = false, precision = 10, scale = 2)
+	private BigDecimal tenantEkycCharges;
+	
 
 	// Getters and Setters
 
@@ -50,6 +57,22 @@ public class ZoyPgOtherCharges {
 
 	public void setTenantDocumentCharges(BigDecimal tenantDocumentCharges) {
 		this.tenantDocumentCharges = tenantDocumentCharges;
+	}
+
+	public BigDecimal getOwnerEkycCharges() {
+		return ownerEkycCharges;
+	}
+
+	public void setOwnerEkycCharges(BigDecimal ownerEkycCharges) {
+		this.ownerEkycCharges = ownerEkycCharges;
+	}
+
+	public BigDecimal getTenantEkycCharges() {
+		return tenantEkycCharges;
+	}
+
+	public void setTenantEkycCharges(BigDecimal tenantEkycCharges) {
+		this.tenantEkycCharges = tenantEkycCharges;
 	}
 
 	

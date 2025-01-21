@@ -183,6 +183,14 @@ export class BulkUploadComponent {
 			if (this.form.invalid || this.filevali) {
 			  return;
 			}
+
+			const duplicate =  this.ELEMENT_DATA.filter(d=>d.ownerId == this.selectedOwner.ownerId && d.propertyId == this.selectedProperty.propertyId && d.status != 'Failed' && this.bulkUpload.category == d.category );
+			console.log("duplicate", this.selectedOwner.ownerId , this.selectedProperty.propertyId , this.bulkUpload.category  )
+			console.log("duplicate",duplicate)
+			if(duplicate.length>0){
+				this.notifyService.showWarning(this.bulkUpload.category+" details have already been uploaded for "+this.selectedProperty.propertyname+"( owned by "+this.selectedOwner.ownerName+" ).","");
+				return;
+			}
 			let bulkUploadModel=new BulkUploadModel();
 			bulkUploadModel.ownerId=this.selectedOwner.ownerId
 			bulkUploadModel.ownerName=this.selectedOwner.ownerName
@@ -219,7 +227,7 @@ export class BulkUploadComponent {
 		}
 
 		submitUploadTenentFile(form_data:any){ 
-			this.confirmationDialogService.confirm('Confirmation!!', "Are you sure to upload the Data?")
+			this.confirmationDialogService.confirm('Confirmation!!', "Initial upload can be done once for a property. Make sure all the data is entered properly in the sheet and correct.")
 			.then(
 			  (confirmed) =>{ 
 				if(confirmed){
@@ -271,7 +279,7 @@ export class BulkUploadComponent {
 		  );	
 		}
 	submitUploadPGFile(form_data:any){ 
-		this.confirmationDialogService.confirm('Confirmation!!', "Are you sure to upload the Data?")
+		this.confirmationDialogService.confirm('Confirmation!!', "Initial upload can be done once for a property. Make sure all the data is entered properly in the sheet and correct.")
 			.then(
 			  (confirmed) =>{ 
 				if(confirmed){

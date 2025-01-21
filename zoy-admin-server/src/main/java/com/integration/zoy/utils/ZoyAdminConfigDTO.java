@@ -27,6 +27,8 @@ public class ZoyAdminConfigDTO {
     private ZoyDataGroupingDto dataGrouping;
 	@SerializedName("otherCharges")
     private ZoyOtherChargesDto otherCharges;
+	@SerializedName("gstCharges")
+	private ZoyGstChargesDto gstCharges;
 	
     
  
