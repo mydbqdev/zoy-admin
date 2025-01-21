@@ -3,6 +3,7 @@ package com.integration.zoy.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -41,6 +42,9 @@ public class ZoyPgOwnerDetails {
     
     @Column(name = "pg_owner_bio_metric", nullable = false)
     private Boolean pgOwnerBioMetric = false;
+    
+    @Column(name = "pg_owner_mpin", nullable = false)
+    private Boolean pgOwnerMPin = false;
     
     @Column(name = "pg_owner_ekyc_isekycverified")
     private Boolean pgOwnerEkycIsEkycVerified = false;
@@ -134,6 +138,14 @@ public class ZoyPgOwnerDetails {
 
 	public void setPgOwnerBioMetric(Boolean pgOwnerBioMetric) {
 		this.pgOwnerBioMetric = pgOwnerBioMetric;
+	}
+
+	public Boolean getPgOwnerMPin() {
+		return pgOwnerMPin;
+	}
+
+	public void setPgOwnerMPin(Boolean pgOwnerMPin) {
+		this.pgOwnerMPin = pgOwnerMPin;
 	}
     
     
