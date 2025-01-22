@@ -169,7 +169,7 @@ public class ZoyEmailService {
 	}
 	public void sendRegistrationMail(UserProfile user) {
 		Email email=new Email();
-		email.setFrom(zoyAdminMail);
+		email.setFrom("zoyPg@mydbq.com");
 		List<String> sendTo=new ArrayList<>();
 		sendTo.add(user.getEmailId());
 		email.setTo(sendTo);
