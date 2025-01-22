@@ -53,14 +53,14 @@
                             <div class="col-sm-9">
                               <div class="row">
                                 <div class="col-sm-4">
-                                  <div>Fixed amount</div>
+                                  <div>Fixed amount{{configMasterModel.tokenDetails.fixedToken}} {{ !tokenAdvancDisabled}}{{isNotValidNumber(configMasterModel.tokenDetails.fixedToken)}}</div>
                                   <div class="input-group input-group-sm">
                                     <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm" 
                                       [(ngModel)]="configMasterModel.tokenDetails.fixedToken" [disabled]="tokenAdvancDisabled" (keypress)="numberOnly($event)" maxlength="7"
-                                       [ngClass]="{'is-invalid': !tokenAdvancDisabled && (configMasterModel.tokenDetails.fixedToken == 0 || !configMasterModel.tokenDetails.fixedToken) }" 
+                                       [ngClass]="{'is-invalid': !tokenAdvancDisabled && isNotValidNumber(configMasterModel.tokenDetails.fixedToken) }" 
                                       style="max-width: 90px !important;" />
                                   </div>
                                   <p class="small text-muted " style="font-size: 12px;">
@@ -74,7 +74,7 @@
                                           type="text" 
                                           class="form-control form-control-sm" 
                                           [(ngModel)]="configMasterModel.tokenDetails.variableToken"  (keypress)="percentageOnly($event)" maxlength="5"
-                                          [ngClass]="{'is-invalid': !tokenAdvancDisabled && ( configMasterModel.tokenDetails.variableToken == 0 || !configMasterModel.tokenDetails.variableToken)}" 
+                                          [ngClass]="{'is-invalid': !tokenAdvancDisabled && isNotValidNumber(configMasterModel.tokenDetails.variableToken)}" 
                                           style="max-width: 70px !important;" [disabled]="tokenAdvancDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
@@ -123,7 +123,7 @@
                                       type="text" 
                                       class="form-control form-control-sm"
                                       [(ngModel)]="configMasterModel.depositDetails.minimumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="7"
-                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.minimumDeposit == 0 || !configMasterModel.depositDetails.minimumDeposit) }" 
+                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && isNotValidNumber(configMasterModel.depositDetails.minimumDeposit) }" 
                                       style="max-width: 140px !important;" />
                                   </div>
                                   <p class="small text-muted" style="font-size: 12px;">
@@ -139,7 +139,7 @@
                                       type="text" 
                                       class="form-control form-control-sm"
                                       [(ngModel)]="configMasterModel.depositDetails.maximumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="7"
-                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (configMasterModel.depositDetails.maximumDeposit == 0 || !configMasterModel.depositDetails.maximumDeposit) }" 
+                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && isNotValidNumber(configMasterModel.depositDetails.maximumDeposit)}" 
                                       style="max-width: 140px !important;"/>
                                   </div>
                                   <p class="small text-muted" style="font-size: 12px;">
@@ -193,7 +193,7 @@
                                       type="text" 
                                       class="form-control form-control-sm" 
                                       [(ngModel)]="configMasterModel.gstCharges.monthlyRent" [disabled]="gstChargesDisabled" (keypress)="numberOnly($event)" maxlength="7"
-                                       [ngClass]="{'is-invalid': !gstChargesDisabled && !configMasterModel.gstCharges.monthlyRent }" 
+                                       [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(configMasterModel.gstCharges.monthlyRent) }" 
                                       style="max-width: 90px !important;" />
                                   </div>
                                   <p class="small text-muted " style="font-size: 12px;">
@@ -207,7 +207,7 @@
                                           type="text" 
                                           class="form-control form-control-sm" 
                                           [(ngModel)]="configMasterModel.gstCharges.gstPercentage"  (keypress)="percentageOnly($event)" maxlength="5"
-                                          [ngClass]="{'is-invalid': !gstChargesDisabled && !configMasterModel.gstCharges.gstPercentage}" 
+                                          [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(configMasterModel.gstCharges.gstPercentage) }" 
                                           style="max-width: 70px !important;" [disabled]="gstChargesDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
@@ -833,7 +833,7 @@
                                                      class="form-control form-control-sm"
                                                      [(ngModel)]="rentSlabModel.slabFrom" maxlength="7"
                                                      (keypress)="numberOnly($event)" 
-                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.slabFrom}" 
+                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && isNotValidNumber(rentSlabModel.slabFrom)}" 
                                                      style="max-width: 70px !important;" />
                                               <span class="input-group-text">Days</span>
                                             </div>
@@ -847,7 +847,7 @@
                                                      class="form-control form-control-sm"
                                                      [(ngModel)]="rentSlabModel.slabTo" 
                                                      (keypress)="numberOnly($event)" maxlength="7"
-                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.slabTo}" 
+                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && isNotValidNumber(rentSlabModel.slabTo)}" 
                                                      style="max-width: 70px !important;" />
                                               <span class="input-group-text">Days</span>
                                             </div>
@@ -861,7 +861,7 @@
                                                      class="form-control form-control-sm"
                                                      [(ngModel)]="rentSlabModel.rentPercentage" 
                                                      (keypress)="percentageOnlyWithZero($event)" 
-                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && !rentSlabModel.rentPercentage}" 
+                                                     [ngClass]="{'is-invalid': rentSlabSaveVali && isNotValidNumber(rentSlabModel.rentPercentage)}" 
                                                      style="max-width: 70px !important;" />
                                               <span class="input-group-text">%</span>
                                             </div>
@@ -998,7 +998,7 @@
                                           <div class="input-group input-group-sm">
                                             <ng-container *ngIf="!gstSlabModel.showInputBox; else inputBoxTemplate">
                                               <select class="form-control" style="max-width: 120px !important;"
-                                                      [ngClass]="{'is-invalid': gstSlabSaveVali && !gstSlabModel.slabFrom}"
+                                                      [ngClass]="{'is-invalid': gstSlabSaveVali && isNotValidNumber(rentSlabModel.slabFrom)}"
                                                       [(ngModel)]="gstSlabModel.slabFrom" (change)="onDropdownChange(gstSlabModel)">
                                                 <option value="Upto">Upto</option>
                                                 <option value="Above">Above</option>
@@ -1011,7 +1011,7 @@
                                                      class="form-control form-control-sm"
                                                      [(ngModel)]="gstSlabModel.slabFrom" maxlength="7"
                                                      (keypress)="numberOnly($event)"
-                                                     [ngClass]="{'is-invalid': gstSlabSaveVali && !gstSlabModel.slabFrom}"
+                                                     [ngClass]="{'is-invalid': gstSlabSaveVali && isNotValidNumber(rentSlabModel.slabFrom)}"
                                                      style="max-width: 90px !important;" />
                                             </ng-template>
                                           </div>
@@ -1029,7 +1029,7 @@
                                                    class="form-control form-control-sm"
                                                    [(ngModel)]="gstSlabModel.slabTo"
                                                    (keypress)="numberOnly($event)" maxlength="7"
-                                                   [ngClass]="{'is-invalid': gstSlabSaveVali && !gstSlabModel.slabTo}"
+                                                   [ngClass]="{'is-invalid': gstSlabSaveVali && isNotValidNumber(rentSlabModel.slabTo)}"
                                                    style="max-width: 90px !important;" />
                                           </div>
                                           <p class="small text-muted" style="font-size: 12px;">
@@ -1045,7 +1045,7 @@
                                                    class="form-control form-control-sm"
                                                    [(ngModel)]="gstSlabModel.gstPercentage"
                                                    (keypress)="percentageOnlyWithZero($event)"
-                                                   [ngClass]="{'is-invalid': gstSlabSaveVali && !gstSlabModel.gstPercentage}"
+                                                   [ngClass]="{'is-invalid': gstSlabSaveVali && isNotValidNumber(gstSlabModel.gstPercentage)}"
                                                    style="max-width: 90px !important;" />
                                             <span class="input-group-text">%</span>
                                           </div>
@@ -1179,7 +1179,7 @@
                                             (keypress)="numberOnly($event)"
                                             maxlength="7"  style="max-width: 100px !important;" 
                                             [(ngModel)]="configMasterModel.otherCharges.ownerEkycCharges"
-                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.ownerEkycCharges}"
+                                            [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges.ownerEkycCharges)}"
                                             [disabled]="otherChargesDisabled"
                                           />
                                         </div>
@@ -1200,7 +1200,7 @@
                                             (keypress)="numberOnly($event)"
                                             maxlength="7"  style="max-width: 100px !important;" 
                                             [(ngModel)]="configMasterModel.otherCharges.tenantEkycCharges"
-                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.tenantEkycCharges}"
+                                            [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges.tenantEkycCharges) }"
                                             [disabled]="otherChargesDisabled"
                                           />
                                         </div>
@@ -1223,7 +1223,7 @@
                                             (keypress)="numberOnly($event)"
                                             maxlength="7"  style="max-width: 100px !important;" 
                                             [(ngModel)]="configMasterModel.otherCharges.ownerDocumentCharges"
-                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.ownerDocumentCharges}"
+                                            [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges.ownerDocumentCharges)}"
                                             [disabled]="otherChargesDisabled"
                                           />
                                         </div>
@@ -1244,7 +1244,7 @@
                                             (keypress)="numberOnly($event)"
                                             maxlength="7"  style="max-width: 100px !important;" 
                                             [(ngModel)]="configMasterModel.otherCharges.tenantDocumentCharges"
-                                            [ngClass]="{'is-invalid': !otherChargesDisabled && !configMasterModel.otherCharges.tenantDocumentCharges}"
+                                            [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges.tenantDocumentCharges) }"
                                             [disabled]="otherChargesDisabled"
                                           />
                                         </div>
@@ -1291,7 +1291,7 @@
                                   type="text" 
                                   class="form-control form-control-sm"
                                   [(ngModel)]="configMasterModel.dataGrouping.considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
-                                  [ngClass]="{'is-invalid': !dataGroupingDisabled && (configMasterModel.dataGrouping.considerDays == 0 || !configMasterModel.dataGrouping.considerDays) }" 
+                                  [ngClass]="{'is-invalid': !dataGroupingDisabled && isNotValidNumber(configMasterModel.dataGrouping.considerDays) }" 
                                   style="max-width: 70px !important;" />
                                   <span class="input-group-text">Days</span>
                                 </div>
@@ -1332,7 +1332,7 @@
                                     <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
                                       [(ngModel)]="configMasterModel.forceCheckout.forceCheckoutDays" 
                                       (keypress)="numberOnly($event)"  maxlength="3"
-                                      [ngClass]="{'is-invalid': !forceCheckoutDisabled && (configMasterModel.forceCheckout.forceCheckoutDays == 0 || !configMasterModel.forceCheckout.forceCheckoutDays)}"
+                                      [ngClass]="{'is-invalid': !forceCheckoutDisabled && isNotValidNumber(configMasterModel.forceCheckout.forceCheckoutDays)}"
                                       [disabled]="forceCheckoutDisabled" />
                                     <span class="input-group-text">Days </span>
                                   </div>
@@ -1374,7 +1374,7 @@
                                     <input type="text" class="form-control form-control-sm" style="max-width: 70px !important;" 
                                       [(ngModel)]="configMasterModel.shortTermRentingDuration.shortTermRentingDuration" 
                                       (keypress)="numberOnly($event)" maxlength="3"
-                                      [ngClass]="{'is-invalid': !shortTermRentingDisabled && (configMasterModel.shortTermRentingDuration.shortTermRentingDuration == 0 || !configMasterModel.shortTermRentingDuration.shortTermRentingDuration)}"
+                                      [ngClass]="{'is-invalid': !shortTermRentingDisabled && isNotValidNumber(configMasterModel.shortTermRentingDuration.shortTermRentingDuration)}"
                                       [disabled]="shortTermRentingDisabled" />
                                     <span class="input-group-text">Months</span>
                                   </div>

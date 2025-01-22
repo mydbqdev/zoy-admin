@@ -100,7 +100,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   submitted:boolean= false ;
 
   changeSettingType(){
-    if("settingType == 'Ameneties' "){
+    if(this.settingType == 'Amenities' ){
     this.resetChange();
     }
     this.settingTypeDetails = this.settingTypeObjClmApiDetailsList.find(t=>t.type == this.settingType);
@@ -173,7 +173,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         }
       } 
 
-      if(this.settingType ==='Ameneties' && this.dbSettingDataModel.ameneties_image){
+      if(this.settingType ==='Amenities' && this.dbSettingDataModel.ameneties_image){
         this.imgeURL2=this.dbSettingDataModel.ameneties_image;
       }
     }  
@@ -321,7 +321,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
                   this.submitDataModel.billingTypeName = this.dbSettingDataModel.billing_type_name;
               }
               break;
-          case 'Ameneties':
+          case 'Amenities':
               if (this.fileUploadRatioStatus || this.fileUploadSizeStatus || this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '' || (!this.isCreated && this.imgeURL2==null) || (this.isCreated && (this.dbSettingDataModel.ameneties_upload==null || this.dbSettingDataModel.ameneties_upload==''))) {
                 return false;
               } else {
