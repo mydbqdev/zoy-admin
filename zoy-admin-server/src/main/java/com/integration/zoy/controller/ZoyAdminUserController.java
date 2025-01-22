@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,12 +57,14 @@ import com.integration.zoy.entity.AdminUserTemporary;
 import com.integration.zoy.entity.AdminUserTemporaryPK;
 import com.integration.zoy.entity.AdminUsersLock;
 import com.integration.zoy.entity.AppRole;
+import com.integration.zoy.entity.NotificationsAndAlerts;
 import com.integration.zoy.entity.RoleScreen;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.AdminUserDetails;
 import com.integration.zoy.model.AdminUserUpdateDetails;
 import com.integration.zoy.model.ForgotPassword;
 import com.integration.zoy.model.LoginDetails;
+import com.integration.zoy.model.NotificationsAndAlertsDTO;
 import com.integration.zoy.model.RoleDetails;
 import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
@@ -66,8 +72,10 @@ import com.integration.zoy.repository.AdminUserLockRepository;
 import com.integration.zoy.repository.AdminUserLoginDetailsRepository;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AdminUserPasswordHistoryRepository;
+import com.integration.zoy.repository.NotificationsAndAlertsRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.EmailService;
+import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.service.ZoyCodeGenerationService;
@@ -82,6 +90,7 @@ import com.integration.zoy.utils.OtpVerification;
 import com.integration.zoy.utils.ResetPassWord;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.RoleModel;
+import com.integration.zoy.utils.UserPaymentFilterRequest;
 
 @RestController
 @RequestMapping("")
@@ -146,6 +155,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 	@Autowired
 	private AdminUserLoginDetailsRepository adminUserLoginDetailsRepository;
+	
+	@Autowired
+	private NotificationsAndAlertsRepository notificationsAndAlertsRepository;
+	
+	@Autowired
+	private NotificationsAndAlertsService NotificationsAndAlertsService;
 
 	@Value("${qa.signin.link}")
 	private String qaSigninLink;
@@ -187,7 +202,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					}
 				}
 			}
-			
+
 			String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword());
 			String decryptedLoginPassword = passwordDecoder.decryptedText(details.getPassword());
 
@@ -248,6 +263,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
 					userLock.setAttemptSequence(0);
 					adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
+					NotificationsAndAlertsService.accountlock(SecurityContextHolder.getContext().getAuthentication().getName(), details.getEmail());
 					response.setStatus(HttpStatus.LOCKED.value());
 					response.setMessage(
 							"Your account is locked due to multiple invalid login attempts. Please try again after 15 minutes.");
@@ -267,6 +283,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					userLock.setLockCount(2); // Permanently lock account
 					userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
 					adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
+					NotificationsAndAlertsService.accountlock(SecurityContextHolder.getContext().getAuthentication().getName(), details.getEmail());
 					response.setStatus(HttpStatus.BAD_REQUEST.value());
 					response.setMessage("Your account has been permanently locked. Please contact Admin Support.");
 				}
@@ -640,9 +657,11 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					history.add(approle.getRoleName());
 			}
 			adminDBImpl.saveAllUserTemporary(adminUserTemporary);
-			
+			System.out.println(userRole.getUserEmail()+"<<<userRole.getUserEmail()>>>>"+SecurityContextHolder.getContext().getAuthentication().getName());
 			//audit here
 			auditHistoryUtilities.auditForRoleAssign(SecurityContextHolder.getContext().getAuthentication().getName(),gson.toJson(history).toString(),userRole.getUserEmail());
+			NotificationsAndAlertsService.approveUser(SecurityContextHolder.getContext().getAuthentication().getName(),userRole.getUserEmail());
+
 			
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("Role Assigned & sent for approval successfully");
@@ -1249,8 +1268,88 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		}
 	}
 
+	@Override
+	public ResponseEntity<String> zoyAdminUserNotifications(UserPaymentFilterRequest FilterRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+
+			int pageNumber = FilterRequest.getPageIndex();
+			int pageSize = FilterRequest.getPageSize();
+			Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+			Page<Object[]> userNotifications = notificationsAndAlertsRepository.findNotification(SecurityContextHolder.getContext().getAuthentication().getName(), pageable);
+			List<NotificationsAndAlertsDTO> usernotificationsList = new ArrayList<>();
+
+			for (Object[] details : userNotifications) {
+				NotificationsAndAlertsDTO notifications = new NotificationsAndAlertsDTO();
+
+				notifications.setNotificationId(details[0] != null ? Long.valueOf(String.valueOf(details[0])) : null);
+				notifications.setCategory(details[1] != null ? (String) details[1] : null);
+				notifications.setCreatedAt(details[2] != null ? (Timestamp) details[2] : null);
+				notifications.setInfoType(details[3] != null ? (String) details[3] : null);
+				notifications.setMessage(details[4] != null ? (String) details[4] : null);
+				notifications.setScreenName(details[5] != null ? (String) details[5] : null);
+				notifications.setUserEmail(details[6] != null ? (String) details[6] : null);
+				notifications.setIsSeen(details[7] != null ? (Boolean) details[7] : null);
+				notifications.setUpdatedAt(details[8] != null ? (Timestamp) details[8] : null);
+
+				usernotificationsList.add(notifications);
+			}
+			
+			  Map<String, Object> responseMap = new HashMap<>();
+		        responseMap.put("notifications", usernotificationsList);
+		        responseMap.put("totalCount", userNotifications.getTotalElements());
+
+		        return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting the notifications of the user API:/zoy_admin/userNotifications.zoyAdminUserNotifications",e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			} catch (Exception ex) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminUserNotifications(NotificationsAndAlertsDTO notificationsAndAlerts) {
+	    ResponseBody response = new ResponseBody();
+	    
+	    try {
+	    	
+	    	if (notificationsAndAlerts.getNotificationId() == null) {
+	    	    response.setStatus(HttpStatus.CONFLICT.value());
+	    	    response.setMessage("Notification ID does not exist");
+	    	    return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+	    	}
+	        
+	        notificationsAndAlertsRepository.toggleNotificationStatus(notificationsAndAlerts.getNotificationId());
+
+	        response.setStatus(HttpStatus.OK.value());
+	        response.setMessage("Notification status updated successfully");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	        
+	    } catch (Exception e) {
+	        log.error("Error in zoyAdminUserNotifications API", e);
+	        
+	        try {
+	            new ZoyAdminApplicationException(e, "");
+	        } catch (Exception ex) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError(ex.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+
+	
 }
-
-
-
-

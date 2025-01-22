@@ -13,6 +13,7 @@ import com.integration.zoy.model.AdminUserDetails;
 import com.integration.zoy.model.AdminUserUpdateDetails;
 import com.integration.zoy.model.ForgotPassword;
 import com.integration.zoy.model.LoginDetails;
+import com.integration.zoy.model.NotificationsAndAlertsDTO;
 import com.integration.zoy.model.RoleDetails;
 import com.integration.zoy.model.Token;
 import com.integration.zoy.model.UserRole;
@@ -20,6 +21,7 @@ import com.integration.zoy.utils.AdminUserList;
 import com.integration.zoy.utils.ChangePassWord;
 import com.integration.zoy.utils.OtpVerification;
 import com.integration.zoy.utils.ResetPassWord;
+import com.integration.zoy.utils.UserPaymentFilterRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -291,5 +293,26 @@ public interface ZoyAdminUserImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> zoyAdminlockedUsers();
 	
+	@Operation(summary = "Get notification's of the User", description = "Getting Admin User notifications ", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/userNotifications",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyAdminUserNotifications(@RequestBody UserPaymentFilterRequest NotificationsAndAlerts);
+	
+	@Operation(summary = "to change the notification State", description = "to change the notification from unseen to seen", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/userNotificationsSeen",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyAdminUserNotifications(@RequestBody NotificationsAndAlertsDTO NotificationsAndAlerts);
 
 }
