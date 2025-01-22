@@ -160,7 +160,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	
 
 	  isNotValidNumber(value: any): boolean {
-		return value == null || isNaN(value);
+		return value === '' || value === undefined || value === null || isNaN(value);
 	  }
 	  numberOnly(event): boolean {
 		const charCode = (event.which) ? event.which : event.keyCode;
@@ -266,7 +266,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}
 
 	 tokenAdvancSubmit() {
-		if(this.configMasterModel.tokenDetails.fixedToken == 0 || this.configMasterModel.tokenDetails.variableToken == 0 || !this.configMasterModel.tokenDetails.fixedToken || !this.configMasterModel.tokenDetails.variableToken ){
+		if(this.isNotValidNumber(this.configMasterModel.tokenDetails.fixedToken) || this.isNotValidNumber(this.configMasterModel.tokenDetails.variableToken )){
 			return
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -319,7 +319,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	  
 	  securityDepositLimitsSubmit() {
-		if(this.configMasterModel.depositDetails.maximumDeposit == 0 || this.configMasterModel.depositDetails.minimumDeposit == 0 || !this.configMasterModel.depositDetails.maximumDeposit || !this.configMasterModel.depositDetails.minimumDeposit ){
+		if(this.isNotValidNumber(this.configMasterModel.depositDetails.maximumDeposit) || this.isNotValidNumber(this.configMasterModel.depositDetails.minimumDeposit) ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -373,7 +373,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}
 
 	gstChargesSubmit() {
-		if( !this.configMasterModel.gstCharges.monthlyRent || !this.configMasterModel.gstCharges.gstPercentage ){
+		if( this.isNotValidNumber(this.configMasterModel.gstCharges.monthlyRent) || this.isNotValidNumber(this.configMasterModel.gstCharges.gstPercentage) ){
 			return
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -426,7 +426,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	securityDepositDeadLineSubmit() {
 		this.authService.checkLoginUserVlidaate();
-		if(!this.configMasterModel.securityDepositDeadLineDetails.auto_cancellation_day || !this.configMasterModel.securityDepositDeadLineDetails.deduction_percentage || !this.configMasterModel.securityDepositDeadLineDetails.trigger_condition|| !this.configMasterModel.securityDepositDeadLineDetails.trigger_value ){
+		if(this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails.auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails.deduction_percentage) || !this.configMasterModel.securityDepositDeadLineDetails.trigger_condition|| !this.configMasterModel.securityDepositDeadLineDetails.trigger_value ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -476,7 +476,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.securityDepositDeadLineDisabled = true;
 	}
 	autoCancellationSubmit() {
-		if(!this.configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day || !this.configMasterModel.cancellationAfterCheckInDetails.deduction_percentage || !this.configMasterModel.cancellationAfterCheckInDetails.trigger_condition|| !this.configMasterModel.cancellationAfterCheckInDetails.trigger_value ){
+		if(this.isNotValidNumber(this.configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) || !this.configMasterModel.cancellationAfterCheckInDetails.trigger_condition|| !this.configMasterModel.cancellationAfterCheckInDetails.trigger_value ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -529,7 +529,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}	
 	otherChargesSubmit() {
 		
-		if(!this.configMasterModel.otherCharges.ownerDocumentCharges || !this.configMasterModel.otherCharges.tenantDocumentCharges || !this.configMasterModel.otherCharges.ownerEkycCharges || !this.configMasterModel.otherCharges.tenantEkycCharges ){
+		if(this.isNotValidNumber(this.configMasterModel.otherCharges.ownerDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges.tenantDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges.ownerEkycCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges.tenantEkycCharges) ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -582,7 +582,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}		  
 
 	trendingPGSubmit() {
-		if(this.configMasterModel.dataGrouping.considerDays == 0 ||  !this.configMasterModel.dataGrouping.considerDays ){
+		if(this.isNotValidNumber(this.configMasterModel.dataGrouping.considerDays)){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -842,7 +842,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	
 	  earlyCheckOutRulesSubmit() {
-		if(!this.configMasterModel.earlyCheckOutRuleDetails.check_out_day || !this.configMasterModel.earlyCheckOutRuleDetails.deduction_percentage || !this.configMasterModel.earlyCheckOutRuleDetails.trigger_condition || !this.configMasterModel.earlyCheckOutRuleDetails.trigger_value ){
+		if(this.isNotValidNumber(this.configMasterModel.earlyCheckOutRuleDetails.check_out_day) || this.isNotValidNumber(this.configMasterModel.earlyCheckOutRuleDetails.deduction_percentage) || !this.configMasterModel.earlyCheckOutRuleDetails.trigger_condition || !this.configMasterModel.earlyCheckOutRuleDetails.trigger_value ){
 			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -895,7 +895,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.earlyCheckOutRulesDisabled = true;
 	  }
 	  forceCheckoutSubmit(): void {
-		if(this.configMasterModel.forceCheckout.forceCheckoutDays == 0 ||  !this.configMasterModel.forceCheckout.forceCheckoutDays ){
+		if(this.isNotValidNumber(this.configMasterModel.forceCheckout.forceCheckoutDays) ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -948,7 +948,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.forceCheckoutDisabled = true;
 	  }
 	  checkoutDeductionSubmit(): void {
-		if(!this.configMasterModel.checkoutDeductionDetails.notice_period_days || !this.configMasterModel.checkoutDeductionDetails.deduction_percentage || !this.configMasterModel.checkoutDeductionDetails.trigger_condition|| !this.configMasterModel.checkoutDeductionDetails.trigger_value ){
+		if(this.isNotValidNumber(this.configMasterModel.checkoutDeductionDetails.notice_period_days) || this.isNotValidNumber(this.configMasterModel.checkoutDeductionDetails.deduction_percentage) || !this.configMasterModel.checkoutDeductionDetails.trigger_condition|| !this.configMasterModel.checkoutDeductionDetails.trigger_value ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -1174,7 +1174,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  }
 
 		  shortTermRentingSubmit(): void {
-			if(!this.configMasterModel.shortTermRentingDuration.shortTermRentingDuration || this.configMasterModel.shortTermRentingDuration.shortTermRentingDuration == 0){
+			if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration.shortTermRentingDuration)){
 				return ;
 			}
 			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
