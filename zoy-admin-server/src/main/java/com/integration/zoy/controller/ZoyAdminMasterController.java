@@ -335,7 +335,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			if(zoyPgRentCycleMasters!=null) {
 				final String oldAmenities=zoyPgRentCycleMasters.getCycleName();
 				zoyPgRentCycleMasters.setCycleName(rentCycleId.getRentCycleName());
-				ZoyPgRentCycleMaster updated=ownerDBImpl.updateRentCycle(zoyPgRentCycleMasters);
+				ZoyPgRentCycleMaster updated=ownerDBImpl.saveRentCycle(zoyPgRentCycleMasters);
 				//audit history here
 				String historyContent=" has updated the Rent Cycle for, from "+oldAmenities+" to "+rentCycleId.getRentCycleName();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
