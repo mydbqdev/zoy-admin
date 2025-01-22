@@ -69,7 +69,7 @@ export class DbMasterConfigurationService {
         'api': 'zoy_admin/billingType'
     },
     {
-        'type': 'Ameneties',
+        'type': 'Amenities',
         'columns': ['ameneties_name','ameneties_image', 'actions'],
         'api': 'zoy_admin/ameneties'
     }
@@ -86,8 +86,8 @@ export class DbMasterConfigurationService {
     'due_type_name':'DUE TYPE',
     'currency_name': 'CURRENCY NAME',
     'billing_type_name': 'BILLING TYPE NAME',
-    'ameneties_name': 'AMENETIES NAME',
-    'ameneties_image':"AMENETIES PICTURE"
+    'ameneties_name': 'AMENITIES NAME',
+    'ameneties_image':"AMENITIES PICTURE"
   }
 
   getDbSettingDetails(api:string): Observable<any> {
