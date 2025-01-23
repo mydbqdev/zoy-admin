@@ -311,7 +311,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 			return ;
 		}
 		this.tdpf.profile.resoan = this.reason ;
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want to '+(this.tdpf.profile.status == 'Active' ? 'Deactivate' : 'Activate') + ' '+this.tdpf.profile.tenantName+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want to '+(this.tdpf.profile.status == 'Active' ? 'Deactivate ' : 'Activate ') +this.tdpf.profile.tenantName+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){

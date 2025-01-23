@@ -49,13 +49,12 @@
                                       <div style="font-size: 13px; color: gray;padding-bottom:3px">Status : {{pgOwnerData.profile?.status}}</div>
                                     </div>
                                     <div class="ml-auto">
-                                      <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
-                                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                       <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                       </a>
                                       <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item" href="javascript:void(0)" (click)="doActiveteDeactiveteOwner(pgOwnerData.profile,pgOwnerData.profile?.status,pgOwnerData.profile?.owner_name)">{{pgOwnerData.profile?.status=='Active'?'Do Deactivated':'Do Activated'}}</a>
-                                    </div>
+                                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="openModelDoActiveteDeactivete('owner')" >{{pgOwnerData.profile?.status=='Active'? 'Deactivate' : 'Activate'}}</a>
+                                      </div>
                                     </div>
                                    </div>
                                   </div>
@@ -155,7 +154,19 @@
                             <div class="card-body" style="display: block;margin: 0px;padding: 2px;" >
                                 <div class="container-main">
                                   <div class="p-3">
-                                    <div style="font-size: 18px;">Property Information</div>
+                                    <div  class="d-sm-flex">
+                                      <div style="font-size: 18px;">Property Information</div>
+                                      <div class="ml-auto">
+                                        <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                          <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="openModelDoActiveteDeactivete('pg')"
+                                            *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0" >
+                                          {{pgOwnerData.profile?.status=='Active'? 'Deactivate' : 'Activate'}}</a>
+                                        </div>
+                                      </div>
+                                    </div>
                                     <div class="row mt-2" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0">
                                       <div class="col-sm-7">
                                         <div class="form-group row">
@@ -175,6 +186,7 @@
                                         </div>
                                       </div>
                                     </div>
+                                    
                                   </div>
                                   <div style="background-color: #c1a1f3;padding: 5px;margin-top:-20px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[0].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight0" aria-expanded="false" aria-controls="collapseExampleRight0" (click)="collaspeExpandPanelRight(collaspeListRight[0],'right1')"></i>  Basic Property Information
@@ -413,6 +425,29 @@
       </div>
       <div class="modal-footer p-0">
         <mat-paginator #paginator [length]="totalRecord" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!------To give the reason for Deactivate/Activate details PopUp model------->
+<div class="modal fade" id="reactivateReason" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-small ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel"><span style="color: rgb(173, 5, 159);">{{status=='Active'? 'Deactivate' : 'Activate'}} {{doActiveteDeactiveteName}} </span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-3">
+        <div>Reason:</div>
+        <textarea id="txtArea" rows="7" cols="52" [(ngModel)]="reason" maxlength="1000" title="Please give me the reason"
+               [ngClass]="{'is-invalid': submitted && !reason}"></textarea>
+        <div *ngIf="submitted && !reason" class="text-danger" >
+          Reason is required.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary-custom me-2" (click)="doActiveteDeactivete()" >{{status=='Active'? 'Deactivate' : 'Activate'}}</button>
       </div>
     </div>
   </div>

@@ -38,11 +38,14 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  floor_id:string='';
 	  property_id:string='';
 	  property_status:string='';
-
 	  propertyInfo :PgOwnerPropertyInformation =new PgOwnerPropertyInformation();
 	  totalRecord:number=0;
 	  pageSizeOptions: number[] = [10, 25, 50];
 	  pageSize = 10;
+	  reason : string='';
+	  status :  string='';
+	  doActiveteDeactiveteName :  string='';
+	  doActiveteDeactiveteType: string='';
 	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService :ZoyOwnerService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			  this.authService.checkLoginUserVlidaate();
@@ -242,17 +245,114 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		}
 		});
 	}
-
-	doActiveteDeactiveteOwner(doActiveteDeactiveteOwner:any,status:string,ownerName:string){
-		this.authService.checkLoginUserVlidaate();		
-		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to '+( status=='Active'?'deactivated':'activated' )+' to the owner - '+ownerName+' ?')
-		.then((confirmed) =>{
-		   if(confirmed){
-			   // backend call here
-			   this.notifyService.showSuccess("Api is not implemented. will do soon", "");   
-			}
-		}).catch(() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')); 
+	
+	openModelDoActiveteDeactivete(type:string){
+		this.reason='';
+		this.submitted=false;
+		this.doActiveteDeactiveteType=type;
+		if(this.doActiveteDeactiveteType === 'owner'){
+			this.doActiveteDeactiveteName=this.pgOwnerData.pg_ownerbasic_information?.first_name +' '+this.pgOwnerData.pg_ownerbasic_information?.last_name;
+			this.status=this.pgOwnerData.profile?.status;
+		}else{
+			 this.doActiveteDeactiveteName= this.propertyInfo.property_name;
+			 this.status=this.propertyInfo.status;
 		}
+	}
+
+	doActiveteDeactivete(){
+		this.submitted =true;
+		if(!this.reason){
+			return ;
+		}
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to '+( this.status=='Active'? 'Deactivate ' : 'Activate ' )+this.doActiveteDeactiveteName+' ?')
+		.then(
+		   (confirmed) =>{
+			if(confirmed){
+				this.authService.checkLoginUserVlidaate();
+				if(this.doActiveteDeactiveteType === 'owner'){
+					this.doActiveteDeactiveteOwner();
+				}else{
+					this.doActiveteDeactivetePg();
+				}
+		}
+		}).catch(
+			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+		);
+	}
+
+	doActiveteDeactiveteOwner(){
+		this.pgOwnerData.profile.reason =  this.reason;
+		this.spinner.show();
+		this.zoyOwnerService.doActiveteDeactiveteOwner(this.pgOwnerData.profile).subscribe(res => {
+		this.submitted =false;
+		this.spinner.hide();
+		}, error => {
+		 this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+			
+	}
+	doActiveteDeactivetePg(){
+		this.pgOwnerData.profile.reason =  this.reason;
+		this.spinner.show();
+		this.zoyOwnerService.doActiveteDeactivetePg(this.pgOwnerData.profile).subscribe(res => {
+
+		this.submitted =false;
+		this.spinner.hide();
+		}, error => {
+		 this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+				
+	  }
 
 		transactionHeader:string="";
 	  selectTransaction(selectTab:number,header:string){
