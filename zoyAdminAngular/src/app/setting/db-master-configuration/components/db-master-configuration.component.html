@@ -23,7 +23,7 @@
         <div class="container-fluid">
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-3">
-            <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Database</span><span
+            <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Initial</span><span
                 class="text-header-800-blue">Configuration</span> <i class="fas fa-angle-double-right" style="color:#97cded;margin-left:10px;"></i> 
                 <span class="text-header-800 ml-2">{{settingType}}</span>
               </h3>
@@ -52,7 +52,7 @@
                           <ng-container [matColumnDef]="column">
                             <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;"> 
                               {{ columnHeaders[column] || ' ' }}
-                            <td mat-cell *matCellDef="let element" > <span *ngIf="columnHeaders[column]!='ameneties_image' && columnHeaders[column]!='AMENETIES PICTURE'"> {{ element[column] || '-' }} </span><span *ngIf="columnHeaders[column]=='AMENETIES PICTURE' && element[column]"><img [src]="element[column]" style="max-width: 75px;max-height: 74px;"></span></td>
+                            <td mat-cell *matCellDef="let element" > <span *ngIf="columnHeaders[column]!='ameneties_image' && columnHeaders[column]!='AMENITIES PICTURE'"> {{ element[column] || '-' }} </span><span *ngIf="columnHeaders[column]=='AMENITIES PICTURE' && element[column]"><img [src]="element[column]" style="max-width: 75px;max-height: 74px;"></span></td>
                           </ng-container>
                         </ng-container>
                         <ng-container matColumnDef="actions">
@@ -250,29 +250,29 @@
       </div>
     </div>
 
-    <div *ngIf="settingType == 'Ameneties' ">
+    <div *ngIf="settingType == 'Amenities' ">
       <div  class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="dbSettingDataModel.ameneties_id">
         <img [src]="imgeURL2">
       </div>
       <div class="form-group">
-        <label for="ameneties_name">Ameneties Name:</label>
+        <label for="ameneties_name">Amenities Name:</label>
         <input type="text" class="form-control" 
-               id="ameneties_name" placeholder="Ameneties Name" required autocomplete="false" 
+               id="ameneties_name" placeholder="Amenities Name" required autocomplete="false" 
                [(ngModel)]="this.dbSettingDataModel.ameneties_name" autocomplete="off"
                [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '' )}" >
         <div *ngIf="submitted && (this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '' )" class="text-danger">
-          Ameneties Name is required.
+          Amenities Name is required.
         </div>
       </div>
       <form [formGroup]="formPicture">
         <div class="form-group">
            <label for="uploadfile"> Upload Picture:</label> 
            <input type="file" class="file-upload form-control" name="ImageInput"  id="ImageInput" formControlName="ImageInput"  accept="image/*"  (change)="onFileChanged($event)" 
-              id="ameneties_upload_id" placeholder="Ameneties Image" required autocomplete="false" 
+              id="ameneties_upload_id" placeholder="Amenities Image" required autocomplete="false" 
                [(ngModel)]="this.dbSettingDataModel.ameneties_upload" autocomplete="off"
                [ngClass]="{'is-invalid':submitted && ((isCreated && (this.dbSettingDataModel.ameneties_upload == null || this.dbSettingDataModel.ameneties_upload == '')) || (!isCreated && imgeURL2==null))}" />
             <div *ngIf="submitted && ((isCreated && (this.dbSettingDataModel.ameneties_upload == null || this.dbSettingDataModel.ameneties_upload == '')) || (!isCreated && imgeURL2==null))" class="text-danger">
-              Ameneties image is required.
+              Amenities image is required.
             </div>
         </div>
          <div *ngIf="fileUploadSizeStatus" style="color: red;">
