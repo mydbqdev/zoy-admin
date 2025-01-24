@@ -130,7 +130,7 @@ public class ZoyEmailService {
 	public void resendPgOwnerDetails(String owneremail,String firstName,String lastName,String zoyCode,String token) {
 		String verifyLink=emailVerificationUrl + token;
 		Email email = new Email();
-		email.setFrom("zoyAdmin@mydbq.com");
+		email.setFrom(zoyAdminMail);
 
 		List<String> to = new ArrayList<>();
 		to.add(owneremail);
@@ -157,6 +157,9 @@ public class ZoyEmailService {
 				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>"
 				+ "<p>Best regards,</p>"
 				+ "<p>ZOY Administrator</p>";
+		
+		email.setBody(message);
+		email.setContent("text/html");
 
 		try {
 	        emailService.sendEmail(email, null);

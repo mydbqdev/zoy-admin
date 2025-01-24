@@ -7,16 +7,21 @@ import org.springframework.stereotype.Service;
 
 import com.integration.zoy.entity.NotificationModeMaster;
 import com.integration.zoy.entity.PgOwnerUserStatus;
+import com.integration.zoy.entity.UserBookingPayment;
 import com.integration.zoy.entity.UserBookings;
 import com.integration.zoy.entity.UserDetails;
+import com.integration.zoy.entity.UserDues;
 import com.integration.zoy.entity.UserMaster;
 import com.integration.zoy.entity.UserNotifications;
 import com.integration.zoy.entity.UserPayment;
+import com.integration.zoy.entity.UserPaymentDue;
 import com.integration.zoy.entity.UserPgDetails;
 import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgFloorRooms;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
+import com.integration.zoy.entity.ZoyPgOwnerSettlementSplitUp;
+import com.integration.zoy.entity.ZoyPgOwnerSettlementStatus;
 import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgPropertyFloors;
 import com.integration.zoy.entity.ZoyPgPropertyRentCycle;
@@ -26,10 +31,13 @@ import com.integration.zoy.entity.ZoyPgRoomBeds;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.repository.NotificationModeMasterRepository;
 import com.integration.zoy.repository.PgOwnerUserStatusRepository;
+import com.integration.zoy.repository.UserBookingPaymentRepository;
 import com.integration.zoy.repository.UserBookingsRepository;
 import com.integration.zoy.repository.UserDetailsRepository;
+import com.integration.zoy.repository.UserDuesRepository;
 import com.integration.zoy.repository.UserMasterRepository;
 import com.integration.zoy.repository.UserNotificationsRepository;
+import com.integration.zoy.repository.UserPaymentDueRepository;
 import com.integration.zoy.repository.UserPaymentRepository;
 import com.integration.zoy.repository.UserPgDetailsRepository;
 import com.integration.zoy.repository.ZoyPgAmenetiesMasterRepository;
@@ -37,6 +45,8 @@ import com.integration.zoy.repository.ZoyPgBedDetailsRepository;
 import com.integration.zoy.repository.ZoyPgFloorRoomsRepository;
 import com.integration.zoy.repository.ZoyPgOwnerBookingDetailsRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
+import com.integration.zoy.repository.ZoyPgOwnerSettlementSplitUpRepository;
+import com.integration.zoy.repository.ZoyPgOwnerSettlementStatusRepository;
 import com.integration.zoy.repository.ZoyPgPropertyFloorDetailsRepository;
 import com.integration.zoy.repository.ZoyPgPropertyFloorsRepository;
 import com.integration.zoy.repository.ZoyPgPropertyRentCycleRepository;
@@ -117,6 +127,21 @@ public class UploadServiceImpl {
 	
 	@Autowired
 	private UserPaymentRepository userPaymentRepository;
+	
+	@Autowired
+	private UserDuesRepository userDuesRepository;
+	
+	@Autowired
+	private ZoyPgOwnerSettlementStatusRepository zoyPgOwnerSettlementStatusRepository;
+	
+	@Autowired
+	private ZoyPgOwnerSettlementSplitUpRepository zoyPgOwnerSettlementSplitUpRepository;
+	
+	@Autowired
+	private UserPaymentDueRepository userPaymentDueRepository;
+	
+	@Autowired
+	private UserBookingPaymentRepository userBookingPaymentRepository;
 	
 	public ZoyPgOwnerDetails findPgOwnerById(String ownerId) {
 		return repository.findById(ownerId).orElse(null);
@@ -268,8 +293,8 @@ public class UploadServiceImpl {
 		return detailsRepository.findById(roomId).orElse(null);
 	}
 
-	public List<UserPayment> saveAllUserPayment(List<UserPayment> userPayment) {
-		return userPaymentRepository.saveAll(userPayment);
+	public List<UserPayment> saveAllUserPayment(List<UserPayment> payment) {
+		return userPaymentRepository.saveAll(payment);
 		
 	}
 
@@ -279,6 +304,43 @@ public class UploadServiceImpl {
 
 	public List<String[]> findFloorRoomBedIdsByPropertyName(String propertyId, String room, String selectedBed) {
 		return zoyPgOwnerBookingDetailsRepository.findFloorRoomBedIdsByPropertyName(propertyId, room, selectedBed);
+	}
+
+	public List<UserDues> saveAllUserDues(List<UserDues> userDues) {
+		return userDuesRepository.saveAll(userDues);
+		
+	}
+
+	public List<ZoyPgOwnerSettlementStatus> saveAllOwnerSettlementStatus(List<ZoyPgOwnerSettlementStatus> settlementStatus) {
+		return zoyPgOwnerSettlementStatusRepository.saveAll(settlementStatus);		
+	}
+
+	public UserPayment saveUserPayment(UserPayment payment) {
+		return userPaymentRepository.save(payment);
+	}
+
+	public UserDues saveUserDues(UserDues dues) {
+		return userDuesRepository.save(dues);
+	}
+
+	public ZoyPgOwnerSettlementStatus saveOwnerSettlementStatus(ZoyPgOwnerSettlementStatus settlementStatus) {
+		return zoyPgOwnerSettlementStatusRepository.save(settlementStatus);
+		
+	}
+
+	public ZoyPgOwnerSettlementSplitUp saveOwnerSettlementSlipUp(ZoyPgOwnerSettlementSplitUp firstPayment) {
+		return zoyPgOwnerSettlementSplitUpRepository.save(firstPayment);
+		
+	}
+
+	public UserPaymentDue saveUserPaymentDue(UserPaymentDue due) {
+		return userPaymentDueRepository.save(due);
+		
+	}
+
+	public UserBookingPayment saveUserBookingPayment(UserBookingPayment userBookingPayment) {
+		return userBookingPaymentRepository.save(userBookingPayment);
+		
 	}
 
 }

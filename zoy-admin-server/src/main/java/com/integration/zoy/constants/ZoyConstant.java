@@ -55,4 +55,6 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_MASTER_CONFIG_UPDATE="MASTER_CONFIGURATION_UPDATE";
 	public static final String ZOY_ADMIN_MASTER_CONFIG_DELETE="MASTER_CONFIGURATION_DELETE";
 	public static final String ZOY_ADMIN_USER_UNLOCK = "USER_UNLOCK";
+	public static final String IST="Asia/Kolkata";
+	public static final Double DAY_24_HRS=24.0; 
 }

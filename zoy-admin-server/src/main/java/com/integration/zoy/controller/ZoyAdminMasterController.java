@@ -1,5 +1,6 @@
 package com.integration.zoy.controller;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -38,6 +39,7 @@ import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
+import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
@@ -63,6 +65,7 @@ import com.integration.zoy.model.RoomType;
 import com.integration.zoy.model.RoomTypeId;
 import com.integration.zoy.model.ShareType;
 import com.integration.zoy.model.ShareTypeId;
+import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.model.UserNameDTO;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
@@ -108,16 +111,16 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
-	
+
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
-	
+
 	@Autowired
 	ZoyS3Service zoyS3Service;
-	
+
 	@Value("${app.minio.Amenities.photos.bucket.name}")
 	private String amenitiesPhotoBucketName;
-	
+
 	@Override
 	public ResponseEntity<String> zoyAdminAmenities() {
 		ResponseBody response=new ResponseBody();
@@ -143,16 +146,16 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST); 
 			}
-			
+
 			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,zoyPgAmenetiesMaster.getAmenetiesId(),amenetie.getAmenetiesImage());
 			zoyPgAmenetiesMaster.setAmenetiesName(amenetie.getAmeneties());
 			zoyPgAmenetiesMaster.setAmenetiesImage(imageUrl);		
 			ZoyPgAmenetiesMaster saved=ownerDBImpl.createAmeneties(zoyPgAmenetiesMaster);
-			
+
 			//audit history here
 			String historyContent=" has created the Amenities for,"+amenetie.getAmeneties();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting ameneties details API:/zoy_admin/ameneties.zoyAdminAmenitiesPost ",e);
@@ -174,7 +177,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				//audit history here
 				String historyContent=" has updated the Amenities for, from "+oldAmenities+" to "+amenetie.getAmeneties();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -192,41 +195,41 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	//Due Factor
 	@Override
 	public ResponseEntity<String> zoyAdminAmenitiesUpdate(AmenetiesId amenetie) {
-	    ResponseBody response = new ResponseBody();
-	    try {
-	        ZoyPgAmenetiesMaster zoyPgAmenetiesMaster = ownerDBImpl.findAmeneties(amenetie.getId());
-	        
-	        if (zoyPgAmenetiesMaster != null) {
-	            final String oldAmenities = zoyPgAmenetiesMaster.getAmenetiesName();
-	            final String oldImage = zoyPgAmenetiesMaster.getAmenetiesImage();
+		ResponseBody response = new ResponseBody();
+		try {
+			ZoyPgAmenetiesMaster zoyPgAmenetiesMaster = ownerDBImpl.findAmeneties(amenetie.getId());
 
-	            zoyPgAmenetiesMaster.setAmenetiesName(amenetie.getAmeneties());
+			if (zoyPgAmenetiesMaster != null) {
+				final String oldAmenities = zoyPgAmenetiesMaster.getAmenetiesName();
+				final String oldImage = zoyPgAmenetiesMaster.getAmenetiesImage();
 
-	            if (amenetie.getAmenetiesImage() != null && !amenetie.getAmenetiesImage().isEmpty()) {
-	                String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName, zoyPgAmenetiesMaster.getAmenetiesId(), amenetie.getAmenetiesImage());
-	                zoyPgAmenetiesMaster.setAmenetiesImage(imageUrl);
-	            }
+				zoyPgAmenetiesMaster.setAmenetiesName(amenetie.getAmeneties());
 
-	            ZoyPgAmenetiesMaster updated = ownerDBImpl.createAmeneties(zoyPgAmenetiesMaster);
+				if (amenetie.getAmenetiesImage() != null && !amenetie.getAmenetiesImage().isEmpty()) {
+					String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName, zoyPgAmenetiesMaster.getAmenetiesId(), amenetie.getAmenetiesImage());
+					zoyPgAmenetiesMaster.setAmenetiesImage(imageUrl);
+				}
 
-	            String historyContent = " has updated the Amenities from " + oldAmenities + " to " + amenetie.getAmeneties();
-	            if (amenetie.getAmenetiesImage() != null && !amenetie.getAmenetiesImage().isEmpty()) {
-	                historyContent += ", Image updated from " + oldImage + " to " + amenetie.getAmenetiesImage();
-	            }
-	            auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
+				ZoyPgAmenetiesMaster updated = ownerDBImpl.createAmeneties(zoyPgAmenetiesMaster);
 
-	            return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
-	        } else {
-	            response.setStatus(HttpStatus.NOT_FOUND.value());
-	            response.setMessage("No Ameneties found for the given Id " + amenetie.getId());
-	            return new ResponseEntity<>(gson2.toJson(response), HttpStatus.OK);
-	        }
-	    } catch (Exception e) {
-	        log.error("Error updating ameneties details API:/zoy_admin/amenetiesUpdate.zoyAdminAmenitiesUpdate ", e);
-	        response.setStatus(HttpStatus.BAD_REQUEST.value());
-	        response.setError(e.getMessage());
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	    }
+				String historyContent = " has updated the Amenities from " + oldAmenities + " to " + amenetie.getAmeneties();
+				if (amenetie.getAmenetiesImage() != null && !amenetie.getAmenetiesImage().isEmpty()) {
+					historyContent += ", Image updated from " + oldImage + " to " + amenetie.getAmenetiesImage();
+				}
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
+
+				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
+			} else {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("No Ameneties found for the given Id " + amenetie.getId());
+				return new ResponseEntity<>(gson2.toJson(response), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			log.error("Error updating ameneties details API:/zoy_admin/amenetiesUpdate.zoyAdminAmenitiesUpdate ", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@Override
@@ -250,11 +253,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			ZoyPgDueFactorMaster zoyPgDueFactorMasters =  new ZoyPgDueFactorMaster();
 			zoyPgDueFactorMasters.setFactorName(dueFactor.getFactorName());
 			ZoyPgDueFactorMaster saved= ownerDBImpl.createDueFactor(zoyPgDueFactorMasters);
-			
+
 			//audit history here
 			String historyContent=" has created the Factor for, "+dueFactor.getFactorName();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting factor details API:/zoy_admin/factor.zoyAdminFactorPost ",e);
@@ -276,7 +279,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				//audit history here
 				String historyContent=" has updated the Factor for, from "+oldAmenities+" to "+dueFactorId.getFactorName();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -313,11 +316,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			ZoyPgRentCycleMaster zoyPgRentCycleMasters =  new ZoyPgRentCycleMaster();
 			zoyPgRentCycleMasters.setCycleName(rentCycle.getRentCycleName());
 			ZoyPgRentCycleMaster saved=ownerDBImpl.saveRentCycle(zoyPgRentCycleMasters);
-			
+
 			//audit history here
 			String historyContent=" has created the Rent Cycle for, "+rentCycle.getRentCycleName();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting rent cycle details API:/zoy_admin/rentCycle.zoyAdminRentCyclePost ",e);
@@ -339,7 +342,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				//audit history here
 				String historyContent=" has updated the Rent Cycle for, from "+oldAmenities+" to "+rentCycleId.getRentCycleName();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -376,11 +379,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			ZoyPgRoomTypeMaster zoyPgRoomTypeMasters =  new ZoyPgRoomTypeMaster();
 			zoyPgRoomTypeMasters.setRoomTypeName(roomType.getRoomTypeName());
 			ZoyPgRoomTypeMaster saved=ownerDBImpl.createRoomType(zoyPgRoomTypeMasters);
-			
+
 			//audit history here
 			String historyContent=" has created the Room Type for, "+roomType.getRoomTypeName();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting room type details API:/zoy_admin/roomType.zoyAdminRoomTypePost ",e);
@@ -403,7 +406,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				//audit history here
 				String historyContent=" has updated the Room Type for, from "+oldAmenities+" to "+roomTypeId.getRoomTypeName();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -441,11 +444,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			zoyPgShareMasters.setShareType(shareType.getShareType());
 			zoyPgShareMasters.setShareOccupancyCount(shareType.getShareOccupancyCount());
 			ZoyPgShareMaster saved=ownerDBImpl.createShare(zoyPgShareMasters);
-			
+
 			//audit history here
 			String historyContent=" has created the Share Type for, Type= "+shareType.getShareType()+" , Occupancy Count "+shareType.getShareOccupancyCount();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting share type details API:/zoy_admin/shareType.zoyAdminShareTypePost ",e);
@@ -466,7 +469,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				zoyPgShareMasters.setShareType(shareTypeId.getShareType());
 				zoyPgShareMasters.setShareOccupancyCount(shareTypeId.getShareOccupancyCount());
 				ZoyPgShareMaster updated=ownerDBImpl.updateShare(zoyPgShareMasters);
-				
+
 				//audit history here
 				StringBuffer historyContent=new StringBuffer(" has updated the Share Type for ");
 				if(!oldType.equals(shareTypeId.getShareType())) {
@@ -476,7 +479,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 					historyContent.append(" , Occupancy Count from "+oldCount+" to "+shareTypeId.getShareOccupancyCount());
 				}				
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -516,7 +519,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			//audit history here
 			String historyContent=" has created the PG Type for, "+pgType.getPgTypeName();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting pg type details API:/zoy_admin/pgType.zoyAdminPgTypePost ",e);
@@ -535,11 +538,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				final String oldCount=zoyPgTypeMasters.getPgTypeName();
 				zoyPgTypeMasters.setPgTypeName(pgTypeId.getPgTypeName());
 				ZoyPgTypeMaster updated=ownerDBImpl.updatePgType(zoyPgTypeMasters);
-				
+
 				//audit history here
 				String historyContent=" has updated the PG Type for, from "+oldCount+" to "+pgTypeId.getPgTypeName();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -576,11 +579,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			NotificationModeMaster notificationModeMasters = new NotificationModeMaster();
 			notificationModeMasters.setNotificationModName(notificationMode.getNotificationModeName());
 			NotificationModeMaster saved=userDBImpl.saveNotificationMode(notificationModeMasters);
-			
+
 			//audit history here
 			String historyContent=" has created the Notification for, "+notificationMode.getNotificationModeName();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting notification mode details API:/zoy_admin/notification_mode.zoyAdminNotificationModeNamePost ",e);
@@ -599,11 +602,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				final String oldCount=notificationModeMasters.getNotificationModName();
 				notificationModeMasters.setNotificationModName(notificationModeId.getNotificationModeName());
 				NotificationModeMaster updated=userDBImpl.updateNotificationMode(notificationModeMasters);
-				
+
 				//audit history here
 				String historyContent=" has updated the Notification for, from "+oldCount+" to "+notificationModeId.getNotificationModeName();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -640,11 +643,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			UserBillingMaster userBillingMasters =  new UserBillingMaster();
 			userBillingMasters.setBillingTypeName(billingType.getBillingTypeName());
 			UserBillingMaster saved=userDBImpl.saveUserBillingMaster(userBillingMasters);
-			
+
 			//audit history here
 			String historyContent=" has created the Billing Type for, "+billingType.getBillingTypeName();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting billing type details API:/zoy_admin/billingType.zoyAdminBillingTypePost ",e);
@@ -666,7 +669,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				//audit history here
 				String historyContent=" has updated the Billing Type for, from "+oldCount+" to "+billingType.getBillingTypeName();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -706,7 +709,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			//audit history here
 			String historyContent=" has updated the Currency Type for, "+currencyType.getCurrencyName();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting currency type details API:/zoy_admin/currencyType.zoyAdminCurrencyTypePost ",e);
@@ -728,7 +731,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				//audit history here
 				String historyContent=" has updated the Currency Type for, from "+oldCount+" to "+currencyTypeId.getCurrencyName();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -750,13 +753,13 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		try {
 			List<ZoyPgDueMaster> userDueMasters =  ownerDBImpl.findAllDueMaster();
 			List<DueMaster> dueMasters = userDueMasters.stream()
-			        .map(zoyPgDueMaster -> {
-			            DueMaster dueMaster = new DueMaster();
-			            dueMaster.setDueTypeId(zoyPgDueMaster.getDueTypeId());
-			            dueMaster.setDueTypeName(zoyPgDueMaster.getDueName());
-			            return dueMaster;
-			        })
-			        .collect(Collectors.toList());
+					.map(zoyPgDueMaster -> {
+						DueMaster dueMaster = new DueMaster();
+						dueMaster.setDueTypeId(zoyPgDueMaster.getDueTypeId());
+						dueMaster.setDueTypeName(zoyPgDueMaster.getDueName());
+						return dueMaster;
+					})
+					.collect(Collectors.toList());
 			return new ResponseEntity<>(gson2.toJson(dueMasters), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting due type details API:/zoy_admin/dueType.zoyAdminDueType ",e);
@@ -776,7 +779,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			//audit history here
 			String historyContent=" has created the Due Type for, "+dueType.getDueTypeName();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting due type details API:/zoy_admin/dueType.zoyAdminDueTypePost ",e);
@@ -795,11 +798,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				final String oldCount=userDueMasters.getDueName();
 				userDueMasters.setDueName(dueTypeId.getDueTypeName());
 				ZoyPgDueMaster updated=ownerDBImpl.updateDueMaster(userDueMasters);
-				
+
 				//audit history here
 				String historyContent=" has updated the Due Type for, from "+oldCount+" to "+dueTypeId.getDueTypeName();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -839,7 +842,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			//audit history here
 			String historyContent=" has created the EKYC for, "+ekycType.getUserEkycTypeName();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-			
+
 			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error posting ekyc type details API:/zoy_admin/ekycType.zoyAdminEkycTypePost ",e);
@@ -861,7 +864,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				//audit history here
 				String historyContent=" has updated the EKYC for, from "+oldCount+" to "+ekycTypeId.getUserEkycTypeName();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-				
+
 				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -881,95 +884,164 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		ResponseBody response = new ResponseBody();
 		try {
 			Page<OwnerPropertyDTO> ownerPropertyList = userDBImpl.findAllOwnerWithPropertyCount( paginationRequest);
-	            return new ResponseEntity<>(gson2.toJson(ownerPropertyList), HttpStatus.OK);
- 		}catch (DataAccessException dae) {
-	        log.error("Database error occurred while fetching owner details: " + dae.getMessage(), dae);
-	        response.setStatus(HttpStatus.BAD_REQUEST.value());
-	        response.setError("Database error: Unable to fetch owner details");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        
-	    }catch (Exception e) {
-	        log.error("Unexpected error occurredAPI:/zoy_admin/manage-owners.zoyPgOwnerDetails", e);
-	        response.setStatus(HttpStatus.BAD_REQUEST.value());
-	        response.setError(e.getMessage());
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	    }
-	}
-	
-	   //my Audit Activities log Details
-		@Override
-		public ResponseEntity<String> zoyAuditActivitiesLogDetails(PaginationRequest paginationRequest) {
-			ResponseBody response = new ResponseBody();
-			try {
-				CommonResponseDTO<AuditActivitiesLogDTO> auditActivitiesLogList = userDBImpl.getAuditActivitiesLogCount(paginationRequest);
-		        return new ResponseEntity<>(gson2.toJson(auditActivitiesLogList), HttpStatus.OK);
-	 		}catch (Exception e) {
-		        log.error("Unexpected error occurredAPI:/zoy_admin/audit-activitieslog.auditactivitieslogdetails", e);
-		        response.setStatus(HttpStatus.BAD_REQUEST.value());
-		        response.setError(e.getMessage());
-		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		    }
+			return new ResponseEntity<>(gson2.toJson(ownerPropertyList), HttpStatus.OK);
+		}catch (DataAccessException dae) {
+			log.error("Database error occurred while fetching owner details: " + dae.getMessage(), dae);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Database error: Unable to fetch owner details");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+
+		}catch (Exception e) {
+			log.error("Unexpected error occurredAPI:/zoy_admin/manage-owners.zoyPgOwnerDetails", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
-		
-		
-		//User Name List Details
-				@Override
-				public ResponseEntity<String> zoyUserNameList() {
-					ResponseBody response = new ResponseBody();
-					try {
-						List<UserNameDTO> userNameList = userDBImpl.getUserNameList();
-						return new ResponseEntity<>(gson2.toJson(userNameList), HttpStatus.OK);
-			 		}catch (Exception e) {
-				        log.error("Error while occurredAPI:/zoy_admin/userName-List zoyUserNameList()", e);
-				        response.setStatus(HttpStatus.BAD_REQUEST.value());
-				        response.setError(e.getMessage());
-				        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-				    }
-				}
-				
-	        //User Audit reports Download
-				@Override
-				public ResponseEntity<byte[]> downloadUserAuditReport(PaginationRequest paginationRequest) {
-					byte[] fileData=null;
-					String fileName ="";
-					MediaType contentType = null;
-		
-					try {
-					  fileData = userDBImpl.generateDynamicReport(paginationRequest);
+	}
 
-						if (fileData.length == 0) {
-							return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  
-						}
+	//my Audit Activities log Details
+	@Override
+	public ResponseEntity<String> zoyAuditActivitiesLogDetails(PaginationRequest paginationRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+			CommonResponseDTO<AuditActivitiesLogDTO> auditActivitiesLogList = userDBImpl.getAuditActivitiesLogCount(paginationRequest);
+			return new ResponseEntity<>(gson2.toJson(auditActivitiesLogList), HttpStatus.OK);
+		}catch (Exception e) {
+			log.error("Unexpected error occurredAPI:/zoy_admin/audit-activitieslog.auditactivitieslogdetails", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
 
-						String fileExtension;
 
-						switch (paginationRequest.getDownloadType().toLowerCase()) {
-						case "excel":
-							contentType = MediaType.APPLICATION_OCTET_STREAM; 
-							fileExtension = ".xlsx";
-							break;
-						case "csv":
-							contentType = MediaType.TEXT_PLAIN; 
-							fileExtension = ".csv";
-							break;
-						
-						default:
-							contentType = MediaType.TEXT_PLAIN; 
-							fileExtension = ".csv";
-							break;
-						}
+	//User Name List Details
+	@Override
+	public ResponseEntity<String> zoyUserNameList() {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<UserNameDTO> userNameList = userDBImpl.getUserNameList();
+			return new ResponseEntity<>(gson2.toJson(userNameList), HttpStatus.OK);
+		}catch (Exception e) {
+			log.error("Error while occurredAPI:/zoy_admin/userName-List zoyUserNameList()", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
 
-						fileName = paginationRequest + fileExtension;
-					}catch(Exception ex) {
-						log.error("Error getting download User Audit Report API:/zoy_admin/download_user_audit_report.downloadUserAuditReport",ex);
-						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage().getBytes());
-					}
-					return ResponseEntity.ok()
-							.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
-							.contentType(contentType)
-							.body(fileData);
-				}			
-				
-				
-				
+	//User Audit reports Download
+	@Override
+	public ResponseEntity<byte[]> downloadUserAuditReport(PaginationRequest paginationRequest) {
+		byte[] fileData=null;
+		String fileName ="";
+		MediaType contentType = null;
+
+		try {
+			fileData = userDBImpl.generateDynamicReport(paginationRequest);
+
+			if (fileData.length == 0) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  
+			}
+
+			String fileExtension;
+
+			switch (paginationRequest.getDownloadType().toLowerCase()) {
+			case "excel":
+				contentType = MediaType.APPLICATION_OCTET_STREAM; 
+				fileExtension = ".xlsx";
+				break;
+			case "csv":
+				contentType = MediaType.TEXT_PLAIN; 
+				fileExtension = ".csv";
+				break;
+
+			default:
+				contentType = MediaType.TEXT_PLAIN; 
+				fileExtension = ".csv";
+				break;
+			}
+
+			fileName = paginationRequest + fileExtension;
+		}catch(Exception ex) {
+			log.error("Error getting download User Audit Report API:/zoy_admin/download_user_audit_report.downloadUserAuditReport",ex);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage().getBytes());
+		}
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+				.contentType(contentType)
+				.body(fileData);
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminShortTerm() {
+		ResponseBody response=new ResponseBody();
+		try {
+			List<ZoyPgShortTermMaster> zoyPgShortTermMasters =  ownerDBImpl.findAllShortTerm();
+			return new ResponseEntity<>(gson2.toJson(zoyPgShortTermMasters), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting ekyc type details API:/zoy_admin/ekycType.zoyAdminEkycType ",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminShortTermPost(ShortTerm shortTerm) {
+		ResponseBody response=new ResponseBody();
+		try {
+			ZoyPgShortTermMaster zoyPgShortTermMaster =  new ZoyPgShortTermMaster();
+			zoyPgShortTermMaster.setStartDay(shortTerm.getStartDay());
+			zoyPgShortTermMaster.setEndDay(shortTerm.getEndDay());
+			zoyPgShortTermMaster.setPercentage(BigDecimal.ZERO);
+			ZoyPgShortTermMaster saved=ownerDBImpl.createShortTerm(zoyPgShortTermMaster);
+			//audit history here
+			String historyContent=" has created the Short Term for, start day "+shortTerm.getStartDay() +" ,End day " + shortTerm.getEndDay();
+			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
+
+			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error posting ekyc type details API:/zoy_admin/shortTerm.zoyAdminShortTermPost ",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminShortTermPut(ShortTerm shortTerm) {
+
+		ResponseBody response=new ResponseBody();
+		try {
+			ZoyPgShortTermMaster zoyPgShortTermMaster = ownerDBImpl.findShortTerm(shortTerm.getZoyPgShortTermMasterId());
+			if(zoyPgShortTermMaster!=null) {
+				final int oldStartCount=zoyPgShortTermMaster.getStartDay();
+				final int oldEndCount=zoyPgShortTermMaster.getEndDay();
+				zoyPgShortTermMaster.setStartDay(shortTerm.getStartDay());
+				zoyPgShortTermMaster.setEndDay(shortTerm.getEndDay());
+				zoyPgShortTermMaster.setPercentage(BigDecimal.ZERO);
+				ZoyPgShortTermMaster updated=ownerDBImpl.createShortTerm(zoyPgShortTermMaster);
+				//audit history here
+				String historyContent=" has updated the Short Term for, start day from "+oldStartCount +" to "+shortTerm.getStartDay() +" ,and End day from " +oldEndCount+" to "+ shortTerm.getEndDay();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
+
+				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
+			} else {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("No Short term for the given Id " + shortTerm.getZoyPgShortTermMasterId());
+				return new ResponseEntity<>(gson2.toJson(response), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			log.error("Error updating ekyc type details API:/zoy_admin/ekycType.zoyAdminEkycTypePut ",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	
+	}			
+
+
+
 }

@@ -29,24 +29,30 @@ public class CsvTenantDetails {
 
     @CsvBindByPosition(position = 6)
     private String permanentAddress;
-
+    
     @CsvCustomBindByPosition(position = 7, converter = Iso8601ToTimestampConverter.class)
+    private Timestamp inDate;
+
+    @CsvCustomBindByPosition(position = 8, converter = Iso8601ToTimestampConverter.class)
     private Timestamp outDate;
 
-    @CsvBindByPosition(position = 8)
+    @CsvBindByPosition(position = 9)
     private String floor;
 
-    @CsvBindByPosition(position = 9)
+    @CsvBindByPosition(position = 10)
     private String room;
 
-    @CsvBindByPosition(position = 10)
+    @CsvBindByPosition(position = 11)
     private String bedNumber;
 
 //    @CsvBindByPosition(position = 11)
 //    private String rentCycle;
 //
-//    @CsvBindByPosition(position = 12)
-//    private BigDecimal depositPaid;
+    @CsvBindByPosition(position = 12)
+    private BigDecimal depositPaid;
+    
+    @CsvBindByPosition(position = 13)
+    private String rentPaid;
 
     public String getFirstName() {
         return firstName;
@@ -104,7 +110,15 @@ public class CsvTenantDetails {
         this.permanentAddress = permanentAddress;
     }
 
-    public Timestamp getOutDate() {
+    public Timestamp getInDate() {
+		return inDate;
+	}
+
+	public void setInDate(Timestamp inDate) {
+		this.inDate = inDate;
+	}
+
+	public Timestamp getOutDate() {
         return outDate;
     }
 
@@ -144,18 +158,29 @@ public class CsvTenantDetails {
 //        this.rentCycle = rentCycle;
 //    }
 //
-//    public BigDecimal getDepositPaid() {
-//        return depositPaid;
-//    }
-//
-//    public void setDepositPaid(BigDecimal depositPaid) {
-//        this.depositPaid = depositPaid;
-//    }
-
-    @Override
-    public String toString() {
-        return "CsvTenantDetails [firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
-                + ", email=" + email + ", dob=" + dob + ", gender=" + gender + ", permanentAddress=" + permanentAddress
-                + ", outDate=" + outDate + ", floor=" + floor + ", room=" + room + ", bedNumber=" + bedNumber + "]";
+    public BigDecimal getDepositPaid() {
+        return depositPaid;
     }
+
+    public void setDepositPaid(BigDecimal depositPaid) {
+        this.depositPaid = depositPaid;
+    }
+
+	public String getRentPaid() {
+		return rentPaid;
+	}
+
+	public void setRentPaid(String rentPaid) {
+		this.rentPaid = rentPaid;
+	}
+
+	@Override
+	public String toString() {
+		return "CsvTenantDetails [firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
+				+ ", email=" + email + ", dob=" + dob + ", gender=" + gender + ", permanentAddress=" + permanentAddress
+				+ ", inDate=" + inDate + ", outDate=" + outDate + ", floor=" + floor + ", room=" + room + ", bedNumber="
+				+ bedNumber + ", depositPaid=" + depositPaid + ", rentPaid=" + rentPaid + "]";
+	}
+
+   
 }

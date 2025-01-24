@@ -68,7 +68,7 @@ public class ExcelValidationService {
 		validateCell(row.getCell(1), "Room Name", rowIndex, 2, errors, 20);
 		validateRoomTypeCell(row.getCell(2), "Room Type", rowIndex, 3, errors, null);
 		validateShareTypeCell(row.getCell(3), "Share Type", rowIndex, 4, errors, null);
-		validateNumeric(row.getCell(4), "Room Area in Sqft", rowIndex, 5, errors);
+		validateNumericNotMandatoryField(row.getCell(4), "Room Area in Sqft", rowIndex, 5, errors);
 		validateNumeric(row.getCell(6), "Daily Rent", rowIndex, 7, errors);
 		validateNumeric(row.getCell(7), "Monthly Rent", rowIndex, 8, errors);
 		validateAmenetiesCell(row.getCell(8), "Room Amenities", rowIndex, 9, errors, null);
@@ -147,5 +147,27 @@ public class ExcelValidationService {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	private void validateNumericNotMandatoryField(Cell cell, String fieldName, int rowIndex, int colIndex, List<ErrorDetail> errors) {
+		
+		if (cell != null) {
+	        switch (cell.getCellType()) {
+	            case STRING:
+	                if (cell.getStringCellValue().trim().isEmpty()) {
+	                    if (!isNumeric(cell)) {
+	                        errors.add(new ErrorDetail(rowIndex, colIndex, fieldName, fieldName + " must be a valid number."));
+	                    }
+	                }
+	                break;
+	            case NUMERIC:
+	                if (!isNumeric(cell)) {
+	                    errors.add(new ErrorDetail(rowIndex, colIndex, fieldName, fieldName + " must be a valid number."));
+	                }
+	                break;
+	            default:
+	                break;
+	        }
+	    }
 	}
 }
