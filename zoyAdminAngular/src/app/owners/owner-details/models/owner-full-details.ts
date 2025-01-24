@@ -12,6 +12,7 @@ export class Profile {
     owner_i_d: string;
     profile_photo: string;
     status: string;
+    reason:string;
   }
   
   // PG Owner Basic Information Model

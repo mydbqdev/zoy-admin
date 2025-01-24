@@ -94,7 +94,7 @@ import { MessageService } from 'src/app/message.service';
     },
 		{
 		  'reportName': 'Tenant Payments GST Report', //==User Payments GST Report
-		  'columns': ['transactionDate','transactionNumber','tenantMobileNum','customerName','PgPropertyName','propertyHouseArea', 'totalAmount', 'gstAmount', 'paymentMethod'],
+		  'columns': ['transactionDate','transactionNumber','tenantContactNum','customerName','PgPropertyName','propertyHouseArea', 'totalAmount', 'gstAmount', 'paymentMethod'],
 		},
     {
 		  'reportName': 'Tenant Dues Report',

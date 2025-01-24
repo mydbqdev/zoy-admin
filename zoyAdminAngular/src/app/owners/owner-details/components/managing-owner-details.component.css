@@ -125,3 +125,6 @@
   border-radius: 5px;
   border:1px solid #dbdbdb;
 }
+.is-invalid {
+  border: 1px solid red;
+}
