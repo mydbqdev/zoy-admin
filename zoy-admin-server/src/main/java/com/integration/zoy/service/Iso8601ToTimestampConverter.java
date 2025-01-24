@@ -15,7 +15,6 @@ public class Iso8601ToTimestampConverter extends AbstractBeanField<String, Times
     @Override
     protected Timestamp convert(String value) throws CsvDataTypeMismatchException, CsvConstraintViolationException {
         try {
-        	System.out.println(value);
             if (value == null || value.trim().isEmpty()) {
                 return null;
             }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
@@ -18,6 +19,7 @@ import com.integration.zoy.utils.ZoyGstChargesDto;
 import com.integration.zoy.utils.ZoyOtherChargesDto;
 import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
 import com.integration.zoy.utils.ZoyPgTokenDetailsDTO;
+import com.integration.zoy.utils.ZoyShortTermDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -188,5 +190,16 @@ public interface ZoyConfigurationMasterImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> getAllTriggeredValue();
 
+	@Operation(summary = "Admin Configration Short Term", description = "Creating/Updating Admin Configration Short Term", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/short-term",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminConfigUpdateShortTerm(@RequestBody ZoyShortTermDto shortTerm);
 
 }

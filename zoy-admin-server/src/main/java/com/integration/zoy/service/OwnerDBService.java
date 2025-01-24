@@ -32,6 +32,7 @@ import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
 import com.integration.zoy.entity.ZoyPgShareMaster;
+import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
@@ -60,6 +61,7 @@ import com.integration.zoy.repository.ZoyPgRoomDetailsRepository;
 import com.integration.zoy.repository.ZoyPgRoomTypeMasterRepository;
 import com.integration.zoy.repository.ZoyPgSecurityDepositDetailsRepository;
 import com.integration.zoy.repository.ZoyPgShareMasterRepository;
+import com.integration.zoy.repository.ZoyPgShortTermMasterRepository;
 import com.integration.zoy.repository.ZoyPgTermsMasterRepository;
 import com.integration.zoy.repository.ZoyPgTimeMasterRepository;
 import com.integration.zoy.repository.ZoyPgTokenDetailsRepository;
@@ -149,6 +151,9 @@ public class OwnerDBService implements OwnerDBImpl{
 	
 	@Autowired
 	private ZoyPgAutoCancellationMasterRepository zoyPgAutoCancellationMasterRepository;
+	
+	@Autowired
+	private ZoyPgShortTermMasterRepository zoyPgShortTermMasterRepository;
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -700,6 +705,26 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public ZoyPgAutoCancellationMaster saveSecurityDepositDeadLine(ZoyPgAutoCancellationMaster autoCancellationMaster) throws WebServiceException {
 		return zoyPgAutoCancellationMasterRepository.save(autoCancellationMaster);
+	}
+
+	@Override
+	public List<String[]> findRentDue(String propertyId) {
+		return zoyPgDueMasterRepository.findRentDue(propertyId);
+	}
+
+	@Override
+	public List<ZoyPgShortTermMaster> findAllShortTerm() {
+		return zoyPgShortTermMasterRepository.findAll();
+	}
+
+	@Override
+	public ZoyPgShortTermMaster createShortTerm(ZoyPgShortTermMaster zoyPgShortTermMaster) {
+		return zoyPgShortTermMasterRepository.save(zoyPgShortTermMaster);
+	}
+
+	@Override
+	public ZoyPgShortTermMaster findShortTerm(String zoyPgShortTermMasterId) {
+		return zoyPgShortTermMasterRepository.findById(zoyPgShortTermMasterId).orElse(null);
 	}
 
 	
