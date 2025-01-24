@@ -10,7 +10,7 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { DbMasterConfigurationService } from '../services/db-master-configuration.service';
-import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetailsModel } from '../models/db-setting-models';
+import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetailsModel, ShortTermDataModel } from '../models/db-setting-models';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -37,6 +37,9 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   dbSettingDataModel :DbSettingDataModel =new DbSettingDataModel();
   columnHeaders = {} ;
   submitDataModel:DbSettingSubmitDataModel=new DbSettingSubmitDataModel();
+
+  shortTermData:ShortTermDataModel = new ShortTermDataModel();
+  shortTermDataList:ShortTermDataModel[] = [];
     
   @ViewChild('closeModel') closeModel: ElementRef;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
@@ -116,6 +119,9 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.dbMasterConfigurationService.getDbSettingDetails(this.settingTypeDetails.api).subscribe(data => {
         this.dbSettingDataList=Object.assign([],data);
         this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
+        if(this.settingType == 'Short Term'){
+          this.getShortTermList(data);
+        }
       this.spinner.hide();
       }, error => {
       this.spinner.hide();
@@ -178,52 +184,56 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       }
     }  
     submitData(){
-      this.submitted = true;
-      this.withPhoto=false;
-     if(this.validation()){      
-      this.authService.checkLoginUserVlidaate();
-      this.spinner.show();
-      var form_data = new FormData();
-      if(this.settingTypeDetails.api=='zoy_admin/ameneties' && this.fileData!=null){
-        this.withPhoto=true;     
-        form_data.append('amenetiesImage', this.fileData);
-        form_data.append('ameneties', this.submitDataModel.ameneties);
-        form_data.append('id', this.submitDataModel.id);
-      }
-      this.dbMasterConfigurationService.submitData(this.submitDataModel,this.isCreated,this.settingTypeDetails.api,form_data,this.withPhoto).subscribe(data => {
-      this.closeModel.nativeElement.click(); 
-      this.getDbSettingDetails();
-      this.resetChange();
-      this.spinner.hide();
-      }, error => {
-      this.spinner.hide();
-      if(error.status == 0) {
-        this.notifyService.showError("Internal Server Error/Connection not established", "")
-       }else if(error.status==401){
-				console.error("Unauthorised");
-			}else if(error.status==403){
-      this.router.navigate(['/forbidden']);
-      }else if (error.error && error.error.message) {
-      this.errorMsg = error.error.message;
-      console.log("Error:" + this.errorMsg);
-      this.notifyService.showError(this.errorMsg, "");
-      } else {
-      if (error.status == 500 && error.statusText == "Internal Server Error") {
-        this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-      } else {
-        let str;
-        if (error.status == 400) {
-        str = error.error.error;
-        } else {
-        str = error.error.message;
-        str = str.substring(str.indexOf(":") + 1);
+      if(this.settingType ==='Short Term'){
+          this.submitShortTermData();
+      }else{
+        this.submitted = true;
+        this.withPhoto=false;
+      if(this.validation()){      
+        this.authService.checkLoginUserVlidaate();
+        this.spinner.show();
+        var form_data = new FormData();
+        if(this.settingTypeDetails.api=='zoy_admin/ameneties' && this.fileData!=null){
+          this.withPhoto=true;     
+          form_data.append('amenetiesImage', this.fileData);
+          form_data.append('ameneties', this.submitDataModel.ameneties);
+          form_data.append('id', this.submitDataModel.id);
         }
-        console.log("Error:" ,str);
-        this.errorMsg = str;
-      }
-      if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-      }
-    });
+        this.dbMasterConfigurationService.submitData(this.submitDataModel,this.isCreated,this.settingTypeDetails.api,form_data,this.withPhoto).subscribe(data => {
+        this.closeModel.nativeElement.click(); 
+        this.getDbSettingDetails();
+        this.resetChange();
+        this.spinner.hide();
+        }, error => {
+        this.spinner.hide();
+        if(error.status == 0) {
+          this.notifyService.showError("Internal Server Error/Connection not established", "")
+        }else if(error.status==401){
+          console.error("Unauthorised");
+        }else if(error.status==403){
+        this.router.navigate(['/forbidden']);
+        }else if (error.error && error.error.message) {
+        this.errorMsg = error.error.message;
+        console.log("Error:" + this.errorMsg);
+        this.notifyService.showError(this.errorMsg, "");
+        } else {
+        if (error.status == 500 && error.statusText == "Internal Server Error") {
+          this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+        } else {
+          let str;
+          if (error.status == 400) {
+          str = error.error.error;
+          } else {
+          str = error.error.message;
+          str = str.substring(str.indexOf(":") + 1);
+          }
+          console.log("Error:" ,str);
+          this.errorMsg = str;
+        }
+        if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+        }
+      });
+    }             
   }
 }
     
@@ -236,7 +246,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     return true;
   }
    
-   withPhoto:boolean=false;
+  withPhoto:boolean=false;
       validation():boolean{
         switch (this.settingType) {
           case 'Share Type':
@@ -418,6 +428,93 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
           }
         }
       } 
+
+
+  isNotValidNumber(value: any): boolean {
+      return  0 == value || value === undefined || value === null || isNaN(value);
+   }
+
+   backUpshortTermDataList :ShortTermDataModel[]=[];
+     getShortTermList(data:any){
+      this.backUpshortTermDataList = [];
+      data.forEach(element => {
+        let model : ShortTermDataModel = new ShortTermDataModel();
+        model.zoy_pg_short_term_master_id = element.zoy_pg_short_term_master_id; 
+        model.start_day = element.start_day; 
+        model.end_day = element.end_day;  
+   
+        this.backUpshortTermDataList.push(model);
+      });
+       
+        this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpshortTermDataList));
+   
+      }
+
+      addShortTermVali:boolean=false
+   addShortTerm() {
+    this.addShortTermVali = true;
+    console.log("shortTerm",this.shortTermData);
+   }
+   modifyShortTerm(shortTerm) {
+    console.log("shortTerm",shortTerm)
+    shortTerm.isEdit = false;
+  }
+  
+  removeShortTerm(shortTerm, index) {
+    console.log("shortTerm",shortTerm)
+    shortTerm.isDelete = true;
+  }
+  
+  undoShortTermDelete(shortTerm) {
+    console.log("shortTerm",shortTerm)
+    shortTerm.isDelete = false;
+  }
+  
+  undoEditShortTermItem(shortTerm) {
+    console.log("shortTerm",shortTerm)
+    shortTerm.isEdit = false;
+  }
+
+  submitShortTermData(){   
+    console.log("this.shortTermDataList",this.shortTermDataList)
+return
+    this.dbMasterConfigurationService.submitShortTermData(this.shortTermDataList).subscribe(data => {
+      this.closeModel.nativeElement.click(); 
+      this.getDbSettingDetails();
+      this.resetChange();
+      this.spinner.hide();
+      }, error => {
+      this.spinner.hide();
+      if(error.status == 0) {
+        this.notifyService.showError("Internal Server Error/Connection not established", "")
+      }else if(error.status==401){
+        console.error("Unauthorised");
+      }else if(error.status==403){
+      this.router.navigate(['/forbidden']);
+      }else if (error.error && error.error.message) {
+      this.errorMsg = error.error.message;
+      console.log("Error:" + this.errorMsg);
+      this.notifyService.showError(this.errorMsg, "");
+      } else {
+      if (error.status == 500 && error.statusText == "Internal Server Error") {
+        this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+      } else {
+        let str;
+        if (error.status == 400) {
+        str = error.error.error;
+        } else {
+        str = error.error.message;
+        str = str.substring(str.indexOf(":") + 1);
+        }
+        console.log("Error:" ,str);
+        this.errorMsg = str;
+      }
+      if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+      }
+    });     
+  }
+        
+
 }
 
   

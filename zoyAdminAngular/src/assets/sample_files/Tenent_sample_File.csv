@@ -1,4 +1,3 @@
-First Name,Last Name,Phone Number,eMail,Date Of Birth,Gender,Permanent Address,Out Date,Floor,Room,Bed Number 
-20- Alphabets,20- Alphabets,10 Digits,25 Charectes,DD-MM-YYYY,Male/ Female / Transgender,200 Charecters,DD-MM-YYYY,20 Charecters,20 Charecters,
-Rajesh,T,9089765431,rajesh@gmail.com,01-01-1991,Male,Karnataka,01-10-2025,First Floor,Room 201,201-A
-Rajendran,M,7866875642,rajendran@gmail.com,01-01-1991,Male,Karnataka,01-10-2025,Secound Floor,Room 201,201-B
+First Name,Last Name,Phone Number,eMail,Date Of Birth,Gender,Permanent Address,In Date,Out Date,Floor,Room,Bed Number ,Deposit Paid,Rent Paid
+20- Alphabets,20- Alphabets,10 Digits,25 Charectes,DD-MM-YYYY,Male/ Female / Transgender,200 Charecters,DD-MM-YYYY,DD-MM-YYYY,20 Charecters,20 Charecters,,,Yes/No
+Praveen,Ramesh,9976243626,praveenr@mydbq.com,16-02-1991,Male,Karnataka,10-01-2025,01-03-2025,Dori 1,D1,D1-C,8000,Yes
