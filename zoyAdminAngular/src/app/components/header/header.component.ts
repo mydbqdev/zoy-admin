@@ -13,6 +13,7 @@ import { UserActivityService } from 'src/app/user-activity.service';
 import { ProfileService } from 'src/app/profile/service/profile-service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { AlertNotificationModel } from 'src/app/alert-notification/model/alert-notification-model';
+import { WebsocketService } from 'src/app/common/service/websocket.service';
 
 @Component({
   selector: 'app-header',
@@ -43,7 +44,8 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   @ViewChild('sessionModelClose') sessionModelClose: any;
   @ViewChild('modal', { static: false }) modal: any;
   selectedNotification: AlertNotificationModel = new AlertNotificationModel();
-  constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,
+  onFlyNotification: AlertNotificationModel = new AlertNotificationModel();
+  constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,private websocketService:WebsocketService,
     private menuService: MenuService,private userActivityService: UserActivityService,private profileService:ProfileService,private notifyService: NotificationService
     ) {
      
@@ -92,15 +94,32 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         this.userActivityService.lastActionTime$.subscribe(time => {
           this.lastActionTime = time;
         });
-       
+        console.log(this.userInfo.userEmail,'AlertNotification')
         this.getTimeSinceLastAction();
         this.startValidateToken();
         this.loadProfilePhoto();
+       
+        setTimeout(() => {
+          this.connectWebsocket();
+        }, 5000);
+       
   }
+
   ngOnDestroy() {
     if (this.mySubscription) {
       this.mySubscription.unsubscribe();
     }
+  //  this.websocketService.closeConnection('AlertNotification');
+  }
+
+  connectWebsocket(){
+    console.log(this.userInfo.userEmail,'AlertNotification')
+    this.authService.connectWebsocket(this.userInfo.userEmail,'AlertNotification');
+    this.websocketService.getMessages('AlertNotification')?.subscribe((notifi) => {
+      console.log("notifi",notifi)
+      this.onFlyNotification =  notifi;
+    });
+    console.log("this.onFlyNotification",this.onFlyNotification);
   }
 
   doSignout() {
