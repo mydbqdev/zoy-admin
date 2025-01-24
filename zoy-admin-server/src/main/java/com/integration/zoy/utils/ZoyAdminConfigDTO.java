@@ -29,6 +29,8 @@ public class ZoyAdminConfigDTO {
     private ZoyOtherChargesDto otherCharges;
 	@SerializedName("gstCharges")
 	private ZoyGstChargesDto gstCharges;
+	@SerializedName("shortTerm")
+	private List<ZoyShortTermDto> zoyShortTermDtos;
 	
     
  

@@ -119,6 +119,7 @@ public class CSVValidationService {
 			validateEmail(value, row, header, columnName, errorDetails);
 			break;
 		case "Date Of Birth":
+		case "In Date":
 		case "Out Date":
 			validateDateFormat(value, row, header, columnName, errorDetails);
 			break;
@@ -138,9 +139,12 @@ public class CSVValidationService {
 //			validateRentCycle(value, row, header, columnName, errorDetails);
 //			validateTable(value, row, header, columnName, 20, errorDetails);
 //			break;
-//		case "Deposit Paid":
-//			validateNumericValue(value, row, header, columnName, errorDetails);
-//			break;
+		case "Deposit Paid":
+			validateNumericValue(value, row, header, columnName, errorDetails);
+			break;
+		case "Rent Paid":
+			validateLength(value, row, header, columnName,20, errorDetails);
+			break;
 		default:
 			break;
 		}
@@ -211,6 +215,17 @@ public class CSVValidationService {
 	        	errorDetails.add(new ErrorDetail(row, header, columnName, "Out Date cannot be same month, please remove or change the Out Date "+ dateValue ));
 	        } else if(dateToCheck.isBefore(currentDate)) {
 	        	errorDetails.add(new ErrorDetail(row, header, columnName, "Out Date cannot be old date, please remove or change the Out Date "+ dateValue ));
+	        }
+		}
+		if(columnName.equals("In Date") && isValidDate(dateValue)) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	        LocalDate dateToCheck = LocalDate.parse(dateValue, formatter);
+	        LocalDate currentDate = LocalDate.now();
+	        boolean isSameMonthAndYear = currentDate.getYear() == dateToCheck.getYear() && currentDate.getMonth() == dateToCheck.getMonth();
+	        if(!isSameMonthAndYear) {
+	        	errorDetails.add(new ErrorDetail(row, header, columnName, "In Date cannot be past or future month, please remove or change the In Date "+ dateValue ));
+	        } else if(dateToCheck.isAfter(currentDate)) {
+	        	errorDetails.add(new ErrorDetail(row, header, columnName, "In Date cannot be future date, please remove or change the In Date "+ dateValue ));
 	        }
 		}
 	}
