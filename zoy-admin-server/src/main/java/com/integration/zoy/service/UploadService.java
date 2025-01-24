@@ -9,8 +9,10 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -52,18 +54,26 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.NotificationModeMaster;
 import com.integration.zoy.entity.PgOwnerUserStatus;
+import com.integration.zoy.entity.UserBookingPayment;
+import com.integration.zoy.entity.UserBookingPaymentId;
 import com.integration.zoy.entity.UserBookings;
 import com.integration.zoy.entity.UserDetails;
+import com.integration.zoy.entity.UserDues;
 import com.integration.zoy.entity.UserMaster;
 import com.integration.zoy.entity.UserNotifications;
 import com.integration.zoy.entity.UserPayment;
+import com.integration.zoy.entity.UserPaymentDue;
+import com.integration.zoy.entity.UserPaymentDueId;
 import com.integration.zoy.entity.UserPgDetails;
 import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgFloorRooms;
 import com.integration.zoy.entity.ZoyPgFloorRoomsId;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
+import com.integration.zoy.entity.ZoyPgOwnerSettlementSplitUp;
+import com.integration.zoy.entity.ZoyPgOwnerSettlementStatus;
 import com.integration.zoy.entity.ZoyPgPropertyDetails;
+import com.integration.zoy.entity.ZoyPgPropertyDues;
 import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgPropertyFloors;
 import com.integration.zoy.entity.ZoyPgPropertyFloorsId;
@@ -179,30 +189,31 @@ public class UploadService {
 			List<UserBookings> userBookingDetails=new ArrayList<>();
 			List<PgOwnerUserStatus> userStatus=new ArrayList<>();
 			List<UserPgDetails> userPgDetails=new ArrayList<>();
-			List<UserPayment> userPayment=new ArrayList<>();
 			List<ZoyPgBedDetails> bedDetails=new ArrayList<>();
 			List<CsvTenantDetails> tenantDetailsList = csvToBean.parse();
+			Map<String,CsvTenantDetails> userCsvDetails= new HashMap<>();
 			for(CsvTenantDetails tenantDetails:tenantDetailsList) {
 				UserMaster userMaster=uploadDBImpl.findUserMaster(tenantDetails.getPhoneNumber(),tenantDetails.getEmail());
 				if(userMaster==null) {
 					String userId=createUser(tenantDetails);
 					createUserDetails(tenantDetails,userId,propertyId,userDetails);
 					createUserBooking(tenantDetails,userId,propertyId,zoyPgOwnerBookingDetails);
+					userCsvDetails.put(userId, tenantDetails);
 				} else {
 					createUserDetails(tenantDetails,userMaster.getUserId(),propertyId,userDetails);
 					createUserBooking(tenantDetails,userMaster.getUserId(),propertyId,zoyPgOwnerBookingDetails);
-
+					userCsvDetails.put(userMaster.getUserId(), tenantDetails);
 				}
 			}
 			uploadDBImpl.saveAllUserDetails(userDetails);
 			List<ZoyPgOwnerBookingDetails> bookingDetails=uploadDBImpl.saveAllOwnerBooking(zoyPgOwnerBookingDetails);
+			List<String[]> dues=ownerDBImpl.findRentDue(propertyId);
 			for(ZoyPgOwnerBookingDetails booking:bookingDetails) {
-				createWebcheckIn(ownerId,booking,userBookingDetails,userStatus,userPgDetails,userPayment,bedDetails);
+				createWebcheckIn(ownerId,booking,userBookingDetails,userStatus,userPgDetails,bedDetails,userCsvDetails,dues);
 			}
 			uploadDBImpl.saveAllUserBookings(userBookingDetails);
 			uploadDBImpl.saveAllUserPgDetails(userPgDetails);
 			uploadDBImpl.saveAllOwnerUserStatus(userStatus);
-			uploadDBImpl.saveAllUserPayment(userPayment);
 			uploadDBImpl.updateAllBeds(bedDetails);
 			for(UserBookings userBooking:userBookingDetails) {
 				ZoyPgPropertyDetails propertyDetail = ownerDBImpl.getPropertyById(userBooking.getUserBookingsPropertyId());
@@ -240,10 +251,15 @@ public class UploadService {
 
 
 	private void createWebcheckIn(String ownerId,ZoyPgOwnerBookingDetails booking, List<UserBookings> userBookingDetails, 
-			List<PgOwnerUserStatus> userStatus, List<UserPgDetails> userPgDetails,List<UserPayment> userPayment,List<ZoyPgBedDetails> bedDetails) {
+			List<PgOwnerUserStatus> userStatus, List<UserPgDetails> userPgDetails,List<ZoyPgBedDetails> bedDetails,
+			Map<String,CsvTenantDetails> userCsvDetails,List<String[]> duesType) {
 		try {
 			ZoyPgRentCycleMaster rentCycle=uploadDBImpl.findRentCycle(booking.getLockInPeriod());
 			if(rentCycle!=null) {
+				BigDecimal settleAmount=BigDecimal.ZERO;
+				UserPayment paidRentPayment=null;
+				UserPayment paidPayment=null;
+				
 				UserBookings details=new UserBookings();
 				details.setUserId(booking.getTenantId());
 				details.setUserBookingsTenantId(booking.getTenantId());
@@ -251,7 +267,7 @@ public class UploadService {
 				details.setUserBookingsPropertyId(booking.getPropertyId());
 				details.setUserBookingsPgOwnerId(ownerId);
 				details.setUserBookingsWebCheckIn(true);
-				details.setUserBookingsDate(new Timestamp(System.currentTimeMillis()));
+				details.setUserBookingsDate(Timestamp.valueOf(LocalDateTime.now()));
 				details.setUserBookingsWebCheckOut(false);
 				details.setUserBookingsIsCancelled(false);
 				userBookingDetails.add(details);
@@ -275,26 +291,110 @@ public class UploadService {
 				ownerUserStatus.setPgTenantStatus(true);
 				userStatus.add(ownerUserStatus);
 
-//				UserPayment payment=new UserPayment();
-//				payment.setUserId(booking.getTenantId());
-//				payment.setUserPaymentBookingId(booking.getBookingId());
-//				if(booking.getPaidDeposit()!=null && !booking.getPaidDeposit().equals(BigDecimal.ZERO))
-//					payment.setUserPaymentPayableAmount(booking.getPaidDeposit());
-//				else 
-//					payment.setUserPaymentPayableAmount(booking.getFixedRent());
-//				payment.setUserPaymentPaymentStatus("success");
-//				payment.setUserPaymentZoyPaymentMode("Cash");
-//				payment.setUserPaymentZoyPaymentType("Deposit");
-//				userPayment.add(payment);
+				UserPayment payment=new UserPayment();
+				payment.setUserId(booking.getTenantId());
+				payment.setUserPaymentBookingId(booking.getBookingId());
+				if(booking.getPaidDeposit()!=null && !booking.getPaidDeposit().equals(BigDecimal.ZERO))
+					payment.setUserPaymentPayableAmount(booking.getPaidDeposit());
+				else 
+					payment.setUserPaymentPayableAmount(booking.getFixedRent());
+				payment.setUserPaymentGst(BigDecimal.ZERO);
+				payment.setUserPaymentPaymentStatus("success");
+				payment.setUserPaymentZoyPaymentMode("Cash");
+				payment.setUserPaymentZoyPaymentType("Deposit");
+				paidPayment=uploadDBImpl.saveUserPayment(payment);
+				settleAmount=settleAmount.add(paidPayment.getUserPaymentPayableAmount());
+				
+				UserBookingPaymentId userPaymentId = new UserBookingPaymentId();
+				userPaymentId.setUserBookingsId(booking.getBookingId());
+				userPaymentId.setUserId(booking.getTenantId());
+				userPaymentId.setUserPaymentId(paidPayment.getUserPaymentId());
+
+				UserBookingPayment userBookingPayment = new UserBookingPayment();
+				userBookingPayment.setId(userPaymentId);
+				uploadDBImpl.saveUserBookingPayment(userBookingPayment);
+				
+				CsvTenantDetails tenantDetails=userCsvDetails.get(booking.getTenantId());
+				if(tenantDetails.getRentPaid().equals("Yes")) {
+					UserDues dues=new UserDues();
+					dues.setUserId(booking.getTenantId());
+					dues.setUserBookingId(booking.getBookingId());
+					dues.setUserMoneyDueAmount(booking.getCalFixedRent());
+					dues.setUserMoneyDueBillEndDate(getMonthStartEndDate().getSecond());
+					dues.setUserMoneyDueBillStartDate(booking.getInDate());
+					dues.setUserMoneyDueDescription("");
+					dues.setUserMoneyDueBillingType(duesType.get(0)[1]);
+					dues.setUserMoneyDueTimestamp(Timestamp.valueOf(LocalDateTime.now()));
+					dues.setUserMoneyDueType(duesType.get(0)[0]);
+					UserDues paidDue=uploadDBImpl.saveUserDues(dues);
+
+					UserPayment rentPayment=new UserPayment();
+					rentPayment.setUserId(booking.getTenantId());
+					rentPayment.setUserPaymentBookingId(booking.getBookingId());
+					rentPayment.setUserMoneyDueId(paidDue.getUserMoneyDueId());
+					rentPayment.setUserPaymentPayableAmount(booking.getCalFixedRent());
+					rentPayment.setUserPaymentGst(BigDecimal.ZERO);
+					rentPayment.setUserPaymentPaymentStatus("success");
+					rentPayment.setUserPaymentZoyPaymentMode("Cash");
+					rentPayment.setUserPaymentZoyPaymentType("dues");
+					paidRentPayment=uploadDBImpl.saveUserPayment(rentPayment);
+					settleAmount=settleAmount.add(paidRentPayment.getUserPaymentPayableAmount());
+					
+					UserPaymentDue due=new UserPaymentDue();
+					due.setUserId(booking.getTenantId());
+					due.setUserMoneyDueId(paidDue.getUserMoneyDueId());
+					due.setUserPaymentId(paidRentPayment.getUserPaymentId());
+					uploadDBImpl.saveUserPaymentDue(due);
+				} else {
+					UserDues dues=new UserDues();
+					dues.setUserId(booking.getTenantId());
+					dues.setUserBookingId(booking.getBookingId());
+					dues.setUserMoneyDueAmount(booking.getCalFixedRent());
+					dues.setUserMoneyDueBillEndDate(booking.getInDate());
+					dues.setUserMoneyDueBillStartDate(booking.getInDate());
+					dues.setUserMoneyDueDescription("");
+					dues.setUserMoneyDueBillingType(duesType.get(0)[1]);
+					dues.setUserMoneyDueTimestamp(Timestamp.valueOf(LocalDateTime.now()));
+					dues.setUserMoneyDueType(duesType.get(0)[0]);
+					uploadDBImpl.saveUserDues(dues);
+				}
 
 				ZoyPgBedDetails pgBedDetails=ownerDBImpl.getBedsId(booking.getSelectedBed());
 				pgBedDetails.setBedId(booking.getSelectedBed());
 				pgBedDetails.setBedAvailable("occupied");
 				bedDetails.add(pgBedDetails);
+				
+				if(settleAmount.doubleValue() > 0) {
+					ZoyPgOwnerSettlementStatus status=new ZoyPgOwnerSettlementStatus();
+					status.setIsApproved(true);
+					status.setIsRejected(false);
+					status.setOwnerId(ownerId);
+					status.setPaymentProcessDate(Timestamp.valueOf(LocalDateTime.now()));
+					status.setPropertyId(booking.getPropertyId());
+					status.setSettlementAmount(settleAmount);
+					ZoyPgOwnerSettlementStatus settlement=uploadDBImpl.saveOwnerSettlementStatus(status);
+
+					if(paidPayment!=null) {
+						ZoyPgOwnerSettlementSplitUp firstPayment=new ZoyPgOwnerSettlementSplitUp();
+						firstPayment.setPgOwnerSettlementId(settlement.getPgOwnerSettlementId());
+						firstPayment.setUserId(booking.getTenantId());
+						firstPayment.setBookingId(booking.getBookingId());
+						firstPayment.setPaymentId(paidPayment.getUserPaymentId());
+						uploadDBImpl.saveOwnerSettlementSlipUp(firstPayment);
+					}
+					if(paidRentPayment!=null) {
+						ZoyPgOwnerSettlementSplitUp rentPayment=new ZoyPgOwnerSettlementSplitUp();
+						rentPayment.setPgOwnerSettlementId(settlement.getPgOwnerSettlementId());
+						rentPayment.setUserId(booking.getTenantId());
+						rentPayment.setBookingId(booking.getBookingId());
+						rentPayment.setPaymentId(paidRentPayment.getUserPaymentId());
+						uploadDBImpl.saveOwnerSettlementSlipUp(rentPayment);
+					}
+				}
 			}	
 		}catch (Exception e) {
-	        log.error("Unexpected error occurred in createWebcheckIn for bookingId: " + booking.getBookingId(), e);
-	    }
+			log.error("Unexpected error occurred in createWebcheckIn for bookingId: " + booking.getBookingId(), e);
+		}
 	}
 
 	private Timestamp getPreviousDate(String inputDate) {
@@ -383,10 +483,13 @@ public class UploadService {
 			//rentCycleName=ids.get(0)[9];
 		}
 		String cycleId=ownerDBImpl.findRentCycleByName("01-01");
+		int rentCycleStartDay = Integer.parseInt("01");
+		LocalDate currentDate = LocalDate.now(ZoneId.of(ZoyConstant.IST));
+		LocalDateTime actualRentDate=LocalDate.of(currentDate.getYear(), currentDate.getMonth(), rentCycleStartDay).atStartOfDay();
 		ZoyPgOwnerBookingDetails bookingDetails=new ZoyPgOwnerBookingDetails();
 		ZoyPgRoomDetails details=uploadDBImpl.getRoomDetails(roomId);
 		Pair<Timestamp, Timestamp> date=getMonthStartEndDate();
-		bookingDetails.setCalFixedRent(new BigDecimal(details.getRoomDailyRent()));
+		
 		bookingDetails.setCurrMonthEndDate(date.getSecond());
 		bookingDetails.setCurrMonthStartDate(date.getFirst());
 		bookingDetails.setDue(BigDecimal.ZERO);
@@ -394,31 +497,39 @@ public class UploadService {
 		bookingDetails.setFloor(floorId);
 		bookingDetails.setGender(tenantDetails.getGender());
 		bookingDetails.setGst(BigDecimal.ZERO);
-		Timestamp currentDate=new Timestamp(System.currentTimeMillis());
-		bookingDetails.setInDate(currentDate);
+		Timestamp checkInDate;
+		if(tenantDetails.getInDate()==null) 
+			checkInDate=Timestamp.valueOf(actualRentDate);
+		else 
+			checkInDate=tenantDetails.getInDate();
+		bookingDetails.setInDate(checkInDate);
 		bookingDetails.setIsTermsAccepted(false);
 		bookingDetails.setLockInPeriod(cycleId);
 		bookingDetails.setName(tenantDetails.getFirstName()+" "+ tenantDetails.getLastName());
-		long noOfDays=getDiffofTimestamp(currentDate,tenantDetails.getOutDate());
+		long noOfDays=getDiffofTimestamp(checkInDate,tenantDetails.getOutDate());
+		long noOfRentCalc=getDiffofTimestamp(checkInDate,date.getSecond());
 		bookingDetails.setNoOfDays(String.valueOf(noOfDays));
+		bookingDetails.setCalFixedRent(new BigDecimal((details.getRoomMonthlyRent()/30)*noOfRentCalc));
 		bookingDetails.setOutDate(tenantDetails.getOutDate());
 		bookingDetails.setPhoneNumber(tenantDetails.getPhoneNumber());
 		bookingDetails.setPropertyId(propertyId);
 		bookingDetails.setRentCycleEndDate(date.getSecond());
 		bookingDetails.setRoom(roomId);
-		bookingDetails.setSecurityDeposit(BigDecimal.ZERO);
-		//bookingDetails.setPaidDeposit(tenantDetails.getDepositPaid());
+		bookingDetails.setSecurityDeposit(tenantDetails.getDepositPaid());
+		bookingDetails.setPaidDeposit(tenantDetails.getDepositPaid());
 		bookingDetails.setSelectedBed(bedId);
 		bookingDetails.setShare(shareId);
 		bookingDetails.setBookingMode("Offline");
 		bookingDetails.setTenantId(userId);
+		bookingDetails.setDepositPaid(true);
 		zoyPgOwnerBookingDetails.add(bookingDetails);
 	}
 
 	private long getDiffofTimestamp(Timestamp currentDate, Timestamp outDate) {
-		LocalDateTime startDateTime = currentDate.toLocalDateTime();
-		LocalDateTime endDateTime = outDate.toLocalDateTime();
-		long daysBetween = ChronoUnit.DAYS.between(startDateTime.toLocalDate(), endDateTime.toLocalDate());
+		//LocalDateTime startDateTime = currentDate.toLocalDateTime();
+		//LocalDateTime endDateTime = outDate.toLocalDateTime();
+		//long daysBetween = ChronoUnit.DAYS.between(startDateTime.toLocalDate(), endDateTime.toLocalDate());
+		long daysBetween = Duration.between(currentDate.toLocalDateTime(),outDate.toLocalDateTime()).toDays();
 		return daysBetween;
 	}
 

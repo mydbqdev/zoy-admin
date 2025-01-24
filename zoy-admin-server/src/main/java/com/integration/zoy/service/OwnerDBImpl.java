@@ -17,12 +17,14 @@ import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.entity.ZoyPgPropertyDetails;
+import com.integration.zoy.entity.ZoyPgPropertyDues;
 import com.integration.zoy.entity.ZoyPgPropertyFloorDetails;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
 import com.integration.zoy.entity.ZoyPgShareMaster;
+import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
@@ -135,4 +137,8 @@ public interface OwnerDBImpl {
 	ZoyPgAutoCancellationMaster findSecurityDepositDeadLine(String autoCancellationId) throws WebServiceException;
 	ZoyPgAutoCancellationMaster findSecurityDepositDeadLine() throws WebServiceException;
 	ZoyPgAutoCancellationMaster saveSecurityDepositDeadLine(ZoyPgAutoCancellationMaster autoCancellationMaster) throws WebServiceException;
+	List<String[]> findRentDue(String propertyId);
+	List<ZoyPgShortTermMaster> findAllShortTerm();
+	ZoyPgShortTermMaster createShortTerm(ZoyPgShortTermMaster zoyPgShortTermMaster);
+	ZoyPgShortTermMaster findShortTerm(String zoyPgShortTermMasterId);
 }
