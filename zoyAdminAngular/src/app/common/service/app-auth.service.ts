@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import {HttpClient,HttpHeaders,HttpErrorResponse} from '@angular/common/http';
 import { MessageService } from 'src/app/message.service';
-import { BASE_PATH } from '../shared/variables';
+import { BASE_PATH, WEDSOCKET_BASE_PATH } from '../shared/variables';
 import { count, Observable, of, throwError} from 'rxjs';
 import { ServiceHelper } from '../shared/service-helper';
 import { Router } from '@angular/router';
@@ -14,6 +14,7 @@ import { ResponseStore } from '../models/response.model';
 import { SignupDetails } from '../shared/signup-details';
 import { DataService } from './data.service';
 import { BrowserDetectorService } from './browser-detector.service';
+import { WebsocketService } from './websocket.service';
 
 @Injectable()
 export class AppAuthService extends AuthService{
@@ -25,7 +26,8 @@ export class AppAuthService extends AuthService{
         headers :new HttpHeaders({'Content-Type':'application/json'})
     };
     constructor(private httpclient:HttpClient,private router:Router,private messageService:MessageService,@Inject(BASE_PATH) private basePath:string,
-    private userService:UserService,private encryptDecryptHelper:AESEncryptDecryptHelper,private dataService:DataService, private browserService: BrowserDetectorService){
+    private userService:UserService,private encryptDecryptHelper:AESEncryptDecryptHelper,private dataService:DataService, private browserService: BrowserDetectorService,
+    private websocketService:WebsocketService,@Inject(WEDSOCKET_BASE_PATH) private websocketBasePath:string,){
        super();
         this.sessionSnapshot=null;
         this.message='';
@@ -261,6 +263,12 @@ export class AppAuthService extends AuthService{
             }
         );
     }
+
+    public connectWebsocket(userId:string,socket:string) {
+        const url=this.websocketBasePath +'notificationPageHandler?userId='+userId;
+        this.websocketService.connect(url, socket );
+    }
+
     private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");
         

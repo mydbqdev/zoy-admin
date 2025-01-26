@@ -20,7 +20,7 @@ import { AlertDialogService } from './common/shared/alert-dialog/alert-dialog.se
 import { ConfirmationDialogComponent } from './common/shared/confirm-dialog/confirm-dialog.component';
 import { ConfirmationDialogService } from './common/shared/confirm-dialog/confirm-dialog.service';
 import { SafePipe } from './common/shared/pipe/safe-pipe';
-import { BASE_PATH, defMenuEnable,BASE_PATH_EXTERNAL_SERVER} from './common/shared/variables';
+import { BASE_PATH, defMenuEnable,BASE_PATH_EXTERNAL_SERVER, WEDSOCKET_BASE_PATH} from './common/shared/variables';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { PageNotFoundComponent } from './components/pagenotfound/pagenotfound.component';
 import { SigninComponent } from './components/signin/signin.component';
@@ -147,6 +147,7 @@ const appRoutes: Routes = [
     {provide:BASE_PATH,useValue:environment.basePath},
     {provide:BASE_PATH_EXTERNAL_SERVER,useValue:environment.basePathExternal},
     {provide:defMenuEnable,useValue:environment.defMenuEnable},
+    {provide:WEDSOCKET_BASE_PATH,useValue:environment.websocketBasePath},
     ConfirmationDialogService,AlertDialogService,
     Title,Meta
   ],

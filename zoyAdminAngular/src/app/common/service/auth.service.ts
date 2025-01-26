@@ -70,5 +70,7 @@ export abstract class AuthService {
 	public signupUser(user:SignupDetails) : Observable<any>{
         return of(true);
     }
+
+	public connectWebsocket(userId:string,socket:string) :void{}
 	
 }

@@ -11,8 +11,8 @@ export class ConfigMasterModel{
     checkoutDeductionDetails: CheckoutDeductionDetailsModel = new CheckoutDeductionDetailsModel();
     rentSlabModel :RentSlabModel = new RentSlabModel();
     gstSlabModel :GstSlabModel[] = [];
-    shortTermRentingDuration :ShortTermRentingDuratioModel = new ShortTermRentingDuratioModel();
     gstCharges : GstChargesModel = new GstChargesModel();
+    shortTerm :ShortTermModel[] = [];
     
 }
 
@@ -105,13 +105,14 @@ export class CheckoutDeductionDetailsModel {
     showInputBox:boolean = false;
   };
 
-  export class ShortTermRentingDuratioModel{
-    shortTermRentingDurationID : string ='';
-    shortTermRentingDuration  : number ;
-}
-
  export class GstChargesModel{
     rentId: string ;
     gstPercentage: number ;
     monthlyRent: number ;
+}
+
+export class ShortTermModel{
+    shortTermId: string ;
+    days: string ;
+    percentage: number ;
 }
