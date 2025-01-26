@@ -70,3 +70,12 @@ export class DbSettingSubmitDataModel{
     ameneties ?: string;
 
 }
+
+export class ShortTermDataModel{
+    zoy_pg_short_term_master_id : string;
+    start_day : number;
+    end_day : number;   
+    isDelete :boolean = false;
+    isEdit : boolean = false;
+
+}

@@ -63,15 +63,20 @@ export class DbMasterConfigurationService {
       'columns': ['currency_name', 'actions'],
       'api': 'zoy_admin/currencyType'
     },
-    {
-        'type': 'Billing Type',
-        'columns': ['billing_type_name', 'actions'],
-        'api': 'zoy_admin/billingType'
-    },
+    // {
+    //     'type': 'Billing Type',
+    //     'columns': ['billing_type_name', 'actions'],
+    //     'api': 'zoy_admin/billingType'
+    // },
     {
         'type': 'Amenities',
         'columns': ['ameneties_name','ameneties_image', 'actions'],
         'api': 'zoy_admin/ameneties'
+    },
+    {
+      'type': 'Short Term',
+      'columns': ['start_day','end_day'],
+      'api': 'zoy_admin/shortTerm'
     }
   ]
 
@@ -87,7 +92,9 @@ export class DbMasterConfigurationService {
     'currency_name': 'CURRENCY NAME',
     'billing_type_name': 'BILLING TYPE NAME',
     'ameneties_name': 'AMENITIES NAME',
-    'ameneties_image':"AMENITIES PICTURE"
+    'ameneties_image':"AMENITIES PICTURE",
+    'start_day' : 'START DAY',
+    'end_day' :'END DAY'
   }
 
   getDbSettingDetails(api:string): Observable<any> {
@@ -138,6 +145,19 @@ export class DbMasterConfigurationService {
             }
         );
       }
+  } 
+
+  submitShortTermData(data:any): Observable<any> {
+    const url1=this.basePath +'zoy_admin/shortTerm';
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
   } 
 
 
