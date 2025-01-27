@@ -293,7 +293,7 @@
     </div>
     <div *ngIf="settingType == 'Short Term'">
       <div class="form-group">
-        <div class="mt-2">
+        <div  >
           <label for="shortTerm"  style="color: #78177e !important;font-size: 20px;">Short term duration period:</label>
        </div>
         <div class="row mb-1">
@@ -301,7 +301,7 @@
           <div class="col-sm-3">
             <input type="text" class="form-control form-control-sm" id="start_day"  required autocomplete="off"
             [(ngModel)]="shortTermData.start_day" (keypress)="numberOnly($event)" maxlength="2"
-            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.start_day == undefined || shortTermData.start_day == null || shortTermData.start_day < 1 || shortTermData.start_day > 31)}">
+            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.start_day == undefined || shortTermData.start_day == null || shortTermData.start_day < 1 || shortTermData.start_day > 31 || shortTermData.start_day >= shortTermData.end_day)}">
           </div>
           <div class="col-sm-1">
             <h2>-</h2>
@@ -309,7 +309,7 @@
           <div class="col-sm-3">
             <input type="text" class="form-control form-control-sm" id="end_day"  required autocomplete="off"
             [(ngModel)]="shortTermData.end_day" (keypress)="numberOnly($event)" maxlength="2"
-            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || shortTermData.end_day < 1 || shortTermData.end_day > 31)}">
+            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || shortTermData.end_day < 1 || shortTermData.end_day > 31 || shortTermData.start_day >= shortTermData.end_day)}">
           </div>
           <div class="col-sm-1">
             <button type="submit" class="btn btn-sm btn-primary" (click)="addShortTerm()" >Add</button>
@@ -323,12 +323,12 @@
         <hr class="solid">
         <div *ngFor="let term of shortTermDataList; let i=index " >
           <div class="form-group">
-            <div class="row mb-1">
+            <div class="row">
               <div class="col-sm-1"></div>
               <div class="col-sm-3">
                 <input type="text" class="form-control form-control-sm" id="term_start_day"  required autocomplete="off"
                 [(ngModel)]="term.start_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2"
-                [ngClass]="{'is-invalid': !term.isDelete && term.isEdit && (term.start_day == undefined || term.start_day == null || term.start_day < 1 || term.start_day > 31)}">
+                [ngClass]="{'is-invalid':(submitShortTerm && !term.isDelete && term.isEdit) ||( !term.isDelete && term.isEdit && (term.start_day == undefined || term.start_day == null || term.start_day < 1 || term.start_day > 31))}">
               </div>
               <div class="col-sm-1">
                 <h2>-</h2>
@@ -336,7 +336,7 @@
               <div class="col-sm-3">
                 <input type="text" class="form-control form-control-sm" id="term_end_day"  required autocomplete="off"
                 [(ngModel)]="term.end_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2"
-                [ngClass]="{'is-invalid': !term.isDelete && term.isEdit && (term.end_day == undefined || term.end_day == null || term.end_day < 1 || term.end_day > 31)}">
+                [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.end_day == undefined || term.end_day == null || term.end_day < 1 || term.end_day > 31))}">
               </div>
               <div class="col-sm-1">
                 <div class="input-group">
@@ -346,7 +346,7 @@
                       <i class="fas fa-edit"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && !term.isEdit"
-                            (click)="removeShortTerm(term, i)" title="Delete The Item">
+                            (click)="removeShortTerm(term)" title="Delete The Item">
                       <i class="fas fa-trash" style="color: red;"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && term.isEdit"
@@ -354,7 +354,7 @@
                       <i class="fas fa-check"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && term.isEdit"
-                            (click)="undoEditShortTermItem(term)" title="Undo Edit">
+                            (click)="undoEditShortTermItem(i)" title="Undo Edit">
                       <i class="fas fa-redo" style="color: red;"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-secondary" *ngIf="term.isDelete"
@@ -375,6 +375,7 @@
 
     <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;">
       <button type="submit" class="btn btn-primary-custom me-2" (click)="submitData()" >Submit</button>
+      <button class="btn btn-sm btn-outline-secondary ml-1" *ngIf="settingType == 'Short Term'" (click)="shortTermDataListReset()"  ><i class="fas fa-redo" style="color: red;"></i></button>
     </div>
   </div>
   </div>

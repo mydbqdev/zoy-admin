@@ -1370,27 +1370,27 @@
                                 <div class="row">
                                   <span>Configure Daily Rent Percentage for Stay Duration Slabs</span>
                                 <div class="col-sm-5">
-                                 <div class="row p-1" *ngFor="let shortTerm of configMasterModel.shortTerm" >
+                                 <div class="row p-1" *ngFor="let shortTerm of configMasterModel.shortTerm ;let i=index" >
                                   <div class="col-sm-8">
                                     <div class="input-group input-group-sm">
                                       <span class="input-group-text">{{shortTerm.days}} Days</span>
                                       <input type="text" class="form-control form-control-sm" style="max-width: 70px !important;" 
-                                        [(ngModel)]="shortTerm.percentage" 
+                                        [(ngModel)]="shortTerm.percentage" [disabled]="!shortTerm.termDisabled"
                                         (keypress)="percentageOnlyWithZero($event)" maxlength="3" 
                                         [ngClass]="{'is-invalid': isNotValidNumber(shortTerm.percentage)}"  />
                                     </div>
                                   </div>
                                   <div class="col-sm-4">
-                                    <div *ngIf="forceCheckoutDisabled">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="forceCheckoutDisabled = false;">
+                                    <div *ngIf="!shortTerm.termDisabled">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTerm.termDisabled = true;">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                     </div>
-                                    <div class="btn-group" *ngIf="!forceCheckoutDisabled">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="forceCheckoutSubmit()">
+                                    <div class="btn-group" *ngIf="shortTerm.termDisabled">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingSubmit(shortTerm)">
                                         <i class="fas fa-check"></i>
                                       </button>
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="forceCheckoutReset()">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingReset(i)">
                                         <i class="fas fa-redo" style="color: red;"></i>
                                       </button>
                                     </div>

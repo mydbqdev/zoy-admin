@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { ConfigMasterService } from '../service/config-master-serive';
-import { BeforeCheckInCancellationRefundModel, CheckoutDeductionDetailsModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstSlabModel, OtherChargesModel, RentSlabModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, TokenDetailsModel} from '../models/config-master-model';
+import { BeforeCheckInCancellationRefundModel, CheckoutDeductionDetailsModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstSlabModel, OtherChargesModel, RentSlabModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermModel, TokenDetailsModel} from '../models/config-master-model';
 import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 
@@ -1167,57 +1167,57 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  }
 		  }
 
-		//   shortTermRentingReset(): void {
-		// 	this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
-		// 	this.shortTermRentingDisabled = true;
-		//   }
+		  shortTermRentingReset(i:number): void {
+			this.configMasterModel.shortTerm[i] = JSON.parse(JSON.stringify(this.configMasterOrg.shortTerm[i]));
+		}
 
-		//   shortTermRentingSubmit(): void {
-		// 	if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration.shortTermRentingDuration)){
-		// 		return ;
-		// 	}
-		// 	this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
-		// 	.then(
-		// 	   (confirmed) =>{
-		// 		if(confirmed){
-		// 			this.authService.checkLoginUserVlidaate();
-		// 			this.spinner.show();
-		// 			this.configMasterService.updateShortTermRentingDuratioDetails(this.configMasterModel.cancellationAfterCheckInDetails).subscribe(res => {
-		// 				this.configMasterOrg.shortTermRentingDuration = Object.assign(new ShortTermRentingDuratioModel(), res.data );
-		// 				this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
-		// 				this.shortTermRentingDisabled = true;
-		// 				this.spinner.hide();
-		// 				}, error => {
-		// 				this.spinner.hide();
-		// 				if(error.status == 0) {
-		// 				this.notifyService.showError("Internal Server Error/Connection not established", "")
-		// 			}else if(error.status==403){
-		// 					this.router.navigate(['/forbidden']);
-		// 				}else if (error.error && error.error.message) {
-		// 					this.errorMsg = error.error.message;
-		// 					console.log("Error:" + this.errorMsg);
-		// 					this.notifyService.showError(this.errorMsg, "");
-		// 				} else {
-		// 					if (error.status == 500 && error.statusText == "Internal Server Error") {
-		// 					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-		// 					} else {
-		// 					let str;
-		// 					if (error.status == 400) {
-		// 						str = error.error.error;
-		// 					} else {
-		// 						str = error.error.message;
-		// 						str = str.substring(str.indexOf(":") + 1);
-		// 					}
-		// 					console.log("Error:" ,str);
-		// 					this.errorMsg = str;
-		// 					}
-		// 					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-		// 					//this.notifyService.showError(this.errorMsg, "");
-		// 				}
-		// 				});
-		// 			}
-		// 		}).catch(
-		// 			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-		// 		);
-		//   }
+		  shortTermRentingSubmit(shortTerm:ShortTermModel): void {
+			if(this.isNotValidNumber(shortTerm.percentage)){
+				return ;
+			}
+			console.log("shortTerm",shortTerm)
+			return;
+			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+			.then(
+			   (confirmed) =>{
+				if(confirmed){
+					this.authService.checkLoginUserVlidaate();
+					this.spinner.show();
+					this.configMasterService.updateShortTermRentingDuratioDetails(this.configMasterModel.cancellationAfterCheckInDetails).subscribe(res => {
+						this.configMasterOrg.shortTerm = Object.assign([], res.data );
+						this.configMasterModel.shortTerm = JSON.parse(JSON.stringify(this.configMasterOrg.shortTerm));
+						this.spinner.hide();
+						}, error => {
+						this.spinner.hide();
+						if(error.status == 0) {
+						this.notifyService.showError("Internal Server Error/Connection not established", "")
+					}else if(error.status==403){
+							this.router.navigate(['/forbidden']);
+						}else if (error.error && error.error.message) {
+							this.errorMsg = error.error.message;
+							console.log("Error:" + this.errorMsg);
+							this.notifyService.showError(this.errorMsg, "");
+						} else {
+							if (error.status == 500 && error.statusText == "Internal Server Error") {
+							this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+							} else {
+							let str;
+							if (error.status == 400) {
+								str = error.error.error;
+							} else {
+								str = error.error.message;
+								str = str.substring(str.indexOf(":") + 1);
+							}
+							console.log("Error:" ,str);
+							this.errorMsg = str;
+							}
+							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+							//this.notifyService.showError(this.errorMsg, "");
+						}
+						});
+					}
+				}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				);
+		  }
   }  
