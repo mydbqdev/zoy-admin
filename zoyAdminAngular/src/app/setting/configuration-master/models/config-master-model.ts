@@ -115,4 +115,5 @@ export class ShortTermModel{
     shortTermId: string ;
     days: string ;
     percentage: number ;
+    termDisabled :boolean =true;
 }

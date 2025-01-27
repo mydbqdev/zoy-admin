@@ -453,35 +453,102 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       addShortTermVali:boolean=false
    addShortTerm() {
     this.addShortTermVali = true;
+    if(!this.shortTermData.start_day|| this.shortTermData.start_day>31 || Number(this.shortTermData.start_day)===0 
+        || !this.shortTermData.end_day|| this.shortTermData.end_day>31 || Number(this.shortTermData.end_day)===0
+        || this.shortTermData.start_day >= this.shortTermData.end_day){
+          return;
+        }
+
+    this.shortTermDataList.push(JSON.parse(JSON.stringify(this.shortTermData)));
+    this.addShortTermVali = false;
+    this.shortTermData = new ShortTermDataModel();
     console.log("shortTerm",this.shortTermData);
    }
+
    modifyShortTerm(shortTerm) {
+    if(!shortTerm.start_day || shortTerm.start_day>31 || Number(shortTerm.start_day)===0 
+    || !shortTerm.end_day || shortTerm.end_day>31 || Number(shortTerm.end_day)===0
+    || shortTerm.start_day >= shortTerm.end_day){
+      return;
+    }
     console.log("shortTerm",shortTerm)
     shortTerm.isEdit = false;
   }
   
-  removeShortTerm(shortTerm, index) {
+  removeShortTerm(shortTerm) {
     console.log("shortTerm",shortTerm)
     shortTerm.isDelete = true;
   }
   
   undoShortTermDelete(shortTerm) {
-    console.log("shortTerm",shortTerm)
     shortTerm.isDelete = false;
   }
   
-  undoEditShortTermItem(shortTerm) {
-    console.log("shortTerm",shortTerm)
-    shortTerm.isEdit = false;
+  undoEditShortTermItem(i:number) {
+    this.shortTermDataList[i]=JSON.parse(JSON.stringify(this.backUpshortTermDataList[i]));
   }
 
-  submitShortTermData(){   
-    console.log("this.shortTermDataList",this.shortTermDataList)
-return
-    this.dbMasterConfigurationService.submitShortTermData(this.shortTermDataList).subscribe(data => {
+  shortTermDataListReset(){
+    this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpshortTermDataList));
+  }
+  submitShortTerm:boolean = false;
+  submitShortTermData() {   
+    let finalSubmitShortList = [];
+    this.submitShortTerm = true;
+    let startDay = 30;
+    let endDay = 0;
+   
+    for (let i = 0; i < this.shortTermDataList.length; i++) {
+      const term = this.shortTermDataList[i];
+
+      if (!term.isDelete) {
+        startDay = startDay>term.start_day?term.start_day:startDay ;
+        endDay = endDay>term.end_day?endDay:term.end_day ;
+
+        if (term.isEdit) {
+          this.notifyService.showWarning("submit if term is being edited.","")
+          return; 
+        }
+ 
+        for (let j = i + 1; j < this.shortTermDataList.length; j++) {
+          const otherTerm = this.shortTermDataList[j];
+          
+          if (!(term.end_day < otherTerm.start_day || term.start_day > otherTerm.end_day)) {
+            this.notifyService.showWarning("The Short term duration period must not Overlapp.","")
+            return;
+          }
+
+          // if( term.end_day !=30 && otherTerm.start_day == (term.end_day+1)){
+          //   this.notifyService.showWarning("The Short term duration period must be within the defined ranges of 1-30 days.","")
+          //   return;
+          // }
+        }
+        finalSubmitShortList.push(term);
+      }
+    }
+  
+    if (finalSubmitShortList.length < 1) {
+      this.notifyService.showWarning("please add durations","");
+      return;
+    }
+   
+    if( startDay != 1 || endDay !=30){
+      this.notifyService.showInfo("The Short term duration period must be within the defined ranges of 1-30 days.", "");
+      return
+    }
+
+    if (JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpshortTermDataList)) {
+      this.notifyService.showInfo("Short term slabs details are already up to date.", "");
+      return;
+    }
+  
+    console.log("Final submitted short term list:", finalSubmitShortList);
+      return
+      this.dbMasterConfigurationService.submitShortTermData(finalSubmitShortList).subscribe(data => {
       this.closeModel.nativeElement.click(); 
       this.getDbSettingDetails();
       this.resetChange();
+      this.submitShortTerm = false;
       this.spinner.hide();
       }, error => {
       this.spinner.hide();
