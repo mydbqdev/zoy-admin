@@ -36,6 +36,7 @@ import com.integration.zoy.entity.ZoyPgAutoCancellationAfterCheckIn;
 import com.integration.zoy.entity.ZoyPgAutoCancellationMaster;
 import com.integration.zoy.entity.ZoyPgCancellationDetails;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
+import com.integration.zoy.entity.ZoyPgForceCheckOut;
 import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
@@ -54,6 +55,7 @@ import com.integration.zoy.utils.ZoyAdminConfigDTO;
 import com.integration.zoy.utils.ZoyAfterCheckInCancellationDto;
 import com.integration.zoy.utils.ZoyBeforeCheckInCancellationDto;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
+import com.integration.zoy.utils.ZoyForceCheckOutDto;
 import com.integration.zoy.utils.ZoyGstChargesDto;
 import com.integration.zoy.utils.ZoyOtherChargesDto;
 import com.integration.zoy.utils.ZoyPgEarlyCheckOutRuleDto;
@@ -817,6 +819,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyPgOtherCharges otherCharges = ownerDBImpl.findZoyOtherCharges();
 			ZoyPgGstCharges gstCharges=ownerDBImpl.findZoyGstCharges();
 			List<ZoyPgShortTermMaster> shortTermMaster=ownerDBImpl.findAllShortTerm();
+			ZoyPgForceCheckOut forceCheckOut=ownerDBImpl.findZoyForceCheckOut();
 
 			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
 			configDTO.setTokenDetails(convertToDTO(tokenDetails));
@@ -829,6 +832,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			configDTO.setOtherCharges(convertToDTO(otherCharges));
 			configDTO.setGstCharges(convertToDTO(gstCharges));
 			configDTO.setZoyShortTermDtos(convertShortToDTO(shortTermMaster));
+			configDTO.setZoyForceCheckOutDto(convertToDTO(forceCheckOut));
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(configDTO);
@@ -1021,5 +1025,58 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		}
 	}
 
+	@Override
+	public ResponseEntity<String> zoyAdminConfigUpdateForceCheckOut(ZoyForceCheckOutDto forceCheckOut) {
+
+		ResponseBody response=new ResponseBody();
+		try {
+			if(forceCheckOut==null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Required cancellation details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			if(forceCheckOut.getForceCheckOutId() != null || !forceCheckOut.getForceCheckOutId().isEmpty()) {
+				ZoyPgForceCheckOut force=ownerDBImpl.findZoyForceCheckOut(forceCheckOut.getForceCheckOutId());
+				final int oldFixed=force.getForceCheckOutDays();
+				force.setForceCheckOutDays(forceCheckOut.getForceCheckOutDays());
+				ownerDBImpl.saveForceCheckOut(force);
+
+				//audit history here
+				String historyContent=" has updated the Force Check Out for, Considering days from "+oldFixed+" to "+forceCheckOut.getForceCheckOutDays();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+
+				ZoyForceCheckOutDto dto=convertToDTO(force);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Updated Data Grouping details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				ZoyPgForceCheckOut newForceCheckOut=new ZoyPgForceCheckOut();
+				newForceCheckOut.setForceCheckOutDays(forceCheckOut.getForceCheckOutDays());
+				ownerDBImpl.saveForceCheckOut(newForceCheckOut);
+				//audit history here
+				String historyContent=" has created the Force Check Out for, Considering days = "+forceCheckOut.getForceCheckOutDays();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+
+				ZoyForceCheckOutDto dto=convertToDTO(newForceCheckOut);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Saved Force Check Out details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			log.error("Error saving/updating Data Grouping details API:/zoy_admin/config/data-grouping.zoyAdminConfigCreateUpdateDataGrouping ",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	
+	}
+	private ZoyForceCheckOutDto convertToDTO(ZoyPgForceCheckOut entity) {
+		ZoyForceCheckOutDto dto = new ZoyForceCheckOutDto();
+		dto.setForceCheckOutId(entity.getForceCheckOutId());
+		dto.setForceCheckOutDays(entity.getForceCheckOutDays());
+		return dto;
+	}
 
 }

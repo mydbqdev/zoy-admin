@@ -980,7 +980,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			List<ZoyPgShortTermMaster> zoyPgShortTermMasters =  ownerDBImpl.findAllShortTerm();
 			return new ResponseEntity<>(gson2.toJson(zoyPgShortTermMasters), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting ekyc type details API:/zoy_admin/ekycType.zoyAdminEkycType ",e);
+			log.error("Error getting ekyc type details API:/zoy_admin/shortTerm.zoyAdminEkycType ",e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			response.setError(e.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
@@ -1034,7 +1034,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				return new ResponseEntity<>(gson2.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error updating ekyc type details API:/zoy_admin/ekycType.zoyAdminEkycTypePut ",e);
+			log.error("Error updating ekyc type details API:/zoy_admin/shortTerm.zoyAdminEkycTypePut ",e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			response.setError(e.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
