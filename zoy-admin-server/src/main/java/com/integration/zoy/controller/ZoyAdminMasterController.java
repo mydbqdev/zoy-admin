@@ -41,6 +41,7 @@ import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
+import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
 import com.integration.zoy.model.AuditActivitiesLogDTO;
@@ -66,7 +67,9 @@ import com.integration.zoy.model.RoomTypeId;
 import com.integration.zoy.model.ShareType;
 import com.integration.zoy.model.ShareTypeId;
 import com.integration.zoy.model.ShortTerm;
+import com.integration.zoy.model.TotalBookingsDetails;
 import com.integration.zoy.model.UserNameDTO;
+import com.integration.zoy.repository.UserBookingsRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.UserDBImpl;
@@ -76,6 +79,7 @@ import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.DueMaster;
 import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
+import com.integration.zoy.utils.UserPaymentFilterRequest;
 
 @RestController
 @RequestMapping("")
@@ -114,6 +118,9 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
+	
+	@Autowired
+	private UserBookingsRepository userBookings;
 
 	@Autowired
 	ZoyS3Service zoyS3Service;
@@ -1040,8 +1047,51 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	
-	}			
+	}
 
+	@Override
+	public ResponseEntity<String> getBookingDetails(UserPaymentFilterRequest filterdata) {
+		ResponseBody response = new ResponseBody();
 
+	    try {
+	        String fromDateString = filterdata.getFromDate();
+	        String endDateString = filterdata.getToDate();
+
+	        if (fromDateString == null || endDateString == null) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError("From Date and End Date are required.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        Timestamp fromDate = Timestamp.valueOf(fromDateString);
+	        Timestamp endDate = Timestamp.valueOf(endDateString);
+
+	        long checkedInCount = userBookings.getBookedCountByDates(fromDate, endDate); 
+	        long bookedCount = userBookings.getCheckInCountByDates(fromDate, endDate);
+	        long vacancyCount = userBookings.getVacancyCount(); 
+
+	        TotalBookingsDetails bookingDetails = new TotalBookingsDetails();
+	        bookingDetails.setCheckedIn(checkedInCount);
+	        bookingDetails.setBooked(bookedCount);
+	        bookingDetails.setVacancy(vacancyCount);
+
+	        return new ResponseEntity<>(gson.toJson(bookingDetails), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error getting booking details API:/zoy_admin/getBookingDetails.getBookingDetails", e);
+
+	        try {
+	            new ZoyAdminApplicationException(e, "");
+	        } catch (Exception ex) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError(ex.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
 
 }

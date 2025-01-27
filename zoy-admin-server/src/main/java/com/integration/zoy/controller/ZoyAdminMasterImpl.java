@@ -32,6 +32,7 @@ import com.integration.zoy.model.ShareType;
 import com.integration.zoy.model.ShareTypeId;
 import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.utils.PaginationRequest;
+import com.integration.zoy.utils.UserPaymentFilterRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -528,6 +529,16 @@ public interface ZoyAdminMasterImpl {
 	@PutMapping(value = "/zoy_admin/shortTerm",
 	produces = { "application/json" })
 	ResponseEntity<String> zoyAdminShortTermPut(@RequestBody ShortTerm ekycTypeId);
+
+	@Operation(summary = "Get Booking details", description = "getting complete booking details", security = {
+			@SecurityRequirement(name = "basicAuth") }, tags = { "Admin Master" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/getBookingDetails", produces = { "application/json" })
+	ResponseEntity<String> getBookingDetails(@RequestBody UserPaymentFilterRequest filterdata);
 
 }
 
