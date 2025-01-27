@@ -21,6 +21,7 @@ import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
+import com.integration.zoy.entity.ZoyPgForceCheckOut;
 import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
@@ -49,6 +50,7 @@ import com.integration.zoy.repository.ZoyPgDueFactorMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueTypeMasterRepository;
 import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
+import com.integration.zoy.repository.ZoyPgForceCheckOutRepository;
 import com.integration.zoy.repository.ZoyPgGstChargesRepository;
 import com.integration.zoy.repository.ZoyPgOtherChargesRepository;
 import com.integration.zoy.repository.ZoyPgOwnerBookingDetailsRepository;
@@ -154,6 +156,9 @@ public class OwnerDBService implements OwnerDBImpl{
 	
 	@Autowired
 	private ZoyPgShortTermMasterRepository zoyPgShortTermMasterRepository;
+	
+	@Autowired
+	private ZoyPgForceCheckOutRepository zoyPgForceCheckOutRepository;
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -725,6 +730,21 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public ZoyPgShortTermMaster findShortTerm(String zoyPgShortTermMasterId) {
 		return zoyPgShortTermMasterRepository.findById(zoyPgShortTermMasterId).orElse(null);
+	}
+
+	@Override
+	public ZoyPgForceCheckOut findZoyForceCheckOut(String forceCheckOutId) {
+		return zoyPgForceCheckOutRepository.findById(forceCheckOutId).orElse(null);
+	}
+
+	@Override
+	public ZoyPgForceCheckOut saveForceCheckOut(ZoyPgForceCheckOut force) {
+		return zoyPgForceCheckOutRepository.save(force);
+	}
+
+	@Override
+	public ZoyPgForceCheckOut findZoyForceCheckOut() {
+		return zoyPgForceCheckOutRepository.findAll().get(0);
 	}
 
 	

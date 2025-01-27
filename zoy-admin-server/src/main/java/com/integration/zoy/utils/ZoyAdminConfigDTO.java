@@ -31,6 +31,8 @@ public class ZoyAdminConfigDTO {
 	private ZoyGstChargesDto gstCharges;
 	@SerializedName("shortTerm")
 	private List<ZoyShortTermDto> zoyShortTermDtos;
+	@SerializedName("forceCheckOut")
+	private ZoyForceCheckOutDto zoyForceCheckOutDto;
 	
     
  

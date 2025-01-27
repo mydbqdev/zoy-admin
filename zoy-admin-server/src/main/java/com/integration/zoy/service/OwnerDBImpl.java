@@ -12,6 +12,7 @@ import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
+import com.integration.zoy.entity.ZoyPgForceCheckOut;
 import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
@@ -141,4 +142,7 @@ public interface OwnerDBImpl {
 	List<ZoyPgShortTermMaster> findAllShortTerm();
 	ZoyPgShortTermMaster createShortTerm(ZoyPgShortTermMaster zoyPgShortTermMaster);
 	ZoyPgShortTermMaster findShortTerm(String zoyPgShortTermMasterId);
+	ZoyPgForceCheckOut findZoyForceCheckOut(String forceCheckOutId);
+	ZoyPgForceCheckOut saveForceCheckOut(ZoyPgForceCheckOut force);
+	ZoyPgForceCheckOut findZoyForceCheckOut();
 }
