@@ -912,7 +912,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		ResponseBody response = new ResponseBody();
 		try {
 			CommonResponseDTO<AuditActivitiesLogDTO> auditActivitiesLogList = userDBImpl.getAuditActivitiesLogCount(paginationRequest);
-			return new ResponseEntity<>(gson2.toJson(auditActivitiesLogList), HttpStatus.OK);
+			return new ResponseEntity<>(gson.toJson(auditActivitiesLogList), HttpStatus.OK);
 		}catch (Exception e) {
 			log.error("Unexpected error occurredAPI:/zoy_admin/audit-activitieslog.auditactivitieslogdetails", e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
