@@ -138,19 +138,19 @@
              <label for="cycleName">Rent Cycle:</label>
           </div>
           <div class="col-sm-3">
-            <input type="number" class="form-control"
+            <input type="text" class="form-control"
             id="cycle_first"  required autocomplete="off"
-            [(ngModel)]="this.dbSettingDataModel.cycle_first" [min]="1" [max]="30"
-            [ngClass]="{'is-invalid': submitted && (this.dbSettingDataModel.cycle_first == null || this.dbSettingDataModel.cycle_first < 1 || this.dbSettingDataModel.cycle_first > 31)}">
+            [(ngModel)]="this.dbSettingDataModel.cycle_first" (keypress)="numberOnly($event)" maxlength="2"
+            [ngClass]="{'is-invalid': submitted && (this.dbSettingDataModel.cycle_first == null || this.dbSettingDataModel.cycle_first == '')}">
           </div>
           <div class="col-sm-1">
             <h2>-</h2>
           </div>
           <div class="col-sm-3">
-            <input type="number" class="form-control" [min]="1" [max]="30"
+            <input type="text" class="form-control"
           id="cycle_second"  required autocomplete="off"
-          [(ngModel)]="this.dbSettingDataModel.cycle_second"
-          [ngClass]="{'is-invalid': submitted && (this.dbSettingDataModel.cycle_second == null || this.dbSettingDataModel.cycle_second < 1 || this.dbSettingDataModel.cycle_second > 31)}">
+          [(ngModel)]="this.dbSettingDataModel.cycle_second" (keypress)="numberOnly($event)" maxlength="2"
+          [ngClass]="{'is-invalid': submitted && (this.dbSettingDataModel.cycle_second == null ||this.dbSettingDataModel.cycle_second == '')}">
     
           </div>
       </div>
@@ -158,7 +158,7 @@
         Rent Cycle is required.
       </div>
 
-        <div *ngIf="submitted && this.dbSettingDataModel.cycle_first != null && this.dbSettingDataModel.cycle_second != null && (this.dbSettingDataModel.cycle_first < 1 || this.dbSettingDataModel.cycle_first > 31 ||  this.dbSettingDataModel.cycle_second < 1 || this.dbSettingDataModel.cycle_second > 31)" class="text-danger">
+        <div *ngIf="submitted && this.dbSettingDataModel.cycle_first != null && this.dbSettingDataModel.cycle_second != null && (this.dbSettingDataModel.cycle_first < '1' || this.dbSettingDataModel.cycle_first > '31' ||  this.dbSettingDataModel.cycle_second < '1' || this.dbSettingDataModel.cycle_second > '31')" class="text-danger">
           Rent Cycle is invalid.
         </div>
        
@@ -280,9 +280,12 @@
         <div *ngIf="fileUploadRatioStatus" style="color: red;">
           Picture size should not be greater than 75px width and  75px height
         </div>
-        <div *ngIf="fileUploadProgress" style="color: green;">
-           Upload progress: {{ fileUploadProgress }}
+        <div *ngIf="fileUploadTypeStatus" style="color: red;">
+          Please select a valid image file.
         </div>
+        <!-- <div *ngIf="fileUploadProgress" style="color: green;">
+           Upload progress: {{ fileUploadProgress }}
+        </div> -->
          <div class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="previewUrl">
            <img [src]="previewUrl" />                 
          </div>

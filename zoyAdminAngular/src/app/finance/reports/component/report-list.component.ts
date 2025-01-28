@@ -132,14 +132,11 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	  }
 
 	  getCityList(){
-		 this.authService.checkLoginUserVlidaate();
-		this.spinner.show();
+		this.authService.checkLoginUserVlidaate();
 		this.reportService.getCityList().subscribe(data => {
 		this.cityLocation=data;
 		this.cityLocationName =this.cityLocation?.length>0?this.cityLocation[0]:"";
 		this.generateReport();
-		
-		this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
 		if(error.status == 0) {
@@ -171,6 +168,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	}
 
 	generateReport(){
+		this.sortActive = this.getColumnsForSelectedReport(this.reportName)[0] || this.sortActive;
 		this.reportDataSource.paginator = this.paginator;
 		this.getReportDetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
 		

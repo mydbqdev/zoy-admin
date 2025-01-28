@@ -77,14 +77,14 @@
                                                       matSortActive="created_on" matSortDirection="asc" multiTemplateDataRows>
                                                          <!-- created date Column -->
                                                           <ng-container matColumnDef="created_on">
-                                                              <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 200px;">
+                                                              <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 260px;">
                                                                 CREATED ON
                                                                 <span style="margin-left: 2px;">
                                                                   <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['created_on'] === 'asc' }"></i>
                                                                   <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['created_on'] === 'desc'}"></i> 
                                                                 </span>
                                                               </th>
-                                                              <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                                              <td mat-cell *matCellDef="let element" style="width: 260px;">
                                                                 {{ element.created_on }}
                                                               </td>
                                                             </ng-container>

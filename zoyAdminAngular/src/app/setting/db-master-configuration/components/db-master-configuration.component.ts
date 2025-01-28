@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';
@@ -11,7 +11,7 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { DbMasterConfigurationService } from '../services/db-master-configuration.service';
 import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetailsModel, ShortTermDataModel } from '../models/db-setting-models';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
 	selector: 'app-db-master-configuration',
@@ -161,6 +161,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.isCreated = true;
       this.dbSettingDataModel = new DbSettingDataModel();
       this.previewUrl=false;
+      this.resetChange();
     }
     getElement(row:any){
       this.submitted = false;
@@ -179,8 +180,11 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         }
       } 
 
-      if(this.settingType ==='Amenities' && this.dbSettingDataModel.ameneties_image){
-        this.imgeURL2=this.dbSettingDataModel.ameneties_image;
+      if(this.settingType ==='Amenities'){
+        this.imgeURL2=this.dbSettingDataModel?.ameneties_image;
+        this.fileUploadSizeStatus=false;
+        this.fileUploadRatioStatus=false;
+        this.fileUploadTypeStatus = false;
       }
     }  
     submitData(){
@@ -252,92 +256,143 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
           case 'Share Type':
                   if(this.dbSettingDataModel.share_type == null || this.dbSettingDataModel.share_type == '' || this.dbSettingDataModel.share_occupancy_count == null || this.dbSettingDataModel.share_occupancy_count == '' ){
                     return false;
-                  }else{
+                  }
+
+                  const shareType = this.dbSettingDataList.filter(d=>d.share_id != this.dbSettingDataModel?.share_id && ( d?.share_type?.toLowerCase() === this.dbSettingDataModel?.share_type?.toLowerCase() || d.share_occupancy_count == this.dbSettingDataModel.share_occupancy_count) );
+                  if(shareType.length>0){
+                    this.notifyService.showError("Share type or share occupancy count is already available.", "");
+                    return false;
+                   }
                     this.submitDataModel.id=this.dbSettingDataModel?.share_id ;
                     this.submitDataModel.shareType=this.dbSettingDataModel.share_type ;
                     this.submitDataModel.shareOccupancyCount=this.dbSettingDataModel.share_occupancy_count ;
-                  }
+                  
             break;
           case 'Room Type':
               if(this.dbSettingDataModel.room_type_name == null || this.dbSettingDataModel.room_type_name == '' ){
                 return false;
-              }else{
+              }
+              const roomType = this.dbSettingDataList.filter(d=>d.room_type_id != this.dbSettingDataModel?.room_type_id &&  d.room_type_name?.toLowerCase() === this.dbSettingDataModel.room_type_name?.toLowerCase()  );
+              if(roomType.length>0){
+               this.notifyService.showError("Room type is already available.", "");
+               return false;
+              }
                 this.submitDataModel.id=this.dbSettingDataModel?.room_type_id ;
                 this.submitDataModel.roomTypeName=this.dbSettingDataModel.room_type_name ;
-              }
+              
           break;
           case 'Rent Cycle':
           
-              if (this.dbSettingDataModel.cycle_first == null || this.dbSettingDataModel.cycle_first == '' || 
-                  this.dbSettingDataModel.cycle_second == null || this.dbSettingDataModel.cycle_second == '') {
+              if (this.dbSettingDataModel.cycle_first == null || this.dbSettingDataModel.cycle_first === '' || Number(this.dbSettingDataModel.cycle_first) < 1 || Number(this.dbSettingDataModel.cycle_first) > 31 ||
+                  this.dbSettingDataModel.cycle_second == null || this.dbSettingDataModel.cycle_second === '' || Number(this.dbSettingDataModel.cycle_first) < 1 || Number(this.dbSettingDataModel.cycle_first) > 31) {
                   
                   return false;
-              } else {
-                  this.dbSettingDataModel.cycle_first = Number(this.dbSettingDataModel.cycle_first) < 10 ? ('0'+this.dbSettingDataModel.cycle_first) :this.dbSettingDataModel.cycle_first ;
-                  this.dbSettingDataModel.cycle_second = Number(this.dbSettingDataModel.cycle_second) < 10 ? ('0'+this.dbSettingDataModel.cycle_second ):this.dbSettingDataModel.cycle_second;
+                }
+                  this.dbSettingDataModel.cycle_first =  Number(this.dbSettingDataModel.cycle_first) < 10 && !(this.dbSettingDataModel.cycle_first.toLowerCase().includes('0'))? ('0'+this.dbSettingDataModel.cycle_first) :this.dbSettingDataModel.cycle_first ;
+                  this.dbSettingDataModel.cycle_second = Number(this.dbSettingDataModel.cycle_second) < 10 && !(this.dbSettingDataModel.cycle_second.toLowerCase().includes('0')) ? ('0'+this.dbSettingDataModel.cycle_second ):this.dbSettingDataModel.cycle_second;
 
                   this.dbSettingDataModel.cycle_name = `${this.dbSettingDataModel.cycle_first}-${this.dbSettingDataModel.cycle_second}`;
                   
                   this.submitDataModel.id = this.dbSettingDataModel?.cycle_id;
                   this.submitDataModel.rentCycleName = this.dbSettingDataModel.cycle_name;
-              }
+
+                  const rentCycle = this.dbSettingDataList.filter(d=>d.cycle_id != this.dbSettingDataModel?.cycle_id &&  d.cycle_name?.toLowerCase() === this.dbSettingDataModel.cycle_name?.toLowerCase() );
+                  if(rentCycle.length>0){
+                    this.notifyService.showError("Rent Cycle is already available.", "");
+                    return false;
+                   }
               break;
 
           case 'PG Type':
                 if ( this.dbSettingDataModel.pg_type_name == null || this.dbSettingDataModel.pg_type_name == '') {
                     return false;
-                } else {
+                }
+                const PGType = this.dbSettingDataList.filter(d=>d.pg_type_id != this.dbSettingDataModel?.pg_type_id &&  d.pg_type_name?.toLowerCase() === this.dbSettingDataModel.pg_type_name?.toLowerCase() );
+                if(PGType.length>0){
+                  this.notifyService.showError("PG Type is already available.", "");
+                  return false;
+                 }
                     this.submitDataModel.id = this.dbSettingDataModel?.pg_type_id;
                     this.submitDataModel.pgTypeName = this.dbSettingDataModel.pg_type_name;
-                }
+                
           break;
           case 'Notification Mode':
                 if ( this.dbSettingDataModel.notification_mod_name == null || this.dbSettingDataModel.notification_mod_name == '') {
                     return false;
-                } else {
+                } 
+                const notificationMode = this.dbSettingDataList.filter(d=>d.notification_mode_id != this.dbSettingDataModel?.notification_mode_id &&  d.notification_mod_name?.toLowerCase() === this.dbSettingDataModel.notification_mod_name?.toLowerCase() );
+                if(notificationMode.length>0){
+                  this.notifyService.showError("Notification Mode is already available.", "");
+                  return false;
+                 }
                     this.submitDataModel.id = this.dbSettingDataModel?.notification_mode_id;
                     this.submitDataModel.notificationModeName = this.dbSettingDataModel.notification_mod_name;
-                }
+                
           break;
           case 'Factor':
                 if ( this.dbSettingDataModel.factor_name == null || this.dbSettingDataModel.factor_name == '') {
                     return false;
-                } else {
+                }
+                const factor = this.dbSettingDataList.filter(d=>d.factor_id != this.dbSettingDataModel?.factor_id &&  d.factor_name?.toLowerCase() === this.dbSettingDataModel.factor_name?.toLowerCase() );
+                if(factor.length>0){
+                  this.notifyService.showError("Factor is already available.", "");
+                  return false;
+                 }
                     this.submitDataModel.id = this.dbSettingDataModel?.factor_id;
                     this.submitDataModel.factorName = this.dbSettingDataModel.factor_name;
-                }
+                
           break;
           case 'Due Type':
             if (this.dbSettingDataModel.due_type_name == null || this.dbSettingDataModel.due_type_name == '') {
                 return false;
-            } else {
+            } 
+            const dueType = this.dbSettingDataList.filter(d=>d.due_type_id != this.dbSettingDataModel?.due_type_id &&  d.due_type_name?.toLowerCase() === this.dbSettingDataModel.due_type_name?.toLowerCase() );
+            if(dueType.length>0){
+              this.notifyService.showError("Due Type is already available.", "");
+              return false;
+             }
                 this.submitDataModel.id = this.dbSettingDataModel?.due_type_id;
                 this.submitDataModel.dueTypeName = this.dbSettingDataModel.due_type_name;
-            }
+            
             break;
             case 'Currency Type':
               if (this.dbSettingDataModel.currency_name == null || this.dbSettingDataModel.currency_name == '') {
                   return false;
-              } else {
+              } 
+              const currencyType = this.dbSettingDataList.filter(d=>d.currency_id != this.dbSettingDataModel?.currency_id &&  d.currency_name?.toLowerCase() === this.dbSettingDataModel.currency_name?.toLowerCase() );
+              if(currencyType.length>0){
+                this.notifyService.showError("Currency Type is already available.", "");
+                return false;
+               }
                   this.submitDataModel.id = this.dbSettingDataModel?.currency_id;
                   this.submitDataModel.currencyName = this.dbSettingDataModel.currency_name;
-              }
+              
               break;
           case 'Billing Type':
               if (this.dbSettingDataModel.billing_type_name == null || this.dbSettingDataModel.billing_type_name == '') {
                   return false;
-              } else {
+              } 
+              const billingType = this.dbSettingDataList.filter(d=>d.billing_type_id != this.dbSettingDataModel?.billing_type_id &&  d.billing_type_name?.toLowerCase() === this.dbSettingDataModel.billing_type_name?.toLowerCase() );
+              if(billingType.length>0){
+                this.notifyService.showError("Billing Type is already available.", "");
+                return false;
+               }
                   this.submitDataModel.id = this.dbSettingDataModel?.billing_type_id;
                   this.submitDataModel.billingTypeName = this.dbSettingDataModel.billing_type_name;
-              }
+              
               break;
           case 'Amenities':
-              if (this.fileUploadRatioStatus || this.fileUploadSizeStatus || this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '' || (!this.isCreated && this.imgeURL2==null) || (this.isCreated && (this.dbSettingDataModel.ameneties_upload==null || this.dbSettingDataModel.ameneties_upload==''))) {
+              if (this.fileUploadRatioStatus || this.fileUploadSizeStatus || this.fileUploadTypeStatus || this.dbSettingDataModel.ameneties_name == null || this.dbSettingDataModel.ameneties_name == '' || (!this.isCreated && this.imgeURL2==null) || (this.isCreated && (this.dbSettingDataModel.ameneties_upload==null || this.dbSettingDataModel.ameneties_upload==''))) {
                 return false;
-              } else {
+              } 
+              const amenities = this.dbSettingDataList.filter(d=>d.ameneties_id != this.dbSettingDataModel?.ameneties_id &&  d.ameneties_name?.toLowerCase() === this.dbSettingDataModel.ameneties_name?.toLowerCase() );
+              if(amenities.length>0){
+                this.notifyService.showError("Amenities is already available.", "");
+                return false;
+               }
                   this.submitDataModel.id = this.dbSettingDataModel?.ameneties_id;
                   this.submitDataModel.ameneties = this.dbSettingDataModel.ameneties_name;
-              }
+              
               break;
           default:
             return false;
@@ -351,6 +406,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         this.formPicture.reset();
         this.fileUploadSizeStatus=false;
         this.fileUploadRatioStatus=false;
+        this.fileUploadTypeStatus = false;
         this.submitted=false;
         this.fileData = null;
       }
@@ -362,21 +418,33 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
    
         fileData: File = null;
         previewUrl:any = null;
-        fileUploadProgress: string = null;
+      //  fileUploadProgress: string = null;
         uploadStatus:boolean=true;
         fileUploadSize:any;
         fileUploadSizeStatus:boolean=false;
         fileUploadRatioStatus:boolean=false;
+        fileUploadTypeStatus:boolean=false;
         fileWidth:number;
         fileHeight:number;
         imgeURL2: string = null;
        onFileChanged(event) {
+
+        this.fileUploadSizeStatus = false;
+        this.fileUploadRatioStatus = false;
+        this.fileUploadTypeStatus = false;
+
         this.previewUrl=false;
         if(event.target.files.length>0){
           if(!this.isCreated && this.imgeURL2==null){
             this.imgeURL2='';
           }
           const file=event.target.files[0];
+
+          if (!file.type.startsWith('image/')) {
+            this.fileUploadTypeStatus = true;
+            return;  
+          }
+
           this.formPicture.patchValue({
           fileSource:file
           });
