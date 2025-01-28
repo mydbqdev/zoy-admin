@@ -32,6 +32,19 @@ export class AppService{
                   }
               );
       } 
+      getTotalBookings(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/getBookingDetails";
+              return this.httpclient.post<any>(
+                  url1,
+                  data,
+                  {
+                      headers:ServiceHelper.buildHeaders(),
+                     observe : 'body',
+                     withCredentials:true
+                  }
+              );
+      } 
+      
 
 
     private errorHandler(error:HttpErrorResponse){

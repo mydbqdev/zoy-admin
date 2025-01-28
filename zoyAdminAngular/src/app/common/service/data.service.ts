@@ -4,6 +4,7 @@ import { OwnerRequestParam } from 'src/app/owners/managing-owner/models/owner-de
 import { ZoyOwner } from 'src/app/owners/managing-owner/models/zoy-owner-model';
 import { UserInfo } from '../shared/model/userinfo.service';
 import { ManageTenant } from 'src/app/tenants/tenant-profile/model/manage.tenant';
+import { TotalBookingDetailsModel } from '../models/dashboard.model';
 @Injectable({
     providedIn:'root'
 })
@@ -79,5 +80,11 @@ export class DataService{
      getTenantListFilterParam=this.tenantListFilterParam.asObservable();
      setTenantListFilterParam(tenantListFilterParam:OwnerRequestParam){
         this.tenantListFilterParam.next(tenantListFilterParam);
+     }
+
+     public dashboardBookingDetails=new BehaviorSubject<TotalBookingDetailsModel>(new TotalBookingDetailsModel());
+     getDashboardBookingDetails=this.dashboardBookingDetails.asObservable();
+     setDashboardBookingDetails(dashboardBookingDetails:TotalBookingDetailsModel){
+        this.dashboardBookingDetails.next(dashboardBookingDetails);
      }
 }

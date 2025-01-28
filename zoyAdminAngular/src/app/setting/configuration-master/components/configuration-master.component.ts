@@ -894,7 +894,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.earlyCheckOutRulesDisabled = true;
 	  }
 	  forceCheckoutSubmit(): void {
-		if(this.isNotValidNumber(this.configMasterModel.forceCheckout.forceCheckoutDays) ){
+		if(this.isNotValidNumber(this.configMasterModel.forceCheckOut.forceCheckOutDays) ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -903,9 +903,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-				this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGrouping).subscribe(res => {
-					this.configMasterOrg.forceCheckout = Object.assign(new ForceCheckoutModel(), res.data );
-					this.configMasterModel.forceCheckout = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckout));
+				this.configMasterService.updateForceCheckOutDetails(this.configMasterModel.forceCheckOut).subscribe(res => {
+					this.configMasterOrg.forceCheckOut = Object.assign(new ForceCheckoutModel(), res.data );
+					this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
 					this.dataGroupingDisabled = true;
 					this.spinner.hide();
 					}, error => {
@@ -943,7 +943,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	
 	  forceCheckoutReset(): void {
-		this.configMasterModel.forceCheckout = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckout));
+		this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
 		this.forceCheckoutDisabled = true;
 	  }
 	  checkoutDeductionSubmit(): void {
