@@ -1364,11 +1364,14 @@
                           <div>
                             <div class="row p-3 align-items-center marginRow">
                               <div class="col-sm-3">
-                                <span style="font-size: 16px;">Renting Package Configuration</span>
+                                <span style="font-size: 16px;">Short term Packages Configuration</span>
+                                <p class="small text-muted" style="font-size: 12px;">
+                                  <em>Specify the percentage of monthly rent to charge for each stay during the specified slabs. The admin can configure rent percentages for each slab  configured in the initial configuration master.</em>
+                                </p>
                               </div>
                               <div class="col-sm-9">
                                 <div class="row">
-                                  <span>Configure Daily Rent Percentage for Stay Duration Slabs</span>
+                                  <span>Short term Packages</span>
                                 <div class="col-sm-5">
                                  <div class="row p-1" *ngFor="let shortTerm of configMasterModel.shortTerm ;let i=index" >
                                   <div class="col-sm-8">
@@ -1400,7 +1403,7 @@
                                 </div>
 
                                 <p class="small text-muted" style="font-size: 12px;">
-                                  <em>Specify the percentage of the Monthly Rent to charge for each stay duration slab. The admin can configure rent percentages for each duration based on the configured rules.</em>
+                                  <em>Specify the percentage of the Monthly Rent to charge for each stay duration slab.</em>
                                 </p>
                               </div>
                             </div>
