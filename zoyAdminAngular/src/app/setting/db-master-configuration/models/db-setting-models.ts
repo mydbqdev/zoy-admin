@@ -13,8 +13,8 @@ export class DbSettingDataModel{
     room_type_id ?: string  ;
     room_type_name ?: string  ;
 
-    cycle_first: any; 
-    cycle_second: any;
+    cycle_first: string; 
+    cycle_second: string;
 
     cycle_id ?: string  ;
     cycle_name ?: string  ;
