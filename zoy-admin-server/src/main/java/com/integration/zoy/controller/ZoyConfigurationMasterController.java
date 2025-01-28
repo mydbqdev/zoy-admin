@@ -1032,11 +1032,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		try {
 			if(forceCheckOut==null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Required cancellation details");
+				response.setError("Required Force Checkout details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
-			if(forceCheckOut.getForceCheckOutId() != null || !forceCheckOut.getForceCheckOutId().isEmpty()) {
-				ZoyPgForceCheckOut force=ownerDBImpl.findZoyForceCheckOut(forceCheckOut.getForceCheckOutId());
+			ZoyPgForceCheckOut force=ownerDBImpl.findZoyForceCheckOut();
+			if(force!=null) {
 				final int oldFixed=force.getForceCheckOutDays();
 				force.setForceCheckOutDays(forceCheckOut.getForceCheckOutDays());
 				ownerDBImpl.saveForceCheckOut(force);
