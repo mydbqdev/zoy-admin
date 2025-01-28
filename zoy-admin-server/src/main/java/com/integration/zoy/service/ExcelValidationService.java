@@ -49,8 +49,12 @@ public class ExcelValidationService {
 		}
 		String[] expectedHeaders = {
 				"Floor Name", "Room Name", "Room Type", "Share Type",
-				"Room Area in Sqft", "Available Bed Numbers", "Daily Rent", "Monthly Rent",
-				"Room Amenities", "Occupied Bed Numbers", "Remarks About Room"
+				"Room Area in Sqft", "Available Bed Numbers", 
+				//"Daily Rent",
+				"Monthly Rent",
+				"Room Amenities",
+				//"Occupied Bed Numbers", 
+				"Remarks About Room"
 		};
 
 		for (int i = 0; i < expectedHeaders.length; i++) {
@@ -69,19 +73,19 @@ public class ExcelValidationService {
 		validateRoomTypeCell(row.getCell(2), "Room Type", rowIndex, 3, errors, null);
 		validateShareTypeCell(row.getCell(3), "Share Type", rowIndex, 4, errors, null);
 		validateNumericNotMandatoryField(row.getCell(4), "Room Area in Sqft", rowIndex, 5, errors);
-		validateNumeric(row.getCell(6), "Daily Rent", rowIndex, 7, errors);
-		validateNumeric(row.getCell(7), "Monthly Rent", rowIndex, 8, errors);
-		validateAmenetiesCell(row.getCell(8), "Room Amenities", rowIndex, 9, errors, null);
+		//validateNumeric(row.getCell(6), "Daily Rent", rowIndex, 7, errors);
+		validateNumeric(row.getCell(6), "Monthly Rent", rowIndex, 7, errors);
+		validateAmenetiesCell(row.getCell(7), "Room Amenities", rowIndex, 8, errors, null);
 		Cell availableBed = row.getCell(5);
-		Cell occupiedBed = row.getCell(9);
-		if(availableBed==null && occupiedBed==null) {
+		//Cell occupiedBed = row.getCell(9);
+		if (availableBed == null /* && occupiedBed==null */) {
 			errors.add(new ErrorDetail(rowIndex, 6, "Available Bed Numbers", "Available Bed Numbers and Occupied Bed Numbers are empty."));
-			errors.add(new ErrorDetail(rowIndex, 9, "Occupied Bed Numbers", "Available Bed Numbers and Occupied Bed Numbers are empty."));
+			//errors.add(new ErrorDetail(rowIndex, 9, "Occupied Bed Numbers", "Available Bed Numbers and Occupied Bed Numbers are empty."));
 		}
 
-		Cell remarksCell = row.getCell(10);
+		Cell remarksCell = row.getCell(8);
 		if (remarksCell != null && remarksCell.getStringCellValue().length() > 300) {
-			errors.add(new ErrorDetail(rowIndex, 11, "Remarks About Room", "Remarks must not exceed 300 characters."));
+			errors.add(new ErrorDetail(rowIndex, 9, "Remarks About Room", "Remarks must not exceed 300 characters."));
 		}
 	}
 

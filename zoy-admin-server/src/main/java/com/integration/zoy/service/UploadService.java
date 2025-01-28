@@ -588,11 +588,11 @@ public class UploadService {
 				String shareType = getCellValue(row.getCell(3));
 				String area = getCellValue(row.getCell(4));
 				String availableBed = getCellValue(row.getCell(5));
-				String dailyRent = getCellValue(row.getCell(6));
-				String monthlyRent = getCellValue(row.getCell(7));
-				String amenities = getCellValue(row.getCell(8));
-				String occupiedBed = getCellValue(row.getCell(9));
-				String remarks = getCellValue(row.getCell(10));
+				//String dailyRent = getCellValue(row.getCell(6));
+				String monthlyRent = getCellValue(row.getCell(6));
+				String amenities = getCellValue(row.getCell(7));
+				//String occupiedBed = getCellValue(row.getCell(9));
+				String remarks = getCellValue(row.getCell(8));
 
 				List<String> newRoomIds = new ArrayList<>();
 				List<String> newBedIds = new ArrayList<>();
@@ -606,7 +606,7 @@ public class UploadService {
 				}
 
 				processNewBeds(availableBed!=""?Arrays.asList(availableBed.split(",")):new ArrayList<>(), "available", newBedIds);
-				processNewBeds(occupiedBed!=""?Arrays.asList(occupiedBed.split(",")):new ArrayList<>(), "occupied", newBedIds);
+				//processNewBeds(occupiedBed!=""?Arrays.asList(occupiedBed.split(",")):new ArrayList<>(), "occupied", newBedIds);
 
 				String roomTypeId = uploadDBImpl.getRoomTypeIdByRoomType(roomType);
 				String shareTypeId = uploadDBImpl.getShareIdByShareType(shareType);
@@ -617,7 +617,7 @@ public class UploadService {
 				newRoomDetails.setRoomType(roomType);
 				newRoomDetails.setShareId(shareTypeId);
 				newRoomDetails.setRoomArea(Double.valueOf(area));
-				newRoomDetails.setRoomDailyRent(Double.valueOf(dailyRent));
+				newRoomDetails.setRoomDailyRent(0.0);//Double.valueOf(dailyRent));
 				newRoomDetails.setRoomMonthlyRent(Double.valueOf(monthlyRent));
 				newRoomDetails.setRoomTypeId(roomTypeId);
 				newRoomDetails.setRoomRemarks(remarks);
