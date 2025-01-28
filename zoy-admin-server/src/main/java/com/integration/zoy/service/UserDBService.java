@@ -330,7 +330,7 @@ public class UserDBService implements UserDBImpl{
 			for (Object[] details : activityLogData) {
 				AuditActivitiesLogDTO auditActivityData = new AuditActivitiesLogDTO();
 				auditActivityData.setUserName(String.valueOf(details[0]));
-				auditActivityData.setCreatedOn(String.valueOf(details[1]));
+				auditActivityData.setCreatedOn(String.valueOf(details[1])!=null?Timestamp.valueOf(String.valueOf(details[1])):null);
 				auditActivityData.setHistoryData(String.valueOf(details[2]));
 				auditActivityData.setType(String.valueOf(details[3]));
 				list.add(auditActivityData);

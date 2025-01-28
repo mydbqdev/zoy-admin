@@ -1,11 +1,13 @@
 package com.integration.zoy.model;
 
+import java.sql.Timestamp;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AuditActivitiesLogDTO {
 	
 	@JsonProperty("created_on")
-	private String createdOn;
+	private Timestamp createdOn;
 	
 	@JsonProperty("user_name")
 	private String userName;
@@ -32,11 +34,11 @@ public class AuditActivitiesLogDTO {
 		this.type = type;
 	}
 
-	public String getCreatedOn() {
+	public Timestamp getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(String createdOn) {
+	public void setCreatedOn(Timestamp createdOn) {
 		this.createdOn = createdOn;
 	}
 
