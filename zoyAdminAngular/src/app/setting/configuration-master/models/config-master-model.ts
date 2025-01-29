@@ -7,7 +7,7 @@ export class ConfigMasterModel{
     cancellationAfterCheckInDetails:SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
     securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
     otherCharges : OtherChargesModel=new OtherChargesModel();
-    forceCheckout :ForceCheckoutModel = new ForceCheckoutModel();
+    forceCheckOut :ForceCheckoutModel = new ForceCheckoutModel();
     checkoutDeductionDetails: CheckoutDeductionDetailsModel = new CheckoutDeductionDetailsModel();
     rentSlabModel :RentSlabModel = new RentSlabModel();
     gstSlabModel :GstSlabModel[] = [];
@@ -74,8 +74,8 @@ export class OtherChargesModel{
 
 
 export class ForceCheckoutModel{
-    forceCheckoutDaysId : string ='';
-    forceCheckoutDays  : number ;
+    id : string ='';
+    forceCheckOutDays  : number ;
 }
 
 export class CheckoutDeductionDetailsModel {

@@ -149,20 +149,20 @@
                                                       <div class="text-xs font-weight-bold mb-1" style="font-size: 20px;"> Total Bookings</div>
                                                       <!-- Dropdown -->
                                                       <div class="ml-auto" style="width: 130px;">
-                                                              <select class="form-select form-select-sm">
-                                                                  <option selected>Last 15 days</option>
-                                                                  <option value="1">Last 30 days</option>
-                                                                  <option value="2">Last 6 months</option>
-                                                                  <option value="3">Last 1 year</option>
+                                                              <select class="form-select form-select-sm" [(ngModel)]="this.bookingDetailsFilter.selectedDays" (ngModelChange)="getTotalBookings()">
+                                                                  <option value="15 days">Last 15 days</option>
+                                                                  <option value="30 days">Last 30 days</option>
+                                                                  <option value="6 months">Last 6 months</option>
+                                                                  <option value="1 year">Last 1 year</option>
                                                               </select>
                                                       </div>
                                                   </div>
                                                   <div>   
                                                       <doughnut-ngx></doughnut-ngx>
                                                       <div class="d-flex justify-content-around mt-2">
-                                                          <div><div style="font-size: 16px;">7,000</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:#448EFC;"></i>Checked-in</div></div>
-                                                          <div><div style="font-size: 16px;">2,000</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:#FF8743;"></i>Booked</div></div>
-                                                          <div><div style="font-size: 16px;">1,000</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:#E1E4E8;"></i>Vacancy</div></div>
+                                                          <div><div style="font-size: 16px;">{{totalBookingDetails.checked_in}}</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:#448EFC;"></i>Checked-in</div></div>
+                                                          <div><div style="font-size: 16px;">{{totalBookingDetails.booked}}</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:#FF8743;"></i>Booked</div></div>
+                                                          <div><div style="font-size: 16px;">{{totalBookingDetails.vacancy}}</div><div style="font-size: 12px;"><i class="fas fa-circle mr-1" style="color:#E1E4E8;"></i>Vacancy</div></div>
                                                       </div>      
                                                   </div>
                                                 </div>

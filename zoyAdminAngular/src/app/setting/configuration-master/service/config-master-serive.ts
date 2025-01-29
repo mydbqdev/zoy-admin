@@ -139,6 +139,19 @@ import { MessageService } from 'src/app/message.service';
             }
         );
     }
+
+    public updateForceCheckOutDetails(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/force-checkout";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    }
     
     public getTriggeredCond(): Observable<any> {
         const url1=this.basePath +"zoy_admin/config/triggered-cond";
