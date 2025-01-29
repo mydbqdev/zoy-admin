@@ -31,6 +31,7 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
 				bulkUploadDetails.setStatus("Completed");
 			} else if (jobExecution.getStatus() == BatchStatus.FAILED) {
 				bulkUploadDetails.setStatus("Failed");
+				
 			}
 			bulkUploadDetailsRepository.save(bulkUploadDetails);
 		});
