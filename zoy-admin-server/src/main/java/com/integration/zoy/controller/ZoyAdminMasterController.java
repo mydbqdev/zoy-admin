@@ -1068,7 +1068,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	        long checkedInCount = userBookings.getBookedCountByDates(fromDate, endDate); 
 	        long bookedCount = userBookings.getCheckInCountByDates(fromDate, endDate);
-	        long vacancyCount = userBookings.getVacancyCount(); 
+	        long vacancyCount = userBookings.getVacancyCount(fromDate, endDate); 
 
 	        TotalBookingsDetails bookingDetails = new TotalBookingsDetails();
 	        bookingDetails.setCheckedIn(checkedInCount);
