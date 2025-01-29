@@ -41,7 +41,7 @@ import { MessageService } from 'src/app/message.service';
       'amountPaidToOwner': 'AMOUNT PAID TO OWNER',
       'zoyCommission': 'ZOY COMMISSION',
       'transactionDate': 'TRANSACTION DATE',
-      'transactionNumber': 'TRANSACTION NUMBER',
+      'transactionNumber': 'INVOICE NUMBER',
       'paymentStatus': 'TRANSACTION STATUS',
       'transactionStatus': 'TRANSACTION STATUS',
       'baseAmount': 'BASE AMOUNT',
