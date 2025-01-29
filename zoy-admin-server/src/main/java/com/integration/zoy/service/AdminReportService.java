@@ -79,7 +79,7 @@ public class AdminReportService implements AdminReportImpl{
 			StringBuilder queryBuilder = new StringBuilder(
 				    "SELECT \r\n"
 				    + "    up.user_payment_timestamp, \r\n"
-				    + "    up.user_payment_razorpay_payment_id, \r\n"
+				    + "    up.user_payment_result_invoice_id, \r\n"
 				    + "    CASE \r\n"
 				    + "        WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' \r\n"
 				    + "        ELSE up.user_payment_payment_status \r\n"
@@ -147,14 +147,14 @@ public class AdminReportService implements AdminReportImpl{
 			}
 			
 			if (filterData.getTransactionNumber() != null && !filterData.getTransactionNumber().isEmpty()) {
-				queryBuilder.append(" AND LOWER(up.user_payment_razorpay_payment_id) LIKE LOWER(:transactionNumber)");
+				queryBuilder.append(" AND LOWER(up.user_payment_result_invoice_id) LIKE LOWER(:transactionNumber)");
 				parameters.put("transactionNumber", "%" + filterData.getTransactionNumber() + "%");
 			}
 
 			String sort = "up.user_payment_timestamp";  
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
 				if ("transactionNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "up.user_payment_razorpay_payment_id";
+					sort = "up.user_payment_result_invoice_id";
 				} else if ("transactionStatus".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_payment_status";
 				} else if ("baseAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
@@ -204,12 +204,12 @@ public class AdminReportService implements AdminReportImpl{
 			    dto.setTransactionStatus(row[2] != null ? (String) row[2] : "");
 			    BigDecimal payableAmount = (BigDecimal) row[3] != null ? (BigDecimal) row[3] : BigDecimal.ZERO;  
 			    BigDecimal gst = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;  
-			    dto.setDueAmount(rupeeSymbol+numberFormat.format(payableAmount));
+			    dto.setDueAmount(rupeeSymbol+numberFormat.format(payableAmount.subtract(gst)));
 			    dto.setGstAmount(rupeeSymbol+numberFormat.format(gst));
 			    dto.setUserPersonalName(row[5] != null ? (String) row[5] : ""); 
 			    dto.setUserPgPropertyName(row[6] != null ? (String) row[6] : "");  
 			    dto.setRoomBedNumber(row[7] != null ? (String) row[7] : ""); 
-			    dto.setTotalAmount(rupeeSymbol+numberFormat.format(payableAmount.add(gst)));  
+			    dto.setTotalAmount(rupeeSymbol+numberFormat.format(payableAmount));  
 			    dto.setCategory(row[8] != null ? (String) row[8] : "");  
 			    dto.setPaymentMode(row[9] != null ? (String) row[9] : ""); 
 			    dto.setPropertyHouseArea(row[11] != null ? (String) row[11] : "");  
@@ -228,7 +228,7 @@ public class AdminReportService implements AdminReportImpl{
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT DISTINCT up.user_payment_timestamp AS transaction_date, " +
-						    "up.user_payment_razorpay_payment_id AS transaction_number, " +
+						    "up.user_payment_result_invoice_id AS transaction_number, " +
 							"'Tenant' AS payer_payee_type, " +
 							"ud.user_personal_name, " +
 							"up.user_payment_payable_amount, " +
@@ -263,7 +263,7 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("cityLocation", filterRequest.getCityLocation() + "%");
 			}
 			if (filterData.getTransactionNumber() != null && !filterData.getTransactionNumber().isEmpty()) {
-				queryBuilder.append(" AND LOWER(up.user_payment_razorpay_payment_id) LIKE LOWER(:transactionNumber)");
+				queryBuilder.append(" AND LOWER(up.user_payment_result_invoice_id) LIKE LOWER(:transactionNumber)");
 				parameters.put("transactionNumber", "%" + filterData.getTransactionNumber() + "%");
 			}
 			String sort = "up.user_payment_timestamp";  
@@ -272,11 +272,11 @@ public class AdminReportService implements AdminReportImpl{
 				if ("transactionDate".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_timestamp";
 				} else if ("transactionNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "up.user_payment_razorpay_payment_id";
+					sort = "up.user_payment_result_invoice_id";
 				} else if ("payerPayeeName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "ud.user_personal_name";
 				} else if ("creditAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "(up.user_payment_payable_amount + up.user_payment_gst)";
+					sort = "(up.user_payment_payable_amount)";
 				} else if ("debitAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_payable_amount";
 				}else {
@@ -305,9 +305,9 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setPayerPayeeType(row[2] != null ? (String) row[2] : "");
 				dto.setPayerPayeeName(row[3] != null ? (String) row[3] : "");
 				BigDecimal payableAmount = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;
-				BigDecimal gst = (BigDecimal) row[5] != null ? (BigDecimal) row[5] : BigDecimal.ZERO;
-				BigDecimal totalAmount = payableAmount.add(gst);
-				dto.setCreditAmount(rupeeSymbol+numberFormat.format(totalAmount));
+				//BigDecimal gst = (BigDecimal) row[5] != null ? (BigDecimal) row[5] : BigDecimal.ZERO;
+				//BigDecimal totalAmount = payableAmount;
+				dto.setCreditAmount(rupeeSymbol+numberFormat.format(payableAmount));
 				dto.setDebitAmount(rupeeSymbol+numberFormat.format(BigDecimal.valueOf(0)));
 				return dto;
 			}).collect(Collectors.toList());
@@ -452,7 +452,7 @@ public class AdminReportService implements AdminReportImpl{
 				            "pd.property_name AS pgName, " +    
 				            "up.user_payment_payable_amount AS totalAmountFromTenants, " +
 				            "up.user_payment_timestamp AS transactionDate, " +
-				            "up.user_payment_razorpay_payment_id AS transactionNumber, " +
+				            "up.user_payment_result_invoice_id AS transactionNumber, " +
 				            "up.user_payment_payment_status AS paymentStatus, " +
 				            "pd.property_city AS city, " +
 				            "pd.property_house_area AS propertyAddress, " +  
@@ -515,7 +515,7 @@ public class AdminReportService implements AdminReportImpl{
 				} else if ("transactionDate".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_timestamp";
 				} else if ("transactionNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "up.user_payment_razorpay_payment_id";
+					sort = "up.user_payment_result_invoice_id";
 				} else if ("paymentStatus".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_payment_status";
 				} else if ("ownerEmail".equalsIgnoreCase(filterRequest.getSortActive())) {
