@@ -704,7 +704,10 @@ public class AdminReportService implements AdminReportImpl{
 	                + "urd.booking_id AS booking_ID, "
 	                + "ub.user_cancellation_reason AS refund_title, "
 	                + "urd.refund_amount AS refund_amount, "
-	                + "urd.refund_process_status AS Status, "
+	                + "CASE \r\n"
+	                + "        WHEN urd.refund_process_status = TRUE THEN 'Completed' \r\n"
+	                + "        ELSE 'Processing' \r\n"
+	                + "    END AS Status, "
 	            	+ "urd.refund_created_timestamp, "
 					+ "zppd.property_city \r\n" 
 	                + "FROM pgcommon.user_refund_details urd "
@@ -716,7 +719,7 @@ public class AdminReportService implements AdminReportImpl{
 	        Map<String, Object> parameters = new HashMap<>();
 	        
 	        if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND urd.refund_updated_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				queryBuilder.append(" AND urd.refund_created_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -823,10 +826,10 @@ public class AdminReportService implements AdminReportImpl{
 	            dto.setBookingId(row[4] != null ? (String) row[4] : "");
 	            dto.setRefundTitle(row[5] != null ? (String) row[5] : "");
 	            dto.setRefundableAmount(rupeeSymbol+numberFormat.format((BigDecimal) row[6] != null ? (BigDecimal) row[6] : BigDecimal.ZERO));
-	            dto.setPaymentStatus("");
+	            dto.setPaymentStatus(row[7] != null ? (String) row[7] : "");
 	            dto.setTransactionNumber("");
 	            dto.setAmountPaid("");
-	            dto.setPaymentDate("");
+	            dto.setPaymentDate(row[8] != null ? Timestamp.valueOf(String.valueOf(row[8])) : null);
 	            return dto;
 	        }).collect(Collectors.toList());
 
