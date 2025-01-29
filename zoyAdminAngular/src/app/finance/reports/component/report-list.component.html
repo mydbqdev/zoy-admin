@@ -101,7 +101,7 @@
                             <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' ||  reportName =='Tenant Transactions Report' 
                                                        || reportName == 'Owner Payments Report' || reportName =='Tenant Payments GST Report' || reportName == 'Tenant Dues Report' || reportName =='Ratings and Reviews Report'">
                               <div class="form-group">
-                                <label for="pgName" class="text-search-header">PG PROPERTY NAME</label>
+                                <label for="pgName" class="text-search-header">PG Property Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgName" name="pgName" />
                               </div>
                             </div>
@@ -123,7 +123,7 @@
                             <div class="col-sm-6" *ngIf="reportName == 'Consolidated Finance Report' || reportName == 'Owner Payments Gst Report' || reportName =='Tenant Transactions Report' 
                                                       || reportName =='Tenant Payments GST Report'">
                               <div class="form-group">
-                                <label for="transactionNumber" class="text-search-header">Transaction Number </label>
+                                <label for="transactionNumber" class="text-search-header">Invoice Number</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.transactionNumber" name="transactionNumber" />
                               </div>
                             </div>
@@ -309,7 +309,7 @@
         
         <div class="pl-3 pr-3">
           <div class="row">
-            <div class="col-sm-4" style="font-size: 14px;">PG PROPERTY NAME</div>
+            <div class="col-sm-4" style="font-size: 14px;">PG Property Name</div>
             <div class="col-sm-1 align-items-center">:</div>
             <div class="col-sm-6" style="font-size: 14px;color: gray;">{{reviewsReplyDetails.pgName}}</div>
             <div class="col-sm-1">
