@@ -239,7 +239,6 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 					  this.reportDataSource =  new MatTableDataSource(this.reportDataList);
 					}
 					this.spinner.hide();
-					console.log("this.totalProduct",this.totalProduct)
 				},error =>{
 				  this.spinner.hide();
 				  if(error.status == 0) {
