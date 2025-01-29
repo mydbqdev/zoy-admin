@@ -386,26 +386,26 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			BigDecimal gstPercentage;
 			BigDecimal monthlyRent;
 			if (gstCharges != null) {
-				final BigDecimal oldGstPercentage=gstCharges.getGstPecrentage();
+				final BigDecimal oldGstPercentage=gstCharges.getGstPercentage();
 				final BigDecimal oldMonthlyRent=gstCharges.getMonthlyRent();
 
 				gstPercentage = (details.getGstPercentage() != null) 
 						? details.getGstPercentage() 
-								: gstCharges.getGstPecrentage();
+								: gstCharges.getGstPercentage();
 
 				monthlyRent = (details.getMonthlyRent() != null) 
 						? details.getMonthlyRent() 
 								: gstCharges.getMonthlyRent();
 
-				gstCharges.setGstPecrentage(gstPercentage);
+				gstCharges.setGstPercentage(gstPercentage);
 				gstCharges.setMonthlyRent(monthlyRent);
 				gstCharges.setComponentName("RENT");
 				ownerDBImpl.saveGstCharges(gstCharges);
 
 				//audit history here
 				StringBuffer historyContent=new StringBuffer(" has updated the Gst Changes for");
-				if(oldGstPercentage!=gstCharges.getGstPecrentage()) {
-					historyContent.append(", GST percentage charges from "+oldGstPercentage+" to "+gstCharges.getGstPecrentage());
+				if(oldGstPercentage!=gstCharges.getGstPercentage()) {
+					historyContent.append(", GST percentage charges from "+oldGstPercentage+" to "+gstCharges.getGstPercentage());
 				}
 				if(oldMonthlyRent!=gstCharges.getMonthlyRent()) {
 					historyContent.append(", monthly Rent charges from "+oldMonthlyRent+" to "+gstCharges.getMonthlyRent());
@@ -429,14 +429,14 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 				ZoyPgGstCharges newGstCharges = new ZoyPgGstCharges();
 
-				newGstCharges.setGstPecrentage(gstPercentage);
+				newGstCharges.setGstPercentage(gstPercentage);
 				newGstCharges.setMonthlyRent(monthlyRent);
 				newGstCharges.setComponentName("RENT");
 
 				ownerDBImpl.saveGstCharges(newGstCharges);
 
 				//audit history here
-				String historyContent=" has created the GST Charges for, GST Charges = "+newGstCharges.getGstPecrentage()+" , Monthly Rent ="+newGstCharges.getMonthlyRent();
+				String historyContent=" has created the GST Charges for, GST Charges = "+newGstCharges.getGstPercentage()+" , Monthly Rent ="+newGstCharges.getMonthlyRent();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
 
 				ZoyGstChargesDto dto =convertToDTO(newGstCharges);
@@ -468,7 +468,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	private ZoyGstChargesDto convertToDTO(ZoyPgGstCharges entity) {
 		ZoyGstChargesDto dto = new ZoyGstChargesDto();
 		dto.setRentId(entity.getRentId());
-		dto.setGstPercentage(entity.getGstPecrentage());
+		dto.setGstPercentage(entity.getGstPercentage());
 		dto.setMonthlyRent(entity.getMonthlyRent());
 		return dto;
 	}
@@ -852,7 +852,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyShortTermDto dto=new ZoyShortTermDto();
 			dto.setShortTermId(master.getZoyPgShortTermMasterId());
 			dto.setDays(master.getStartDay()+"-"+master.getEndDay());
-			dto.setPercentage(BigDecimal.ZERO);
+			dto.setPercentage(master.getPercentage());
 			dtos.add(dto);
 		}
 		return dtos;
