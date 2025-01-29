@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { DataService } from '../common/service/data.service';
+import { TotalBookingDetailsModel } from '../common/models/dashboard.model';
  
 @Component({
   selector: 'doughnut-ngx',
@@ -13,24 +15,43 @@ import { Component } from '@angular/core';
   [animations]="false">
 </ngx-charts-pie-chart>`
 })
+
 export class DoughnutNgxChartComponent {
-    series = [
+  series: { name: string; value: number; label: string }[] = [];
+  totalBookingDetails :TotalBookingDetailsModel= new TotalBookingDetailsModel();
+  constructor(private dataService:DataService){
+    this.dataService.getDashboardBookingDetails.subscribe(details=>{
+      this.totalBookingDetails = details;
+      this.getBookingDetails();
+    });
+  }
+
+  getBookingDetails(): void {
+      const totalBookings = this.totalBookingDetails.checked_in + this.totalBookingDetails.booked + this.totalBookingDetails.vacancy;
+
+      const bookedPercentage = ((this.totalBookingDetails.booked / totalBookings) * 100).toFixed(2);
+      const checkedInPercentage = ((this.totalBookingDetails.checked_in / totalBookings) * 100).toFixed(2);
+      const vacancyPercentage = ((this.totalBookingDetails.vacancy / totalBookings) * 100).toFixed(2);
+
+      this.series = [
         {
-          "name": "Booked",
-          "value": 2000,
-          "label": "20%"
+          name: 'Booked',
+          value: this.totalBookingDetails.booked,
+          label: bookedPercentage+'%'
         },
         {
-          "name": "Checked-in",
-          "value": 7000,
-          "label": "70%"
+          name: 'Checked-in',
+          value: this.totalBookingDetails.checked_in,
+          label: checkedInPercentage+'%'
         },
         {
-          "name": "Vacancy",
-          "value": 1000,
-          "label": "10%"
+          name: 'Vacancy',
+          value: this.totalBookingDetails.vacancy,
+          label: vacancyPercentage+'%'
         }
       ];
+    }
+
       // your color scheme
   colorScheme = [
       {"name": "Vacancy",

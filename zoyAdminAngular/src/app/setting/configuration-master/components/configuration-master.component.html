@@ -1330,9 +1330,9 @@
                                 <div class="col-sm-3">
                                   <div class="input-group input-group-sm">
                                     <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
-                                      [(ngModel)]="configMasterModel.forceCheckout.forceCheckoutDays" 
+                                      [(ngModel)]="configMasterModel.forceCheckOut.forceCheckOutDays" 
                                       (keypress)="numberOnly($event)"  maxlength="3"
-                                      [ngClass]="{'is-invalid': !forceCheckoutDisabled && isNotValidNumber(configMasterModel.forceCheckout.forceCheckoutDays)}"
+                                      [ngClass]="{'is-invalid': !forceCheckoutDisabled && isNotValidNumber(configMasterModel.forceCheckOut.forceCheckOutDays)}"
                                       [disabled]="forceCheckoutDisabled" />
                                     <span class="input-group-text">Days </span>
                                   </div>

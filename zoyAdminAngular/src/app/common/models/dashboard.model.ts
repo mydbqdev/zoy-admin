@@ -10,3 +10,15 @@ export class TopRevenuePG{
     pg_name:string;
     revenue:string;
 }
+
+export class TotalBookingDetailsModel{
+    checked_in:number=0;
+    booked:number=0;
+    vacancy:number=0;
+}   
+export class DashboardFilterModel{
+    fromDate:string="";
+    toDate:string="";
+    selectedDays:string="15 days";
+}  
+
