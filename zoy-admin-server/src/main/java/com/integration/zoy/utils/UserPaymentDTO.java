@@ -31,6 +31,9 @@ public class UserPaymentDTO {
 	@SerializedName("PgPropertyName")
     private String userPgPropertyName;
 	
+	@SerializedName("propertyId")
+	private String propertyId;
+	
 	@SerializedName("bedNumber")
 	private String roomBedNumber;
 	
@@ -148,6 +151,14 @@ public class UserPaymentDTO {
 
 	public void setTenantContactNum(String tenantContactNum) {
 		this.tenantContactNum = tenantContactNum;
+	}
+
+	public String getPropertyId() {
+		return propertyId;
+	}
+
+	public void setPropertyId(String propertyId) {
+		this.propertyId = propertyId;
 	}
 	
 
