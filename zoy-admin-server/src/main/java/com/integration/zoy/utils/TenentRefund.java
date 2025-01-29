@@ -1,12 +1,13 @@
 package com.integration.zoy.utils;
 
-import java.math.BigDecimal;
+import java.sql.Timestamp;
+
 import com.google.gson.annotations.SerializedName;
 
 public class TenentRefund {
 
 	@SerializedName("paymentDate")
-	private String paymentDate;
+	private Timestamp paymentDate;
 
 	@SerializedName("customerName")
 	private String customerName;
@@ -46,11 +47,11 @@ public class TenentRefund {
 		this.refundableAmount = refundableAmount;
 	}
 
-	public String getPaymentDate() {
+	public Timestamp getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(String paymentDate) {
+	public void setPaymentDate(Timestamp paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 
