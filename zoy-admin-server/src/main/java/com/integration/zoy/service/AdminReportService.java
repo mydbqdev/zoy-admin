@@ -96,7 +96,8 @@ public class AdminReportService implements AdminReportImpl{
 				    + "    END AS user_payment_result_method, \r\n"
 				    + "    pgt.property_city, \r\n"
 				    + "    pgt.property_house_area, \r\n"
-				    + "    um.user_mobile\r\n"
+				    + "    um.user_mobile, \r\n"
+				    + "    pgt.property_id\r\n"
 				    + "FROM pgusers.user_payments up \r\n"
 				    + "LEFT JOIN pgusers.user_details ud \r\n"
 				    + "    ON up.user_id = ud.user_id\r\n"
@@ -141,10 +142,17 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("toDate", filterRequest.getToDate());
 			}
 			
+			if (filterRequest.getPropertyId() != null && !filterRequest.getPropertyId().isEmpty()) {
+				queryBuilder.append(" AND LOWER(pgt.property_id) LIKE LOWER(:propertyId)");
+				parameters.put("propertyId", "%" + filterRequest.getPropertyId() + "%");
+			}
+			
 			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
 				queryBuilder.append(" AND LOWER(um.user_mobile) LIKE LOWER(:tenantContactNum)");
 				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
 			}
+			
+			
 			
 			if (filterData.getTransactionNumber() != null && !filterData.getTransactionNumber().isEmpty()) {
 				queryBuilder.append(" AND LOWER(up.user_payment_result_invoice_id) LIKE LOWER(:transactionNumber)");
@@ -214,6 +222,7 @@ public class AdminReportService implements AdminReportImpl{
 			    dto.setPaymentMode(row[9] != null ? (String) row[9] : ""); 
 			    dto.setPropertyHouseArea(row[11] != null ? (String) row[11] : "");  
 			    dto.setTenantContactNum(row[12] != null ? (String) row[12] : "");
+			    dto.setPropertyId(row[13] != null ? (String) row[13] : "");
 			    return dto;
 			}).collect(Collectors.toList());
 			return new CommonResponseDTO<>(userPaymentDTOs, filterCount);

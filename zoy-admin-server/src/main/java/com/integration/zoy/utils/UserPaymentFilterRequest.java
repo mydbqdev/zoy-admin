@@ -35,6 +35,17 @@ public class UserPaymentFilterRequest {
 	
 	@JsonProperty("filterData")
 	private String filterData;
+	
+	@JsonProperty("propertyId")
+	private String propertyId;
+
+	public String getPropertyId() {
+		return propertyId;
+	}
+
+	public void setPropertyId(String propertyId) {
+		this.propertyId = propertyId;
+	}
 
 	public int getPageIndex() {
 		return pageIndex;
