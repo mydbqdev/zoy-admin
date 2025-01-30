@@ -159,7 +159,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	
 
 	  isNotValidNumber(value: any): boolean {
-		return value === '' || value === undefined || value === null || isNaN(value);
+		return  (value == '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
 	  }
 	  numberOnly(event): boolean {
 		const charCode = (event.which) ? event.which : event.keyCode;
@@ -906,7 +906,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.configMasterService.updateForceCheckOutDetails(this.configMasterModel.forceCheckOut).subscribe(res => {
 					this.configMasterOrg.forceCheckOut = Object.assign(new ForceCheckoutModel(), res.data );
 					this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
-					this.dataGroupingDisabled = true;
+					this.forceCheckoutDisabled = true;
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -1175,15 +1175,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			if(this.isNotValidNumber(shortTerm.percentage)){
 				return ;
 			}
-			console.log("shortTerm",shortTerm)
-			return;
+			
 			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 			.then(
 			   (confirmed) =>{
 				if(confirmed){
 					this.authService.checkLoginUserVlidaate();
 					this.spinner.show();
-					this.configMasterService.updateShortTermRentingDuratioDetails(this.configMasterModel.cancellationAfterCheckInDetails).subscribe(res => {
+					this.configMasterService.updateShortTermRentingDuratioDetails(shortTerm).subscribe(res => {
 						this.configMasterOrg.shortTerm = Object.assign([], res.data );
 						this.configMasterModel.shortTerm = JSON.parse(JSON.stringify(this.configMasterOrg.shortTerm));
 						this.spinner.hide();

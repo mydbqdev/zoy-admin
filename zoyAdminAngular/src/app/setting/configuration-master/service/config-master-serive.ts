@@ -177,7 +177,7 @@ import { MessageService } from 'src/app/message.service';
     }
 
     public updateShortTermRentingDuratioDetails(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/config/shortTermRentingDuration";
+        const url1=this.basePath +"zoy_admin/config/short-term";
         return  this.httpclient.post<any>(
             url1,
             data,

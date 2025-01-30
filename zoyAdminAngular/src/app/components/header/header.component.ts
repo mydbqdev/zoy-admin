@@ -148,9 +148,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     getTimeSinceLastAction() {
       this.timeSinceLastAction = setInterval(() => {
         if(!this.userService.getSessionTime()){
-          clearInterval(this.timeSinceLastAction);
-          clearInterval(this.timeoutId);  
-          clearInterval(this.interval); 
+          this.clearAllIntervals();
           return;
         }
       const time = this.userActivityService.getTimeSinceLastAction();
@@ -159,21 +157,20 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         this.countdown = 120;
         this.sessionModelOpen.nativeElement.click(); 
         this.startSessionTimeout();
-        console.log(new Date(),"<<getTimeSinceLastAction>>this.countdown>>",this.countdown )
-        console.log(new Date(),"<<getTimeSinceLastAction>>time>>",time )
       }
     }, 1000); 
     }	
 
  
   startSessionTimeout() {
+    if (this.interval) {
+      return;
+    }
     this.interval = setInterval(() => {
       if (this.countdown <= 0) {
         this.nun=0;
         this.logout();
-        console.log(new Date(),"<<startSessionTimeout>>this.countdown>>",this.countdown )
       } else {
-        console.log(new Date(),"<<startSessionTimeout>>this.countdown>>",this.countdown )
         this.countdown--;
       }
     }, 1000); 
@@ -184,7 +181,6 @@ export class HeaderComponent implements OnInit,AfterViewInit {
       this.sessionTime = this.userService.getSessionTime() || new Date();
       const diff =  new Date().getTime() - this.sessionTime.getTime() ;
       if(diff>800000 && !this.userService.isLoggedOut() && this.userService.getSessionTime()){
-        console.log(new Date(),"<<startValidateToken>>",this.userService.getSessionTime() )
        this.authService.checkLoginUserVlidaate();
       }
     }, 60000); 
@@ -192,27 +188,37 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     
 
   stay() {
-	  clearInterval(this.interval);
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
     this.authService.checkLoginUserVlidaate();
     this.sessionModelClose.nativeElement.click(); 
     this.nun=0;
     this.countdown = 120;
-    console.log(new Date(),"<<stay>>this.countdown>>",this.countdown )
-    console.log(new Date(),"<<stay>>this.interval>>",this.interval )
   }
 
   logout() {
-    clearInterval(this.timeSinceLastAction);
-    clearInterval(this.timeoutId);  
-    clearInterval(this.interval); 
+    this.clearAllIntervals();
     this.doSignout();
     this.sessionModelClose.nativeElement.click(); 
     this.nun = 0;
     this.countdown = 120;
-    console.log(new Date(),"<<logout>>this.countdown>>",this.countdown )
-    console.log(new Date(),"<<logout>>this.interval>>",this.interval )
-    console.log(new Date(),"<<logout>>this.timeoutId>>",this.timeoutId )
-    console.log(new Date(),"<<logout>>this.timeSinceLastAction>>",this.timeSinceLastAction )
+  }
+
+  clearAllIntervals() {
+    if (this.timeSinceLastAction) {
+      clearInterval(this.timeSinceLastAction);
+      this.timeSinceLastAction = null; 
+    }
+    if (this.timeoutId) {
+      clearInterval(this.timeoutId);
+      this.timeoutId = null; 
+    }
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null; 
+    }
   }
 
   
