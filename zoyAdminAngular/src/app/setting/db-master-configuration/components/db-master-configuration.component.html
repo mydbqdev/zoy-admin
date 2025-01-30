@@ -348,10 +348,10 @@
                             (click)="term.isEdit = true;" title="Edit The Item">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && !term.isEdit"
+                    <!-- <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && !term.isEdit"
                             (click)="removeShortTerm(term)" title="Delete The Item">
                       <i class="fas fa-trash" style="color: red;"></i>
-                    </button>
+                    </button> -->
                     <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && term.isEdit"
                             (click)="modifyShortTerm(term)" title="Save Changes">
                       <i class="fas fa-check"></i>
@@ -360,10 +360,10 @@
                             (click)="undoEditShortTermItem(i)" title="Undo Edit">
                       <i class="fas fa-redo" style="color: red;"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary" *ngIf="term.isDelete"
+                  <!--   <button class="btn btn-sm btn-outline-secondary" *ngIf="term.isDelete"
                             (click)="undoShortTermDelete(term)" title="Undo Delete">
                       <i class="fas fa-redo" style="color: red;"></i>
-                    </button>
+                    </button> -->
                   </div>
                 </div>
               </div>
