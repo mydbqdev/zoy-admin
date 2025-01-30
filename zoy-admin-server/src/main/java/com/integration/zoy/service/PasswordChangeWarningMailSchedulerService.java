@@ -38,11 +38,12 @@ public class PasswordChangeWarningMailSchedulerService {
 		     Timestamp currentTimestamp = new Timestamp(currentTimeMillis);
 		    
 		     adminUserLoginDetailsRepository.deleteDataInAdminUsersLockDetails(currentTimestamp);
+		     List<String[]> list = adminUserLoginDetailsRepository.getPasswordWarnerMailsData(currentTimestamp);
 			 adminUserLoginDetailsRepository.doLockAfterPWExpired(currentTimestamp);
-			 List<String[]> list = adminUserLoginDetailsRepository.getPasswordWarnerMailsData(currentTimestamp);
-				for(String[] str : list) {
+			 
+			 for(String[] str : list) {
 					zoyEmailService.sendPasswordChangeWarningMails(str);
-			    }		
+			  }		
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

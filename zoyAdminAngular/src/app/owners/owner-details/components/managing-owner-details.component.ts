@@ -14,6 +14,11 @@ import { GenerateZoyCodeService } from '../../service/zoy-code.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { FloorInformation, PgOwnerData, PgOwnerPropertyInformation, Room } from '../models/owner-full-details';
 import { ZoyOwnerService } from '../../service/zoy-owner.service';
+import { FilterData, FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
+import { MatTableDataSource } from '@angular/material/table';
+import { ReportService } from 'src/app/finance/reports/service/reportService';
+import { MatSort, Sort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-managing-owner-details',
@@ -40,14 +45,34 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  property_status:string='';
 	  propertyInfo :PgOwnerPropertyInformation =new PgOwnerPropertyInformation();
 	  totalRecord:number=0;
-	  pageSizeOptions: number[] = [10, 25, 50];
-	  pageSize = 10;
 	  reason : string='';
 	  status :  string='';
 	  doActiveteDeactiveteName :  string='';
 	  doActiveteDeactiveteType: string='';
+
+	  pageSize = 25;
+	  pageSizeOptions: number[] = [25, 50,100,200];
+	  fromDate:string='';
+	  toDate:string='';
+	  reportName:string ='';
+	  filtersRequest :FiltersRequestModel = new FiltersRequestModel();
+	  public lastPageSize:number=0;
+	  public totalProduct:number=0;
+	  sortActive:string="";
+	  sortDirection:string="desc";
+	  selectedReportColumns: any[] = [];
+	  reportDataList :any[]=[];
+	  reportDataSource: MatTableDataSource<any>=new MatTableDataSource(this.reportDataList);
+	  displayedColumns: string[] = [];
+	  columnHeaders = {} ;
+	  reportColumnsList = [] ;
+	  reportNamesList = this.reportService.reportNamesList;
+	  transactionHeader:string="";
+	  @ViewChild(MatSort) sort: MatSort;
+	  @ViewChild(MatPaginator) paginator: MatPaginator;
+
 	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService :ZoyOwnerService,
-		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
+		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private reportService : ReportService) {
 			  this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
 		  //this.defHomeMenu=defMenuEnable;
@@ -88,6 +113,10 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				this.owenerId=id;
 			}
 		});
+		this.fromDate=this.getLastMonthDate();
+		this.toDate=this.getCurrentDate();
+		this.reportColumnsList=reportService.reportColumnsList;
+		this.columnHeaders = reportService.columnHeaders;
 	  }
 
 	  ngOnDestroy() {
@@ -354,9 +383,141 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				
 	  }
 
-		transactionHeader:string="";
-	  selectTransaction(selectTab:number,header:string){
-		//this.selectedTab=selectTab;
+
+	  selectTransaction(header:string){
 		this.transactionHeader=header;
+		if(header=='Tenant Payment History'){
+			this.sortActive="transactionDate";
+			this.reportName = "Tenant Transactions Report";
+		}else if(header=='ZOY to Owner Payment History'){
+			this.sortActive="transactionDate";
+			this.reportName = "Owner Payments Dues Report";
+		}
+		this.getReportSearchBy();
 	}
+	
+	getColumnsForSelectedReport(name:string) {
+		const report = this.reportService.reportColumnsList.find(n => n.reportName === name);
+		return report?report.columns:[];
+	 }
+
+	  getCurrentDate(): string {
+		const today = new Date();
+		return this.formatDate(today);
+	  }
+	
+	  getLastMonthDate(): string {
+		const today = new Date();
+		today.setMonth(today.getMonth() - 1); 
+		return this.formatDate(today);
+	  }
+	
+	  formatDate(date: Date): string {
+		const year = date.getFullYear();
+		const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+		const day = date.getDate().toString().padStart(2, '0');
+		const hours = date.getHours().toString().padStart(2, '0');
+		const minutes = date.getMinutes().toString().padStart(2, '0');
+
+		return `${year}-${month}-${day}T${hours}:${minutes}`
+	  }	
+
+	  pageChanged(event:any){
+		this.reportDataSource=new MatTableDataSource<any>();
+		if(this.lastPageSize!=event.pageSize){
+			this.paginator.pageIndex=0;
+			event.pageIndex=0;
+		   }
+		 this.pageSize=event.pageSize;
+		 this.getReportDetails(this.paginator.pageIndex , event.pageSize,this.sortActive,this.sortDirection);
+	   }
+
+	 onSortData(sort: Sort) {
+		this.sortActive=sort.active;
+		this.sortDirection=sort.direction;
+		this.paginator.pageIndex=0;
+		 this.getReportDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
+	   }
+
+	getReportSearchBy(){
+		this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
+		this.paginator.pageIndex=0;
+		this.pageSize = this.paginator.pageSize;
+		this.getReportDetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
+	}
+
+	getReportDetails(pageIndex:number,pageSize:number,sortActive:string,sortDirection:string){
+		if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
+			return;
+		}
+		
+		this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
+		this.lastPageSize=pageSize;
+		this.filtersRequest.pageIndex=pageIndex;
+		this.filtersRequest.pageSize=pageSize;
+		this.filtersRequest.sortActive=sortActive;
+		this.filtersRequest.sortDirection=sortDirection.toUpperCase();
+		this.filtersRequest.propertyId = this.property_id;
+		this.filtersRequest.filterData = JSON.stringify(new FilterData()) ;
+		this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
+		this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
+		this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
+
+		if(this.transactionHeader=='ZOY to Owner Payment History'){
+			this.totalProduct=0;
+			this.reportDataList=Object.assign([]);
+			this.reportDataSource =  new MatTableDataSource(this.reportDataList);
+			this.spinner.hide();
+			return;
+		}
+	
+		this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+		  if(data?.data?.length >0){
+				this.totalProduct=data.count;
+				this.reportDataList=Object.assign([],data.data);
+				this.reportDataSource = new MatTableDataSource(this.reportDataList);
+			}else{
+			  this.totalProduct=0;
+			  this.reportDataList=Object.assign([]);
+			  this.reportDataSource =  new MatTableDataSource(this.reportDataList);
+			}
+			this.spinner.hide();
+		},error =>{
+		  this.spinner.hide();
+		  if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		 }else if(error.status==401){
+			console.error("Unauthorised");
+		}else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		  }else if (error.error && error.error.message) {
+			this.errorMsg =error.error.message;
+			console.log("Error:"+this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+			this.spinner.hide();
+		  } else {
+			this.spinner.hide();
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			  let str;
+				if(error.status==400){
+				str=error.error.error;
+				}else{
+				  str=error.error.message;
+				  str=str.substring(str.indexOf(":")+1);
+				}
+				
+				console.log("Error:",str);
+				this.errorMsg=str;
+			}
+		
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  }
+		}); 
+	}
+		
+	
+		
   }  

@@ -17,7 +17,7 @@ export class FiltersRequestModel{
     public reportType ?: string  ;
     public downloadType ?: string  ;
     public filterData ?:string  ;
-
+    public propertyId: string ='';
 
 }
 
