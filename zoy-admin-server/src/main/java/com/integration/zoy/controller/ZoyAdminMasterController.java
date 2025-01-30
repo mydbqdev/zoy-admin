@@ -3,6 +3,7 @@ package com.integration.zoy.controller;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
@@ -979,6 +980,58 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				.contentType(contentType)
 				.body(fileData);
 	}
+	
+	@Override
+	public ResponseEntity<String> zoyAdminManageShortTerm(List<ShortTerm> shortTermList) {
+		ResponseBody response = new ResponseBody();
+	    List<ZoyPgShortTermMaster> processedList = new ArrayList<>();
+	    
+	    try {
+	        for (ShortTerm shortTerm : shortTermList) {
+	            ZoyPgShortTermMaster zoyPgShortTermMaster;
+	            if (shortTerm.getZoyPgShortTermMasterId() != null) {
+	                // Update existing record
+	                zoyPgShortTermMaster = ownerDBImpl.findShortTerm(shortTerm.getZoyPgShortTermMasterId());
+	                if (zoyPgShortTermMaster != null) {
+	                    zoyPgShortTermMaster.setStartDay(shortTerm.getStartDay());
+	                    zoyPgShortTermMaster.setEndDay(shortTerm.getEndDay());
+	                    zoyPgShortTermMaster.setPercentage(BigDecimal.ZERO);
+	                    ZoyPgShortTermMaster updated = ownerDBImpl.createShortTerm(zoyPgShortTermMaster);
+	                    processedList.add(updated);
+	                    
+	                    // Audit history
+	                    String historyContent = " has updated the Short Term for, start day from " + zoyPgShortTermMaster.getStartDay() + " to " + shortTerm.getStartDay() + " ,and End day from " + zoyPgShortTermMaster.getEndDay() + " to " + shortTerm.getEndDay();
+	                    auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
+	                } else {
+	                    response.setStatus(HttpStatus.NOT_FOUND.value());
+	                    response.setMessage("No Short term for the given Id " + shortTerm.getZoyPgShortTermMasterId());
+	                    return new ResponseEntity<>(gson2.toJson(response), HttpStatus.NOT_FOUND);
+	                }
+	            } else {
+	                // Create new record
+	                zoyPgShortTermMaster = new ZoyPgShortTermMaster();
+	                zoyPgShortTermMaster.setStartDay(shortTerm.getStartDay());
+	                zoyPgShortTermMaster.setEndDay(shortTerm.getEndDay());
+	                zoyPgShortTermMaster.setPercentage(BigDecimal.ZERO);
+	                ZoyPgShortTermMaster saved = ownerDBImpl.createShortTerm(zoyPgShortTermMaster);
+	                processedList.add(saved);
+	                
+	                // Audit history
+	                String historyContent = " has created the Short Term for, start day " + shortTerm.getStartDay() + " ,End day " + shortTerm.getEndDay();
+	                auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
+	            }
+	        }
+	        
+	        return new ResponseEntity<>(gson2.toJson(processedList), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error managing short term details API:/zoy_admin/shortTerm/manage ", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+
+	}
+
 
 	@Override
 	public ResponseEntity<String> zoyAdminShortTerm() {
@@ -988,60 +1041,6 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			return new ResponseEntity<>(gson2.toJson(zoyPgShortTermMasters), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ekyc type details API:/zoy_admin/shortTerm.zoyAdminEkycType ",e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-	
-	}
-
-	@Override
-	public ResponseEntity<String> zoyAdminShortTermPost(ShortTerm shortTerm) {
-		ResponseBody response=new ResponseBody();
-		try {
-			ZoyPgShortTermMaster zoyPgShortTermMaster =  new ZoyPgShortTermMaster();
-			zoyPgShortTermMaster.setStartDay(shortTerm.getStartDay());
-			zoyPgShortTermMaster.setEndDay(shortTerm.getEndDay());
-			zoyPgShortTermMaster.setPercentage(BigDecimal.ZERO);
-			ZoyPgShortTermMaster saved=ownerDBImpl.createShortTerm(zoyPgShortTermMaster);
-			//audit history here
-			String historyContent=" has created the Short Term for, start day "+shortTerm.getStartDay() +" ,End day " + shortTerm.getEndDay();
-			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
-
-			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error posting ekyc type details API:/zoy_admin/shortTerm.zoyAdminShortTermPost ",e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@Override
-	public ResponseEntity<String> zoyAdminShortTermPut(ShortTerm shortTerm) {
-
-		ResponseBody response=new ResponseBody();
-		try {
-			ZoyPgShortTermMaster zoyPgShortTermMaster = ownerDBImpl.findShortTerm(shortTerm.getZoyPgShortTermMasterId());
-			if(zoyPgShortTermMaster!=null) {
-				final int oldStartCount=zoyPgShortTermMaster.getStartDay();
-				final int oldEndCount=zoyPgShortTermMaster.getEndDay();
-				zoyPgShortTermMaster.setStartDay(shortTerm.getStartDay());
-				zoyPgShortTermMaster.setEndDay(shortTerm.getEndDay());
-				zoyPgShortTermMaster.setPercentage(BigDecimal.ZERO);
-				ZoyPgShortTermMaster updated=ownerDBImpl.createShortTerm(zoyPgShortTermMaster);
-				//audit history here
-				String historyContent=" has updated the Short Term for, start day from "+oldStartCount +" to "+shortTerm.getStartDay() +" ,and End day from " +oldEndCount+" to "+ shortTerm.getEndDay();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
-
-				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
-			} else {
-				response.setStatus(HttpStatus.NOT_FOUND.value());
-				response.setMessage("No Short term for the given Id " + shortTerm.getZoyPgShortTermMasterId());
-				return new ResponseEntity<>(gson2.toJson(response), HttpStatus.OK);
-			}
-		} catch (Exception e) {
-			log.error("Error updating ekyc type details API:/zoy_admin/shortTerm.zoyAdminEkycTypePut ",e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			response.setError(e.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
@@ -1094,4 +1093,5 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	    }
 	}
 
+	
 }

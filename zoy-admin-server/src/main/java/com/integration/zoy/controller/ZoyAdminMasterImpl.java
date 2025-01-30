@@ -1,5 +1,7 @@
 package com.integration.zoy.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -507,29 +509,19 @@ public interface ZoyAdminMasterImpl {
 	@GetMapping(value = "/zoy_admin/shortTerm",
 	produces = { "application/json" })
 	ResponseEntity<String> zoyAdminShortTerm();
-	
-	@Operation(summary = "Post Short Term", description = "Posting Short Term", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
-	@ApiResponses(value = { 
-			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
-			@ApiResponse(responseCode = "400", description = "Bad Request"),
-			@ApiResponse(responseCode = "404", description = "Not Found"),
-			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PostMapping(value = "/zoy_admin/shortTerm",
-	produces = { "application/json" })
-	ResponseEntity<String> zoyAdminShortTermPost(@RequestBody ShortTerm ekycType);
-	
-	@Operation(summary = "Put Short Term", description = "Updating Short Term", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
-	@ApiResponses(value = { 
-			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
-			@ApiResponse(responseCode = "400", description = "Bad Request"),
-			@ApiResponse(responseCode = "404", description = "Not Found"),
-			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PutMapping(value = "/zoy_admin/shortTerm",
-	produces = { "application/json" })
-	ResponseEntity<String> zoyAdminShortTermPut(@RequestBody ShortTerm ekycTypeId);
 
+	@Operation(summary = "Manage Short Term", description = "Create or Update Short Term details", security = {
+	        @SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
+	@ApiResponses(value = { 
+	        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+	        @ApiResponse(responseCode = "400", description = "Bad Request"),
+	        @ApiResponse(responseCode = "404", description = "Not Found"),
+	        @ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/manageShortTerm",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyAdminManageShortTerm(@RequestBody List<ShortTerm> shortTermList);
+	
+	
 	@Operation(summary = "Get Booking details", description = "getting complete booking details", security = {
 			@SecurityRequirement(name = "basicAuth") }, tags = { "Admin Master" })
 	@ApiResponses(value = {
