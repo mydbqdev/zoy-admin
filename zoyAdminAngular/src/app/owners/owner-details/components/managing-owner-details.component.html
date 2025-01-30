@@ -348,7 +348,7 @@
                                         <div class="row">
                                           <div class="col-sm-5" style="font-size: 14px;">Tenant Payment History</div>
                                           <div class="col-sm-6">
-                                            <a class="link-opacity-100-hover" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction(1,'Tenant Payment History')" style="font-size: 13px;cursor: pointer;">
+                                            <a class="link-opacity-100-hover" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction('Tenant Payment History')" style="font-size: 13px;cursor: pointer;">
                                             Click Here
                                             </a>
                                            </div>
@@ -356,7 +356,7 @@
                                         <div class="row">
                                           <div class="col-sm-5" style="font-size: 14px;">ZOY to Owner Payment History</div>
                                           <div class="col-sm-6">
-                                            <a class="link-opacity-100-hover" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction(2,'ZOY to Owner Payment History')" style="font-size: 13px;cursor: pointer;">
+                                            <a class="link-opacity-100-hover" data-bs-toggle="modal" data-bs-target="#paymentHistory" (click)="selectTransaction('ZOY to Owner Payment History')" style="font-size: 13px;cursor: pointer;">
                                               Click Here
                                               </a>
                                            </div>
@@ -406,26 +406,56 @@
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">{{transactionHeader}}</h5>
+        <h5 class="modal-title" id="modalLabel">{{transactionHeader}} - [<span style="color: rgb(173, 5, 159);">{{propertyInfo.property_name}}</span>]</h5>
         <div>
           <div class="d-flex pl-5 ">
             <div class="mr-1 mt-1">Date Range</div>
-            <input type="date" class="form-control" style="width: 130px;font-size: 12px; " id="fromDate"  /> 
+            
+            <input type="datetime-local" class="form-control form-control-sm" style="width: 160px;font-size: 12px; " id="fromDate" [(ngModel)]="fromDate" 
+                  [ngClass]="{'is-invalid': (!fromDate ||(fromDate>toDate && toDate))}" 
+                  [title]="!fromDate? 'From Date is required':((fromDate>toDate && toDate)?'Invalid date range':'') " /> 
+    
             <div style="padding-top: 3px;"> - </div>
-            <input type="date" class="form-control" style="width: 130px; font-size: 12px;" id="toDate"  />
-            <div class="ml-1"><button class="btn btn-sm btn-primary-custom"><i class="fas fa-search fa-sm"></i></button></div>
+            <input type="datetime-local" class="form-control form-control-sm" style="width: 160px; font-size: 12px;" id="toDate"  [(ngModel)]="toDate" 
+                   [ngClass]="{'is-invalid': (!toDate ||(fromDate>toDate && fromDate ))}" 
+                   [title]="!toDate? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
+           
+            <div class="ml-1"><button class="btn btn-sm btn-primary-custom" (click)="getReportSearchBy()" ><i class="fas fa-search fa-sm"></i></button></div>
           </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body p-0">  
-                                  <div style="text-align: center; min-height: 45px; padding-top: 10px;">
-                                    under construction. live soon..
-                                  </div>
-      </div>
-      <div class="modal-footer p-0">
-        <mat-paginator #paginator [length]="totalRecord" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
-      </div>
+      <div class="modal-body p-0">
+        <div class="card-body" style="padding: 2px;margin: 0px;" >
+        <div class="scrollable-container-main">    
+          <table mat-table [dataSource]="reportDataSource" matSort (matSortChange)="onSortData($event)" 
+                  matSortActive="name" matSortDirection="asc" matSortDisableClear multiTemplateDataRows>
+            <ng-container *ngFor="let column of selectedReportColumns">
+              <ng-container [matColumnDef]="column">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 400;" [matTooltip]="columnHeaders[column] "> 
+                  {{ columnHeaders[column] || column }}
+                  <i class="fas fa-lg fa-sort ml-1" style="color:#d1cfcf;margin-right: 3px;"></i>
+                  <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
+                     style="margin-right: 3px;margin-left: -14px;"></i>
+                  <i class="fas fa-lg  fa-sort-down" *ngIf="sortActive === column && sortDirection === 'desc'" 
+                     style="margin-right: 3px;margin-left: -14px;"></i></th>
+                <td mat-cell *matCellDef="let element" >  {{  element[column] == undefined || element[column] == '' ? '-' : element[column] }} </td>
+              </ng-container>
+            </ng-container>
+          
+            <tr mat-header-row *matHeaderRowDef="selectedReportColumns; sticky:true"></tr>
+            <tr mat-row *matRowDef="let row; columns: selectedReportColumns;"></tr>
+          </table>
+          <div style="text-align: center; min-height: 45px; padding-top: 10px;" 
+          *ngIf="reportDataSource.data.length === 0">
+            No records found
+          </div>
+        </div> 
+           <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" 
+           [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)">
+          </mat-paginator>
+        </div>
+    </div>
     </div>
   </div>
 </div>

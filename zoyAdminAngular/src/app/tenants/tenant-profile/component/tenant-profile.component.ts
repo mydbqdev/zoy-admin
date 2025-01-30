@@ -237,7 +237,8 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 
 	getReportSearchBy(){
 		this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
-		this.reportDataSource.paginator = this.paginator;
+		this.paginator.pageIndex=0;
+		this.pageSize = this.paginator.pageSize;
 		this.getReportDetails(this.paginator.pageIndex , this.paginator.pageSize,this.sortActive,this.sortDirection);
 	}
 
