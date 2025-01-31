@@ -161,6 +161,8 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
  
   startSessionTimeout() {
+    console.log(new Date(),"time>>",this.userActivityService.getTimeSinceLastAction());
+    console.log(new Date(),"this.nun",this.nun,'<this.interval>',this.interval);
     if (this.interval) {
       return;
     }

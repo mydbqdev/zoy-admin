@@ -372,7 +372,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}
 
 	gstChargesSubmit() {
-		if( this.isNotValidNumber(this.configMasterModel.gstCharges.monthlyRent) || this.isNotValidNumber(this.configMasterModel.gstCharges.gstPercentage) ){
+		if( this.isNotValidNumber(this.configMasterModel.gstCharges.monthlyRent) || this.isNotValidNumber(this.configMasterModel.gstCharges.cgstPercentage) 
+			|| this.isNotValidNumber(this.configMasterModel.gstCharges.sgstPercentage) || this.isNotValidNumber(this.configMasterModel.gstCharges.igstPercentage) ){
 			return
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')

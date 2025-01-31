@@ -107,7 +107,9 @@ export class CheckoutDeductionDetailsModel {
 
  export class GstChargesModel{
     rentId: string ;
-    gstPercentage: number ;
+    cgstPercentage:number ;
+    sgstPercentage: number ;
+    igstPercentage:number ;
     monthlyRent: number ;
 }
 

@@ -12,6 +12,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { DbMasterConfigurationService } from '../services/db-master-configuration.service';
 import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetailsModel, ShortTermDataModel } from '../models/db-setting-models';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
 	selector: 'app-db-master-configuration',
@@ -42,7 +43,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   shortTermDataList:ShortTermDataModel[] = [];
     
   @ViewChild('closeModel') closeModel: ElementRef;
-	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
+	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private confirmationDialogService:ConfirmationDialogService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,
     private dbMasterConfigurationService:DbMasterConfigurationService) {
     this.authService.checkLoginUserVlidaate();
@@ -203,40 +204,48 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
           form_data.append('ameneties', this.submitDataModel.ameneties);
           form_data.append('id', this.submitDataModel.id);
         }
-        this.dbMasterConfigurationService.submitData(this.submitDataModel,this.isCreated,this.settingTypeDetails.api,form_data,this.withPhoto).subscribe(data => {
-        this.closeModel.nativeElement.click(); 
-        this.getDbSettingDetails();
-        this.resetChange();
-        this.spinner.hide();
-        }, error => {
-        this.spinner.hide();
-        if(error.status == 0) {
-          this.notifyService.showError("Internal Server Error/Connection not established", "")
-        }else if(error.status==401){
-          console.error("Unauthorised");
-        }else if(error.status==403){
-        this.router.navigate(['/forbidden']);
-        }else if (error.error && error.error.message) {
-        this.errorMsg = error.error.message;
-        console.log("Error:" + this.errorMsg);
-        this.notifyService.showError(this.errorMsg, "");
-        } else {
-        if (error.status == 500 && error.statusText == "Internal Server Error") {
-          this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-        } else {
-          let str;
-          if (error.status == 400) {
-          str = error.error.error;
-          } else {
-          str = error.error.message;
-          str = str.substring(str.indexOf(":") + 1);
-          }
-          console.log("Error:" ,str);
-          this.errorMsg = str;
-        }
-        if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-        }
-      });
+        this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+        .then(
+           (confirmed) =>{
+          if(confirmed){
+            this.dbMasterConfigurationService.submitData(this.submitDataModel,this.isCreated,this.settingTypeDetails.api,form_data,this.withPhoto).subscribe(data => {
+            this.closeModel.nativeElement.click(); 
+            this.getDbSettingDetails();
+            this.resetChange();
+            this.spinner.hide();
+            }, error => {
+            this.spinner.hide();
+            if(error.status == 0) {
+              this.notifyService.showError("Internal Server Error/Connection not established", "")
+            }else if(error.status==401){
+              console.error("Unauthorised");
+            }else if(error.status==403){
+            this.router.navigate(['/forbidden']);
+            }else if (error.error && error.error.message) {
+            this.errorMsg = error.error.message;
+            console.log("Error:" + this.errorMsg);
+            this.notifyService.showError(this.errorMsg, "");
+            } else {
+            if (error.status == 500 && error.statusText == "Internal Server Error") {
+              this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+            } else {
+              let str;
+              if (error.status == 400) {
+              str = error.error.error;
+              } else {
+              str = error.error.message;
+              str = str.substring(str.indexOf(":") + 1);
+              }
+              console.log("Error:" ,str);
+              this.errorMsg = str;
+            }
+            if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+            }
+            });
+          }	
+          }).catch(
+            () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+          );		
     }             
   }
 }
@@ -502,6 +511,10 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       return  0 == value || value === undefined || value === null || isNaN(value);
    }
 
+  convertToNumber(value: any): number {
+    return Number(value);
+  }
+
    backUpshortTermDataList :ShortTermDataModel[]=[];
      getShortTermList(data:any){
       this.backUpshortTermDataList = [];
@@ -523,23 +536,20 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     this.addShortTermVali = true;
     if(!this.shortTermData.start_day|| this.shortTermData.start_day>31 || Number(this.shortTermData.start_day)===0 
         || !this.shortTermData.end_day|| this.shortTermData.end_day>31 || Number(this.shortTermData.end_day)===0
-        || this.shortTermData.start_day >= this.shortTermData.end_day){
+        || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)){
           return;
         }
-
     this.shortTermDataList.push(JSON.parse(JSON.stringify(this.shortTermData)));
     this.addShortTermVali = false;
     this.shortTermData = new ShortTermDataModel();
-    console.log("shortTerm",this.shortTermData);
    }
 
    modifyShortTerm(shortTerm) {
-    if(!shortTerm.start_day || shortTerm.start_day>31 || Number(shortTerm.start_day)===0 
-    || !shortTerm.end_day || shortTerm.end_day>31 || Number(shortTerm.end_day)===0
-    || shortTerm.start_day >= shortTerm.end_day){
+     if(!shortTerm.start_day || Number(shortTerm.start_day)>31 || Number(shortTerm.start_day)===0 
+        || !shortTerm.end_day || Number(shortTerm.end_day)>31 || Number(shortTerm.end_day)===0
+        || Number(shortTerm.start_day) >= Number(shortTerm.end_day)){
       return;
     }
-    console.log("shortTerm",shortTerm)
     shortTerm.isEdit = false;
   }
   
@@ -574,33 +584,37 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         endDay = endDay>term.end_day?endDay:term.end_day ;
 
         if (term.isEdit) {
-          this.notifyService.showWarning("submit if term is being edited.","")
+          this.notifyService.showWarning("Save if term is being edited.","")
           return; 
         }
  
         for (let j = i + 1; j < this.shortTermDataList.length; j++) {
           const otherTerm = this.shortTermDataList[j];
           
-          if (!(term.end_day < otherTerm.start_day || term.start_day > otherTerm.end_day)) {
+          if (!(Number(term.end_day) < Number(otherTerm.start_day) || Number(term.start_day) > Number(otherTerm.end_day))) {
             this.notifyService.showWarning("The Short term duration period must not Overlapp.","")
             return;
           }
 
-          // if( term.end_day !=30 && otherTerm.start_day == (term.end_day+1)){
-          //   this.notifyService.showWarning("The Short term duration period must be within the defined ranges of 1-30 days.","")
-          //   return;
-          // }
+          
         }
+
+        const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1))
+        if(term.end_day !=30 && ranges.length === 0 ){
+           this.notifyService.showWarning("The Short term duration period must be within the defined ranges of 1-30 days.","")
+           return;
+         }
+
         finalSubmitShortList.push(term);
       }
     }
   
     if (finalSubmitShortList.length < 1) {
-      this.notifyService.showWarning("please add durations","");
+      this.notifyService.showWarning("Please add durations","");
       return;
     }
    
-    if( startDay != 1 || endDay !=30){
+    if( Number(startDay) != 1 || Number(endDay) !=30){
       this.notifyService.showInfo("The Short term duration period must be within the defined ranges of 1-30 days.", "");
       return
     }
@@ -609,43 +623,51 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.notifyService.showInfo("Short term slabs details are already up to date.", "");
       return;
     }
-      this.dbMasterConfigurationService.submitShortTermData(finalSubmitShortList).subscribe(data => {
-      this.closeModel.nativeElement.click(); 
-      this.getShortTermList(data);
-      this.dbSettingDataList=Object.assign([],data);
-      this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
-      this.resetChange();
-      this.submitShortTerm = false;
-      this.spinner.hide();
-      }, error => {
-      this.spinner.hide();
-      if(error.status == 0) {
-        this.notifyService.showError("Internal Server Error/Connection not established", "")
-      }else if(error.status==401){
-        console.error("Unauthorised");
-      }else if(error.status==403){
-      this.router.navigate(['/forbidden']);
-      }else if (error.error && error.error.message) {
-      this.errorMsg = error.error.message;
-      console.log("Error:" + this.errorMsg);
-      this.notifyService.showError(this.errorMsg, "");
-      } else {
-      if (error.status == 500 && error.statusText == "Internal Server Error") {
-        this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-      } else {
-        let str;
-        if (error.status == 400) {
-        str = error.error.error;
-        } else {
-        str = error.error.message;
-        str = str.substring(str.indexOf(":") + 1);
-        }
-        console.log("Error:" ,str);
-        this.errorMsg = str;
-      }
-      if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-      }
-    });     
+    this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+    .then(
+       (confirmed) =>{
+      if(confirmed){
+          this.dbMasterConfigurationService.submitShortTermData(finalSubmitShortList).subscribe(data => {
+          this.closeModel.nativeElement.click(); 
+          this.getShortTermList(data);
+          this.dbSettingDataList=Object.assign([],data);
+          this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
+          this.resetChange();
+          this.submitShortTerm = false;
+          this.spinner.hide();
+          }, error => {
+          this.spinner.hide();
+          if(error.status == 0) {
+            this.notifyService.showError("Internal Server Error/Connection not established", "")
+          }else if(error.status==401){
+            console.error("Unauthorised");
+          }else if(error.status==403){
+          this.router.navigate(['/forbidden']);
+          }else if (error.error && error.error.message) {
+          this.errorMsg = error.error.message;
+          console.log("Error:" + this.errorMsg);
+          this.notifyService.showError(this.errorMsg, "");
+          } else {
+          if (error.status == 500 && error.statusText == "Internal Server Error") {
+            this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+          } else {
+            let str;
+            if (error.status == 400) {
+            str = error.error.error;
+            } else {
+            str = error.error.message;
+            str = str.substring(str.indexOf(":") + 1);
+            }
+            console.log("Error:" ,str);
+            this.errorMsg = str;
+          }
+          if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+          }
+        });  
+      }	
+    }).catch(
+      () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+    );	   
   }
         
 
