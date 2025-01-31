@@ -148,7 +148,7 @@ export class DbMasterConfigurationService {
   } 
 
   submitShortTermData(data:any): Observable<any> {
-    const url1=this.basePath +'zoy_admin/shortTerm';
+    const url1=this.basePath +'zoy_admin/manageShortTerm';
         return  this.httpclient.post<any>(
             url1,
             data,

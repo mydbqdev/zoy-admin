@@ -94,7 +94,6 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         this.userActivityService.lastActionTime$.subscribe(time => {
           this.lastActionTime = time;
         });
-        console.log(this.userInfo.userEmail,'AlertNotification')
         this.getTimeSinceLastAction();
         this.startValidateToken();
         this.loadProfilePhoto();
@@ -113,7 +112,6 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   }
 
   connectWebsocket(){
-    console.log(this.userInfo.userEmail,'AlertNotification')
     this.authService.connectWebsocket(this.userInfo.userEmail,'AlertNotification');
     this.websocketService.getMessages('AlertNotification')?.subscribe((notifi) => {
       console.log("notifi",notifi)
@@ -192,10 +190,10 @@ export class HeaderComponent implements OnInit,AfterViewInit {
       clearInterval(this.interval);
       this.interval = null;
     }
-    this.authService.checkLoginUserVlidaate();
     this.sessionModelClose.nativeElement.click(); 
     this.nun=0;
     this.countdown = 120;
+    this.authService.checkLoginUserVlidaate();
   }
 
   logout() {

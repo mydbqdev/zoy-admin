@@ -609,12 +609,11 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.notifyService.showInfo("Short term slabs details are already up to date.", "");
       return;
     }
-  
-    console.log("Final submitted short term list:", finalSubmitShortList);
-      return
       this.dbMasterConfigurationService.submitShortTermData(finalSubmitShortList).subscribe(data => {
       this.closeModel.nativeElement.click(); 
-      this.getDbSettingDetails();
+      this.getShortTermList(data);
+      this.dbSettingDataList=Object.assign([],data);
+      this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
       this.resetChange();
       this.submitShortTerm = false;
       this.spinner.hide();
