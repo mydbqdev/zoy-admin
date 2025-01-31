@@ -8,8 +8,14 @@ public class ZoyGstChargesDto {
 	@SerializedName("rentId")
 	private String rentId;
 
-	@SerializedName("gstPercentage")
-	private BigDecimal gstPercentage;
+	@SerializedName("cgstPercentage")
+	private BigDecimal cgstPercentage;
+	
+	@SerializedName("sgstPercentage")
+	private BigDecimal sgstPercentage;
+	
+	@SerializedName("igstPercentage")
+	private BigDecimal igstPercentage;
 	
 	@SerializedName("monthlyRent")
 	private BigDecimal monthlyRent;
@@ -22,12 +28,30 @@ public class ZoyGstChargesDto {
 		this.rentId = rentId;
 	}
 
-	public BigDecimal getGstPercentage() {
-		return gstPercentage;
+	
+
+	public BigDecimal getCgstPercentage() {
+		return cgstPercentage;
 	}
 
-	public void setGstPercentage(BigDecimal gstPercentage) {
-		this.gstPercentage = gstPercentage;
+	public void setCgstPercentage(BigDecimal cgstPercentage) {
+		this.cgstPercentage = cgstPercentage;
+	}
+
+	public BigDecimal getSgstPercentage() {
+		return sgstPercentage;
+	}
+
+	public void setSgstPercentage(BigDecimal sgstPercentage) {
+		this.sgstPercentage = sgstPercentage;
+	}
+
+	public BigDecimal getIgstPercentage() {
+		return igstPercentage;
+	}
+
+	public void setIgstPercentage(BigDecimal igstPercentage) {
+		this.igstPercentage = igstPercentage;
 	}
 
 	public BigDecimal getMonthlyRent() {
