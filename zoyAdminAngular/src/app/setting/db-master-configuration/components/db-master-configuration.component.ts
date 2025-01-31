@@ -511,6 +511,10 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       return  0 == value || value === undefined || value === null || isNaN(value);
    }
 
+  convertToNumber(value: any): number {
+    return Number(value);
+  }
+
    backUpshortTermDataList :ShortTermDataModel[]=[];
      getShortTermList(data:any){
       this.backUpshortTermDataList = [];
@@ -532,23 +536,20 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     this.addShortTermVali = true;
     if(!this.shortTermData.start_day|| this.shortTermData.start_day>31 || Number(this.shortTermData.start_day)===0 
         || !this.shortTermData.end_day|| this.shortTermData.end_day>31 || Number(this.shortTermData.end_day)===0
-        || this.shortTermData.start_day >= this.shortTermData.end_day){
+        || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)){
           return;
         }
-
     this.shortTermDataList.push(JSON.parse(JSON.stringify(this.shortTermData)));
     this.addShortTermVali = false;
     this.shortTermData = new ShortTermDataModel();
-    console.log("shortTerm",this.shortTermData);
    }
 
    modifyShortTerm(shortTerm) {
-    if(!shortTerm.start_day || shortTerm.start_day>31 || Number(shortTerm.start_day)===0 
-    || !shortTerm.end_day || shortTerm.end_day>31 || Number(shortTerm.end_day)===0
-    || shortTerm.start_day >= shortTerm.end_day){
+     if(!shortTerm.start_day || Number(shortTerm.start_day)>31 || Number(shortTerm.start_day)===0 
+        || !shortTerm.end_day || Number(shortTerm.end_day)>31 || Number(shortTerm.end_day)===0
+        || Number(shortTerm.start_day) >= Number(shortTerm.end_day)){
       return;
     }
-    console.log("shortTerm",shortTerm)
     shortTerm.isEdit = false;
   }
   
@@ -583,33 +584,37 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         endDay = endDay>term.end_day?endDay:term.end_day ;
 
         if (term.isEdit) {
-          this.notifyService.showWarning("submit if term is being edited.","")
+          this.notifyService.showWarning("Save if term is being edited.","")
           return; 
         }
  
         for (let j = i + 1; j < this.shortTermDataList.length; j++) {
           const otherTerm = this.shortTermDataList[j];
           
-          if (!(term.end_day < otherTerm.start_day || term.start_day > otherTerm.end_day)) {
+          if (!(Number(term.end_day) < Number(otherTerm.start_day) || Number(term.start_day) > Number(otherTerm.end_day))) {
             this.notifyService.showWarning("The Short term duration period must not Overlapp.","")
             return;
           }
 
-          // if( term.end_day !=30 && otherTerm.start_day == (term.end_day+1)){
-          //   this.notifyService.showWarning("The Short term duration period must be within the defined ranges of 1-30 days.","")
-          //   return;
-          // }
+          
         }
+
+        const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1))
+        if(term.end_day !=30 && ranges.length === 0 ){
+           this.notifyService.showWarning("The Short term duration period must be within the defined ranges of 1-30 days.","")
+           return;
+         }
+
         finalSubmitShortList.push(term);
       }
     }
   
     if (finalSubmitShortList.length < 1) {
-      this.notifyService.showWarning("please add durations","");
+      this.notifyService.showWarning("Please add durations","");
       return;
     }
    
-    if( startDay != 1 || endDay !=30){
+    if( Number(startDay) != 1 || Number(endDay) !=30){
       this.notifyService.showInfo("The Short term duration period must be within the defined ranges of 1-30 days.", "");
       return
     }

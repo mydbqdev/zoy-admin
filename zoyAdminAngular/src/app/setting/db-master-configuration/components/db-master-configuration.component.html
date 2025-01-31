@@ -304,7 +304,7 @@
           <div class="col-sm-3">
             <input type="text" class="form-control form-control-sm" id="start_day"  required autocomplete="off"
             [(ngModel)]="shortTermData.start_day" (keypress)="numberOnly($event)" maxlength="2"
-            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.start_day == undefined || shortTermData.start_day == null || shortTermData.start_day < 1 || shortTermData.start_day > 31 || shortTermData.start_day >= shortTermData.end_day)}">
+            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.start_day == undefined || shortTermData.start_day == null || convertToNumber(shortTermData.start_day) < 1 || convertToNumber(shortTermData.start_day) > 31 || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
           </div>
           <div class="col-sm-1">
             <h2>-</h2>
@@ -312,13 +312,13 @@
           <div class="col-sm-3">
             <input type="text" class="form-control form-control-sm" id="end_day"  required autocomplete="off"
             [(ngModel)]="shortTermData.end_day" (keypress)="numberOnly($event)" maxlength="2"
-            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || shortTermData.end_day < 1 || shortTermData.end_day > 31 || shortTermData.start_day >= shortTermData.end_day)}">
+            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.end_day) > 31 || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
           </div>
           <div class="col-sm-1">
             <button type="submit" class="btn btn-sm btn-primary" (click)="addShortTerm()" >Add</button>
           </div>
       </div>
-       <div *ngIf="submitted && shortTermData.end_day != null && shortTermData.start_day != null && (shortTermData.start_day < 1 || shortTermData.start_day > 31 ||  shortTermData.end_day < 1 || shortTermData.end_day > 31)" class="text-danger">
+       <div *ngIf="submitted && shortTermData.end_day != null && shortTermData.start_day != null && (convertToNumber(shortTermData.start_day) < 1 || convertToNumber(shortTermData.start_day) > 31 ||  convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.end_day) > 31)" class="text-danger">
           Short term duration is invalid.
         </div>
       </div>
@@ -331,7 +331,7 @@
               <div class="col-sm-3">
                 <input type="text" class="form-control form-control-sm" id="term_start_day"  required autocomplete="off"
                 [(ngModel)]="term.start_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2"
-                [ngClass]="{'is-invalid':(submitShortTerm && !term.isDelete && term.isEdit) ||( !term.isDelete && term.isEdit && (term.start_day == undefined || term.start_day == null || term.start_day < 1 || term.start_day > 31))}">
+                [ngClass]="{'is-invalid':(submitShortTerm && !term.isDelete && term.isEdit) ||( !term.isDelete && term.isEdit && (term.start_day == undefined || term.start_day == null || convertToNumber(term.start_day) < 1 || convertToNumber(term.start_day) > 31))}">
               </div>
               <div class="col-sm-1">
                 <h2>-</h2>
@@ -339,7 +339,7 @@
               <div class="col-sm-3">
                 <input type="text" class="form-control form-control-sm" id="term_end_day"  required autocomplete="off"
                 [(ngModel)]="term.end_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2"
-                [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.end_day == undefined || term.end_day == null || term.end_day < 1 || term.end_day > 31))}">
+                [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.end_day == undefined || term.end_day == null || convertToNumber(term.end_day) < 1 || convertToNumber(term.end_day) > 31))}">
               </div>
               <div class="col-sm-1">
                 <div class="input-group">
