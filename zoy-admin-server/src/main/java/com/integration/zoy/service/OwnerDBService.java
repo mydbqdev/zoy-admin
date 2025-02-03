@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.entity.ZoyCompanyProfileMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgAutoCancellationAfterCheckIn;
@@ -40,6 +41,7 @@ import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.exception.WebServiceException;
+import com.integration.zoy.repository.ZoyCompanyProfileMasterRepository;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
 import com.integration.zoy.repository.ZoyPgAmenetiesMasterRepository;
 import com.integration.zoy.repository.ZoyPgAutoCancellationAfterCheckInRepository;
@@ -158,7 +160,10 @@ public class OwnerDBService implements OwnerDBImpl{
 	private ZoyPgShortTermMasterRepository zoyPgShortTermMasterRepository;
 	
 	@Autowired
-	private ZoyPgForceCheckOutRepository zoyPgForceCheckOutRepository;
+	private ZoyPgForceCheckOutRepository zoyPgForceCheckOutRepository; 
+	
+	@Autowired
+	private ZoyCompanyProfileMasterRepository zoyCompanyProfileMasterRepository;
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -745,6 +750,21 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public ZoyPgForceCheckOut findZoyForceCheckOut() {
 		return zoyPgForceCheckOutRepository.findAll().get(0);
+	}
+
+	@Override
+	public ZoyCompanyProfileMaster findCompanyProfile(String profileId) {
+		return zoyCompanyProfileMasterRepository.findById(profileId).orElse(null);
+	}
+
+	@Override
+	public ZoyCompanyProfileMaster createOrUpdateCompanyProfile(ZoyCompanyProfileMaster companyProfile) {
+		return zoyCompanyProfileMasterRepository.save(companyProfile);
+	}
+
+	@Override
+	public List<ZoyCompanyProfileMaster> findAllCompanyProfiles() {
+		return zoyCompanyProfileMasterRepository.findAll();
 	}
 
 	
