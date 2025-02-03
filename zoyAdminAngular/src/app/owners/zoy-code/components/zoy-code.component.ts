@@ -109,6 +109,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			  Validators.required,
 			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
 			]],
+			zoyShare:['', [Validators.required]],
 		  });
 	}
 	ngAfterViewInit() {
@@ -331,5 +332,29 @@ nameValidation(event: any, inputId: string) {
 				}).catch(
 					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 				); 
+  }
+
+  isNotValidNumber(value: any): boolean {
+	return  (value == '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
+  }
+percentageOnlyWithZero(event): boolean {
+	const charCode = (event.which) ? event.which : event.keyCode;
+	const inputValue = event.target.value + String.fromCharCode(charCode); 
+
+	if (inputValue.startsWith('.')) {
+		return false;
+	  }
+	
+	if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+	  if (charCode !== 46 ) { // Allow decimal point (46) and percent symbol (37)
+		return false;
+	  }
+	}
+  
+	if ((inputValue.match(/\./g) || []).length> 1 || parseFloat(inputValue) > 100 ) {
+	  return false;
+	}
+
+	return true;
   }
 }

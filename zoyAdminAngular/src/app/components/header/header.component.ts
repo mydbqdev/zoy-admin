@@ -168,9 +168,11 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     }
     this.interval = setInterval(() => {
       if (this.countdown <= 0) {
+        console.log(new Date(),"startSessionTimeout >this.countdown>>",this.countdown);
         this.nun=0;
         this.logout();
       } else {
+        console.log(new Date(),"startSessionTimeout >this.countdown>>",this.countdown);
         this.countdown--;
       }
     }, 1000); 
