@@ -60,7 +60,7 @@ public class ExcelGenerateService {
 			row.createCell(3).setCellValue("PG Address");
 			row.createCell(4).setCellValue("BED Number");
 			row.createCell(5).setCellValue("Transaction Date");
-			row.createCell(6).setCellValue("Transaction No");
+			row.createCell(6).setCellValue("Invoice No");
 			row.createCell(7).setCellValue("Transaction Status");
 			row.createCell(8).setCellValue("Due Amount");
 			row.createCell(9).setCellValue("GST Amount");
@@ -70,7 +70,7 @@ public class ExcelGenerateService {
 			break;
 		case "userPaymentGstReport":
 			row.createCell(0).setCellValue("Transaction Date");
-			row.createCell(1).setCellValue("Transaction No");
+			row.createCell(1).setCellValue("Invoice No");
 			row.createCell(2).setCellValue("Tenant Name");
 			row.createCell(3).setCellValue("PG Name");
 			row.createCell(4).setCellValue("PG Address");
@@ -81,7 +81,7 @@ public class ExcelGenerateService {
 			break;
 		case "consolidatedFinanceReport":
 			row.createCell(0).setCellValue("Transaction Date");
-			row.createCell(1).setCellValue("Transaction Number");
+			row.createCell(1).setCellValue("Invoice Number");
 			row.createCell(2).setCellValue("Payer/Payee Type");
 			row.createCell(3).setCellValue("Name of the Payer/Payee");
 			row.createCell(4).setCellValue("Debit");
@@ -105,7 +105,7 @@ public class ExcelGenerateService {
 			row.createCell(5).setCellValue("Total Amount Paid to Owner");
 			row.createCell(6).setCellValue("ZOY Share");
 			row.createCell(7).setCellValue("Transaction Date");
-			row.createCell(8).setCellValue("Transaction Number");
+			row.createCell(8).setCellValue("Invoice Number");
 			row.createCell(9).setCellValue("Payment Status");
 			row.createCell(10).setCellValue("Owner approval Status");
 			break;
@@ -120,8 +120,8 @@ public class ExcelGenerateService {
 			row.createCell(7).setCellValue("Total Amount Payable");
 			break;
 		case "vendorPaymentsGstReport":
-			row.createCell(0).setCellValue("Transaction Date");
-			row.createCell(1).setCellValue("Transaction No");
+			row.createCell(0).setCellValue(" Date");
+			row.createCell(1).setCellValue("Invoice No");
 			row.createCell(2).setCellValue("Property ID");
 			row.createCell(3).setCellValue("Property Name");
 			row.createCell(4).setCellValue("Total Amount");
@@ -139,7 +139,7 @@ public class ExcelGenerateService {
 			row.createCell(6).setCellValue("Refundable Amount");
 			row.createCell(7).setCellValue("Amount Paid");
 			row.createCell(8).setCellValue("Payment Date");
-			row.createCell(9).setCellValue("Transaction Number");
+			row.createCell(9).setCellValue("Invoice Number");
 			row.createCell(10).setCellValue("Status");
 			break;	
 		case "reviewsAndRatingReport":
