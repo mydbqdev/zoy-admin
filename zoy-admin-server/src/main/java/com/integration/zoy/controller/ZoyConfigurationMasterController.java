@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -31,6 +32,7 @@ import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.TriggeredCond;
 import com.integration.zoy.entity.TriggeredOn;
 import com.integration.zoy.entity.TriggeredValue;
+import com.integration.zoy.entity.ZoyCompanyProfileMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAutoCancellationAfterCheckIn;
 import com.integration.zoy.entity.ZoyPgAutoCancellationMaster;
@@ -45,15 +47,18 @@ import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
+import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
+import com.integration.zoy.service.PdfGenerateService;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.ZoyAdminConfigDTO;
 import com.integration.zoy.utils.ZoyAfterCheckInCancellationDto;
 import com.integration.zoy.utils.ZoyBeforeCheckInCancellationDto;
+import com.integration.zoy.utils.ZoyCompanyProfileMasterDto;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
 import com.integration.zoy.utils.ZoyForceCheckOutDto;
 import com.integration.zoy.utils.ZoyGstChargesDto;
@@ -98,6 +103,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
+
+	@Autowired
+	PdfGenerateService pdfGenerateService;
 
 
 	@Override
@@ -1106,13 +1114,131 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
-	
+
 	}
 	private ZoyForceCheckOutDto convertToDTO(ZoyPgForceCheckOut entity) {
 		ZoyForceCheckOutDto dto = new ZoyForceCheckOutDto();
 		dto.setForceCheckOutId(entity.getForceCheckOutId());
 		dto.setForceCheckOutDays(entity.getForceCheckOutDays());
 		return dto;
+	}
+
+
+	@Override
+	public ResponseEntity<String> zoyAdminCompanyProfileMaster(ZoyCompanyProfileMasterModal companyProfile,MultipartFile Logo) {
+		ResponseBody response = new ResponseBody();
+		try {
+			if (companyProfile == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Required Company Profile details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+
+			ZoyCompanyProfileMaster zoyCompanyProfileMaster = null;
+			if (companyProfile.getCompanyProfileId() != null) {
+				zoyCompanyProfileMaster = ownerDBImpl.findCompanyProfile(companyProfile.getCompanyProfileId());
+			}
+			if (zoyCompanyProfileMaster != null) {
+				// Update existing company profile
+				zoyCompanyProfileMaster.setType(companyProfile.getType());
+				zoyCompanyProfileMaster.setCompanyName(companyProfile.getCompanyName());
+				byte[] profilePictureBase64 = pdfGenerateService.imageToBytes(Logo.getInputStream());
+				zoyCompanyProfileMaster.setLogo(profilePictureBase64);
+				zoyCompanyProfileMaster.setAddress(companyProfile.getAddress());
+				zoyCompanyProfileMaster.setCity(companyProfile.getCity());
+				zoyCompanyProfileMaster.setState(companyProfile.getState());
+				zoyCompanyProfileMaster.setGstNumber(companyProfile.getGstNumber());
+				zoyCompanyProfileMaster.setPanNumber(companyProfile.getPanNumber());
+				zoyCompanyProfileMaster.setEmailId(companyProfile.getEmailId());
+				zoyCompanyProfileMaster.setContactNumber(companyProfile.getContactNumber());
+
+				ownerDBImpl.createOrUpdateCompanyProfile(zoyCompanyProfileMaster);
+
+				// Audit history here
+				StringBuffer historyContent = new StringBuffer(" has updated the Company Profile for " + companyProfile.getCompanyName());
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+
+				List<ZoyCompanyProfileMaster> companyProfiles = ownerDBImpl.findAllCompanyProfiles();
+				List<ZoyCompanyProfileMasterDto> dto = convertsToDTO(companyProfiles);
+
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Updated Company Profile");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				// Create new company profile
+				ZoyCompanyProfileMaster newZoyCompanyProfile = new ZoyCompanyProfileMaster();
+				newZoyCompanyProfile.setType(companyProfile.getType());
+				newZoyCompanyProfile.setCompanyName(companyProfile.getCompanyName());
+				byte[] profilePictureBase64 = pdfGenerateService.imageToBytes(Logo.getInputStream());
+				newZoyCompanyProfile.setLogo(profilePictureBase64);
+				newZoyCompanyProfile.setAddress(companyProfile.getAddress());
+				newZoyCompanyProfile.setCity(companyProfile.getCity());
+				newZoyCompanyProfile.setState(companyProfile.getState());
+				newZoyCompanyProfile.setGstNumber(companyProfile.getGstNumber());
+				newZoyCompanyProfile.setPanNumber(companyProfile.getPanNumber());
+				newZoyCompanyProfile.setEmailId(companyProfile.getEmailId());
+				newZoyCompanyProfile.setContactNumber(companyProfile.getContactNumber());
+
+				ownerDBImpl.createOrUpdateCompanyProfile(newZoyCompanyProfile);
+
+				// Audit history here
+				StringBuffer historyContent = new StringBuffer(" has created a new Company Profile for " + companyProfile.getCompanyName());
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+
+				List<ZoyCompanyProfileMaster> companyProfiles = ownerDBImpl.findAllCompanyProfiles();
+				List<ZoyCompanyProfileMasterDto> dto = convertsToDTO(companyProfiles);
+
+				response.setStatus(HttpStatus.CREATED.value());
+				response.setData(dto);
+				response.setMessage("Created Company Profile");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CREATED);
+			}
+
+		} catch (Exception e) {
+			log.error("Error saving/updating Company Profile API:/zoy_admin/config/company-profile.zoyAdminConfigUpdateCompany", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	public static List<ZoyCompanyProfileMasterDto> convertsToDTO(List<ZoyCompanyProfileMaster> companyProfiles) {
+		List<ZoyCompanyProfileMasterDto> dtoList = new ArrayList<>();
+		for (ZoyCompanyProfileMaster profile : companyProfiles) {
+			ZoyCompanyProfileMasterDto dto = new ZoyCompanyProfileMasterDto();
+			dto.setCompanyProfileId(profile.getCompanyProfileId());
+			dto.setType(profile.getType());
+			dto.setCompanyName(profile.getCompanyName());
+			dto.setLogo(profile.getLogo());
+			dto.setAddress(profile.getAddress());
+			dto.setCity(profile.getCity());
+			dto.setState(profile.getState());
+			dto.setGstNumber(profile.getGstNumber());
+			dto.setPanNumber(profile.getPanNumber());
+			dto.setEmailId(profile.getEmailId());
+			dto.setContactNumber(profile.getContactNumber());
+			dtoList.add(dto);
+		}
+		return dtoList;
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminCompanyProfiles() {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<ZoyCompanyProfileMaster> companyProfiles = ownerDBImpl.findAllCompanyProfiles();
+			List<ZoyCompanyProfileMasterDto> dto = convertsToDTO(companyProfiles);
+			response.setStatus(HttpStatus.CREATED.value());
+			response.setData(dto);
+			response.setMessage("Created Company Profile");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.CREATED);
+		}catch (Exception e) {
+			log.error("Error saving/updating Company Profile API:/zoy_admin/config/company-profiles.zoyAdminConfigUpdateCompany", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }

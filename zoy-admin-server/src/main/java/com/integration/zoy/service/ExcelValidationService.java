@@ -28,6 +28,12 @@ public class ExcelValidationService {
 		try (ByteArrayInputStream is = new ByteArrayInputStream(file); Workbook workbook = new XSSFWorkbook(is)) {
 			Sheet sheet = workbook.getSheetAt(0);
 			Row headerRow = sheet.getRow(0);
+			Row thirdRow = sheet.getRow(2);
+			
+	        if (thirdRow == null || thirdRow.getPhysicalNumberOfCells() < 2) {
+	            errors.add(new ErrorDetail(0, 3, "File", "File is empty (No data)"));
+	            return errors;
+	        }
 			if (!validateHeaders(headerRow, errors)) {
 				return errors;
 			}
