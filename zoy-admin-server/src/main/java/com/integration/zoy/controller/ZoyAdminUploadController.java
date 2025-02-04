@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,7 @@ import com.integration.zoy.service.CSVValidationService;
 import com.integration.zoy.service.ExcelValidationService;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.ZoyAdminService;
+import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.BulkUploadData;
 import com.integration.zoy.utils.ErrorDetail;
 import com.integration.zoy.utils.OwnerPropertyDetails;
@@ -56,12 +58,17 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 	@Autowired
 	ZoyAdminService zoyAdminService;
 
+	@Autowired
+	ZoyS3Service zoyS3Service;
+
+	@Value("${app.minio.zoypg.upload.docs.bucket.name}")
+	private String zoypgUploadDocsBucketName;
+
 	private final HttpServletRequest request;
 
 	public ZoyAdminUploadController(HttpServletRequest request) {
 		this.request = request;
 	}
-
 
 	private static final Logger log = LoggerFactory.getLogger(ZoyAdminUploadController.class);
 	private static final Gson gson = new GsonBuilder()
@@ -144,6 +151,9 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				bulkUploadDetails.setPropertyName(tenant.getPropertyName());
 				bulkUploadDetails.setStatus("Failed");
 				bulkUploadDetails.setFileName(file.getOriginalFilename());
+				String uploadedFileName = tenant.getOwnerId() + "/" + tenant.getPropertyId() + "/" + fileName;
+				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+				bulkUploadDetails.setFilePath(fileUrl);
 				adminDBImpl.saveBulkUpload(bulkUploadDetails);
 				response.setStatus(HttpStatus.CONFLICT.value());
 				response.setData(error);
@@ -158,6 +168,9 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				bulkUploadDetails.setPropertyName(tenant.getPropertyName());
 				bulkUploadDetails.setStatus("Processing");
 				bulkUploadDetails.setFileName(file.getOriginalFilename());
+				String uploadedFileName = tenant.getOwnerId() + "/" + tenant.getPropertyId() + "/" + fileName;
+				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+				bulkUploadDetails.setFilePath(fileUrl);
 				adminDBImpl.saveBulkUpload(bulkUploadDetails);
 				zoyAdminService.processTenant(tenant.getOwnerId(),tenant.getPropertyId(),fileBytes,fileName,jobExecutionId);
 				response.setStatus(HttpStatus.OK.value());
@@ -203,6 +216,9 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				bulkUploadDetails.setPropertyName(property.getPropertyName());
 				bulkUploadDetails.setStatus("Failed");
 				bulkUploadDetails.setFileName(file.getOriginalFilename());
+				String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
+				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+				bulkUploadDetails.setFilePath(fileUrl);
 				adminDBImpl.saveBulkUpload(bulkUploadDetails);
 				response.setStatus(HttpStatus.CONFLICT.value());
 				response.setData(error);
@@ -217,6 +233,9 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				bulkUploadDetails.setPropertyName(property.getPropertyName());
 				bulkUploadDetails.setStatus("Processing");
 				bulkUploadDetails.setFileName(file.getOriginalFilename());
+				String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
+				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+				bulkUploadDetails.setFilePath(fileUrl);
 				adminDBImpl.saveBulkUpload(bulkUploadDetails);
 				zoyAdminService.processProperty(property.getOwnerId(),property.getPropertyId(),fileBytes,fileName,jobExecutionId);
 				response.setStatus(HttpStatus.OK.value());
@@ -249,6 +268,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				uploadData.setPropertyName(data.getPropertyName());
 				uploadData.setStatus(data.getStatus());
 				uploadData.setCreateAt(data.getCreatedAt());
+				uploadData.setFilePath(data.getFilePath());
 				bulkUploadDatas.add(uploadData);
 			}
 			return new ResponseEntity<>(gson.toJson(bulkUploadDatas), HttpStatus.OK);

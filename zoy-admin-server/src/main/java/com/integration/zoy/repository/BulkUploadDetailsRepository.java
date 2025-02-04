@@ -14,5 +14,13 @@ public interface BulkUploadDetailsRepository extends JpaRepository<BulkUploadDet
 	
 	@Query(value = "SELECT * FROM bulk_upload_details WHERE job_execution_id = :jobExeId", nativeQuery = true)
     Optional<BulkUploadDetails> findByJobExecutionId(@Param("jobExeId") String jobExeId);
-
+	
+	@Query(value = "select exit_message from bulkupload.batch_job_execution where job_execution_id = :executionId", nativeQuery = true)
+    String findErrorMessage(@Param("executionId") long executionId);
+	
+	@Query(value = "select ur.user_email from \r\n" + "pgadmin.user_role ur\r\n"
+			+ "join pgadmin.app_role ar on ur.role_id = ar.id\r\n"
+			+ "where ar.role_name='SUPER_ADMIN_ACCESS'", nativeQuery = true)
+	String[] allSuperAdmin();
+	
 }

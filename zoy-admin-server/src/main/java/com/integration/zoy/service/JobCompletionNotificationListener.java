@@ -15,6 +15,9 @@ import com.integration.zoy.repository.BulkUploadDetailsRepository;
 public class JobCompletionNotificationListener extends JobExecutionListenerSupport{
 	@Autowired
 	BulkUploadDetailsRepository bulkUploadDetailsRepository;
+	
+	@Autowired
+	ZoyEmailService zoyEmailService;
 
 	@Override
 	public void afterJob(JobExecution jobExecution) {
@@ -25,13 +28,15 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
 			e.printStackTrace();
 		}
 		Optional<BulkUploadDetails> bulkUploadDetailsOpt = bulkUploadDetailsRepository.findByJobExecutionId(jobExecutionId);
-
+		
 		bulkUploadDetailsOpt.ifPresent(bulkUploadDetails -> {
 			if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 				bulkUploadDetails.setStatus("Completed");
 			} else if (jobExecution.getStatus() == BatchStatus.FAILED) {
 				bulkUploadDetails.setStatus("Failed");
-				
+				long executionId =jobExecution.getJobInstance().getInstanceId();
+				String errorMessage=bulkUploadDetailsRepository.findErrorMessage(executionId);
+				zoyEmailService.sendErrorEmail(jobExecutionId, errorMessage);				
 			}
 			bulkUploadDetailsRepository.save(bulkUploadDetails);
 		});
