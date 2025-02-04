@@ -3,6 +3,7 @@ package com.integration.zoy.utils;
 import com.google.gson.annotations.SerializedName;
 
 public class ZoyRentingDuration {
+	
 	@SerializedName("rentingDurationId")
 	private String rentingDurationId;
 

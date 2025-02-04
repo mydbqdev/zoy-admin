@@ -689,7 +689,8 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public ZoyPgEarlyCheckOut findEarlyCheckOutRule() throws WebServiceException {
-		return zoyPgEarlyCheckOutRepository.findAll().get(0);
+		List<ZoyPgEarlyCheckOut> results=zoyPgEarlyCheckOutRepository.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@Override
@@ -699,7 +700,9 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public ZoyPgAutoCancellationAfterCheckIn findAutoCancellationAfterCheckIn() throws WebServiceException {
-		return zoyPgAutoCancellationAfterCheckInRepository.findAll().get(0);
+		List<ZoyPgAutoCancellationAfterCheckIn> results=zoyPgAutoCancellationAfterCheckInRepository.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
+
 	}
 
 	@Override
@@ -714,7 +717,8 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public ZoyPgAutoCancellationMaster findSecurityDepositDeadLine() throws WebServiceException {
-		return zoyPgAutoCancellationMasterRepository.findAll().get(0);
+		List<ZoyPgAutoCancellationMaster> results=zoyPgAutoCancellationMasterRepository.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@Override
@@ -754,7 +758,9 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public ZoyPgForceCheckOut findZoyForceCheckOut() {
-		return zoyPgForceCheckOutRepository.findAll().get(0);
+		List<ZoyPgForceCheckOut> results=zoyPgForceCheckOutRepository.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
+
 	}
 
 	@Override
@@ -774,7 +780,8 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public ZoyPgShortTermRentingDuration findZoyRentingDuration() {
-		return rentingDurationRepo.findAll().get(0);
+		List<ZoyPgShortTermRentingDuration> results=rentingDurationRepo.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@Override
