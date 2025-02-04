@@ -33,6 +33,8 @@ public class ZoyAdminConfigDTO {
 	private List<ZoyShortTermDto> zoyShortTermDtos;
 	@SerializedName("forceCheckOut")
 	private ZoyForceCheckOutDto zoyForceCheckOutDto;
+	@SerializedName("shortTermRentingDuration")
+	private ZoyRentingDuration shortTermRentingDuration;
 	
     
  

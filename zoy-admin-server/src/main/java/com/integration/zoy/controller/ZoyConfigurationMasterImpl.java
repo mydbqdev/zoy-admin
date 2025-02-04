@@ -26,6 +26,7 @@ import com.integration.zoy.utils.ZoyGstChargesDto;
 import com.integration.zoy.utils.ZoyOtherChargesDto;
 import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
 import com.integration.zoy.utils.ZoyPgTokenDetailsDTO;
+import com.integration.zoy.utils.ZoyRentingDuration;
 import com.integration.zoy.utils.ZoyShortTermDto;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -245,4 +246,16 @@ public interface ZoyConfigurationMasterImpl {
     produces = { "application/json" },
     consumes = { "multipart/form-data" })
 	ResponseEntity<String> zoyAdminCompanyProfiles();
+	
+	@Operation(summary = "Admin Configration Short Term Renting Duration", description = "Creating/Updating Admin Configration Short Term Renting Duration", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/renting-duration",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminConfigShortTermRentingDuration(@RequestBody ZoyRentingDuration rentingDuration);
 }
