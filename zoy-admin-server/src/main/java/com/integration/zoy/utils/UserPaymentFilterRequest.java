@@ -1,4 +1,7 @@
 package com.integration.zoy.utils;
+import java.sql.Timestamp;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserPaymentFilterRequest {
@@ -20,10 +23,12 @@ public class UserPaymentFilterRequest {
 	
 	
 	@JsonProperty("fromDate")
-	private String fromDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private Timestamp fromDate;
 	
 	@JsonProperty("toDate")
-	private String toDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private Timestamp toDate;
 	
 	
 	@JsonProperty("reportType")
@@ -88,19 +93,19 @@ public class UserPaymentFilterRequest {
 	}
 
 	
-	public String getFromDate() {
+	public Timestamp getFromDate() {
 		return fromDate;
 	}
 
-	public void setFromDate(String fromDate) {
+	public void setFromDate(Timestamp fromDate) {
 		this.fromDate = fromDate;
 	}
 
-	public String getToDate() {
+	public Timestamp getToDate() {
 		return toDate;
 	}
 
-	public void setToDate(String toDate) {
+	public void setToDate(Timestamp toDate) {
 		this.toDate = toDate;
 	}
 

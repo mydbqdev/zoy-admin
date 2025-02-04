@@ -50,6 +50,9 @@ public class CSVValidationService {
 			if (records.isEmpty()) {
 				return Collections.singletonList(new ErrorDetail(0, 0, "file", "CSV file is empty"));
 			}
+			if (records.size() < 3) {
+		        return Collections.singletonList(new ErrorDetail(3, 0, "file", "CSV file is empty (No data) "));
+		    }
 			String[] headers = records.get(0);
 			int emailIndex = Arrays.asList(headers).indexOf("eMail");
 			int phoneIndex = Arrays.asList(headers).indexOf("Phone Number");
@@ -70,6 +73,7 @@ public class CSVValidationService {
 					}
 				}
 			}
+			
 			for (Map.Entry<String, List<Integer>> entry : phoneTracker.entrySet()) {
 				List<Integer> rows = entry.getValue();
 				if (rows.size() > 1) {

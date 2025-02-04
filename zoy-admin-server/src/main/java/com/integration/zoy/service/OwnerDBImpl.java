@@ -2,6 +2,7 @@ package com.integration.zoy.service;
 
 import java.util.List;
 
+import com.integration.zoy.entity.ZoyCompanyProfileMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgAutoCancellationAfterCheckIn;
@@ -144,5 +145,8 @@ public interface OwnerDBImpl {
 	ZoyPgShortTermMaster findShortTerm(String zoyPgShortTermMasterId);
 	ZoyPgForceCheckOut findZoyForceCheckOut(String forceCheckOutId);
 	ZoyPgForceCheckOut saveForceCheckOut(ZoyPgForceCheckOut force);
+	ZoyCompanyProfileMaster createOrUpdateCompanyProfile(ZoyCompanyProfileMaster companyProfile);
+	ZoyCompanyProfileMaster findCompanyProfile(String profileId);
+	List<ZoyCompanyProfileMaster> findAllCompanyProfiles();
 	ZoyPgForceCheckOut findZoyForceCheckOut();
 }

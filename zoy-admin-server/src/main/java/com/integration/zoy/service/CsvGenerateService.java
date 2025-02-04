@@ -50,28 +50,28 @@ public class CsvGenerateService {
     private void createCsvHeaderRow(PrintWriter writer, Object dto, String reportType) {
         switch (reportType) {
             case "userTransactionReport":
-                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Transaction No,Transaction Status,Due Amount,GST Amount,Total Amount,Category,Mode of Payment");
+                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Invoice No,Transaction Status,Due Amount,GST Amount,Total Amount,Category,Mode of Payment");
                 break;
             case "userPaymentGstReport":
-                writer.println("Transaction Date,Transaction No,Tenant Name,PG Name,PG Address,Total Amount,GST Amount,Due Amount,Mode of Payment");
+                writer.println("Transaction Date,Invoice No,Tenant Name,PG Name,PG Address,Total Amount,GST Amount,Due Amount,Mode of Payment");
                 break;
             case "consolidatedFinanceReport":
-                writer.println("Transaction Date,Transaction Number,Payer/Payee Type,Name of the Payer/Payee,Debit,Credit");
+                writer.println("Transaction Date,Invoice Number,Payer/Payee Type,Name of the Payer/Payee,Debit,Credit");
                 break;
             case "tenantDuesReport":
                 writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,Bed No,Pending Amount,Payment Due Date");
                 break;
             case "vendorPaymentsReport":
-                writer.println("Owner Name,PG Name,Owner Email ID,PG Address,Total Amount Received from Tenants,Total Amount Paid to Owner,ZOY Share,Transaction Date,Transaction Number,Payment Status,Owner approval Status");
+                writer.println("Owner Name,PG Name,Owner Email ID,PG Address,Total Amount Received from Tenants,Total Amount Paid to Owner,ZOY Share,Transaction Date,Invoice Number,Payment Status,Owner approval Status");
                 break;
             case "vendorPaymentsDuesReport":
                 writer.println("Owner ID,Owner Name,Pending Amount,Pending Due Date,Property ID,Property Name,Total Amount Paid,Total Amount Payable");
                 break;
             case "vendorPaymentsGstReport":
-                writer.println("Transaction Date,Transaction No,Property ID,Property Name,Total Amount,GST Amount,Basic Amount,Payment Method");
+                writer.println("Transaction Date,Invoice No,Property ID,Property Name,Total Amount,GST Amount,Basic Amount,Payment Method");
                 break;
             case "tenantRefundReport":
-                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,Booking ID,Refund Title,Refundable Amount,Amount Paid,Payment Date,Transaction Number,Status");
+                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,Booking ID,Refund Title,Refundable Amount,Amount Paid,Payment Date,Invoice Number,Status");
                 break;    
             case "reviewsAndRatingReport":
                 writer.println("Review Date,Tenant Name,PG Name,Tenant Contact,Cleanliness,Accommodation,Aminities,Maintenance,Value For Money,Overall Rating");
@@ -235,7 +235,7 @@ public class CsvGenerateService {
         }
     }
 
-    private String safeToString(Object obj) {
-        return obj == null ? "N/A" : obj.toString();
+    private Object safeToString(Object obj) {
+        return obj == null ? "N/A" : obj;
     }
 }
