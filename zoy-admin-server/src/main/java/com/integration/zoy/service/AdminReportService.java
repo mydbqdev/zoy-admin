@@ -575,7 +575,7 @@ public class AdminReportService implements AdminReportImpl{
 
 
 	@Override
-	public CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails(String fromDate, String toDate) throws WebServiceException{		
+	public CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails(Timestamp fromDate, Timestamp toDate) throws WebServiceException{		
 		try{
 			List<VendorPaymentsDues> vendorPaymentsDues = new ArrayList<>();
 			VendorPaymentsDues vendorPayDues = new VendorPaymentsDues();
@@ -597,7 +597,7 @@ public class AdminReportService implements AdminReportImpl{
 	}
 
 	@Override
-	public CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails(String fromDate, String toDate) throws WebServiceException{
+	public CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails(Timestamp fromDate, Timestamp toDate) throws WebServiceException{
 		try {
 			List<VendorPaymentsGst> vendorPaymentsGst = new ArrayList<>();
 			VendorPaymentsGst vendorPaysGst = new VendorPaymentsGst();
@@ -654,8 +654,8 @@ public class AdminReportService implements AdminReportImpl{
 			}
 			List<?> dataList = reportData.getData();
 			data.put("reportData", dataList);
-			data.put("startDate", Timestamp.valueOf(filterRequest.getFromDate()));  
-			data.put("endDate", Timestamp.valueOf(filterRequest.getToDate())); 
+			data.put("startDate", filterRequest.getFromDate());  
+			data.put("endDate", filterRequest.getToDate()); 
 			switch (filterRequest.getDownloadType().toLowerCase()) {
 			case "pdf":
 				try {

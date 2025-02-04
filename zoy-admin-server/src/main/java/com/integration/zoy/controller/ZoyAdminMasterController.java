@@ -1053,17 +1053,17 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		ResponseBody response = new ResponseBody();
 
 	    try {
-	        String fromDateString = filterdata.getFromDate();
-	        String endDateString = filterdata.getToDate();
+	        Timestamp fromDate = filterdata.getFromDate();
+	        Timestamp endDate = filterdata.getToDate();
 
-	        if (fromDateString == null || endDateString == null) {
+	        if (fromDate == null || endDate == null) {
 	            response.setStatus(HttpStatus.BAD_REQUEST.value());
 	            response.setError("From Date and End Date are required.");
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	        }
 
-	        Timestamp fromDate = Timestamp.valueOf(fromDateString);
-	        Timestamp endDate = Timestamp.valueOf(endDateString);
+	        //Timestamp fromDate = Timestamp.valueOf(fromDateString);
+	        //Timestamp fromDate = Timestamp.valueOf(endDateString);
 
 	        long checkedInCount = userBookings.getBookedCountByDates(fromDate, endDate); 
 	        long bookedCount = userBookings.getCheckInCountByDates(fromDate, endDate);

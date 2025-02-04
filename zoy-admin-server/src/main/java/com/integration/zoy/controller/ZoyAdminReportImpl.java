@@ -1,5 +1,7 @@
 package com.integration.zoy.controller;
 
+import java.sql.Timestamp;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -84,8 +86,8 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/vendor-payment-dues-report",
 	produces = { "application/json" })
-	ResponseEntity<String> getVendorPaymentDuesByDateRange(@RequestParam("fromDate") String fromDate,
-            @RequestParam("toDate") String toDate);
+	ResponseEntity<String> getVendorPaymentDuesByDateRange(@RequestParam("fromDate") Timestamp fromDate,
+            @RequestParam("toDate") Timestamp toDate);
 	
 	@Operation(summary = "Get vendor payments GST Report by date range", description = "Getting vendor payments GST  Report Details", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
@@ -96,8 +98,8 @@ public interface ZoyAdminReportImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/vendor-payment-gst-report",
 	produces = { "application/json" })
-	ResponseEntity<String> getVendorPaymentGstReportByDateRange(@RequestParam("fromDate") String fromDate,
-            @RequestParam("toDate") String toDate);
+	ResponseEntity<String> getVendorPaymentGstReportByDateRange(@RequestParam("fromDate") Timestamp fromDate,
+            @RequestParam("toDate") Timestamp toDate);
 	@Operation(summary = "download User Pyament Details", description = "download  User payment Transfer Details", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
 	
