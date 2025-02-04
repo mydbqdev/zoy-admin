@@ -32,6 +32,9 @@ public class BulkUploadData {
 	
 	@SerializedName("createAt")
 	Timestamp createAt;
+	
+	@SerializedName("filePath")
+	String filePath;
 
 	public Long getId() {
 		return id;
@@ -105,11 +108,20 @@ public class BulkUploadData {
 		this.createAt = createAt;
 	}
 
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	
 	@Override
 	public String toString() {
 		return "BulkUploadData [id=" + id + ", category=" + category + ", fileName=" + fileName + ", ownerId=" + ownerId
 				+ ", ownerName=" + ownerName + ", propertyId=" + propertyId + ", propertyName=" + propertyName
-				+ ", status=" + status + ", createAt=" + createAt + "]";
+				+ ", status=" + status + ", createAt=" + createAt + ", filePath=" + filePath + "]";
 	}
 	
 }

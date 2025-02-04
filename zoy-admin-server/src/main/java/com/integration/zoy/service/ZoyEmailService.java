@@ -1,13 +1,17 @@
 package com.integration.zoy.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.hc.core5.http.ContentType;
@@ -30,6 +34,7 @@ import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.entity.ZoyPgPropertyDetails;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.model.RegisterUser;
+import com.integration.zoy.repository.BulkUploadDetailsRepository;
 import com.integration.zoy.utils.AdminUserList;
 import com.integration.zoy.utils.Email;
 
@@ -38,7 +43,13 @@ public class ZoyEmailService {
 
 	@Autowired
 	EmailService emailService;
-
+	
+	@Autowired
+	PdfGenerateService pdfGenerateService;
+	
+	@Autowired
+	BulkUploadDetailsRepository bulkUploadDetailsRepository;
+	
 	@Value("${qa.signin.link}")
 	private String qaSigninLink;
 
@@ -379,4 +390,52 @@ public class ZoyEmailService {
 	    }
 	}
 	
+	
+
+	public void sendErrorEmail(String executionId, String errorMessage) {
+		try {
+			String[] allMails = bulkUploadDetailsRepository.allSuperAdmin();
+
+			Email email = new Email();
+			email.setFrom(zoyAdminMail);
+			List<String> to = new ArrayList<>();
+			Collections.addAll(to, allMails);
+			email.setTo(to);
+
+			email.setSubject("Urgent: Document Update Failure – Assistance Required " + executionId);
+
+			// Create HTML body
+			String htmlBody = "<p>Dear Team,</p>"
+					+ "<p>The system encountered an issue while attempting to update the uploaded data on the Admin Portal.</p>"
+					+ "<p>The update process failed, and the system generated the following error the following error log,</p>"
+					+ "<p>which is attached below for your reference.</p>"
+					+ "<p>This issue is impacting our ability to process documents efficiently. "
+					+ "Kindly investigate and provide a resolution at the earliest.</p>"
+					+ "<p>Best regards,<br>ZOY Administrator</p>";
+
+			email.setBody(htmlBody);
+			email.setContent("text/html");
+
+			StringBuilder attachmentContent = new StringBuilder();
+			attachmentContent.append("Error Log Report\n");
+			attachmentContent.append("================\n\n");
+			attachmentContent.append("Execution ID: ").append(executionId).append("\n");
+			attachmentContent.append("Timestamp: ").append(LocalDateTime.now()).append("\n\n");
+			attachmentContent.append("Detailed Error Message:\n");
+			attachmentContent.append("--------------------\n");
+			attachmentContent.append(errorMessage).append("\n");
+
+			ByteArrayInputStream inputStream = new ByteArrayInputStream(
+					attachmentContent.toString().getBytes(StandardCharsets.UTF_8));
+
+			byte[] content = pdfGenerateService.imageToBytes(inputStream);
+			MultipartFile multipartFile = new CustomMultipartFile(content, "error_log_" + executionId + ".txt",
+					"error_log_" + executionId + ".txt", "text/plain");
+
+			emailService.sendEmail(email, multipartFile);
+
+		} catch (Exception e) {
+			log.error("Failed to send error email for executionId {}: {}", executionId, e.getMessage(), e);
+		}
+	}
 }
