@@ -65,6 +65,7 @@ import { TenantsComponent } from './tenants/tenants/component/tenants.component'
 import { TenantProfileComponent } from './tenants/tenant-profile/component/tenant-profile.component';
 import { AlertNotificationComponent } from './alert-notification/component/alert-notification.component';
 import { AppNotificationRoutingModule } from './alert-notification/notification-routing.module';
+import { OrganizationInfoConfigComponent } from './setting/organization-info-config/components/organization-info-config.component';
 
 
 const appRoutes: Routes = [
@@ -109,7 +110,8 @@ const appRoutes: Routes = [
     DocumentUploadComponent,
     ConfigurationMasterComponent,
     UserAuditComponent,
-    AlertNotificationComponent
+    AlertNotificationComponent,
+   
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -133,7 +135,8 @@ const appRoutes: Routes = [
     TenantMenuRoutingModule,
     NgxChartsModule,
     AppDocumentUploadRoutingModule,
-    AppNotificationRoutingModule
+    AppNotificationRoutingModule,
+    OrganizationInfoConfigComponent
     ],
   providers: [
     {

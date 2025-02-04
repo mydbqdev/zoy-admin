@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { ConfigMasterService } from '../service/config-master-serive';
-import { BeforeCheckInCancellationRefundModel, CheckoutDeductionDetailsModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstSlabModel, OtherChargesModel, RentSlabModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermModel, TokenDetailsModel} from '../models/config-master-model';
+import { BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermModel, ShortTermRentingDuration, TokenDetailsModel} from '../models/config-master-model';
 import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 
@@ -48,6 +48,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  checkoutDeductionDisabled: boolean = true;
 	  forceCheckoutDisabled: boolean = true;
 	  gstChargesDisabled : boolean = true;
+	  shortTermRentingDurationDisabled: boolean = true;
 
 	  triggerCondition : {'id':number,'cond_name':string}[] = []; //['==','>=','<=','>','<','!='];
 	  triggerOn : {'id':number,'trigger_on':string}[]=[];//['PaidAmount','Rent','PaidAmount & Rent']; 
@@ -125,7 +126,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		});
 		this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
 		this.getBeforeCheckInCRData();
-		this.rentSlabsdataSource = new MatTableDataSource<RentSlabModel>(this.rentSlabs);
+		// this.rentSlabsdataSource = new MatTableDataSource<RentSlabModel>(this.rentSlabs);
 		this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
@@ -156,6 +157,73 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}
 		});
 	}	
+	getTriggerCondition(){		     
+		this.configMasterService.getTriggeredCond().subscribe(res => {
+		this.triggerCondition = Object.assign([],res );
+	  },error =>{
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		 }else if(error.status==403){
+		this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+		this.errorMsg =error.error.message;
+		console.log("Error:"+this.errorMsg);
+  
+		if(error.status==500 && error.statusText=="Internal Server Error"){
+		  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+		}else{
+		//  this.spinner.hide();
+		  let str;
+		  if(error.status==400){
+		  str=error.error.error;
+		  }else{
+			str=error.error.message;
+			str=str.substring(str.indexOf(":")+1);
+		  }
+		  console.log("Error:",str);
+		  this.errorMsg=str;
+		}
+		  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		//this.notifyService.showError(this.errorMsg, "");
+		}
+	  });  
+					
+	}
+   
+getTriggerOn(){
+	   this.configMasterService.getTriggerOn().subscribe(res => {
+	   this.triggerOn = Object.assign([],res );
+	 },error =>{
+	   this.spinner.hide();
+	   console.log("error.error",error)
+	   if(error.status == 0) {
+		   this.notifyService.showError("Internal Server Error/Connection not established", "")
+		}else if(error.status==403){
+	   this.router.navigate(['/forbidden']);
+	   }else if (error.error && error.error.message) {
+	   this.errorMsg =error.error.message;
+	   console.log("Error:"+this.errorMsg);
+ 
+	   if(error.status==500 && error.statusText=="Internal Server Error"){
+		 this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+	   }else{
+	   //  this.spinner.hide();
+		 let str;
+		 if(error.status==400){
+		 str=error.error.error;
+		 }else{
+		   str=error.error.message;
+		   str=str.substring(str.indexOf(":")+1);
+		 }
+		 console.log("Error:",str);
+		 this.errorMsg=str;
+	   }
+		 if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+	   //this.notifyService.showError(this.errorMsg, "");
+	   }
+	 });  
+				   
+   }
 	
 
 	  isNotValidNumber(value: any): boolean {
@@ -947,220 +1015,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
 		this.forceCheckoutDisabled = true;
 	  }
-	  checkoutDeductionSubmit(): void {
-		if(this.isNotValidNumber(this.configMasterModel.checkoutDeductionDetails.notice_period_days) || this.isNotValidNumber(this.configMasterModel.checkoutDeductionDetails.deduction_percentage) || !this.configMasterModel.checkoutDeductionDetails.trigger_condition|| !this.configMasterModel.checkoutDeductionDetails.trigger_value ){
-			return ;
-		}
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
-		.then(
-		   (confirmed) =>{
-			if(confirmed){
-				this.authService.checkLoginUserVlidaate();
-				this.spinner.show();
-				this.configMasterService.updateAutoCancellationDetails(this.configMasterModel.cancellationAfterCheckInDetails).subscribe(res => {
-					this.configMasterOrg.checkoutDeductionDetails = Object.assign(new CheckoutDeductionDetailsModel(), res.data );
-					this.configMasterModel.checkoutDeductionDetails = JSON.parse(JSON.stringify(this.configMasterOrg.checkoutDeductionDetails));
-					this.autoCancellationDisabled = true;
-					this.spinner.hide();
-					}, error => {
-					this.spinner.hide();
-					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "")
-				}else if(error.status==403){
-						this.router.navigate(['/forbidden']);
-					}else if (error.error && error.error.message) {
-						this.errorMsg = error.error.message;
-						console.log("Error:" + this.errorMsg);
-						this.notifyService.showError(this.errorMsg, "");
-					} else {
-						if (error.status == 500 && error.statusText == "Internal Server Error") {
-						this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-						} else {
-						let str;
-						if (error.status == 400) {
-							str = error.error.error;
-						} else {
-							str = error.error.message;
-							str = str.substring(str.indexOf(":") + 1);
-						}
-						console.log("Error:" ,str);
-						this.errorMsg = str;
-						}
-						if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-						//this.notifyService.showError(this.errorMsg, "");
-					}
-					});
-				}
-			}).catch(
-				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-			);
-	  }
-	
-	  // Reset the form
-	  checkoutDeductionReset(): void {
-		this.configMasterModel.checkoutDeductionDetails = JSON.parse(JSON.stringify(this.configMasterOrg.checkoutDeductionDetails));
-		this.checkoutDeductionDisabled = true;
-	}
 
-		
-		
-		getTriggerCondition(){		     
-			 this.configMasterService.getTriggeredCond().subscribe(res => {
-			 this.triggerCondition = Object.assign([],res );
-		   },error =>{
-			 if(error.status == 0) {
-				 this.notifyService.showError("Internal Server Error/Connection not established", "")
-			  }else if(error.status==403){
-			 this.router.navigate(['/forbidden']);
-			 }else if (error.error && error.error.message) {
-			 this.errorMsg =error.error.message;
-			 console.log("Error:"+this.errorMsg);
-	   
-			 if(error.status==500 && error.statusText=="Internal Server Error"){
-			   this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-			 }else{
-			 //  this.spinner.hide();
-			   let str;
-			   if(error.status==400){
-			   str=error.error.error;
-			   }else{
-				 str=error.error.message;
-				 str=str.substring(str.indexOf(":")+1);
-			   }
-			   console.log("Error:",str);
-			   this.errorMsg=str;
-			 }
-			   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			 //this.notifyService.showError(this.errorMsg, "");
-			 }
-		   });  
-						 
-		 }
-		
-	getTriggerOn(){
-			this.configMasterService.getTriggerOn().subscribe(res => {
-			this.triggerOn = Object.assign([],res );
-		  },error =>{
-			this.spinner.hide();
-			console.log("error.error",error)
-			if(error.status == 0) {
-				this.notifyService.showError("Internal Server Error/Connection not established", "")
-			 }else if(error.status==403){
-			this.router.navigate(['/forbidden']);
-			}else if (error.error && error.error.message) {
-			this.errorMsg =error.error.message;
-			console.log("Error:"+this.errorMsg);
-	  
-			if(error.status==500 && error.statusText=="Internal Server Error"){
-			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-			}else{
-			//  this.spinner.hide();
-			  let str;
-			  if(error.status==400){
-			  str=error.error.error;
-			  }else{
-				str=error.error.message;
-				str=str.substring(str.indexOf(":")+1);
-			  }
-			  console.log("Error:",str);
-			  this.errorMsg=str;
-			}
-			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			//this.notifyService.showError(this.errorMsg, "");
-			}
-		  });  
-						
-		}
-
-		rentSlabs :RentSlabModel[] = [
-			{ rentSlabId:"1", slabFrom: 'Upto', slabTo: '1000', rentPercentage: 10, isEdit: false, isDelete: false },
-			{ rentSlabId:"2",slabFrom: '1001', slabTo: '10000', rentPercentage: 18, isEdit: false, isDelete: false },
-			{ rentSlabId:"3",slabFrom: 'Above', slabTo: '10000', rentPercentage: 25, isEdit: false, isDelete: false },
-		
-		  ];
-		
-		  rentSlabsdataSource = new MatTableDataSource<RentSlabModel>([]);
-	
-		  rentSlabSaveVali = false;
-		
-		  rentSlabsDisplayedColumns: string[] = ['slabFrom', 'slabTo', 'rentPercentage', 'action'];
-		  rentSlabModel = {
-			slabFrom: null,
-			slabTo: null,
-			rentPercentage: null
-		  };
-		  addRentSlab() {
-			if (this.rentSlabModel.slabFrom && this.rentSlabModel.slabTo && this.rentSlabModel.rentPercentage) {
-				const newSlab = { 
-				  rentSlabId:'',
-				  slabFrom: this.rentSlabModel.slabFrom,
-				  slabTo: this.rentSlabModel.slabTo,
-				  rentPercentage: this.rentSlabModel.rentPercentage,
-				  isEdit: false,
-				  isDelete: false
-				};
-				this.rentSlabs.push(newSlab);
-				this.rentSlabModel = { slabFrom: null, slabTo: null, rentPercentage: null };
-				this.rentSlabsdataSource = new MatTableDataSource<RentSlabModel>(this.rentSlabs);
-			  } else {
-				this.rentSlabSaveVali = true;
-			  }
-		  }
-
-		  gstSlabModel : GstSlabModel=new GstSlabModel();
-		  gstSlabSaveVali :boolean = false;
-
-		  addGSTSlab() {
-			if (this.gstSlabModel.slabFrom && this.gstSlabModel.slabTo && this.gstSlabModel.gstPercentage) {
-				const newSlab = { 
-				  rentSlabId:'',
-				  slabFrom: this.gstSlabModel.slabFrom,
-				  slabTo: this.gstSlabModel.slabTo,
-				  gstPercentage: this.gstSlabModel.gstPercentage,
-				  isEdit: false,
-				  isDelete: false,
-				  showInputBox: false
-				};
-				this.configMasterModel.gstSlabModel.push(newSlab);
-				this.gstSlabModel = new GstSlabModel();
-				this.gstSlabSaveVali = false;
-			  } else {
-				this.gstSlabSaveVali = true;
-			  }
-		  }
-
-		  
-		
-		  modifyRentSlab(slab) {
-			console.log("slab",slab)
-			slab.isEdit = false;
-		  }
-		
-		  removeRentSlab(slab, index) {
-			console.log("slab",slab)
-			slab.isDelete = true;
-		  }
-		
-		  undoRentSlabDelete(slab) {
-			console.log("slab",slab)
-			slab.isDelete = false;
-		  }
-		
-		  undoEditRentSlabItem(slab) {
-			console.log("slab",slab)
-			slab.isEdit = false;
-		  }
-	
-		  showInputBox = false;
-		//   onCheckboxChange(event: Event) {
-		// 	const checkboxElement = event.target as HTMLInputElement;
-		// 	if (checkboxElement.checked) {
-		// 	  this.showInputBox = false;
-		// 	  this.rentSlabModel.slabFrom='';
-		// 	}
-		//   }
-
-		  onDropdownChange(slab:any) {
+		onDropdownChange(slab:any) {
 			if (slab.slabFrom === 'Input') {
 				slab.showInputBox = true;  
 			  } else {
@@ -1219,5 +1075,61 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				}).catch(
 					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 				);
+
+			}
+
+		shortTermRentingDurationSubmit(): void {
+		    if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration.rentingDurationDays) ){
+			   return ;
+			}
+			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+			.then(
+			   (confirmed) =>{
+				if(confirmed){
+					this.authService.checkLoginUserVlidaate();
+					this.spinner.show();
+					this.configMasterService.updateShortTermRentingDuration(this.configMasterModel.shortTermRentingDuration).subscribe(res => {
+						this.configMasterOrg.shortTermRentingDuration = Object.assign(new ShortTermRentingDuration(), res.data );
+						this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
+						this.shortTermRentingDurationDisabled = true;
+						this.spinner.hide();
+						}, error => {
+						this.spinner.hide();
+						if(error.status == 0) {
+						this.notifyService.showError("Internal Server Error/Connection not established", "")
+					}else if(error.status==403){
+							this.router.navigate(['/forbidden']);
+						}else if (error.error && error.error.message) {
+							this.errorMsg = error.error.message;
+							console.log("Error:" + this.errorMsg);
+							this.notifyService.showError(this.errorMsg, "");
+						} else {
+							if (error.status == 500 && error.statusText == "Internal Server Error") {
+							this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+							} else {
+							let str;
+							if (error.status == 400) {
+								str = error.error.error;
+							} else {
+								str = error.error.message;
+								str = str.substring(str.indexOf(":") + 1);
+							}
+							console.log("Error:" ,str);
+							this.errorMsg = str;
+							}
+							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+							//this.notifyService.showError(this.errorMsg, "");
+						}
+						});	
+					}
+				}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				);
 		  }
+		
+	 shortTermRentingDurationReset(): void {
+			this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
+			this.shortTermRentingDurationDisabled = true;
+		  }
+		  
   }  

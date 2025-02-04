@@ -80,7 +80,7 @@
                                                     
                                                 </th>
                                                 <td mat-cell data-label="status" *matCellDef="let element;">
-                                                    <button type="button" class="btn btn-primary-custom m-1" (click)="doUnlock(element)">Do Unlock</button>
+                                                    <button type="button" class="btn btn-primary-custom m-1" (click)="doUnlock(element)" *ngIf="rolesArray.includes('LOCKED_USER_WRITE')">Do Unlock</button>
                                                 </td>
                                             </ng-container>                  
                                             <ng-container matColumnDef="action">
