@@ -867,21 +867,31 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			List<ZoyPgShortTermMaster> shortTermMaster=ownerDBImpl.findAllShortTerm();
 			ZoyPgForceCheckOut forceCheckOut=ownerDBImpl.findZoyForceCheckOut();
 			ZoyPgShortTermRentingDuration rentingDuration=ownerDBImpl.findZoyRentingDuration();
-
 			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
+			if (tokenDetails != null) 
 			configDTO.setTokenDetails(convertToDTO(tokenDetails));
+			if (depositDetails != null)
 			configDTO.setDepositDetails(convertToDTO(depositDetails));
+			if (cancellationDetails != null)
 			configDTO.setCancellationBeforeCheckInDetails(convertToDTO(cancellationDetails));
+			if (earlyCheckOutDetails != null)
 			configDTO.setEarlyCheckOutRuleDetails(convertToDTO(earlyCheckOutDetails));
+			if (cancellationAfterCheckIn != null)
 			configDTO.setCancellationAfterCheckInDetails(convertToDTO(cancellationAfterCheckIn));
+			if (securityDepositDeadLine != null)
 			configDTO.setSecurityDepositDeadLineDetails(convertToDTO(securityDepositDeadLine));
+			if (dataGrouping != null)
 			configDTO.setDataGrouping(convertToDTO(dataGrouping));
+			if (otherCharges != null)
 			configDTO.setOtherCharges(convertToDTO(otherCharges));
+			if (gstCharges != null)
 			configDTO.setGstCharges(convertToDTO(gstCharges));
+			if (shortTermMaster != null)
 			configDTO.setZoyShortTermDtos(convertShortToDTO(shortTermMaster));
+			if (forceCheckOut != null)
 			configDTO.setZoyForceCheckOutDto(convertToDTO(forceCheckOut));
+			if (rentingDuration != null) 
 			configDTO.setShortTermRentingDuration(convertToDTO(rentingDuration));
-
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(configDTO);
 			response.setMessage("Successfully fetched all config details");
