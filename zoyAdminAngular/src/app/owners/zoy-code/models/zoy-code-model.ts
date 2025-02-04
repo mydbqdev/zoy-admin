@@ -10,4 +10,5 @@ export class ZoyData {
     lastName: string;
     contactNumber: string;
     userEmail: string;
+    zoyShare :string;
   }

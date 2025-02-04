@@ -133,6 +133,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 
 	  getCityList(){
 		this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
 		this.reportService.getCityList().subscribe(data => {
 		this.cityLocation=data;
 		this.cityLocationName =this.cityLocation?.length>0?this.cityLocation[0]:"";
@@ -189,8 +190,10 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	   }
 
  	 onSortData(sort: Sort) {
+		this.sortDirection= this.sortActive==sort.active ? 
+							((this.sortDirection === 'asc' && sort.direction === 'asc')?"desc"
+							:(this.sortDirection === 'desc' && sort.direction === 'desc'?"asc":'desc')):this.sortDirection;
 		this.sortActive=sort.active;
-		this.sortDirection=sort.direction;
 		this.paginator.pageIndex=0;
 		 this.getReportDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
 	   }
