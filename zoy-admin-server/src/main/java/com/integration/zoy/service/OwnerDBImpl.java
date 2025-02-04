@@ -27,6 +27,7 @@ import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
+import com.integration.zoy.entity.ZoyPgShortTermRentingDuration;
 import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
@@ -149,4 +150,7 @@ public interface OwnerDBImpl {
 	ZoyCompanyProfileMaster findCompanyProfile(String profileId);
 	List<ZoyCompanyProfileMaster> findAllCompanyProfiles();
 	ZoyPgForceCheckOut findZoyForceCheckOut();
+	ZoyPgShortTermRentingDuration findZoyRentingDuration();
+	ZoyPgShortTermRentingDuration saveRentingDuration(ZoyPgShortTermRentingDuration rentingDuration);
+	
 }

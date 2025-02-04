@@ -35,6 +35,7 @@ import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
+import com.integration.zoy.entity.ZoyPgShortTermRentingDuration;
 import com.integration.zoy.entity.ZoyPgTermsMaster;
 import com.integration.zoy.entity.ZoyPgTimeMaster;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
@@ -61,6 +62,7 @@ import com.integration.zoy.repository.ZoyPgPropertyAmenetiesRepository;
 import com.integration.zoy.repository.ZoyPgPropertyDetailsRepository;
 import com.integration.zoy.repository.ZoyPgPropertyFloorDetailsRepository;
 import com.integration.zoy.repository.ZoyPgRentCycleMasterRepository;
+import com.integration.zoy.repository.ZoyPgRentingDurationRepository;
 import com.integration.zoy.repository.ZoyPgRoomDetailsRepository;
 import com.integration.zoy.repository.ZoyPgRoomTypeMasterRepository;
 import com.integration.zoy.repository.ZoyPgSecurityDepositDetailsRepository;
@@ -165,9 +167,12 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Autowired
 	private ZoyCompanyProfileMasterRepository zoyCompanyProfileMasterRepository;
 	
+	@Autowired
+	private ZoyPgRentingDurationRepository rentingDurationRepo;
+	
 	@PersistenceContext
 	private EntityManager entityManager;
-
+	
 	@Override
 	public ZoyPgTypeMaster createPgType(ZoyPgTypeMaster pgType)throws WebServiceException {
 		return zoyPgTypeMasterRepository.save(pgType);
@@ -765,6 +770,16 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public List<ZoyCompanyProfileMaster> findAllCompanyProfiles() {
 		return zoyCompanyProfileMasterRepository.findAll();
+	}
+
+	@Override
+	public ZoyPgShortTermRentingDuration findZoyRentingDuration() {
+		return rentingDurationRepo.findAll().get(0);
+	}
+
+	@Override
+	public ZoyPgShortTermRentingDuration saveRentingDuration(ZoyPgShortTermRentingDuration rentingDuration) {
+		return rentingDurationRepo.save(rentingDuration);
 	}
 
 	

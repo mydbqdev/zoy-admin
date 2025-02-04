@@ -43,6 +43,7 @@ import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
+import com.integration.zoy.entity.ZoyPgShortTermRentingDuration;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
@@ -66,6 +67,7 @@ import com.integration.zoy.utils.ZoyOtherChargesDto;
 import com.integration.zoy.utils.ZoyPgEarlyCheckOutRuleDto;
 import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
 import com.integration.zoy.utils.ZoyPgTokenDetailsDTO;
+import com.integration.zoy.utils.ZoyRentingDuration;
 import com.integration.zoy.utils.ZoySecurityDepositDeadLineDto;
 import com.integration.zoy.utils.ZoyShortTermDto;
 
@@ -408,11 +410,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				sgstPercentage = (details.getSgstPercentage() != null) 
 						? details.getSgstPercentage() 
 								: gstCharges.getSgstPercentage();
-				
+
 				igstPercentage = (details.getIgstPercentage() != null) 
 						? details.getIgstPercentage() 
 								: gstCharges.getIgstPercentage();
-				
+
 				monthlyRent = (details.getMonthlyRent() != null) 
 						? details.getMonthlyRent() 
 								: gstCharges.getMonthlyRent();
@@ -455,11 +457,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				sgstPercentage = (details.getSgstPercentage() != null) 
 						? details.getSgstPercentage() 
 								: BigDecimal.ZERO;
-				
+
 				igstPercentage = (details.getIgstPercentage() != null) 
 						? details.getIgstPercentage() 
 								: BigDecimal.ZERO;
-				
+
 				monthlyRent = (details.getMonthlyRent() != null) 
 						? details.getMonthlyRent() 
 								: BigDecimal.ZERO;
@@ -864,6 +866,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyPgGstCharges gstCharges=ownerDBImpl.findZoyGstCharges();
 			List<ZoyPgShortTermMaster> shortTermMaster=ownerDBImpl.findAllShortTerm();
 			ZoyPgForceCheckOut forceCheckOut=ownerDBImpl.findZoyForceCheckOut();
+			ZoyPgShortTermRentingDuration rentingDuration=ownerDBImpl.findZoyRentingDuration();
 
 			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
 			configDTO.setTokenDetails(convertToDTO(tokenDetails));
@@ -877,6 +880,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			configDTO.setGstCharges(convertToDTO(gstCharges));
 			configDTO.setZoyShortTermDtos(convertShortToDTO(shortTermMaster));
 			configDTO.setZoyForceCheckOutDto(convertToDTO(forceCheckOut));
+			configDTO.setShortTermRentingDuration(convertToDTO(rentingDuration));
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(configDTO);
@@ -1092,7 +1096,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				ZoyForceCheckOutDto dto=convertToDTO(force);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
-				response.setMessage("Updated Data Grouping details");
+				response.setMessage("Updated Force Check Out details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
 				ZoyPgForceCheckOut newForceCheckOut=new ZoyPgForceCheckOut();
@@ -1109,7 +1113,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			log.error("Error saving/updating Data Grouping details API:/zoy_admin/config/data-grouping.zoyAdminConfigCreateUpdateDataGrouping ",e);
+			log.error("Error saving/updating Force Check Out details API:/zoy_admin/config/force-checkout.zoyAdminConfigUpdateForceCheckOut ",e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
@@ -1239,6 +1243,63 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			response.setError("Internal server error");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminConfigShortTermRentingDuration(ZoyRentingDuration rentingDuration) {
+		ResponseBody response=new ResponseBody();
+		try {
+			if(rentingDuration==null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Required Short Term Renting Duration Details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			ZoyPgShortTermRentingDuration force = null;
+			if (rentingDuration.getRentingDurationId() != null) {
+				force=ownerDBImpl.findZoyRentingDuration();
+			}
+
+			if(force!=null) {
+				final int oldFixed=force.getRentingDurationDays();
+				force.setRentingDurationDays(rentingDuration.getRentingDurationDays());
+				ownerDBImpl.saveRentingDuration(force);
+
+				//audit history here
+				String historyContent=" has updated the Renting Duration  for, Considering days from "+oldFixed+" to "+rentingDuration.getRentingDurationDays();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+
+				ZoyRentingDuration dto=convertToDTO(force);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Updated Short Term Renting Duration  details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				ZoyPgShortTermRentingDuration newRentingDuration=new ZoyPgShortTermRentingDuration();
+				newRentingDuration.setRentingDurationDays(rentingDuration.getRentingDurationDays());
+				ownerDBImpl.saveRentingDuration(newRentingDuration);
+				//audit history here
+				String historyContent=" has created the Short Term Renting Duration for, Considering days = "+rentingDuration.getRentingDurationDays();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+
+				ZoyRentingDuration dto=convertToDTO(newRentingDuration);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Saved Short Term Renting Duration details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			log.error("Error saving/updating Short Term Renting Duration API:/zoy_admin/config/renting-duration.zoyAdminConfigShortTermRentingDuration ",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	private ZoyRentingDuration convertToDTO(ZoyPgShortTermRentingDuration force) {
+		ZoyRentingDuration rentingDuration = new ZoyRentingDuration();
+		rentingDuration.setRentingDurationId(force.getRentingDurationId());
+		rentingDuration.setRentingDurationDays(force.getRentingDurationDays());
+		return rentingDuration;
 	}
 
 }
