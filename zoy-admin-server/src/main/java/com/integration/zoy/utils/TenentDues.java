@@ -2,7 +2,6 @@ package com.integration.zoy.utils;
 
 
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.google.gson.annotations.SerializedName;

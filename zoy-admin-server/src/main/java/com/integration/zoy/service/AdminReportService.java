@@ -838,7 +838,7 @@ public class AdminReportService implements AdminReportImpl{
 	            dto.setPaymentStatus(row[7] != null ? (String) row[7] : "");
 	            dto.setTransactionNumber("");
 	            dto.setAmountPaid("");
-	            dto.setPaymentDate(row[8] != null ? Timestamp.valueOf(String.valueOf(row[8])) : null);
+	            dto.setPaymentDate(row[8] != null ? (Timestamp)(row[8]) : null);
 	            return dto;
 	        }).collect(Collectors.toList());
 
