@@ -235,7 +235,7 @@ public class CsvGenerateService {
         }
     }
 
-    private String safeToString(Object obj) {
-        return obj == null ? "N/A" : obj.toString();
+    private Object safeToString(Object obj) {
+        return obj == null ? "N/A" : obj;
     }
 }
