@@ -1,6 +1,7 @@
 package com.integration.zoy.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -50,6 +51,9 @@ public class UserProfile implements Serializable {
 	    
 	    @Column(name = "encrypted_aadhar")
 	    private String encryptedAadhar;
+	    
+	    @Column(name = "zoy_share", nullable = false)
+		private BigDecimal zoyShare;
 
 	    // Getters and Setters
 
@@ -139,6 +143,14 @@ public class UserProfile implements Serializable {
 
 		public void setEncryptedAadhar(String encryptedAadhar) {
 			this.encryptedAadhar = encryptedAadhar;
+		}
+
+		public BigDecimal getZoyShare() {
+			return zoyShare;
+		}
+
+		public void setZoyShare(BigDecimal zoyShare) {
+			this.zoyShare = zoyShare;
 		}
 	    
 	    

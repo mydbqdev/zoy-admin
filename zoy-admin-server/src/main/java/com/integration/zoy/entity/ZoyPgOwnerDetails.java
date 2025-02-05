@@ -1,5 +1,7 @@
 package com.integration.zoy.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -51,6 +53,9 @@ public class ZoyPgOwnerDetails {
     
     @Column(name = "pg_owner_ekyc_isvideo_verified")
     private Boolean pgOwnerEkycIsVideoVerified = false;
+    
+    @Column(name = "zoy_share", nullable = false)
+    private BigDecimal zoyShare;
 
     public String getPgOwnerId() {
         return pgOwnerId;
@@ -146,6 +151,14 @@ public class ZoyPgOwnerDetails {
 
 	public void setPgOwnerMPin(Boolean pgOwnerMPin) {
 		this.pgOwnerMPin = pgOwnerMPin;
+	}
+
+	public BigDecimal getZoyShare() {
+		return zoyShare;
+	}
+
+	public void setZoyShare(BigDecimal zoyShare) {
+		this.zoyShare = zoyShare;
 	}
     
     
