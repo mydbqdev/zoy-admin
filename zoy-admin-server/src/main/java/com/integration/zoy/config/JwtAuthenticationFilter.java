@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.integration.zoy.service.AdminUserAuthService;
+import com.integration.zoy.service.ZoyAdminService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -31,6 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Autowired
 	private AdminUserAuthService adminAuthService;
 
+	@Autowired
+	private ZoyAdminService zoyAdminService; 
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -40,15 +44,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				throw new JwtTokenMissingException("No JWT token found in the request headers");
 			}
 			String token = header.replace("Bearer ","");
-			if(jwtUtil.validateToken(token)) {
-				String email = jwtUtil.getUserName(token);
-				UserDetails userDetails = adminAuthService.loadUserByUsername(email);
-				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-						userDetails, null, userDetails.getAuthorities());
-				usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-			}else {
-				System.out.println("Can't set security context");
+			if (zoyAdminService.isBlacklisted(token)) {
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is expired or blacklisted");
+				return;
+			} else {
+				if(jwtUtil.validateToken(token)) {
+					String email = jwtUtil.getUserName(token);
+					UserDetails userDetails = adminAuthService.loadUserByUsername(email);
+					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+							userDetails, null, userDetails.getAuthorities());
+					usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+				} else {
+					System.out.println("Can't set security context");
+				}
 			}
 		}catch(ExpiredJwtException ex) {
 			request.setAttribute("exception",ex);
