@@ -1,5 +1,6 @@
 package com.integration.zoy.controller;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -241,7 +242,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				ownerDetails.setMobileNo(details[3] != null ? (String) details[3] : null);
 				ownerDetails.setCreatedDate(details[4] != null ? (Timestamp) details[4] : null);
 				ownerDetails.setStatus(details[5] != null ? (String) details[5] : null);
-
+				ownerDetails.setZoyShare(details[6] != null ? (BigDecimal) details[6] : null);
 				pgOwnerDetailsList.add(ownerDetails);
 			}
 

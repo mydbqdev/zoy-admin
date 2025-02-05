@@ -1,5 +1,6 @@
 package com.integration.zoy.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,6 +21,12 @@ public class PgOwnerDetails {
     
     @JsonProperty("createdDate")
     private Timestamp createdDate;
+    
+    @JsonProperty("status")
+    private String status;
+    
+    @JsonProperty("zoyShare")
+    private BigDecimal zoyShare;
     
     public String getZoyCode() {
 		return zoyCode;
@@ -69,7 +76,14 @@ public class PgOwnerDetails {
 		this.status = status;
 	}
 
-	@JsonProperty("status")
-    private String status;
+	public BigDecimal getZoyShare() {
+		return zoyShare;
+	}
+
+	public void setZoyShare(BigDecimal zoyShare) {
+		this.zoyShare = zoyShare;
+	}
+
+	
 
 }
