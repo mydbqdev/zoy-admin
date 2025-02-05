@@ -1,5 +1,7 @@
 package com.integration.zoy.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,7 +70,7 @@ public interface ZoyAdminUserImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/userlogout",
 	produces = { "application/json" })
-	ResponseEntity<String> doUserlogout();
+	ResponseEntity<String> doUserlogout(HttpServletRequest request);
 	
 	
 	@Operation(summary = "Create Admin User", description = "Creating new admin User", security = {
