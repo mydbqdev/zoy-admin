@@ -47,6 +47,9 @@ public class BulkUploadDetails {
 	
 	@Column(name = "job_execution_id")
 	private String jobExeId;
+	
+	@Column(name ="file_path")
+	private String filePath;
 
 	public Long getId() {
 		return id;
@@ -126,6 +129,14 @@ public class BulkUploadDetails {
 
 	public void setJobExeId(String jobExeId) {
 		this.jobExeId = jobExeId;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 

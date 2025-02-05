@@ -1,5 +1,7 @@
 package com.integration.zoy.model;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PgOwnerMasterModel {
@@ -16,6 +18,9 @@ public class PgOwnerMasterModel {
 
 	    @JsonProperty("mobileNo")
 	    private String mobileNo;
+	    
+	    @JsonProperty("zoyShare")
+	    private BigDecimal zoyShare;
 
 	   
 	    public String getFirstName() {
@@ -49,6 +54,14 @@ public class PgOwnerMasterModel {
 	    public void setMobileNo(String mobileNo) {
 	        this.mobileNo = mobileNo;
 	    }
+
+		public BigDecimal getZoyShare() {
+			return zoyShare;
+		}
+
+		public void setZoyShare(BigDecimal zoyShare) {
+			this.zoyShare = zoyShare;
+		}
 
 
 }

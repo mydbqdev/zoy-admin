@@ -119,7 +119,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
-					<text><![CDATA[Transaction No]]></text>
+					<text><![CDATA[Invoice No]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="840" y="0" width="120" height="20" uuid="a7602bc6-da41-42ce-81ed-aee1f8b180f2"/>
