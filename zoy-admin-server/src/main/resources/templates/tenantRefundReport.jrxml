@@ -5,7 +5,7 @@
 	<parameter name="endDate" class="java.util.Date"/>
 	<parameter name="LOGO_PATH" class="java.io.InputStream"/>
 	<parameter name="WATERMARK_IMAGE" class="java.io.InputStream"/>
-	<field name="paymentDate" class="java.lang.String"/>
+	<field name="paymentDate" class="java.util.Date"/>
 	<field name="customerName" class="java.lang.String"/>
 	<field name="tenantMobileNum" class="java.lang.String"/>
 	<field name="pgPropertyName" class="java.lang.String"/>
@@ -147,7 +147,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
-					<text><![CDATA[Transaction Number]]></text>
+					<text><![CDATA[Invoice Number]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="1320" y="0" width="150" height="20" uuid="4c6a601b-6023-46cc-b4d6-503de68eaa40"/>
@@ -241,7 +241,7 @@
 						<rightPen lineWidth="1.0" lineStyle="Solid"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[($F{paymentDate})]]></textFieldExpression>
+					<textFieldExpression><![CDATA[new java.text.SimpleDateFormat(" yyyy-MM-dd HH:mm:ss").format(($F{paymentDate}))]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" x="1120" y="0" width="200" height="20" uuid="f66269cf-a7fb-4af3-8940-5fac5e703f32"/>
