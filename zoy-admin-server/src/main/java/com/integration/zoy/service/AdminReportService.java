@@ -332,24 +332,23 @@ public class AdminReportService implements AdminReportImpl{
 	public CommonResponseDTO<TenentDues> getTenentDuesDetails(UserPaymentFilterRequest filterRequest, FilterData filterData,Boolean applyPagination) throws WebServiceException {
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
-					 "select\r\n"
+					 "SELECT\r\n"
 					 + "ud.user_money_due_amount,\r\n"
 					 + "ud.user_money_due_bill_start_date,\r\n"
 					 + "um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
 					 + "pgt.property_name,\r\n"
 					 + "pgt.property_house_area,\r\n"
-					 + "bd.bed_name, \r\n"
-					 + "ud.user_money_due_id, \r\n"
-					 + "pgt.property_city, \r\n"
-					 + "um.user_mobile \r\n"
-					 + "from pgusers.user_payment_due u \r\n"
-					 + "JOIN pgusers.user_master um ON u.user_id = um.user_id\r\n"
-					 + "join pgusers.user_dues ud on u.user_money_due_id= ud.user_money_due_id\r\n"
-					 + "join pgowners.zoy_pg_owner_booking_details zpobd on ud.user_booking_id = zpobd.booking_id\r\n"
-					 + "join pgowners.zoy_pg_property_details pgt on zpobd.property_id = pgt.property_id\r\n"
-					 + "join pgowners.zoy_pg_bed_details bd on zpobd.selected_bed = bd.bed_id \r\n"
-					 + "where 1=1"
-							);
+					 + "bd.bed_name,\r\n"
+					 + "ud.user_money_due_id,\r\n"
+					 + "pgt.property_city,\r\n"
+					 + "um.user_mobile\r\n"
+					 + "FROM pgusers.user_dues ud\r\n"
+					 + "JOIN pgusers.user_master um ON ud.user_id = um.user_id\r\n"
+					 + "JOIN pgowners.zoy_pg_owner_booking_details zpobd ON ud.user_booking_id = zpobd.booking_id\r\n"
+					 + "JOIN pgowners.zoy_pg_property_details pgt ON zpobd.property_id = pgt.property_id\r\n"
+					 + "JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id\r\n"
+					 + "LEFT JOIN pgusers.user_payment_due upd ON ud.user_money_due_id = upd.user_money_due_id\r\n"
+					 + "WHERE 1=1 and upd.user_money_due_id IS NULL");
 
 			Map<String, Object> parameters = new HashMap<>();
 
