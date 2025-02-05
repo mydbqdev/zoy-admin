@@ -20,7 +20,7 @@ import { MessageService } from 'src/app/message.service';
     
      public generateOwnerCode(data:any): Observable<any> {
         const url1=this.basePath +"zoy_admin/savePgOwnerData" ;
-        let param={"firstName":data.firstName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail};
+        let param={"firstName":data.firstName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail,"zoyShare":data.zoyShare};
           return  this.httpclient.post<any>(
               url1,
               param,

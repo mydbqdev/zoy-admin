@@ -95,11 +95,15 @@
 
                     <div class="col-md-4 mb-3">
                       <label for="phone">Contact</label>
-                      <input type="text" formControlName="contactNumber" [(ngModel)]="generateZCode.contactNumber" maxlength="15" id="contactNumber" class="form-control"  name="contactNumber"(keypress)="numberOnly($event)"  autocomplete="false"
+                      <input type="text" formControlName="contactNumber" [(ngModel)]="generateZCode.contactNumber" maxlength="10" id="contactNumber" class="form-control"  name="contactNumber"
+                      (keypress)="numberOnly($event)"  autocomplete="false" maxlength="10"
                         placeholder="Enter Owner Contact Number" [ngClass]="{'is-invalid':submitted && form.controls.contactNumber.errors}">
                         <div *ngIf="submitted && form.controls.contactNumber.errors" class="text-danger">
                         <div *ngIf="submitted && form.controls.contactNumber.errors?.required">
                           Contact Number is required.
+                        </div>
+                        <div *ngIf="submitted && form.controls.contactNumber.errors.pattern">
+                          Contact Number is invalid.
                         </div>
                       </div>
                     </div>
@@ -127,14 +131,13 @@
                     </div>
                   </div>
                   <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;" *ngIf="rolesArray.includes('ZOYCODES_WRITE')">
-                    <input type="submit" class="btn btn-primary-custom me-2" value="Generate Zoy Code" />
+                    <input type="submit" class="btn btn-primary-custom me-2" value="Generate Zoy Co de" />
                   </div>
                 </form>
                 </div>              
                 <div *ngIf="selectedModel == 'generated'">
                   <div class="scrollable-container-main">
-                  <table mat-table [dataSource]="dataSource" matSort  
-                  (matSortChange)="announceSortChange($event)" matSortActive="created_date" matSortDirection="desc"  >
+                  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" >
                     <!-- Zoy Code Column -->
                     <ng-container matColumnDef="zoy_code">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> ZOY CODE
@@ -183,6 +186,13 @@
                         </span>
                       </th>
                       <td mat-cell *matCellDef="let element" style="width: 130px;"> {{ element.created_date | date :'dd-MM-YYYY'}} </td>
+                    </ng-container>
+
+                    <!-- Date Column -->
+                   
+                    <ng-container matColumnDef="zoy_share">
+                      <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> Zoy Share </th>
+                      <td mat-cell *matCellDef="let element"> {{ element.zoy_share }} </td>
                     </ng-container>
 
                     <!-- Status Column with Conditional Button Styling -->

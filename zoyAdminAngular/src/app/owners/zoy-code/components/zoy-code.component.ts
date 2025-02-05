@@ -23,7 +23,7 @@ import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/
   styleUrl: './zoy-code.component.css'
 })
 export class ZoyCodeComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['zoy_code', 'owner_name', 'email_id', 'mobile_no','created_date', 'status','action'];
+  displayedColumns: string[] = ['zoy_code', 'owner_name', 'email_id', 'mobile_no','created_date', 'zoy_share','status','action'];
   public ELEMENT_DATA:ZoyData[]=[];
   orginalFetchData:ZoyData[]=[];
   searchText:string='';
@@ -33,6 +33,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
     owner_name: null,
     email_id: null,
     created_date: null,
+	zoy_share: null,
 	status: null
   };
   generateZCode : ZoyData=new ZoyData();
@@ -104,7 +105,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		this.form = this.formBuilder.group({
 			firstName: ['', [Validators.required]],
 			lastName: ['', [Validators.required]],
-		    contactNumber: ['', [Validators.required]],
+		    contactNumber: ['', [Validators.required],Validators.pattern(/^\d{10}$/) ],
 			userEmail: ['', [
 			  Validators.required,
 			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
