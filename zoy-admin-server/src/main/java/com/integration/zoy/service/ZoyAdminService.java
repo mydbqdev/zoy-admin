@@ -152,6 +152,7 @@ public class ZoyAdminService {
 			zoyPgOwnerDetails.setPgOwnerName(user.getPropertyOwnerName());
 			zoyPgOwnerDetails.setZoyCode(user.getZoyCode());
 			zoyPgOwnerDetails.setPgOwnerEncryptedAadhar(user.getEncryptedAadhar());
+			zoyPgOwnerDetails.setZoyShare(user.getZoyShare());
 			ownerDBImpl.savePgOwner(zoyPgOwnerDetails);
 
 			Whatsapp whatsapp = new Whatsapp();

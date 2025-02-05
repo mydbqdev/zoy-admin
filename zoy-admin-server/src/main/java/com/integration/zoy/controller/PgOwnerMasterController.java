@@ -156,6 +156,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			ownerData.setFirstName(model.getFirstName());
 			ownerData.setLastName(model.getLastName());
 			ownerData.setMobileNo(model.getMobileNo());
+			ownerData.setZoyShare(model.getZoyShare());
 			pgOwnerMaterRepository.save(ownerData);
 
 			String token = UUID.randomUUID().toString();
@@ -167,6 +168,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			user.setEnabled(false);
 			user.setUserApplicationName("O");
 			user.setVerifyToken(token);
+			user.setZoyShare(model.getZoyShare());
 			commonDBImpl.registerNewUserAccount(user);
 			//audit history here
 			String historyContent=" has generated the zoy code for,"+user.getPropertyOwnerName();

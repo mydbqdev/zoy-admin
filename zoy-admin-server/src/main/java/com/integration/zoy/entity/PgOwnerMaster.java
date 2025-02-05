@@ -1,5 +1,6 @@
 package com.integration.zoy.entity;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -37,6 +38,9 @@ public class PgOwnerMaster {
 	@Column(name = "updated_at", nullable = false)
 	@UpdateTimestamp
 	private Timestamp updated_at;
+	
+	@Column(name = "zoy_share", nullable = false)
+	private BigDecimal zoyShare;
 
 	public String getZoyCode() {
 		return zoyCode;
@@ -92,6 +96,14 @@ public class PgOwnerMaster {
 
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public BigDecimal getZoyShare() {
+		return zoyShare;
+	}
+
+	public void setZoyShare(BigDecimal zoyShare) {
+		this.zoyShare = zoyShare;
 	}
 
 
