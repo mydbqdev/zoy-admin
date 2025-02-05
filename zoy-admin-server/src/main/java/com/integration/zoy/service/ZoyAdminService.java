@@ -1,7 +1,9 @@
 package com.integration.zoy.service;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -77,6 +79,7 @@ public class ZoyAdminService {
 
 	private final Map<String, String> otpMap = new ConcurrentHashMap<>();
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private final Set<String> blacklistedTokens = new HashSet<>();
 
 	public void storeOtp(String userId, String otp) {
 		otpMap.put(userId, otp);
@@ -170,4 +173,13 @@ public class ZoyAdminService {
 			return "Email already verified";
 		}
 	}
+	
+	public void addToBlacklist(String token) {
+        blacklistedTokens.add(token);
+    }
+
+    public boolean isBlacklisted(String token) {
+        return blacklistedTokens.contains(token);
+    }
+	
 }

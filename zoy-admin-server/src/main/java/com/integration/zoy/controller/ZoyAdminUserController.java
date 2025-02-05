@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -345,11 +346,17 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	}
 	
 	@Override
-	public ResponseEntity<String> doUserlogout() {
+	public ResponseEntity<String> doUserlogout(HttpServletRequest request) {
 		ResponseBody response=new ResponseBody();
 		try {
 			String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 			SecurityContextHolder.getContext().setAuthentication(null);
+			
+			String authHeader = request.getHeader("Authorization");
+	        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+	        	String token = authHeader.replace("Bearer ","");
+	        	zoyAdminService.addToBlacklist(token);
+	        }
 			
 			auditHistoryUtilities.auditForUserLoginLogout(userEmail, false);
 			response.setStatus(HttpStatus.OK.value());
