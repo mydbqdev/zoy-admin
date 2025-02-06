@@ -30,7 +30,7 @@
             <div class="ml-auto">
               <div class="d-flex">
                 <div>
-                  <button class="btn btn-primary-custom  btn-sm  mr-2" (click)="createSetting()" 
+                  <button class="btn btn-primary-custom  btn-sm  mr-2" (click)="createSetting()"  *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE')" 
                   data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails"> {{settingType == 'Short Term' && dbSettingDataList.length > 0 ?'Update':'Create' }}</button></div>
                   <select class="form-select form-select-sm"  style="min-width: 150px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
                   <option *ngFor="let type of settingTypeObjClmApiDetailsList"  [value]="type.type" >{{type.type}}</option>
@@ -59,7 +59,7 @@
                         <ng-container matColumnDef="actions"  *ngIf="settingType != 'Short Term'" >
                           <th mat-header-cell style="width: 50px;" *matHeaderCellDef ></th>
                           <td mat-cell style="width: 50px;" *matCellDef="let term">
-                          <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails">
+                          <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE')" >
                               <i class="bi bi-pencil-square" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  (click)="getElement(term)" ></i>
                           </span>
                           </td>
@@ -376,7 +376,7 @@
       </div>
     </div>
 
-    <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;">
+    <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;" >
       <button type="submit" class="btn btn-primary-custom me-2" (click)="submitData()" >Submit</button>
       <button class="btn btn-sm btn-outline-secondary ml-1" *ngIf="settingType == 'Short Term'" (click)="shortTermDataListReset()"  ><i class="fas fa-redo" style="color: red;"></i></button>
     </div>

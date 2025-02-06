@@ -64,4 +64,7 @@ export class RoleScreenModel {
     USER_AUDIT_READ: boolean = false;
     USER_AUDIT_WRITE: boolean = false;
 
+    ORGANIZATION_INFO_CONFIG_READ: boolean = false;
+    ORGANIZATION_INFO_CONFIG_WRITE: boolean = false;
+
 }
