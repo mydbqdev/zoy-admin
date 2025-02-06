@@ -8,11 +8,9 @@ export class ConfigMasterModel{
     securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
     otherCharges : OtherChargesModel=new OtherChargesModel();
     forceCheckOut :ForceCheckoutModel = new ForceCheckoutModel();
-    checkoutDeductionDetails: CheckoutDeductionDetailsModel = new CheckoutDeductionDetailsModel();
-    rentSlabModel :RentSlabModel = new RentSlabModel();
-    gstSlabModel :GstSlabModel[] = [];
     gstCharges : GstChargesModel = new GstChargesModel();
     shortTerm :ShortTermModel[] = [];
+    shortTermRentingDuration:ShortTermRentingDuration = new ShortTermRentingDuration();
     
 }
 
@@ -45,8 +43,8 @@ export class BeforeCheckInCancellationRefundModel{
     trigger_on : string  ="WebCheckIn";
     trigger_condition : string ;
     priority: number ;
-    isDelete:boolean = false;
-    isEdit:boolean = false;
+    isDelete:boolean ;
+    isEdit:boolean ;
 }
 
 export class DataGroupingModel{
@@ -78,34 +76,7 @@ export class ForceCheckoutModel{
     forceCheckOutDays  : number ;
 }
 
-export class CheckoutDeductionDetailsModel {
-    checkout_deduction_Id : string ='';
-    trigger_condition: string ;
-    notice_period_days: number ;
-    deduction_percentage: number ;
-    trigger_value : string ;
-  }
-
-  export class RentSlabModel  {
-    rentSlabId: string ;
-    slabFrom: string ;
-    slabTo: string ;
-    rentPercentage: number ;
-    isEdit:boolean = false;
-    isDelete:boolean = false;
-  };
-
-  export class GstSlabModel  {
-    rentSlabId: string ;
-    slabFrom: string ;
-    slabTo: string ;
-    gstPercentage: number ;
-    isEdit:boolean = false;
-    isDelete:boolean = false;
-    showInputBox:boolean = false;
-  };
-
- export class GstChargesModel{
+export class GstChargesModel{
     rentId: string ;
     cgstPercentage:number ;
     sgstPercentage: number ;
@@ -118,4 +89,9 @@ export class ShortTermModel{
     days: string ;
     percentage: number ;
     termDisabled :boolean =true;
+}
+
+export class ShortTermRentingDuration  {
+    rentingDurationId :string;
+    rentingDurationDays: number;
 }

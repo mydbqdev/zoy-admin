@@ -188,6 +188,18 @@ import { MessageService } from 'src/app/message.service';
             }
         );
     } 
+    public updateShortTermRentingDuration(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/renting-duration";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    }
 
       private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");    

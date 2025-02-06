@@ -35,7 +35,8 @@ export class MenuService {
     { name: "Role and Permission", link: "/role-master", permission: "ROLE_AND_PERMISSION_READ" },
     { name: "Settings", link: "/settings", permission: "DEFAULT_PERMISSION" },
     { name: "Zoy Code", link: "/zoy-code", permission: "ZOYCODES_READ" },
-    { name: "User Audit", link: "/user-audit", permission: "USER_AUDIT_READ" }
+    { name: "User Audit", link: "/user-audit", permission: "USER_AUDIT_READ" },
+    { name: "Organization Info-Config", link: "/organization-info-config", permission: "ORGANIZATION_INFO_CONFIG_READ" }
   ];
   
 
