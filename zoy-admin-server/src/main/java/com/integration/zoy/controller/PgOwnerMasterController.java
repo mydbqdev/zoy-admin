@@ -57,6 +57,7 @@ import com.integration.zoy.model.Room;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.PgOwnerMaterRepository;
 import com.integration.zoy.repository.UserProfileRepository;
+import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
@@ -77,7 +78,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	private UserProfileRepository profileRepository;
 	@Autowired
 	private AdminUserMasterRepository adminUserMasterRepository;
-	
+	@Autowired
+	ZoyPgOwnerDetailsRepository zoyPgOwnerDetailsRepo;
+
 	@Autowired
 	ZoyCodeGenerationService zoyCodeGenerationService;
 	@Autowired
@@ -88,10 +91,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 	@Autowired
 	ZoyEmailService emailBodyService;
-	
+
 	@Autowired
 	ZoyS3Service zoyS3Service;
-	
+
 	@Autowired
 	PdfGenerateService  pdfGenerateService;
 
@@ -100,7 +103,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 	@Value("${qa.signin.link}")
 	private String qaRegistrationLink;
-	
+
 	@Value("${app.minio.user.photos.bucket.name}")
 	private String userPhotoBucketName;
 	@Autowired
@@ -144,7 +147,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			}
 
 			String phoneNumber= pgOwnerMaterRepository.findPhoneNumber(model.getMobileNo());
-			
+
 			if (phoneNumber != null && !phoneNumber.isEmpty()) {
 				response.setStatus(HttpStatus.CONFLICT.value());
 				response.setMessage("Phone number " + phoneNumber + " already exists");
@@ -176,7 +179,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);
 			emailBodyService.sendZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,token);
 
-			
+
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("ZOY code has been generated & sent successfully.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -262,7 +265,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	public ResponseEntity<Object> searchPgOwnerDetails(PgOwnerFilter pgOwnerFilter) {
 		ResponseBody response = new ResponseBody();
 		try {
@@ -325,6 +328,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			profile.setOwnerName(details[1] != null ? details[1] : null);
 			profile.setStatus(details[8] != null ? details[8].toString() : null);
 			profile.setProfilePhoto( details[9] != null ? details[9].toString() : null);
+			profile.setZoyShare(details[37] != null ? details[37].toString() : null);
 			PgOwnerbasicInformation basicInformation = new PgOwnerbasicInformation();
 			basicInformation.setFirstName(details[2] != null ? details[2].toString() : null);
 			basicInformation.setLastName(details[3] != null ? details[3].toString() : null);
@@ -478,86 +482,116 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 		}
 	}
 
-	
+
 	@Override
 	public ResponseEntity<String> uploadProfilePicture(MultipartFile image) {
-	    ResponseBody response = new ResponseBody();
-	    try {
-	        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-	        String fileName = image.getOriginalFilename();
+		ResponseBody response = new ResponseBody();
+		try {
+			String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+			String fileName = image.getOriginalFilename();
 
-	        long maxSize = 2 * 1024 * 1024; 
-	        if (image.getSize() > maxSize) {
-	            log.error("File size exceeds the maximum limit of 2MB.");
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setMessage("File size exceeds the maximum limit of 2MB.");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        }
-	        if (fileName == null || fileName.isEmpty()) {
-	            log.error("No file uploaded.");
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setMessage("No file uploaded.");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        }
+			long maxSize = 2 * 1024 * 1024; 
+			if (image.getSize() > maxSize) {
+				log.error("File size exceeds the maximum limit of 2MB.");
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setMessage("File size exceeds the maximum limit of 2MB.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			if (fileName == null || fileName.isEmpty()) {
+				log.error("No file uploaded.");
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setMessage("No file uploaded.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
 
-	        AdminUserMaster userDetail = adminUserMasterRepository.findById(userEmail)
-	                .orElseThrow(() -> new RuntimeException("User not found"));
+			AdminUserMaster userDetail = adminUserMasterRepository.findById(userEmail)
+					.orElseThrow(() -> new RuntimeException("User not found"));
 
-	        byte[] profilePictureBase64 = pdfGenerateService.imageToBytes(image.getInputStream());
-	        userDetail.setUserProfilePicture(profilePictureBase64);
+			byte[] profilePictureBase64 = pdfGenerateService.imageToBytes(image.getInputStream());
+			userDetail.setUserProfilePicture(profilePictureBase64);
 
-	        adminUserMasterRepository.save(userDetail);
+			adminUserMasterRepository.save(userDetail);
 
-	        log.info("Profile picture uploaded successfully for user: {}", userEmail);
-	        response.setStatus(HttpStatus.OK.value());
-	        response.setMessage("Profile picture uploaded successfully.");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			log.info("Profile picture uploaded successfully for user: {}", userEmail);
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Profile picture uploaded successfully.");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
-	    } catch (RuntimeException ex) {
-	        log.error("User not found or error occurred while uploading profile picture API:/zoy_admin/uploadProfilePicture.uploadProfilePicture", ex.getMessage());
-	        response.setStatus(HttpStatus.NOT_FOUND.value());
-	        response.setMessage("User not found.");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+		} catch (RuntimeException ex) {
+			log.error("User not found or error occurred while uploading profile picture API:/zoy_admin/uploadProfilePicture.uploadProfilePicture", ex.getMessage());
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			response.setMessage("User not found.");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 
-	    } catch (Exception ex) {
-	        log.error("Unexpected error occurred while uploading the profile pictureAPI:/zoy_admin/uploadProfilePicture.uploadProfilePicture", ex.getMessage(), ex);
+		} catch (Exception ex) {
+			log.error("Unexpected error occurred while uploading the profile pictureAPI:/zoy_admin/uploadProfilePicture.uploadProfilePicture", ex.getMessage(), ex);
 
-	        try {
-	            new ZoyAdminApplicationException(ex, "");
-	        } catch (Exception e) {
-	            log.error("Error during custom exception handling API:/zoy_admin/uploadProfilePicture.uploadProfilePicture", e.getMessage(), e);
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setError(e.getMessage());
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        }
+			try {
+				new ZoyAdminApplicationException(ex, "");
+			} catch (Exception e) {
+				log.error("Error during custom exception handling API:/zoy_admin/uploadProfilePicture.uploadProfilePicture", e.getMessage(), e);
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(e.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
 
-	        response.setStatus(HttpStatus.BAD_REQUEST.value());
-	        response.setError(ex.getMessage());
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	    }
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(ex.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
 	}
 
-	
-	public byte[] getProfilePicture() { 
-	    byte[] profilePic = null ;
-	    try {
-	        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();  
-	        profilePic = adminUserMasterRepository.findProfilePhoto(userEmail);  
 
-	        if (profilePic == null || profilePic.length == 0) {
-	            log.info("Profile picture not found for user API:/zoy_admin/getProfilePicture.getProfilePicture", userEmail);
-	            return profilePic; 
-	        }
-	        
-	     }catch (Exception ex) {
-	        log.error("Unexpected error occurred while fetching the profile picture API:/zoy_admin/getProfilePicture.getProfilePicture", ex);
-	        try {
-	            new ZoyAdminApplicationException(ex, "");
-	        } catch (Exception e) {
-	        	log.error("Failed to download Profile Photo API:/zoy_admin/getProfilePicture.getProfilePicture "+ex.getMessage(),ex);
-	        }
-	    }
-	    return profilePic ;
+	public byte[] getProfilePicture() { 
+		byte[] profilePic = null ;
+		try {
+			String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();  
+			profilePic = adminUserMasterRepository.findProfilePhoto(userEmail);  
+
+			if (profilePic == null || profilePic.length == 0) {
+				log.info("Profile picture not found for user API:/zoy_admin/getProfilePicture.getProfilePicture", userEmail);
+				return profilePic; 
+			}
+
+		}catch (Exception ex) {
+			log.error("Unexpected error occurred while fetching the profile picture API:/zoy_admin/getProfilePicture.getProfilePicture", ex);
+			try {
+				new ZoyAdminApplicationException(ex, "");
+			} catch (Exception e) {
+				log.error("Failed to download Profile Photo API:/zoy_admin/getProfilePicture.getProfilePicture "+ex.getMessage(),ex);
+			}
+		}
+		return profilePic ;
+	}
+
+	@Override
+	public ResponseEntity<String> updateOwnerZoyShare(String ownerid,BigDecimal newZoyshare) {
+		ResponseBody response = new ResponseBody();
+		try {
+			int rowsUpdated = zoyPgOwnerDetailsRepo.updateZoyShare(ownerid, newZoyshare);
+			if (rowsUpdated > 0) {
+				response.setStatus(HttpStatus.OK.value());
+				response.setMessage("Zoy share updated successfully.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setError("Owner not found.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			log.error("Error occurred while updating zoy share: API:/zoy_admin/updateZoyShare.updateOwnerZoyShare", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
 

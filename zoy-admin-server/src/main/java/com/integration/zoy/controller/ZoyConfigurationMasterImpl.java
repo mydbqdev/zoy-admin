@@ -258,4 +258,5 @@ public interface ZoyConfigurationMasterImpl {
 	produces = { "application/json" },
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminConfigShortTermRentingDuration(@RequestBody ZoyRentingDuration rentingDuration);
+
 }
