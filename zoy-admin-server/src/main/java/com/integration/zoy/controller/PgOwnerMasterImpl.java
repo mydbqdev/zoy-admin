@@ -1,10 +1,13 @@
 package com.integration.zoy.controller;
 
+import java.math.BigDecimal;
+
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -112,5 +115,17 @@ public interface PgOwnerMasterImpl {
 	@GetMapping(value = "/zoy_admin/getProfilePicture",
 	produces = { "application/json" })
 	byte[] getProfilePicture();
+	
+	
+	@Operation(summary = "update owner zoyShare", description = "to update the zoyShare", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Pg Owner" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PutMapping(value = "/zoy_admin/updateZoyShare",
+	produces = { "application/json" })
+	ResponseEntity<String> updateOwnerZoyShare(@RequestParam("ownerid") String ownerid,@RequestParam("newZoyShare") BigDecimal newZoyShare);
 	
 }
