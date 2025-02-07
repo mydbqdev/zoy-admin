@@ -70,7 +70,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  transactionHeader:string="";
 	  @ViewChild(MatSort) sort: MatSort;
 	  @ViewChild(MatPaginator) paginator: MatPaginator;
-
+	
 	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService :ZoyOwnerService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private reportService : ReportService) {
 			  this.authService.checkLoginUserVlidaate();
@@ -242,6 +242,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				this.floor_id = this.floorInfo.floor_id; 
 				this.showRooms();
 			}
+			this.zoyShare = JSON.parse(JSON.stringify( this.pgOwnerData?.profile.zoy_share? Number(this.pgOwnerData.profile.zoy_share):0));
 			
 		} 
 		this.spinner.hide();
@@ -348,7 +349,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	doActiveteDeactivetePg(){
 		this.pgOwnerData.profile.reason =  this.reason;
 		this.spinner.show();
-		this.zoyOwnerService.doActiveteDeactivetePg(this.pgOwnerData.profile).subscribe(res => {
+		this.zoyOwnerService.doActiveteDeactivetePg(this.pgOwnerData.profile.owner_i_d).subscribe(res => {
 
 		this.submitted =false;
 		this.spinner.hide();
@@ -542,11 +543,11 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		return true;
 	  }
 
-	zoyShare :number=3;
+	zoyShare :number=0;
 	zoyShareDisabled :boolean;
 	zoyShareReset(): void {
 		this.zoyShareDisabled = false;
-			this.zoyShare = JSON.parse(JSON.stringify(this.zoyShare));
+		this.zoyShare =JSON.parse(JSON.stringify( this.pgOwnerData.profile.zoy_share));
 		}
 
 	zoyShareSubmit(): void {
@@ -559,8 +560,39 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		   (confirmed) =>{
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
-				
-				console.log("update zoy Share",this.zoyShare)
+				this.spinner.show();
+					this.zoyOwnerService.updateZoyShare(this.pgOwnerData.profile.owner_i_d,this.zoyShare).subscribe(res => {
+					this.pgOwnerData.profile.zoy_share = JSON.parse(JSON.stringify(this.zoyShare));
+					this.zoyShareDisabled = false;
+					this.spinner.hide();
+					}, error => {
+					 this.spinner.hide();
+					if(error.status == 0) {
+						this.notifyService.showError("Internal Server Error/Connection not established", "")
+					}else if(error.status==403){
+							this.router.navigate(['/forbidden']);
+						}else if (error.error && error.error.message) {
+							this.errorMsg = error.error.message;
+							console.log("Error:" + this.errorMsg);
+							this.notifyService.showError(this.errorMsg, "");
+						} else {
+							if (error.status == 500 && error.statusText == "Internal Server Error") {
+							this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+							} else {
+							let str;
+							if (error.status == 400) {
+								str = error.error.error;
+							} else {
+								str = error.error.message;
+								str = str.substring(str.indexOf(":") + 1);
+							}
+							console.log("Error:" ,str);
+							this.errorMsg = str;
+							}
+							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+							//this.notifyService.showError(this.errorMsg, "");
+						}
+						}); 
 				}
 			}).catch(
 				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')

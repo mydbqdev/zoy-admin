@@ -268,12 +268,13 @@
                         <hr class="solid"> 
                          <!--Cancellation And Refund Policy-->
                          <div>
-                          <div class="row p-3 marginRow">
+                          <div class="row p-3 align-items-center ">
                             <div class="col-sm-3">
                               <span style="font-size: 16px;">Cancellation And Refund Policy</span>
                               <p class="small text-muted" style="font-size: 12px;"><em>Define the deduction percentage and time frame for cancellation before check in.</em></p>
                             </div>
                             <div class="col-sm-9">
+                              <div>Before check in</div>
                                   <div class="card card-body m-0 p-0">
                                     <div>
                                       <div class="pt-2 pb-2" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
@@ -289,8 +290,7 @@
                                           </div>
                                         </div>
                                             <div class="mr-3" style="width: 155px;">
-                                              <div>Before check in</div>
-                                              <div class="input-group input-group-sm">
+                                              <div class="input-group input-group-sm mt-4">
                                                 <input 
                                                 type="text" 
                                                 class="form-control form-control-sm"
@@ -450,7 +450,88 @@
                                     </div>
                                     </div>
                                   </div>
-                                <!-- </div> -->
+
+                                  <div class="mt-3 ">After check-in</div>
+                                  <div class="card card-body m-0 p-0">
+                                  <div class="row p-2">
+                                    <!-- Auto-Cancellation after Check-in Dates -->
+                                    <div class="col-sm-2">
+                                      <div>Condition</div>
+                                      <div class="input-group input-group-sm" *ngIf="autoCancellationDisabled">
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_condition" [disabled]="autoCancellationDisabled" /> 
+                                      </div> 
+                                      <div class="input-group input-group-sm" *ngIf="!autoCancellationDisabled">
+                                        <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_condition" [ngClass]="{'is-invalid': !autoCancellationDisabled && !configMasterModel.cancellationAfterCheckInDetails.trigger_condition }" >
+                                          <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
+                                        </select>
+                                      </div>
+                                     </div>
+                                    <div class="col-sm-3">
+                                      <div class="input-group input-group-sm mt-4">
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm"
+                                          [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day" [disabled]="autoCancellationDisabled" (keypress)="numberOnly($event)" maxlength="3" 
+                                           [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day) }" 
+                                          style="max-width: 70px !important;" />
+                                          <span class="input-group-text">Days</span>
+                                      </div>
+                                      <p class="small text-muted" style="font-size: 12px;">
+                                      <em>Set the days to cancel if not checked in.</em>
+                                      </p>
+                                    </div>
+                                    <div class="col-sm-3">
+                                      <div>Deduction Type</div>
+                                      <div class="input-group input-group-sm" *ngIf="autoCancellationDisabled">
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_value" [disabled]="autoCancellationDisabled" /> 
+                                      </div>
+                                      <div class="input-group input-group-sm" *ngIf="!autoCancellationDisabled">
+                                        <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_value"   [ngClass]="{'is-invalid': !autoCancellationDisabled && !configMasterModel.cancellationAfterCheckInDetails.trigger_value }" >
+                                        <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <!-- Deduction Percentage -->
+                                    <div class="col-sm-2">
+                                      <div>Deduction</div>
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="5"
+                                          [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_percentage" [disabled]="autoCancellationDisabled" 
+                                           [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) }" 
+                                          style="max-width: 70px !important;"/>
+                                          <span class="input-group-text">%</span>
+                                      </div>
+                                      <p class="small text-muted" style="font-size: 12px;">
+                                      <em>Percentage of paid amount to deduct.</em>
+                                      </p>
+                                    </div>
+                                    <!-- Action Button -->
+                                    <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
+                                      <div class="btn-group">
+                                        <button 
+                                          class="btn btn-sm btn-outline-secondary" 
+                                          *ngIf="autoCancellationDisabled"
+                                          (click)="autoCancellationDisabled = false">
+                                          <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button 
+                                          class="btn btn-sm btn-outline-secondary" 
+                                          *ngIf="!autoCancellationDisabled"
+                                          (click)="autoCancellationSubmit()">
+                                          <i class="fas fa-check"></i>
+                                        </button>
+                                        <button 
+                                          class="btn btn-sm btn-outline-secondary" 
+                                          *ngIf="!autoCancellationDisabled"
+                                          (click)="autoCancellationReset()">
+                                          <i class="fas fa-redo" style="color: red;"></i>
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div> 
                                </div>
                            </div>
                         </div>
@@ -542,16 +623,16 @@
                             <hr class="solid"> 
                             <div>
                               <!--Auto-Cancellation Period-->
-                              <div class="row p-3 align-items-center marginRow">
-                                <div class="col-sm-3">
+                              <div class="row p-3 marginRow">
+                                <div class="col-sm-2">
                                   <div><span style="font-size: 16px;">After check-in Date </span></div>
-                                  <div>
+                                  <!-- <div>
                                     <p class="small text-muted" style="font-size: 12px;">
                                     <em>Configure the number of days after the check-in date to automatically cancel bookings if tenants fail to check-in.</em>
                                     </p>
-                                  </div>
+                                  </div> -->
                                 </div>
-                                <div class="col-sm-9">
+                                <div class="col-sm-10">
                                   <div class="row">
                                     <!-- Auto-Cancellation after Check-in Dates -->
                                     <div class="col-sm-2">
@@ -565,7 +646,7 @@
                                         </select>
                                       </div>
                                      </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-2">
                                       <div>After check-in</div>
                                       <div class="input-group input-group-sm">
                                         <input 
@@ -592,7 +673,7 @@
                                       </div>
                                     </div>
                                     <!-- Deduction Percentage -->
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-4">
                                       <div>Deduction</div>
                                       <div class="input-group input-group-sm">
                                         <input 
@@ -602,9 +683,20 @@
                                            [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) }" 
                                           style="max-width: 70px !important;"/>
                                           <span class="input-group-text">%</span>
+                                          <span class="mt-2 ml-1 mr-1"> + </span>
+                                            <input 
+                                              type="text" 
+                                              class="form-control form-control-sm"
+                                              [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day" [disabled]="autoCancellationDisabled" (keypress)="numberOnly($event)" maxlength="3" 
+                                               [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day) }" 
+                                              style="max-width: 70px !important;" />
+                                              <span class="input-group-text">Days</span>
+                                         
                                       </div>
                                       <p class="small text-muted" style="font-size: 12px;">
-                                      <em>Percentage of paid amount to deduct.</em>
+                                       <span> <em>Percentage of paid amount to deduct.</em></span>
+                                     <span style="width: 10px;"></span>
+                                      <span><em>Days of rent amount to deduct.</em></span>
                                       </p>
                                     </div>
                                     <!-- Action Button -->
@@ -632,8 +724,21 @@
                                     </div>
                                   </div>
                                 </div>
+                                 
                               </div>
-                              
+                              <div class="m-2">
+                                <p class="small text-muted" style="font-size: 12px;">
+                                  <em>Configure the number of days after the check-in date to automatically cancel bookings if tenants fail to check-in.
+                                    If type as a selected Rent then days of rent amount dedected .
+                                    <a href="javascript:void(0)" *ngIf="!more"  (click)="more=!more">...more</a>
+                                    <span *ngIf="more">
+                                      If type as a selected PaidAmount then parcentage of Paid amount(security Deposit) dedected .
+                                      If type as a selected PaidAmount & Rent then parcentage of Paid amount and addtionally days of rent amount dedected .
+                                      <a href="javascript:void(0)" (click)="more=!more"><<...less</a>
+                                    </span>
+                                  </em>
+                                </p>
+                              </div>
                             </div>
                           
                             <hr class="solid"> 

@@ -13,6 +13,7 @@ export class Profile {
     profile_photo: string;
     status: string;
     reason:string;
+    zoy_share: number;
   }
   
   // PG Owner Basic Information Model
