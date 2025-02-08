@@ -108,6 +108,7 @@ const appRoutes: Routes = [
     LineNgxChartComponent,
     AreaNgxChartComponent,
     DocumentUploadComponent,
+    OrganizationInfoConfigComponent,
     ConfigurationMasterComponent,
     UserAuditComponent,
     AlertNotificationComponent,
@@ -136,7 +137,7 @@ const appRoutes: Routes = [
     NgxChartsModule,
     AppDocumentUploadRoutingModule,
     AppNotificationRoutingModule,
-    OrganizationInfoConfigComponent
+    
     ],
   providers: [
     {

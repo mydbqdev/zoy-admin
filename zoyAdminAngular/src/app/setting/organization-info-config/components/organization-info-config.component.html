@@ -1,0 +1,275 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+  <p style="color: white;">Loading ...</p>
+</ngx-spinner>
+<div id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">    
+      <!-- Sidebar -->
+        <app-sidebar></app-sidebar>
+      <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+            <!-- Main Content -->
+            <div id="content">
+                <div style="display: block;margin-bottom: 5.375rem;">
+                <!-- Topbar -->
+                <app-header></app-header>
+                <!-- End of Topbar -->
+                </div>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                  <div class="d-sm-flex align-items-center justify-content-between mb-0">
+                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Organization</span><span class="text-header-800-blue">Configuration</span></h3> 
+                    <div>
+                    </div>
+                  </div>
+                  
+               
+                <div class="card-body  m-2 p-2">
+                <div class="ml-5 mt-3 mb-1">
+                  Organization Basic Information
+                </div>
+                  <div class="container-main shadow">
+                    <div >
+                   <div class="row p-5">
+                    <div class="col-sm-3">
+                      <div  class="image-preview mb-1" style="width: 220px ; overflow: auto;text-align: center;" >
+                        <img [src]="imgeURL2">
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="mb-2">
+                        <div class="row mb-2">
+                          <div *ngIf="!editOrg">ZOY Infinity Hospitality Pvt Ltd</div>
+                          <div *ngIf="editOrg">
+                            <input type="text" class="form-control form-control-sm" placeholder="Enter Organization Name" />
+                          </div>
+                        </div>
+                        <div class="row mb-2">
+                          <div class="input-group input-group-sm">
+                             <span> GST Number : </span>
+                              <span *ngIf="!editOrg" class="ml-2">27AAAPA1234A1Z5</span>
+                              <input type="text" class="form-control form-control-sm ml-2"  placeholder="Enter GST Number" *ngIf="editOrg" />
+                          </div>
+                        </div>
+                        <div class="row mb-2">
+                          <div class="input-group input-group-sm">
+                          <span> PAN Number : </span>
+                            <span *ngIf="!editOrg" class="ml-2"> AAAPA1234A</span>
+                            <input type="text" class="form-control form-control-sm ml-2"  placeholder="Enter PAN Number" *ngIf="editOrg" />
+                          </div>
+                        </div>
+                        <div class="row mb-2">
+                          <div class="input-group input-group-sm">
+                          <span> URL :</span>
+                            <span *ngIf="!editOrg" class="ml-2"> www.zpypg.com</span>
+                            <input type="text" class="form-control form-control-sm ml-2"  placeholder="Enter URL" *ngIf="editOrg" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="d-sm-flex mb-2">
+                        <div class="ml-auto" style="align-content: flex-end;">  
+                           <button type="button" class="btn btn-sm btn-primary" *ngIf="!editOrg" (click)="editOrg=!editOrg" > <i class="fas fa-edit" ></i>
+                          Edit</button> 
+                        <button type="button" class="btn btn-sm btn-primary" *ngIf="editOrg"  >save changes</button>
+                        <button class="btn btn-sm btn-outline-secondary ml-1" *ngIf="editOrg" (click)="editOrg=!editOrg"> Cancel</button>
+                        </div>
+                     </div>
+                    </div>
+                   </div>
+                    </div>
+                  </div>
+                 
+                </div>
+                <div>
+                  <div class="ml-5 mb-2">
+                  Organization Detailed Information 
+                  </div>
+                  <div class="card shadow  m-3 p-3">
+                      <!-- Card Body -->
+                      <div class="d-sm-flex mb-2">
+                      <div class="ml-auto">  
+                        <div class="input-group">
+                          <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i> 
+                          <input type="text" class="form-control form-control-sm  border-1 "  [(ngModel)]="searchText" (keyup)="filterData($event)" style="border-radius: 20px;padding-left: 29px;width: 300px;" placeholder="Search"
+                                aria-label="Search" aria-describedby="basic-addon2">  
+                           <button type="button" class="btn btn-sm btn-primary ml-2" data-bs-toggle="offcanvas" data-bs-target="#detailedModel" aria-controls="offcanvasUpdateLabel"> <i class="fas fa-plus mr-1" ></i>Add</button>    
+                       </div>                    
+                      </div>
+                      </div>
+                      <div class="card-body" style="padding: 2px; margin: 0;">
+                         
+                        <div>
+                            <div class="scrollable-container-main">
+                                <table mat-table [dataSource]="dataSource" >                                          
+                                    <!-- User Name Column -->
+                                    <ng-container matColumnDef="type">
+                                        <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                            TYPE 
+                                            <span style="margin-left: 2px;">
+                                           
+                                                <i class="fas fa-lg fa-sort-up sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'type' && sortDirection === 'asc' }" (click)= "sortChange('type','asc')" ></i>
+                                                <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'type' && sortDirection === 'desc' }" (click)= "sortChange('type','desc')"></i>
+                                            </span>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                            {{element.type}} 
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="addressLine1">
+                                      <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                         ADDRESS
+                                          <span style="margin-left: 2px;">
+                                            <span> <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'addressLine1' && sortDirection === 'asc' }" (click)= "sortChange('addressLine1','asc')" ></i></span>
+                                            <span><i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'addressLine1' && sortDirection === 'desc' }" (click)= "sortChange('addressLine1','desc')"></i></span>
+                                              
+                                          </span>
+                                      </th>
+                                      <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                          {{element.addressLine1}} 
+                                      </td>
+                                  </ng-container>
+                                  <ng-container matColumnDef="city">
+                                    <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                       CITY
+                                        <span style="margin-left: 2px;">
+                                            <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'city' && sortDirection === 'asc' }" (click)= "sortChange('city','asc')" ></i>
+                                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'city' && sortDirection === 'desc' }" (click)= "sortChange('city','desc')"></i>
+                                        </span>
+                                    </th>
+                                    <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                        {{element.city}} 
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="state">
+                                  <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                     STATE
+                                      <span style="margin-left: 2px;">
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'state' && sortDirection === 'asc' }" (click)= "sortChange('state','asc')" ></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'state' && sortDirection === 'desc' }" (click)= "sortChange('state','desc')"></i>
+                                      </span>
+                                  </th>
+                                  <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                      {{element.state}} 
+                                  </td>
+                              </ng-container>
+                              <ng-container matColumnDef="pincode">
+                                <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                   PINCODE
+                                    <span style="margin-left: 2px;">
+                                        <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'pincode' && sortDirection === 'asc' }" (click)= "sortChange('pincode','asc')" ></i>
+                                        <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'pincode' && sortDirection === 'desc' }" (click)= "sortChange('pincode','desc')"></i>
+                                    </span>
+                                </th>
+                                <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                    {{element.pincode}} 
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="contactNumber1">
+                              <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                CONTACT NUMBER
+                                  <span style="margin-left: 2px;">
+                                      <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'contactNumber1' && sortDirection === 'asc' }" (click)= "sortChange('contactNumber1','asc')" ></i>
+                                      <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'contactNumber1' && sortDirection === 'desc' }" (click)= "sortChange('contactNumber1','desc')"></i>
+                                  </span>
+                              </th>
+                              <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                  {{element.contactNumber1}} 
+                              </td>
+                          </ng-container>
+                          <ng-container matColumnDef="emailId1">
+                            <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                               EMAILD ID
+                                <span style="margin-left: 2px;">
+                                    <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'emailId1' && sortDirection === 'asc' }" (click)= "sortChange('emailId1','asc')" ></i>
+                                    <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'emailId1' && sortDirection === 'desc' }" (click)= "sortChange('emailId1','desc')"></i>
+                                </span>
+                            </th>
+                            <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                {{element.emailId1}} 
+                            </td>
+                        </ng-container>
+                                
+                        <ng-container matColumnDef="action">
+                          <th mat-header-cell *matHeaderCellDef style="width: 50px;"></th>
+                          <td mat-cell style="width: 50px;" data-label="action" *matCellDef="let element">
+                              <a class="dropdown no-arrow dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                              </a>
+                              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                              aria-labelledby="dropdownMenuLink">
+                              <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#detailedModel" aria-controls="offcanvasUpdateLabel" >View</a>
+                              <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#detailedModel" aria-controls="offcanvasUpdateLabel" >Edit</a>
+                              <a class="dropdown-item" href="javascript:void(0)"  >status</a>
+                          </div>
+                              
+                          </td>
+                      </ng-container>
+
+                      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                      <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
+                  </table>
+                  <div style="text-align: center; min-height: 45px; padding-top: 10px;" *ngIf="dataSource.data.length == 0">
+                      No records found
+                  </div>
+              </div>
+          </div>
+          <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>             
+</div>
+</div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+        </div>
+        <!-- End of Content Wrapper -->
+   </div>
+  <!-- End of Page Wrapper -->
+</div>
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="detailedModel" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+  <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="detailedModel">Update/Add </h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #closeModal></button>
+  </div>
+  <hr class="sidebar-divider my-0">
+  <div class="offcanvas-body">
+    <div>
+      <div class="pl-3" style="font-size: 14px;color: #707070;">
+        <div class="d-flex mb-1"><div style="width: 180px;">Emergency Number</div><div><span class="mr-2">:</span>
+          <span *ngIf="!editOrg" class="ml-2"> www.zpypg.com</span>
+          <input type="text" class="form-control form-control-sm ml-2"  placeholder="Enter URL" *ngIf="editOrg" />
+        </div>
+      </div>
+        <div class="d-flex mb-1"><div style="width: 180px;">Alternative Phone Number</div><div><span class="mr-2">:</span>
+          <span *ngIf="!editOrg" class="ml-2"> www.zpypg.com</span>
+          <input type="text" class="form-control form-control-sm ml-2"  placeholder="Enter URL" *ngIf="editOrg" />
+        </div></div>
+        <div class="d-flex mb-1"><div style="width: 180px;">Tenant Type</div><div><span class="mr-2">:</span>dpf.profile.tenantType</div></div>
+        <div class="d-flex mb-1"><div style="width: 180px;">Gender</div><div><span class="mr-2">:</span>tdpf.profile.gender</div></div>
+        <div class="d-flex mb-1"><div style="width: 180px;">Date of Birth</div><div><span class="mr-2">:</span>.profile.dateOfBirth</div></div>
+        <div class="d-flex mb-1"><div style="width: 180px;">Blood Group</div><div><span class="mr-2">:</span>dpf.profile.bloodGrou</div></div>
+        <div class="d-flex mb-1"><div style="width: 180px;">Father's Name</div><div><span class="mr-2">:</span>dpf.profile.fatherName</div></div>
+        <div class="d-flex mb-1"><div style="width: 180px;">Present Address</div><div><span class="mr-2">:</span>.profile.currentAddre</div></div>
+        <div class="d-flex mb-1"><div style="width: 180px;">Permanent Address</div><div><span class="mr-2">:</span>rofile.permanentAddre</div></div>
+      </div>
+    </div>
+          
+       <div class="offcanvas-footer d-flex  justify-content-start mt-3">  
+        <div class="ml-auto" >     
+         <button type="submit" class="btn btn-primary-custom me-2" value="Save" > Submit</button>
+         <button type="button" class="btn btn-dark" data-bs-dismiss="offcanvas" aria-label="Close">Close</button>
+        </div>   
+      </div>  
+  </div>
+</div> 
+
+
