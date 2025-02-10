@@ -272,6 +272,16 @@ public interface ZoyConfigurationMasterImpl {
 	consumes = { "multipart/form-data" })
 	ResponseEntity<String> zoyAdminCompanyProfileMaster(@RequestPart("companyProfile") String  companyProfile,@RequestPart("companyLogo") MultipartFile companyLogo);
 	
+	@Operation(summary = "Fetch master  company details", description = "fetch  Company Master", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/config/fetch-master-profile",
+	produces = { "application/json" })
+	ResponseEntity<String> fetchCompanyProfileMaster();
 	
 	@Operation(summary = "Admin Configration Short Term Renting Duration", description = "Creating/Updating Admin Configration Short Term Renting Duration", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
