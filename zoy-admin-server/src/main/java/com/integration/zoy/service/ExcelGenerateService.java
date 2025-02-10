@@ -4,8 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
@@ -18,38 +22,79 @@ import com.integration.zoy.utils.UserPaymentDTO;
 import com.integration.zoy.utils.VendorPayments;
 import com.integration.zoy.utils.VendorPaymentsDues;
 import com.integration.zoy.utils.VendorPaymentsGst;
+import com.itextpdf.io.exceptions.IOException;
 
 @Service
 public class ExcelGenerateService {
+	
+	private CellStyle currencyStyle;
+	
+	private void initializeCurrencyStyle(Workbook workbook) {
+        currencyStyle = workbook.createCellStyle();
+        DataFormat format = workbook.createDataFormat();
 
-	public byte[] generateExcelFile(String reportType, Map<String, Object> data) {
-		List<?> reportData = (List<?>) data.get("reportData");
+        currencyStyle.setDataFormat(format.getFormat("#,##0.00"));
+    }
 
-		try (XSSFWorkbook workbook = new XSSFWorkbook()) {
-			Sheet sheet = workbook.createSheet(reportType);
+	private void setCurrencyCell(Row row, int column, String value) { 
+	    Cell cell = row.createCell(column);
 
-			if (reportData == null || reportData.isEmpty()) {
-				return new byte[0];
-			}
-
-			Row headerRow = sheet.createRow(0);
-			createExcelHeaderRow(headerRow, reportData.get(0), reportType);
-
-			for (int i = 0; i < reportData.size(); i++) {
-				Row dataRow = sheet.createRow(i + 1);
-				createExcelDataRow(dataRow, reportData.get(i), reportType);
-			}
-
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			workbook.write(outputStream);
-			return outputStream.toByteArray();
-
-		} catch (Exception e) {
-			//throw new RuntimeException("Error generating Excel file", e);
-			new ZoyAdminApplicationException(e, "Error generating Excel file");
-		}
-		return null;
+	    if (value != null && !value.equals("N/A")) {
+	        try {
+	            String cleanedValue = value.replaceAll("[^\\d.]", "");
+	            
+	            if (!cleanedValue.isEmpty()) {
+	                if (cleanedValue.indexOf('.') != cleanedValue.lastIndexOf('.')) {
+	                    cleanedValue = cleanedValue.substring(0, cleanedValue.indexOf('.')) + cleanedValue.substring(cleanedValue.lastIndexOf('.'));
+	                }
+	                
+	                double amount = Double.parseDouble(cleanedValue);
+	                
+	                cell.setCellValue(amount);
+	                
+	                cell.setCellStyle(currencyStyle);
+	            } else {
+	                cell.setCellValue("N/A");
+	            }
+	        } catch (NumberFormatException e) {
+	            cell.setCellValue(value);
+	        }
+	    } else {
+	        cell.setCellValue("N/A");
+	    }
 	}
+
+    
+    public byte[] generateExcelFile(String reportType, Map<String, Object> data) {
+        List<?> reportData = (List<?>) data.get("reportData");
+
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            initializeCurrencyStyle(workbook);
+
+            Sheet sheet = workbook.createSheet(reportType);
+
+            if (reportData == null || reportData.isEmpty()) {
+                return new byte[0];
+            }
+
+            Row headerRow = sheet.createRow(0);
+            createExcelHeaderRow(headerRow, reportData.get(0), reportType);
+
+            for (int i = 0; i < reportData.size(); i++) {
+                Row dataRow = sheet.createRow(i + 1);
+                createExcelDataRow(dataRow, reportData.get(i), reportType);
+            }
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            return outputStream.toByteArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error generating Excel file", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing the Excel generation", e);
+        }
+    }
 
 	private void createExcelHeaderRow(Row row, Object dto, String reportType) {
 		switch (reportType) {
@@ -62,9 +107,9 @@ public class ExcelGenerateService {
 			row.createCell(5).setCellValue("Transaction Date");
 			row.createCell(6).setCellValue("Invoice No");
 			row.createCell(7).setCellValue("Transaction Status");
-			row.createCell(8).setCellValue("Due Amount");
-			row.createCell(9).setCellValue("GST Amount");
-			row.createCell(10).setCellValue("Total Amount");
+			row.createCell(8).setCellValue("Due Amount(₹)");
+			row.createCell(9).setCellValue("GST Amount(₹)");
+			row.createCell(10).setCellValue("Total Amount(₹)");
 			row.createCell(11).setCellValue("Category");
 			row.createCell(12).setCellValue("Mode of Payment");
 			break;
@@ -74,9 +119,9 @@ public class ExcelGenerateService {
 			row.createCell(2).setCellValue("Tenant Name");
 			row.createCell(3).setCellValue("PG Name");
 			row.createCell(4).setCellValue("PG Address");
-			row.createCell(5).setCellValue("Total Amount");
-			row.createCell(6).setCellValue("GST Amount");
-			row.createCell(7).setCellValue("Due Amount");
+			row.createCell(5).setCellValue("Total Amount(₹)");
+			row.createCell(6).setCellValue("GST Amount(₹)");
+			row.createCell(7).setCellValue("Due Amount(₹)");
 			row.createCell(8).setCellValue("MODE OF PAYMENT");
 			break;
 		case "consolidatedFinanceReport":
@@ -84,8 +129,8 @@ public class ExcelGenerateService {
 			row.createCell(1).setCellValue("Invoice Number");
 			row.createCell(2).setCellValue("Payer/Payee Type");
 			row.createCell(3).setCellValue("Name of the Payer/Payee");
-			row.createCell(4).setCellValue("Debit");
-			row.createCell(5).setCellValue("Credit");
+			row.createCell(4).setCellValue("Debit(₹)");
+			row.createCell(5).setCellValue("Credit(₹)");
 			break;
 		case "tenantDuesReport":
 			row.createCell(0).setCellValue("Tenant Name");
@@ -93,7 +138,7 @@ public class ExcelGenerateService {
 			row.createCell(2).setCellValue("PG Name");
 			row.createCell(3).setCellValue("PG Address");
 			row.createCell(4).setCellValue("Bed No");
-			row.createCell(5).setCellValue("Pending Amount");
+			row.createCell(5).setCellValue("Pending Amount(₹)");
 			row.createCell(6).setCellValue("Payment Due Date");
 			break;
 		case "vendorPaymentsReport":
@@ -101,9 +146,9 @@ public class ExcelGenerateService {
 			row.createCell(1).setCellValue("PG Name");
 			row.createCell(2).setCellValue("Owner Email ID");
 			row.createCell(3).setCellValue("PG Address");
-			row.createCell(4).setCellValue("Total Amount Received from Tenants");
-			row.createCell(5).setCellValue("Total Amount Paid to Owner");
-			row.createCell(6).setCellValue("ZOY Share");
+			row.createCell(4).setCellValue("Total Amount Received from Tenants(₹)");
+			row.createCell(5).setCellValue("Total Amount Paid to Owner(₹)");
+			row.createCell(6).setCellValue("ZOY Share(₹)");
 			row.createCell(7).setCellValue("Transaction Date");
 			row.createCell(8).setCellValue("Invoice Number");
 			row.createCell(9).setCellValue("Payment Status");
@@ -112,21 +157,21 @@ public class ExcelGenerateService {
 		case "vendorPaymentsDuesReport":
 			row.createCell(0).setCellValue("Owner ID");
 			row.createCell(1).setCellValue("Owner Name");
-			row.createCell(2).setCellValue("Pending Amount");
+			row.createCell(2).setCellValue("Pending Amount(₹)");
 			row.createCell(3).setCellValue("Pending Due Date");
 			row.createCell(4).setCellValue("Property ID");
 			row.createCell(5).setCellValue("Property Name");
-			row.createCell(6).setCellValue("Total Amount Paid");
-			row.createCell(7).setCellValue("Total Amount Payable");
+			row.createCell(6).setCellValue("Total Amount Paid(₹)");
+			row.createCell(7).setCellValue("Total Amount Payable(₹)");
 			break;
 		case "vendorPaymentsGstReport":
 			row.createCell(0).setCellValue(" Date");
 			row.createCell(1).setCellValue("Invoice No");
 			row.createCell(2).setCellValue("Property ID");
 			row.createCell(3).setCellValue("Property Name");
-			row.createCell(4).setCellValue("Total Amount");
-			row.createCell(5).setCellValue("GST Amount");
-			row.createCell(6).setCellValue("Basic Amount");
+			row.createCell(4).setCellValue("Total Amount(₹)");
+			row.createCell(5).setCellValue("GST Amount(₹)");
+			row.createCell(6).setCellValue("Basic Amount(₹)");
 			row.createCell(7).setCellValue("Payment Method");
 			break;
 		case "tenantRefundReport":
@@ -136,8 +181,8 @@ public class ExcelGenerateService {
 			row.createCell(3).setCellValue("PG Address");
 			row.createCell(4).setCellValue("Booking ID");
 			row.createCell(5).setCellValue("Refund Title");
-			row.createCell(6).setCellValue("Refundable Amount");
-			row.createCell(7).setCellValue("Amount Paid");
+			row.createCell(6).setCellValue("Refundable Amount(₹)");
+			row.createCell(7).setCellValue("Amount Paid(₹)");
 			row.createCell(8).setCellValue("Payment Date");
 			row.createCell(9).setCellValue("Invoice Number");
 			row.createCell(10).setCellValue("Status");
@@ -172,9 +217,9 @@ public class ExcelGenerateService {
 					row.createCell(2).setCellValue(nullSafe(userPayment.getUserPersonalName()));
 					row.createCell(3).setCellValue(nullSafe(userPayment.getUserPgPropertyName()));
 					row.createCell(4).setCellValue(nullSafe(userPayment.getPropertyHouseArea()));
-					row.createCell(5).setCellValue(nullSafe(userPayment.getTotalAmount()));
-					row.createCell(6).setCellValue(nullSafe(userPayment.getGstAmount()));
-					row.createCell(7).setCellValue(nullSafe(userPayment.getDueAmount()));
+					setCurrencyCell(row, 5, nullSafe(userPayment.getDueAmount()));
+					setCurrencyCell(row, 6, nullSafe(userPayment.getGstAmount()));
+					setCurrencyCell(row, 7, nullSafe(userPayment.getTotalAmount()));
 					row.createCell(8).setCellValue(nullSafe(userPayment.getPaymentMode()));
 				} else {
 					row.createCell(0).setCellValue(nullSafe(userPayment.getUserPersonalName()));
@@ -185,9 +230,9 @@ public class ExcelGenerateService {
 					row.createCell(5).setCellValue(nullSafe(userPayment.getTransactionDate()));
 					row.createCell(6).setCellValue(nullSafe(userPayment.getTransactionNumber()));
 					row.createCell(7).setCellValue(nullSafe(userPayment.getTransactionStatus()));
-					row.createCell(8).setCellValue(nullSafe(userPayment.getDueAmount()));
-					row.createCell(9).setCellValue(nullSafe(userPayment.getGstAmount()));
-					row.createCell(10).setCellValue(nullSafe(userPayment.getTotalAmount()));
+					setCurrencyCell(row, 8, nullSafe(userPayment.getDueAmount()));
+					setCurrencyCell(row, 9, nullSafe(userPayment.getGstAmount()));
+					setCurrencyCell(row, 10, nullSafe(userPayment.getTotalAmount()));
 					row.createCell(11).setCellValue(nullSafe(userPayment.getCategory()));
 					row.createCell(12).setCellValue(nullSafe(userPayment.getPaymentMode()));
 				}
@@ -201,8 +246,8 @@ public class ExcelGenerateService {
 				row.createCell(1).setCellValue(nullSafe(finance.getUserPaymentBankTransactionId()));
 				row.createCell(2).setCellValue(nullSafe(finance.getPayerPayeeType()));
 				row.createCell(3).setCellValue(nullSafe(finance.getPayerPayeeName()));
-				row.createCell(4).setCellValue(nullSafe(finance.getDebitAmount()));
-				row.createCell(5).setCellValue(nullSafe(finance.getCreditAmount()));
+				setCurrencyCell(row,4,nullSafe(finance.getDebitAmount()));
+				setCurrencyCell(row,5,nullSafe(finance.getCreditAmount()));
 			}
 			break;
 
@@ -213,8 +258,8 @@ public class ExcelGenerateService {
 				row.createCell(1).setCellValue(nullSafe(dues.getTenantMobileNum())); 
 				row.createCell(2).setCellValue(nullSafe(dues.getUserPgPropertyName()));     
 				row.createCell(3).setCellValue(nullSafe(dues.getUserPgPropertyAddress()));  
-				row.createCell(4).setCellValue(nullSafe(dues.getBedNumber()));               
-				row.createCell(5).setCellValue(nullSafe(dues.getPendingAmount()));           
+				row.createCell(4).setCellValue(nullSafe(dues.getBedNumber()));
+				setCurrencyCell(row,5,nullSafe(dues.getPendingAmount()));
 				row.createCell(6).setCellValue(nullSafe(dues.getPendingDueDate()));          
 			}
 			break;
@@ -226,9 +271,9 @@ public class ExcelGenerateService {
 				row.createCell(1).setCellValue(nullSafe(vendor.getPgName()));
 				row.createCell(2).setCellValue(nullSafe(vendor.getOwnerEmail()));
 				row.createCell(3).setCellValue(nullSafe(vendor.getPgAddress()));
-				row.createCell(4).setCellValue(nullSafe(vendor.getTotalAmountFromTenants())); 
-				row.createCell(5).setCellValue(nullSafe(vendor.getAmountPaidToOwner()));
-				row.createCell(6).setCellValue(nullSafe(vendor.getZoyShare()));
+				setCurrencyCell(row,4,nullSafe(vendor.getTotalAmountFromTenants()));
+				setCurrencyCell(row,5,nullSafe(vendor.getAmountPaidToOwner()));
+				setCurrencyCell(row,6,nullSafe(vendor.getZoyShare()));
 				row.createCell(7).setCellValue(nullSafe(vendor.getTransactionDate()));
 				row.createCell(8).setCellValue(nullSafe(vendor.getTransactionNumber()));
 				row.createCell(9).setCellValue(nullSafe(vendor.getPaymentStatus()));
@@ -241,13 +286,12 @@ public class ExcelGenerateService {
 				VendorPaymentsDues vendorDues = (VendorPaymentsDues) dto;
 				row.createCell(0).setCellValue(nullSafe(vendorDues.getOwnerId()));
 				row.createCell(1).setCellValue(nullSafe(vendorDues.getOwnerName()));
-				row.createCell(2).setCellValue(nullSafe(vendorDues.getPendingAmount()));
+				setCurrencyCell(row,2,nullSafe(vendorDues.getPendingAmount()));
 				row.createCell(3).setCellValue(nullSafe(vendorDues.getPendingDueDate()));
 				row.createCell(4).setCellValue(nullSafe(vendorDues.getPgId()));
 				row.createCell(5).setCellValue(nullSafe(vendorDues.getPgName()));
-				row.createCell(6).setCellValue(nullSafe(vendorDues.getTotalAmountPaid()));
-				row.createCell(7).setCellValue(nullSafe(vendorDues.getTotalAmountPayable()));
-
+				setCurrencyCell(row,6,nullSafe(vendorDues.getTotalAmountPaid()));
+				setCurrencyCell(row,7,nullSafe(vendorDues.getTotalAmountPayable()));
 			}
 			break;
 
@@ -258,9 +302,9 @@ public class ExcelGenerateService {
 				row.createCell(1).setCellValue(nullSafe(vendorGst.getTransactionNo()));
 				row.createCell(2).setCellValue(nullSafe(vendorGst.getPgId()));
 				row.createCell(3).setCellValue(nullSafe(vendorGst.getPgName()));
-				row.createCell(4).setCellValue(nullSafe(vendorGst.getTotalAmount()));
-				row.createCell(5).setCellValue(nullSafe(vendorGst.getGstAmount()));
-				row.createCell(6).setCellValue(nullSafe(vendorGst.getBasicAmount()));
+				setCurrencyCell(row,4,nullSafe(vendorGst.getTotalAmount()));
+				setCurrencyCell(row,5,nullSafe(vendorGst.getGstAmount()));
+				setCurrencyCell(row,6,nullSafe(vendorGst.getBasicAmount()));
 				row.createCell(7).setCellValue(nullSafe(vendorGst.getPaymentMethod()));
 			}
 			break;
@@ -274,7 +318,7 @@ public class ExcelGenerateService {
 				row.createCell(3).setCellValue(nullSafe(tenentRefund.getUserPgPropertyAddress()));
 				row.createCell(4).setCellValue(nullSafe(tenentRefund.getBookingId()));
 				row.createCell(5).setCellValue(nullSafe(tenentRefund.getRefundTitle()));
-				row.createCell(6).setCellValue(nullSafe(tenentRefund.getRefundableAmount()));
+				setCurrencyCell(row,6,nullSafe(tenentRefund.getRefundableAmount()));
 				row.createCell(7).setCellValue(nullSafe(tenentRefund.getPaymentDate()));
 				row.createCell(8).setCellValue(nullSafe(tenentRefund.getTransactionNumber()));
 				row.createCell(9).setCellValue(nullSafe(tenentRefund.getPaymentStatus()));

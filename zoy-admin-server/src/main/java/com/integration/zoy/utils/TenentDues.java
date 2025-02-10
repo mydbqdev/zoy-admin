@@ -1,34 +1,31 @@
 package com.integration.zoy.utils;
 
-
-
 import java.sql.Timestamp;
 
 import com.google.gson.annotations.SerializedName;
 
 public class TenentDues {
-	
+
 	@SerializedName("customerName")
-    private String userPersonalName;
-	
+	private String userPersonalName;
+
 	@SerializedName("tenantMobileNum")
 	private String tenantMobileNum;
-	
+
 	@SerializedName("PgPropertyName")
-    private String userPgPropertyName;
-	
+	private String userPgPropertyName;
+
 	@SerializedName("bedNumber")
 	private String bedNumber;
-	
+
 	@SerializedName("pendingAmount")
-	private String pendingAmount;
-	
+	private double pendingAmount;
+
 	@SerializedName("pendingDueDate")
 	private Timestamp pendingDueDate;
-	
+
 	@SerializedName("userPgPropertyAddress")
 	private String userPgPropertyAddress;
-
 
 	public String getUserPersonalName() {
 		return userPersonalName;
@@ -46,7 +43,6 @@ public class TenentDues {
 		this.userPgPropertyName = userPgPropertyName;
 	}
 
-
 	public String getBedNumber() {
 		return bedNumber;
 	}
@@ -55,11 +51,11 @@ public class TenentDues {
 		this.bedNumber = bedNumber;
 	}
 
-	public String getPendingAmount() {
+	public double getPendingAmount() {
 		return pendingAmount;
 	}
 
-	public void setPendingAmount(String pendingAmount) {
+	public void setPendingAmount(double pendingAmount) {
 		this.pendingAmount = pendingAmount;
 	}
 
@@ -86,8 +82,5 @@ public class TenentDues {
 	public void setTenantMobileNum(String tenantMobileNum) {
 		this.tenantMobileNum = tenantMobileNum;
 	}
-	
-	
-	
 
 }

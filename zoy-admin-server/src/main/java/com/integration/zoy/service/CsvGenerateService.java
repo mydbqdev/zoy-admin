@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -49,32 +51,52 @@ public class CsvGenerateService {
             throw new RuntimeException("Error generating CSV file", e);
         }
     }
+    
+    public String formatAmountWithCommas(double amount) {
+        // Define a pattern that will display commas in Indian-style formatting
+    	if (Double.isNaN(amount)) {
+            return "0.00";
+        }
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator(',');
 
+        // Indian-style format (1,23,45,678.00) with zero handling
+        DecimalFormat formatter = new DecimalFormat("#,##,###.00", symbols);
+
+        // If the amount is exactly zero, format it as "0.00"
+        if (amount == 0) {
+            return "0.00";
+        }
+        
+
+        // Format the amount
+        return formatter.format(amount);
+    }
     private void createCsvHeaderRow(PrintWriter writer, Object dto, String reportType) {
         switch (reportType) {
             case "userTransactionReport":
-                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Invoice No,Transaction Status,Due Amount,GST Amount,Total Amount,Category,Mode of Payment");
+                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Invoice No,Transaction Status,Due Amount(₹),GST Amount(₹),Total Amount(₹),Category,Mode of Payment");
                 break;
             case "userPaymentGstReport":
-                writer.println("Transaction Date,Invoice No,Tenant Name,PG Name,PG Address,Total Amount,GST Amount,Due Amount,Mode of Payment");
+                writer.println("Transaction Date,Invoice No,Tenant Name,PG Name,PG Address,Total Amount(₹),GST Amount(₹),Due Amount(₹),Mode of Payment");
                 break;
             case "consolidatedFinanceReport":
-                writer.println("Transaction Date,Invoice Number,Payer/Payee Type,Name of the Payer/Payee,Debit,Credit");
+                writer.println("Transaction Date,Invoice Number,Payer/Payee Type,Name of the Payer/Payee,Debit(₹),Credit(₹)");
                 break;
             case "tenantDuesReport":
-                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,Bed No,Pending Amount,Payment Due Date");
+                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,Bed No,Pending Amount(₹),Payment Due Date");
                 break;
             case "vendorPaymentsReport":
-                writer.println("Owner Name,PG Name,Owner Email ID,PG Address,Total Amount Received from Tenants,Total Amount Paid to Owner,ZOY Share,Transaction Date,Invoice Number,Payment Status,Owner approval Status");
+                writer.println("Owner Name,PG Name,Owner Email ID,PG Address,Total Amount Received from Tenants(₹),Total Amount Paid to Owner(₹),ZOY Share(₹),Transaction Date,Invoice Number,Payment Status,Owner approval Status");
                 break;
             case "vendorPaymentsDuesReport":
-                writer.println("Owner ID,Owner Name,Pending Amount,Pending Due Date,Property ID,Property Name,Total Amount Paid,Total Amount Payable");
+                writer.println("Owner ID,Owner Name,Pending Amount(₹),Pending Due Date,Property ID,Property Name,Total Amount Paid(₹),Total Amount Payable(₹)");
                 break;
             case "vendorPaymentsGstReport":
-                writer.println("Transaction Date,Invoice No,Property ID,Property Name,Total Amount,GST Amount,Basic Amount,Payment Method");
+                writer.println("Transaction Date,Invoice No,Property ID,Property Name,Total Amount(₹),GST Amount(₹),Basic Amount(₹),Payment Method");
                 break;
             case "tenantRefundReport":
-                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,Booking ID,Refund Title,Refundable Amount,Amount Paid,Payment Date,Invoice Number,Status");
+                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,Booking ID,Refund Title,Refundable Amount(₹),Amount Paid(₹),Payment Date,Invoice Number,Status");
                 break;    
             case "reviewsAndRatingReport":
                 writer.println("Review Date,Tenant Name,PG Name,Tenant Contact,Cleanliness,Accommodation,Aminities,Maintenance,Value For Money,Overall Rating");
@@ -98,9 +120,9 @@ public class CsvGenerateService {
                     formatDate(userPayment.getTransactionDate()),
                     safeToString(userPayment.getTransactionNumber()),
                     safeToString(userPayment.getTransactionStatus()),
-                    safeToString(userPayment.getDueAmount()),
-                    safeToString(userPayment.getGstAmount()),
-                    safeToString(userPayment.getTotalAmount()),
+                    formatAmountWithCommas(userPayment.getDueAmount()),
+                    formatAmountWithCommas(userPayment.getGstAmount()),
+                    formatAmountWithCommas(userPayment.getTotalAmount()),
                     safeToString(userPayment.getCategory()),
                     safeToString(userPayment.getPaymentMode()));
             }
@@ -115,9 +137,9 @@ public class CsvGenerateService {
                     safeToString(userPayment.getUserPersonalName()),
                     safeToString(userPayment.getUserPgPropertyName()),
                     safeToString(userPayment.getPropertyHouseArea()),
-                    safeToString(userPayment.getTotalAmount()),
-                    safeToString(userPayment.getGstAmount()),
-                    safeToString(userPayment.getDueAmount()),
+                    formatAmountWithCommas(userPayment.getTotalAmount()),
+                    formatAmountWithCommas(userPayment.getGstAmount()),
+                    formatAmountWithCommas(userPayment.getDueAmount()),
                     safeToString(userPayment.getPaymentMode()));
             }
             break;
@@ -130,8 +152,8 @@ public class CsvGenerateService {
                             safeToString(finance.getUserPaymentBankTransactionId()),
                             safeToString(finance.getPayerPayeeType()),
                             safeToString(finance.getPayerPayeeName()),
-                            safeToString(finance.getDebitAmount()),
-                            safeToString(finance.getCreditAmount()));
+                            formatAmountWithCommas(finance.getDebitAmount()),
+                            formatAmountWithCommas(finance.getCreditAmount()));
                 }
                 break;
 
@@ -144,7 +166,7 @@ public class CsvGenerateService {
                             safeToString(dues.getUserPgPropertyName()),
                             safeToString(dues.getUserPgPropertyAddress()),
                             safeToString(dues.getBedNumber()),
-                            safeToString(dues.getPendingAmount()),
+                            formatAmountWithCommas(dues.getPendingAmount()),
                             formatDate(dues.getPendingDueDate()));
                 }
                 break;
@@ -157,9 +179,9 @@ public class CsvGenerateService {
                             safeToString(vendor.getPgName()),
                             safeToString(vendor.getOwnerEmail()),
                             safeToString(vendor.getPgAddress()),
-                            safeToString(vendor.getTotalAmountFromTenants()),
-                            safeToString(vendor.getAmountPaidToOwner()),
-                            safeToString(vendor.getZoyShare()),
+                            formatAmountWithCommas(vendor.getTotalAmountFromTenants()),
+                            formatAmountWithCommas(vendor.getAmountPaidToOwner()),
+                            formatAmountWithCommas(vendor.getZoyShare()),
                             formatDate(vendor.getTransactionDate()),
                             safeToString(vendor.getTransactionNumber()),
                             safeToString(vendor.getPaymentStatus()),
@@ -173,12 +195,12 @@ public class CsvGenerateService {
                     writer.printf("%s,%s,%s,%s,%s,%s,%s,%s%n",
                             vendorDues.getOwnerId(),
                             safeToString(vendorDues.getOwnerName()),
-                            safeToString(vendorDues.getPendingAmount()),
+                            formatAmountWithCommas(vendorDues.getPendingAmount()),
                             formatDate(vendorDues.getPendingDueDate()),
                             safeToString(vendorDues.getPgId()),
                             safeToString(vendorDues.getPgName()),
-                            safeToString(vendorDues.getTotalAmountPaid()),
-                            safeToString(vendorDues.getTotalAmountPayable()));
+                            formatAmountWithCommas(vendorDues.getTotalAmountPaid()),
+                            formatAmountWithCommas(vendorDues.getTotalAmountPayable()));
                 }
                 break;
 
@@ -190,9 +212,9 @@ public class CsvGenerateService {
                             safeToString(vendorGst.getTransactionNo()),
                             safeToString(vendorGst.getPgId()),
                             safeToString(vendorGst.getPgName()),
-                            safeToString(vendorGst.getTotalAmount()),
-                            safeToString(vendorGst.getGstAmount()),
-                            safeToString(vendorGst.getBasicAmount()),
+                            formatAmountWithCommas(vendorGst.getTotalAmount()),
+                            formatAmountWithCommas(vendorGst.getGstAmount()),
+                            formatAmountWithCommas(vendorGst.getBasicAmount()),
                             safeToString(vendorGst.getPaymentMethod()));
                 }
                 break;
@@ -207,8 +229,8 @@ public class CsvGenerateService {
                             safeToString(tenentRefund.getUserPgPropertyAddress()),
                             safeToString(tenentRefund.getBookingId()),
                             safeToString(tenentRefund.getRefundTitle()),
-                            safeToString(tenentRefund.getRefundableAmount()),
-                            safeToString(tenentRefund.getAmountPaid()),
+                            formatAmountWithCommas(tenentRefund.getRefundableAmount()),
+                            formatAmountWithCommas(tenentRefund.getAmountPaid()),
                             formatDate(tenentRefund.getPaymentDate()),
                             safeToString(tenentRefund.getTransactionNumber()),
                             safeToString(tenentRefund.getPaymentStatus()));
