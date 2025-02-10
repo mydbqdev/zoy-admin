@@ -18,10 +18,10 @@ public class ConsilidatedFinanceDetails {
     private String payerPayeeName;
 	
 	@SerializedName("creditAmount")
-	private String creditAmount;
-	
+	private double creditAmount;
+
 	@SerializedName("debitAmount")
-	private String debitAmount;
+	private double debitAmount;
 
 	
 	public String getPayerPayeeType() {
@@ -56,19 +56,19 @@ public class ConsilidatedFinanceDetails {
 		this.userPaymentBankTransactionId = userPaymentBankTransactionId;
 	}
 
-	public String getCreditAmount() {
+	public double getCreditAmount() {
 		return creditAmount;
 	}
 
-	public void setCreditAmount(String creditAmount) {
+	public void setCreditAmount(double creditAmount) {
 		this.creditAmount = creditAmount;
 	}
 
-	public String getDebitAmount() {
+	public double getDebitAmount() {
 		return debitAmount;
 	}
 
-	public void setDebitAmount(String debitAmount) {
+	public void setDebitAmount(double debitAmount) {
 		this.debitAmount = debitAmount;
 	}
 
