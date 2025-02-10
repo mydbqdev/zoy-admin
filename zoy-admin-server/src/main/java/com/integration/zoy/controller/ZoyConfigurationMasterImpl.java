@@ -16,9 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
+import com.integration.zoy.model.ZoyCompanyMasterModal;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
+import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.ZoyCompanyProfileMasterDto;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
 import com.integration.zoy.utils.ZoyForceCheckOutDto;
@@ -231,8 +233,8 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/config/company-profile",
     produces = { "application/json" },
-    consumes = { "multipart/form-data" })
-	ResponseEntity<String> zoyAdminCompanyProfileMaster(@RequestPart("companyProfile") ZoyCompanyProfileMasterModal companyProfile,@RequestPart("companyLogo") MultipartFile companyLogo);
+    consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminCompanyProfileMaster(@RequestBody ZoyCompanyProfileMasterModal companyProfile);
 	
 	
 	@Operation(summary = "Get all  Company Profile master Details", description = "Get All  Company Profile Master", security = {
@@ -242,10 +244,34 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/config/company-profiles",
+	@GetMapping(value = "/zoy_admin/config/fetch-company-profiles",
     produces = { "application/json" },
-    consumes = { "multipart/form-data" })
+    consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminCompanyProfiles();
+	
+	@Operation(summary = "Delete  Company Profile master Details", description = "Delete Company Profile Master", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@DeleteMapping(value = "/zoy_admin/config/remove-company-profiles",
+    produces = { "application/json" })
+	ResponseEntity<String> zoyAdminRemoveCompanyProfile(@RequestParam("profileId")String profileId);
+	
+	@Operation(summary = "Create and Update company details", description = "Creating/Updating Company Master", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/company-master-profile",
+	produces = { "application/json" },
+	consumes = { "multipart/form-data" })
+	ResponseEntity<String> zoyAdminCompanyProfileMaster(@RequestPart("companyProfile") String  companyProfile,@RequestPart("companyLogo") MultipartFile companyLogo);
+	
 	
 	@Operation(summary = "Admin Configration Short Term Renting Duration", description = "Creating/Updating Admin Configration Short Term Renting Duration", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })

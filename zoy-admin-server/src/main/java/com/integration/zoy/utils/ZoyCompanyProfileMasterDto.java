@@ -1,19 +1,19 @@
 package com.integration.zoy.utils;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public class ZoyCompanyProfileMasterDto {
 	private String companyProfileId;
     private String type;
-    private String companyName;
-    private byte[] logo;
-    private String address;
-    private String city;
+    private String pinCode;
     private String state;
-    private String gstNumber;
-    private String panNumber;
-    private String emailId;
-    private String contactNumber;
+    private String city;
+    private String addressLineOne;
+    private String addressLineTwo;
+    private String addressLineThree;
+    private String contactNumberOne;
+    private String contactNumberTwo;
+    private String emailOne;
+    private String emailTwo;
+    private String status;
 	public String getCompanyProfileId() {
 		return companyProfileId;
 	}
@@ -26,29 +26,11 @@ public class ZoyCompanyProfileMasterDto {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getCompanyName() {
-		return companyName;
+	public String getPinCode() {
+		return pinCode;
 	}
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-	public byte[] getLogo() {
-		return logo;
-	}
-	public void setLogo(byte[] logo) {
-		this.logo = logo;
-	}
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	public String getCity() {
-		return city;
-	}
-	public void setCity(String city) {
-		this.city = city;
+	public void setPinCode(String pinCode) {
+		this.pinCode = pinCode;
 	}
 	public String getState() {
 		return state;
@@ -56,29 +38,59 @@ public class ZoyCompanyProfileMasterDto {
 	public void setState(String state) {
 		this.state = state;
 	}
-	public String getGstNumber() {
-		return gstNumber;
+	public String getCity() {
+		return city;
 	}
-	public void setGstNumber(String gstNumber) {
-		this.gstNumber = gstNumber;
+	public void setCity(String city) {
+		this.city = city;
 	}
-	public String getPanNumber() {
-		return panNumber;
+	public String getAddressLineOne() {
+		return addressLineOne;
 	}
-	public void setPanNumber(String panNumber) {
-		this.panNumber = panNumber;
+	public void setAddressLineOne(String addressLineOne) {
+		this.addressLineOne = addressLineOne;
 	}
-	public String getEmailId() {
-		return emailId;
+	public String getAddressLineTwo() {
+		return addressLineTwo;
 	}
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
+	public void setAddressLineTwo(String addressLineTwo) {
+		this.addressLineTwo = addressLineTwo;
 	}
-	public String getContactNumber() {
-		return contactNumber;
+	public String getAddressLineThree() {
+		return addressLineThree;
 	}
-	public void setContactNumber(String contactNumber) {
-		this.contactNumber = contactNumber;
+	public void setAddressLineThree(String addressLineThree) {
+		this.addressLineThree = addressLineThree;
+	}
+	public String getContactNumberOne() {
+		return contactNumberOne;
+	}
+	public void setContactNumberOne(String contactNumberOne) {
+		this.contactNumberOne = contactNumberOne;
+	}
+	public String getContactNumberTwo() {
+		return contactNumberTwo;
+	}
+	public void setContactNumberTwo(String contactNumberTwo) {
+		this.contactNumberTwo = contactNumberTwo;
+	}
+	public String getEmailOne() {
+		return emailOne;
+	}
+	public void setEmailOne(String emailOne) {
+		this.emailOne = emailOne;
+	}
+	public String getEmailTwo() {
+		return emailTwo;
+	}
+	public void setEmailTwo(String emailTwo) {
+		this.emailTwo = emailTwo;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
     
 }

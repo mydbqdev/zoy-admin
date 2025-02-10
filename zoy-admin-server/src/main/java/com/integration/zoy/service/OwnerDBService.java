@@ -8,9 +8,13 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.entity.ZoyCompanyMaster;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
@@ -42,6 +46,7 @@ import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.exception.WebServiceException;
+import com.integration.zoy.repository.ZoyCompanyMasterRepository;
 import com.integration.zoy.repository.ZoyCompanyProfileMasterRepository;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
 import com.integration.zoy.repository.ZoyPgAmenetiesMasterRepository;
@@ -73,6 +78,8 @@ import com.integration.zoy.repository.ZoyPgTimeMasterRepository;
 import com.integration.zoy.repository.ZoyPgTokenDetailsRepository;
 import com.integration.zoy.repository.ZoyPgTypeMasterRepository;
 import com.integration.zoy.repository.ZoyShareMasterRepository;
+import com.integration.zoy.utils.PaginationRequest;
+import com.integration.zoy.utils.ZoyCompanyProfileMasterDto;
 
 @Service
 public class OwnerDBService implements OwnerDBImpl{
@@ -169,6 +176,9 @@ public class OwnerDBService implements OwnerDBImpl{
 	
 	@Autowired
 	private ZoyPgRentingDurationRepository rentingDurationRepo;
+	
+	@Autowired
+	ZoyCompanyMasterRepository zoyCompanyMasterRepository;
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -774,11 +784,6 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public List<ZoyCompanyProfileMaster> findAllCompanyProfiles() {
-		return zoyCompanyProfileMasterRepository.findAll();
-	}
-
-	@Override
 	public ZoyPgShortTermRentingDuration findZoyRentingDuration() {
 		List<ZoyPgShortTermRentingDuration> results=rentingDurationRepo.findAll(PageRequest.of(0, 1)).getContent();
 		return results.isEmpty() ? null : results.get(0);
@@ -789,6 +794,27 @@ public class OwnerDBService implements OwnerDBImpl{
 		return rentingDurationRepo.save(rentingDuration);
 	}
 
-	
+	@Override
+	public List<ZoyCompanyProfileMaster> findAllCompanyProfiles() {
+		return zoyCompanyProfileMasterRepository.findAll();
+	}
 
+	@Override
+	@Transactional
+	public void deleteCompanyProfile(String profileiD) throws WebServiceException {
+		zoyCompanyProfileMasterRepository.deleteById(profileiD);
+		
+	}
+
+	@Override
+	public ZoyCompanyMaster findcompanyMaster() throws WebServiceException {
+		List<ZoyCompanyMaster> results=zoyCompanyMasterRepository.findAll(PageRequest.of(0, 1)).getContent();
+		return results.isEmpty() ? null : results.get(0);
+	}
+
+	@Override
+	public ZoyCompanyMaster saveCompanyMaster(ZoyCompanyMaster master) throws WebServiceException {
+		return zoyCompanyMasterRepository.save(master);
+	}
+	
 }

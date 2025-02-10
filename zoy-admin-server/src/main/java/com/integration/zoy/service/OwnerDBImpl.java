@@ -2,6 +2,9 @@ package com.integration.zoy.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
+import com.integration.zoy.entity.ZoyCompanyMaster;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
@@ -34,6 +37,9 @@ import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.exception.WebServiceException;
+import com.integration.zoy.model.OwnerPropertyDTO;
+import com.integration.zoy.utils.PaginationRequest;
+import com.integration.zoy.utils.ZoyCompanyProfileMasterDto;
 
 public interface OwnerDBImpl {
 
@@ -148,9 +154,11 @@ public interface OwnerDBImpl {
 	ZoyPgForceCheckOut saveForceCheckOut(ZoyPgForceCheckOut force);
 	ZoyCompanyProfileMaster createOrUpdateCompanyProfile(ZoyCompanyProfileMaster companyProfile);
 	ZoyCompanyProfileMaster findCompanyProfile(String profileId);
-	List<ZoyCompanyProfileMaster> findAllCompanyProfiles();
 	ZoyPgForceCheckOut findZoyForceCheckOut();
 	ZoyPgShortTermRentingDuration findZoyRentingDuration();
 	ZoyPgShortTermRentingDuration saveRentingDuration(ZoyPgShortTermRentingDuration rentingDuration);
-	
+	List<ZoyCompanyProfileMaster> findAllCompanyProfiles();
+	void deleteCompanyProfile(String profileiD)throws WebServiceException;
+	ZoyCompanyMaster findcompanyMaster() throws WebServiceException;
+	ZoyCompanyMaster saveCompanyMaster(ZoyCompanyMaster master) throws WebServiceException;
 }
