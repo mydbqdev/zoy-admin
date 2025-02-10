@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'db-master-configuration', component: DbMasterConfigurationComponent},
   { path: 'configuration-master', component: ConfigurationMasterComponent},
   { path: 'user-audit', component: UserAuditComponent},
-  { path: 'organization-info-config', component: OrganizationInfoConfigComponent}
+  { path: 'organization-info-config', component: OrganizationInfoConfigComponent},
 ];
 
 @NgModule({
