@@ -6,28 +6,28 @@ import java.sql.Timestamp;
 import com.google.gson.annotations.SerializedName;
 
 public class VendorPaymentsGst {
-	
+
 	@SerializedName("transactionDate")
 	private Timestamp transactionDate;
-	
+
 	@SerializedName("transactionNo")
 	private String transactionNo;
-	
+
 	@SerializedName("pgId")
 	private String pgId;
-	
+
 	@SerializedName("pgName")
 	private String pgName;
-	
+
 	@SerializedName("totalAmount")
-	private BigDecimal totalAmount;
-	
+	private double totalAmount;
+
 	@SerializedName("gstAmount")
-	private BigDecimal gstAmount;
-	
+	private double gstAmount;
+
 	@SerializedName("basicAmount")
-	private BigDecimal basicAmount;
-	
+	private double basicAmount;
+
 	@SerializedName("paymentMethod")
 	private String paymentMethod;
 
@@ -63,27 +63,27 @@ public class VendorPaymentsGst {
 		this.pgName = pgName;
 	}
 
-	public BigDecimal getTotalAmount() {
+	public double getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(BigDecimal totalAmount) {
+	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
-	public BigDecimal getGstAmount() {
+	public double getGstAmount() {
 		return gstAmount;
 	}
 
-	public void setGstAmount(BigDecimal gstAmount) {
+	public void setGstAmount(double gstAmount) {
 		this.gstAmount = gstAmount;
 	}
 
-	public BigDecimal getBasicAmount() {
+	public double getBasicAmount() {
 		return basicAmount;
 	}
 
-	public void setBasicAmount(BigDecimal basicAmount) {
+	public void setBasicAmount(double basicAmount) {
 		this.basicAmount = basicAmount;
 	}
 
@@ -94,5 +94,5 @@ public class VendorPaymentsGst {
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
-	
+
 }

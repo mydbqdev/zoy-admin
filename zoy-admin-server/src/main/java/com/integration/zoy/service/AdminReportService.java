@@ -210,15 +210,16 @@ public class AdminReportService implements AdminReportImpl{
 			    dto.setTransactionDate((Timestamp) row[0]); 
 			    dto.setTransactionNumber(row[1] != null ? (String) row[1] : "");
 			    dto.setTransactionStatus(row[2] != null ? (String) row[2] : "");
-			    BigDecimal payableAmount = (BigDecimal) row[3] != null ? (BigDecimal) row[3] : BigDecimal.ZERO;  
-			    BigDecimal gst = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;  
-			    dto.setDueAmount(rupeeSymbol+numberFormat.format(payableAmount.subtract(gst)));
-			    dto.setGstAmount(rupeeSymbol+numberFormat.format(gst));
+			    double payableAmount = row[3] != null ? ((BigDecimal) row[3]).doubleValue() : 0.0;  
+			    double gst = row[4] != null ? ((BigDecimal) row[4]).doubleValue() : 0.0;  
+			    double dueamount=payableAmount-gst;
+			    dto.setDueAmount(dueamount != 0.0 ? dueamount : null);
+			    dto.setGstAmount((row[4] != null) ?  ((Number) row[4]).doubleValue() : 0.0);
 			    dto.setUserPersonalName(row[5] != null ? (String) row[5] : ""); 
 			    dto.setUserPgPropertyName(row[6] != null ? (String) row[6] : "");  
 			    dto.setRoomBedNumber(row[7] != null ? (String) row[7] : ""); 
-			    dto.setTotalAmount(rupeeSymbol+numberFormat.format(payableAmount));  
-			    dto.setCategory(row[8] != null ? (String) row[8] : "");  
+			    dto.setTotalAmount((row[3] != null) ?  ((Number) row[3]).doubleValue() : 0.0);
+			    dto.setCategory(row[8] != null ? (String) row[8] : "");
 			    dto.setPaymentMode(row[9] != null ? (String) row[9] : ""); 
 			    dto.setPropertyHouseArea(row[11] != null ? (String) row[11] : "");  
 			    dto.setTenantContactNum(row[12] != null ? (String) row[12] : "");
@@ -316,9 +317,9 @@ public class AdminReportService implements AdminReportImpl{
 				BigDecimal payableAmount = (BigDecimal) row[4] != null ? (BigDecimal) row[4] : BigDecimal.ZERO;
 				//BigDecimal gst = (BigDecimal) row[5] != null ? (BigDecimal) row[5] : BigDecimal.ZERO;
 				//BigDecimal totalAmount = payableAmount;
-				dto.setCreditAmount(rupeeSymbol+numberFormat.format(payableAmount));
-				dto.setDebitAmount(rupeeSymbol+numberFormat.format(BigDecimal.valueOf(0)));
-				return dto;
+			    dto.setCreditAmount((payableAmount != null) ?  ((Number) payableAmount).doubleValue() : 0.0);
+			    dto.setDebitAmount(BigDecimal.valueOf(0).doubleValue());
+			    return dto;
 			}).collect(Collectors.toList());
 
 			return new CommonResponseDTO<>(consolidatedFinanceDTOs, filterCount);
@@ -426,12 +427,12 @@ public class AdminReportService implements AdminReportImpl{
 			        BigDecimal payableAmount = userPaymentRepository.findUserPaymentPayableAmountByUserPaymentId(userPaymentId);
 			        
 			        if (((BigDecimal) row[0]).subtract(payableAmount).compareTo(BigDecimal.ZERO) > 0) {
-			            dto.setPendingAmount(rupeeSymbol+numberFormat.format(payableAmount.subtract((BigDecimal) row[0])));
+			            dto.setPendingAmount((payableAmount != null) ?  ((Number) payableAmount).doubleValue() : 0.0);
 			        } else {
-			            dto.setPendingAmount(rupeeSymbol+numberFormat.format((BigDecimal) row[0]));
+			            dto.setPendingAmount((row[0] != null) ?  ((Number) row[0]).doubleValue() : 0.0);
 			        }
 			    } else {
-			        dto.setPendingAmount(rupeeSymbol+numberFormat.format((BigDecimal) row[0]));
+			        dto.setPendingAmount((row[0] != null) ?  ((Number) row[0]).doubleValue() : 0.0);
 			    }
 			    dto.setPendingDueDate((Timestamp) row[1]);
 			    dto.setUserPersonalName(row[2] != null ? (String) row[2] : "");
@@ -552,14 +553,14 @@ public class AdminReportService implements AdminReportImpl{
 			    VendorPayments dto = new VendorPayments();
 			    dto.setOwnerName(row[0] != null ? (String) row[0] : "");  
 			    dto.setPgName(row[1] != null ? (String) row[1] : "");    
-			    dto.setTotalAmountFromTenants(rupeeSymbol+numberFormat.format((BigDecimal) row[2] != null ? (BigDecimal) row[2] : BigDecimal.ZERO)); 
+			    dto.setTotalAmountFromTenants((row[2] != null) ?  ((Number) row[2]).doubleValue() : 0.0);
 			    dto.setTransactionDate((Timestamp) row[3]);  
 			    dto.setTransactionNumber(row[4] != null ? (String) row[4] : "");  
 			    dto.setPaymentStatus(row[5] != null ? (String) row[5] : "");      
 			    dto.setPgAddress(row[7] != null ? (String) row[7] : "");  
 			    dto.setOwnerEmail(row[8] != null ? (String) row[8] : "");  
-			    dto.setAmountPaidToOwner(rupeeSymbol+numberFormat.format(BigDecimal.valueOf(0)));  
-			    dto.setZoyShare(rupeeSymbol+numberFormat.format(BigDecimal.valueOf(0)));  
+			    dto.setAmountPaidToOwner(BigDecimal.valueOf(0).doubleValue());  
+			    dto.setZoyShare(BigDecimal.valueOf(0).doubleValue()); 
 			    dto.setOwnerApprovalStatus(null);
 			    return dto;
 			}).collect(Collectors.toList());
@@ -580,12 +581,12 @@ public class AdminReportService implements AdminReportImpl{
 			VendorPaymentsDues vendorPayDues = new VendorPaymentsDues();
 			vendorPayDues.setOwnerId(" ");
 			vendorPayDues.setOwnerName(" ");
-			vendorPayDues.setPendingAmount(BigDecimal.valueOf(0));
+			vendorPayDues.setPendingAmount(BigDecimal.valueOf(0).doubleValue());
 			vendorPayDues.setPendingDueDate(null);
 			vendorPayDues.setPgId(" ");
 			vendorPayDues.setPgName(" ");
-			vendorPayDues.setTotalAmountPaid(BigDecimal.valueOf(0));
-			vendorPayDues.setTotalAmountPayable(BigDecimal.valueOf(0));
+			vendorPayDues.setTotalAmountPaid(BigDecimal.valueOf(0).doubleValue());
+			vendorPayDues.setTotalAmountPayable(BigDecimal.valueOf(0).doubleValue());
 			vendorPaymentsDues.add(vendorPayDues);
 			int resultCount = vendorPaymentsDues.size();
 			return new CommonResponseDTO<>(vendorPaymentsDues, resultCount);
@@ -604,9 +605,9 @@ public class AdminReportService implements AdminReportImpl{
 			vendorPaysGst.setTransactionNo(" ");
 			vendorPaysGst.setPgId(" ");
 			vendorPaysGst.setPgName(" ");
-			vendorPaysGst.setTotalAmount(BigDecimal.valueOf(0));
-			vendorPaysGst.setGstAmount(BigDecimal.valueOf(0));
-			vendorPaysGst.setBasicAmount(BigDecimal.valueOf(0));
+			vendorPaysGst.setTotalAmount(BigDecimal.valueOf(0).doubleValue());
+			vendorPaysGst.setGstAmount(BigDecimal.valueOf(0).doubleValue());
+			vendorPaysGst.setBasicAmount(BigDecimal.valueOf(0).doubleValue());
 			vendorPaysGst.setPaymentMethod(" ");
 			vendorPaymentsGst.add(vendorPaysGst);
 			int resultCount = vendorPaymentsGst.size();
@@ -833,10 +834,10 @@ public class AdminReportService implements AdminReportImpl{
 	            dto.setUserPgPropertyAddress(row[3] != null ? (String) row[3] : "");
 	            dto.setBookingId(row[4] != null ? (String) row[4] : "");
 	            dto.setRefundTitle(row[5] != null ? (String) row[5] : "");
-	            dto.setRefundableAmount(rupeeSymbol+numberFormat.format((BigDecimal) row[6] != null ? (BigDecimal) row[6] : BigDecimal.ZERO));
+	            dto.setRefundableAmount((row[6] != null) ?  ((Number) row[6]).doubleValue() : 0.0);
 	            dto.setPaymentStatus(row[7] != null ? (String) row[7] : "");
 	            dto.setTransactionNumber("");
-	            dto.setAmountPaid("");
+	            dto.setAmountPaid(BigDecimal.valueOf(0).doubleValue());
 	            dto.setPaymentDate(row[8] != null ? (Timestamp)(row[8]) : null);
 	            return dto;
 	        }).collect(Collectors.toList());

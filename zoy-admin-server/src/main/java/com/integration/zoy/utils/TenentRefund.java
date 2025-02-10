@@ -28,10 +28,10 @@ public class TenentRefund {
 	private String refundTitle;
 
 	@SerializedName("refundableAmount")
-	private String refundableAmount;
+	private double refundableAmount;
 
 	@SerializedName("amountPaid")
-	private String amountPaid;
+	private double amountPaid;
 
 	@SerializedName("transactionNumber")
 	private String transactionNumber;
@@ -39,11 +39,11 @@ public class TenentRefund {
 	@SerializedName("paymentStatus")
 	private String paymentStatus;
 
-	public String getRefundableAmount() {
+	public double getRefundableAmount() {
 		return refundableAmount;
 	}
 
-	public void setRefundableAmount(String refundableAmount) {
+	public void setRefundableAmount(double refundableAmount) {
 		this.refundableAmount = refundableAmount;
 	}
 
@@ -103,11 +103,11 @@ public class TenentRefund {
 		this.refundTitle = refundTitle;
 	}
 
-	public String getAmountPaid() {
+	public double getAmountPaid() {
 		return amountPaid;
 	}
 
-	public void setAmountPaid(String amountPaid) {
+	public void setAmountPaid(double amountPaid) {
 		this.amountPaid = amountPaid;
 	}
 

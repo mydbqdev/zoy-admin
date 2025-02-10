@@ -12,7 +12,7 @@ public class VendorPayments {
 	
 	@SerializedName("ownerEmail")
 	private String ownerEmail;
-	
+
 	@SerializedName("pgName")
 	private String pgName;
 	
@@ -20,14 +20,14 @@ public class VendorPayments {
 	private String pgAddress;
 	
 	@SerializedName("totalAmountFromTenants")
-	private String totalAmountFromTenants;
-	
+	private double totalAmountFromTenants;
+
 	@SerializedName("amountPaidToOwner")
-	private String amountPaidToOwner;
-	
+	private double amountPaidToOwner;
+
 	@SerializedName("zoyShare")
-	private String zoyShare;
-	
+	private double zoyShare;
+
 	@SerializedName("transactionDate")
 	private Timestamp transactionDate;
 	
@@ -40,6 +40,29 @@ public class VendorPayments {
 	@SerializedName("ownerApprovalStatus")
 	private String ownerApprovalStatus;
 
+	public double getTotalAmountFromTenants() {
+		return totalAmountFromTenants;
+	}
+
+	public void setTotalAmountFromTenants(double totalAmountFromTenants) {
+		this.totalAmountFromTenants = totalAmountFromTenants;
+	}
+
+	public double getAmountPaidToOwner() {
+		return amountPaidToOwner;
+	}
+
+	public void setAmountPaidToOwner(double amountPaidToOwner) {
+		this.amountPaidToOwner = amountPaidToOwner;
+	}
+
+	public double getZoyShare() {
+		return zoyShare;
+	}
+
+	public void setZoyShare(double zoyShare) {
+		this.zoyShare = zoyShare;
+	}
 
 	public String getOwnerName() {
 		return ownerName;
@@ -55,26 +78,6 @@ public class VendorPayments {
 
 	public void setPgName(String pgName) {
 		this.pgName = pgName;
-	}
-
-	public String getTotalAmountFromTenants() {
-		return totalAmountFromTenants;
-	}
-
-	public void setTotalAmountFromTenants(String totalAmountFromTenants) {
-		this.totalAmountFromTenants = totalAmountFromTenants;
-	}
-
-	public String getAmountPaidToOwner() {
-		return amountPaidToOwner;
-	}
-
-	public void setAmountPaidToOwner(String amountPaidToOwner) {
-		this.amountPaidToOwner = amountPaidToOwner;
-	}
-
-	public void setZoyShare(String zoyShare) {
-		this.zoyShare = zoyShare;
 	}
 
 	public Timestamp getTransactionDate() {
@@ -109,10 +112,6 @@ public class VendorPayments {
 		this.pgAddress = pgAddress;
 	}
 
-	public String getZoyShare() {
-		return zoyShare;
-	}
-
 	public String getOwnerApprovalStatus() {
 		return ownerApprovalStatus;
 	}
@@ -128,7 +127,5 @@ public class VendorPayments {
 	public void setOwnerEmail(String ownerEmail) {
 		this.ownerEmail = ownerEmail;
 	}
-	
-	
-	
+
 }
