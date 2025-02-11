@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +23,10 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.service.AdminReportImpl;
+import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
@@ -61,6 +64,9 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 
 	@Autowired
 	AdminReportImpl adminReportImpl;
+	
+	@Autowired
+	AuditHistoryUtilities auditHistoryUtilities;
 
 
 	@Override
@@ -210,6 +216,9 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 			log.error("Error getting download DynamicReport ByDateRange API:/zoy_admin/download_report.downloadDynamicReportByDateRange ",ex);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage().getBytes());
 		}
+		
+		String historyContent=" has downloaded "+filterRequest.getReportType()+" report";
+		auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_FINANCE_REPORT_DOWNLOAD);
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
 				.contentType(contentType)

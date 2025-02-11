@@ -24,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
+import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.CSVValidationService;
@@ -43,6 +45,7 @@ import com.integration.zoy.service.ExcelValidationService;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.service.ZoyS3Service;
+import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.BulkUploadData;
 import com.integration.zoy.utils.ErrorDetail;
 import com.integration.zoy.utils.OwnerPropertyDetails;
@@ -104,6 +107,9 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 
 	@Autowired
 	ExcelValidationService excelValidationService;
+	
+	@Autowired
+	AuditHistoryUtilities auditHistoryUtilities;
 
 	@Override
 	public ResponseEntity<String> ownerPropertyDetails() {
@@ -173,6 +179,10 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				bulkUploadDetails.setFilePath(fileUrl);
 				adminDBImpl.saveBulkUpload(bulkUploadDetails);
 				zoyAdminService.processTenant(tenant.getOwnerId(),tenant.getPropertyId(),fileBytes,fileName,jobExecutionId);
+
+				String historyContent=" has uploaded tenent file for "+tenant.getOwnerId()+"/"+tenant.getPropertyId();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_TENANT_FILE_UPLOAD);
+
 				response.setStatus(HttpStatus.OK.value());
 				response.setData("Processed");
 			} 
@@ -238,6 +248,9 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				bulkUploadDetails.setFilePath(fileUrl);
 				adminDBImpl.saveBulkUpload(bulkUploadDetails);
 				zoyAdminService.processProperty(property.getOwnerId(),property.getPropertyId(),fileBytes,fileName,jobExecutionId);
+				String historyContent=" has uploaded tenent file for "+property.getOwnerId()+"/"+property.getPropertyId();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_PROPERTY_FILE_UPLOAD);
+
 				response.setStatus(HttpStatus.OK.value());
 				response.setData("Sucess");
 
