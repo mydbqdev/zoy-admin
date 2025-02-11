@@ -20,9 +20,11 @@ export class MenuService {
   private menuList: Menu[] = [
     { name: "Activity Log", link: "/activity-log", permission: "DEFAULT_PERMISSION" },
     { name: "Bulk Upload", link: "/bulk-upload", permission: "BULK_UPLOAD_READ" },
+    { name: "Tenant", link: "/tenants", permission: "TENANTSZOY_READ" },
     { name: "Change Password", link: "/profile", permission: "DEFAULT_PERMISSION" },
     { name: "Dashboard", link: "/home", permission: "DEFAULT_PERMISSION" },
-    { name: "DB Master Configuration", link: "/db-master-configuration", permission: "DB_MASTER_CONFIGURATION_READ" },
+    { name: "Initial Configuration", link: "/db-master-configuration", permission: "DB_MASTER_CONFIGURATION_READ" },
+    { name: "Master Configuration", link: "/configuration-master", permission: "CONFIGURATION_MASTER_READ" },
     { name: "Help", link: "/help", permission: "DEFAULT_PERMISSION" },
     { name: "Home", link: "/home", permission: "DEFAULT_PERMISSION" },
     { name: "Managing Users", link: "/user-master", permission: "MANAGING_USERS_READ" },
