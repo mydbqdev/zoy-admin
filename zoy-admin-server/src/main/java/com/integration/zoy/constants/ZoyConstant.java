@@ -56,5 +56,15 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_MASTER_CONFIG_DELETE="MASTER_CONFIGURATION_DELETE";
 	public static final String ZOY_ADMIN_USER_UNLOCK = "USER_UNLOCK";
 	public static final String IST="Asia/Kolkata";
-	public static final Double DAY_24_HRS=24.0; 
+	public static final Double DAY_24_HRS=24.0;
+	
+	public static final String ZOY_ADMIN_ZOY_SHARE ="ZOY_SHARE_UPDATE";
+	public static final String ZOY_ADMIN_UPLOAD_PROFILE_PICTURE ="ZOY_UPLOADED_PROFILE_PICTURE";
+	public static final String ZOY_ADMIN_AUDIT_REPORT_DOWNLOAD ="ZOY_AUDIT_REPORT_DOWNLOAD";
+	public static final String ZOY_ADMIN_FINANCE_REPORT_DOWNLOAD ="ZOY_FINANCE_REPORT_DOWNLOAD";
+	public static final String ZOY_ADMIN_TENANT_FILE_UPLOAD ="ZOY_TENANT_FILE_UPLOAD";
+	public static final String ZOY_ADMIN_PROPERTY_FILE_UPLOAD ="ZOY_PROPERTY_REPORT_UPLOAD";
+
+
+
 }

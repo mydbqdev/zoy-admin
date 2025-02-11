@@ -512,6 +512,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 			adminUserMasterRepository.save(userDetail);
 
+			String historyContent=" has Updated profile picture";	
+			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_UPLOAD_PROFILE_PICTURE);
+			
 			log.info("Profile picture uploaded successfully for user: {}", userEmail);
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("Profile picture uploaded successfully.");
@@ -572,6 +575,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			if (rowsUpdated > 0) {
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("Zoy share updated successfully.");
+				
+				String historyContent=" has Updated Owner ZoyShare Details for" +ownerid;	
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_SHARE);
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());

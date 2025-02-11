@@ -971,6 +971,9 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			}
 
 			fileName = paginationRequest + fileExtension;
+
+			String historyContent=" has downloaded the audit report";	
+			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_AUDIT_REPORT_DOWNLOAD);
 		}catch(Exception ex) {
 			log.error("Error getting download User Audit Report API:/zoy_admin/download_user_audit_report.downloadUserAuditReport",ex);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage().getBytes());
