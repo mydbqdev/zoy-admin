@@ -19,13 +19,13 @@ public class VendorPaymentsDues {
 	private String pgName;
 	
 	@SerializedName("totalAmountPayable")
-	private BigDecimal totalAmountPayable;
+	private double totalAmountPayable;
 	
 	@SerializedName("totalAmountPaid")
-	private BigDecimal totalAmountPaid;
+	private double totalAmountPaid;
 	
 	@SerializedName("pendingAmount")
-	private BigDecimal pendingAmount;
+	private double pendingAmount;
 	
 	@SerializedName("pendingDueDate")
 	private Timestamp pendingDueDate;
@@ -62,27 +62,27 @@ public class VendorPaymentsDues {
 		this.pgName = pgName;
 	}
 
-	public BigDecimal getTotalAmountPayable() {
+	public double getTotalAmountPayable() {
 		return totalAmountPayable;
 	}
 
-	public void setTotalAmountPayable(BigDecimal totalAmountPayable) {
+	public void setTotalAmountPayable(double totalAmountPayable) {
 		this.totalAmountPayable = totalAmountPayable;
 	}
 
-	public BigDecimal getTotalAmountPaid() {
+	public double getTotalAmountPaid() {
 		return totalAmountPaid;
 	}
 
-	public void setTotalAmountPaid(BigDecimal totalAmountPaid) {
+	public void setTotalAmountPaid(double totalAmountPaid) {
 		this.totalAmountPaid = totalAmountPaid;
 	}
 
-	public BigDecimal getPendingAmount() {
+	public double getPendingAmount() {
 		return pendingAmount;
 	}
 
-	public void setPendingAmount(BigDecimal pendingAmount) {
+	public void setPendingAmount(double pendingAmount) {
 		this.pendingAmount = pendingAmount;
 	}
 

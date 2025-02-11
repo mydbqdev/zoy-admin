@@ -6,46 +6,46 @@ import java.sql.Timestamp;
 import com.google.gson.annotations.SerializedName;
 
 public class UserPaymentDTO {
-	
+
 	@SerializedName("transactionDate")
-    private Timestamp transactionDate;
-	
+	private Timestamp transactionDate;
+
 	@SerializedName("transactionNumber")
-    private String transactionNumber;
-	
+	private String transactionNumber;
+
 	@SerializedName("transactionStatus")
-    private String transactionStatus;
-	
+	private String transactionStatus;
+
 	@SerializedName("baseAmount")
-    private String dueAmount;
-	
+	private double dueAmount;
+
 	@SerializedName("gstAmount")
-    private String gstAmount;
-	
+	private double gstAmount;
+
 	@SerializedName("totalAmount")
-	private String totalAmount;
-	
+	private double totalAmount;
+
 	@SerializedName("customerName")
-    private String userPersonalName;
-	
+	private String userPersonalName;
+
 	@SerializedName("PgPropertyName")
-    private String userPgPropertyName;
-	
+	private String userPgPropertyName;
+
 	@SerializedName("propertyId")
 	private String propertyId;
-	
+
 	@SerializedName("bedNumber")
 	private String roomBedNumber;
-	
+
 	@SerializedName("category")
 	private String category;
-	
+
 	@SerializedName("paymentMethod")
 	private String paymentMode;
-	
+
 	@SerializedName("propertyHouseArea")
 	private String propertyHouseArea;
-	
+
 	@SerializedName("tenantContactNum")
 	private String tenantContactNum;
 
@@ -73,27 +73,27 @@ public class UserPaymentDTO {
 		this.transactionStatus = transactionStatus;
 	}
 
-	public String getDueAmount() {
+	public double getDueAmount() {
 		return dueAmount;
 	}
 
-	public void setDueAmount(String dueAmount) {
+	public void setDueAmount(double dueAmount) {
 		this.dueAmount = dueAmount;
 	}
 
-	public String getGstAmount() {
+	public double getGstAmount() {
 		return gstAmount;
 	}
 
-	public void setGstAmount(String gstAmount) {
+	public void setGstAmount(double gstAmount) {
 		this.gstAmount = gstAmount;
 	}
 
-	public String getTotalAmount() {
+	public double getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(String totalAmount) {
+	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
@@ -160,6 +160,5 @@ public class UserPaymentDTO {
 	public void setPropertyId(String propertyId) {
 		this.propertyId = propertyId;
 	}
-	
 
 }

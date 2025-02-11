@@ -1414,4 +1414,22 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setLogo(company.getCompanyLogo());
 		return dto;
 	}
+
+	@Override
+	public ResponseEntity<String> fetchCompanyProfileMaster() {
+		ResponseBody response = new ResponseBody();
+		try {
+			ZoyCompanyMaster company=ownerDBImpl.findcompanyMaster();
+			ZoyCompanyMasterDto dto = convertToDTO(company);
+			response.setStatus(HttpStatus.CREATED.value());
+			response.setData(dto);
+			response.setMessage("Fetched master Company Profile details successfully");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.CREATED);
+		}catch (Exception e) {
+			log.error("Error while Fetching all  Company Profile details API:/zoy_admin/config/fetch-master-profile.fetchCompanyProfileMaster", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
 }
