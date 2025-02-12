@@ -336,7 +336,7 @@ nameValidation(event: any, inputId: string) {
   }
 
   isNotValidNumber(value: any): boolean {
-	return  (value == '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
+	return  (value === '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
   }
 percentageOnlyWithZero(event): boolean {
 	const charCode = (event.which) ? event.which : event.keyCode;

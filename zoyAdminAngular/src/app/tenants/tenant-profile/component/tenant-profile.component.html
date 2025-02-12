@@ -40,7 +40,7 @@
                                   <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                 </a>
                                   <div class="dropdown-menu dropdown-menu-left shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                                      <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="reason='';submitted=false" >{{tdpf.profile.status == 'Active' ? 'Deactivate' : 'Activate'}}</a>
+                                      <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="reason='';submitted=false" >Status</a>
                                   </div>
                                 </div>
                                   <div class="d-flex justify-content-center" style="margin-top: -25px;">
@@ -240,11 +240,21 @@
   <div class="modal-dialog modal-small ">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel"><span style="color: rgb(173, 5, 159);">{{tdpf.profile.status == 'Active' ? 'Deactivate' : 'Activate'}}  {{tdpf.profile.tenantName}}</span></h5>
+        <h5 class="modal-title" id="modalLabel"><span style="color: rgb(173, 5, 159);"> {{tdpf.profile.tenantName}} - Status</span></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3">
-        <div>Reason:</div>
+        <div class="form-group row">
+          <label for="category" class="col-sm-4 col-form-label">Status :</label>
+          <div class="col-sm-8">
+            <select class="form-select form-select-sm" id="status">
+              <option>Active</option>
+              <option>Inactive</option>
+              <option>Suspended</option>
+            </select>
+          </div>
+        </div>
+        <div>Reason :</div>
         <textarea id="txtArea" rows="7" cols="52" [(ngModel)]="reason" maxlength="1000" title="Please give me the reason"
                [ngClass]="{'is-invalid': submitted && !reason}"></textarea>
         <div *ngIf="submitted && !reason" class="text-danger" >
@@ -252,7 +262,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary-custom me-2" (click)="doDeactivateActivate()" >{{tdpf.profile.status == 'Active' ? 'Deactivate' : 'Activate'}}</button>
+        <button type="submit" class="btn btn-primary-custom me-2" (click)="doDeactivateActivate()" >Update</button>
       </div>
     </div>
   </div>
