@@ -245,8 +245,7 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@GetMapping(value = "/zoy_admin/config/fetch-company-profiles",
-    produces = { "application/json" },
-    consumes = { "application/json"})
+    produces = { "application/json" })
 	ResponseEntity<String> zoyAdminCompanyProfiles();
 	
 	@Operation(summary = "Delete  Company Profile master Details", description = "Delete Company Profile Master", security = {
