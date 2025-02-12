@@ -1,19 +1,47 @@
 package com.integration.zoy.utils;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ZoyCompanyProfileMasterDto {
+	@SerializedName("companyProfileId")
 	private String companyProfileId;
+	
+	@SerializedName("type")
     private String type;
+	
+	@SerializedName("pinCode")
     private String pinCode;
+	
+	@SerializedName("state")
     private String state;
+	
+	@SerializedName("city")
     private String city;
+	
+	@SerializedName("addressLineOne")
     private String addressLineOne;
+	
+	@SerializedName("addressLineTwo")
     private String addressLineTwo;
+	
+	@SerializedName("addressLineThree")
     private String addressLineThree;
+	
+	@SerializedName("contactNumberOne")
     private String contactNumberOne;
+	
+	@SerializedName("contactNumberTwo")
     private String contactNumberTwo;
+	
+	@SerializedName("emailOne")
     private String emailOne;
+	
+	@SerializedName("emailTwo")
     private String emailTwo;
+	
+	@SerializedName("status")
     private String status;
+	
 	public String getCompanyProfileId() {
 		return companyProfileId;
 	}
