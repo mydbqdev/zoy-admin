@@ -14,7 +14,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserDetails } from 'src/app/user-management/user-master/models/register-details';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { OrganizationBranchInfoModel } from '../models/organization-info-config-model';
+import { OrganizationBranchInfoModel, OrganizationMainBranchInfoModel } from '../models/organization-info-config-model';
 
 @Component({
   selector: 'app-organization-info-config',
@@ -31,9 +31,11 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
   imgeURL2:any="assets/images/NotAvailable.jpg";
   editInfo:boolean;
   editOrg:boolean;
-  pageSize: number = 10; pageSizeOptions: number[] = [10, 20, 50]; 
+  public lastPageSize:number=0;
+  pageSize: number = 10; 
+  pageSizeOptions: number[] = [10, 20, 50]; 
   totalProduct: number = 0; 
-  displayedColumns: string[] = ['type', 'addressLine1', 'city', 'state', 'pincode','contactNumber1','emailId1','action'];
+  displayedColumns: string[] = ['type', 'addressLineOne', 'city', 'state', 'pinCode','contactNumberOne','emailOne','action'];
   public ELEMENT_DATA:OrganizationBranchInfoModel[];
   orginalFetchData:OrganizationBranchInfoModel[];
   dataSource:MatTableDataSource<OrganizationBranchInfoModel>=new MatTableDataSource<OrganizationBranchInfoModel>();
@@ -81,6 +83,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
       //if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
       //	this.router.navigate(['/']);
       //}
+      this.getOrganizationMailBranchInfo();
       this.getOrganizationBranchInfo();
      
     }
@@ -89,29 +92,72 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
       this.sidemenuComp.activeMenu(4, 'organization-info-config');
       this.dataService.setHeaderName("Organization Info Configuration");
     }
-
     
-    getOrganizationBranchInfo(){
-      this.searchText ='';
-      this.orginalFetchData = JSON.parse(JSON.stringify(this.mockdata)) ;
-      this.totalProduct =this.mockdata.length;
-      this.ELEMENT_DATA = Object.assign([],this.mockdata);
-      this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-      this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
-      return;
+    getOrganizationMailBranchInfo(){
        this.authService.checkLoginUserVlidaate();
        this.spinner.show();
-       this.organizationInfoConfigService.getConfigMasterDetails().subscribe(data => {
-        
-      if(data !=null && data.length>0){
-    
-        this.ELEMENT_DATA = Object.assign([],data);
-         this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+       this.organizationInfoConfigService.getOrganizationMailBranchInfo().subscribe(res => {
+        console.log(res);
+        this.orgMainBranchInfo = res.data;
+        this.mainBranchInfo = JSON.parse(JSON.stringify(this.orgMainBranchInfo)) ;
+        if(!res.logo && res.logo?.size!=0){ 
+          const reader =new FileReader();
+          reader.readAsDataURL(new Blob([res.logo]));
+          reader.onload=(e)=>this.imgeURL2=e.target.result; 
+          }else{
+          this.imgeURL2="assets/images/NotAvailable.jpg";
+          }
+         this.spinner.hide();
+      }, error => {
+       this.spinner.hide();
+       if(error.status == 0) {
+        this.notifyService.showError("Internal Server Error/Connection not established", "")
+       }else if(error.status==401){
+        console.error("Unauthorised");
+      }else if(error.status==403){
+         this.router.navigate(['/forbidden']);
+       }else if (error.error && error.error.message) {
+         this.errorMsg = error.error.message;
+         console.log("Error:" + this.errorMsg);
+         this.notifyService.showError(this.errorMsg, "");
+       } else {
+         if (error.status == 500 && error.statusText == "Internal Server Error") {
+           this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+         } else {
+           let str;
+           if (error.status == 400) {
+             str = error.error.error;
+           } else {
+             str = error.error.message;
+             str = str.substring(str.indexOf(":") + 1);
+           }
+           console.log("Error:" ,str);
+           this.errorMsg = str;
+         }
+         if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+       }
+     });
+     
+     }
+    getOrganizationBranchInfo(){
+     
+       this.authService.checkLoginUserVlidaate();
+       this.spinner.show();
+       this.organizationInfoConfigService.getOrganizationBranchInfo().subscribe(res => {
+        console.log(res.data)
+      if(res.data !=null && res.data?.length>0){
+        this.totalProduct = this.mockdata.length
+        this.ELEMENT_DATA = Object.assign([],this.mockdata);
+        this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
       }else{
+        this.totalProduct = 0;
         this.ELEMENT_DATA = Object.assign([]);
-         this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+        this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
       }
+      this.lastPageSize=this.pageSize;
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+      console.log()
          this.spinner.hide();
       }, error => {
        this.spinner.hide();
@@ -149,288 +195,288 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
       {
         "companyProfileId": "CP123456789",
         "type": "Head Office",
-        "addressLine1": "123 Business Park Road",
+        "addressLineOne": "123 Business Park Road",
         "city": "Dindea City",
         "state": "Dindea State",
-        "pincode": "456789",
-        "emailId1": "contact@companydindea.com",
-        "contactNumber1": "+1234567890",
+        "pinCode": "456789",
+        "emailOne": "contact@companydindea.com",
+        "contactNumberOne": "+1234567890",
         "emailId2": "support@companydindea.com",
         "contactNumber2": "+0987654321"
       },
       {
         "companyProfileId": "CP987654321",
         "type": "Branch Office",
-        "addressLine1": "456 Corporate Plaza",
+        "addressLineOne": "456 Corporate Plaza",
         "city": "Techville",
         "state": "Dindea State",
-        "pincode": "123456",
-        "emailId1": "branch@companydindea.com",
-        "contactNumber1": "+1987654321",
+        "pinCode": "123456",
+        "emailOne": "branch@companydindea.com",
+        "contactNumberOne": "+1987654321",
         "emailId2": "info@companydindea.com",
         "contactNumber2": "+1234567899"
       },
       {
         "companyProfileId": "CP564738291",
         "type": "Regional Office",
-        "addressLine1": "789 Industrial Avenue",
+        "addressLineOne": "789 Industrial Avenue",
         "city": "Industrial Town",
         "state": "Dindea State",
-        "pincode": "789123",
-        "emailId1": "regional@companydindea.com",
-        "contactNumber1": "+1122334455",
+        "pinCode": "789123",
+        "emailOne": "regional@companydindea.com",
+        "contactNumberOne": "+1122334455",
         "emailId2": "contact@companydindea.com",
         "contactNumber2": "+9988776655"
       },
       {
         "companyProfileId": "CP1122334455",
         "type": "Sales Office",
-        "addressLine1": "101 Sales Square",
+        "addressLineOne": "101 Sales Square",
         "city": "Dindea City",
         "state": "Dindea State",
-        "pincode": "654321",
-        "emailId1": "sales@companydindea.com",
-        "contactNumber1": "+1144556677",
+        "pinCode": "654321",
+        "emailOne": "sales@companydindea.com",
+        "contactNumberOne": "+1144556677",
         "emailId2": "support@companydindea.com",
         "contactNumber2": "+1222333444"
       },
       {
         "companyProfileId": "CP5566778899",
         "type": "Customer Service",
-        "addressLine1": "202 Service Lane",
+        "addressLineOne": "202 Service Lane",
         "city": "Service City",
         "state": "Dindea State",
-        "pincode": "321654",
-        "emailId1": "service@companydindea.com",
-        "contactNumber1": "+1239876543",
+        "pinCode": "321654",
+        "emailOne": "service@companydindea.com",
+        "contactNumberOne": "+1239876543",
         "emailId2": "help@companydindea.com",
         "contactNumber2": "+1298765432"
       },
         {
           "companyProfileId": "CP123456789",
           "type": "Head Office",
-          "addressLine1": "123 Business Park Road",
+          "addressLineOne": "123 Business Park Road",
           "city": "Dindea City",
           "state": "Dindea State",
-          "pincode": "456789",
-          "emailId1": "contact@companydindea.com",
-          "contactNumber1": "+1234567890",
+          "pinCode": "456789",
+          "emailOne": "contact@companydindea.com",
+          "contactNumberOne": "+1234567890",
           "emailId2": "support@companydindea.com",
           "contactNumber2": "+0987654321"
         },
         {
           "companyProfileId": "CP987654321",
           "type": "Branch Office",
-          "addressLine1": "456 Corporate Plaza",
+          "addressLineOne": "456 Corporate Plaza",
           "city": "Techville",
           "state": "Dindea State",
-          "pincode": "123456",
-          "emailId1": "branch@companydindea.com",
-          "contactNumber1": "+1987654321",
+          "pinCode": "123456",
+          "emailOne": "branch@companydindea.com",
+          "contactNumberOne": "+1987654321",
           "emailId2": "info@companydindea.com",
           "contactNumber2": "+1234567899"
         },
         {
           "companyProfileId": "CP564738291",
           "type": "Regional Office",
-          "addressLine1": "789 Industrial Avenue",
+          "addressLineOne": "789 Industrial Avenue",
           "city": "Industrial Town",
           "state": "Dindea State",
-          "pincode": "789123",
-          "emailId1": "regional@companydindea.com",
-          "contactNumber1": "+1122334455",
+          "pinCode": "789123",
+          "emailOne": "regional@companydindea.com",
+          "contactNumberOne": "+1122334455",
           "emailId2": "contact@companydindea.com",
           "contactNumber2": "+9988776655"
         },
         {
           "companyProfileId": "CP1122334455",
           "type": "Sales Office",
-          "addressLine1": "101 Sales Square",
+          "addressLineOne": "101 Sales Square",
           "city": "Dindea City",
           "state": "Dindea State",
-          "pincode": "654321",
-          "emailId1": "sales@companydindea.com",
-          "contactNumber1": "+1144556677",
+          "pinCode": "654321",
+          "emailOne": "sales@companydindea.com",
+          "contactNumberOne": "+1144556677",
           "emailId2": "support@companydindea.com",
           "contactNumber2": "+1222333444"
         },
         {
           "companyProfileId": "CP5566778899",
           "type": "Customer Service",
-          "addressLine1": "202 Service Lane",
+          "addressLineOne": "202 Service Lane",
           "city": "Service City",
           "state": "Dindea State",
-          "pincode": "321654",
-          "emailId1": "service@companydindea.com",
-          "contactNumber1": "+1239876543",
+          "pinCode": "321654",
+          "emailOne": "service@companydindea.com",
+          "contactNumberOne": "+1239876543",
           "emailId2": "help@companydindea.com",
           "contactNumber2": "+1298765432"
         },
         {
           "companyProfileId": "CP6688994455",
           "type": "Support Office",
-          "addressLine1": "303 Support Road",
+          "addressLineOne": "303 Support Road",
           "city": "Supportville",
           "state": "Dindea State",
-          "pincode": "987654",
-          "emailId1": "support@companydindea.com",
-          "contactNumber1": "+1012345678",
+          "pinCode": "987654",
+          "emailOne": "support@companydindea.com",
+          "contactNumberOne": "+1012345678",
           "emailId2": "care@companydindea.com",
           "contactNumber2": "+1112233445"
         },
         {
           "companyProfileId": "CP4455778899",
           "type": "Warehouse",
-          "addressLine1": "404 Industrial Road",
+          "addressLineOne": "404 Industrial Road",
           "city": "Logistics City",
           "state": "Dindea State",
-          "pincode": "568934",
-          "emailId1": "warehouse@companydindea.com",
-          "contactNumber1": "+1234567891",
+          "pinCode": "568934",
+          "emailOne": "warehouse@companydindea.com",
+          "contactNumberOne": "+1234567891",
           "emailId2": "logistics@companydindea.com",
           "contactNumber2": "+2345678902"
         },
         {
           "companyProfileId": "CP9900112233",
           "type": "Marketing Office",
-          "addressLine1": "505 Marketing Hub",
+          "addressLineOne": "505 Marketing Hub",
           "city": "Marketville",
           "state": "Dindea State",
-          "pincode": "234567",
-          "emailId1": "marketing@companydindea.com",
-          "contactNumber1": "+1010101010",
+          "pinCode": "234567",
+          "emailOne": "marketing@companydindea.com",
+          "contactNumberOne": "+1010101010",
           "emailId2": "promo@companydindea.com",
           "contactNumber2": "+1020304050"
         },
         {
           "companyProfileId": "CP6677889900",
           "type": "Training Center",
-          "addressLine1": "606 Training Lane",
+          "addressLineOne": "606 Training Lane",
           "city": "Educity",
           "state": "Dindea State",
-          "pincode": "123789",
-          "emailId1": "training@companydindea.com",
-          "contactNumber1": "+2020304050",
+          "pinCode": "123789",
+          "emailOne": "training@companydindea.com",
+          "contactNumberOne": "+2020304050",
           "emailId2": "education@companydindea.com",
           "contactNumber2": "+2121212121"
         },
         {
           "companyProfileId": "CP2233445566",
           "type": "Product Design Office",
-          "addressLine1": "707 Design Boulevard",
+          "addressLineOne": "707 Design Boulevard",
           "city": "Creative City",
           "state": "Dindea State",
-          "pincode": "445566",
-          "emailId1": "design@companydindea.com",
-          "contactNumber1": "+3031323344",
+          "pinCode": "445566",
+          "emailOne": "design@companydindea.com",
+          "contactNumberOne": "+3031323344",
           "emailId2": "innovation@companydindea.com",
           "contactNumber2": "+3132334455"
         },
         {
           "companyProfileId": "CP8877665544",
           "type": "Legal Office",
-          "addressLine1": "808 Legal Plaza",
+          "addressLineOne": "808 Legal Plaza",
           "city": "Lawcity",
           "state": "Dindea State",
-          "pincode": "654987",
-          "emailId1": "legal@companydindea.com",
-          "contactNumber1": "+4040506070",
+          "pinCode": "654987",
+          "emailOne": "legal@companydindea.com",
+          "contactNumberOne": "+4040506070",
           "emailId2": "attorney@companydindea.com",
           "contactNumber2": "+5050607071"
         },
         {
           "companyProfileId": "CP3344556677",
           "type": "IT Support",
-          "addressLine1": "909 Tech Lane",
+          "addressLineOne": "909 Tech Lane",
           "city": "Techopolis",
           "state": "Dindea State",
-          "pincode": "323423",
-          "emailId1": "it@companydindea.com",
-          "contactNumber1": "+6060708090",
+          "pinCode": "323423",
+          "emailOne": "it@companydindea.com",
+          "contactNumberOne": "+6060708090",
           "emailId2": "support@companydindea.com",
           "contactNumber2": "+7070809091"
         },
         {
           "companyProfileId": "CP1100223344",
           "type": "Accounting Office",
-          "addressLine1": "1010 Finance Road",
+          "addressLineOne": "1010 Finance Road",
           "city": "Financtown",
           "state": "Dindea State",
-          "pincode": "224455",
-          "emailId1": "accounts@companydindea.com",
-          "contactNumber1": "+8080910112",
+          "pinCode": "224455",
+          "emailOne": "accounts@companydindea.com",
+          "contactNumberOne": "+8080910112",
           "emailId2": "billing@companydindea.com",
           "contactNumber2": "+9091022233"
         },
         {
           "companyProfileId": "CP1199776655",
           "type": "Research Office",
-          "addressLine1": "1212 Research Street",
+          "addressLineOne": "1212 Research Street",
           "city": "Innovation City",
           "state": "Dindea State",
-          "pincode": "112233",
-          "emailId1": "research@companydindea.com",
-          "contactNumber1": "+1213141516",
+          "pinCode": "112233",
+          "emailOne": "research@companydindea.com",
+          "contactNumberOne": "+1213141516",
           "emailId2": "data@companydindea.com",
           "contactNumber2": "+1314151617"
         },
         {
           "companyProfileId": "CP2233667799",
           "type": "Customer Relations",
-          "addressLine1": "1313 Customer Drive",
+          "addressLineOne": "1313 Customer Drive",
           "city": "Relatown",
           "state": "Dindea State",
-          "pincode": "445577",
-          "emailId1": "relations@companydindea.com",
-          "contactNumber1": "+1415161718",
+          "pinCode": "445577",
+          "emailOne": "relations@companydindea.com",
+          "contactNumberOne": "+1415161718",
           "emailId2": "clients@companydindea.com",
           "contactNumber2": "+1516171819"
         },
         {
           "companyProfileId": "CP7755889922",
           "type": "Inventory Office",
-          "addressLine1": "1414 Stock Lane",
+          "addressLineOne": "1414 Stock Lane",
           "city": "Stockport",
           "state": "Dindea State",
-          "pincode": "556677",
-          "emailId1": "inventory@companydindea.com",
-          "contactNumber1": "+1617181920",
+          "pinCode": "556677",
+          "emailOne": "inventory@companydindea.com",
+          "contactNumberOne": "+1617181920",
           "emailId2": "stocks@companydindea.com",
           "contactNumber2": "+1718192021"
         },
         {
           "companyProfileId": "CP8899776655",
           "type": "Event Office",
-          "addressLine1": "1515 Event Plaza",
+          "addressLineOne": "1515 Event Plaza",
           "city": "Eventcity",
           "state": "Dindea State",
-          "pincode": "667788",
-          "emailId1": "events@companydindea.com",
-          "contactNumber1": "+1819202122",
+          "pinCode": "667788",
+          "emailOne": "events@companydindea.com",
+          "contactNumberOne": "+1819202122",
           "emailId2": "organize@companydindea.com",
           "contactNumber2": "+1920212223"
         },
         {
           "companyProfileId": "CP6655334422",
           "type": "Quality Assurance",
-          "addressLine1": "1616 Quality Road",
+          "addressLineOne": "1616 Quality Road",
           "city": "Qacity",
           "state": "Dindea State",
-          "pincode": "778899",
-          "emailId1": "quality@companydindea.com",
-          "contactNumber1": "+2021222324",
+          "pinCode": "778899",
+          "emailOne": "quality@companydindea.com",
+          "contactNumberOne": "+2021222324",
           "emailId2": "assurance@companydindea.com",
           "contactNumber2": "+2122232425"
         },
         {
           "companyProfileId": "CP2233441100",
           "type": "Compliance Office",
-          "addressLine1": "1717 Law Lane",
+          "addressLineOne": "1717 Law Lane",
           "city": "Compliancetown",
           "state": "Dindea State",
-          "pincode": "334455",
-          "emailId1": "compliance@companydindea.com",
-          "contactNumber1": "+2223242526",
+          "pinCode": "334455",
+          "emailOne": "compliance@companydindea.com",
+          "contactNumberOne": "+2223242526",
           "emailId2": "audit@companydindea.com",
           "contactNumber2": "+2324252627"
         }
@@ -438,9 +484,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
       
     ]
     
-        announceSortChange(sortState: Sort): void {
-         
-        }
+      
 
         sortActive:string='';
         sortDirection:string='';
@@ -467,24 +511,178 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
               return comparison;
           });
       }
-      filterData($event: KeyboardEvent){
+      searchBy($event: KeyboardEvent){
         if ($event.keyCode === 13) {
+        this.filterData();
+        }
+      }
+
+      filterData(){
+        
         if(this.searchText==''){
           this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
     
         }else{
-          const pagedData = Object.assign([],this.orginalFetchData.filter(data =>
-          	data.addressLine1.toLowerCase().includes(this.searchText.toLowerCase()) || data.city.toLowerCase().includes(this.searchText.toLowerCase()) || data.contactNumber1?.toLowerCase().includes(this.searchText.toLowerCase()) 
-            || data.emailId1?.toLowerCase().includes(this.searchText.toLowerCase()) || data.pincode?.toLowerCase().includes(this.searchText.toLowerCase()) || data.state?.toLowerCase().includes(this.searchText.toLowerCase()) || data.type?.toLowerCase().includes(this.searchText.toLowerCase())
+          
+          const pagedData = Object.assign([], this.orginalFetchData.filter(data =>
+            data.addressLineOne.toLowerCase().includes(this.searchText.toLowerCase()) || 
+            data.city.toLowerCase().includes(this.searchText.toLowerCase()) || 
+            data.contactNumberOne?.toLowerCase().includes(this.searchText.toLowerCase()) || 
+            data.emailOne?.toLowerCase().includes(this.searchText.toLowerCase()) || 
+            data.pinCode?.toLowerCase().includes(this.searchText.toLowerCase()) || 
+            data.state?.toLowerCase().includes(this.searchText.toLowerCase()) || 
+            data.type?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+            data.addressLineTwo?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+            data.addressLineThree?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+            data.emailTwo?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+            data.contactNumberTwo?.toLowerCase().includes(this.searchText.toLowerCase())
           ));
+          
           this.ELEMENT_DATA = Object.assign([],pagedData);
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
           
         }
-        
+
+        console.log("this.paginator.pageIndex",this.paginator.pageIndex,this.pageSize);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
-        }
       }
+
+      pageChanged(event:any){
+       // this.reportDataSource=new MatTableDataSource<any>();
+        if(this.lastPageSize!=event.pageSize){
+          this.paginator.pageIndex=0;
+          event.pageIndex=0;
+           }
+         this.pageSize=event.pageSize;
+         this.filterData();
+        // this.getReportDetails(this.paginator.pageIndex , event.pageSize,this.sortActive,this.sortDirection);
+         }
+
+      task:string='';
+      openModel(element:any,task:string){
+        this.submittedBranchInfo=false;
+        this.task=task;
+        this.infoModel = JSON.parse(JSON.stringify(element))
+      }
+
+      submittedBranchInfo:boolean;
+      submittedMainInfo:boolean;
+      infoModel:OrganizationBranchInfoModel = new OrganizationBranchInfoModel();
+      branchType:string[]=['Head Branch','Sub Branch ']
+      OrganizationMainBranchInfoModel
+      mainBranchInfo:OrganizationMainBranchInfoModel = new OrganizationMainBranchInfoModel();
+      
+
+      submitBranchInfo(){
+        this.submittedBranchInfo=true;
+         this.authService.checkLoginUserVlidaate();
+         this.spinner.show();
+         this.organizationInfoConfigService.submitBranchInfo(this.infoModel).subscribe(res => {
+          console.log(res.data)
+          if(res.data !=null && res.data?.length>0){
+            this.totalProduct = res.data.length
+            this.ELEMENT_DATA = Object.assign([],res.data);
+            this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+          }else{
+            this.totalProduct = 0;
+            this.ELEMENT_DATA = Object.assign([]);
+            this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+          }
+          this.lastPageSize=this.pageSize;
+          this.dataSource.sort = this.sort;
+          this.dataSource.paginator = this.paginator;
+          this.spinner.hide();
+        }, error => {
+         this.spinner.hide();
+         if(error.status == 0) {
+          this.notifyService.showError("Internal Server Error/Connection not established", "")
+         }else if(error.status==401){
+          console.error("Unauthorised");
+        }else if(error.status==403){
+           this.router.navigate(['/forbidden']);
+         }else if (error.error && error.error.message) {
+           this.errorMsg = error.error.message;
+           console.log("Error:" + this.errorMsg);
+           this.notifyService.showError(this.errorMsg, "");
+         } else {
+           if (error.status == 500 && error.statusText == "Internal Server Error") {
+             this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+           } else {
+             let str;
+             if (error.status == 400) {
+               str = error.error.error;
+             } else {
+               str = error.error.message;
+               str = str.substring(str.indexOf(":") + 1);
+             }
+             console.log("Error:" ,str);
+             this.errorMsg = str;
+           }
+           if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+         }
+       });
+       
+       }
+       orgMainBranchInfo:OrganizationMainBranchInfoModel=new OrganizationMainBranchInfoModel();
+       editMainBranchInfo(){
+        this.submittedMainInfo = false ;
+        this.editOrg=!this.editOrg ;
+        this.mainBranchInfo = JSON.parse(JSON.stringify(this.orgMainBranchInfo)) 
+       }
+
+
+       submitMainBranchInfo(){
+        this.submittedMainInfo = true ;
+         this.authService.checkLoginUserVlidaate();
+         const model =JSON.stringify(this.mainBranchInfo);
+			   var form_data = new FormData();
+
+			   form_data.append('companyProfile', model);
+			//	form_data.append("companyLogo",this.upfile);
+
+         this.spinner.show();
+         this.organizationInfoConfigService.submitMainBranchInfo(form_data).subscribe(res => {
+          this.orgMainBranchInfo = res.data;
+          this.mainBranchInfo = JSON.parse(JSON.stringify(this.orgMainBranchInfo)) ;
+          if(!res.logo && res.logo?.size!=0){ 
+            const reader =new FileReader();
+            reader.readAsDataURL(new Blob([res.logo]));
+            reader.onload=(e)=>this.imgeURL2=e.target.result; 
+            }else{
+            this.imgeURL2="assets/images/NotAvailable.jpg";
+            }
+           this.spinner.hide();
+        }, error => {
+         this.spinner.hide();
+         if(error.status == 0) {
+          this.notifyService.showError("Internal Server Error/Connection not established", "")
+         }else if(error.status==401){
+          console.error("Unauthorised");
+        }else if(error.status==403){
+           this.router.navigate(['/forbidden']);
+         }else if (error.error && error.error.message) {
+           this.errorMsg = error.error.message;
+           console.log("Error:" + this.errorMsg);
+           this.notifyService.showError(this.errorMsg, "");
+         } else {
+           if (error.status == 500 && error.statusText == "Internal Server Error") {
+             this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+           } else {
+             let str;
+             if (error.status == 400) {
+               str = error.error.error;
+             } else {
+               str = error.error.message;
+               str = str.substring(str.indexOf(":") + 1);
+             }
+             console.log("Error:" ,str);
+             this.errorMsg = str;
+           }
+           if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+         }
+       });
+       
+       }
 }
