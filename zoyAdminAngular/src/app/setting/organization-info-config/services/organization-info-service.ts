@@ -18,11 +18,22 @@ import { MessageService } from 'src/app/message.service';
 
     }
     
-     public getConfigMasterDetails(): Observable<any> {
-          const url1=this.basePath +"zoy_admin/config/admin-configuration-details";
-            return  this.httpclient.post<any>(
+    public getOrganizationMailBranchInfo(): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/fetch-master-profile";
+          return  this.httpclient.get<any>(
+              url1,
+              {
+                 headers:ServiceHelper.buildHeaders(),
+                 observe : 'body',
+                 withCredentials:true
+              }
+          );
+  }
+
+     public getOrganizationBranchInfo(): Observable<any> {
+          const url1=this.basePath +"zoy_admin/config/fetch-company-profiles";
+            return  this.httpclient.get<any>(
                 url1,
-                "",
                 {
                    headers:ServiceHelper.buildHeaders(),
                    observe : 'body',
@@ -31,8 +42,20 @@ import { MessageService } from 'src/app/message.service';
             );
     } 
 
-    public updateShortTermRentingDuratioDetails(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/config/short-term";
+    public submitMainBranchInfo(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/company-master-profile";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    } 
+    public submitBranchInfo(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/company-profile";
         return  this.httpclient.post<any>(
             url1,
             data,
