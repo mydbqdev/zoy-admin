@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.crypto.BadPaddingException;
@@ -169,6 +170,8 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	@Value("${spring.jackson.time-zone}")
 	private String currentTimeZone;
 	
+	private final ConcurrentHashMap<String, Boolean> userSingleDeviceLockMap = new ConcurrentHashMap<>();
+	
 
 	@Override
 	public ResponseEntity<String> zoyAdminUserLogin(LoginDetails details) {
@@ -202,6 +205,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 						userRepository.save(userLock);
 					}
 				}
+			}
+			
+			if (userSingleDeviceLockMap.putIfAbsent(details.getEmail(), true) != null) {
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				response.setMessage("Already logged in another device");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
 			}
 
 			String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword());
@@ -356,6 +365,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	        if (authHeader != null && authHeader.startsWith("Bearer ")) {
 	        	String token = authHeader.replace("Bearer ","");
 	        	zoyAdminService.addToBlacklist(token);
+	        	userSingleDeviceLockMap.remove(userEmail);
 	        }
 			
 			auditHistoryUtilities.auditForUserLoginLogout(userEmail, false);
