@@ -92,6 +92,7 @@ import com.integration.zoy.utils.OtpVerification;
 import com.integration.zoy.utils.ResetPassWord;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.RoleModel;
+import com.integration.zoy.utils.SessionInfo;
 import com.integration.zoy.utils.UserPaymentFilterRequest;
 
 @RestController
@@ -170,9 +171,6 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	@Value("${spring.jackson.time-zone}")
 	private String currentTimeZone;
 	
-	//private final ConcurrentHashMap<String, Boolean> userSingleDeviceLockMap = new ConcurrentHashMap<>();
-	
-
 	@Override
 	public ResponseEntity<String> zoyAdminUserLogin(LoginDetails details) {
 		ResponseBody response = new ResponseBody();
@@ -207,11 +205,13 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				}
 			}
 			
-//			if (userSingleDeviceLockMap.putIfAbsent(details.getEmail(), true) != null) {
-//				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//				response.setMessage("Already logged in another device");
-//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
-//			}
+			zoyAdminService.removeExpiredSessions();
+			
+			if (zoyAdminService.getUserSingleDeviceLockMap().containsKey(details.getEmail())) {
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				response.setMessage("Already logged in another device");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
+		    }
 
 			String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword());
 			String decryptedLoginPassword = passwordDecoder.decryptedText(details.getPassword());
@@ -219,12 +219,11 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
 
 			if (isPasswordMatch) {
-				
-				
 
 				Authentication authentication = authenticationManager.authenticate(
 						new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
 				String token = jwtUtil.generateToken(authentication);
+				 zoyAdminService.getUserSingleDeviceLockMap().put(details.getEmail(), new SessionInfo(token, System.currentTimeMillis()));
 				userRepository.deleteByUsername(details.getEmail());
 				response.setStatus(HttpStatus.OK.value());
 				response.setEmail(details.getEmail());
@@ -365,7 +364,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	        if (authHeader != null && authHeader.startsWith("Bearer ")) {
 	        	String token = authHeader.replace("Bearer ","");
 	        	zoyAdminService.addToBlacklist(token);
-//	        	userSingleDeviceLockMap.remove(userEmail);
+	        	zoyAdminService.getUserSingleDeviceLockMap().remove(userEmail);
 	        }
 			
 			auditHistoryUtilities.auditForUserLoginLogout(userEmail, false);
