@@ -9,6 +9,9 @@ public class DueMaster {
 	@SerializedName("due_type_name")
 	private String dueTypeName;
 
+	@SerializedName("due_type_image")
+	private String dueTypeImage;
+
 	public String getDueTypeId() {
 		return dueTypeId;
 	}
@@ -23,6 +26,14 @@ public class DueMaster {
 
 	public void setDueTypeName(String dueTypeName) {
 		this.dueTypeName = dueTypeName;
+	}
+
+	public String getDueTypeImage() {
+		return dueTypeImage;
+	}
+
+	public void setDueTypeImage(String dueTypeImage) {
+		this.dueTypeImage = dueTypeImage;
 	}
 	
 	

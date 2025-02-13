@@ -215,7 +215,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 			String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword());
 			String decryptedLoginPassword = passwordDecoder.decryptedText(details.getPassword());
-
+			System.out.println(decryptedStoredPassword);
 			boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
 
 			if (isPasswordMatch) {

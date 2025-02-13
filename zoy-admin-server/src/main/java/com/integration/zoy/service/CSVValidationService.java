@@ -155,6 +155,7 @@ public class CSVValidationService {
 	}
 
 	private void validateTable(String value, int row, int header, String columnName, int i,List<ErrorDetail> errorDetails) {
+		if (value != null && !value.trim().isEmpty()) {
 		switch (columnName) {
 		case "Floor":
 			ZoyPgPropertyFloorDetails floorDetails =ownerDBImpl.findFloorDetails(propertyId,value);
@@ -181,6 +182,7 @@ public class CSVValidationService {
 //			break;
 		default:
 			break;
+		 }
 		}
 	}
 
@@ -201,8 +203,10 @@ public class CSVValidationService {
 	}
 
 	private void validateEmail(String email, int row, int header, String columnName, List<ErrorDetail> errorDetails) {
-		if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-			errorDetails.add(new ErrorDetail(row, header, columnName, "Invalid email format"));
+		if (email != null && !email.trim().isEmpty()) {
+			if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+				errorDetails.add(new ErrorDetail(row, header, columnName, "Invalid email format"));
+			}
 		}
 	}
 
@@ -246,8 +250,11 @@ public class CSVValidationService {
 	}
 
 	private void validateGender(String gender, int row, int header, String columnName, List<ErrorDetail> errorDetails) {
-		if (!gender.equalsIgnoreCase("Male") && !gender.equalsIgnoreCase("Female") && !gender.equalsIgnoreCase("Transgender")) {
-			errorDetails.add(new ErrorDetail(row, header, columnName, "Invalid gender value"));
+		if (gender != null && !gender.trim().isEmpty()) {
+			if (!gender.equalsIgnoreCase("Male") && !gender.equalsIgnoreCase("Female")
+					&& !gender.equalsIgnoreCase("Transgender")) {
+				errorDetails.add(new ErrorDetail(row, header, columnName, "Invalid gender value"));
+			}
 		}
 	}
 
@@ -257,9 +264,12 @@ public class CSVValidationService {
 		}
 	}
 
-	private void validateRentCycle(String rentCycle, int row, int header, String columnName, List<ErrorDetail> errorDetails) {
-		if (!rentCycle.matches("\\d{2}-\\d{2}")) {
-			errorDetails.add(new ErrorDetail(row, header, columnName, "Invalid rent cycle format (expected DD-MM)"));
+	private void validateRentCycle(String rentCycle, int row, int header, String columnName,List<ErrorDetail> errorDetails) {
+		if (rentCycle != null && !rentCycle.trim().isEmpty()) {
+			if (!rentCycle.matches("\\d{2}-\\d{2}")) {
+				errorDetails
+						.add(new ErrorDetail(row, header, columnName, "Invalid rent cycle format (expected DD-MM)"));
+			}
 		}
 	}
 
