@@ -765,6 +765,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 						DueMaster dueMaster = new DueMaster();
 						dueMaster.setDueTypeId(zoyPgDueMaster.getDueTypeId());
 						dueMaster.setDueTypeName(zoyPgDueMaster.getDueName());
+						dueMaster.setDueTypeImage(zoyPgDueMaster.getDueImage());
 						return dueMaster;
 					})
 					.collect(Collectors.toList());
@@ -783,6 +784,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		try {
 			ZoyPgDueMaster userDueMasters =  new ZoyPgDueMaster();
 			userDueMasters.setDueName(dueType.getDueTypeName());
+			userDueMasters.setDueImage(dueType.getDueTypeImage());
 			ZoyPgDueMaster saved=ownerDBImpl.saveUserDueMaster(userDueMasters);
 			//audit history here
 			String historyContent=" has created the Due Type for, "+dueType.getDueTypeName();
@@ -805,6 +807,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			if(userDueMasters!=null) {
 				final String oldCount=userDueMasters.getDueName();
 				userDueMasters.setDueName(dueTypeId.getDueTypeName());
+				userDueMasters.setDueImage(dueTypeId.getDueTypeImage());
 				ZoyPgDueMaster updated=ownerDBImpl.updateDueMaster(userDueMasters);
 
 				//audit history here
