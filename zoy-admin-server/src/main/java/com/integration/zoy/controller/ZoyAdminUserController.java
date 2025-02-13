@@ -170,7 +170,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	@Value("${spring.jackson.time-zone}")
 	private String currentTimeZone;
 	
-	private final ConcurrentHashMap<String, Boolean> userSingleDeviceLockMap = new ConcurrentHashMap<>();
+	//private final ConcurrentHashMap<String, Boolean> userSingleDeviceLockMap = new ConcurrentHashMap<>();
 	
 
 	@Override
@@ -207,15 +207,15 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				}
 			}
 			
-			if (userSingleDeviceLockMap.putIfAbsent(details.getEmail(), true) != null) {
-				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-				response.setMessage("Already logged in another device");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
-			}
+//			if (userSingleDeviceLockMap.putIfAbsent(details.getEmail(), true) != null) {
+//				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//				response.setMessage("Already logged in another device");
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
+//			}
 
 			String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword());
 			String decryptedLoginPassword = passwordDecoder.decryptedText(details.getPassword());
-			System.out.println(decryptedStoredPassword);
+
 			boolean isPasswordMatch = decryptedStoredPassword.equals(decryptedLoginPassword);
 
 			if (isPasswordMatch) {
@@ -365,7 +365,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	        if (authHeader != null && authHeader.startsWith("Bearer ")) {
 	        	String token = authHeader.replace("Bearer ","");
 	        	zoyAdminService.addToBlacklist(token);
-	        	userSingleDeviceLockMap.remove(userEmail);
+//	        	userSingleDeviceLockMap.remove(userEmail);
 	        }
 			
 			auditHistoryUtilities.auditForUserLoginLogout(userEmail, false);
