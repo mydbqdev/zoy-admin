@@ -325,6 +325,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				AdminUserDetailPrevilage adminUserList=new AdminUserDetailPrevilage();
 				List<String[]> user=adminDBImpl.findAllAdminUserDetails(emailId);
 				if(user.size()>0) {
+					zoyAdminService.getUserSingleDeviceLockMap().replace(emailId, new SessionInfo(generateToken, System.currentTimeMillis()));
 					adminUserList.setToken(generateToken);
 					adminUserList.setFirstName(user.get(0)[0]);
 					adminUserList.setLastName(user.get(0)[1]!=null?user.get(0)[1]:"");
