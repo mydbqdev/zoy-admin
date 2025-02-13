@@ -242,9 +242,9 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				this.floor_id = this.floorInfo.floor_id; 
 				this.showRooms();
 			}
-			this.zoyShare = JSON.parse(JSON.stringify( this.pgOwnerData?.profile.zoy_share? Number(this.pgOwnerData.profile.zoy_share):0));
-			
 		} 
+		this.zoyShare = JSON.parse(JSON.stringify( this.pgOwnerData?.profile?.zoy_share? Number(this.pgOwnerData.profile.zoy_share):0));
+		
 		this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
