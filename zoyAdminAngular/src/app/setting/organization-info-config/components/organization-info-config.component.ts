@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder} from '@angular/forms';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from 'src/app/common/service/auth.service';
@@ -10,9 +10,8 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { OrganizationInfoConfigService } from '../services/organization-info-service';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { UserDetails } from 'src/app/user-management/user-master/models/register-details';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { OrganizationBranchInfoModel, OrganizationMainBranchInfoModel } from '../models/organization-info-config-model';
 
@@ -28,22 +27,36 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
   isExpandSideBar:boolean=true;
   @ViewChild(SidebarComponent) sidemenuComp;
   public rolesArray: string[] = [];
-  imgeURL2:any="assets/images/NotAvailable.jpg";
+  imgeURL2:any="";
+  previewUrl:any="";
   editInfo:boolean;
   editOrg:boolean;
   public lastPageSize:number=0;
-  pageSize: number = 10; 
-  pageSizeOptions: number[] = [10, 20, 50]; 
+  pageSize: number = 5; 
+  pageSizeOptions: number[] = [5,10, 20, 50]; 
   totalProduct: number = 0; 
   displayedColumns: string[] = ['type', 'addressLineOne', 'city', 'state', 'pinCode','contactNumberOne','emailOne','action'];
   public ELEMENT_DATA:OrganizationBranchInfoModel[];
-  orginalFetchData:OrganizationBranchInfoModel[];
+  orginalFetchData:OrganizationBranchInfoModel[]=[];
   dataSource:MatTableDataSource<OrganizationBranchInfoModel>=new MatTableDataSource<OrganizationBranchInfoModel>();
   searchText :string;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild('closeModal') closeModal : ElementRef;
-   private _liveAnnouncer = inject(LiveAnnouncer);
+  @ViewChild('closeModel') closeModel : ElementRef;
+  private _liveAnnouncer = inject(LiveAnnouncer);
+  orgMainBranchInfo:OrganizationMainBranchInfoModel=new OrganizationMainBranchInfoModel();
+  sortActive:string='';
+  sortDirection:string='';
+  selectedLogo: File | null = null;
+  fileData: File | null = null;
+  fileUploadSizeStatus: boolean = true;
+  task:string='';
+  submittedBranchInfo:boolean;
+  submittedMainInfo:boolean;
+  infoModel:OrganizationBranchInfoModel = new OrganizationBranchInfoModel();
+  branchType:string[]=['Head Branch','Sub Branch ']
+  OrganizationMainBranchInfoModel
+  mainBranchInfo:OrganizationMainBranchInfoModel = new OrganizationMainBranchInfoModel();
   constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private dataService: DataService, private organizationInfoConfigService :OrganizationInfoConfigService,private userService:UserService,
       private spinner: NgxSpinnerService, private authService:AuthService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
         this.authService.checkLoginUserVlidaate();
@@ -101,9 +114,17 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
         this.orgMainBranchInfo = res.data;
         this.mainBranchInfo = JSON.parse(JSON.stringify(this.orgMainBranchInfo)) ;
         if(!res.logo && res.logo?.size!=0){ 
-          const reader =new FileReader();
-          reader.readAsDataURL(new Blob([res.logo]));
-          reader.onload=(e)=>this.imgeURL2=e.target.result; 
+          const blob = new Blob([new Uint8Array(res.logo)], { type: 'image/png' });
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.imgeURL2 = e.target?.result as string;
+          };
+          
+          reader.readAsDataURL(blob);
+          // const reader =new FileReader();
+          
+          // reader.readAsDataURL(new Blob([res.logo]));
+          // reader.onload=(e)=>this.imgeURL2=e.target.result; 
           }else{
           this.imgeURL2="assets/images/NotAvailable.jpg";
           }
@@ -140,17 +161,18 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
      
      }
     getOrganizationBranchInfo(){
-     
        this.authService.checkLoginUserVlidaate();
        this.spinner.show();
        this.organizationInfoConfigService.getOrganizationBranchInfo().subscribe(res => {
         console.log(res.data)
       if(res.data !=null && res.data?.length>0){
-        this.totalProduct = this.mockdata.length
-        this.ELEMENT_DATA = Object.assign([],this.mockdata);
+        this.totalProduct = res.data.length
+        this.orginalFetchData = JSON.parse(JSON.stringify(res.data));
+        this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
         this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
       }else{
         this.totalProduct = 0;
+        this.orginalFetchData = [];
         this.ELEMENT_DATA = Object.assign([]);
         this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
       }
@@ -191,314 +213,17 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
      
      }
 
-    mockdata= [
-      {
-        "companyProfileId": "CP123456789",
-        "type": "Head Office",
-        "addressLineOne": "123 Business Park Road",
-        "city": "Dindea City",
-        "state": "Dindea State",
-        "pinCode": "456789",
-        "emailOne": "contact@companydindea.com",
-        "contactNumberOne": "+1234567890",
-        "emailId2": "support@companydindea.com",
-        "contactNumber2": "+0987654321"
-      },
-      {
-        "companyProfileId": "CP987654321",
-        "type": "Branch Office",
-        "addressLineOne": "456 Corporate Plaza",
-        "city": "Techville",
-        "state": "Dindea State",
-        "pinCode": "123456",
-        "emailOne": "branch@companydindea.com",
-        "contactNumberOne": "+1987654321",
-        "emailId2": "info@companydindea.com",
-        "contactNumber2": "+1234567899"
-      },
-      {
-        "companyProfileId": "CP564738291",
-        "type": "Regional Office",
-        "addressLineOne": "789 Industrial Avenue",
-        "city": "Industrial Town",
-        "state": "Dindea State",
-        "pinCode": "789123",
-        "emailOne": "regional@companydindea.com",
-        "contactNumberOne": "+1122334455",
-        "emailId2": "contact@companydindea.com",
-        "contactNumber2": "+9988776655"
-      },
-      {
-        "companyProfileId": "CP1122334455",
-        "type": "Sales Office",
-        "addressLineOne": "101 Sales Square",
-        "city": "Dindea City",
-        "state": "Dindea State",
-        "pinCode": "654321",
-        "emailOne": "sales@companydindea.com",
-        "contactNumberOne": "+1144556677",
-        "emailId2": "support@companydindea.com",
-        "contactNumber2": "+1222333444"
-      },
-      {
-        "companyProfileId": "CP5566778899",
-        "type": "Customer Service",
-        "addressLineOne": "202 Service Lane",
-        "city": "Service City",
-        "state": "Dindea State",
-        "pinCode": "321654",
-        "emailOne": "service@companydindea.com",
-        "contactNumberOne": "+1239876543",
-        "emailId2": "help@companydindea.com",
-        "contactNumber2": "+1298765432"
-      },
-        {
-          "companyProfileId": "CP123456789",
-          "type": "Head Office",
-          "addressLineOne": "123 Business Park Road",
-          "city": "Dindea City",
-          "state": "Dindea State",
-          "pinCode": "456789",
-          "emailOne": "contact@companydindea.com",
-          "contactNumberOne": "+1234567890",
-          "emailId2": "support@companydindea.com",
-          "contactNumber2": "+0987654321"
-        },
-        {
-          "companyProfileId": "CP987654321",
-          "type": "Branch Office",
-          "addressLineOne": "456 Corporate Plaza",
-          "city": "Techville",
-          "state": "Dindea State",
-          "pinCode": "123456",
-          "emailOne": "branch@companydindea.com",
-          "contactNumberOne": "+1987654321",
-          "emailId2": "info@companydindea.com",
-          "contactNumber2": "+1234567899"
-        },
-        {
-          "companyProfileId": "CP564738291",
-          "type": "Regional Office",
-          "addressLineOne": "789 Industrial Avenue",
-          "city": "Industrial Town",
-          "state": "Dindea State",
-          "pinCode": "789123",
-          "emailOne": "regional@companydindea.com",
-          "contactNumberOne": "+1122334455",
-          "emailId2": "contact@companydindea.com",
-          "contactNumber2": "+9988776655"
-        },
-        {
-          "companyProfileId": "CP1122334455",
-          "type": "Sales Office",
-          "addressLineOne": "101 Sales Square",
-          "city": "Dindea City",
-          "state": "Dindea State",
-          "pinCode": "654321",
-          "emailOne": "sales@companydindea.com",
-          "contactNumberOne": "+1144556677",
-          "emailId2": "support@companydindea.com",
-          "contactNumber2": "+1222333444"
-        },
-        {
-          "companyProfileId": "CP5566778899",
-          "type": "Customer Service",
-          "addressLineOne": "202 Service Lane",
-          "city": "Service City",
-          "state": "Dindea State",
-          "pinCode": "321654",
-          "emailOne": "service@companydindea.com",
-          "contactNumberOne": "+1239876543",
-          "emailId2": "help@companydindea.com",
-          "contactNumber2": "+1298765432"
-        },
-        {
-          "companyProfileId": "CP6688994455",
-          "type": "Support Office",
-          "addressLineOne": "303 Support Road",
-          "city": "Supportville",
-          "state": "Dindea State",
-          "pinCode": "987654",
-          "emailOne": "support@companydindea.com",
-          "contactNumberOne": "+1012345678",
-          "emailId2": "care@companydindea.com",
-          "contactNumber2": "+1112233445"
-        },
-        {
-          "companyProfileId": "CP4455778899",
-          "type": "Warehouse",
-          "addressLineOne": "404 Industrial Road",
-          "city": "Logistics City",
-          "state": "Dindea State",
-          "pinCode": "568934",
-          "emailOne": "warehouse@companydindea.com",
-          "contactNumberOne": "+1234567891",
-          "emailId2": "logistics@companydindea.com",
-          "contactNumber2": "+2345678902"
-        },
-        {
-          "companyProfileId": "CP9900112233",
-          "type": "Marketing Office",
-          "addressLineOne": "505 Marketing Hub",
-          "city": "Marketville",
-          "state": "Dindea State",
-          "pinCode": "234567",
-          "emailOne": "marketing@companydindea.com",
-          "contactNumberOne": "+1010101010",
-          "emailId2": "promo@companydindea.com",
-          "contactNumber2": "+1020304050"
-        },
-        {
-          "companyProfileId": "CP6677889900",
-          "type": "Training Center",
-          "addressLineOne": "606 Training Lane",
-          "city": "Educity",
-          "state": "Dindea State",
-          "pinCode": "123789",
-          "emailOne": "training@companydindea.com",
-          "contactNumberOne": "+2020304050",
-          "emailId2": "education@companydindea.com",
-          "contactNumber2": "+2121212121"
-        },
-        {
-          "companyProfileId": "CP2233445566",
-          "type": "Product Design Office",
-          "addressLineOne": "707 Design Boulevard",
-          "city": "Creative City",
-          "state": "Dindea State",
-          "pinCode": "445566",
-          "emailOne": "design@companydindea.com",
-          "contactNumberOne": "+3031323344",
-          "emailId2": "innovation@companydindea.com",
-          "contactNumber2": "+3132334455"
-        },
-        {
-          "companyProfileId": "CP8877665544",
-          "type": "Legal Office",
-          "addressLineOne": "808 Legal Plaza",
-          "city": "Lawcity",
-          "state": "Dindea State",
-          "pinCode": "654987",
-          "emailOne": "legal@companydindea.com",
-          "contactNumberOne": "+4040506070",
-          "emailId2": "attorney@companydindea.com",
-          "contactNumber2": "+5050607071"
-        },
-        {
-          "companyProfileId": "CP3344556677",
-          "type": "IT Support",
-          "addressLineOne": "909 Tech Lane",
-          "city": "Techopolis",
-          "state": "Dindea State",
-          "pinCode": "323423",
-          "emailOne": "it@companydindea.com",
-          "contactNumberOne": "+6060708090",
-          "emailId2": "support@companydindea.com",
-          "contactNumber2": "+7070809091"
-        },
-        {
-          "companyProfileId": "CP1100223344",
-          "type": "Accounting Office",
-          "addressLineOne": "1010 Finance Road",
-          "city": "Financtown",
-          "state": "Dindea State",
-          "pinCode": "224455",
-          "emailOne": "accounts@companydindea.com",
-          "contactNumberOne": "+8080910112",
-          "emailId2": "billing@companydindea.com",
-          "contactNumber2": "+9091022233"
-        },
-        {
-          "companyProfileId": "CP1199776655",
-          "type": "Research Office",
-          "addressLineOne": "1212 Research Street",
-          "city": "Innovation City",
-          "state": "Dindea State",
-          "pinCode": "112233",
-          "emailOne": "research@companydindea.com",
-          "contactNumberOne": "+1213141516",
-          "emailId2": "data@companydindea.com",
-          "contactNumber2": "+1314151617"
-        },
-        {
-          "companyProfileId": "CP2233667799",
-          "type": "Customer Relations",
-          "addressLineOne": "1313 Customer Drive",
-          "city": "Relatown",
-          "state": "Dindea State",
-          "pinCode": "445577",
-          "emailOne": "relations@companydindea.com",
-          "contactNumberOne": "+1415161718",
-          "emailId2": "clients@companydindea.com",
-          "contactNumber2": "+1516171819"
-        },
-        {
-          "companyProfileId": "CP7755889922",
-          "type": "Inventory Office",
-          "addressLineOne": "1414 Stock Lane",
-          "city": "Stockport",
-          "state": "Dindea State",
-          "pinCode": "556677",
-          "emailOne": "inventory@companydindea.com",
-          "contactNumberOne": "+1617181920",
-          "emailId2": "stocks@companydindea.com",
-          "contactNumber2": "+1718192021"
-        },
-        {
-          "companyProfileId": "CP8899776655",
-          "type": "Event Office",
-          "addressLineOne": "1515 Event Plaza",
-          "city": "Eventcity",
-          "state": "Dindea State",
-          "pinCode": "667788",
-          "emailOne": "events@companydindea.com",
-          "contactNumberOne": "+1819202122",
-          "emailId2": "organize@companydindea.com",
-          "contactNumber2": "+1920212223"
-        },
-        {
-          "companyProfileId": "CP6655334422",
-          "type": "Quality Assurance",
-          "addressLineOne": "1616 Quality Road",
-          "city": "Qacity",
-          "state": "Dindea State",
-          "pinCode": "778899",
-          "emailOne": "quality@companydindea.com",
-          "contactNumberOne": "+2021222324",
-          "emailId2": "assurance@companydindea.com",
-          "contactNumber2": "+2122232425"
-        },
-        {
-          "companyProfileId": "CP2233441100",
-          "type": "Compliance Office",
-          "addressLineOne": "1717 Law Lane",
-          "city": "Compliancetown",
-          "state": "Dindea State",
-          "pinCode": "334455",
-          "emailOne": "compliance@companydindea.com",
-          "contactNumberOne": "+2223242526",
-          "emailId2": "audit@companydindea.com",
-          "contactNumber2": "+2324252627"
-        }
-      
-      
-    ]
-    
-      
-
-        sortActive:string='';
-        sortDirection:string='';
     sortChange(sortActive: string, sortDirection: string){
-   
       this.sortDirection = this.sortActive === sortActive ? (this.sortDirection == 'desc' ?'asc':'desc'):sortDirection;
       this.sortActive=sortActive ;
-      console.log("sortActive",sortActive,"sortDirection",sortDirection)
       const sorterdList = this.sorting();
       this.ELEMENT_DATA = JSON.parse(JSON.stringify(sorterdList));
       this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
     }
 
-    sorting( ): OrganizationBranchInfoModel[] {
+    sorting(): OrganizationBranchInfoModel[] {
       const list = this.ELEMENT_DATA;
           return list.sort((a, b) => {
               let comparison = 0;
@@ -511,85 +236,162 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
               return comparison;
           });
       }
+
       searchBy($event: KeyboardEvent){
+        console.log("$event.keyCode",$event.keyCode)
         if ($event.keyCode === 13) {
         this.filterData();
         }
       }
 
       filterData(){
-        
         if(this.searchText==''){
-          this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
+          this.ELEMENT_DATA = JSON.parse(JSON.stringify(this.orginalFetchData));
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-    
         }else{
-          
-          const pagedData = Object.assign([], this.orginalFetchData.filter(data =>
-            data.addressLineOne.toLowerCase().includes(this.searchText.toLowerCase()) || 
-            data.city.toLowerCase().includes(this.searchText.toLowerCase()) || 
-            data.contactNumberOne?.toLowerCase().includes(this.searchText.toLowerCase()) || 
-            data.emailOne?.toLowerCase().includes(this.searchText.toLowerCase()) || 
-            data.pinCode?.toLowerCase().includes(this.searchText.toLowerCase()) || 
-            data.state?.toLowerCase().includes(this.searchText.toLowerCase()) || 
-            data.type?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-            data.addressLineTwo?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-            data.addressLineThree?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-            data.emailTwo?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-            data.contactNumberTwo?.toLowerCase().includes(this.searchText.toLowerCase())
+          const searchText = this.searchText ? this.searchText.toLocaleLowerCase() : ''; 
+          const pagedData = Object.assign([], this.orginalFetchData?.filter(data =>
+            (data.addressLineOne?.toLowerCase())?.includes(searchText) || 
+            (data.city?.toLowerCase())?.includes(searchText) || 
+            (data.contactNumberOne?.toLowerCase())?.includes(searchText) || 
+            (data.emailOne?.toLowerCase())?.includes(searchText) || 
+            (data.pinCode?.toLowerCase())?.includes(searchText) || 
+            (data.state?.toLowerCase())?.includes(searchText) || 
+            (data.type?.toLowerCase())?.includes(searchText) ||
+            (data.addressLineTwo?.toLowerCase())?.includes(searchText) ||
+            (data.addressLineThree?.toLowerCase())?.includes(searchText) ||
+            (data.emailTwo?.toLowerCase())?.includes(searchText) ||
+            (data.contactNumberTwo?.toLowerCase())?.includes(searchText)
           ));
           
-          this.ELEMENT_DATA = Object.assign([],pagedData);
+          this.ELEMENT_DATA = JSON.parse(JSON.stringify(pagedData)) ;
           this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
           
         }
 
-        console.log("this.paginator.pageIndex",this.paginator.pageIndex,this.pageSize);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
       }
 
       pageChanged(event:any){
-       // this.reportDataSource=new MatTableDataSource<any>();
         if(this.lastPageSize!=event.pageSize){
           this.paginator.pageIndex=0;
           event.pageIndex=0;
            }
          this.pageSize=event.pageSize;
          this.filterData();
-        // this.getReportDetails(this.paginator.pageIndex , event.pageSize,this.sortActive,this.sortDirection);
          }
 
-      task:string='';
+       
+        resetFileData(): void {
+          this.previewUrl = false;
+          this.fileUploadSizeStatus = true;
+          this.selectedLogo = null;
+          this.fileData = null;
+        }
+
+        preview(): void {
+          const mimeType = this.fileData?.type;
+          if (mimeType && mimeType.match(/image\/*/) != null) {
+            const reader = new FileReader();
+            reader.readAsDataURL(this.fileData!);
+            reader.onload = () => {
+              this.previewUrl = reader.result;  // Set preview URL
+            };
+          }
+        }
+        onFileChanged(event: any): void {
+          this.previewUrl = false;  // Reset preview before a new file is selected
+          const file = event.target.files[0];
+      
+          if (file) {
+            this.selectedLogo = file;
+            this.fileData = file;
+      
+            const fileSizeInKB = file.size / 1024;
+            if (!(file.type === 'image/jpeg' || file.type === 'image/png')) {
+              this.fileUploadSizeStatus = false;  
+            } else if (fileSizeInKB <= 100) {
+              this.fileUploadSizeStatus = true; 
+              this.preview();
+            } else {
+              this.fileUploadSizeStatus = false;  
+            }
+          }
+        }
+
       openModel(element:any,task:string){
         this.submittedBranchInfo=false;
         this.task=task;
-        this.infoModel = JSON.parse(JSON.stringify(element))
+        this.infoModel = JSON.parse(JSON.stringify(element?element:new OrganizationBranchInfoModel() ))
       }
-
-      submittedBranchInfo:boolean;
-      submittedMainInfo:boolean;
-      infoModel:OrganizationBranchInfoModel = new OrganizationBranchInfoModel();
-      branchType:string[]=['Head Branch','Sub Branch ']
-      OrganizationMainBranchInfoModel
-      mainBranchInfo:OrganizationMainBranchInfoModel = new OrganizationMainBranchInfoModel();
-      
+  
+      validateEmailFormat(email:string): boolean {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailPattern.test(email)) {
+          return true;  
+        } else {
+          return false; 
+        }
+      }
+      numberOnly(event): boolean {
+        const charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+          return false;
+        }
+        return true;
+      }
+      validatePinCode(pinCode: string): boolean {
+        const pinCodePattern = /^[0-9]{5}$/;  
+        return !pinCodePattern.test(pinCode);
+      }
+      validatecontactNumber(contactNumber: string): boolean {
+        const pinCodePattern = /^[0-9]{10}$/;  
+        return !pinCodePattern.test(contactNumber);
+      }
+      validateUrl(url) {
+        const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+        return !urlPattern.test(url);
+      }
+      validatePanNumber(panNumber) {
+        const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+        return !panRegex.test(panNumber);
+      }
 
       submitBranchInfo(){
         this.submittedBranchInfo=true;
+         console.log("this.infoModel",this.infoModel);
+         if (!this.infoModel.type || !this.infoModel.type || 
+              !this.infoModel.pinCode || this.validatePinCode(this.infoModel?.pinCode) ||
+              !this.infoModel.city || !this.infoModel.state || 
+              !this.infoModel.addressLineOne || !this.infoModel.addressLineTwo || !this.infoModel.addressLineThree || 
+              !this.infoModel.emailOne || this.validateEmailFormat(this.infoModel.emailOne) || 
+              !this.infoModel.emailTwo || this.validateEmailFormat(this.infoModel.emailTwo) || 
+               this.infoModel.emailOne === this.infoModel.emailTwo ||
+              !this.infoModel.contactNumberOne || this.validatecontactNumber(this.infoModel.contactNumberOne) || 
+              !this.infoModel.contactNumberTwo || this.validatecontactNumber(this.infoModel.contactNumberTwo) || 
+              this.infoModel.contactNumberOne === this.infoModel.contactNumberTwo 
+            ){
+            return;
+          }
+    
          this.authService.checkLoginUserVlidaate();
          this.spinner.show();
          this.organizationInfoConfigService.submitBranchInfo(this.infoModel).subscribe(res => {
           console.log(res.data)
           if(res.data !=null && res.data?.length>0){
             this.totalProduct = res.data.length
-            this.ELEMENT_DATA = Object.assign([],res.data);
+            this.orginalFetchData = JSON.parse(JSON.stringify(res.data));
+            this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
             this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
           }else{
             this.totalProduct = 0;
+            this.orginalFetchData = Object.assign([]);
             this.ELEMENT_DATA = Object.assign([]);
             this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
           }
+          this.closeModel.nativeElement.click(); 
+          this.submittedBranchInfo=false;
           this.lastPageSize=this.pageSize;
           this.dataSource.sort = this.sort;
           this.dataSource.paginator = this.paginator;
@@ -625,7 +427,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
        });
        
        }
-       orgMainBranchInfo:OrganizationMainBranchInfoModel=new OrganizationMainBranchInfoModel();
+      
        editMainBranchInfo(){
         this.submittedMainInfo = false ;
         this.editOrg=!this.editOrg ;
@@ -635,13 +437,24 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
 
        submitMainBranchInfo(){
         this.submittedMainInfo = true ;
+        if (!this.mainBranchInfo.companyName || !this.mainBranchInfo.gstNumber || 
+          !this.mainBranchInfo.panNumber || this.validatePanNumber(this.mainBranchInfo.panNumber) ||
+          !this.mainBranchInfo.url || this.validateUrl(this.mainBranchInfo.url) || !this.fileUploadSizeStatus
+        ){
+          return;
+        }
          this.authService.checkLoginUserVlidaate();
-         const model =JSON.stringify(this.mainBranchInfo);
+         const data={"company_name":this.mainBranchInfo.companyName,"gst_number":this.mainBranchInfo.gstNumber,
+                  "pan_number":this.mainBranchInfo.panNumber,"url":this.mainBranchInfo.url}
+         const model =JSON.stringify(data);
 			   var form_data = new FormData();
 
 			   form_data.append('companyProfile', model);
-			//	form_data.append("companyLogo",this.upfile);
-
+         if(this.fileUploadSizeStatus){
+          form_data.append("companyLogo",this.selectedLogo);
+         }else{
+          form_data.append("companyLogo",this.mainBranchInfo.logo);
+         }
          this.spinner.show();
          this.organizationInfoConfigService.submitMainBranchInfo(form_data).subscribe(res => {
           this.orgMainBranchInfo = res.data;
@@ -649,10 +462,13 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
           if(!res.logo && res.logo?.size!=0){ 
             const reader =new FileReader();
             reader.readAsDataURL(new Blob([res.logo]));
-            reader.onload=(e)=>this.imgeURL2=e.target.result; 
+            reader.onload=(e)=>this.imgeURL2=e.target.result as string; 
             }else{
             this.imgeURL2="assets/images/NotAvailable.jpg";
             }
+            this.submittedMainInfo = false ;
+            this.editOrg =false;
+            this.resetFileData();
            this.spinner.hide();
         }, error => {
          this.spinner.hide();
