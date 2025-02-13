@@ -7,6 +7,9 @@ public class DueType {
 	@JsonProperty("dueTypeName")
 	private String dueTypeName;
 
+	@JsonProperty("dueTypeImage")
+	private String dueTypeImage;
+	
 	public String getDueTypeName() {
 		return dueTypeName;
 	}
@@ -15,5 +18,14 @@ public class DueType {
 		this.dueTypeName = dueTypeName;
 	}
 
+	public String getDueTypeImage() {
+		return dueTypeImage;
+	}
+
+	public void setDueTypeImage(String dueTypeImage) {
+		this.dueTypeImage = dueTypeImage;
+	}
+
+	
 
 }
