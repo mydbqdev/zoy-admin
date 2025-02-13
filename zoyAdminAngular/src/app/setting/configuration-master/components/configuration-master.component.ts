@@ -112,6 +112,8 @@ more:boolean
 		  this.sidemenuComp.expandMenu(4);
 		  this.sidemenuComp.activeMenu(4, 'configuration-master');
 		  this.dataService.setHeaderName("Configuration Master");
+		  this.configMasterModel.securityDepositDeadLineDetails.trigger_value="TotalPaidAmount";
+		  this.beforeCheckInCRfModel.trigger_value="TotalPaidAmount";
 	  }
 	  getConfigMasterDetails(){
 		this.authService.checkLoginUserVlidaate();
