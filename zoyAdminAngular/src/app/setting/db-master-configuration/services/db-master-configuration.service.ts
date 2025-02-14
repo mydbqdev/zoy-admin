@@ -55,7 +55,7 @@ export class DbMasterConfigurationService {
     },
     {
 		  'type': 'Due Type',
-		  'columns': ['due_type_name','due_type_image', 'actions'],
+		  'columns': ['due_name','due_image', 'actions'],
       'api':'zoy_admin/dueType'
     },
     {
@@ -88,8 +88,8 @@ export class DbMasterConfigurationService {
     'pg_type_name': 'PG TYPE NAME',
     'notification_mod_name':'NOTIFICATION MOD NAME',
     'factor_name':'FACTOR NAME',
-    'due_type_name':'DUE TYPE',
-    'due_type_image':"DUETYPE PICTURE",
+    'due_name':'DUE TYPE',
+    'due_image':"DUETYPE PICTURE",
     'currency_name': 'CURRENCY NAME',
     'billing_type_name': 'BILLING TYPE NAME',
     'ameneties_name': 'AMENITIES NAME',
