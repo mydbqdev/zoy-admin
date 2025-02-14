@@ -191,7 +191,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         this.fileUploadTypeStatus = false;
       }
       if(this.settingType ==='Due Type'){
-        this.imgeURLDueType2=this.dbSettingDataModel?.due_type_image;
+        this.imgeURLDueType2=this.dbSettingDataModel?.due_image;
         this.fileUploadSizeStatus=false;
         this.fileUploadRatioStatus=false;
         this.fileUploadTypeStatus = false;
@@ -370,16 +370,16 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
                 
           break;
           case 'Due Type':
-            if (this.fileUploadRatioStatus || this.fileUploadSizeStatus || this.fileUploadTypeStatus || this.dbSettingDataModel.due_type_name == null || this.dbSettingDataModel.due_type_name == '' || (!this.isCreated && this.imgeURLDueType2==null) || (this.isCreated && (this.dbSettingDataModel.due_type_upload==null || this.dbSettingDataModel.due_type_upload==''))) {
+            if (this.fileUploadRatioStatus || this.fileUploadSizeStatus || this.fileUploadTypeStatus || this.dbSettingDataModel.due_name == null || this.dbSettingDataModel.due_name == '' || (!this.isCreated && this.imgeURLDueType2==null) || (this.isCreated && (this.dbSettingDataModel.due_type_upload==null || this.dbSettingDataModel.due_type_upload==''))) {
                 return false;
             } 
-            const dueType = this.dbSettingDataList.filter(d=>d.due_type_id != this.dbSettingDataModel?.due_type_id &&  d.due_type_name?.toLowerCase() === this.dbSettingDataModel.due_type_name?.toLowerCase() );
+            const dueType = this.dbSettingDataList.filter(d=>d.due_type_id != this.dbSettingDataModel?.due_type_id &&  d.due_name?.toLowerCase() === this.dbSettingDataModel.due_name?.toLowerCase() );
             if(dueType.length>0){
               this.notifyService.showError("Due Type is already available.", "");
               return false;
              }
                 this.submitDataModel.id = this.dbSettingDataModel?.due_type_id;
-                this.submitDataModel.dueTypeName = this.dbSettingDataModel.due_type_name;
+                this.submitDataModel.dueTypeName = this.dbSettingDataModel.due_name;
             
             break;
             case 'Currency Type':

@@ -801,8 +801,6 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			if(userDueMasters!=null) {
 				final String oldCount=userDueMasters.getDueName();
 				userDueMasters.setDueName(dueTypeId.getDueTypeName());
-				String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,dueTypeId.getDueTypeName(),dueTypeId.getDueTypeImage());
-				userDueMasters.setDueImage(imageUrl);
 				ZoyPgDueMaster updated=ownerDBImpl.updateDueMaster(userDueMasters);
 
 				//audit history here
