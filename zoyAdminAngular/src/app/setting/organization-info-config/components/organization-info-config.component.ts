@@ -110,21 +110,16 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
        this.authService.checkLoginUserVlidaate();
        this.spinner.show();
        this.organizationInfoConfigService.getOrganizationMailBranchInfo().subscribe(res => {
-        console.log(res);
         this.orgMainBranchInfo = res.data;
         this.mainBranchInfo = JSON.parse(JSON.stringify(this.orgMainBranchInfo)) ;
-        if(!res.logo && res.logo?.size!=0){ 
-          const blob = new Blob([new Uint8Array(res.logo)], { type: 'image/png' });
+       
+        if(res.data?.logo && res.data?.logo.length > 0){ 
+          const blob = new Blob([new Uint8Array(res.data.logo)], { type: 'image/png' });
           const reader = new FileReader();
           reader.onload = (e) => {
             this.imgeURL2 = e.target?.result as string;
           };
-          
-          reader.readAsDataURL(blob);
-          // const reader =new FileReader();
-          
-          // reader.readAsDataURL(new Blob([res.logo]));
-          // reader.onload=(e)=>this.imgeURL2=e.target.result; 
+          reader.readAsDataURL(blob);  
           }else{
           this.imgeURL2="assets/images/NotAvailable.jpg";
           }
@@ -160,6 +155,8 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
      });
      
      }
+
+
     getOrganizationBranchInfo(){
        this.authService.checkLoginUserVlidaate();
        this.spinner.show();
@@ -296,7 +293,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
             const reader = new FileReader();
             reader.readAsDataURL(this.fileData!);
             reader.onload = () => {
-              this.previewUrl = reader.result;  // Set preview URL
+              this.previewUrl = reader.result;  
             };
           }
         }
@@ -360,7 +357,6 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
 
       submitBranchInfo(){
         this.submittedBranchInfo=true;
-         console.log("this.infoModel",this.infoModel);
          if (!this.infoModel.type || !this.infoModel.type || 
               !this.infoModel.pinCode || this.validatePinCode(this.infoModel?.pinCode) ||
               !this.infoModel.city || !this.infoModel.state || 
@@ -378,7 +374,12 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
          this.authService.checkLoginUserVlidaate();
          this.spinner.show();
          this.organizationInfoConfigService.submitBranchInfo(this.infoModel).subscribe(res => {
-          console.log(res.data)
+          if(this.infoModel.companyProfileId){
+            this.notifyService.showSuccess("",this.infoModel.type+" has been created successfully");
+          }else{
+            this.notifyService.showSuccess("",this.infoModel.type+" has been updated successfully");
+          }
+        
           if(res.data !=null && res.data?.length>0){
             this.totalProduct = res.data.length
             this.orginalFetchData = JSON.parse(JSON.stringify(res.data));
@@ -431,7 +432,12 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
        editMainBranchInfo(){
         this.submittedMainInfo = false ;
         this.editOrg=!this.editOrg ;
-        this.mainBranchInfo = JSON.parse(JSON.stringify(this.orgMainBranchInfo)) 
+        this.mainBranchInfo = JSON.parse(JSON.stringify(this.orgMainBranchInfo)) ;
+       }
+
+       cancelMainBranchInfo(){
+        this.editOrg=!this.editOrg ;
+        this.resetFileData();
        }
 
 
@@ -450,25 +456,29 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
 			   var form_data = new FormData();
 
 			   form_data.append('companyProfile', model);
-         if(this.fileUploadSizeStatus){
+         if(this.fileUploadSizeStatus && !this.selectedLogo){
           form_data.append("companyLogo",this.selectedLogo);
          }else{
           form_data.append("companyLogo",this.mainBranchInfo.logo);
          }
          this.spinner.show();
          this.organizationInfoConfigService.submitMainBranchInfo(form_data).subscribe(res => {
+          this.notifyService.showSuccess("","Organization Basic Information has been updated successfully");
           this.orgMainBranchInfo = res.data;
           this.mainBranchInfo = JSON.parse(JSON.stringify(this.orgMainBranchInfo)) ;
-          if(!res.logo && res.logo?.size!=0){ 
-            const reader =new FileReader();
-            reader.readAsDataURL(new Blob([res.logo]));
-            reader.onload=(e)=>this.imgeURL2=e.target.result as string; 
+          if(res.data?.logo && res.data?.logo.length > 0){ 
+            const blob = new Blob([new Uint8Array(res.data.logo)], { type: 'image/png' });
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              this.imgeURL2 = e.target?.result as string;
+            };
+            reader.readAsDataURL(blob);  
             }else{
             this.imgeURL2="assets/images/NotAvailable.jpg";
             }
-            this.submittedMainInfo = false ;
-            this.editOrg =false;
-            this.resetFileData();
+           this.submittedMainInfo = false ;
+           this.editOrg =false;
+           this.resetFileData();
            this.spinner.hide();
         }, error => {
          this.spinner.hide();

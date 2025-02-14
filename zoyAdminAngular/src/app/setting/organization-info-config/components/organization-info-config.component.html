@@ -36,12 +36,12 @@
                    <div class="row p-3">
                     <div class="col-sm-2">
                       <div  class="organization-logo mb-1" style="overflow: auto;text-align: center;" >
-                        <img [src]="imgeURL2">
+                        <img [src]="editOrg && selectedLogo ? previewUrl :imgeURL2"  lass="profile-picture">
                       </div>
                       <div>
                         <input type="file" *ngIf="editOrg" class="file-upload form-control form-control-sm" name="ImageInput"  id="ImageInput" 
                                accept="image/png, image/jpeg" (change)="onFileChanged($event)"  />
-                        <div *ngIf="!fileUploadSizeStatus" class="text-danger">
+                        <div *ngIf="!fileUploadSizeStatus" class="text-danger" style="font-size: 10px;">
                                 Please upload a valid image (PNG/JPEG) under 100KB.
                         </div>
                       </div>
@@ -49,7 +49,7 @@
                     <div class="col-sm-7">
                       <div>
                         <div class="row mb-2">
-                          <div *ngIf="!editOrg">{{mainBranchInfo.companyName}}</div>
+                          <div *ngIf="!editOrg">{{orgMainBranchInfo.companyName}}</div>
                           <div *ngIf="editOrg">
                             <input type="text"  class="form-control form-control-sm" placeholder="Enter Organization Name" style="max-width: 350px;"
                                  [(ngModel)]="mainBranchInfo.companyName"  [ngClass]="{'is-invalid': submittedMainInfo && !mainBranchInfo.companyName}" />
@@ -58,7 +58,7 @@
                         <div class="row mb-2">
                           <div class="input-group input-group-sm">
                              <span> GST Number : </span>
-                              <span *ngIf="!editOrg" class="ml-2">{{mainBranchInfo.gstNumber}}</span>
+                              <span *ngIf="!editOrg" class="ml-2">{{orgMainBranchInfo.gstNumber}}</span>
                               <input type="text" class="form-control form-control-sm ml-2"  placeholder="Enter GST Number" *ngIf="editOrg" style="max-width: 240px;"
                                     [(ngModel)]="mainBranchInfo.gstNumber" [ngClass]="{'is-invalid': submittedMainInfo && !mainBranchInfo.gstNumber}" />
                           </div>
@@ -66,7 +66,7 @@
                         <div class="row mb-2">
                           <div class="input-group input-group-sm">
                           <span> PAN Number : </span>
-                            <span *ngIf="!editOrg" class="ml-2"> {{mainBranchInfo.panNumber}}</span>
+                            <span *ngIf="!editOrg" class="ml-2"> {{orgMainBranchInfo.panNumber}}</span>
                             <input type="text" class="form-control form-control-sm ml-2"  placeholder="Enter PAN Number" *ngIf="editOrg" style="max-width: 238px;"
                                  [(ngModel)]="mainBranchInfo.panNumber" [ngClass]="{'is-invalid': submittedMainInfo && ( !mainBranchInfo.panNumber || validatePanNumber(mainBranchInfo.panNumber))}" />
                           </div>
@@ -74,7 +74,7 @@
                         <div class="row">
                           <div class="input-group input-group-sm">
                           <span > URL :</span>
-                            <span *ngIf="!editOrg" class="ml-2"> {{mainBranchInfo.url}}</span>
+                            <span *ngIf="!editOrg" class="ml-2"> {{orgMainBranchInfo.url}}</span>
                             <input type="text" class="form-control form-control-sm ml-2"  placeholder="Enter URL" *ngIf="editOrg" style="max-width: 302px;"
                                 [(ngModel)]="mainBranchInfo.url" [ngClass]="{'is-invalid': submittedMainInfo && (!mainBranchInfo.url || validateUrl(mainBranchInfo.url))}" />
                           </div>
@@ -83,13 +83,13 @@
                     </div>
                     <div class="col-sm-3">
                       <div class="organization-logo mb-2" style="overflow: auto;" >
-                        <img [src]="previewUrl" *ngIf="editOrg && selectedLogo" class="profile-picture"/>                 
+                        <!-- <img [src]="previewUrl" *ngIf="editOrg && selectedLogo" class="profile-picture"/>                  -->
                        </div>
                       <div class="d-sm-flex">
                         <div class="ml-auto" style="align-content: flex-end;">  
                         <button type="button" class="btn btn-sm btn-primary" *ngIf="!editOrg" (click)="editMainBranchInfo()" > <i class="fas fa-edit" ></i>Edit</button> 
                         <button type="button" class="btn btn-sm btn-primary" *ngIf="editOrg" (click)="submitMainBranchInfo()" >save changes</button>
-                        <button class="btn btn-sm btn-outline-secondary ml-1" *ngIf="editOrg" (click)="editOrg=!editOrg"> Cancel</button>
+                        <button class="btn btn-sm btn-outline-secondary ml-1" *ngIf="editOrg" (click)="cancelMainBranchInfo()"> Cancel</button>
                         </div>
                      </div>
                     </div>
@@ -110,7 +110,7 @@
                           <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i> 
                           <input type="text" class="form-control form-control-sm  border-1 "  [(ngModel)]="searchText" (keyup)="searchBy($event)" style="border-radius: 20px;padding-left: 29px;width: 300px;" placeholder="Search"
                                 aria-label="Search" aria-describedby="basic-addon2">  
-                           <button type="button" class="btn btn-sm btn-primary ml-2"data-bs-toggle="modal" title="Add Details" data-bs-target="#detailedModel" (click)="openModel('','Add')"> <i class="fas fa-plus mr-1" ></i>Add</button>    
+                           <button type="button" class="btn btn-sm btn-primary ml-2"data-bs-toggle="modal" title="Add Details" data-bs-target="#detailedModel" (click)="openModel('','Add')"> <i class="fas fa-plus mr-1" ></i>Add New</button>    
                        </div>                    
                       </div>
                       </div>
