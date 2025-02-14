@@ -25,7 +25,7 @@
                           <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Dashboard</span></h3> 
                           <div>
                           <!-- <a href="javascript:void(0)"  class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm mr-3"> View Tenants Transactions</a> -->
-                          <a href="javascript:void(0)" routerLink="/zoy-code" class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm"> Generate Zoy Code</a>
+                          <a href="javascript:void(0)" routerLink="/zoy-code" class="d-sm-inline-block btn btn-sm btn-primary-custom shadow-sm" *ngIf="rolesArray.includes('ZOYCODES_READ')" > Generate Zoy Code</a>
                            </div>
                       </div>
   
