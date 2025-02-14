@@ -1,5 +1,7 @@
 package com.integration.zoy.model;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DueType {
@@ -8,7 +10,7 @@ public class DueType {
 	private String dueTypeName;
 
 	@JsonProperty("dueTypeImage")
-	private String dueTypeImage;
+	private MultipartFile dueTypeImage;
 	
 	public String getDueTypeName() {
 		return dueTypeName;
@@ -18,11 +20,11 @@ public class DueType {
 		this.dueTypeName = dueTypeName;
 	}
 
-	public String getDueTypeImage() {
+	public MultipartFile getDueTypeImage() {
 		return dueTypeImage;
 	}
 
-	public void setDueTypeImage(String dueTypeImage) {
+	public void setDueTypeImage(MultipartFile dueTypeImage) {
 		this.dueTypeImage = dueTypeImage;
 	}
 
