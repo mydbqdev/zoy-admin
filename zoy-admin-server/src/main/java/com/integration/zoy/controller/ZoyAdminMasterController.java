@@ -784,7 +784,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		try {
 			ZoyPgDueMaster userDueMasters =  new ZoyPgDueMaster();
 			userDueMasters.setDueName(dueType.getDueTypeName());
-			userDueMasters.setDueImage(dueType.getDueTypeImage());
+			//userDueMasters.setDueImage(dueType.getDueTypeImage());
 			ZoyPgDueMaster saved=ownerDBImpl.saveUserDueMaster(userDueMasters);
 			//audit history here
 			String historyContent=" has created the Due Type for, "+dueType.getDueTypeName();
@@ -807,7 +807,36 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			if(userDueMasters!=null) {
 				final String oldCount=userDueMasters.getDueName();
 				userDueMasters.setDueName(dueTypeId.getDueTypeName());
-				userDueMasters.setDueImage(dueTypeId.getDueTypeImage());
+				//userDueMasters.setDueImage(dueTypeId.getDueTypeImage());
+				ZoyPgDueMaster updated=ownerDBImpl.updateDueMaster(userDueMasters);
+
+				//audit history here
+				String historyContent=" has updated the Due Type for, from "+oldCount+" to "+dueTypeId.getDueTypeName();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
+
+				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
+			} else {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("No Due type for the given Id " + dueTypeId.getId());
+				return new ResponseEntity<>(gson2.toJson(response), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			log.error("Error updating due type details API:/zoy_admin/dueType.zoyAdminDueTypePut ",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<String> zoyAdminDueTypeUpdate(DueTypeId dueTypeId) {
+		ResponseBody response=new ResponseBody();
+		try {
+			ZoyPgDueMaster userDueMasters =  ownerDBImpl.findUserDueMaster(dueTypeId.getId());
+			if(userDueMasters!=null) {
+				final String oldCount=userDueMasters.getDueName();
+				userDueMasters.setDueName(dueTypeId.getDueTypeName());
+				//userDueMasters.setDueImage(dueTypeId.getDueTypeImage());
 				ZoyPgDueMaster updated=ownerDBImpl.updateDueMaster(userDueMasters);
 
 				//audit history here
