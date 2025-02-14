@@ -319,7 +319,7 @@
                                        </div>
                                     </div>
                                   </div>
-                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="propertyInfo?.pg_owner_additional_info?.security_deposit">
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[2].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight2" aria-expanded="false" aria-controls="collapseExampleRight2" (click)="collaspeExpandPanelRight(collaspeListRight[2],'right3')"></i>  Additional Information
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[2].selected ? 'show':''" id="collapseExampleRight2">
@@ -350,21 +350,21 @@
                                           <div class="col-sm-1 align-items-center">:</div>
                                           <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.grace_period}} </div>
                                         </div>
-                                        <div class="row">
+                                        <!-- <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Additional Charges</div>
                                           <div class="col-sm-1 align-items-center">:</div>
                                           <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.additional_charges}} </div>
-                                        </div>
+                                        </div> 
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Aggrement Charges</div>
                                           <div class="col-sm-1 align-items-center">:</div>
                                           <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.agreement_charges}} </div>
                                         </div>
-                                        <div class="row">
+                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">EKYC Changes</div>
                                           <div class="col-sm-1 align-items-center">:</div>
                                           <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.ekyc_charges}} </div>
-                                        </div>
+                                        </div> -->
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Description</div>
                                           <div class="col-sm-1 align-items-center">:</div>
@@ -374,7 +374,7 @@
                                     </div>
                                   </div>
 
-                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" >
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[3].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight3" aria-expanded="false" aria-controls="collapseExampleRight3" (click)="collaspeExpandPanelRight(collaspeListRight[3],'right4')"></i>  Payment Information
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[3].selected ? 'show':''" id="collapseExampleRight3">
