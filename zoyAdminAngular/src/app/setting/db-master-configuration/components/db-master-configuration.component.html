@@ -218,12 +218,12 @@
         <img [src]="imgeURLDueType2">
       </div>
       <div class="form-group">
-        <label for="due_type_name">Due Type Name:</label>
+        <label for="due_name">Due Type Name:</label>
         <input type="text" class="form-control" 
-               id="due_type_name" placeholder="Due Type Name" required autocomplete="false" 
-               [(ngModel)]="this.dbSettingDataModel.due_type_name" autocomplete="off"
-               [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.due_type_name == null || this.dbSettingDataModel.due_type_name == '' )}" >
-        <div *ngIf="submitted && (this.dbSettingDataModel.due_type_name == null || this.dbSettingDataModel.due_type_name == '' )" class="text-danger">
+               id="due_name" placeholder="Due Type Name" required autocomplete="false" 
+               [(ngModel)]="this.dbSettingDataModel.due_name" autocomplete="off"
+               [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.due_name == null || this.dbSettingDataModel.due_name == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.due_name == null || this.dbSettingDataModel.due_name == '' )" class="text-danger">
           Due Type Name is required.
         </div>
       </div>
