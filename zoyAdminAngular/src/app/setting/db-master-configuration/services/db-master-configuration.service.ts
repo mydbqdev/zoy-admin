@@ -114,7 +114,7 @@ export class DbMasterConfigurationService {
     
     if(isCreate){
       const url1=this.basePath +api;
-      if(isPhoto && api=='zoy_admin/ameneties'){
+      if(isPhoto && (api=='zoy_admin/ameneties' || api=='zoy_admin/dueType')){
         data=formData;
       }
         return  this.httpclient.post<any>(
@@ -133,6 +133,11 @@ export class DbMasterConfigurationService {
          url1=this.basePath +'zoy_admin/amenetiesUpdate';
       }else if(!isPhoto && api=='zoy_admin/ameneties'){
          url1=this.basePath +'zoy_admin/ameneties';
+      }else  if(isPhoto && api=='zoy_admin/dueType'){
+        data=formData;
+         url1=this.basePath +'zoy_admin/dueTypeUpdate';
+      }else if(!isPhoto && api=='zoy_admin/dueType'){
+         url1=this.basePath +'zoy_admin/dueType';
       }else{
         
       }

@@ -162,13 +162,16 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.isCreated = true;
       this.dbSettingDataModel = new DbSettingDataModel();
       this.previewUrl=false;
+      this.previewUrlDueType=false;
       this.resetChange();
     }
     getElement(row:any){
       this.submitted = false;
       this.isCreated = false;
       this.previewUrl=false;
+      this.previewUrlDueType=false;
       this.imgeURL2=null;
+      this.imgeURLDueType2=null;
       const data =  JSON.parse(JSON.stringify(row));
       this.dbSettingDataModel = Object.assign(new DbSettingDataModel(),data);
   
@@ -187,6 +190,12 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         this.fileUploadRatioStatus=false;
         this.fileUploadTypeStatus = false;
       }
+      if(this.settingType ==='Due Type'){
+        this.imgeURLDueType2=this.dbSettingDataModel?.due_type_image;
+        this.fileUploadSizeStatus=false;
+        this.fileUploadRatioStatus=false;
+        this.fileUploadTypeStatus = false;
+      }
     }  
     submitData(){
       if(this.settingType ==='Short Term'){
@@ -196,7 +205,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         this.withPhoto=false;
       if(this.validation()){      
         this.authService.checkLoginUserVlidaate();
-        this.spinner.show();
+        
         var form_data = new FormData();
         if(this.settingTypeDetails.api=='zoy_admin/ameneties' && this.fileData!=null){
           this.withPhoto=true;     
@@ -204,10 +213,19 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
           form_data.append('ameneties', this.submitDataModel.ameneties);
           form_data.append('id', this.submitDataModel.id);
         }
+
+        if(this.settingTypeDetails.api=='zoy_admin/dueType' && this.fileDataDueType!=null){
+          this.withPhoto=true;     
+          form_data.append('dueTypeImage', this.fileDataDueType);
+          form_data.append('dueTypeName', this.submitDataModel.dueTypeName);
+          form_data.append('id', this.submitDataModel.id);
+        }
+
         this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
         .then(
            (confirmed) =>{
           if(confirmed){
+            this.spinner.show();
             this.dbMasterConfigurationService.submitData(this.submitDataModel,this.isCreated,this.settingTypeDetails.api,form_data,this.withPhoto).subscribe(data => {
             this.closeModel.nativeElement.click(); 
             this.getDbSettingDetails();
@@ -352,7 +370,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
                 
           break;
           case 'Due Type':
-            if (this.dbSettingDataModel.due_type_name == null || this.dbSettingDataModel.due_type_name == '') {
+            if (this.fileUploadRatioStatus || this.fileUploadSizeStatus || this.fileUploadTypeStatus || this.dbSettingDataModel.due_type_name == null || this.dbSettingDataModel.due_type_name == '' || (!this.isCreated && this.imgeURLDueType2==null) || (this.isCreated && (this.dbSettingDataModel.due_type_upload==null || this.dbSettingDataModel.due_type_upload==''))) {
                 return false;
             } 
             const dueType = this.dbSettingDataList.filter(d=>d.due_type_id != this.dbSettingDataModel?.due_type_id &&  d.due_type_name?.toLowerCase() === this.dbSettingDataModel.due_type_name?.toLowerCase() );
@@ -412,12 +430,16 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 
       resetChange(){
         this.previewUrl=false;
+        this.previewUrlDueType=false;
         this.formPicture.reset();
         this.fileUploadSizeStatus=false;
         this.fileUploadRatioStatus=false;
         this.fileUploadTypeStatus = false;
         this.submitted=false;
         this.fileData = null;
+        this.fileDataDueType = null;
+       this.fileWidth=0;
+        this.fileHeight=0;
       }
 
       formPicture = new FormGroup({
@@ -426,7 +448,9 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         });
    
         fileData: File = null;
+        fileDataDueType: File = null;
         previewUrl:any = null;
+        previewUrlDueType:any = null;
       //  fileUploadProgress: string = null;
         uploadStatus:boolean=true;
         fileUploadSize:any;
@@ -436,16 +460,21 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         fileWidth:number;
         fileHeight:number;
         imgeURL2: string = null;
-       onFileChanged(event) {
+        imgeURLDueType2: string = null;
+       onFileChanged(event,type:string) {
 
         this.fileUploadSizeStatus = false;
         this.fileUploadRatioStatus = false;
         this.fileUploadTypeStatus = false;
 
         this.previewUrl=false;
+        this.previewUrlDueType=false;
         if(event.target.files.length>0){
-          if(!this.isCreated && this.imgeURL2==null){
+          if(!this.isCreated && this.imgeURL2==null && type!='duetype'){
             this.imgeURL2='';
+          }
+          if(!this.isCreated && this.imgeURL2==null && type=='duetype'){
+            this.imgeURLDueType2='';
           }
           const file=event.target.files[0];
 
@@ -457,7 +486,11 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
           this.formPicture.patchValue({
           fileSource:file
           });
+          if(type!='duetype'){
           this.fileData = <File>event.target.files[0];
+          }else if(type=='duetype'){
+            this.fileDataDueType = <File>event.target.files[0];
+          }
           this.fileUploadSize=file.size/1024;
           if (this.fileUploadSize <= 50) {
             const img = new Image();
@@ -468,7 +501,11 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
                 if (this.fileWidth <= 75 && this.fileHeight <= 75) {
                     this.fileUploadRatioStatus = false;
                     this.fileUploadSizeStatus = false;
+                    if(type!='duetype'){
                     this.preview();
+                    }else if(type=='duetype'){
+                      this.previewDueType();
+                    }
                 } else {
                     this.fileUploadRatioStatus = true;
                     this.fileUploadSizeStatus = false;
@@ -484,6 +521,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         }else{
           if(!this.isCreated){
             this.imgeURL2=null;
+            this.imgeURLDueType2=null;
           }
         }
       }
@@ -498,6 +536,25 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
         reader.readAsDataURL(this.fileData); 
         reader.onload = (_event) => { 
           this.previewUrl = reader.result; 
+          var img=new Image();
+          img.onload=()=>{
+            this.fileHeight=img.height;
+            this.fileWidth=img.width;
+          }
+        }
+      }
+      
+      previewDueType() {
+        // Show preview 
+        var mimeType = this.fileDataDueType.type;
+        if (mimeType.match(/image\/*/) == null) {
+          return;
+        }
+        this.uploadStatus=false;
+        var reader = new FileReader();      
+        reader.readAsDataURL(this.fileDataDueType); 
+        reader.onload = (_event) => { 
+          this.previewUrlDueType = reader.result; 
           var img=new Image();
           img.onload=()=>{
             this.fileHeight=img.height;
