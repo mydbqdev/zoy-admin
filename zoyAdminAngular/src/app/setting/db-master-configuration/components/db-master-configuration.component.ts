@@ -220,8 +220,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
           form_data.append('dueTypeName', this.submitDataModel.dueTypeName);
           form_data.append('id', this.submitDataModel.id);
         }
-
-        this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+        let isCreatedMsg= this.isCreated ? ' create' :' update';
+        this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+isCreatedMsg+'?')
         .then(
            (confirmed) =>{
           if(confirmed){
@@ -230,6 +230,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
             this.closeModel.nativeElement.click(); 
             this.getDbSettingDetails();
             this.resetChange();
+            this.notifyService.showSuccess("Data has been "+isCreatedMsg+"d successfully", "")
             this.spinner.hide();
             }, error => {
             this.spinner.hide();
