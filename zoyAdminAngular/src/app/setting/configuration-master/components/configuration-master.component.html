@@ -361,12 +361,12 @@
                         
                                           <ng-container matColumnDef="trigger_condition" class="example-box">
                                             <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
-                                            <mat-cell data-label="trigger_condition" *matCellDef="let element" style="width: 120px;flex:none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'"  >
+                                            <mat-cell data-label="trigger_condition" *matCellDef="let element" style="width: 130px;flex:none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'"  >
                                             <span style="min-width:20px" > {{ element.priority }} </span> 
-                                              <div class="ml-1" *ngIf="!element.isEdit || element.isDelete" >
-                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_condition" [disabled]="!element.isEdit || element.isDelete" style="width: 80px !important;" /> 
+                                              <div class="ml-1" *ngIf="!element.isConfirm || element.isDelete" >
+                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_condition" [disabled]="!element.isConfirm || element.isDelete" style="width: 80px !important;" /> 
                                               </div> 
-                                              <div class="ml-1" *ngIf="!element.isDelete && element.isEdit" >
+                                              <div class="ml-1" *ngIf="!element.isDelete && element.isConfirm" >
                                                 <select class="form-select form-select-sm" style="width: 80px !important;"  [(ngModel)]="element.trigger_condition"
                                                 [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && !element.trigger_condition  }" >
                                                 <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
@@ -381,7 +381,7 @@
                                               <div class="d-flex input-group input-group-sm">
                                                 <input type="text" 
                                                         class="form-control form-control-sm"
-                                                        [(ngModel)]="element.before_checkin_days" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.isDelete || !element.isEdit"
+                                                        [(ngModel)]="element.before_checkin_days" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.isDelete || !element.isConfirm"
                                                         [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.before_checkin_days) }" 
                                                         style="max-width: 84px !important;" />
                                                 <span class="input-group-text">Days</span>
@@ -413,7 +413,7 @@
                                               <div class="d-flex input-group input-group-sm">
                                                 <input  type="text" 
                                                         class="form-control form-control-sm"
-                                                        [(ngModel)]="element.deduction_percentage" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.isDelete || !element.isEdit"
+                                                        [(ngModel)]="element.deduction_percentage" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.isDelete || !element.isConfirm"
                                                         [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.deduction_percentage) }" 
                                                         style="max-width: 90px !important;"
                                                         disabled />
@@ -427,26 +427,27 @@
                                             <mat-cell data-label="action" *matCellDef="let element ;let i=index"  style="padding-left:0px;flex:none;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'">
                                               <div class="input-group" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
                                                 <div class="btn-group">
-                                                  <button class="btn btn-sm btn-outline-secondary"  *ngIf="!element.isDelete && !element.isEdit"
-                                                    (click)="element.isEdit = true;" title="Edit The Item"> 
+                                                  <button class="btn btn-sm btn-outline-secondary"  *ngIf="!element.isDelete && !element.isConfirm"
+                                                    (click)="element.isConfirm = true;" title="Edit The Item"> 
                                                      <i class="fas fa-edit"></i>
                                                   </button>
-                                                <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && !element.isEdit" 
-                                                    (click)="beforeCheckInCRfDelete(element,i)" title="Delete The Item"> 
-                                                    <i class="fas fa-trash" style="color: red;"></i>
-                                                </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isEdit"
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isConfirm"
                                                     (click)="beforeCheckInCRfModify(element)" title="Edit The Item">
                                                      <i class="fas fa-check"></i>
                                                   </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isEdit"
-                                                    (click)="undoEditItem(element,i)" title="Undo Edit Item">
+                                                <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete" 
+                                                    (click)="beforeCheckInCRfDelete(element,i)" title="Delete The Item"> 
+                                                    <i class="fas fa-trash" style="color: red;"></i>
+                                                </button>
+                                                  
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete || element.isEdit"
+                                                    (click)="undoEditItem(element,i);undoDelete(element);" title="Undo Edit Item">
                                                     <i class="fas fa-redo" style="color: red;"></i>
                                                   </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete"
+                                                  <!--button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete"
                                                     (click)="undoDelete(element)" title="Undo Delete Item">
                                                     <i class="fas fa-redo" style="color: red;" ></i>
-                                                  </button>
+                                                  </button -->
                                                 </div>
                                                </div>
                                             </mat-cell>
@@ -471,7 +472,16 @@
                           <div class="p-3">
                             <div>
                               <div><span style="font-size: 16px;color:#78177e;">Early Check-out Rules</span></div>
-                              <div ><p class="small text-muted" style="font-size: 12px;"><em>The Maximim Number of days allowing tenants to get refund of rent amount in prorate basis if not happy with the current PG.</em></p></div>
+                              <div ><p class="small text-muted" style="font-size: 12px;">
+                                <em>The Maximim Number of days allowing tenants to get refund of rent amount in prorate basis if not happy with the current PG.
+                                  If type as a selected Rent then days 
+                                  <a href="javascript:void(0)" *ngIf="!moreEarlyCheckout"  (click)="moreEarlyCheckout=!moreEarlyCheckout">...more</a>
+                                  <span *ngIf="moreEarlyCheckout">
+                                    of rent amount dedected .If type as a selected PaidAmount then parcentage of Paid amount(security Deposit) dedected .
+                                    If type as a selected PaidAmount & Rent then parcentage of Paid amount and addtionally days of rent amount dedected .
+                                    <a href="javascript:void(0)" (click)="moreEarlyCheckout=!moreEarlyCheckout"><<...less</a>
+                                  </span>
+                                </em></p></div>
                             </div>
                             
                             <div>
@@ -538,8 +548,8 @@
                                       <input 
                                       type="text" 
                                       class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="3"
-                                      [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_percentage" [disabled]="earlyCheckOutRulesDisabled" 
-                                       [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) }" 
+                                      [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_day" [disabled]="earlyCheckOutRulesDisabled" 
+                                       [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_day) }" 
                                       style="max-width: 70px !important;"/>
                                         <span class="input-group-text">Days</span>
                                     </div>
@@ -660,9 +670,9 @@
                                           <div class="input-group input-group-sm">
                                             <input 
                                             type="text" 
-                                            class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="5"
-                                            [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_percentage" [disabled]="autoCancellationDisabled" 
-                                             [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) }" 
+                                            class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="3"
+                                            [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_day" [disabled]="autoCancellationDisabled" 
+                                             [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_day) }" 
                                             style="max-width: 70px !important;"/>
                                               <span class="input-group-text">Days</span>
                                           </div>
