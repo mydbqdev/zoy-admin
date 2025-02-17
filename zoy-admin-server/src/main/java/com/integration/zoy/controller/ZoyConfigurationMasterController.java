@@ -1420,11 +1420,23 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	public ResponseEntity<String> fetchCompanyProfileMaster() {
 		ResponseBody response = new ResponseBody();
 		try {
-			ZoyCompanyMaster company=ownerDBImpl.findcompanyMaster();
-			ZoyCompanyMasterDto dto = convertToDTO(company);
-			response.setStatus(HttpStatus.CREATED.value());
-			response.setData(dto);
-			response.setMessage("Fetched master Company Profile details successfully");
+			ZoyCompanyMaster company = ownerDBImpl.findcompanyMaster();
+			ZoyCompanyMasterDto dto = null;
+
+			if (company != null) {
+			    dto = convertToDTO(company);
+			}
+
+			if (dto == null) {
+			    response.setData(new ZoyCompanyMasterDto()); 
+			    response.setMessage("Company profile details not found");
+			    response.setStatus(HttpStatus.NOT_FOUND.value());
+			} else {
+			    response.setData(dto);
+			    response.setMessage("Fetched master Company Profile details successfully");
+			    response.setStatus(HttpStatus.CREATED.value());
+			}
+
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.CREATED);
 		}catch (Exception e) {
 			log.error("Error while Fetching all  Company Profile details API:/zoy_admin/config/fetch-master-profile.fetchCompanyProfileMaster", e);
