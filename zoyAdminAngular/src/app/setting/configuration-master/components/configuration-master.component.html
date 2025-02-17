@@ -477,8 +477,8 @@
                                   If type as a selected Rent then days 
                                   <a href="javascript:void(0)" *ngIf="!moreEarlyCheckout"  (click)="moreEarlyCheckout=!moreEarlyCheckout">...more</a>
                                   <span *ngIf="moreEarlyCheckout">
-                                    of rent amount dedected .If type as a selected PaidAmount then parcentage of Paid amount(security Deposit) dedected .
-                                    If type as a selected PaidAmount & Rent then parcentage of Paid amount and addtionally days of rent amount dedected .
+                                    of rent amount dedected .If type as a selected TotalPaidAmount then parcentage of Total Paid Amount to be dedected .
+                                    If type as a selected Security Deposit then parcentage of Security Deposit Amount to be dedected .
                                     <a href="javascript:void(0)" (click)="moreEarlyCheckout=!moreEarlyCheckout"><<...less</a>
                                   </span>
                                 </em></p></div>
@@ -528,7 +528,7 @@
                                 <div class="col-sm-4">
                                   <div> Platform charges </div>
                                   <div class="row">
-                                  <div class="col-sm-5">
+                                  <div class="col-sm-8">
                                       <div class="input-group input-group-sm" >
                                         <input 
                                           type="text" 
@@ -539,24 +539,11 @@
                                          <span class="input-group-text" *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value!='Rent'">%</span>
                                          <span class="input-group-text" *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='Rent'">Days</span>
                                   </div>
-                                  <p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value!='Rent'" style="font-size: 12px;"><em>Enter deduction percentage from security deposit.</em></p>
+                                  <p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='TotalPaidAmount'" style="font-size: 12px;"><em>Enter deduction percentage from Total Paid Amount.</em></p>
+                                  <p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value!='Rent' && configMasterModel.earlyCheckOutRuleDetails.trigger_value!='TotalPaidAmount'" style="font-size: 12px;"><em>Enter deduction percentage from security deposit.</em></p>                                 
                                   <p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='Rent'" style="font-size: 12px;"><em>Enter deduction days from rent deposit.</em></p>
                                   </div>
-                                  <div class="col-sm-1 pt-1"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='TotalPaidAmount & Rent'">+</div>
-                                  <div class="col-sm-5"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='TotalPaidAmount & Rent'">
-                                    <div class="input-group input-group-sm">
-                                      <input 
-                                      type="text" 
-                                      class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="3"
-                                      [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_day" [disabled]="earlyCheckOutRulesDisabled" 
-                                       [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_day) }" 
-                                      style="max-width: 70px !important;"/>
-                                        <span class="input-group-text">Days</span>
-                                    </div>
-                                    <p class="small text-muted" style="font-size: 12px;">
-                                    <em>Additionally days of rent amount to deduct.</em>
-                                    </p>
-                                  </div>
+                                  
                                 </div>
                                 </div>
                                 <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
@@ -596,8 +583,8 @@
                                         If type as a selected Rent then days of rent amount dedected .
                                         <a href="javascript:void(0)" *ngIf="!more"  (click)="more=!more">...more</a>
                                         <span *ngIf="more">
-                                          If type as a selected PaidAmount then parcentage of Paid amount(security Deposit) dedected .
-                                          If type as a selected PaidAmount & Rent then parcentage of Paid amount and addtionally days of rent amount dedected .
+                                          If type as a selected TotalPaidAmount then parcentage of Total Paid Amount to be dedected .
+                                          If type as a selected Security Deposit then parcentage of Security Deposit Amount to be dedected .
                                           <a href="javascript:void(0)" (click)="more=!more"><<...less</a>
                                         </span>
                                       </em>
@@ -648,7 +635,7 @@
                                     <div class="col-sm-4">
                                       <div>Deduction</div>
                                       <div class="row">
-                                        <div class="col-sm-5">
+                                        <div class="col-sm-8">
                                           <div class="input-group input-group-sm">
                                             <input 
                                               type="text" 
@@ -660,26 +647,11 @@
                                               <span class="input-group-text" *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='Rent'">Days</span>
                                              
                                           </div>
-                                          <p class="small text-muted" style="font-size: 12px;">
-                                           <span  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value!='Rent'"> <em>Percentage of total paid amount to deduct.</em></span>
-                                           <span  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='Rent'"> <em>Days of rent amount to deduct.</em></span>
-                                          </p>
+                                            <p class="small text-muted"  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='TotalPaidAmount'" style="font-size: 12px;"><em>Enter deduction percentage from Total Paid Amount.</em></p>
+                                            <p class="small text-muted"  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value!='Rent' && configMasterModel.cancellationAfterCheckInDetails.trigger_value!='TotalPaidAmount'" style="font-size: 12px;"><em>Enter deduction percentage from security deposit.</em></p>                                 
+                                            <p class="small text-muted"  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='Rent'" style="font-size: 12px;"><em>Enter deduction days from rent deposit.</em></p>
                                         </div>
-                                        <div class="col-sm-1 pt-1"  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='TotalPaidAmount & Rent'">+</div>
-                                        <div class="col-sm-5"  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='TotalPaidAmount & Rent'">
-                                          <div class="input-group input-group-sm">
-                                            <input 
-                                            type="text" 
-                                            class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="3"
-                                            [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_day" [disabled]="autoCancellationDisabled" 
-                                             [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_day) }" 
-                                            style="max-width: 70px !important;"/>
-                                              <span class="input-group-text">Days</span>
-                                          </div>
-                                          <p class="small text-muted" style="font-size: 12px;">
-                                          <em>Additionally days of rent amount to deduct.</em>
-                                          </p>
-                                        </div>
+                                        
                                       </div>
                                       
                                     </div>
@@ -778,7 +750,7 @@
                                           <span class="input-group-text">%</span>
                                       </div>
                                       <p class="small text-muted" style="font-size: 12px;">
-                                      <em>Percentage of paid amount to deduct.</em>
+                                      <em>Percentage of security deposit to deduct.</em>
                                       </p>
                                     </div>
                                    
