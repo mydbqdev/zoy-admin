@@ -113,7 +113,7 @@ moreEarlyCheckout:boolean;
 		  this.sidemenuComp.expandMenu(4);
 		  this.sidemenuComp.activeMenu(4, 'configuration-master');
 		  this.dataService.setHeaderName("Configuration Master");
-		  this.configMasterModel.securityDepositDeadLineDetails.trigger_value="TotalPaidAmount";
+		  this.configMasterModel.securityDepositDeadLineDetails.trigger_value="Security Deposit";
 		  this.beforeCheckInCRfModel.trigger_value="TotalPaidAmount";
 	  }
 	  getConfigMasterDetails(){
