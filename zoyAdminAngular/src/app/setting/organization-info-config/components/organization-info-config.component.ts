@@ -456,10 +456,16 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
 			   var form_data = new FormData();
 
 			   form_data.append('companyProfile', model);
-         if(this.fileUploadSizeStatus && !this.selectedLogo){
+         if(this.fileUploadSizeStatus && this.selectedLogo){
           form_data.append("companyLogo",this.selectedLogo);
+         } else if(this.orgMainBranchInfo.logo){
+          const byteArray = new Uint8Array(this.orgMainBranchInfo.logo.map(value => value < 0 ? 256 + value : value));
+          const blob = new Blob([byteArray], { type: 'image/png' });
+
+          form_data.append("companyLogo",  blob, 'companyLogo.png');
          }else{
-          form_data.append("companyLogo",this.mainBranchInfo.logo);
+          this.notifyService.showError("","Please select a logo to upload.")
+         return;
          }
          this.spinner.show();
          this.organizationInfoConfigService.submitMainBranchInfo(form_data).subscribe(res => {
