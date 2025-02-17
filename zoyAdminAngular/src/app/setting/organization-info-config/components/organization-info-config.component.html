@@ -28,9 +28,7 @@
                   
                
                 <div class="card-body  m-2 p-2">
-                <div class="ml-5 mt-3 mb-1">
-                  Organization Basic Information
-                </div>
+                
                   <div class="container-main shadow">
                     <div >
                    <div class="row p-3">
@@ -47,6 +45,9 @@
                       </div>
                     </div>
                     <div class="col-sm-7">
+                      <div class="mt-1 mb-1" style="font-size: 16px;color:#78177e;">
+                        <strong>Organization Basic Information</strong>
+                      </div>
                       <div>
                         <div class="row mb-2">
                           <div *ngIf="!editOrg">{{orgMainBranchInfo.companyName}}</div>
@@ -88,7 +89,7 @@
                       <div class="d-sm-flex">
                         <div class="ml-auto" style="align-content: flex-end;">  
                         <button type="button" class="btn btn-sm btn-primary" *ngIf="!editOrg" (click)="editMainBranchInfo()" > <i class="fas fa-edit" ></i>Edit</button> 
-                        <button type="button" class="btn btn-sm btn-primary" *ngIf="editOrg" (click)="submitMainBranchInfo()" >save changes</button>
+                        <button type="button" class="btn btn-sm btn-primary" *ngIf="editOrg" (click)="submitMainBranchInfo()" >Save Changes</button>
                         <button class="btn btn-sm btn-outline-secondary ml-1" *ngIf="editOrg" (click)="cancelMainBranchInfo()"> Cancel</button>
                         </div>
                      </div>
@@ -99,12 +100,15 @@
                  
                 </div>
                 <div>
-                  <div class="ml-5">
-                  Organization Detailed Information 
-                  </div>
+                  
                   <div class="card shadow ml-3 mr-2 p-3">
                       <!-- Card Body -->
                       <div class="d-sm-flex mb-2">
+                      <div>
+                          <div style="font-size: 16px;color:#78177e;">
+                           <strong>Organization Detailed Information </strong>
+                          </div>
+                      </div>  
                       <div class="ml-auto">  
                         <div class="input-group">
                           <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i> 
