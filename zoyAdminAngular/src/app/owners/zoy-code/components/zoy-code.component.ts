@@ -105,7 +105,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		this.form = this.formBuilder.group({
 			firstName: ['', [Validators.required]],
 			lastName: ['', [Validators.required]],
-		    contactNumber: ['', [Validators.required],Validators.pattern(/^\d{10}$/) ],
+		    contactNumber: ['', [Validators.required],],
 			userEmail: ['', [
 			  Validators.required,
 			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
@@ -129,7 +129,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 
 	   generateZoyCode() {
 		this.submitted=true;	
-		if (this.form.invalid) {
+		if (this.form.invalid || this.generateZCode.contactNumber.length !=10) {
 		return;
 		}
 		this.spinner.show();		     

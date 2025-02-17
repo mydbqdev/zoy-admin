@@ -95,16 +95,16 @@
 
                     <div class="col-md-4 mb-3">
                       <label for="phone">Contact</label>
-                      <input type="text" formControlName="contactNumber" [(ngModel)]="generateZCode.contactNumber" maxlength="10" id="contactNumber" class="form-control"  name="contactNumber"
-                      (keypress)="numberOnly($event)"  autocomplete="false" maxlength="10"
-                        placeholder="Enter Owner Contact Number" [ngClass]="{'is-invalid':submitted && form.controls.contactNumber.errors}">
+                      <input type="text" formControlName="contactNumber"  maxlength="10" id="contactNumber" class="form-control"  name="contactNumber"
+                       autocomplete="false" maxlength="10"  (keypress)="numberOnly($event)" [(ngModel)]="generateZCode.contactNumber"
+                        placeholder="Enter Owner Contact Number" [ngClass]="{'is-invalid':submitted && (form.controls.contactNumber.errors || generateZCode.contactNumber?.length !=10 )}">
                         <div *ngIf="submitted && form.controls.contactNumber.errors" class="text-danger">
                         <div *ngIf="submitted && form.controls.contactNumber.errors?.required">
                           Contact Number is required.
                         </div>
-                        <div *ngIf="submitted && form.controls.contactNumber.errors.pattern">
-                          Contact Number is invalid.
-                        </div>
+                      </div>
+                      <div *ngIf="submitted && !form.controls.contactNumber.errors && generateZCode.contactNumber?.length !=10 " class="text-danger">
+                        Contact Number is invalid.
                       </div>
                     </div>
                   </div>
