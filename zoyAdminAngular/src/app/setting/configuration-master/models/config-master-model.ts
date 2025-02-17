@@ -32,6 +32,7 @@ export class EarlyCheckOutRuleDetails{
     trigger_condition : string ;
     check_out_day : number ;
     deduction_percentage: number ;
+    deduction_day: number ;
     trigger_value : string ;
 }
 
@@ -45,6 +46,7 @@ export class BeforeCheckInCancellationRefundModel{
     priority: number ;
     isDelete:boolean ;
     isEdit:boolean ;
+    isConfirm:boolean ;
 }
 
 export class DataGroupingModel{
@@ -58,6 +60,7 @@ export class SecurityDepositDeadLineAndAutoCancellationModel{
     trigger_condition : string ;
     auto_cancellation_day : number ;
     deduction_percentage : number ;
+    deduction_day : number ;
     cond : string ;
     trigger_value : string ;
 }

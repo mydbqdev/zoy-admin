@@ -18,6 +18,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -27,6 +28,7 @@ import com.integration.zoy.entity.UserProfile;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.utils.OtpVerification;
+import com.integration.zoy.utils.SessionInfo;
 import com.integration.zoy.utils.Whatsapp;
 
 @Service
@@ -80,6 +82,8 @@ public class ZoyAdminService {
 	private final Map<String, String> otpMap = new ConcurrentHashMap<>();
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private final Set<String> blacklistedTokens = new HashSet<>();
+	
+	private final ConcurrentHashMap<String, SessionInfo> userSingleDeviceLockMap = new ConcurrentHashMap<>();
 
 	public void storeOtp(String userId, String otp) {
 		otpMap.put(userId, otp);
@@ -181,5 +185,20 @@ public class ZoyAdminService {
     public boolean isBlacklisted(String token) {
         return blacklistedTokens.contains(token);
     }
+
+    @Scheduled(fixedRate = 5*60*1000)
+	public void removeExpiredSessions() {
+		long currentTime = System.currentTimeMillis();
+	    long sessionTimeout = 30 * 60 * 1000;
+	    userSingleDeviceLockMap.entrySet().removeIf(entry -> 
+	        (currentTime - entry.getValue().getLoginTime()) > sessionTimeout
+	    );
+	}
+
+	public ConcurrentHashMap<String, SessionInfo> getUserSingleDeviceLockMap() {
+		return userSingleDeviceLockMap;
+	}
+	
+	
 	
 }

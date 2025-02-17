@@ -60,7 +60,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  backUpBeforeCheckInCRList:BeforeCheckInCancellationRefundModel[]=[];
 	  canSubmit:boolean = true;
 	  @ViewChild('table', { static: true }) table: MatTable<BeforeCheckInCancellationRefundModel>;
-more:boolean
+more:boolean;
+moreEarlyCheckout:boolean;
 	  constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService, private configMasterService :ConfigMasterService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			  this.authService.checkLoginUserVlidaate();
@@ -112,6 +113,8 @@ more:boolean
 		  this.sidemenuComp.expandMenu(4);
 		  this.sidemenuComp.activeMenu(4, 'configuration-master');
 		  this.dataService.setHeaderName("Configuration Master");
+		  this.configMasterModel.securityDepositDeadLineDetails.trigger_value="TotalPaidAmount";
+		  this.beforeCheckInCRfModel.trigger_value="TotalPaidAmount";
 	  }
 	  getConfigMasterDetails(){
 		this.authService.checkLoginUserVlidaate();
@@ -227,7 +230,7 @@ getTriggerOn(){
 	
 
 	  isNotValidNumber(value: any): boolean {
-		return  (value == '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
+		return  (value === '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
 	  }
 	  numberOnly(event): boolean {
 		const charCode = (event.which) ? event.which : event.keyCode;
@@ -346,11 +349,12 @@ getTriggerOn(){
 			this.configMasterOrg.tokenDetails = Object.assign(new TokenDetailsModel(), res.data );
 			this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
 			this.tokenAdvancDisabled = true;
+			this.notifyService.showSuccess("Token Advance has been updated successfully", "");
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
 			if(error.status == 0) {
-			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			  this.notifyService.showError("Internal Server Error/Connection not established", "");
 		   }else if(error.status==403){
 				this.router.navigate(['/forbidden']);
 			}else if (error.error && error.error.message) {
@@ -399,11 +403,12 @@ getTriggerOn(){
 					this.configMasterOrg.depositDetails = Object.assign(new SecurityDepositLimitsModel(), res.data );
 					this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
 					this.securityDepositLimitsDisabled = true;
+					this.notifyService.showSuccess("Security Deposit Limits has been updated successfully", "");
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
 					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "")
+					this.notifyService.showError("Internal Server Error/Connection not established", "");
 				}else if(error.status==403){
 						this.router.navigate(['/forbidden']);
 					}else if (error.error && error.error.message) {
@@ -454,11 +459,12 @@ getTriggerOn(){
 			this.configMasterOrg.gstCharges = Object.assign(new TokenDetailsModel(), res.data );
 			this.configMasterModel.gstCharges = JSON.parse(JSON.stringify(this.configMasterOrg.gstCharges));
 			this.gstChargesDisabled = true;
+			this.notifyService.showSuccess("GST Charges has been updated successfully", "");
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
 			if(error.status == 0) {
-			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			  this.notifyService.showError("Internal Server Error/Connection not established", "");
 		   }else if(error.status==403){
 				this.router.navigate(['/forbidden']);
 			}else if (error.error && error.error.message) {
@@ -506,11 +512,12 @@ getTriggerOn(){
 			this.configMasterOrg.securityDepositDeadLineDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
 			this.configMasterModel.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositDeadLineDetails));
 			this.securityDepositDeadLineDisabled = true;
+			this.notifyService.showSuccess("Security Deposit Deadline has been updated successfully", "");
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
 			if(error.status == 0) {
-			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			  this.notifyService.showError("Internal Server Error/Connection not established", "");
 		   }else if(error.status==403){
 				this.router.navigate(['/forbidden']);
 			}else if (error.error && error.error.message) {
@@ -557,11 +564,12 @@ getTriggerOn(){
 					this.configMasterOrg.cancellationAfterCheckInDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
 					this.configMasterModel.cancellationAfterCheckInDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationAfterCheckInDetails));
 					this.autoCancellationDisabled = true;
+					this.notifyService.showSuccess("After check-in Date has been updated successfully", "");
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
 					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "")
+					this.notifyService.showError("Internal Server Error/Connection not established", "");
 				}else if(error.status==403){
 						this.router.navigate(['/forbidden']);
 					}else if (error.error && error.error.message) {
@@ -610,11 +618,12 @@ getTriggerOn(){
 					this.configMasterOrg.otherCharges = Object.assign(new OtherChargesModel(), res.data );
 					this.configMasterModel.otherCharges = JSON.parse(JSON.stringify(this.configMasterOrg.otherCharges));
 					this.otherChargesDisabled = true;
+					this.notifyService.showSuccess("Other Charges has been updated successfully", "");
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
 					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "")
+					this.notifyService.showError("Internal Server Error/Connection not established", "");
 				}else if(error.status==403){
 						this.router.navigate(['/forbidden']);
 					}else if (error.error && error.error.message) {
@@ -663,11 +672,12 @@ getTriggerOn(){
 					this.configMasterOrg.dataGrouping = Object.assign(new DataGroupingModel(), res.data );
 					this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
 					this.dataGroupingDisabled = true;
+					this.notifyService.showSuccess("Data Grouping has been updated successfully", "");
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
 					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "")
+					this.notifyService.showError("Internal Server Error/Connection not established", "");
 				}else if(error.status==403){
 						this.router.navigate(['/forbidden']);
 					}else if (error.error && error.error.message) {
@@ -719,6 +729,8 @@ getTriggerOn(){
 				return ;
 			  }
 			  element.priority = i++;
+			  element.isEdit=true;
+			  element.isConfirm=false;
 			});
 			this.canSubmit=false;
 		} 
@@ -748,6 +760,7 @@ getTriggerOn(){
 	  beforeCheckInCRDatafReset(){
 		this.beforeCheckInCRfSaveVali = false ;
 		this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
+		this.beforeCheckInCRfModel.trigger_value='TotalPaidAmount';
 		this.canSubmit=true;
 		this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
 		this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
@@ -818,6 +831,7 @@ getTriggerOn(){
 			this.configMasterOrg.cancellationBeforeCheckInDetails = res.data;
 			this.canSubmit = true;
 			this.getBeforeCheckInCRData();
+			this.notifyService.showSuccess("Before check in has been updated successfully", "");
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -858,7 +872,8 @@ getTriggerOn(){
 		if(this.checkDuplicateBCCR(row)){
 			return;
 		}
-		row.isEdit = false;
+		row.isEdit = true;
+		row.isConfirm=false;
 		this.dataSource.data = this.beforeCheckInCRDetails;
 		this.canSubmit=false;
 	}
@@ -875,6 +890,7 @@ getTriggerOn(){
 			row.isDelete = false;
 		}
 		row.isEdit = false;
+		row.isConfirm=false;
 		this.beforeCheckInCRDetails[i] = row ;
 		this.dataSource.data[i] = row;
 		this.canSubmit=false;
@@ -891,6 +907,8 @@ getTriggerOn(){
 		  if(element.isDelete){
 			return ;
 		  }
+		  element.isEdit = true;
+		  element.isConfirm=false;
 		  element.priority = i++;
 		});
 		this.canSubmit=false;
@@ -923,11 +941,12 @@ getTriggerOn(){
 					this.configMasterOrg.earlyCheckOutRuleDetails = Object.assign(new EarlyCheckOutRuleDetails(), res.data );
 					this.configMasterModel.earlyCheckOutRuleDetails = JSON.parse(JSON.stringify(this.configMasterOrg.earlyCheckOutRuleDetails));
 					this.earlyCheckOutRulesDisabled = true;
+					this.notifyService.showSuccess("Early Check-out Rules has been updated successfully", "");
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
 					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "")
+					this.notifyService.showError("Internal Server Error/Connection not established", "");
 				}else if(error.status==403){
 						this.router.navigate(['/forbidden']);
 					}else if (error.error && error.error.message) {
@@ -976,11 +995,12 @@ getTriggerOn(){
 					this.configMasterOrg.forceCheckOut = Object.assign(new ForceCheckoutModel(), res.data );
 					this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
 					this.forceCheckoutDisabled = true;
+					this.notifyService.showSuccess("Force Checkout has been updated successfully", "");
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
 					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "")
+					this.notifyService.showError("Internal Server Error/Connection not established", "");
 				}else if(error.status==403){
 						this.router.navigate(['/forbidden']);
 					}else if (error.error && error.error.message) {
@@ -1042,11 +1062,12 @@ getTriggerOn(){
 					this.configMasterService.updateShortTermRentingDuratioDetails(shortTerm).subscribe(res => {
 						this.configMasterOrg.shortTerm = Object.assign([], res.data );
 						this.configMasterModel.shortTerm = JSON.parse(JSON.stringify(this.configMasterOrg.shortTerm));
+						this.notifyService.showSuccess("Short term Packages Configuration has been updated successfully", "");
 						this.spinner.hide();
 						}, error => {
 						this.spinner.hide();
 						if(error.status == 0) {
-						this.notifyService.showError("Internal Server Error/Connection not established", "")
+						this.notifyService.showError("Internal Server Error/Connection not established", "");
 					}else if(error.status==403){
 							this.router.navigate(['/forbidden']);
 						}else if (error.error && error.error.message) {
@@ -1092,11 +1113,12 @@ getTriggerOn(){
 						this.configMasterOrg.shortTermRentingDuration = Object.assign(new ShortTermRentingDuration(), res.data );
 						this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
 						this.shortTermRentingDurationDisabled = true;
+						this.notifyService.showSuccess("No Rental Agreement has been updated successfully", "");
 						this.spinner.hide();
 						}, error => {
 						this.spinner.hide();
 						if(error.status == 0) {
-						this.notifyService.showError("Internal Server Error/Connection not established", "")
+						this.notifyService.showError("Internal Server Error/Connection not established", "");
 					}else if(error.status==403){
 							this.router.navigate(['/forbidden']);
 						}else if (error.error && error.error.message) {

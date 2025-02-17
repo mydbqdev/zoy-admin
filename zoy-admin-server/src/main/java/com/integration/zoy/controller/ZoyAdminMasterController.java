@@ -37,11 +37,13 @@ import com.integration.zoy.entity.UserEkycTypeMaster;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
+import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
+import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
@@ -753,22 +755,14 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
-
+	
 	//Due Type
 	@Override
 	public ResponseEntity<String> zoyAdminDueType() {
 		ResponseBody response=new ResponseBody();
 		try {
 			List<ZoyPgDueMaster> userDueMasters =  ownerDBImpl.findAllDueMaster();
-			List<DueMaster> dueMasters = userDueMasters.stream()
-					.map(zoyPgDueMaster -> {
-						DueMaster dueMaster = new DueMaster();
-						dueMaster.setDueTypeId(zoyPgDueMaster.getDueTypeId());
-						dueMaster.setDueTypeName(zoyPgDueMaster.getDueName());
-						return dueMaster;
-					})
-					.collect(Collectors.toList());
-			return new ResponseEntity<>(gson2.toJson(dueMasters), HttpStatus.OK);
+			return new ResponseEntity<>(gson2.toJson(userDueMasters), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting due type details API:/zoy_admin/dueType.zoyAdminDueType ",e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -783,6 +777,8 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		try {
 			ZoyPgDueMaster userDueMasters =  new ZoyPgDueMaster();
 			userDueMasters.setDueName(dueType.getDueTypeName());
+			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,dueType.getDueTypeName(),dueType.getDueTypeImage());
+			userDueMasters.setDueImage(imageUrl);
 			ZoyPgDueMaster saved=ownerDBImpl.saveUserDueMaster(userDueMasters);
 			//audit history here
 			String historyContent=" has created the Due Type for, "+dueType.getDueTypeName();
@@ -805,6 +801,36 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			if(userDueMasters!=null) {
 				final String oldCount=userDueMasters.getDueName();
 				userDueMasters.setDueName(dueTypeId.getDueTypeName());
+				ZoyPgDueMaster updated=ownerDBImpl.updateDueMaster(userDueMasters);
+
+				//audit history here
+				String historyContent=" has updated the Due Type for, from "+oldCount+" to "+dueTypeId.getDueTypeName();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
+
+				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
+			} else {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("No Due type for the given Id " + dueTypeId.getId());
+				return new ResponseEntity<>(gson2.toJson(response), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			log.error("Error updating due type details API:/zoy_admin/dueType.zoyAdminDueTypePut ",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<String> zoyAdminDueTypeUpdate(DueTypeId dueTypeId) {
+		ResponseBody response=new ResponseBody();
+		try {
+			ZoyPgDueMaster userDueMasters =  ownerDBImpl.findUserDueMaster(dueTypeId.getId());
+			if(userDueMasters!=null) {
+				final String oldCount=userDueMasters.getDueName();
+				userDueMasters.setDueName(dueTypeId.getDueTypeName());
+				String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,dueTypeId.getDueTypeName(),dueTypeId.getDueTypeImage());
+				userDueMasters.setDueImage(imageUrl);
 				ZoyPgDueMaster updated=ownerDBImpl.updateDueMaster(userDueMasters);
 
 				//audit history here

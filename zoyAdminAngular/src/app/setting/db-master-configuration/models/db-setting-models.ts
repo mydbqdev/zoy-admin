@@ -29,7 +29,9 @@ export class DbSettingDataModel{
     factor_name ?:string ;
 
     due_type_id ?: string;
-    due_type_name ?: string;
+    due_name ?: string;
+    due_type_upload ?: string;
+    due_image ?: string;
 
     currency_id ?: string;
     currency_name ?: string;

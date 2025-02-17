@@ -404,8 +404,8 @@ public interface ZoyAdminMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/dueType",
 	produces = { "application/json" },
-	consumes = { "application/json" })
-	ResponseEntity<String> zoyAdminDueTypePost(@RequestBody DueType dueType);
+	consumes = { "multipart/form-data" })
+	ResponseEntity<String> zoyAdminDueTypePost(@ModelAttribute DueType dueType);
 	
 	@Operation(summary = "Put Due Type", description = "Updating Due Type", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
@@ -418,6 +418,18 @@ public interface ZoyAdminMasterImpl {
 	produces = { "application/json" },
 	consumes = { "application/json" })
 	ResponseEntity<String> zoyAdminDueTypePut(@RequestBody DueTypeId dueTypeId);
+	
+	@Operation(summary = "Put Due Type", description = "Updating Due Type with image", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PutMapping(value = "/zoy_admin/dueTypeUpdate",
+	produces = { "application/json" },
+	consumes = { "multipart/form-data" })
+	ResponseEntity<String> zoyAdminDueTypeUpdate(@ModelAttribute DueTypeId dueTypeId);
 
 	//Ekyc Type
 	@Operation(summary = "Get Ekyc Type", description = "Getting Ekyc Type", security = {

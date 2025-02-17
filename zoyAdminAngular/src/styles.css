@@ -156,9 +156,26 @@ ngb-modal-backdrop.modal-backdrop {
   object-fit: cover;   
 }
 
-.tenant-profile-top span {
-  display: inline-block;
-  line-height: 95px;  
+
+.organization-logo {
+  width: 150px;
+  height: 150px;
+  /* background-color: #925fe2;
+   font-weight: 500;
+  font-size: 40px; */
+  text-align: center;
+   /* line-height: 10px;
+  color: #fff; */
+  border-radius: 5%;
+  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+  position: relative; 
+}
+
+.organization-logo img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5%;  
+  object-fit: cover;   
 }
 
 

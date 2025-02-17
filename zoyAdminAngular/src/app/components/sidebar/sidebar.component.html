@@ -15,28 +15,14 @@
   <!-- Divider -->
   <hr class="sidebar-divider my-0">
   <div class="my-1"></div>
+  <div style="overflow-y: auto;height: calc(100vh - 90px);">
   <!-- Nav Item - Dashboard -->
   <li class="nav-item" [ngClass]="{'active':activeSubNenuName=='home'}">
       <a class="nav-link" routerLink="/home" (click)="setHeaderName('Dashboard');expandMenu(1)">
           <i class="fas fa-th-list"></i>
           <span>Dashboard</span></a>
   </li>
- 
 
-  <!-- Nav Item - Pages Collapse Menu -->
-  <!--li class="nav-item">
-      <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse" data-target="#collapseTwo"
-          aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-cog"></i>
-          <span>Components</span>
-      </a>
-      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="javascript:void(0)">Buttons</a>
-              <a class="collapse-item" href="javascript:void(0)">Cards</a>
-          </div>
-      </div>
-  </li-->
   
  <!-- Nav Item - Owners Collapse Menu -->
  <li class="nav-item" [ngClass]="{'active':menu21}" id="menu2" *ngIf="defMenu.owners && (rolesArray.includes('ZOYCODES_READ') || rolesArray.includes('MANAGING_OWNERS_READ'))" >
@@ -91,7 +77,7 @@
             <a class="collapse-item" routerLink="/bulk-upload" *ngIf="defMenu.tenantsSubMenu.bulkUpload && rolesArray.includes('BULK_UPLOAD_READ')" [ngClass]="{'active':activeSubNenuName=='bulk-upload'}" (click)="setHeaderName('Bulk Upload')" >Bulk Upload</a>
         </div>
     </div>
-   </li>
+</li>
     <!-- Nav Item - Finance Collapse Menu -->
   <li class="nav-item" [ngClass]="{'active':menu51}" id="menu5" *ngIf="defMenu.finances && rolesArray.includes('REPORTS_READ')">
     <a [ngClass]="menu5 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" *ngIf="defMenu.finances && rolesArray.includes('REPORTS_READ')" (click)="expandMenu(5)" data-target="#collapseFinances"
@@ -156,26 +142,20 @@
         </div>
     </li>
 
-
-   <!--li class="nav-item">
-     <a class="nav-link" routerLink="/user-list" >
-         <i class="fas fa-fw fa-folder"></i>
-         <span>User Management</span>
-     </a>
-   </li -->
   <!-- Divider -->
-  <hr class="sidebar-divider">
+  <!--hr class="sidebar-divider" -->
   <!-- Heading -->
-  <div class="sidebar-heading">
+  <!--div class="sidebar-heading">
       Contact
-  </div>
+  </div-->
   <!-- Nav Item - Pages Collapse Menu -->
-  <li class="nav-item">
+  <!--li class="nav-item">
       <a class="nav-link" href="javascript:void(0)" >
           <i class="fas fa-fw fa-folder"></i>
           <span>Help Center</span>
       </a>
-  </li>
+  </li-->
+  </div>
 </ul>
 
 

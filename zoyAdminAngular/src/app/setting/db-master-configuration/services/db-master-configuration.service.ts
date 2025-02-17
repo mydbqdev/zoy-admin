@@ -55,7 +55,7 @@ export class DbMasterConfigurationService {
     },
     {
 		  'type': 'Due Type',
-		  'columns': ['due_type_name', 'actions'],
+		  'columns': ['due_name','due_image', 'actions'],
       'api':'zoy_admin/dueType'
     },
     {
@@ -88,7 +88,8 @@ export class DbMasterConfigurationService {
     'pg_type_name': 'PG TYPE NAME',
     'notification_mod_name':'NOTIFICATION MOD NAME',
     'factor_name':'FACTOR NAME',
-    'due_type_name':'DUE TYPE',
+    'due_name':'DUE TYPE',
+    'due_image':"DUETYPE PICTURE",
     'currency_name': 'CURRENCY NAME',
     'billing_type_name': 'BILLING TYPE NAME',
     'ameneties_name': 'AMENITIES NAME',
@@ -113,7 +114,7 @@ export class DbMasterConfigurationService {
     
     if(isCreate){
       const url1=this.basePath +api;
-      if(isPhoto && api=='zoy_admin/ameneties'){
+      if(isPhoto && (api=='zoy_admin/ameneties' || api=='zoy_admin/dueType')){
         data=formData;
       }
         return  this.httpclient.post<any>(
@@ -132,6 +133,11 @@ export class DbMasterConfigurationService {
          url1=this.basePath +'zoy_admin/amenetiesUpdate';
       }else if(!isPhoto && api=='zoy_admin/ameneties'){
          url1=this.basePath +'zoy_admin/ameneties';
+      }else  if(isPhoto && api=='zoy_admin/dueType'){
+        data=formData;
+         url1=this.basePath +'zoy_admin/dueTypeUpdate';
+      }else if(!isPhoto && api=='zoy_admin/dueType'){
+         url1=this.basePath +'zoy_admin/dueType';
       }else{
         
       }

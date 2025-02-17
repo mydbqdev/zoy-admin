@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private ZoyAdminService zoyAdminService; 
-	
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -60,7 +60,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				}
 			}
 		}catch(ExpiredJwtException ex) {
-			request.setAttribute("exception",ex);
+			String expiredEmail = ex.getClaims().getSubject();
+			if (expiredEmail != null && zoyAdminService.getUserSingleDeviceLockMap().containsKey(expiredEmail)) {
+				zoyAdminService.getUserSingleDeviceLockMap().remove(expiredEmail);
+			}
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has expired");
+			return;
 		}catch(BadCredentialsException ex) {
 			request.setAttribute("exception",ex);
 		}catch(Exception ex) {

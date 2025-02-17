@@ -242,9 +242,9 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				this.floor_id = this.floorInfo.floor_id; 
 				this.showRooms();
 			}
-			this.zoyShare = JSON.parse(JSON.stringify( this.pgOwnerData?.profile.zoy_share? Number(this.pgOwnerData.profile.zoy_share):0));
-			
 		} 
+		this.zoyShare = JSON.parse(JSON.stringify( this.pgOwnerData?.profile?.zoy_share? Number(this.pgOwnerData.profile.zoy_share):0));
+		
 		this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
@@ -520,7 +520,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	}
 		
 	isNotValidNumber(value: any): boolean {
-		return  (value == '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
+		return  (value === '' || value === undefined || value === null || isNaN(value) || value === false || value == 0);
 	  }
 	percentageOnlyWithZero(event): boolean {
 		const charCode = (event.which) ? event.which : event.keyCode;

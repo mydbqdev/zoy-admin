@@ -44,13 +44,18 @@
                    <div class="card">
                       <div>
                           <!--Total Advance section-->
-                          <div class="row p-3 align-items-center marginRow">
-                            <div class="col-sm-3">
-                              <div><span style="font-size: 16px;">Token Advance (%)</span></div>
-                              <div><p class="small text-muted " style="font-size: 12px;"><em>Specify the percentage of the total amount to be collected as a token advance during booking.</em></p></div>
+                          <div class="p-3">
+                            <div>
+                              <div><span style="font-size: 16px;color:#78177e;">Token Advance (%)</span></div>
+                              <div>
+                                <p class="small text-muted" style="font-size: 12px;">
+                                  <em>Specify the percentage of the total amount to be collected as a token advance during booking.
+                                  </em>
+                                </p>
+                              </div>
                             </div>
                             
-                            <div class="col-sm-9">
+                            <div>
                               <div class="row">
                                 <div class="col-sm-4">
                                   <div>Fixed amount</div>
@@ -81,7 +86,7 @@
                                   <p class="small text-muted " style="font-size: 12px;"><em>Percentage of the token advance required during booking.</em></p>
                       
                                 </div>
-                                <div class="col-sm-3" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
+                                <div class="col-sm-3 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
                                     <div *ngIf="tokenAdvancDisabled">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="tokenAdvancDisabled = false">
                                         <i class="fas fa-edit"></i>
@@ -103,16 +108,16 @@
                         <hr class="solid"> 
                         <div>
                           <!--Security Deposit Limits-->
-                          <div class="row p-3 marginRow">
-                            <div class="col-sm-3">
-                              <div><span style="font-size: 16px;">Security Deposit Limits</span></div>
+                          <div class="p-3">
+                            <div>
+                              <div><span style="font-size: 16px;color:#78177e;">Security Deposit Limits</span></div>
                               <div>
                                 <p class="small text-muted " style="font-size: 12px;">
                                 <em>Configure the minimum and maximum security deposit limits that owners are allowed to collect from tenants.</em>
                                 </p>
                               </div>
                             </div>
-                            <div class="col-sm-9">
+                            <div>
                               <div class="row">
                                 <!-- Minimum Security Deposit -->
                                 <div class="col-sm-4">
@@ -172,18 +177,17 @@
                               </div>
                             </div>
                           </div>
-                          
                         </div>
                         <hr class="solid"> 
                         <div>
                           <!--Total Advance section-->
-                          <div class="row p-3 align-items-center marginRow">
-                            <div class="col-sm-3">
-                              <div><span style="font-size: 16px;">GST Charges</span></div>
+                          <div class="p-3">
+                            <div>
+                              <div><span style="font-size: 16px;color:#78177e;">GST Charges</span></div>
                               <div><p class="small text-muted " style="font-size: 12px;"><em>Specify the GST percentage to be applied.</em></p></div>
                             </div>
                             
-                            <div class="col-sm-9">
+                            <div>
                               <div class="row">
                                 <div class="col-sm-10">
                                 <div class="row">
@@ -268,70 +272,73 @@
                         <hr class="solid"> 
                          <!--Cancellation And Refund Policy-->
                          <div>
-                          <div class="row p-3 align-items-center ">
-                            <div class="col-sm-3">
-                              <span style="font-size: 16px;">Cancellation And Refund Policy</span>
+                          <div class="p-3">
+                            <div >
+                              <span style="font-size: 16px;color:#78177e;">Cancellation And Refund Policy</span>
                               <p class="small text-muted" style="font-size: 12px;"><em>Define the deduction percentage and time frame for cancellation before check in.</em></p>
                             </div>
-                            <div class="col-sm-9">
+                            <div>
                               <div>Before check in</div>
                                   <div class="card card-body m-0 p-0">
                                     <div>
                                       <div class="pt-2 pb-2" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
-                                       <div class="d-flex">
-                                        <div style="width: 40px;"></div>
-                                        <div class="mr-3" style="width: 80px;">
-                                          <div>Condition</div>
-                                          <div class="input-group input-group-sm">
-                                            <select class="form-select form-select-sm" style="max-width: 80px !important;"  [(ngModel)]="beforeCheckInCRfModel.trigger_condition"
-                                            [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.trigger_condition}" >
-                                            <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
-                                            </select>
+                                        <div class="d-flex">
+                                          <div style="width: 40px;"></div>
+                                          <div class="mr-3" style="width: 80px;">
+                                            <div>Condition</div>
+                                            <div class="input-group input-group-sm">
+                                              <select class="form-select form-select-sm" style="max-width: 80px !important;"  [(ngModel)]="beforeCheckInCRfModel.trigger_condition"
+                                              [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.trigger_condition}" >
+                                              <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
+                                              </select>
+                                            </div>
                                           </div>
-                                        </div>
-                                            <div class="mr-3" style="width: 155px;">
-                                              <div class="input-group input-group-sm mt-4">
-                                                <input 
-                                                type="text" 
-                                                class="form-control form-control-sm"
-                                                [(ngModel)]="beforeCheckInCRfModel.before_checkin_days" (keypress)="numberOnly($event)" maxlength="3"
-                                                [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && isNotValidNumber(beforeCheckInCRfModel.before_checkin_days)  }" 
-                                                style="max-width: 84px !important;"
-                                                />
-                                                <span class="input-group-text">Days</span>
-                                              </div>
-                                              <p class="small text-muted" style="font-size: 12px;"><em>Enter maximum days before check in.</em></p>
-                                            </div>
-                                            <div class="mr-3" style="width: 190px;">
-                                              <div>Deduction Type</div>
-                                              <div class="input-group input-group-sm">
-                                                <select class="form-select form-select-sm" [(ngModel)]="beforeCheckInCRfModel.trigger_value" 
-                                                [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.trigger_value}" >
-                                                <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
-                                                </select>
-                                              </div>
-                                            </div>
-                                            <div style="width: 160px;">
-                                                <div>Deduction</div>
-                                                <div class="input-group input-group-sm">
+                                              <div class="mr-3" style="width: 155px;">
+                                                <div class="input-group input-group-sm mt-4">
                                                   <input 
                                                   type="text" 
                                                   class="form-control form-control-sm"
-                                                  [(ngModel)]="beforeCheckInCRfModel.deduction_percentage" (keypress)="percentageOnlyWithZero($event)" maxlength="5"
-                                                  [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali &&  isNotValidNumber(beforeCheckInCRfModel.deduction_percentage) }" 
-                                                  style="max-width: 90px !important;"
+                                                  [(ngModel)]="beforeCheckInCRfModel.before_checkin_days" (keypress)="numberOnly($event)" maxlength="3"
+                                                  [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && isNotValidNumber(beforeCheckInCRfModel.before_checkin_days)  }" 
+                                                  style="max-width: 84px !important;"
                                                   />
-                                                  <span class="input-group-text">%</span>
-                                                 </div>
-                                                <p class="small text-muted" style="font-size: 12px;"><em>Percentage of booking amount to deduct.</em></p>
-                                            </div>
-                                            <div class="ml-1">
-                                              <div style="height: 23px;"></div>
-                                              <div>
-                                                <button type="button" class="btn btn-sm btn-primary" (click)="beforeCheckInCRfAdd()" >Add</button>
+                                                  <span class="input-group-text">Days</span>
+                                                </div>
+                                                <p class="small text-muted" style="font-size: 12px;"><em>Enter maximum days before check in.</em></p>
                                               </div>
-                                            </div>
-                                        </div>
+                                              <div class="mr-3" style="width: 190px;">
+                                                <div>Deduction Type</div>
+                                                <div class="input-group input-group-sm">
+                                                  <input type="text" class="form-control form-control-sm" [(ngModel)]="beforeCheckInCRfModel.trigger_value" disabled /> 
+                                                </div>
+                                                <!--div class="input-group input-group-sm">
+                                                  <select class="form-select form-select-sm" [(ngModel)]="beforeCheckInCRfModel.trigger_value" 
+                                                  [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.trigger_value}" >
+                                                  <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
+                                                  </select>
+                                                </div -->
+                                              </div>
+                                              <div style="width: 160px;">
+                                                  <div>Deduction</div>
+                                                  <div class="input-group input-group-sm">
+                                                    <input 
+                                                    type="text" 
+                                                    class="form-control form-control-sm"
+                                                    [(ngModel)]="beforeCheckInCRfModel.deduction_percentage" (keypress)="percentageOnlyWithZero($event)" maxlength="5"
+                                                    [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali &&  isNotValidNumber(beforeCheckInCRfModel.deduction_percentage) }" 
+                                                    style="max-width: 90px !important;"
+                                                    />
+                                                    <span class="input-group-text">%</span>
+                                                   </div>
+                                                  <p class="small text-muted" style="font-size: 12px;"><em>Percentage of booking amount to deduct.</em></p>
+                                              </div>
+                                              <div class="ml-1">
+                                                <div style="height: 23px;"></div>
+                                                <div>
+                                                  <button type="button" class="btn btn-sm btn-primary" (click)="beforeCheckInCRfAdd()" >Add</button>
+                                                </div>
+                                              </div>
+                                          </div>
                                       </div>
                                       <div >
                                       
@@ -350,16 +357,16 @@
                                                     class="example-list"
                                                     cdkDropList
                                                     [cdkDropListData]="dataSource.data"
-                                                    (cdkDropListDropped)="drop($event)">
+                                                    (cdkDropListDropped)="drop($event)" style="border:0px;border-top:1px solid #ccc;">
                         
                                           <ng-container matColumnDef="trigger_condition" class="example-box">
                                             <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
-                                            <mat-cell data-label="trigger_condition" *matCellDef="let element" style="width: 120px;flex:none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'"  >
+                                            <mat-cell data-label="trigger_condition" *matCellDef="let element" style="width: 130px;flex:none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'"  >
                                             <span style="min-width:20px" > {{ element.priority }} </span> 
-                                              <div class="ml-1" *ngIf="!element.isEdit || element.isDelete" >
-                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_condition" [disabled]="!element.isEdit || element.isDelete" style="width: 80px !important;" /> 
+                                              <div class="ml-1" *ngIf="!element.isConfirm || element.isDelete" >
+                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_condition" [disabled]="!element.isConfirm || element.isDelete" style="width: 80px !important;" /> 
                                               </div> 
-                                              <div class="ml-1" *ngIf="!element.isDelete && element.isEdit" >
+                                              <div class="ml-1" *ngIf="!element.isDelete && element.isConfirm" >
                                                 <select class="form-select form-select-sm" style="width: 80px !important;"  [(ngModel)]="element.trigger_condition"
                                                 [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && !element.trigger_condition  }" >
                                                 <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
@@ -374,7 +381,7 @@
                                               <div class="d-flex input-group input-group-sm">
                                                 <input type="text" 
                                                         class="form-control form-control-sm"
-                                                        [(ngModel)]="element.before_checkin_days" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.isDelete || !element.isEdit"
+                                                        [(ngModel)]="element.before_checkin_days" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.isDelete || !element.isConfirm"
                                                         [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.before_checkin_days) }" 
                                                         style="max-width: 84px !important;" />
                                                 <span class="input-group-text">Days</span>
@@ -385,15 +392,18 @@
                                           <ng-container matColumnDef="trigger_value" class="example-box">
                                             <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
                                             <mat-cell data-label="requirePayslip" *matCellDef="let element"  style="width: 210px;padding-right: 0px;flex: none;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'" > 
-                                              <div *ngIf="!element.isEdit || element.isDelete">
-                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_value" [disabled]="!element.isEdit || element.isDelete" style="width: 190px !important;"/> 
+                                              <div >
+                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_value" disabled style="width: 190px !important;"/> 
                                               </div>
-                                              <div *ngIf="!element.isDelete && element.isEdit" >
+                                              <!--div *ngIf="!element.isEdit || element.isDelete">
+                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_value" [disabled]="!element.isEdit || element.isDelete" style="width: 190px !important;"/> 
+                                              </div-->
+                                              <!--div *ngIf="!element.isDelete && element.isEdit" >
                                                 <select class="form-select form-select-sm" [(ngModel)]="element.trigger_value" style="width: 190px !important;" 
                                                 [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && !element.trigger_value }" >
                                                 <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
                                                 </select>
-                                              </div>
+                                              </div-->
                                             </mat-cell>
                                           </ng-container>
 
@@ -403,7 +413,7 @@
                                               <div class="d-flex input-group input-group-sm">
                                                 <input  type="text" 
                                                         class="form-control form-control-sm"
-                                                        [(ngModel)]="element.deduction_percentage" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.isDelete || !element.isEdit"
+                                                        [(ngModel)]="element.deduction_percentage" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.isDelete || !element.isConfirm"
                                                         [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.deduction_percentage) }" 
                                                         style="max-width: 90px !important;"
                                                         disabled />
@@ -417,26 +427,27 @@
                                             <mat-cell data-label="action" *matCellDef="let element ;let i=index"  style="padding-left:0px;flex:none;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'">
                                               <div class="input-group" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
                                                 <div class="btn-group">
-                                                  <button class="btn btn-sm btn-outline-secondary"  *ngIf="!element.isDelete && !element.isEdit"
-                                                    (click)="element.isEdit = true;" title="Edit The Item"> 
+                                                  <button class="btn btn-sm btn-outline-secondary"  *ngIf="!element.isDelete && !element.isConfirm"
+                                                    (click)="element.isConfirm = true;" title="Edit The Item"> 
                                                      <i class="fas fa-edit"></i>
                                                   </button>
-                                                <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && !element.isEdit" 
-                                                    (click)="beforeCheckInCRfDelete(element,i)" title="Delete The Item"> 
-                                                    <i class="fas fa-trash" style="color: red;"></i>
-                                                </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isEdit"
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isConfirm"
                                                     (click)="beforeCheckInCRfModify(element)" title="Edit The Item">
                                                      <i class="fas fa-check"></i>
                                                   </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isEdit"
-                                                    (click)="undoEditItem(element,i)" title="Undo Edit Item">
+                                                <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete" 
+                                                    (click)="beforeCheckInCRfDelete(element,i)" title="Delete The Item"> 
+                                                    <i class="fas fa-trash" style="color: red;"></i>
+                                                </button>
+                                                  
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete || element.isEdit"
+                                                    (click)="undoEditItem(element,i);undoDelete(element);" title="Undo Edit Item">
                                                     <i class="fas fa-redo" style="color: red;"></i>
                                                   </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete"
+                                                  <!--button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete"
                                                     (click)="undoDelete(element)" title="Undo Delete Item">
                                                     <i class="fas fa-redo" style="color: red;" ></i>
-                                                  </button>
+                                                  </button -->
                                                 </div>
                                                </div>
                                             </mat-cell>
@@ -450,88 +461,7 @@
                                     </div>
                                     </div>
                                   </div>
-
-                                  <div class="mt-3 ">After check-in</div>
-                                  <div class="card card-body m-0 p-0">
-                                  <div class="row p-2">
-                                    <!-- Auto-Cancellation after Check-in Dates -->
-                                    <div class="col-sm-2">
-                                      <div>Condition</div>
-                                      <div class="input-group input-group-sm" *ngIf="autoCancellationDisabled">
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_condition" [disabled]="autoCancellationDisabled" /> 
-                                      </div> 
-                                      <div class="input-group input-group-sm" *ngIf="!autoCancellationDisabled">
-                                        <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_condition" [ngClass]="{'is-invalid': !autoCancellationDisabled && !configMasterModel.cancellationAfterCheckInDetails.trigger_condition }" >
-                                          <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
-                                        </select>
-                                      </div>
-                                     </div>
-                                    <div class="col-sm-3">
-                                      <div class="input-group input-group-sm mt-4">
-                                        <input 
-                                          type="text" 
-                                          class="form-control form-control-sm"
-                                          [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day" [disabled]="autoCancellationDisabled" (keypress)="numberOnly($event)" maxlength="3" 
-                                           [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day) }" 
-                                          style="max-width: 70px !important;" />
-                                          <span class="input-group-text">Days</span>
-                                      </div>
-                                      <p class="small text-muted" style="font-size: 12px;">
-                                      <em>Set the days to cancel if not checked in.</em>
-                                      </p>
-                                    </div>
-                                    <div class="col-sm-3">
-                                      <div>Deduction Type</div>
-                                      <div class="input-group input-group-sm" *ngIf="autoCancellationDisabled">
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_value" [disabled]="autoCancellationDisabled" /> 
-                                      </div>
-                                      <div class="input-group input-group-sm" *ngIf="!autoCancellationDisabled">
-                                        <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_value"   [ngClass]="{'is-invalid': !autoCancellationDisabled && !configMasterModel.cancellationAfterCheckInDetails.trigger_value }" >
-                                        <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
-                                        </select>
-                                      </div>
-                                    </div>
-                                    <!-- Deduction Percentage -->
-                                    <div class="col-sm-2">
-                                      <div>Deduction</div>
-                                      <div class="input-group input-group-sm">
-                                        <input 
-                                          type="text" 
-                                          class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="5"
-                                          [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_percentage" [disabled]="autoCancellationDisabled" 
-                                           [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) }" 
-                                          style="max-width: 70px !important;"/>
-                                          <span class="input-group-text">%</span>
-                                      </div>
-                                      <p class="small text-muted" style="font-size: 12px;">
-                                      <em>Percentage of paid amount to deduct.</em>
-                                      </p>
-                                    </div>
-                                    <!-- Action Button -->
-                                    <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <div class="btn-group">
-                                        <button 
-                                          class="btn btn-sm btn-outline-secondary" 
-                                          *ngIf="autoCancellationDisabled"
-                                          (click)="autoCancellationDisabled = false">
-                                          <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button 
-                                          class="btn btn-sm btn-outline-secondary" 
-                                          *ngIf="!autoCancellationDisabled"
-                                          (click)="autoCancellationSubmit()">
-                                          <i class="fas fa-check"></i>
-                                        </button>
-                                        <button 
-                                          class="btn btn-sm btn-outline-secondary" 
-                                          *ngIf="!autoCancellationDisabled"
-                                          (click)="autoCancellationReset()">
-                                          <i class="fas fa-redo" style="color: red;"></i>
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div> 
+ 
                                </div>
                            </div>
                         </div>
@@ -539,13 +469,22 @@
                         <!--Security Deposit Refund rules-->
                         <div>
                           <!--Total Advance section-->
-                          <div class="row p-3 align-items-center marginRow">
-                            <div class="col-sm-3">
-                              <div><span style="font-size: 16px;">Early Check-out Rules</span></div>
-                              <div><p class="small text-muted" style="font-size: 12px;"><em>The Maximim Number of days allowing tenants to get refund of rent amount in prorate basis if not happy with the current PG.</em></p></div>
+                          <div class="p-3">
+                            <div>
+                              <div><span style="font-size: 16px;color:#78177e;">Early Check-out Rules</span></div>
+                              <div ><p class="small text-muted" style="font-size: 12px;">
+                                <em>The Maximim Number of days allowing tenants to get refund of rent amount in prorate basis if not happy with the current PG.
+                                  If type as a selected Rent then days 
+                                  <a href="javascript:void(0)" *ngIf="!moreEarlyCheckout"  (click)="moreEarlyCheckout=!moreEarlyCheckout">...more</a>
+                                  <span *ngIf="moreEarlyCheckout">
+                                    of rent amount dedected .If type as a selected PaidAmount then parcentage of Paid amount(security Deposit) dedected .
+                                    If type as a selected PaidAmount & Rent then parcentage of Paid amount and addtionally days of rent amount dedected .
+                                    <a href="javascript:void(0)" (click)="moreEarlyCheckout=!moreEarlyCheckout"><<...less</a>
+                                  </span>
+                                </em></p></div>
                             </div>
                             
-                            <div class="col-sm-9">
+                            <div>
                               <div class="row">
                                 <div class="col-sm-2">
                                   <div>Condition</div>
@@ -559,7 +498,7 @@
                                     </select>
                                   </div>
                                  </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                   <div>Days for Refund</div>
                                   <div class="input-group input-group-sm">
                                     <input 
@@ -586,19 +525,39 @@
                                     </select>
                                   </div>
                                   </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                   <div> Platform charges </div>
+                                  <div class="row">
+                                  <div class="col-sm-5">
                                       <div class="input-group input-group-sm" >
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
                                           [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.deduction_percentage"  (keypress)="percentageOnly($event)" maxlength="5"
                                           [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled &&  isNotValidNumber(configMasterModel.earlyCheckOutRuleDetails.deduction_percentage)}" 
-                                          style="max-width: 70px !important;" [disabled]="earlyCheckOutRulesDisabled" />
-                                         <span class="input-group-text">%</span>
+                                          style="max-width: 70px !important;" [disabled]="earlyCheckOutRulesDisabled"/>
+                                         <span class="input-group-text" *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value!='Rent'">%</span>
+                                         <span class="input-group-text" *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='Rent'">Days</span>
                                   </div>
-                                  <p class="small text-muted" style="font-size: 12px;"><em>Enter deduction percentage from security deposit.</em></p>
-                      
+                                  <p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value!='Rent'" style="font-size: 12px;"><em>Enter deduction percentage from security deposit.</em></p>
+                                  <p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='Rent'" style="font-size: 12px;"><em>Enter deduction days from rent deposit.</em></p>
+                                  </div>
+                                  <div class="col-sm-1 pt-1"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='TotalPaidAmount & Rent'">+</div>
+                                  <div class="col-sm-5"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='TotalPaidAmount & Rent'">
+                                    <div class="input-group input-group-sm">
+                                      <input 
+                                      type="text" 
+                                      class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="3"
+                                      [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_day" [disabled]="earlyCheckOutRulesDisabled" 
+                                       [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_day) }" 
+                                      style="max-width: 70px !important;"/>
+                                        <span class="input-group-text">Days</span>
+                                    </div>
+                                    <p class="small text-muted" style="font-size: 12px;">
+                                    <em>Additionally days of rent amount to deduct.</em>
+                                    </p>
+                                  </div>
+                                </div>
                                 </div>
                                 <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                     <div *ngIf="earlyCheckOutRulesDisabled">
@@ -616,23 +575,36 @@
                                     </div>
                                 </div>
                               </div>
-                                 </div>
                           </div>
+                          
                         </div>
                       
                             <hr class="solid"> 
                             <div>
                               <!--Auto-Cancellation Period-->
-                              <div class="row p-3 marginRow">
-                                <div class="col-sm-2">
-                                  <div><span style="font-size: 16px;">After check-in Date </span></div>
+                              <div class="p-3">
+                                <div>
+                                  <div><span style="font-size: 16px;color:#78177e;">After check-in Date </span></div>
                                   <!-- <div>
                                     <p class="small text-muted" style="font-size: 12px;">
                                     <em>Configure the number of days after the check-in date to automatically cancel bookings if tenants fail to check-in.</em>
                                     </p>
                                   </div> -->
+                                  <div >
+                                    <p class="small text-muted" style="font-size: 12px;">
+                                      <em>Configure the number of days after the check-in date to automatically cancel bookings if tenants fail to check-in.
+                                        If type as a selected Rent then days of rent amount dedected .
+                                        <a href="javascript:void(0)" *ngIf="!more"  (click)="more=!more">...more</a>
+                                        <span *ngIf="more">
+                                          If type as a selected PaidAmount then parcentage of Paid amount(security Deposit) dedected .
+                                          If type as a selected PaidAmount & Rent then parcentage of Paid amount and addtionally days of rent amount dedected .
+                                          <a href="javascript:void(0)" (click)="more=!more"><<...less</a>
+                                        </span>
+                                      </em>
+                                    </p>
+                                  </div>
                                 </div>
-                                <div class="col-sm-10">
+                                <div>
                                   <div class="row">
                                     <!-- Auto-Cancellation after Check-in Dates -->
                                     <div class="col-sm-2">
@@ -675,29 +647,41 @@
                                     <!-- Deduction Percentage -->
                                     <div class="col-sm-4">
                                       <div>Deduction</div>
-                                      <div class="input-group input-group-sm">
-                                        <input 
-                                          type="text" 
-                                          class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="5"
-                                          [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_percentage" [disabled]="autoCancellationDisabled" 
-                                           [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) }" 
-                                          style="max-width: 70px !important;"/>
-                                          <span class="input-group-text">%</span>
-                                          <span class="mt-2 ml-1 mr-1"> + </span>
+                                      <div class="row">
+                                        <div class="col-sm-5">
+                                          <div class="input-group input-group-sm">
                                             <input 
                                               type="text" 
-                                              class="form-control form-control-sm"
-                                              [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day" [disabled]="autoCancellationDisabled" (keypress)="numberOnly($event)" maxlength="3" 
-                                               [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day) }" 
-                                              style="max-width: 70px !important;" />
+                                              class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="5"
+                                              [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_percentage" [disabled]="autoCancellationDisabled" 
+                                               [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) }" 
+                                              style="max-width: 70px !important;"/>
+                                              <span class="input-group-text" *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value!='Rent'">%</span>
+                                              <span class="input-group-text" *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='Rent'">Days</span>
+                                             
+                                          </div>
+                                          <p class="small text-muted" style="font-size: 12px;">
+                                           <span  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value!='Rent'"> <em>Percentage of total paid amount to deduct.</em></span>
+                                           <span  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='Rent'"> <em>Days of rent amount to deduct.</em></span>
+                                          </p>
+                                        </div>
+                                        <div class="col-sm-1 pt-1"  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='TotalPaidAmount & Rent'">+</div>
+                                        <div class="col-sm-5"  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='TotalPaidAmount & Rent'">
+                                          <div class="input-group input-group-sm">
+                                            <input 
+                                            type="text" 
+                                            class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="3"
+                                            [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_day" [disabled]="autoCancellationDisabled" 
+                                             [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_day) }" 
+                                            style="max-width: 70px !important;"/>
                                               <span class="input-group-text">Days</span>
-                                         
+                                          </div>
+                                          <p class="small text-muted" style="font-size: 12px;">
+                                          <em>Additionally days of rent amount to deduct.</em>
+                                          </p>
+                                        </div>
                                       </div>
-                                      <p class="small text-muted" style="font-size: 12px;">
-                                       <span> <em>Percentage of paid amount to deduct.</em></span>
-                                     <span style="width: 10px;"></span>
-                                      <span><em>Days of rent amount to deduct.</em></span>
-                                      </p>
+                                      
                                     </div>
                                     <!-- Action Button -->
                                     <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
@@ -726,34 +710,22 @@
                                 </div>
                                  
                               </div>
-                              <div class="m-2">
-                                <p class="small text-muted" style="font-size: 12px;">
-                                  <em>Configure the number of days after the check-in date to automatically cancel bookings if tenants fail to check-in.
-                                    If type as a selected Rent then days of rent amount dedected .
-                                    <a href="javascript:void(0)" *ngIf="!more"  (click)="more=!more">...more</a>
-                                    <span *ngIf="more">
-                                      If type as a selected PaidAmount then parcentage of Paid amount(security Deposit) dedected .
-                                      If type as a selected PaidAmount & Rent then parcentage of Paid amount and addtionally days of rent amount dedected .
-                                      <a href="javascript:void(0)" (click)="more=!more"><<...less</a>
-                                    </span>
-                                  </em>
-                                </p>
-                              </div>
+                              
                             </div>
                           
                             <hr class="solid"> 
                             <div>
                               <!--Security Deposit Deadline-->
-                              <div class="row p-3 align-items-center marginRow">
-                                <div class="col-sm-3">
-                                  <div><span style="font-size: 16px;">Security Deposit Deadline </span></div>
+                              <div class="p-3 ">
+                                <div>
+                                  <div><span style="font-size: 16px;color:#78177e;">Security Deposit Deadline </span></div>
                                   <div>
                                     <p class="small text-muted" style="font-size: 12px;">
                                     <em>Configure the number of days to collect total security deposit amount before check-in date to avoid auto cancellation.</em>
                                     </p>
                                   </div>
                                 </div>
-                                <div class="col-sm-9">
+                                <div >
                                   <div class="row">
                                     <!-- Auto-Cancellation after Check-in Dates -->
                                     <div class="col-sm-2">
@@ -784,14 +756,14 @@
                                     </div>
                                     <div class="col-sm-3">
                                       <div>Deduction Type</div>
-                                      <div class="input-group input-group-sm" *ngIf="securityDepositDeadLineDisabled">
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_value" [disabled]="securityDepositDeadLineDisabled" /> 
+                                      <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_value" disabled /> 
                                       </div>
-                                      <div class="input-group input-group-sm" *ngIf="!securityDepositDeadLineDisabled">
+                                      <!--div class="input-group input-group-sm" *ngIf="!securityDepositDeadLineDisabled">
                                         <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_value" [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails.trigger_value }" >
                                         <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
                                         </select>
-                                      </div>
+                                      </div -->
                                     </div>
                                      <!-- Deduction Percentage -->
                                      <div class="col-sm-2">
@@ -836,20 +808,21 @@
                                   </div>
                                 </div>
                               </div>
+                             
                             </div>
                            
                             <hr class="solid">
                             <!--Other Charges-->
                             <div>
-                                 <div class="row pl-3 align-items-center">
-                                  <div class="col-sm-3">
-                                    <span style="font-size: 16px;">Other Charges</span>
+                                 <div class="p-3">
+                                  <div  style="align-items: baseline !important;">
+                                    <span style="font-size: 16px;color:#78177e;">Other Charges</span>
                                     <p class="small text-muted" style="font-size: 12px;">
                                       <em>Configure eKYC and documentation charges for Owners and Tenants.</em>
                                     </p>
                                   </div>
-                                
-                                  <div class="col-sm-8">
+                                  <div class="row marginRow align-items-center">
+                                  <div class="col-sm-11">
                                     <div class="card card-body">
                                     <div class="row">
                                       <!-- eKYC Charges for Owners -->
@@ -954,7 +927,8 @@
                                       <i class="fas fa-redo" style="color: red;"></i>
                                     </button>
                                   </div>
-                                </div>  
+                                </div> 
+                                </div> 
                                 </div>
                                 
                             
@@ -963,11 +937,14 @@
                         <hr class="solid">
                         <!--Data Grouping-->
                         <div>
-                          <div class="row p-3 align-items-center marginRow">
-                            <div class="col-sm-3">
-                              <span style="font-size: 16px;">Data Grouping</span>
+                          <div class=" p-3 ">
+                            <div>
+                              <span style="font-size: 16px;color:#78177e;">Data Grouping</span>
+                              <div>
+                                <p class="small text-muted" style="font-size: 12px;"><em>Specify the number of days that is to be considered for showing trending PG's to Tenants.</em></p>
+                              </div>
                             </div>
-                            <div class="col-sm-9">
+                            <div>
                              <div class="row">
                                 <span>Trending PG Configuration</span>
                                 <div class="col-sm-3">
@@ -997,19 +974,20 @@
                                   </div>
                               </div>
                                 </div>
-                             <div>
-                              <p class="small text-muted" style="font-size: 12px;"><em>Specify the number of days that is to be considered for showing trending PG's to Tenants.</em></p>
-                            </div>
+                             
                             </div>
                           </div>
                         </div>
                         <hr class="solid">
                         <div>
-                          <div class="row p-3 align-items-center marginRow">
-                            <div class="col-sm-3">
-                              <span style="font-size: 16px;">Force Checkout </span>
+                          <div class="p-3">
+                            <div>
+                              <span style="font-size: 16px;color:#78177e;">Force Checkout </span>
+                              <p class="small text-muted" style="font-size: 12px;">
+                                <em>Specify the number of days that are to be considered for enabling force checkout in case the tenant is not meeting the expectations.</em>
+                              </p>
                             </div>
-                            <div class="col-sm-9">
+                            <div>
                               <div class="row">
                                 <span>Force Checkout Enabling Days</span>
                                 <div class="col-sm-3">
@@ -1038,22 +1016,23 @@
                                   </div>
                                 </div>
                               </div>
-                              <p class="small text-muted" style="font-size: 12px;">
-                                <em>Specify the number of days that are to be considered for enabling force checkout in case the tenant is not meeting the expectations.</em>
-                              </p>
+                              
                             </div>
                           </div>
                           
                         </div>
                         <hr class="solid">
                         <div>
-                          <div class="row p-3 align-items-center marginRow">
-                            <div class="col-sm-3">
-                              <span style="font-size: 16px;">Short Term Renting Duration</span>
+                          <div class="p-3">
+                            <div>
+                              <span style="font-size: 16px;color:#78177e;">No Rental Agreement </span>
+                              <p class="small text-muted" style="font-size: 12px;">
+                                <em>Specify the number of days that are to be considered for No Rental Agreement generate.</em>
+                              </p>
                             </div>
-                            <div class="col-sm-9">
+                            <div>
                               <div class="row">
-                                <span>Short Term Renting Duration Upto</span>
+                                <span>No Rental agreement upto</span>
                                 <div class="col-sm-3">
                                   <div class="input-group input-group-sm">
                                     <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
@@ -1080,23 +1059,22 @@
                                   </div>
                                 </div>
                               </div>
-                              <p class="small text-muted" style="font-size: 12px;">
-                                <em>Specify the number of days that are to be considered for Short Term Renting Duration.</em>
-                              </p>
+                              
                             </div>
                           </div>
                           
                         </div>
                         <hr class="solid">
                           <div>
-                            <div class="row p-3 align-items-center marginRow">
-                              <div class="col-sm-3">
-                                <span style="font-size: 16px;">Short term Packages Configuration</span>
+                            <div class="p-3">
+                              <div>
+                                <span style="font-size: 16px;color:#78177e;">Short term Packages Configuration</span>
+                                
                                 <p class="small text-muted" style="font-size: 12px;">
                                   <em>Specify the percentage of monthly rent to charge for each stay during the specified slabs. The admin can configure rent percentages for each slab  configured in the initial configuration master.</em>
                                 </p>
                               </div>
-                              <div class="col-sm-9">
+                              <div>
                                 <div class="row">
                                   <span>Short term Packages</span>
                                 <div class="col-sm-5">
@@ -1108,6 +1086,7 @@
                                         [(ngModel)]="shortTerm.percentage" [disabled]="!shortTerm.termDisabled"
                                         (keypress)="percentageOnlyWithZero($event)" maxlength="3" 
                                         [ngClass]="{'is-invalid': shortTerm.termDisabled && isNotValidNumber(shortTerm.percentage)}"  />
+                                        <span class="input-group-text">%</span>
                                     </div>
                                   </div>
                                   <div class="col-sm-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
@@ -1129,14 +1108,9 @@
                                 </div>
                                 </div>
 
-                                <p class="small text-muted" style="font-size: 12px;">
-                                  <em>Specify the percentage of the Monthly Rent to charge for each stay duration slab.</em>
-                                </p>
                               </div>
                             </div>
-                          </div>
-
-                        
+                          </div>                       
                    </div>
                   </div>
                 <!-- /.container-fluid -->

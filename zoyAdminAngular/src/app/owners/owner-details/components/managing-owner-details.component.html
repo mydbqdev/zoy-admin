@@ -53,7 +53,7 @@
                                       <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                       </a>
                                       <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="openModelDoActiveteDeactivete('owner')" >{{pgOwnerData.profile?.status=='Active'? 'Deactivate' : 'Activate'}}</a>
+                                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="openModelDoActiveteDeactivete('owner')" >Status</a>
                                       </div>
                                     </div>
                                    </div>
@@ -98,7 +98,7 @@
                                     </div>
                                   </div>
 
-                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_business_info?.length > 0" >
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2">
                                     <i class="far mr-2 ml-2" class="far mr-2 ml-2" [ngClass]="collaspeList[1].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2" (click)="collaspeExpandPanel(collaspeList[1],'left2')"></i> Business Information
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeList[1].selected ? 'show':''" id="collapseExample2">
@@ -137,7 +137,7 @@
 
                                       </div>
                                       
-                                        <div class="card card-body mt-2">
+                                        <div class="card card-body mt-2"  *ngIf="pgOwnerData?.pg_owner_business_info?.length > 0" >
                                         <div class="row">
                                           <div class="col-auto" style="font-size: 15px;font-weight: 600;">Bank Details <span *ngIf="pgOwnerData?.pg_owner_business_info?.length>1" > ({{pgOwnerData?.pg_owner_business_info?.length}})</span> </div>
                                         </div>
@@ -172,7 +172,7 @@
                                               </div>
                                             </div>
                                           </div>
-                                          <button *ngIf="pgOwnerData?.pg_owner_business_info?.length>1" class="carousel-control-next" type="button" data-bs-target="#carouselbankFade" data-bs-slide="next">
+                                          <button class="carousel-control-next" type="button" data-bs-target="#carouselbankFade" data-bs-slide="next">
                                             <i class="fas fa-chevron-right" style="color: gray;margin-right: -30px;"></i>
                                           </button>
                                         </div>
@@ -198,7 +198,7 @@
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                           <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="openModelDoActiveteDeactivete('pg')"
                                             *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0" >
-                                          {{pgOwnerData.profile?.status=='Active'? 'Deactivate' : 'Activate'}}</a>
+                                          Status</a>
                                         </div>
                                       </div>
                                     </div>
@@ -319,7 +319,7 @@
                                        </div>
                                     </div>
                                   </div>
-                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="propertyInfo?.pg_owner_additional_info?.security_deposit">
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[2].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight2" aria-expanded="false" aria-controls="collapseExampleRight2" (click)="collaspeExpandPanelRight(collaspeListRight[2],'right3')"></i>  Additional Information
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[2].selected ? 'show':''" id="collapseExampleRight2">
@@ -350,21 +350,21 @@
                                           <div class="col-sm-1 align-items-center">:</div>
                                           <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.grace_period}} </div>
                                         </div>
-                                        <div class="row">
+                                        <!-- <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Additional Charges</div>
                                           <div class="col-sm-1 align-items-center">:</div>
                                           <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.additional_charges}} </div>
-                                        </div>
+                                        </div> 
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Aggrement Charges</div>
                                           <div class="col-sm-1 align-items-center">:</div>
                                           <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.agreement_charges}} </div>
                                         </div>
-                                        <div class="row">
+                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">EKYC Changes</div>
                                           <div class="col-sm-1 align-items-center">:</div>
                                           <div class="col-sm-7" style="font-size: 14px;color: gray;">{{propertyInfo?.pg_owner_additional_info?.ekyc_charges}} </div>
-                                        </div>
+                                        </div> -->
                                         <div class="row">
                                           <div class="col-sm-4" style="font-size: 14px;">Description</div>
                                           <div class="col-sm-1 align-items-center">:</div>
@@ -374,7 +374,7 @@
                                     </div>
                                   </div>
 
-                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" >
+                                  <div style="background-color: #c1a1f3;padding: 5px;" class="mb-2" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0">
                                     <i class="far mr-2 ml-2" [ngClass]="collaspeListRight[3].selected ? 'fa-minus-square':'fa-plus-square'" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseExampleRight3" aria-expanded="false" aria-controls="collapseExampleRight3" (click)="collaspeExpandPanelRight(collaspeListRight[3],'right4')"></i>  Payment Information
                                   </div>
                                   <div class="collapse" [ngClass]="collaspeListRight[3].selected ? 'show':''" id="collapseExampleRight3">
@@ -500,11 +500,21 @@
   <div class="modal-dialog modal-small ">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel"><span style="color: rgb(173, 5, 159);">{{status=='Active'? 'Deactivate' : 'Activate'}} {{doActiveteDeactiveteName}} </span></h5>
+        <h5 class="modal-title" id="modalLabel"><span style="color: rgb(173, 5, 159);">{{doActiveteDeactiveteName}} - Status</span></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3">
-        <div>Reason:</div>
+        <div class="form-group row">
+          <label for="category" class="col-sm-4 col-form-label">Status : </label>
+          <div class="col-sm-8">
+            <select class="form-select form-select-sm" id="status">
+              <option>Active</option>
+              <option>Inactive</option>
+              <option>Suspended</option>
+            </select>
+          </div>
+        </div>
+        <div>Reason :</div>
         <textarea id="txtArea" rows="7" cols="52" [(ngModel)]="reason" maxlength="1000" title="Please give me the reason"
                [ngClass]="{'is-invalid': submitted && !reason}"></textarea>
         <div *ngIf="submitted && !reason" class="text-danger" >
@@ -512,7 +522,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary-custom me-2" (click)="doActiveteDeactivete()" >{{status=='Active'? 'Deactivate' : 'Activate'}}</button>
+        <button type="submit" class="btn btn-primary-custom me-2" (click)="doActiveteDeactivete()" >Update</button>
       </div>
     </div>
   </div>

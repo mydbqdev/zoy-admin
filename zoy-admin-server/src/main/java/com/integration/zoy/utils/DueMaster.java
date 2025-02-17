@@ -1,6 +1,9 @@
 package com.integration.zoy.utils;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.google.gson.annotations.SerializedName;
+
 
 public class DueMaster {
 	@SerializedName("due_type_id")
@@ -8,6 +11,9 @@ public class DueMaster {
 
 	@SerializedName("due_type_name")
 	private String dueTypeName;
+
+	@SerializedName("due_type_image")
+	private MultipartFile dueTypeImage;
 
 	public String getDueTypeId() {
 		return dueTypeId;
@@ -24,6 +30,16 @@ public class DueMaster {
 	public void setDueTypeName(String dueTypeName) {
 		this.dueTypeName = dueTypeName;
 	}
+
+	public MultipartFile getDueTypeImage() {
+		return dueTypeImage;
+	}
+
+	public void setDueTypeImage(MultipartFile dueTypeImage) {
+		this.dueTypeImage = dueTypeImage;
+	}
+
+
 	
 	
 	

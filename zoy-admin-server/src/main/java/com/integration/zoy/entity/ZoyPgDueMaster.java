@@ -21,6 +21,10 @@ public class ZoyPgDueMaster {
     @Column(name = "due_name", nullable = false)
     private String dueName;
 
+    @Column(name = "due_image")
+    private String dueImage;
+    
+    
     public String getDueTypeId() {
         return dueTypeId;
     }
@@ -37,11 +41,18 @@ public class ZoyPgDueMaster {
         this.dueName = dueName;
     }
 
-    @Override
-    public String toString() {
-        return "DueMaster{" +
-                "dueTypeId='" + dueTypeId + '\'' +
-                ", dueName='" + dueName + '\'' +
-                '}';
-    }
+	public String getDueImage() {
+		return dueImage;
+	}
+
+	public void setDueImage(String dueImage) {
+		this.dueImage = dueImage;
+	}
+
+	@Override
+	public String toString() {
+		return "ZoyPgDueMaster [dueTypeId=" + dueTypeId + ", dueName=" + dueName + ", dueImage=" + dueImage + "]";
+	}
+
+    
 }
