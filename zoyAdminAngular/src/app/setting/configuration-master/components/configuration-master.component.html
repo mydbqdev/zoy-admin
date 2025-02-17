@@ -472,16 +472,10 @@
                           <div class="p-3">
                             <div>
                               <div><span style="font-size: 16px;color:#78177e;">Early Check-out Rules</span></div>
-                              <div ><p class="small text-muted" style="font-size: 12px;">
-                                <em>The Maximim Number of days allowing tenants to get refund of rent amount in prorate basis if not happy with the current PG.
-                                  If type as a selected Rent then days 
-                                  <a href="javascript:void(0)" *ngIf="!moreEarlyCheckout"  (click)="moreEarlyCheckout=!moreEarlyCheckout">...more</a>
-                                  <span *ngIf="moreEarlyCheckout">
-                                    of rent amount dedected .If type as a selected TotalPaidAmount then parcentage of Total Paid Amount to be dedected .
-                                    If type as a selected Security Deposit then parcentage of Security Deposit Amount to be dedected .
-                                    <a href="javascript:void(0)" (click)="moreEarlyCheckout=!moreEarlyCheckout"><<...less</a>
-                                  </span>
-                                </em></p></div>
+                              <div >
+                                <p class="small text-muted" style="font-size: 12px;">
+                                <em>The Maximim Number of days allowing tenants to get refund of rent amount in prorate basis if not happy with the current PG.</em></p>
+                              </div>
                             </div>
                             
                             <div>
@@ -515,15 +509,15 @@
                                 </div>
                                 <div class="col-sm-3">
                                   <div>Deduction Type</div>
-                                  <div class="input-group input-group-sm" *ngIf="earlyCheckOutRulesDisabled">
-                                    <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_value" [disabled]="earlyCheckOutRulesDisabled" /> 
+                                  <div class="input-group input-group-sm" >
+                                    <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_value" disabled/> 
                                   </div>
-                                  <div class="input-group input-group-sm" *ngIf="!earlyCheckOutRulesDisabled">
+                                  <!--div class="input-group input-group-sm" *ngIf="!earlyCheckOutRulesDisabled">
                                     <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_value"
                                     [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled &&  !configMasterModel.earlyCheckOutRuleDetails.trigger_value}"  >
                                     <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
                                     </select>
-                                  </div>
+                                  </div -->
                                   </div>
                                 <div class="col-sm-4">
                                   <div> Platform charges </div>
@@ -533,14 +527,14 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.deduction_percentage"  (keypress)="percentageOnly($event)" maxlength="5"
+                                          [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.deduction_percentage"  (keypress)="percentageOnly($event)" maxlength="3"
                                           [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled &&  isNotValidNumber(configMasterModel.earlyCheckOutRuleDetails.deduction_percentage)}" 
                                           style="max-width: 70px !important;" [disabled]="earlyCheckOutRulesDisabled"/>
-                                         <span class="input-group-text" *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value!='Rent'">%</span>
+                                         <!--span class="input-group-text" *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value!='Rent'">%</span-->
                                          <span class="input-group-text" *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='Rent'">Days</span>
                                   </div>
-                                  <p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='TotalPaidAmount'" style="font-size: 12px;"><em>Enter deduction percentage from Total Paid Amount.</em></p>
-                                  <p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value!='Rent' && configMasterModel.earlyCheckOutRuleDetails.trigger_value!='TotalPaidAmount'" style="font-size: 12px;"><em>Enter deduction percentage from security deposit.</em></p>                                 
+                                  <!--p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='TotalPaidAmount'" style="font-size: 12px;"><em>Enter deduction percentage from Total Paid Amount.</em></p>
+                                  <p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value!='Rent' && configMasterModel.earlyCheckOutRuleDetails.trigger_value!='TotalPaidAmount'" style="font-size: 12px;"><em>Enter deduction percentage from security deposit.</em></p -->                                 
                                   <p class="small text-muted"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.trigger_value=='Rent'" style="font-size: 12px;"><em>Enter deduction days from rent deposit.</em></p>
                                   </div>
                                   

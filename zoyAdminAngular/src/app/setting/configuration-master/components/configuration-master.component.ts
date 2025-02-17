@@ -115,6 +115,7 @@ moreEarlyCheckout:boolean;
 		  this.dataService.setHeaderName("Configuration Master");
 		  this.configMasterModel.securityDepositDeadLineDetails.trigger_value="Security Deposit";
 		  this.beforeCheckInCRfModel.trigger_value="TotalPaidAmount";
+		  this.configMasterModel.earlyCheckOutRuleDetails.trigger_value="Rent";
 	  }
 	  getConfigMasterDetails(){
 		this.authService.checkLoginUserVlidaate();
