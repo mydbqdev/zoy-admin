@@ -1201,7 +1201,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newZoyCompanyProfile.setContactNumbertwo(companyProfile.getContactNumberTwo());
 				newZoyCompanyProfile.setEmailIdOne(companyProfile.getEmailOne());
 				newZoyCompanyProfile.setEmailIdTwo(companyProfile.getEmailTwo());
-				newZoyCompanyProfile.setStatus(companyProfile.getStatus());
+				newZoyCompanyProfile.setStatus(companyProfile.getStatus()); 
 
 				ownerDBImpl.createOrUpdateCompanyProfile(newZoyCompanyProfile);
 
