@@ -129,6 +129,8 @@ moreEarlyCheckout:boolean;
 			}
 		});
 		this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
+		this.configMasterModel.earlyCheckOutRuleDetails.trigger_value="Rent";
+		this.configMasterModel.securityDepositDeadLineDetails.trigger_value="Security Deposit";
 		this.getBeforeCheckInCRData();
 		// this.rentSlabsdataSource = new MatTableDataSource<RentSlabModel>(this.rentSlabs);
 		this.spinner.hide();
@@ -798,6 +800,7 @@ getTriggerOn(){
 		this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
 		this.beforeCheckInCRfSaveVali = false ;
 		this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
+		this.beforeCheckInCRfModel.trigger_value="TotalPaidAmount";
 	}  
 
  beforeCheckInCRfUpDate(){
