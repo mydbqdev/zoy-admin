@@ -220,10 +220,16 @@ export class AppAuthService extends AuthService{
      public checkLogout() : void{
         var msg:string;
         this.message ='';
+        if (!this.userService.getUserinfo() || !this.sessionSnapshot) {
+            return;
+        }
+        
         this.checkLogoutUserOnServer().subscribe(
             (result)=>{ 
                 this.userService.setLoggedOut(true);
+                this.userService.setUserinfo(null);
                 this.sessionSnapshot =null;
+                this.dataService.setStartedSession(false);
                 this.userService.setSessionTime(null);
                 sessionStorage.clear();
                 this.router.navigate(['/signin']); 
