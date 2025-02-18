@@ -35,7 +35,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
   pageSize: number = 5; 
   pageSizeOptions: number[] = [5,10, 20, 50]; 
   totalProduct: number = 0; 
-  displayedColumns: string[] = ['type', 'addressLineOne', 'city', 'state', 'pinCode','contactNumberOne','emailOne','action'];
+  displayedColumns: string[] = ['type', 'addressLineOne', 'city', 'state', 'pinCode','contactNumberOne','emailOne','status','action'];
   public ELEMENT_DATA:OrganizationBranchInfoModel[];
   orginalFetchData:OrganizationBranchInfoModel[]=[];
   dataSource:MatTableDataSource<OrganizationBranchInfoModel>=new MatTableDataSource<OrganizationBranchInfoModel>();
@@ -54,7 +54,8 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
   submittedBranchInfo:boolean;
   submittedMainInfo:boolean;
   infoModel:OrganizationBranchInfoModel = new OrganizationBranchInfoModel();
-  branchType:string[]=['Head Branch','Sub Branch ']
+  branchType:string[]=['Head Office','Branch Office'];
+  status:string[]=['Open','On Hold','Closed'];
   OrganizationMainBranchInfoModel
   mainBranchInfo:OrganizationMainBranchInfoModel = new OrganizationMainBranchInfoModel();
   constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private dataService: DataService, private organizationInfoConfigService :OrganizationInfoConfigService,private userService:UserService,
@@ -167,6 +168,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
         this.orginalFetchData = JSON.parse(JSON.stringify(res.data));
         this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
         this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+        this.sortChange('type','desc');
       }else{
         this.totalProduct = 0;
         this.orginalFetchData = [];
@@ -252,6 +254,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
             (data.city?.toLowerCase())?.includes(searchText) || 
             (data.contactNumberOne?.toLowerCase())?.includes(searchText) || 
             (data.emailOne?.toLowerCase())?.includes(searchText) || 
+            (data.status?.toLowerCase())?.includes(searchText) || 
             (data.pinCode?.toLowerCase())?.includes(searchText) || 
             (data.state?.toLowerCase())?.includes(searchText) || 
             (data.type?.toLowerCase())?.includes(searchText) ||
@@ -339,7 +342,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
         return true;
       }
       validatePinCode(pinCode: string): boolean {
-        const pinCodePattern = /^[0-9]{5}$/;  
+        const pinCodePattern = /^[0-9]{6}$/;  
         return !pinCodePattern.test(pinCode);
       }
       validatecontactNumber(contactNumber: string): boolean {
@@ -357,7 +360,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
 
       submitBranchInfo(){
         this.submittedBranchInfo=true;
-         if (!this.infoModel.type || !this.infoModel.type || 
+         if (!this.infoModel.type || !this.infoModel.type || !this.infoModel.status ||
               !this.infoModel.pinCode || this.validatePinCode(this.infoModel?.pinCode) ||
               !this.infoModel.city || !this.infoModel.state || 
               !this.infoModel.addressLineOne || !this.infoModel.addressLineTwo || !this.infoModel.addressLineThree || 
@@ -368,6 +371,16 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
               !this.infoModel.contactNumberTwo || this.validatecontactNumber(this.infoModel.contactNumberTwo) || 
               this.infoModel.contactNumberOne === this.infoModel.contactNumberTwo 
             ){
+            return;
+          }
+
+          if(this.infoModel.type === 'Head Office' && this.orginalFetchData.filter(org=>org.companyProfileId != this.infoModel.companyProfileId && org.type == this.infoModel.type).length>0 ){
+            this.notifyService.showError('Head Office already exists',"");
+            return;
+          }
+
+          if(this.orginalFetchData.filter(org=>org.companyProfileId != this.infoModel.companyProfileId && org.contactNumberOne == this.infoModel.contactNumberOne).length>0 ){
+            this.notifyService.showError('Contact Number One already exists',"");
             return;
           }
     
@@ -385,6 +398,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
             this.orginalFetchData = JSON.parse(JSON.stringify(res.data));
             this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
             this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+            this.sortChange('type','desc');
           }else{
             this.totalProduct = 0;
             this.orginalFetchData = Object.assign([]);
