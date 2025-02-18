@@ -34,9 +34,8 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
 				bulkUploadDetails.setStatus("Completed");
 			} else if (jobExecution.getStatus() == BatchStatus.FAILED) {
 				bulkUploadDetails.setStatus("Failed");
-				long executionId =jobExecution.getJobInstance().getInstanceId();
-				String errorMessage=bulkUploadDetailsRepository.findErrorMessage(executionId);
-				zoyEmailService.sendErrorEmail(jobExecutionId, errorMessage);				
+				String executionId =jobExecution.getExitStatus().getExitDescription();
+				zoyEmailService.sendErrorEmail(jobExecutionId, executionId);				
 			}
 			bulkUploadDetailsRepository.save(bulkUploadDetails);
 		});
