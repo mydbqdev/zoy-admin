@@ -59,7 +59,12 @@ export class SigninComponent implements OnInit {
 			this.rememberme=JSON.parse(localStorage.getItem('rememberme'));
 		}
 	}
-	
+	ngAfterViewInit() {
+		this.doSignout();
+	}
+	doSignout() {
+		this.authService.checkLogout();
+  	}
 
 	togglePasswordVisibility(){
 		this.isPasswordVisible=!this.isPasswordVisible;
@@ -108,7 +113,7 @@ export class SigninComponent implements OnInit {
 					   str = error.error.error;
 					 } else{
 					   str = error.error.message;
-					   str = str.substring(str.indexOf(":") + 1);
+					   str = str?.substring(str.indexOf(":") + 1);
 					 }
 					 this.error = str;
 				   }
@@ -169,7 +174,7 @@ export class SigninComponent implements OnInit {
 			str=error.error;
 			}else{
 			  str=error.message;
-			  str=str.substring(str.indexOf(":")+1);
+			  str=str?.substring(str.indexOf(":")+1);
 			}
 			console.log("Error:"+str);
 			this.errorMsg=str;
