@@ -229,7 +229,6 @@ export class AppAuthService extends AuthService{
                 this.userService.setLoggedOut(true);
                 this.userService.setUserinfo(null);
                 this.sessionSnapshot =null;
-                this.dataService.setStartedSession(false);
                 this.userService.setSessionTime(null);
                 sessionStorage.clear();
                 this.router.navigate(['/signin']); 
