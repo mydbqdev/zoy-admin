@@ -1173,6 +1173,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				zoyCompanyProfileMaster.setContactNumbertwo(companyProfile.getContactNumberTwo());
 				zoyCompanyProfileMaster.setEmailIdOne(companyProfile.getEmailOne());
 				zoyCompanyProfileMaster.setEmailIdTwo(companyProfile.getEmailTwo());
+				zoyCompanyProfileMaster.setStatus(companyProfile.getStatus());
 				ownerDBImpl.createOrUpdateCompanyProfile(zoyCompanyProfileMaster);
 
 				// Audit history here
@@ -1200,6 +1201,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newZoyCompanyProfile.setContactNumbertwo(companyProfile.getContactNumberTwo());
 				newZoyCompanyProfile.setEmailIdOne(companyProfile.getEmailOne());
 				newZoyCompanyProfile.setEmailIdTwo(companyProfile.getEmailTwo());
+				newZoyCompanyProfile.setState(companyProfile.getStatus());
 
 				ownerDBImpl.createOrUpdateCompanyProfile(newZoyCompanyProfile);
 
