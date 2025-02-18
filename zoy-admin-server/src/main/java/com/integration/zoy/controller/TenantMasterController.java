@@ -4,15 +4,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -33,25 +26,18 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
-import com.integration.zoy.entity.AdminUserMaster;
+import com.integration.zoy.constants.ZoyConstant;
+import com.integration.zoy.entity.UserMaster;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.ActiveBookings;
-import com.integration.zoy.model.BasicPropertyInformation;
-import com.integration.zoy.model.Bed;
 import com.integration.zoy.model.CancellationDetails;
-import com.integration.zoy.model.FloorInformation;
-import com.integration.zoy.model.PgOwnerAdditionalInfo;
-import com.integration.zoy.model.PgOwnerBusinessInfo;
-import com.integration.zoy.model.PgOwnerProfile;
-import com.integration.zoy.model.PgOwnerPropertyInformation;
-import com.integration.zoy.model.PgOwnerbasicInformation;
-import com.integration.zoy.model.PgOwnerdetailPortfolio;
-import com.integration.zoy.model.Room;
 import com.integration.zoy.model.TenantDetailPortfolio;
 import com.integration.zoy.model.TenantProfile;
 import com.integration.zoy.model.UpcomingBookingDetails;
+import com.integration.zoy.model.UserStatus;
 import com.integration.zoy.repository.UserMasterRepository;
 import com.integration.zoy.service.UserDBImpl;
+import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.TenantDetails;
@@ -87,6 +73,9 @@ public class TenantMasterController implements TenantMasterImpl{
 
 	@Autowired
 	private UserMasterRepository userRepo;
+	
+	@Autowired
+	AuditHistoryUtilities auditHistoryUtilities;
 
 	@Override
 	public ResponseEntity<String> zoyTenantManagement(PaginationRequest paginationRequest) {
@@ -220,5 +209,48 @@ public class TenantMasterController implements TenantMasterImpl{
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
 	}
+
+	@Override
+	public ResponseEntity<String> zoyTenantStatusUpdate(UserStatus userStatus) {
+	    ResponseBody response = new ResponseBody();
+	    
+	    try {
+	        Optional<UserMaster> userOpt = userRepo.findById(userStatus.getUserId());
+
+	        if (userOpt.isPresent()) {
+	            UserMaster user = userOpt.get();
+	            user.setUserStatus(userStatus.getStatus());
+	            user.setReasonMessage(userStatus.getReasonMessage());
+	            userRepo.save(user);
+
+	            response.setStatus(HttpStatus.OK.value());
+	            response.setMessage("User status and reason updated successfully.");
+	            
+	            String historyContent = " has Updated tenent Status for " + userStatus.getUserId();
+	            auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_TENANT_USER_STATUS_UPDATE);
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	        } else {
+	            response.setStatus(HttpStatus.NOT_FOUND.value());
+	            response.setError("User not found.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+	        }
+	    } catch (Exception e) {
+	        log.error("Error occurred while updating user status: API:/zoy_admin/updateUserStatus.zoyTenantStatusUpdate", e);
+	        try {
+	            new ZoyAdminApplicationException(e, "");
+	        } catch (Exception ex) {
+	        	System.out.println(">>>"+ex);
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError(ex.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+	        System.out.println(">>>>>>"+e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+
+
 
 }

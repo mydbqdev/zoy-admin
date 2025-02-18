@@ -56,6 +56,12 @@ public class UserMaster {
     @Column(name = "user_ekyc_paid")
     private Boolean userEkycPaid = false;
     
+    @Column(name="user_status")
+    private String userStatus;
+    
+    @Column(name="reason_message")
+    private String reasonMessage;
+    
     public String getUserId() {
         return userId;
     }
@@ -159,6 +165,22 @@ public class UserMaster {
 	public void setUserEkycPaid(Boolean userEkycPaid) {
 		this.userEkycPaid = userEkycPaid;
 	}
+	
+	public String getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(String userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public String getReasonMessage() {
+		return reasonMessage;
+	}
+
+	public void setReasonMessage(String reasonMessage) {
+		this.reasonMessage = reasonMessage;
+	}
 
 	@Override
 	public String toString() {
@@ -166,7 +188,8 @@ public class UserMaster {
 				+ userPin + ", userIdEnc=" + userIdEnc + ", userFirstName=" + userFirstName + ", userLastName="
 				+ userLastName + ", userEkycIsEkycVerified=" + userEkycIsEkycVerified + ", userEkycIsVideoVerified="
 				+ userEkycIsVideoVerified + ", userCreatedAt=" + userCreatedAt + ", userModifiedAt=" + userModifiedAt
-				+ ", userGender=" + userGender + ", userEkycPaid=" + userEkycPaid + "]";
+				+ ", userGender=" + userGender + ", userEkycPaid=" + userEkycPaid + ", userStatus=" + userStatus
+				+ ", reasonMessage=" + reasonMessage + "]";
 	}
 
 

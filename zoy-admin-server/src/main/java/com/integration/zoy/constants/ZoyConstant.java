@@ -64,6 +64,7 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_FINANCE_REPORT_DOWNLOAD ="ZOY_FINANCE_REPORT_DOWNLOAD";
 	public static final String ZOY_ADMIN_TENANT_FILE_UPLOAD ="ZOY_TENANT_FILE_UPLOAD";
 	public static final String ZOY_ADMIN_PROPERTY_FILE_UPLOAD ="ZOY_PROPERTY_REPORT_UPLOAD";
+	public static final String ZOY_TENANT_USER_STATUS_UPDATE="ZOY_TENANT_USER_STATUS_UPDATE";
 
 
 
