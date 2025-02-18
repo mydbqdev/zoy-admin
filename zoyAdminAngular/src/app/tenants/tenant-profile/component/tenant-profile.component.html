@@ -39,7 +39,7 @@
                                   <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                   <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                 </a>
-                                  <div class="dropdown-menu dropdown-menu-left shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                                  <div class="dropdown-menu dropdown-menu-left shadow animated--fade-in" aria-labelledby="dropdownMenuLink" *ngIf="tdpf.profile?.status != 'Active' ">
                                       <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="reason='';submitted=false" >Status</a>
                                   </div>
                                 </div>
@@ -244,7 +244,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3">
-        <div class="form-group row">
+        <!-- <div class="form-group row">
           <label for="category" class="col-sm-4 col-form-label">Status :</label>
           <div class="col-sm-8">
             <select class="form-select form-select-sm" id="status">
@@ -253,7 +253,7 @@
               <option>Suspended</option>
             </select>
           </div>
-        </div>
+        </div> -->
         <div>Reason :</div>
         <textarea id="txtArea" rows="7" cols="52" [(ngModel)]="reason" maxlength="1000" title="Please give me the reason"
                [ngClass]="{'is-invalid': submitted && !reason}"></textarea>
@@ -262,7 +262,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary-custom me-2" (click)="doDeactivateActivate()" >Update</button>
+        <button type="submit" class="btn btn-primary-custom me-2" (click)="doInActiveSuspended()" >{{tdpf.profile?.status ==='Suspended'?'Inactive':'Suspended'}}</button>
       </div>
     </div>
   </div>
