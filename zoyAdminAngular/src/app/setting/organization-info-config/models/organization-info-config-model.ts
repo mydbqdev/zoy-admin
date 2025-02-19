@@ -19,6 +19,7 @@ export class OrganizationBranchInfoModel{
     public  emailTwo : string ;
     public  contactNumberOne : string ;
     public  contactNumberTwo : string ;
+    public  status : string ; 
 }
 
 
