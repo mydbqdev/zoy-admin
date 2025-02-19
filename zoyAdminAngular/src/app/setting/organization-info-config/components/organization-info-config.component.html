@@ -139,7 +139,7 @@
                                   </ng-container>
 
                                     <ng-container matColumnDef="addressLineOne">
-                                      <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                      <th mat-header-cell style="width: 250px;font-weight: 600;" *matHeaderCellDef >
                                          ADDRESS
                                           <span style="margin-left: 2px;">
                                             <span> <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'addressLineOne' && sortDirection === 'asc' }" (click)= "sortChange('addressLineOne','asc')" ></i></span>
@@ -211,6 +211,18 @@
                                 {{element.emailOne}} 
                             </td>
                         </ng-container>
+                        <ng-container matColumnDef="status">
+                          <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                            STATUS
+                              <span style="margin-left: 2px;">
+                                  <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'status' && sortDirection === 'asc' }" (click)= "sortChange('status','asc')" ></i>
+                                  <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'status' && sortDirection === 'desc' }" (click)= "sortChange('status','desc')"></i>
+                              </span>
+                          </th>
+                          <td mat-cell *matCellDef="let element" style="width: 200px;">
+                              {{element.status}} 
+                          </td>
+                      </ng-container>
                                 
                         <ng-container matColumnDef="action">
                           <th mat-header-cell *matHeaderCellDef style="width: 50px;"></th>
@@ -261,7 +273,19 @@
         </button>
       </div>
       <div class="modal-body">
-        
+
+        <div class="row mb-2">
+          <label for="type" class="col-sm-5 col-form-label" style="text-align: left;">Status </label>
+          <div class="col-sm-1"> <span>:</span></div>
+          <div class="col-sm-6">
+            <span *ngIf="task === 'View'">{{infoModel.status}}</span>
+            <select class="form-select form-select-sm" *ngIf="task !== 'View'" placeholder="Select Branch Type" 
+                    [(ngModel)]="infoModel.status" [ngClass]="{'is-invalid': submittedBranchInfo && !infoModel?.status}">
+              <option *ngFor="let status of status" [value]="status">{{status}}</option>
+            </select>
+          </div>
+        </div>
+
         <div class="row mb-2">
           <label for="type" class="col-sm-5 col-form-label" style="text-align: left;">Type </label>
           <div class="col-sm-1"> <span>:</span></div>
@@ -280,7 +304,7 @@
           <div class="col-sm-6">
             <span *ngIf="task === 'View'">{{infoModel.pinCode}}</span>
             <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Pin Code" (keypress)="numberOnly($event)"
-                   [(ngModel)]="infoModel.pinCode" [ngClass]="{'is-invalid': submittedBranchInfo && (!infoModel?.pinCode || validatePinCode(infoModel?.pinCode))}" maxlength="5" minlength="5">
+                   [(ngModel)]="infoModel.pinCode" [ngClass]="{'is-invalid': submittedBranchInfo && (!infoModel?.pinCode || validatePinCode(infoModel?.pinCode))}" maxlength="6" minlength="6">
           </div>
         </div>
 

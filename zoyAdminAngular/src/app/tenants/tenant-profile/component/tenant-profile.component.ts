@@ -306,20 +306,23 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		}); 
 	}
 	
-	doDeactivateActivate(): void {
+	doInActiveSuspended(): void {
 		this.submitted =true;
 		if(!this.reason){
 			return ;
 		}
-		this.tdpf.profile.resoan = this.reason ;
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want to '+(this.tdpf.profile.status == 'Active' ? 'Deactivate ' : 'Activate ') +this.tdpf.profile.tenantName+' ?')
+		const status = this.tdpf.profile?.status === 'Suspended'?'Inactive':'Suspended';
+		const userStatus={"userId":this.tenantId,"status":this.tdpf.profile?.status === 'inactive' ?'Suspended':'Inactive',
+			"reasonMessage":this.reason
+		}
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want to '+(this.tdpf.profile.status == 'Suspended' ? 'Inactive ' : 'Suspended ') +this.tdpf.profile.tenantName+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-				this.tenantService.doDeactivateActivate(this.tdpf.profile).subscribe(res => {
-
+				this.tenantService.doInActiveSuspended(userStatus).subscribe(res => {
+				this.tdpf.profile.status = status;
 				this.submitted =false;
 				this.spinner.hide();
 				}, error => {

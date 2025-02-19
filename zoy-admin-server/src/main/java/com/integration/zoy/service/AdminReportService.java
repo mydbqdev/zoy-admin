@@ -1,10 +1,11 @@
 package com.integration.zoy.service;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +67,9 @@ public class AdminReportService implements AdminReportImpl{
 
 	@Autowired
 	private ZoyPgPropertyDetailsRepository propertyDetailsRepository;
+	
+	@Autowired
+	private WordToPdfConverterService wordToPdfConverterService;
 
 	@Value("${zoy.admin.logo}")
 	private String zoyLogoPath;
@@ -624,67 +628,56 @@ public class AdminReportService implements AdminReportImpl{
 		try {
 			Map<String, Object> data = new HashMap<>();
 			CommonResponseDTO<?> reportData = null; 
+			List<Map<String, Object>> dataListWrapper=null;
+			String templatePath ="";
 			switch (filterRequest.getReportType()) {
 			case "userTransactionReport":
 				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateUserTransactionDataList(reportData,filterRequest);
+				templatePath = getClass().getClassLoader().getResource("templates/userTransactionReport.docx").getPath();
 				break;
 			case "userPaymentGstReport":
 				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateUserPaymentGstReport(reportData,filterRequest);
+				templatePath = getClass().getClassLoader().getResource("templates/userPaymentGstReport.docx").getPath();
 				break;
 			case "consolidatedFinanceReport":
 				reportData = getConsolidatedFinanceDetails(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateConsolidatedFinanceReport(reportData,filterRequest);
+				templatePath = getClass().getClassLoader().getResource("templates/consolidatedFinanceReport.docx").getPath();
 				break;
 			case "tenantDuesReport":
 				reportData = getTenentDuesDetails(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateTenantDuesReport(reportData,filterRequest);
+				templatePath = getClass().getClassLoader().getResource("templates/tenantDuesReport.docx").getPath();
 				break;
 			case "vendorPaymentsReport":
 				reportData = getVendorPaymentDetails(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateVendorPaymentsReport(reportData,filterRequest);
+				templatePath = getClass().getClassLoader().getResource("templates/vendorPaymentsReport.docx").getPath();
 				break;
 			case "vendorPaymentsDuesReport":
 				reportData = getVendorPaymentDuesDetails(filterRequest.getFromDate(), filterRequest.getToDate());
 				break;
 			case "tenantRefundReport":
 				reportData = getTenantRefunds(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateTenantRefundReport(reportData,filterRequest);
+				templatePath = getClass().getClassLoader().getResource("templates/tenantRefundReport.docx").getPath();
 				break;
 			case "reviewsAndRatingReport":
 				reportData = getRatingsAndReviewsDetails(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generaterReviewsAndRatingReport(reportData,filterRequest);
+				templatePath = getClass().getClassLoader().getResource("templates/reviewsAndRatingReport.docx").getPath();
 				break;
 	
 			default:
 				throw new IllegalArgumentException("Invalid template name provided.");
 			}
-			List<?> dataList = reportData.getData();
-			data.put("reportData", dataList);
-			data.put("startDate", filterRequest.getFromDate());  
-			data.put("endDate", filterRequest.getToDate()); 
+			
 			switch (filterRequest.getDownloadType().toLowerCase()) {
 			case "pdf":
-				try {
-					InputStream inputLogoStreamImg = getClass().getResourceAsStream(zoyLogoPath);
-					InputStream inputWaterMarkStreamImg = getClass().getResourceAsStream(watermarkImagePath);
 
-					if (inputLogoStreamImg == null || inputWaterMarkStreamImg == null) {
-					    if (inputLogoStreamImg == null) {
-					        log.error("Logo image not found at the specified path: {}", zoyLogoPath);
-					        throw new FileNotFoundException("Logo image not found at the specified path: " + zoyLogoPath);
-					    }
-					    if (inputWaterMarkStreamImg == null) {
-					        log.error("Watermark image not found at the specified path: {}", watermarkImagePath);
-					        throw new FileNotFoundException("Watermark image not found at the specified path: " + watermarkImagePath);
-					    }
-					}
-					data.put("LOGO_PATH", inputLogoStreamImg); 
-					data.put("WATERMARK_IMAGE", inputWaterMarkStreamImg);
-				}catch (FileNotFoundException e) {
-					log.error("Logo image not found, PDF generation failed."+e);
-					new ZoyAdminApplicationException(e,"Logo image not found, PDF generation failed.");
-				}
-				catch (Exception ex) {
-					log.error("Exception in logo for pdf report."+ex);
-					new ZoyAdminApplicationException(ex,"");
-				}
-				InputStream reportStream = getClass().getResourceAsStream("/templates/"+filterRequest.getReportType()+".jasper");
-				return pdfGenerateService.generatePdfFile(reportStream,data);
+				return wordToPdfConverterService.generateWordDocument(templatePath,dataListWrapper);
 			case "excel":
 				return excelGenerateService.generateExcelFile(filterRequest.getReportType(), data);  
 			case "csv":
@@ -693,11 +686,272 @@ public class AdminReportService implements AdminReportImpl{
 				throw new IllegalArgumentException("Invalid file type provided. Supported types: pdf, excel, csv");
 			}
 		}catch (Exception e) {
+			System.out.println(e);
 			new ZoyAdminApplicationException(e, "");
 		}
 		return null;
 	}
 
+
+	public List<Map<String, Object>> generateUserTransactionDataList(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        UserPaymentDTO userPayment = (UserPaymentDTO) item;
+
+	        data.put("transactionDate", userPayment.getTransactionDate());
+	        data.put("transactionNo", userPayment.getTransactionNumber());
+	        data.put("transactionStatus", userPayment.getTransactionStatus());
+	        data.put("dueAmount", userPayment.getDueAmount());
+	        data.put("gstAmount", userPayment.getGstAmount());
+	        data.put("totalAmount", userPayment.getTotalAmount());
+	        data.put("userName", userPayment.getUserPersonalName());
+	        data.put("pgName", userPayment.getUserPgPropertyName());
+	        data.put("propertyId", userPayment.getPropertyId());
+	        data.put("bedNum", userPayment.getRoomBedNumber());
+	        data.put("category", userPayment.getCategory());
+	        data.put("modeOfPayment", userPayment.getPaymentMode());
+	        data.put("pgAddress", userPayment.getPropertyHouseArea());
+	        data.put("tenantMobile", userPayment.getTenantContactNum());
+
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
+	
+	public List<Map<String, Object>> generateUserPaymentGstReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        UserPaymentDTO userPayment = (UserPaymentDTO) item;
+
+	        data.put("txnDate", userPayment.getTransactionDate());
+	        data.put("invoiceNo", userPayment.getTransactionNumber());
+	        data.put("txnStatus", userPayment.getTransactionStatus());
+	        data.put("tenantName", userPayment.getUserPersonalName());
+	        data.put("tenantMobile", userPayment.getTenantContactNum());
+	        data.put("pgName", userPayment.getUserPgPropertyName());
+	        data.put("pgAddress", userPayment.getPropertyHouseArea());
+	        data.put("totalAmount", userPayment.getTotalAmount());
+	        data.put("gstAmount", userPayment.getGstAmount());
+	        data.put("dueAmount", userPayment.getDueAmount());
+	        data.put("modeOfPayment", userPayment.getPaymentMode());
+
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
+	
+	public List<Map<String, Object>> generateConsolidatedFinanceReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        ConsilidatedFinanceDetails financeDetails = (ConsilidatedFinanceDetails) item;
+
+	        data.put("txnDate", financeDetails.getUserPaymentTimestamp());
+	        data.put("invoiceNum", financeDetails.getUserPaymentBankTransactionId());
+	        data.put("payeePayerType", financeDetails.getPayerPayeeType());
+	        data.put("payeePayerName", financeDetails.getPayerPayeeName());
+	        data.put("debit", financeDetails.getDebitAmount());
+	        data.put("credit", financeDetails.getCreditAmount());
+
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
+	
+	public List<Map<String, Object>> generateTenantDuesReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        TenentDues tenantDues = (TenentDues) item;
+
+	        data.put("tenantName", tenantDues.getUserPersonalName());
+	        data.put("tenantMobile", tenantDues.getTenantMobileNum());
+	        data.put("pgName", tenantDues.getUserPgPropertyName());
+	        data.put("pgAddress", tenantDues.getUserPgPropertyAddress());
+	        data.put("bedNumber", tenantDues.getBedNumber());
+	        data.put("pendingAmount", tenantDues.getPendingAmount());
+	        data.put("paymentDueDate", tenantDues.getPendingDueDate().toLocalDateTime().toLocalDate().toString());
+
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
+	
+	public List<Map<String, Object>> generateVendorPaymentsReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        VendorPayments vendorPayment = (VendorPayments) item;
+
+	        data.put("ownerName", vendorPayment.getOwnerName() != null ? vendorPayment.getOwnerName() : "");
+	        data.put("pgName", vendorPayment.getPgName() != null ? vendorPayment.getPgName() : "");
+	        data.put("ownerEmail", vendorPayment.getOwnerEmail() != null ? vendorPayment.getOwnerEmail() : "");
+	        data.put("pgAddress", vendorPayment.getPgAddress() != null ? vendorPayment.getPgAddress() : "");
+	        data.put("receivedFromTenant", vendorPayment.getTotalAmountFromTenants());
+	        data.put("paidToOwner", vendorPayment.getAmountPaidToOwner());
+	        data.put("zoyShare", vendorPayment.getZoyShare());
+	        data.put("txnDate", vendorPayment.getTransactionDate() != null ? vendorPayment.getTransactionDate() : "");
+	        data.put("invoiceNum", vendorPayment.getTransactionNumber() != null ? vendorPayment.getTransactionNumber() : "");
+	        data.put("paymentStatus", vendorPayment.getPaymentStatus() != null ? vendorPayment.getPaymentStatus() : "");
+	        data.put("approvalStatus", vendorPayment.getOwnerApprovalStatus() != null ? vendorPayment.getOwnerApprovalStatus() : "");
+
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
+	
+	public List<Map<String, Object>> generateTenantRefundReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        TenentRefund tenantRefund = (TenentRefund) item;
+
+	        data.put("userName", tenantRefund.getCustomerName() != null ? tenantRefund.getCustomerName() : "");
+	        data.put("tenantMobile", tenantRefund.getTenantMobileNum() != null ? tenantRefund.getTenantMobileNum() : "");
+	        data.put("pgName", tenantRefund.getPgPropertyName() != null ? tenantRefund.getPgPropertyName() : "");
+	        data.put("pgAddress", tenantRefund.getUserPgPropertyAddress() != null ? tenantRefund.getUserPgPropertyAddress() : "");
+	        data.put("bookingId", tenantRefund.getBookingId() != null ? tenantRefund.getBookingId() : "");
+	        data.put("refundTitle", tenantRefund.getRefundTitle() != null ? tenantRefund.getRefundTitle() : "");
+	        data.put("refundableAmount", tenantRefund.getRefundableAmount());
+	        data.put("amountPaid", tenantRefund.getAmountPaid());
+	        data.put("paymentDate", tenantRefund.getPaymentDate() != null ? tenantRefund.getPaymentDate().toLocalDateTime().toLocalDate().toString() : "");
+	        data.put("invoiceNo", tenantRefund.getTransactionNumber() != null ? tenantRefund.getTransactionNumber() : "");
+	        data.put("status", tenantRefund.getPaymentStatus() != null ? tenantRefund.getPaymentStatus() : "");
+
+	        // Common fields
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
+	
+	public List<Map<String, Object>> generaterReviewsAndRatingReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        RatingsAndReviewsReport review = (RatingsAndReviewsReport) item;
+
+	        data.put("reviewDate", review.getReviewDate() != null ? review.getReviewDate() : "");
+	        data.put("tenantName", review.getCustomerName() != null ? review.getCustomerName() : "");
+	        data.put("pgName", review.getPropertyName() != null ? review.getPropertyName() : "");
+	        data.put("tenantContact", review.getCustomerMobileNo() != null ? review.getCustomerMobileNo() : "");
+	        data.put("cleanliness", review.getCleanliness() != null ? review.getCleanliness() : "");
+	        data.put("accommodation", review.getAccommodation() != null ? review.getAccommodation() : "");
+	        data.put("amenities", review.getAmenities() != null ? review.getAmenities() : "");
+	        data.put("maintenance", review.getMaintenance() != null ? review.getMaintenance() : "");
+	        data.put("valueForMoney", review.getValueForMoney() != null ? review.getValueForMoney() : "");
+	        data.put("overallRating", review.getOverallRating() != null ? review.getOverallRating() : "");
+
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
 	public String[] getDistinctCities() {
 		return propertyDetailsRepository.findDistinctCities();
 	}
