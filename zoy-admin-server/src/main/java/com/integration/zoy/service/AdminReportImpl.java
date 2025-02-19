@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.model.FilterData;
+import com.integration.zoy.model.TenantResportsDTO;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
@@ -24,6 +25,8 @@ public interface AdminReportImpl {
 	CommonResponseDTO<VendorPaymentsDues> getVendorPaymentDuesDetails( Timestamp fromDate, Timestamp toDate) throws WebServiceException;
 	CommonResponseDTO<VendorPaymentsGst> getVendorPaymentGstDetails( Timestamp fromDate, Timestamp toDate) throws WebServiceException;
 	CommonResponseDTO<RatingsAndReviewsReport> getRatingsAndReviewsDetails(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
+	CommonResponseDTO<TenantResportsDTO> getUpcomingTenantsReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
+	CommonResponseDTO<TenantResportsDTO> getActiveTenantsReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	byte[] generateDynamicReport(UserPaymentFilterRequest filterRequest, FilterData filterData,Boolean applyPagination)  throws WebServiceException;
 	String[] getDistinctCities() throws WebServiceException;
 	
