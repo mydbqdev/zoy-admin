@@ -190,14 +190,15 @@ public class CSVValidationService {
 		errorDetails.add(new ErrorDetail(row, header, columnName, "Field is missing or empty"));
 	}
 
-	private void validateAlphabets(String value, int row, int header, String columnName, List<ErrorDetail> errorDetails) {
-		if (value != null && !value.matches("^[a-zA-Z]{1,20}$")) {
-			errorDetails.add(new ErrorDetail(row, header, columnName, "Must contain 1 to 20 alphabetic characters"));
-		}
-	}
+	private void validateAlphabets(String value, int row, int header, String columnName,List<ErrorDetail> errorDetails) {
+			if (value != null && !value.trim().isEmpty() && !value.matches("^[a-zA-Z]{1,20}$")) {
+				errorDetails
+						.add(new ErrorDetail(row, header, columnName, "Must contain 1 to 20 alphabetic characters"));
+			}
+		}	
 
 	private void validatePhoneNumber(String phoneValue, int row, int header, String columnName, List<ErrorDetail> errorDetails) {
-		if (phoneValue != null && !phoneValue.matches("\\d{10}")) {
+		if (phoneValue != null && !phoneValue.trim().isEmpty() && !phoneValue.matches("\\d{10}")) {
 			errorDetails.add(new ErrorDetail(row, header, columnName, "Invalid phone number (must be 10 digits)"));
 		}
 	}
@@ -273,11 +274,13 @@ public class CSVValidationService {
 		}
 	}
 
-	private void validateNumericValue(String numericValue, int row, int header, String columnName, List<ErrorDetail> errorDetails) {
-		try {
-			new BigDecimal(numericValue);
-		} catch (NumberFormatException e) {
-			errorDetails.add(new ErrorDetail(row, header, columnName, "Invalid numeric value"));
+	private void validateNumericValue(String numericValue, int row, int header, String columnName,List<ErrorDetail> errorDetails) {
+		if (numericValue != null && !numericValue.trim().isEmpty()) {
+			try {
+				new BigDecimal(numericValue);
+			} catch (NumberFormatException e) {
+				errorDetails.add(new ErrorDetail(row, header, columnName, "Invalid numeric value"));
+			}
 		}
 	}
 }
