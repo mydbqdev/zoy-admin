@@ -77,7 +77,51 @@ public class FilterData {
 
 	@SerializedName("valueForMoney")
 	String valueForMoney;
-	
+
+	@SerializedName("checkInDate")
+	String checkInDate;
+
+	@SerializedName("checkOutDate")
+	String checkOutDate;
+
+	@SerializedName("suspendedDate")
+	String suspendedDate;
+
+	@SerializedName("suspendedReason")
+	String suspendedReason;
+
+	public String getCheckInDate() {
+		return checkInDate;
+	}
+
+	public void setCheckInDate(String checkInDate) {
+		this.checkInDate = checkInDate;
+	}
+
+	public String getCheckOutDate() {
+		return checkOutDate;
+	}
+
+	public void setCheckOutDate(String checkOutDate) {
+		this.checkOutDate = checkOutDate;
+	}
+
+	public String getSuspendedDate() {
+		return suspendedDate;
+	}
+
+	public void setSuspendedDate(String suspendedDate) {
+		this.suspendedDate = suspendedDate;
+	}
+
+	public String getSuspendedReason() {
+		return suspendedReason;
+	}
+
+	public void setSuspendedReason(String suspendedReason) {
+		this.suspendedReason = suspendedReason;
+	}
+
 	public String getCleanliness() {
 		return Cleanliness;
 	}
