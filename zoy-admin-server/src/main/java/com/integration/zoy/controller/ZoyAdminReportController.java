@@ -296,7 +296,39 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	        CommonResponseDTO<TenantResportsDTO> upcomingTenantDetails = adminReportImpl.getActiveTenantsReport(filterRequest, filterData, applyPagination);
 	        return new ResponseEntity<>(gson.toJson(upcomingTenantDetails), HttpStatus.OK);
 	    } catch (Exception e) {
-	        log.error("Error in API:/zoy_admin/upcoming_tenant_details.getUpcomingTenantsReportDetailsByDateRange", e);
+	        log.error("Error in API:/zoy_admin/Active_tenant_details.getUpcomingTenantsReportDetailsByDateRange", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+
+	@Override
+	public ResponseEntity<String> getInActiveTenantsReportDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
+		ResponseBody response = new ResponseBody();
+	    try {
+	        FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+	        boolean applyPagination = true;
+	        CommonResponseDTO<TenantResportsDTO> upcomingTenantDetails = adminReportImpl.getActiveTenantsReport(filterRequest, filterData, applyPagination);
+	        return new ResponseEntity<>(gson.toJson(upcomingTenantDetails), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error in API:/zoy_admin/inactive_tenant_details.getInActiveTenantsReportDetailsByDateRange", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+
+	@Override
+	public ResponseEntity<String> getSuspendedTenantsReportDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
+		ResponseBody response = new ResponseBody();
+	    try {
+	        FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+	        boolean applyPagination = true;
+	        CommonResponseDTO<TenantResportsDTO> upcomingTenantDetails = adminReportImpl.getActiveTenantsReport(filterRequest, filterData, applyPagination);
+	        return new ResponseEntity<>(gson.toJson(upcomingTenantDetails), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error in API:/zoy_admin/suspended_tenant_details.getSuspendedTenantsReportDetailsByDateRange", e);
 	        response.setStatus(HttpStatus.BAD_REQUEST.value());
 	        response.setError(e.getMessage());
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
