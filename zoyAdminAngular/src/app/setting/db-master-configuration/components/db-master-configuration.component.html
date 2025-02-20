@@ -57,14 +57,16 @@
                                {{ (term[column] == '' || term[column] == undefined) && term[column] != '0'? '-' : term[column] }} 
                               </span>
 
-                               <span *ngIf="(columnHeaders[column]=='AMENITIES PICTURE' || columnHeaders[column]=='DUETYPE PICTURE') && term[column]"><img [src]="term[column]" style="max-width: 75px;max-height: 74px;"></span>
+                               <span *ngIf="(columnHeaders[column]=='AMENITIES PICTURE' || columnHeaders[column]=='DUETYPE PICTURE') && term[column]">
+                                <img [src]="term[column]" style="width: 56px;height: 56px;"></span>
                               </td>
                           </ng-container>
                         </ng-container>
                         <ng-container matColumnDef="actions"  *ngIf="settingType != 'Short Term'" >
                           <th mat-header-cell style="width: 50px;" *matHeaderCellDef ></th>
                           <td mat-cell style="width: 50px;" *matCellDef="let term">
-                          <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE')" >
+                            <div></div>
+                          <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE') && !(settingType == 'Due Type' && !term.due_status)" >
                               <i class="bi bi-pencil-square" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  (click)="getElement(term)" ></i>
                           </span>
                           </td>
@@ -214,7 +216,7 @@
      </div>
 
      <div *ngIf="settingType == 'Due Type' ">
-      <div  class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="dbSettingDataModel.due_type_id">
+      <div  class="image-preview mb-1" style="overflow: auto;text-align: center; width: 56px;height: 56px" *ngIf="dbSettingDataModel.due_type_id">
         <img [src]="imgeURLDueType2">
       </div>
       <div class="form-group">
@@ -251,7 +253,7 @@
         <!-- <div *ngIf="fileUploadProgress" style="color: green;">
            Upload progress: {{ fileUploadProgress }}
         </div> -->
-         <div class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="previewUrlDueType">
+         <div class="image-preview mb-1" style="overflow: auto;text-align: center; width: 56px;height: 56px" *ngIf="previewUrlDueType">
            <img [src]="previewUrlDueType" />                 
          </div>
         </form>
@@ -288,7 +290,7 @@
     </div>
 
     <div *ngIf="settingType == 'Amenities' ">
-      <div  class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="dbSettingDataModel.ameneties_id">
+      <div  class="image-preview mb-1" style="overflow: auto;text-align: center; width: 56px;height: 56px;" *ngIf="dbSettingDataModel.ameneties_id">
         <img [src]="imgeURL2">
       </div>
       <div class="form-group">
@@ -324,7 +326,7 @@
         <!-- <div *ngIf="fileUploadProgress" style="color: green;">
            Upload progress: {{ fileUploadProgress }}
         </div> -->
-         <div class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="previewUrl">
+         <div class="image-preview mb-1" style="overflow: auto;text-align: center; width: 56px;height: 56px" *ngIf="previewUrl">
            <img [src]="previewUrl" />                 
          </div>
         </form>

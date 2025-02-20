@@ -113,7 +113,6 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
        this.organizationInfoConfigService.getOrganizationMailBranchInfo().subscribe(res => {
         this.orgMainBranchInfo = res.data;
         this.mainBranchInfo = JSON.parse(JSON.stringify(this.orgMainBranchInfo)) ;
-       
         if(res.data?.logo && res.data?.logo.length > 0){ 
           const blob = new Blob([new Uint8Array(res.data.logo)], { type: 'image/png' });
           const reader = new FileReader();
@@ -160,9 +159,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
 
     getOrganizationBranchInfo(){
        this.authService.checkLoginUserVlidaate();
-       this.spinner.show();
        this.organizationInfoConfigService.getOrganizationBranchInfo().subscribe(res => {
-        console.log(res.data)
       if(res.data !=null && res.data?.length>0){
         this.totalProduct = res.data.length
         this.orginalFetchData = JSON.parse(JSON.stringify(res.data));
@@ -178,8 +175,6 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
       this.lastPageSize=this.pageSize;
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
-      console.log()
-         this.spinner.hide();
       }, error => {
        this.spinner.hide();
        if(error.status == 0) {
