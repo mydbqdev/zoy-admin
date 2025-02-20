@@ -779,6 +779,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			userDueMasters.setDueName(dueType.getDueTypeName());
 			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,dueType.getDueTypeName(),dueType.getDueTypeImage());
 			userDueMasters.setDueImage(imageUrl);
+			userDueMasters.setDueStatus(true);
 			ZoyPgDueMaster saved=ownerDBImpl.saveUserDueMaster(userDueMasters);
 			//audit history here
 			String historyContent=" has created the Due Type for, "+dueType.getDueTypeName();
