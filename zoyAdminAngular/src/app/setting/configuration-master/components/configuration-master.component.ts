@@ -15,6 +15,7 @@ import { ConfigMasterService } from '../service/config-master-serive';
 import { BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermModel, ShortTermRentingDuration, TokenDetailsModel} from '../models/config-master-model';
 import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { DbSettingDataModel } from '../../db-master-configuration/models/db-setting-models';
 
 
 @Component({
@@ -108,6 +109,7 @@ moreEarlyCheckout:boolean;
 		  this.getConfigMasterDetails();
 		  this.getTriggerCondition();
 		  this.getTriggerOn();
+		  this.getPGTypesDetails();
 	  }
 	  ngAfterViewInit() {
 		  this.sidemenuComp.expandMenu(4);
@@ -117,6 +119,48 @@ moreEarlyCheckout:boolean;
 		  this.beforeCheckInCRfModel.trigger_value="TotalPaidAmount";
 		  this.configMasterModel.earlyCheckOutRuleDetails.trigger_value="Rent";
 	  }
+	  settingType:string='';
+	  pgTypes:DbSettingDataModel[]=[];
+	  changeSettingType(){
+		this. getConfigMasterDetails();
+	  }
+
+	  getPGTypesDetails(){
+		this.authService.checkLoginUserVlidaate();
+		this.configMasterService.getPGTypesDetails().subscribe(res => {
+		this.pgTypes = res;
+		if(	this.pgTypes.length>0){
+			this.settingType= this.pgTypes[0].pg_type_name;
+		}
+		}, error => {
+		this.spinner.hide();
+		if(error.status == 0) {
+		  this.notifyService.showError("Internal Server Error/Connection not established", "")
+	   }else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+			this.errorMsg = error.error.message;
+			console.log("Error:" + this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+		} else {
+			if (error.status == 500 && error.statusText == "Internal Server Error") {
+			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+			} else {
+			let str;
+			if (error.status == 400) {
+				str = error.error.error;
+			} else {
+				str = error.eror.message;
+				str = str.substring(str.indexOf(":") + 1);
+			}
+			console.log("Error:" ,str);
+			this.errorMsg = str;
+			}
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			//this.notifyService.showError(this.errorMsg, "");
+		}
+		});
+	}	
 	  getConfigMasterDetails(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
@@ -1127,8 +1171,8 @@ getTriggerOn(){
 		    if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration.rentingDurationDays) ){
 			   return ;
 			}
-			if(Number(this.configMasterModel.shortTermRentingDuration.rentingDurationDays)<31 ){
-				this.notifyService.showInfo("No Rental agreement upto should be greater than Short term period.","");
+			if(Number(this.configMasterModel.noRentalAgreement.noRentalAgreementDays) > Number(this.configMasterModel.shortTermRentingDuration.rentingDurationDays) ){
+				this.notifyService.showInfo("Short term duration should not be greater than 'No Rental agreement upto'.","");
 				return ;
 			 }
 			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -1181,5 +1225,66 @@ getTriggerOn(){
 			this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
 			this.shortTermRentingDurationDisabled = true;
 		  }
+
+		  noRentalAgreementDisabled:boolean=true;
+		  noRentalAgreementSubmit(): void {
+		    if(this.isNotValidNumber(this.configMasterModel.noRentalAgreement.noRentalAgreementDays) ){
+			   return ;
+			}
+			if(Number(this.configMasterModel.noRentalAgreement.noRentalAgreementDays) < Number(this.configMasterModel.shortTermRentingDuration.rentingDurationDays) ){
+				this.notifyService.showInfo("No Rental agreement upto should be greater than Short term duration.","");
+				return ;
+			 }
+			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+			.then(
+			   (confirmed) =>{
+				if(confirmed){
+					this.authService.checkLoginUserVlidaate();
+					this.spinner.show();
+					this.configMasterService.updateNoRentalAgreement(this.configMasterModel.noRentalAgreement).subscribe(res => {
+						this.configMasterOrg.noRentalAgreement = Object.assign(new ShortTermRentingDuration(), res.data );
+						this.configMasterModel.noRentalAgreement = JSON.parse(JSON.stringify(this.configMasterOrg.noRentalAgreement));
+						this.noRentalAgreementDisabled = true;
+						this.notifyService.showSuccess("No Rental Agreement has been updated successfully", "");
+						this.spinner.hide();
+						}, error => {
+						this.spinner.hide();
+						if(error.status == 0) {
+						this.notifyService.showError("Internal Server Error/Connection not established", "");
+					}else if(error.status==403){
+							this.router.navigate(['/forbidden']);
+						}else if (error.error && error.error.message) {
+							this.errorMsg = error.error.message;
+							console.log("Error:" + this.errorMsg);
+							this.notifyService.showError(this.errorMsg, "");
+						} else {
+							if (error.status == 500 && error.statusText == "Internal Server Error") {
+							this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+							} else {
+							let str;
+							if (error.status == 400) {
+								str = error.error.error;
+							} else {
+								str = error.error.message;
+								str = str.substring(str.indexOf(":") + 1);
+							}
+							console.log("Error:" ,str);
+							this.errorMsg = str;
+							}
+							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+							//this.notifyService.showError(this.errorMsg, "");
+						}
+						});	
+					}
+				}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				);
+		  }
+		
+		  noRentalAgreementReset(): void {
+			this.configMasterModel.noRentalAgreement = JSON.parse(JSON.stringify(this.configMasterOrg.noRentalAgreement));
+			this.noRentalAgreementDisabled = true;
+		  }
+		  
 		  
   }  

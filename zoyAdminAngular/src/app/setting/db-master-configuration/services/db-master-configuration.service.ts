@@ -165,6 +165,17 @@ export class DbMasterConfigurationService {
             }
         );
   } 
+  getShortTermDuration(): Observable<any> {
+    const url1=this.basePath +'zoy_admin/shortTermRenting';
+        return  this.httpclient.get<any>(
+            url1,
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+  } 
 
 
 

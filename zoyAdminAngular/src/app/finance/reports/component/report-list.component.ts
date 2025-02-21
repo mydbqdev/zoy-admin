@@ -14,6 +14,8 @@ import { ReportService } from '../service/reportService';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { FilterData, FiltersRequestModel } from '../model/report-filters-model';
 import { ReviewsModel } from '../model/reviews-model';
+import { FormControl } from '@angular/forms';
+import { map, Observable, startWith } from 'rxjs';
  
 @Component({
 	selector: 'app-report-list',
@@ -86,6 +88,10 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		this.toDate=this.getCurrentDate();
 		this.reportColumnsList=reportService.reportColumnsList;
 		this.columnHeaders = reportService.columnHeaders;
+		 this.filteredOptions = this.reportControl.valueChanges.pipe(
+					startWith(''),
+					map(value => this.filter(value))
+				  );
 	}
 
 	ngOnDestroy() {
@@ -105,6 +111,29 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		this.sidemenuComp.activeMenu(5, 'report-list');
 		this.dataService.setHeaderName("Reports");
 	}
+ 
+	reportNames =this.reportNamesList;
+	reportControl = new FormControl();
+	filteredOptions: Observable<any[]>;
+	 private filter(value: string): any[] {
+		const filterValue = value.toLowerCase();
+		return this.reportNames.filter(menu => menu.name.toLowerCase().includes(filterValue));
+	  }
+	searchMenus(event: Event): void {
+		event.preventDefault();
+			this.filteredOptions.subscribe(options => {
+			  this.reportNamesList=options.filter(menu => menu.name.toLowerCase().includes(this.reportControl.value.toLowerCase()));
+			  if (this.reportNamesList.length === 1) {
+				this.selectedReport(this.reportNamesList[0].name);
+			  } 
+		  });
+		  }
+		  
+	selectedReport(report:any ): void {
+		this.reportName = report;
+		this.changeReport();
+	  }
+
 	getColumnsForSelectedReport(name:string) {
 		const report = this.reportService.reportColumnsList.find(n => n.reportName === name);
 		return report?report.columns:[];

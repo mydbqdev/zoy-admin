@@ -11,7 +11,7 @@ export class ConfigMasterModel{
     gstCharges : GstChargesModel = new GstChargesModel();
     shortTerm :ShortTermModel[] = [];
     shortTermRentingDuration:ShortTermRentingDuration = new ShortTermRentingDuration();
-    
+    noRentalAgreement:NoRentalAgreement =new NoRentalAgreement();
 }
 
 export class TokenDetailsModel{
@@ -97,4 +97,8 @@ export class ShortTermModel{
 export class ShortTermRentingDuration  {
     rentingDurationId :string;
     rentingDurationDays: number;
+}
+export class NoRentalAgreement  {
+    noRentalAgreementId :string;
+    noRentalAgreementDays: number;
 }
