@@ -33,7 +33,15 @@ import { MessageService } from 'src/app/message.service';
       'upcomingTenantsReport':'payment_transfer_details',
       'suspendedTenantsReport':'suspended_tenant_details',
       'inactiveTenantsReport':'inactive_tenant_details',
-      'activeTenantsReport':'active_tenant_details'
+      'activeTenantsReport':'active_tenant_details',
+     
+      'upcomingPotentialPropertiesReport': 'payment_transfer_details',//'upcoming_potential_properties_details',
+      'suspendedPropertiesReport': 'payment_transfer_details',//'suspended_properties_details',
+      'inactivePropertiesReport': 'payment_transfer_details',//'inactive_properties_details',
+      'nonPotentialPropertiesReport': 'payment_transfer_details',//'non_potential_properties_details',
+      'potentialPropertiesReport': 'payment_transfer_details',//'potential_properties_details'
+      
+      
     };
     
     columnHeaders = {
@@ -104,6 +112,21 @@ import { MessageService } from 'src/app/message.service';
       'checkedOutDate' : 'CHECKED-OUT DATE',
       'suspendedDate' : 'SUSPENDED DATE',
       'reasonForSuspension' : 'REASON FOR SUSPENSION',
+
+      
+      'ownerFullName' : 'OWNER FULL NAME',
+      'propertyName' : 'PROPERTY NAME',
+      'propertyContactNumber' : 'PROPERTY CONTACT NUMBER',
+      'propertyEmailAddress' : 'PROPERTY EMAIL ADDRESS',
+      'propertyAddress' : 'PROPERTY ADDRESS',
+      'inactivePropertyName' : 'INACTIVE PROPERTY NAME',
+      'bookedPropertyName' : 'BOOKED PROPERTY NAME',
+      'numberOfBeds' : 'NUMBER OF BEDS',
+      'expectedRentPerMonth' : 'EXPECTED RENT PER MONTH',
+      'lastCheckoutDate' : 'LAST CHECK-OUT DATE',
+      'numberOfBedsOccupied' : 'NUMBER OF BEDS OCCUPIED'
+      
+      
   };
   
 	  reportColumnsList: { 'reportName': string, 'columns': string[] }[] = [
@@ -162,7 +185,28 @@ import { MessageService } from 'src/app/message.service';
 		  'reportName': 'Active Tenants Report',
 		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'currentPropertName', 'propertAddress','roomNumber', 'checkInDate','expectedCheckOutdate']
 		},
-   
+    
+    { 
+      'reportName': 'Suspended Properties Report', 
+      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'suspendedDate', 'reasonForSuspension'] 
+    }, 
+    { 
+      'reportName': 'Inactive Properties Report', 
+      'columns': ['ownerFullName', 'inactivePropertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress'] 
+    }, 
+    { 
+      'reportName': 'Upcoming Potential Properties Report',
+      'columns': ['ownerFullName', 'bookedPropertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'numberOfBeds', 'expectedRentPerMonth'] 
+    }, 
+    { 
+      'reportName': 'Non-Potential Properties Report', 
+      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'lastCheckoutDate'] 
+    }, 
+    { 
+      'reportName': 'Potential Properties Report', 
+      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'numberOfBedsOccupied', 'expectedRentPerMonth']
+    }
+
 	  ];
   
     reportNamesList:{'name':string,'key':string}[] = [
@@ -175,12 +219,18 @@ import { MessageService } from 'src/app/message.service';
       { name: "Owner Payments Gst Report", key: "vendorPaymentsGstReport" },
       { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
       { name: "Ratings and Reviews Report", key: "reviewsAndRatingReport" },
+    
       { name: "Upcoming Tenants Report", key: "upcomingTenantsReport" },
       { name: "Suspended Tenants Report", key: "suspendedTenantsReport" },
       { name: "Inactive Tenants Report", key: "inactiveTenantsReport" },
       { name: "Active Tenants Report", key: "activeTenantsReport" },
-      
-  
+
+      { name: "Suspended Properties Report", key: "suspendedPropertiesReport" }, 
+      { name: "Inactive Properties Report", key: "inactivePropertiesReport" }, 
+      { name: "Upcoming Potential Properties Report", key: "upcomingPotentialPropertiesReport" }, 
+      { name: "Non-Potential Properties Report", key: "nonPotentialPropertiesReport" }, 
+      { name: "Potential Properties Report", key: "potentialPropertiesReport" }
+
       ];
 
       getCityList(): Observable<any> {

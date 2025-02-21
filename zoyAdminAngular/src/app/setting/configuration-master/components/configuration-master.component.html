@@ -21,7 +21,15 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Master</span><span class="text-header-800-blue">Configuration</span></h3> 
+                    <h3 class="h3 mb-0">
+                      <span class="text-header-800 text-header-border">{{settingType}} PG Master</span><span class="text-header-800-blue">Configuration</span></h3> 
+                      <div class="ml-auto">
+                        <div class="d-flex">
+                            <select class="form-select form-select-sm"  style="min-width: 200px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
+                            <option *ngFor="let type of pgTypes"  [value]="type.pg_type_name" >{{type.pg_type_name}}</option>
+                        </select>
+                        </div>
+                      </div>
                     <div>
                     </div>
                   </div>
@@ -491,24 +499,24 @@
                                   <div class="col-sm-3">
                                     <div class="input-group input-group-sm">
                                       <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
-                                        [(ngModel)]="configMasterModel.shortTermRentingDuration.rentingDurationDays" 
+                                        [(ngModel)]="configMasterModel.noRentalAgreement.noRentalAgreementDays" 
                                         (keypress)="numberOnly($event)"  maxlength="3"
-                                        [ngClass]="{'is-invalid': !shortTermRentingDurationDisabled && isNotValidNumber(configMasterModel.shortTermRentingDuration.rentingDurationDays)}"
-                                        [disabled]="shortTermRentingDurationDisabled" />
+                                        [ngClass]="{'is-invalid': !noRentalAgreementDisabled && isNotValidNumber(configMasterModel.noRentalAgreement.noRentalAgreementDays)}"
+                                        [disabled]="noRentalAgreementDisabled" />
                                       <span class="input-group-text">Days </span>
                                     </div>
                                   </div>
                                   <div class="col-sm-2" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                    <div *ngIf="shortTermRentingDurationDisabled">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationDisabled = false;">
+                                    <div *ngIf="noRentalAgreementDisabled">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="noRentalAgreementDisabled = false;">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                     </div>
-                                    <div class="btn-group" *ngIf="!shortTermRentingDurationDisabled">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationSubmit()">
+                                    <div class="btn-group" *ngIf="!noRentalAgreementDisabled">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="noRentalAgreementSubmit()">
                                         <i class="fas fa-check"></i>
                                       </button>
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationReset()">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="noRentalAgreementReset()">
                                         <i class="fas fa-redo" style="color: red;"></i>
                                       </button>
                                     </div>
@@ -812,6 +820,49 @@
                                </div>
                            </div>
                         </div>
+                        <hr class="solid">
+                          <div>
+                            <div class="p-3">
+                              <div>
+                                <span style="font-size: 16px;color:#78177e;">Short term duration </span>
+                                <p class="small text-muted" style="font-size: 12px;">
+                                  <em>Specify the number of days that are to be considered as "Short term duration".</em>
+                                </p>
+                              </div>
+                              <div>
+                                <div class="row">
+                                  <span>Short term </span>
+                                  <div class="col-sm-3">
+                                    <div class="input-group input-group-sm">
+                                      <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
+                                        [(ngModel)]="configMasterModel.shortTermRentingDuration.rentingDurationDays" 
+                                        (keypress)="numberOnly($event)"  maxlength="3"
+                                        [ngClass]="{'is-invalid': !shortTermRentingDurationDisabled && isNotValidNumber(configMasterModel.shortTermRentingDuration.rentingDurationDays)}"
+                                        [disabled]="shortTermRentingDurationDisabled" />
+                                      <span class="input-group-text">Days </span>
+                                    </div>
+                                  </div>
+                                  <div class="col-sm-2" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
+                                    <div *ngIf="shortTermRentingDurationDisabled">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationDisabled = false;">
+                                        <i class="fas fa-edit"></i>
+                                      </button>
+                                    </div>
+                                    <div class="btn-group" *ngIf="!shortTermRentingDurationDisabled">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationSubmit()">
+                                        <i class="fas fa-check"></i>
+                                      </button>
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationReset()">
+                                        <i class="fas fa-redo" style="color: red;"></i>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                              </div>
+                            </div>
+                            
+                          </div>
                             <hr class="solid">
                             <div>
                               <div class="p-3">

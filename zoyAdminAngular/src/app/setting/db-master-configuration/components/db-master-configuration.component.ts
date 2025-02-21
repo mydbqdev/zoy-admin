@@ -38,10 +38,11 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   dbSettingDataModel :DbSettingDataModel =new DbSettingDataModel();
   columnHeaders = {} ;
   submitDataModel:DbSettingSubmitDataModel=new DbSettingSubmitDataModel();
-
+  submitted:boolean= false ;
+  isCreated :boolean=true;
   shortTermData:ShortTermDataModel = new ShortTermDataModel();
   shortTermDataList:ShortTermDataModel[] = [];
-    
+  shortTermduration:number=30;
   @ViewChild('closeModel') closeModel: ElementRef;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private confirmationDialogService:ConfirmationDialogService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,
@@ -101,8 +102,6 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 
 	}
 
-  submitted:boolean= false ;
-
   changeSettingType(){
     if(this.settingType == 'Amenities' ){
     this.resetChange();
@@ -112,8 +111,41 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     this.getDbSettingDetails() ;
   }
 
- 
-    isCreated :boolean=true;
+  getShortTermDuration(){
+      this.authService.checkLoginUserVlidaate();
+     this.dbMasterConfigurationService.getShortTermDuration().subscribe(data => {
+      this.shortTermduration = data;
+     }, error => {
+     this.spinner.hide();
+     if(error.status == 0) {
+       this.notifyService.showError("Internal Server Error/Connection not established", "")
+      }else if(error.status==401){
+       console.error("Unauthorised");
+     }else if(error.status==403){
+     this.router.navigate(['/forbidden']);
+     }else if (error.error && error.error.message) {
+     this.errorMsg = error.error.message;
+     console.log("Error:" + this.errorMsg);
+     this.notifyService.showError(this.errorMsg, "");
+     } else {
+     if (error.status == 500 && error.statusText == "Internal Server Error") {
+       this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+     } else {
+       let str;
+       if (error.status == 400) {
+       str = error.error.error;
+       } else {
+       str = error.error.message;
+       str = str.substring(str.indexOf(":") + 1);
+       }
+       console.log("Error:" ,str);
+       this.errorMsg = str;
+     }
+     if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+     }
+   });
+   
+   }
     getDbSettingDetails(){
        this.authService.checkLoginUserVlidaate();
       this.spinner.show();
@@ -592,8 +624,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       addShortTermVali:boolean=false
    addShortTerm() {
     this.addShortTermVali = true;
-    if(!this.shortTermData.start_day|| this.shortTermData.start_day>31 || Number(this.shortTermData.start_day)===0 
-        || !this.shortTermData.end_day|| this.shortTermData.end_day>31 || Number(this.shortTermData.end_day)===0
+    if(!this.shortTermData.start_day|| this.shortTermData.start_day>this.shortTermduration || Number(this.shortTermData.start_day)===0 
+        || !this.shortTermData.end_day|| this.shortTermData.end_day>this.shortTermduration || Number(this.shortTermData.end_day)===0
         || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)){
           return;
         }
@@ -603,8 +635,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
    }
 
    modifyShortTerm(shortTerm) {
-     if(!shortTerm.start_day || Number(shortTerm.start_day)>31 || Number(shortTerm.start_day)===0 
-        || !shortTerm.end_day || Number(shortTerm.end_day)>31 || Number(shortTerm.end_day)===0
+     if(!shortTerm.start_day || Number(shortTerm.start_day)>this.shortTermduration || Number(shortTerm.start_day)===0 
+        || !shortTerm.end_day || Number(shortTerm.end_day)>this.shortTermduration || Number(shortTerm.end_day)===0
         || Number(shortTerm.start_day) >= Number(shortTerm.end_day)){
       return;
     }
