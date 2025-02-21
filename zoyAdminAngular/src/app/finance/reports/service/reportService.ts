@@ -29,7 +29,11 @@ import { MessageService } from 'src/app/message.service';
       // 'vendorPaymentsDuesReport':'vendor-payment-dues-report',
       // 'vendorPaymentsGstReport':'vendor-payment-gst-report',
       'tenantRefundReport':'user_refund_details',
-      'reviewsAndRatingReport':'user_reviews_ratings_details'
+      'reviewsAndRatingReport':'user_reviews_ratings_details',
+      'upcomingTenantsReport':'payment_transfer_details',
+      'suspendedTenantsReport':'suspended_tenant_details',
+      'inactiveTenantsReport':'inactive_tenant_details',
+      'activeTenantsReport':'active_tenant_details'
     };
     
     columnHeaders = {
@@ -83,7 +87,23 @@ import { MessageService } from 'src/app/message.service';
       'maintenance':'MAINTENANCE',
       'valueForMoney':'VALUE FOR MONEY',
       'overallRating':'OVERALL RATING',
-      'accommodation':'ACCOMMODATION'
+      'accommodation':'ACCOMMODATION',
+
+      'tenantName' : 'TENANT NAME',
+      'tenantContactNumber' : 'TENANT CONTACT NUMBER',
+      'tenantEmailAddress' : 'TENANT EMAIL ADDRESS',
+      'bookedProperyName' : 'BOOKED PROPERTY NAME',
+      'previousPropertName' : 'PREVIOUS PROPERTY NAME',
+      'currentPropertName' : 'CURRENT PROPERTY NAME',
+      'propertAddress' : 'PROPERTY ADDRESS',
+      'roomNumber' : 'ROOM NUMBER',
+      'expectedCheckIndate' : 'EXPECTED CHECK-IN DATE',
+      'expectedCheckOutdate' : 'EXPECTED CHECK-OUT DATE',
+      'checkInDate' : 'CHECK-IN DATE',
+      'checkedInDate' : 'CHECKED-IN DATE',
+      'checkedOutDate' : 'CHECKED-OUT DATE',
+      'suspendedDate' : 'SUSPENDED DATE',
+      'reasonForSuspension' : 'REASON FOR SUSPENSION',
   };
   
 	  reportColumnsList: { 'reportName': string, 'columns': string[] }[] = [
@@ -124,6 +144,25 @@ import { MessageService } from 'src/app/message.service';
 		  'reportName': 'Ratings and Reviews Report',
 		  'columns': ['pgName', 'customerName','cleanliness', 'accommodation', 'amenities', 'maintenance','valueForMoney','overallRating','reviews']
 		}
+
+    ,
+    {
+		  'reportName': 'Upcoming Tenants Report',
+		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'bookedProperyName','propertAddress', 'roomNumber', 'expectedCheckIndate','expectedCheckOutdate']
+		},
+    {
+		  'reportName': 'Suspended Tenants Report',
+		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'roomNumber', 'checkedOutDate','suspendedDate','reasonForSuspension']
+		},
+    {
+		  'reportName': 'Inactive Tenants Report',
+		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'roomNumber', 'checkedOutDate','expectedCheckOutdate']
+		},
+    {
+		  'reportName': 'Active Tenants Report',
+		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'currentPropertName', 'propertAddress','roomNumber', 'checkInDate','expectedCheckOutdate']
+		},
+   
 	  ];
   
     reportNamesList:{'name':string,'key':string}[] = [
@@ -136,6 +175,11 @@ import { MessageService } from 'src/app/message.service';
       { name: "Owner Payments Gst Report", key: "vendorPaymentsGstReport" },
       { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
       { name: "Ratings and Reviews Report", key: "reviewsAndRatingReport" },
+      { name: "Upcoming Tenants Report", key: "upcomingTenantsReport" },
+      { name: "Suspended Tenants Report", key: "suspendedTenantsReport" },
+      { name: "Inactive Tenants Report", key: "inactiveTenantsReport" },
+      { name: "Active Tenants Report", key: "activeTenantsReport" },
+      
   
       ];
 

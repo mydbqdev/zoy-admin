@@ -231,7 +231,9 @@ getTriggerOn(){
 				   
    }
 	
-
+   isNotValidNumbernAndZero(value: any): boolean {
+	return  (value === '' || value == undefined || value == null || isNaN(value) || value === false || value == 0);
+  }
 	  isNotValidNumber(value: any): boolean {
 		return  (value === '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
 	  }
@@ -342,6 +344,10 @@ getTriggerOn(){
 		if(this.isNotValidNumber(this.configMasterModel.tokenDetails.fixedToken) || this.isNotValidNumber(this.configMasterModel.tokenDetails.variableToken )){
 			return
 		}
+		if(Number(this.configMasterModel.tokenDetails.fixedToken) > Number(this.configMasterModel.depositDetails.maximumDeposit)){
+		    this.notifyService.showInfo("The token fixed amount should not be greater than the maximum security deposit.","")
+			return;
+		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 		.then(
 		   (confirmed) =>{
@@ -395,6 +401,14 @@ getTriggerOn(){
 	  securityDepositLimitsSubmit() {
 		if(this.isNotValidNumber(this.configMasterModel.depositDetails.maximumDeposit) || this.isNotValidNumber(this.configMasterModel.depositDetails.minimumDeposit) ){
 			return ;
+		}
+		if(Number(this.configMasterModel.depositDetails.maximumDeposit) < Number(this.configMasterModel.depositDetails.minimumDeposit) ){
+		    this.notifyService.showInfo("The maximum security deposit should not be less than to the minimum security deposit.","")
+			return;
+		}
+		if(Number(this.configMasterModel.depositDetails.maximumDeposit) < Number(this.configMasterModel.tokenDetails.fixedToken) ){
+		    this.notifyService.showInfo("The maximum security deposit should not be less than to the token fixed amount.","")
+			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 		.then(
@@ -554,8 +568,11 @@ getTriggerOn(){
 		this.securityDepositDeadLineDisabled = true;
 	}
 	autoCancellationSubmit() {
-		if(this.isNotValidNumber(this.configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) || !this.configMasterModel.cancellationAfterCheckInDetails.trigger_condition|| !this.configMasterModel.cancellationAfterCheckInDetails.trigger_value ){
+		if(this.isNotValidNumbernAndZero(this.configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) || !this.configMasterModel.cancellationAfterCheckInDetails.trigger_condition|| !this.configMasterModel.cancellationAfterCheckInDetails.trigger_value ){
 			return ;
+		}
+		if(this.configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day == 1 && this.configMasterModel.cancellationAfterCheckInDetails.trigger_condition === '<'){
+			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 		.then(
@@ -932,7 +949,10 @@ getTriggerOn(){
 	  }
 	
 	  earlyCheckOutRulesSubmit() {
-		if(this.isNotValidNumber(this.configMasterModel.earlyCheckOutRuleDetails.check_out_day) || this.isNotValidNumber(this.configMasterModel.earlyCheckOutRuleDetails.deduction_percentage) || !this.configMasterModel.earlyCheckOutRuleDetails.trigger_condition || !this.configMasterModel.earlyCheckOutRuleDetails.trigger_value ){
+		if(this.isNotValidNumbernAndZero(this.configMasterModel.earlyCheckOutRuleDetails.check_out_day) || this.isNotValidNumber(this.configMasterModel.earlyCheckOutRuleDetails.deduction_percentage) || !this.configMasterModel.earlyCheckOutRuleDetails.trigger_condition || !this.configMasterModel.earlyCheckOutRuleDetails.trigger_value ){
+			return;
+		}
+		if(this.configMasterModel.earlyCheckOutRuleDetails.check_out_day == 1 && this.configMasterModel.earlyCheckOutRuleDetails.trigger_condition === '<'){
 			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -1107,6 +1127,10 @@ getTriggerOn(){
 		    if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration.rentingDurationDays) ){
 			   return ;
 			}
+			if(Number(this.configMasterModel.shortTermRentingDuration.rentingDurationDays)<31 ){
+				this.notifyService.showInfo("No Rental agreement upto should be greater than Short term period.","");
+				return ;
+			 }
 			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 			.then(
 			   (confirmed) =>{
