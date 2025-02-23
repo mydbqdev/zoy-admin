@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class WordToPdfConverterService {
     	if (dataList == null || dataList.isEmpty()) {
             return new byte[0];
         }
-    	try (FileInputStream fis = new FileInputStream(templatePath);
+    	try (InputStream fis = getClass().getClassLoader().getResourceAsStream(templatePath);
              XWPFDocument document = new XWPFDocument(fis);
              ByteArrayOutputStream docxOutputStream = new ByteArrayOutputStream()) {
 

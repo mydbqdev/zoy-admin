@@ -634,27 +634,28 @@ public class AdminReportService implements AdminReportImpl{
 			case "userTransactionReport":
 				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateUserTransactionDataList(reportData,filterRequest);
-				templatePath = getClass().getClassLoader().getResource("templates/userTransactionReport.docx").getPath();
+				templatePath = "templates/userTransactionReport.docx";
+				
 				break;
 			case "userPaymentGstReport":
 				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateUserPaymentGstReport(reportData,filterRequest);
-				templatePath = getClass().getClassLoader().getResource("templates/userPaymentGstReport.docx").getPath();
+				templatePath ="templates/userPaymentGstReport.docx";
 				break;
 			case "consolidatedFinanceReport":
 				reportData = getConsolidatedFinanceDetails(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateConsolidatedFinanceReport(reportData,filterRequest);
-				templatePath = getClass().getClassLoader().getResource("templates/consolidatedFinanceReport.docx").getPath();
+				templatePath ="templates/consolidatedFinanceReport.docx";
 				break;
 			case "tenantDuesReport":
 				reportData = getTenentDuesDetails(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateTenantDuesReport(reportData,filterRequest);
-				templatePath = getClass().getClassLoader().getResource("templates/tenantDuesReport.docx").getPath();
+				templatePath ="templates/tenantDuesReport.docx";
 				break;
 			case "vendorPaymentsReport":
 				reportData = getVendorPaymentDetails(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateVendorPaymentsReport(reportData,filterRequest);
-				templatePath = getClass().getClassLoader().getResource("templates/vendorPaymentsReport.docx").getPath();
+				templatePath = "templates/vendorPaymentsReport.docx";
 				break;
 			case "vendorPaymentsDuesReport":
 				reportData = getVendorPaymentDuesDetails(filterRequest.getFromDate(), filterRequest.getToDate());
@@ -662,29 +663,38 @@ public class AdminReportService implements AdminReportImpl{
 			case "tenantRefundReport":
 				reportData = getTenantRefunds(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateTenantRefundReport(reportData,filterRequest);
-				templatePath = getClass().getClassLoader().getResource("templates/tenantRefundReport.docx").getPath();
+				templatePath = "templates/tenantRefundReport.docx";
 				break;
 			case "UpcomingTenantsReport":
 				reportData = getUpcomingTenantsReport(filterRequest, filterData,applyPagination);
+			    dataListWrapper=this.generateUpcomingTenantsReport(reportData,filterRequest);
+			    templatePath ="templates/upcomingTenantsReport.docx";
 				break;
 			case "ActiveTenantsReport":
 				reportData = getActiveTenantsReport(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateActiveTenantsReport(reportData,filterRequest);
+			    templatePath = "templates/activeTenantsReport.docx";
 				break;	
 			case "InactiveTenantsReport":
 				reportData = getInActiveTenantsReport(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateInactiveTenantsReport(reportData,filterRequest);
+			    templatePath = "templates/inactiveTenantsReport.docx";
 				break;	
 			case "SuspendedTenantsReport":
 				reportData = getSuspendedTenantsReport(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateSuspendedTenantsReport(reportData,filterRequest);
+			    templatePath = "templates/suspendedTenantsReport.docx";
 				break;	
 			case "reviewsAndRatingReport":
 				reportData = getRatingsAndReviewsDetails(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generaterReviewsAndRatingReport(reportData,filterRequest);
-				templatePath = getClass().getClassLoader().getResource("templates/reviewsAndRatingReport.docx").getPath();
+				templatePath ="templates/reviewsAndRatingReport.docx";
 				break;
 			default:
 				throw new IllegalArgumentException("Invalid template name provided.");
 			}
-			
+			List<?> dataList = reportData.getData();
+			data.put("reportData", dataList);
 			switch (filterRequest.getDownloadType().toLowerCase()) {
 			case "pdf":
 
@@ -697,7 +707,6 @@ public class AdminReportService implements AdminReportImpl{
 				throw new IllegalArgumentException("Invalid file type provided. Supported types: pdf, excel, csv");
 			}
 		}catch (Exception e) {
-			System.out.println(e);
 			new ZoyAdminApplicationException(e, "");
 		}
 		return null;
@@ -963,10 +972,153 @@ public class AdminReportService implements AdminReportImpl{
 	    }
 	    return dataList;
 	}
+	
+	public List<Map<String, Object>> generateActiveTenantsReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        TenantResportsDTO tenantReport = (TenantResportsDTO) item;
+
+	        data.put("tenantFullName", tenantReport.getTenantName() != null ? tenantReport.getTenantName() : "");
+	        data.put("tenantContact", tenantReport.getTenantContactNumber() != null ? tenantReport.getTenantContactNumber() : "");
+	        data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
+	        data.put("propertyName", tenantReport.getBookedProperyName() != null ? tenantReport.getBookedProperyName() : "");
+	        data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
+	        data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
+	        data.put("checkInDate", tenantReport.getExpectedCheckIndate() != null ? tenantReport.getExpectedCheckIndate() : "");
+	        data.put("checkOutDate", tenantReport.getExpectedCheckOutdate() != null ? tenantReport.getExpectedCheckOutdate() : "");
+
+	        // Common fields
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
+	
+	public List<Map<String, Object>> generateInactiveTenantsReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        TenantResportsDTO tenantReport = (TenantResportsDTO) item;
+
+	        data.put("tenantName", tenantReport.getTenantName() != null ? tenantReport.getTenantName() : "");
+	        data.put("tenantContact", tenantReport.getTenantContactNumber() != null ? tenantReport.getTenantContactNumber() : "");
+	        data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
+	        data.put("previousPropert", tenantReport.getBookedProperyName() != null ? tenantReport.getBookedProperyName() : "");
+	        data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
+	        data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
+	        data.put("checkedOutDate", tenantReport.getExpectedCheckOutdate() != null ? tenantReport.getExpectedCheckOutdate() : "");
+
+	        // Common fields
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
+	
+	public List<Map<String, Object>> generateSuspendedTenantsReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        TenantResportsDTO tenantReport = (TenantResportsDTO) item;
+
+	        data.put("tenantName", tenantReport.getTenantName() != null ? tenantReport.getTenantName() : "");
+	        data.put("tenantContact", tenantReport.getTenantContactNumber() != null ? tenantReport.getTenantContactNumber() : "");
+	        data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
+	        data.put("previousPropert", tenantReport.getBookedProperyName() != null ? tenantReport.getBookedProperyName() : "");
+	        data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
+	        data.put("checkedOutDate", tenantReport.getExpectedCheckOutdate() != null ? tenantReport.getExpectedCheckOutdate() : "");
+	        data.put("suspendedDate", tenantReport.getSuspendedDate() != null ? tenantReport.getSuspendedDate() : "");
+	        data.put("reason", tenantReport.getReasonForSuspension() != null ? tenantReport.getReasonForSuspension() : "");
+
+	        // Common fields
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
+	
 	public String[] getDistinctCities() {
 		return propertyDetailsRepository.findDistinctCities();
 	}
 
+	public List<Map<String, Object>> generateUpcomingTenantsReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+	    List<Map<String, Object>> dataList = new ArrayList<>();
+	    List<?> dataItems = reportData.getData();
+	    String currentDate = LocalDate.now().toString();
+
+	    for (Object item : dataItems) {
+	        Map<String, Object> data = new HashMap<>();
+	        TenantResportsDTO tenantRefund = (TenantResportsDTO) item;
+
+	        data.put("tenantName", tenantRefund.getTenantName() != null ? tenantRefund.getTenantName() : "");
+	        data.put("contactNum", tenantRefund.getTenantContactNumber() != null ? tenantRefund.getTenantContactNumber() : "");
+	        data.put("tenantEmail", tenantRefund.getTenantEmailAddress() != null ? tenantRefund.getTenantEmailAddress() : "");
+	        data.put("propertyName", tenantRefund.getBookedProperyName() != null ? tenantRefund.getBookedProperyName() : "");
+	        data.put("propertyAddress", tenantRefund.getPropertAddress() != null ? tenantRefund.getPropertAddress() : "");
+	        data.put("bedAllocation", tenantRefund.getRoomNumber() != null ? tenantRefund.getRoomNumber() : "");
+	        data.put("expectedCheckin", tenantRefund.getExpectedCheckIndate() != null ? tenantRefund.getExpectedCheckIndate() : "");
+	        data.put("expectedCheckOut", tenantRefund.getExpectedCheckOutdate() != null ? tenantRefund.getExpectedCheckOutdate() : "");
+
+	        // Common fields
+	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
+	        Timestamp toDateTimestamp = filterRequest.getToDate();
+
+	        LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        data.put("fromDate", fromDate.format(formatter));
+	        data.put("toDate", toDate.format(formatter));
+	        data.put("printedOn", currentDate);
+
+	        dataList.add(data);
+	    }
+	    return dataList;
+	}
 	
 	public CommonResponseDTO<TenentRefund> getTenantRefunds(UserPaymentFilterRequest filterRequest,
 	        FilterData filterData, Boolean applyPagination) throws WebServiceException {
@@ -1401,7 +1553,8 @@ public class AdminReportService implements AdminReportImpl{
 	        		+ "    zpd.property_house_area,\r\n"
 	        		+ "    bd.bed_name,\r\n"
 	        		+ "    zpqbd.in_date, \r\n"
-	        		+ "    zpqbd.out_date\r\n"
+	        		+ "    zpqbd.out_date\r\n, "
+	        		+ "    zpd.property_city\r\n "
 	        		+ "FROM pgusers.user_master um\r\n"
 	        		+ "JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
 	        		+ "    ON um.user_id = zpqbd.tenant_id \r\n"
@@ -1444,7 +1597,7 @@ public class AdminReportService implements AdminReportImpl{
 	        }
 
 	        if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
+				queryBuilder.append(" AND LOWER(zpd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
 	        
@@ -1518,27 +1671,32 @@ public class AdminReportService implements AdminReportImpl{
 	public CommonResponseDTO<TenantResportsDTO> getInActiveTenantsReport(UserPaymentFilterRequest filterRequest,
 	        FilterData filterData, Boolean applyPagination) throws WebServiceException {
 	    try {
-	        StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT ON (zpobd.tenant_id) \r\n"
-	        		+ "   um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
-	        		+ "    um.user_mobile,\r\n"
-	        		+ "    um.user_email,\r\n"
-	        		+ "    zpPd.property_name,\r\n"
-	        		+ "    zpPd.property_house_area,\r\n"
-	        		+ "    bd.bed_name,\r\n"
-	        		+ "    zpobd.in_date, \r\n"
-	        		+ "    zpobd.out_date\r\n"
-	        		+ "   FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
-	        		+ "JOIN pgusers.user_bookings ub\r\n"
-	        		+ "    ON zpobd.booking_id = ub.user_bookings_id \r\n"
-	        		+ "    AND ub.user_bookings_web_check_out = TRUE \r\n"
-	        		+ "join pgusers.user_master um on um.user_id =zpobd.tenant_id \r\n"
-	        		+ "join pgowners.zoy_pg_property_details zppd on zppd.property_id=zpobd.property_id \r\n"
-	        		+ "JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id where 1=1");
+	    	StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT ON (zpobd.tenant_id) \r\n"
+	    		    + "   um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+	    		    + "    um.user_mobile,\r\n"
+	    		    + "    um.user_email,\r\n"
+	    		    + "    zppd.property_name,\r\n"
+	    		    + "    zppd.property_house_area,\r\n"
+	    		    + "    bd.bed_name,\r\n"
+	    		    + "    zpobd.in_date, \r\n"
+	    		    + "    zpobd.out_date\r\n"
+	    		    + "FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
+	    		    + "JOIN pgusers.user_bookings ub\r\n"
+	    		    + "    ON zpobd.booking_id = ub.user_bookings_id \r\n"
+	    		    + "    AND ub.user_bookings_web_check_out = TRUE \r\n"
+	    		    + "JOIN pgusers.user_master um \r\n"
+	    		    + "    ON um.user_id = zpobd.tenant_id \r\n"
+	    		    + "JOIN pgowners.zoy_pg_property_details zppd \r\n"
+	    		    + "    ON zppd.property_id = zpobd.property_id \r\n"
+	    		    + "JOIN pgowners.zoy_pg_bed_details bd \r\n"
+	    		    + "    ON zpobd.selected_bed = bd.bed_id \r\n"
+	    		    + "WHERE 1=1 \r\n"
+	    		    + "ORDER BY zpobd.tenant_id, zpobd.in_date DESC;");
 
 	        Map<String, Object> parameters = new HashMap<>();
 	        
 	        if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				queryBuilder.append(" AND zpobd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -1553,12 +1711,12 @@ public class AdminReportService implements AdminReportImpl{
 	        }
 
 	        if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zpPd.property_name) LIKE LOWER(:PgPropertyName) ");
+	            queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:PgPropertyName) ");
 	            parameters.put("PgPropertyName", "%" + filterData.getPgName() + "%");
 	        }
 
 	        if (filterData.getPgAddress() != null && !filterData.getPgAddress().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zpPd.property_house_area) LIKE LOWER(:pgAddress) ");
+	            queryBuilder.append(" AND LOWER(zppd.property_house_area) LIKE LOWER(:pgAddress) ");
 	            parameters.put("pgAddress", "%" + filterData.getPgAddress() + "%");
 	        }
 
@@ -1606,6 +1764,7 @@ public class AdminReportService implements AdminReportImpl{
 	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
 	        parameters.forEach(query::setParameter);
 
+	        System.out.println(query.getResultList());
 	        int filterCount = query.getResultList().size();
 
 	        if (applyPagination) {
@@ -1641,8 +1800,8 @@ public class AdminReportService implements AdminReportImpl{
 	        		+ "   um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
 	        		+ "    um.user_mobile,\r\n"
 	        		+ "    um.user_email,\r\n"
-	        		+ "    zpPd.property_name,\r\n"
-	        		+ "    zpPd.property_house_area,\r\n"
+	        		+ "    zppd.property_name,\r\n"
+	        		+ "    zppd.property_house_area,\r\n"
 	        		+ "    bd.bed_name,\r\n"
 	        		+ "    zpobd.out_date,\r\n"
 	        		+ "    um.user_modified_at ,\r\n"
@@ -1659,7 +1818,7 @@ public class AdminReportService implements AdminReportImpl{
 	        Map<String, Object> parameters = new HashMap<>();
 	        
 	        if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				queryBuilder.append(" AND zpobd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -1674,12 +1833,12 @@ public class AdminReportService implements AdminReportImpl{
 	        }
 
 	        if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zpPd.property_name) LIKE LOWER(:PgPropertyName) ");
+	            queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:PgPropertyName) ");
 	            parameters.put("PgPropertyName", "%" + filterData.getPgName() + "%");
 	        }
 
 	        if (filterData.getPgAddress() != null && !filterData.getPgAddress().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zpPd.property_house_area) LIKE LOWER(:pgAddress) ");
+	            queryBuilder.append(" AND LOWER(zppd.property_house_area) LIKE LOWER(:pgAddress) ");
 	            parameters.put("pgAddress", "%" + filterData.getPgAddress() + "%");
 	        }
 
