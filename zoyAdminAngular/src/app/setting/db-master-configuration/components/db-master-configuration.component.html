@@ -57,16 +57,24 @@
                                {{ (term[column] == '' || term[column] == undefined) && term[column] != '0'? '-' : term[column] }} 
                               </span>
 
-                               <span *ngIf="(columnHeaders[column]=='AMENITIES PICTURE' || columnHeaders[column]=='DUETYPE PICTURE') && term[column]"><img [src]="term[column]" style="max-width: 75px;max-height: 74px;"></span>
+                               <span *ngIf="(columnHeaders[column]=='AMENITIES PICTURE' || columnHeaders[column]=='DUETYPE PICTURE') && term[column]">
+                                <img [src]="term[column]" style="width: 56px;height: 56px;"></span>
                               </td>
                           </ng-container>
                         </ng-container>
                         <ng-container matColumnDef="actions"  *ngIf="settingType != 'Short Term'" >
                           <th mat-header-cell style="width: 50px;" *matHeaderCellDef ></th>
                           <td mat-cell style="width: 50px;" *matCellDef="let term">
-                          <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE')" >
-                              <i class="bi bi-pencil-square" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  (click)="getElement(term)" ></i>
-                          </span>
+                            <div *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE')">
+                              <div *ngIf="(settingType == 'Due Type' && !term.due_status)">
+                                <div style="color:red;padding: 5px 0px;font-size: 14px;"><i class="fa fa-info-circle" title="This is internally configured, and we can't modify it."></i></div>
+                              </div>
+                              <div *ngIf="!(settingType == 'Due Type' && !term.due_status)">
+                                <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE') && !(settingType == 'Due Type' && !term.due_status)" >
+                                    <i class="bi bi-pencil-square" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  (click)="getElement(term)" ></i>
+                                </span>
+                              </div>
+                           </div>
                           </td>
                       </ng-container>  
                       
@@ -93,7 +101,7 @@
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="createUpdateDetails" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
   <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasRightLabel"> <span>{{isCreated?'Create ':'Update '}}</span> {{settingType}} Details</h5>
+      <h5 class="offcanvas-title" id="offcanvasRightLabel"> <span>{{settingType == 'Short Term' ? ' ':(isCreated?'Create ':'Update ')}}</span> {{settingType}} Details</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #closeModel ></button>
   </div>
   <hr class="sidebar-divider my-0">
@@ -214,7 +222,7 @@
      </div>
 
      <div *ngIf="settingType == 'Due Type' ">
-      <div  class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="dbSettingDataModel.due_type_id">
+      <div  class="image-preview mb-1" style="overflow: auto;text-align: center; width: 56px;height: 56px" *ngIf="dbSettingDataModel.due_type_id">
         <img [src]="imgeURLDueType2">
       </div>
       <div class="form-group">
@@ -251,7 +259,7 @@
         <!-- <div *ngIf="fileUploadProgress" style="color: green;">
            Upload progress: {{ fileUploadProgress }}
         </div> -->
-         <div class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="previewUrlDueType">
+         <div class="image-preview mb-1" style="overflow: auto;text-align: center; width: 56px;height: 56px" *ngIf="previewUrlDueType">
            <img [src]="previewUrlDueType" />                 
          </div>
         </form>
@@ -288,7 +296,7 @@
     </div>
 
     <div *ngIf="settingType == 'Amenities' ">
-      <div  class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="dbSettingDataModel.ameneties_id">
+      <div  class="image-preview mb-1" style="overflow: auto;text-align: center; width: 56px;height: 56px;" *ngIf="dbSettingDataModel.ameneties_id">
         <img [src]="imgeURL2">
       </div>
       <div class="form-group">
@@ -324,7 +332,7 @@
         <!-- <div *ngIf="fileUploadProgress" style="color: green;">
            Upload progress: {{ fileUploadProgress }}
         </div> -->
-         <div class="image-preview mb-1" style="overflow: auto;text-align: center;" *ngIf="previewUrl">
+         <div class="image-preview mb-1" style="overflow: auto;text-align: center; width: 56px;height: 56px" *ngIf="previewUrl">
            <img [src]="previewUrl" />                 
          </div>
         </form>
@@ -342,7 +350,7 @@
           <div class="col-sm-3">
             <input type="text" class="form-control form-control-sm" id="start_day"  required autocomplete="off"
             [(ngModel)]="shortTermData.start_day" (keypress)="numberOnly($event)" maxlength="2"
-            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.start_day == undefined || shortTermData.start_day == null || convertToNumber(shortTermData.start_day) < 1 || convertToNumber(shortTermData.start_day) > 31 || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
+            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.start_day == undefined || shortTermData.start_day == null || convertToNumber(shortTermData.start_day) < 1 || convertToNumber(shortTermData.start_day) > shortTermduration || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
           </div>
           <div class="col-sm-1">
             <h2>-</h2>
@@ -350,13 +358,13 @@
           <div class="col-sm-3">
             <input type="text" class="form-control form-control-sm" id="end_day"  required autocomplete="off"
             [(ngModel)]="shortTermData.end_day" (keypress)="numberOnly($event)" maxlength="2"
-            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.end_day) > 31 || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
+            [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.end_day) > shortTermduration  || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
           </div>
           <div class="col-sm-1">
             <button type="submit" class="btn btn-sm btn-primary" (click)="addShortTerm()" >Add</button>
           </div>
       </div>
-       <div *ngIf="submitted && shortTermData.end_day != null && shortTermData.start_day != null && (convertToNumber(shortTermData.start_day) < 1 || convertToNumber(shortTermData.start_day) > 31 ||  convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.end_day) > 31)" class="text-danger">
+       <div *ngIf="submitted && shortTermData.end_day != null && shortTermData.start_day != null && (convertToNumber(shortTermData.start_day) < 1 || convertToNumber(shortTermData.start_day) > shortTermduration ||  convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.end_day) > shortTermduration)" class="text-danger">
           Short term duration is invalid.
         </div>
       </div>
@@ -369,7 +377,7 @@
               <div class="col-sm-3">
                 <input type="text" class="form-control form-control-sm" id="term_start_day"  required autocomplete="off"
                 [(ngModel)]="term.start_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2"
-                [ngClass]="{'is-invalid':(submitShortTerm && !term.isDelete && term.isEdit) ||( !term.isDelete && term.isEdit && (term.start_day == undefined || term.start_day == null || convertToNumber(term.start_day) < 1 || convertToNumber(term.start_day) > 31))}">
+                [ngClass]="{'is-invalid':(submitShortTerm && !term.isDelete && term.isEdit) ||( !term.isDelete && term.isEdit && (term.start_day == undefined || term.start_day == null || convertToNumber(term.start_day) < 1 || convertToNumber(term.start_day) > shortTermduration))}">
               </div>
               <div class="col-sm-1">
                 <h2>-</h2>
@@ -377,7 +385,7 @@
               <div class="col-sm-3">
                 <input type="text" class="form-control form-control-sm" id="term_end_day"  required autocomplete="off"
                 [(ngModel)]="term.end_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2"
-                [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.end_day == undefined || term.end_day == null || convertToNumber(term.end_day) < 1 || convertToNumber(term.end_day) > 31))}">
+                [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.end_day == undefined || term.end_day == null || convertToNumber(term.end_day) < 1 || convertToNumber(term.end_day) > shortTermduration))}">
               </div>
               <div class="col-sm-1">
                 <div class="input-group">
@@ -409,7 +417,7 @@
           </div>
         </div>
         <div class="text-danger">
-          Note: The Short term duration period must be within the defined ranges of 1-30 days and cannot overlap between slabs.
+          Note: The Short term duration period must be within the defined ranges of 1-{{shortTermduration}} days and cannot overlap between slabs.
         </div>
       </div>
     </div>

@@ -64,4 +64,7 @@ th, td {
   .low-rating {
     background-color: rgb(192, 14, 14) !important; 
   }
-  
+  .mat-mdc-option {
+    font-size: 13px;
+    min-height: 12px;
+  }

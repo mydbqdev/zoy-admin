@@ -32,6 +32,7 @@ export class DbSettingDataModel{
     due_name ?: string;
     due_type_upload ?: string;
     due_image ?: string;
+    due_status ?:boolean;
 
     currency_id ?: string;
     currency_name ?: string;

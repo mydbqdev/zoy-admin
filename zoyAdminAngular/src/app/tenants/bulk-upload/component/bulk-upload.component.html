@@ -253,7 +253,7 @@
                 <h5 style="flex:1;">Tenant</h5>
                 <button mat-mini-fab  color="accent" class="mr-1" title="Click to download the file" [disabled]="'Tenent_sample_File.csv' === downloading" (click)="downloadSamples('Tenent_sample_File.csv')"><i class="fa fa-download"></i></button>
               </div>
-            <div style="justify-content: start; text-justify: auto;"><p>Tenant Details upload sheet consists of the First Name,Last Name,Phone Number,eMail,Date Of Birth,Gender,Permanent Address,In Date,Out Date,Floor,Room,Bed Number ,Deposit Paid,Rent Paid in .csv format. Follow the instructions on fields strength and data validation given in the row-2. For successfull upload avoid changing the file format, column headers(First Two Rows) or their order to prevent upload errors.</p></div>
+            <div style="justify-content: start; text-justify: auto;"><p>Tenant Details upload sheet consists of the First Name,Last Name,Phone Number,eMail,Date Of Birth,Gender,Permanent Address,In Date(exact date for Current month checked-in Tenants and any date in the current month for other tenants to generate Rental agreement and rent calculation.),Out Date,Floor,Room,Bed Number ,Deposit Paid,Rent Paid in .csv format.All fields are mandatory except 'Out Date' field. Follow the instructions on fields strength and data validation given in the row-2. For successfull upload avoid changing the file format, column headers(First Two Rows) or their order to prevent upload errors.</p></div>
            </div>
           <div>
             <div style="display: flex; flex-direction: row; align-items: center;">
