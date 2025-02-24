@@ -284,4 +284,12 @@ public  class AdminDBService implements AdminDBImpl {
 	public List<TriggeredValue> findTriggeredValue() {
 		return triggeredValueRepository.findAll();
 	}
+
+
+
+	@Override
+	public List<Object[]> findTenantsCardsDetails() throws WebServiceException {
+		return userMasterRepository.getTenantCardsDetails();
+	}
+	
 }
