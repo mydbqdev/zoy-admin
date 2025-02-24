@@ -179,7 +179,7 @@ import { MessageService } from 'src/app/message.service';
 		},
     {
 		  'reportName': 'Inactive Tenants Report',
-		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'roomNumber', 'checkedOutDate','expectedCheckOutdate']
+		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'roomNumber', 'checkedOutDate']
 		},
     {
 		  'reportName': 'Active Tenants Report',

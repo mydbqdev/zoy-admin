@@ -235,7 +235,6 @@
                               aria-labelledby="dropdownMenuLink">
                               <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" title="View Details" data-bs-target="#detailedModel"(click)="openModel(element,'View')" >View</a>
                               <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" title="Edit Details" data-bs-target="#detailedModel" (click)="openModel(element,'Edit')" >Edit</a>
-                              <a class="dropdown-item" href="javascript:void(0)"  >status</a>
                           </div>
                               
                           </td>
@@ -277,7 +276,7 @@
         <div class="row mb-2">
           <label for="type" class="col-sm-5 col-form-label" style="text-align: left;">Status </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'">{{infoModel.status}}</span>
             <select class="form-select form-select-sm" *ngIf="task !== 'View'" placeholder="Select Branch Type" 
                     [(ngModel)]="infoModel.status" [ngClass]="{'is-invalid': submittedBranchInfo && !infoModel?.status}">
@@ -289,7 +288,7 @@
         <div class="row mb-2">
           <label for="type" class="col-sm-5 col-form-label" style="text-align: left;">Type </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'">{{infoModel.type}}</span>
             <select class="form-select form-select-sm" *ngIf="task !== 'View'" placeholder="Select Branch Type" 
                     [(ngModel)]="infoModel.type" [ngClass]="{'is-invalid': submittedBranchInfo && !infoModel?.type}">
@@ -301,7 +300,7 @@
         <div class="row mb-2">
           <label for="pinCode" class="col-sm-5 col-form-label" style="text-align: left;">Pin Code </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'">{{infoModel.pinCode}}</span>
             <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Pin Code" (keypress)="numberOnly($event)"
                    [(ngModel)]="infoModel.pinCode" [ngClass]="{'is-invalid': submittedBranchInfo && (!infoModel?.pinCode || validatePinCode(infoModel?.pinCode))}" maxlength="6" minlength="6">
@@ -311,7 +310,7 @@
         <div class="row mb-2">
           <label for="city" class="col-sm-5 col-form-label" style="text-align: left;">City </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'"  style="text-align: left;">{{infoModel.city}}</span>
             <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter City" 
                    [(ngModel)]="infoModel.city" [ngClass]="{'is-invalid': submittedBranchInfo && !infoModel?.city}">
@@ -321,7 +320,7 @@
         <div class="row mb-2">
           <label for="state" class="col-sm-5 col-form-label" style="text-align: left;">State </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'">{{infoModel.state}}</span>
             <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter State" 
                    [(ngModel)]="infoModel.state" [ngClass]="{'is-invalid': submittedBranchInfo && !infoModel?.state}">
@@ -331,7 +330,7 @@
         <div class="row mb-2">
           <label for="addressLineOne" class="col-sm-5 col-form-label" style="text-align: left;">Address Line One </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'">{{infoModel.addressLineOne}}</span>
             <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Address Line One" 
                    [(ngModel)]="infoModel.addressLineOne" [ngClass]="{'is-invalid': submittedBranchInfo && !infoModel?.addressLineOne}">
@@ -341,7 +340,7 @@
         <div class="row mb-2">
           <label for="addressLineTwo" class="col-sm-5 col-form-label" style="text-align: left;">Address Line Two </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'">{{infoModel.addressLineTwo}}</span>
             <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Address Line Two" 
                    [(ngModel)]="infoModel.addressLineTwo" [ngClass]="{'is-invalid': submittedBranchInfo && !infoModel?.addressLineTwo}">
@@ -351,7 +350,7 @@
         <div class="row mb-2">
           <label for="addressLineThree" class="col-sm-5 col-form-label" style="text-align: left;">Address Line Three </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'">{{infoModel.addressLineThree}}</span>
             <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Address Line Three" 
                    [(ngModel)]="infoModel.addressLineThree" [ngClass]="{'is-invalid': submittedBranchInfo && !infoModel?.addressLineThree}">
@@ -361,7 +360,7 @@
         <div class="row mb-2">
           <label for="emailOne" class="col-sm-5 col-form-label" style="text-align: left;">Email One </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'"  style="text-align: left;">{{infoModel.emailOne}}{{validateEmailFormat(infoModel?.emailOne)}}</span>
             <input type="email" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Email One" 
                    [(ngModel)]="infoModel.emailOne" [ngClass]="{'is-invalid': submittedBranchInfo &&( !infoModel?.emailOne || validateEmailFormat(infoModel.emailOne) || infoModel?.emailOne === infoModel?.emailTwo)}">
@@ -371,7 +370,7 @@
         <div class="row mb-2">
           <label for="emailTwo" class="col-sm-5 col-form-label" style="text-align: left;">Email Two </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'">{{infoModel.emailTwo}}</span>
             <input type="email" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Email Two" 
                    [(ngModel)]="infoModel.emailTwo" [ngClass]="{'is-invalid': submittedBranchInfo && (!infoModel?.emailTwo || validateEmailFormat(infoModel?.emailTwo) || infoModel?.emailOne === infoModel?.emailTwo)}">
@@ -381,7 +380,7 @@
         <div class="row mb-2">
           <label for="contactNumberOne" class="col-sm-5 col-form-label text-left" >Contact Number One </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span class="text-left" *ngIf="task === 'View'">{{infoModel.contactNumberOne}}</span>
             <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Contact Number One" (keypress)="numberOnly($event)"
                    [(ngModel)]="infoModel.contactNumberOne" [ngClass]="{'is-invalid': submittedBranchInfo && (!infoModel?.contactNumberOne || infoModel?.contactNumberOne === infoModel?.contactNumberTwo || validatecontactNumber(this.infoModel.contactNumberOne))}">
@@ -391,7 +390,7 @@
         <div class="row mb-2">
           <label for="contactNumberTwo" class="col-sm-5 col-form-label text-left" >Contact Number Two </label>
           <div class="col-sm-1"> <span>:</span></div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" style="text-align: justify;">
             <span class="text-left" *ngIf="task === 'View'">{{infoModel.contactNumberTwo}}</span>
             <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Contact Number Two" (keypress)="numberOnly($event)"
                    [(ngModel)]="infoModel.contactNumberTwo" [ngClass]="{'is-invalid': submittedBranchInfo && (!infoModel?.contactNumberTwo || infoModel?.contactNumberOne === infoModel?.contactNumberTwo || validatecontactNumber(this.infoModel.contactNumberTwo) )}">
