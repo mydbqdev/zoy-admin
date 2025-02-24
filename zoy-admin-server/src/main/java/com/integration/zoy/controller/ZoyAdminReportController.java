@@ -309,7 +309,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	    try {
 	        FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
 	        boolean applyPagination = true;
-	        CommonResponseDTO<TenantResportsDTO> upcomingTenantDetails = adminReportImpl.getActiveTenantsReport(filterRequest, filterData, applyPagination);
+	        CommonResponseDTO<TenantResportsDTO> upcomingTenantDetails = adminReportImpl.getInActiveTenantsReport(filterRequest, filterData, applyPagination);
 	        return new ResponseEntity<>(gson.toJson(upcomingTenantDetails), HttpStatus.OK);
 	    } catch (Exception e) {
 	        log.error("Error in API:/zoy_admin/inactive_tenant_details.getInActiveTenantsReportDetailsByDateRange", e);
@@ -325,7 +325,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	    try {
 	        FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
 	        boolean applyPagination = true;
-	        CommonResponseDTO<TenantResportsDTO> upcomingTenantDetails = adminReportImpl.getActiveTenantsReport(filterRequest, filterData, applyPagination);
+	        CommonResponseDTO<TenantResportsDTO> upcomingTenantDetails = adminReportImpl.getSuspendedTenantsReport(filterRequest, filterData, applyPagination);
 	        return new ResponseEntity<>(gson.toJson(upcomingTenantDetails), HttpStatus.OK);
 	    } catch (Exception e) {
 	        log.error("Error in API:/zoy_admin/suspended_tenant_details.getSuspendedTenantsReportDetailsByDateRange", e);
