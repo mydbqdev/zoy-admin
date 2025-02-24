@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.model.TenantResportsDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
 import com.integration.zoy.utils.TenentDues;
@@ -100,7 +101,13 @@ public class CsvGenerateService {
                 break;    
             case "reviewsAndRatingReport":
                 writer.println("Review Date,Tenant Name,PG Name,Tenant Contact,Cleanliness,Accommodation,Aminities,Maintenance,Value For Money,Overall Rating");
-                break;       
+                break; 
+            case "UpcomingTenantsReport":
+                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address,Booked Property Name,Property Address,Room Number/Bed Allocation,Expected Check-in Date,Expected Checked-out Date");
+                break; 
+            case "ActiveTenantsReport":
+                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Property Name,Property Address,Room Number/Bed Allocation, Check-in Date,Expected Checked-out Date");
+                break;  
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }
@@ -253,8 +260,34 @@ public class CsvGenerateService {
                             safeToString(ratingsAndReviews.getOverallRating()));
                 }
                 break;    
-                
-
+            case "UpcomingTenantsReport":
+            	if (dto instanceof TenantResportsDTO) {
+            		TenantResportsDTO ratingsAndReviews = (TenantResportsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(ratingsAndReviews.getTenantName()),
+                            safeToString(ratingsAndReviews.getTenantContactNumber()),
+                            safeToString(ratingsAndReviews.getTenantEmailAddress()),
+                            safeToString(ratingsAndReviews.getBookedProperyName()),
+                            safeToString(ratingsAndReviews.getPropertAddress()),
+                            safeToString(ratingsAndReviews.getRoomNumber()),
+                            formatDate(ratingsAndReviews.getExpectedCheckIndate()),
+                            formatDate(ratingsAndReviews.getExpectedCheckOutdate()));
+                }
+                break;
+            case "ActiveTenantsReport":
+            	if (dto instanceof TenantResportsDTO) {
+            		TenantResportsDTO ratingsAndReviews = (TenantResportsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(ratingsAndReviews.getTenantName()),
+                            safeToString(ratingsAndReviews.getTenantContactNumber()),
+                            safeToString(ratingsAndReviews.getTenantEmailAddress()),
+                            safeToString(ratingsAndReviews.getBookedProperyName()),
+                            safeToString(ratingsAndReviews.getPropertAddress()),
+                            safeToString(ratingsAndReviews.getRoomNumber()),
+                            formatDate(ratingsAndReviews.getExpectedCheckIndate()),
+                            formatDate(ratingsAndReviews.getExpectedCheckOutdate()));
+                }
+                break; 
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }

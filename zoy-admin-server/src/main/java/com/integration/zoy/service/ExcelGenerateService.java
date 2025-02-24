@@ -1,6 +1,7 @@
 package com.integration.zoy.service;
 
 import java.io.ByteArrayOutputStream;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.exception.ZoyAdminApplicationException;
+import com.integration.zoy.model.TenantResportsDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
 import com.integration.zoy.utils.TenentDues;
@@ -199,6 +201,26 @@ public class ExcelGenerateService {
 			row.createCell(8).setCellValue("Value For Money");
 			row.createCell(9).setCellValue("Overall Rating");
 			break;	
+		case "UpcomingTenantsReport":
+			row.createCell(0).setCellValue("Tenant Name");
+			row.createCell(1).setCellValue("Tenant Contact Number");
+			row.createCell(2).setCellValue("Tenant Email Address");
+			row.createCell(3).setCellValue("Booked Property Name");
+			row.createCell(4).setCellValue("Property Address");
+			row.createCell(5).setCellValue("Room Number/Bed Allocation");
+			row.createCell(6).setCellValue("Expected Check-in Date");
+			row.createCell(7).setCellValue("Expected Checked-out Date");
+			break;
+		case "ActiveTenantsReport":
+			row.createCell(0).setCellValue("Tenant Full Name");
+			row.createCell(1).setCellValue("Tenant Contact Number");
+			row.createCell(2).setCellValue("Tenant Email Address");
+			row.createCell(3).setCellValue("Property Name");
+			row.createCell(4).setCellValue("Property Address");
+			row.createCell(5).setCellValue("Room Number/Bed Allocation");
+			row.createCell(6).setCellValue("Check-in Date");
+			row.createCell(7).setCellValue("Expected Check-out Date");
+			break;
 		default:
 			throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 		}
@@ -339,8 +361,36 @@ public class ExcelGenerateService {
 				row.createCell(8).setCellValue(nullSafe(ratingsAndReviews.getValueForMoney()));
 				row.createCell(9).setCellValue(nullSafe(ratingsAndReviews.getOverallRating()));
 			}
-			break;		
-
+			break;
+		case "UpcomingTenantsReport":
+			if (dto instanceof TenantResportsDTO) {
+				TenantResportsDTO upcomingTenant = (TenantResportsDTO) dto;
+				row.createCell(0).setCellValue(nullSafe(upcomingTenant.getTenantName()));
+				row.createCell(1).setCellValue(nullSafe(upcomingTenant.getTenantContactNumber()));
+				row.createCell(2).setCellValue(nullSafe(upcomingTenant.getTenantEmailAddress()));
+				row.createCell(3).setCellValue(nullSafe(upcomingTenant.getBookedProperyName()));
+				row.createCell(4).setCellValue(nullSafe(upcomingTenant.getPropertAddress()));
+				row.createCell(5).setCellValue(nullSafe(upcomingTenant.getRoomNumber()));
+				row.createCell(6).setCellValue(nullSafe(upcomingTenant.getExpectedCheckIndate()));
+				row.createCell(7).setCellValue(nullSafe(upcomingTenant.getExpectedCheckOutdate()));
+				
+			}
+			break;
+			
+		case "ActiveTenantsReport":
+			if (dto instanceof TenantResportsDTO) {
+				TenantResportsDTO upcomingTenant = (TenantResportsDTO) dto;
+				row.createCell(0).setCellValue(nullSafe(upcomingTenant.getTenantName()));
+				row.createCell(1).setCellValue(nullSafe(upcomingTenant.getTenantContactNumber()));
+				row.createCell(2).setCellValue(nullSafe(upcomingTenant.getTenantEmailAddress()));
+				row.createCell(3).setCellValue(nullSafe(upcomingTenant.getBookedProperyName()));
+				row.createCell(4).setCellValue(nullSafe(upcomingTenant.getPropertAddress()));
+				row.createCell(5).setCellValue(nullSafe(upcomingTenant.getRoomNumber()));
+				row.createCell(6).setCellValue(nullSafe(upcomingTenant.getExpectedCheckIndate()));
+				row.createCell(7).setCellValue(nullSafe(upcomingTenant.getExpectedCheckOutdate()));
+				
+			}
+			break;
 		default:
 			//throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 			new ZoyAdminApplicationException(new Exception() ,"Invalid report type provided: " + reportType);
