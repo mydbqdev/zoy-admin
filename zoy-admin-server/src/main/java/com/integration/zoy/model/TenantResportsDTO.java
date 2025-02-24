@@ -2,23 +2,65 @@ package com.integration.zoy.model;
 
 import java.sql.Timestamp;
 
+import com.google.gson.annotations.SerializedName;
+
 public class TenantResportsDTO {
 
+	@SerializedName("tenantName")
 	private String tenantName;
+
+	@SerializedName("tenantContactNumber")
 	private String tenantContactNumber;
+
+	@SerializedName("tenantEmailAddress")
 	private String tenantEmailAddress;
+
+	@SerializedName("bookedProperyName")
 	private String bookedProperyName;
+
+	@SerializedName("previousPropertName")
 	private String previousPropertName;
+
+	@SerializedName("currentPropertName")
 	private String currentPropertName;
+
+	@SerializedName("propertAddress")
 	private String propertAddress;
+
+	@SerializedName("roomNumber")
 	private String roomNumber;
+
+	@SerializedName("expectedCheckIndate")
 	private Timestamp expectedCheckIndate;
+
+	@SerializedName("expectedCheckOutdate")
 	private Timestamp expectedCheckOutdate;
+
+	@SerializedName("checkInDate")
 	private Timestamp checkInDate;
+
+	@SerializedName("checkOutDate")
+	private Timestamp checkOutDate;
+
+	@SerializedName("checkedInDate")
 	private Timestamp checkedInDate;
+
+	@SerializedName("checkedOutDate")
 	private Timestamp checkedOutDate;
+
+	@SerializedName("suspendedDate")
 	private Timestamp suspendedDate;
+
+	@SerializedName("reasonForSuspension")
 	private String reasonForSuspension;
+
+	public Timestamp getCheckOutDate() {
+		return checkOutDate;
+	}
+
+	public void setCheckOutDate(Timestamp checkOutDate) {
+		this.checkOutDate = checkOutDate;
+	}
 
 	public String getTenantName() {
 		return tenantName;
