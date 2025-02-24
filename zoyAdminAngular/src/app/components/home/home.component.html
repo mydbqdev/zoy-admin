@@ -33,26 +33,42 @@
                   <div class="row">
                       <!-- Earnings (Monthly) Card Example -->
                       <div class="col-xl-3 col-md-6 mb-3">
-                          <div class="card border-left-primary shadow h-100 py-1">
-                              <div class="card-body" style="padding: 15px;">
-                                  <div class="row no-gutters align-items-center">
+                          <div class="holographic-card card-1 card border-left-primary shadow h-100 ">
+                                  <div class="card-custom-hedder row align-items-center shadow">
                                       <div class="col mr-2">
-                                          <div class="text-xs font-weight-bold text-dark mb-1" style="font-size: 15px;">Active Tenants
-                                          </div>
-                                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{dashboardCardModel.usersWithNonNullPin}}</div>
+                                          <div class="font-weight-bold text-dark" style="font-size: 15px;">Total Tenants 
+                                        </div>
+                                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{tenantDetails.activeTenantsCount + tenantDetails.upcomingTenantsCount +tenantDetails.inactiveTenantsCount + tenantDetails.suspendedTenantsCount}}</div>
                                       </div>
                                       <div class="col-auto">
                                           <div style="border-radius: 15px;background-color: rgb(232, 242, 247);"><i class="fas fa-user-friends text-primary" style="margin: 10px;font-size: 22px;"></i></div>
                                       </div>
                                   </div>
-                                  <div class="mt-2"><span class="mr-1"><img src="assets/images/trending_up.svg"/></span> <span class="text-info" style="font-size: 13px;">8.3%</span> <span class="text-gray-800 ml-1" style="font-size: 13px;">Up from past week</span></div>
-                              </div>
+                                  <div class="ml-3 mt-2 mb-2 mr-3" style="font-size: 12px;">
+                                    <div class="row item">
+                                        <div class="col-sm-7 status-item"> <span class="active"></span> Active</div>
+                                        <div class="col-sm-5" style="text-align: right;">{{tenantDetails.activeTenantsCount}}</div>
+                                    </div>
+                                    <div class="row item">
+                                        <div class="col-sm-7 status-item"> <span class="upcoming"></span> Upcoming</div>
+                                        <div class="col-sm-5" style="text-align: right;">{{tenantDetails.upcomingTenantsCount}}</div>
+                                    </div>
+                                    <div class="row item">
+                                        <div class="col-sm-7 status-item">  <span class="inactive"></span>Inactive</div>
+                                        <div class="col-sm-5" style="text-align: right;">{{tenantDetails.inactiveTenantsCount}}</div>
+                                    </div>
+                                    <div class="row item">
+                                        <div class="col-sm-7 status-item"><span class="suspended"></span>Suspended</div>
+                                        <div class="col-sm-5" style="text-align: right;">{{tenantDetails.suspendedTenantsCount}}</div>
+                                    </div>
+                                  <div class="mt-2"><span class="mr-1"><img src="assets/images/trending_up.svg"/></span> <span class="text-info" >8.3%</span> <span class="text-gray-800 ml-1" style="font-size: 13px;">Up from past week</span></div>
+                                </div>
                           </div>
                       </div>
   
                       <!-- Earnings (Monthly) Card Example -->
                       <div class="col-xl-3 col-md-6 mb-3">
-                          <div class="card border-left-success shadow h-100 py-1">
+                          <div class="holographic-card card-2 card border-left-success shadow h-100 py-1">
                               <div class="card-body" style="padding: 15px;">
                                   <div class="row no-gutters align-items-center">
                                       <div class="col mr-2">
@@ -71,7 +87,7 @@
   
                       <!-- Earnings (Monthly) Card Example -->
                       <div class="col-xl-3 col-md-6 mb-3">
-                          <div class="card border-left-info shadow h-100 py-1">
+                          <div class="holographic-card card-3 card border-left-info shadow h-100 py-1">
                               <div class="card-body" style="padding: 15px;">
                                   <div class="row no-gutters align-items-center">
                                       <div class="col mr-2">
@@ -90,7 +106,7 @@
   
                       <!-- Pending Requests Card Example -->
                       <div class="col-xl-3 col-md-6 mb-3">
-                          <div class="card border-left-warning shadow h-100 py-1">
+                          <div class="holographic-card card-4 card border-left-warning shadow h-100 py-1">
                               <div class="card-body" style="padding: 15px;">
                                   <div class="row no-gutters align-items-center">
                                       <div class="col mr-2">

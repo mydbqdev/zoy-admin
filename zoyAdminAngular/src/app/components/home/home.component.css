@@ -1,0 +1,103 @@
+
+
+  .holographic-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #000;
+  }
+  
+  .holographic-card {
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    transition: all 0.5s ease;
+  }
+  
+  
+  .holographic-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      0deg, 
+      transparent, 
+      transparent 30%, 
+      #27a317
+    );
+    transform: rotate(-45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+  }
+  
+  .holographic-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #902363;
+  }
+  
+  .holographic-card:hover::before {
+    opacity: 1;
+    transform: rotate(-45deg) translateY(100%);
+  }
+
+  .card-custom-hedder{
+    padding: 12px;
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+  }
+  .status-item {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+}
+
+.card-1::before {
+  background: linear-gradient(0deg, transparent, transparent 30%, #93c0f0); 
+}
+.card-2::before {
+  background: linear-gradient(0deg, transparent, transparent 30%, #a9edb9); 
+}
+.card-3::before {
+  background: linear-gradient(0deg, transparent, transparent 30%, #9ed8e0); 
+}
+.card-4::before {
+  background: linear-gradient(0deg, transparent, transparent 30%, #eddca8); 
+}
+
+.status-item span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 3px;
+}
+.item:hover {
+  background-color: #f0f0f0; 
+  border-radius: 8px; 
+  transform: scale(1.07);
+}
+
+.status-item span.active {
+    background-color: #4dd495; 
+}
+
+.status-item span.upcoming {
+    background-color:#ef8026;
+}
+.status-item span.inactive {
+  background-color:#6f6d6d;
+}
+.status-item span.suspended {
+    background-color: #ef3826;
+}
+
+.status-item:hover span {
+  transform: scale(1.2);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+

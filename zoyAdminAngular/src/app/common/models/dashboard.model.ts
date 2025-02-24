@@ -22,3 +22,10 @@ export class DashboardFilterModel{
     selectedDays:string="15 days";
 }  
 
+
+export class TenantsCardModel{
+    activeTenantsCount : number = 0 ;
+    upcomingTenantsCount : number = 0 ;
+    inactiveTenantsCount : number = 0 ;
+    suspendedTenantsCount : number = 0 ;
+}

@@ -9,7 +9,7 @@ import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AppService } from 'src/app/common/service/application.service';
-import { DashboardCardModel, DashboardFilterModel, TopRevenuePG, TotalBookingDetailsModel } from 'src/app/common/models/dashboard.model';
+import { DashboardCardModel, DashboardFilterModel, TenantsCardModel, TopRevenuePG, TotalBookingDetailsModel } from 'src/app/common/models/dashboard.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 
@@ -70,6 +70,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 			this.router.navigate(['/']);
 		}
 		this.getDashboardCard();
+		this.getTenantCardDetails();
 		this.getTotalBookings();
 	}
 	ngAfterViewInit() {
@@ -88,6 +89,38 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		this.authService.checkLoginUserVlidaate();
 		this.appService.getDashboardCard().subscribe((result) => {
 			this.dashboardCardModel=result;
+		  },error =>{
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==403){
+			  this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+			  this.errorMsg =error.error.message;
+			  console.log("Error:"+this.errorMsg);
+			  this.notifyService.showError(this.errorMsg, "");
+			} else {
+			  if(error.status==500 && error.statusText=="Internal Server Error"){
+				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			  }else{
+				let str;
+				  if(error.status==400){
+				  str=error.error.error;
+				  }else{
+					str=error.error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:",str);
+				  this.errorMsg=str;
+			  }
+			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+		  });
+	}
+	tenantDetails:TenantsCardModel=new TenantsCardModel();
+	getTenantCardDetails(){
+		this.authService.checkLoginUserVlidaate();
+		this.appService.getTenantCardDetails().subscribe((result) => {
+			this.tenantDetails=result;
 		  },error =>{
 			if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
