@@ -172,7 +172,15 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			"(SELECT COUNT(*) FROM pgcommon.pg_owner_property_status WHERE status = true) AS activePropertiesCount",
 			nativeQuery = true)
 	List<Object[]> getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
-
+	
+	@Query(value = "SELECT " +
+	        "(SELECT COUNT(*) FROM pgusers.user_bookings ub WHERE ub.user_bookings_web_check_in = TRUE AND ub.user_bookings_web_check_out = FALSE AND ub.user_bookings_is_cancelled = FALSE) AS activeTenants, " +
+	        "(SELECT COUNT(*) FROM pgowners.zoy_pg_owner_booking_details zpqbd WHERE zpqbd.in_date > CURRENT_DATE) AS upcomingTenantsCount, " +
+	        "(SELECT COUNT(DISTINCT zpobd.tenant_id) FROM pgowners.zoy_pg_owner_booking_details zpobd JOIN pgusers.user_bookings ub ON zpobd.booking_id = ub.user_bookings_id WHERE ub.user_bookings_web_check_out = TRUE) AS inactiveTenantsCount, " +
+	        "(SELECT COUNT(DISTINCT zpobd.tenant_id) FROM pgowners.zoy_pg_owner_booking_details zpobd JOIN pgusers.user_bookings ub ON zpobd.booking_id = ub.user_bookings_id JOIN pgusers.user_master um ON um.user_id = zpobd.tenant_id WHERE ub.user_bookings_web_check_out = TRUE AND um.user_status = 'Suspended') AS suspendedTenantsCount",
+	        nativeQuery = true)
+	List<Object[]> getTenantCardsDetails();
+			
 	@Query(value="select user_profile_picture from pgadmin.user_master \r\n"
 			+ "	where user_email =:emailId",nativeQuery = true)
 	byte[] findProfilePhoto(String emailId);
