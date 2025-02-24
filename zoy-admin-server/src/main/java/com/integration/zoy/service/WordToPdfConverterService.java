@@ -2,7 +2,6 @@ package com.integration.zoy.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -78,10 +77,12 @@ public class WordToPdfConverterService {
                     cell.removeParagraph(0);
                     Object value = data.get(placeHolder);
                     cell.setText(value != null ? value.toString() : "");
+                    adjustCellProperties(cell);
                 }
                 table.addRow(newRow);
             }
             table.removeRow(templateRowId);
+            removeTrailingEmptyParagraphs(document);
 
             document.write(docxOutputStream);
             return convertToPdf(docxOutputStream);
@@ -157,6 +158,28 @@ public class WordToPdfConverterService {
                     paragraph.setSpacingAfter(200);
                     paragraph.setSpacingBefore(200);
                 }
+            }
+        }
+    }
+    private void adjustCellProperties(XWPFTableCell cell) {
+        cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+        cell.getCTTc().addNewTcPr().addNewNoWrap();
+        for (XWPFParagraph paragraph : cell.getParagraphs()) {
+            for (XWPFRun run : paragraph.getRuns()) {
+                run.setFontFamily("Consolas");
+                run.setFontSize(6); 
+            }
+        }
+    }
+    
+    private void removeTrailingEmptyParagraphs(XWPFDocument document) {
+        List<XWPFParagraph> paragraphs = document.getParagraphs();
+        for (int i = paragraphs.size() - 1; i >= 0; i--) {
+            XWPFParagraph paragraph = paragraphs.get(i);
+            if (paragraph.getText().trim().isEmpty()) {
+                document.removeBodyElement(document.getPosOfParagraph(paragraph));
+            } else {
+                break;
             }
         }
     }
