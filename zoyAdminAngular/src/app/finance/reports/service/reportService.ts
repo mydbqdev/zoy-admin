@@ -30,10 +30,10 @@ import { MessageService } from 'src/app/message.service';
       // 'vendorPaymentsGstReport':'vendor-payment-gst-report',
       'tenantRefundReport':'user_refund_details',
       'reviewsAndRatingReport':'user_reviews_ratings_details',
-      'upcomingTenantsReport':'payment_transfer_details',
-      'suspendedTenantsReport':'suspended_tenant_details',
-      'inactiveTenantsReport':'inactive_tenant_details',
-      'activeTenantsReport':'active_tenant_details',
+      'UpcomingTenantsReport':'upcoming_tenant_details',
+      'SuspendedTenantsReport':'suspended_tenant_details',
+      'InactiveTenantsReport':'inactive_tenant_details',
+      'ActiveTenantsReport':'active_tenant_details',
      
       'upcomingPotentialPropertiesReport': 'payment_transfer_details',//'upcoming_potential_properties_details',
       'suspendedPropertiesReport': 'payment_transfer_details',//'suspended_properties_details',
@@ -185,7 +185,7 @@ import { MessageService } from 'src/app/message.service';
 		  'reportName': 'Active Tenants Report',
 		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'currentPropertName', 'propertAddress','roomNumber', 'checkInDate','expectedCheckOutdate']
 		},
-    
+
     { 
       'reportName': 'Suspended Properties Report', 
       'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'suspendedDate', 'reasonForSuspension'] 
@@ -220,10 +220,10 @@ import { MessageService } from 'src/app/message.service';
       { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
       { name: "Ratings and Reviews Report", key: "reviewsAndRatingReport" },
     
-      { name: "Upcoming Tenants Report", key: "upcomingTenantsReport" },
-      { name: "Suspended Tenants Report", key: "suspendedTenantsReport" },
-      { name: "Inactive Tenants Report", key: "inactiveTenantsReport" },
-      { name: "Active Tenants Report", key: "activeTenantsReport" },
+      { name: "Upcoming Tenants Report", key: "UpcomingTenantsReport" },
+      { name: "Suspended Tenants Report", key: "SuspendedTenantsReport" },
+      { name: "Inactive Tenants Report", key: "InactiveTenantsReport" },
+      { name: "Active Tenants Report", key: "ActiveTenantsReport" },
 
       { name: "Suspended Properties Report", key: "suspendedPropertiesReport" }, 
       { name: "Inactive Properties Report", key: "inactivePropertiesReport" }, 
