@@ -125,6 +125,14 @@ moreEarlyCheckout:boolean;
 		this. getConfigMasterDetails();
 	  }
 
+	  navigateInitialConfig(){
+		if(this.rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE')){
+			this.router.navigate(['/db-master-configuration']);
+		}else{
+			this.notifyService.showInfo("Please contact a higher-level admin","You do not have permission.");
+		}
+	  }
+
 	  getPGTypesDetails(){
 		this.authService.checkLoginUserVlidaate();
 		this.configMasterService.getPGTypesDetails().subscribe(res => {
@@ -798,7 +806,7 @@ getTriggerOn(){
 			});
 			this.canSubmit=false;
 		} 
-		this.table.renderRows();
+			this.table?.renderRows();
 	  }
 
 	  getBeforeCheckInCRData(){
@@ -818,7 +826,7 @@ getTriggerOn(){
 		 
 		  this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
 		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
-		  this.table.renderRows();
+		  this.table?.renderRows();
 		}
 
 	  beforeCheckInCRDatafReset(){
