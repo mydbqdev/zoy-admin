@@ -193,13 +193,15 @@ public class UploadService {
 			List<CsvTenantDetails> tenantDetailsList = csvToBean.parse();
 			Map<String,CsvTenantDetails> userCsvDetails= new HashMap<>();
 			for(CsvTenantDetails tenantDetails:tenantDetailsList) {
-				UserMaster userMaster=uploadDBImpl.findUserMaster(tenantDetails.getPhoneNumber(),tenantDetails.getEmail());
+				UserMaster userMaster=uploadDBImpl.findUserMaster(tenantDetails.getPhoneNumber());
 				if(userMaster==null) {
 					String userId=createUser(tenantDetails);
 					createUserDetails(tenantDetails,userId,propertyId,userDetails);
 					createUserBooking(tenantDetails,userId,propertyId,zoyPgOwnerBookingDetails);
 					userCsvDetails.put(userId, tenantDetails);
 				} else {
+					//userMaster.setUserEmail(tenantDetails.getEmail());
+					//uploadDBImpl.saveUser(userMaster);
 					createUserDetails(tenantDetails,userMaster.getUserId(),propertyId,userDetails);
 					createUserBooking(tenantDetails,userMaster.getUserId(),propertyId,zoyPgOwnerBookingDetails);
 					userCsvDetails.put(userMaster.getUserId(), tenantDetails);
@@ -291,28 +293,60 @@ public class UploadService {
 				ownerUserStatus.setPgTenantStatus(true);
 				userStatus.add(ownerUserStatus);
 
-				UserPayment payment=new UserPayment();
-				payment.setUserId(booking.getTenantId());
-				payment.setUserPaymentBookingId(booking.getBookingId());
-				if(booking.getPaidDeposit()!=null && !booking.getPaidDeposit().equals(BigDecimal.ZERO))
+				if(booking.getPaidDeposit()!=null && !booking.getPaidDeposit().equals(BigDecimal.ZERO)) {
+					List<String[]> duesId=ownerDBImpl.getPropertyDueDetails(booking.getPropertyId(),ZoyConstant.SECURITY_DEPOSIT);
+					UserDues userDue=new UserDues();
+					userDue.setUserId(booking.getTenantId());
+					userDue.setUserMoneyDueAmount(booking.getPaidDeposit());
+					userDue.setUserMoneyDueBillEndDate(new Timestamp(System.currentTimeMillis()));
+					userDue.setUserMoneyDueBillingType(duesId.get(0)[1]);
+					userDue.setUserMoneyDueBillStartDate(new Timestamp(System.currentTimeMillis()));
+					userDue.setUserMoneyDueDescription(ZoyConstant.SECURITY_DEPOSIT);
+					userDue.setUserMoneyDueType(duesId.get(0)[0]);
+					userDue.setUserMoneyDueTimestamp(new Timestamp(System.currentTimeMillis()));
+					userDue.setUserBookingId(booking.getBookingId());
+					userDue.setUserDueAmount(booking.getSecurityDeposit());
+					userDue.setUserCgstAmount(BigDecimal.ZERO);
+					userDue.setUserSgstAmount(BigDecimal.ZERO);
+					userDue.setUserIgstAmount(BigDecimal.ZERO);
+					userDue.setUserCgstPercentage(BigDecimal.ZERO);
+					userDue.setUserSgstPercentage(BigDecimal.ZERO);
+					userDue.setUserIgstPercentage(BigDecimal.ZERO);
+					UserDues paidDue=uploadDBImpl.saveUserDues(userDue);
+					
+					
+					UserPayment payment=new UserPayment();
+					payment.setUserId(booking.getTenantId());
+					payment.setUserPaymentBookingId(booking.getBookingId());
 					payment.setUserPaymentPayableAmount(booking.getPaidDeposit());
-				else 
-					payment.setUserPaymentPayableAmount(booking.getFixedRent());
-				payment.setUserPaymentGst(BigDecimal.ZERO);
-				payment.setUserPaymentPaymentStatus("success");
-				payment.setUserPaymentZoyPaymentMode("Cash");
-				payment.setUserPaymentZoyPaymentType("Deposit");
-				paidPayment=uploadDBImpl.saveUserPayment(payment);
-				settleAmount=settleAmount.add(paidPayment.getUserPaymentPayableAmount());
-				
-				UserBookingPaymentId userPaymentId = new UserBookingPaymentId();
-				userPaymentId.setUserBookingsId(booking.getBookingId());
-				userPaymentId.setUserId(booking.getTenantId());
-				userPaymentId.setUserPaymentId(paidPayment.getUserPaymentId());
+					payment.setUserPaymentGst(BigDecimal.ZERO);
+					payment.setUserPaymentPaymentStatus("success");
+					payment.setUserPaymentZoyPaymentMode("Cash");
+					payment.setUserPaymentZoyPaymentType(ZoyConstant.SECURITY_DEPOSIT);
+					payment.setUserPaymentSgst(BigDecimal.ZERO);
+					payment.setUserPaymentCgst(BigDecimal.ZERO);
+					payment.setUserPaymentIgst(BigDecimal.ZERO);
+					payment.setUserPaymentSgstPercentage(BigDecimal.ZERO);
+					payment.setUserPaymentCgstPercentage(BigDecimal.ZERO);
+					payment.setUserPaymentIgstPercentage(BigDecimal.ZERO);
+					paidPayment=uploadDBImpl.saveUserPayment(payment);
+					settleAmount=settleAmount.add(paidPayment.getUserPaymentPayableAmount());
+					
+					UserPaymentDue due=new UserPaymentDue();
+					due.setUserId(booking.getTenantId());
+					due.setUserMoneyDueId(paidDue.getUserMoneyDueId());
+					due.setUserPaymentId(paidPayment.getUserPaymentId());
+					uploadDBImpl.saveUserPaymentDue(due);
+					
+					UserBookingPaymentId userPaymentId = new UserBookingPaymentId();
+					userPaymentId.setUserBookingsId(booking.getBookingId());
+					userPaymentId.setUserId(booking.getTenantId());
+					userPaymentId.setUserPaymentId(paidPayment.getUserPaymentId());
 
-				UserBookingPayment userBookingPayment = new UserBookingPayment();
-				userBookingPayment.setId(userPaymentId);
-				uploadDBImpl.saveUserBookingPayment(userBookingPayment);
+					UserBookingPayment userBookingPayment = new UserBookingPayment();
+					userBookingPayment.setId(userPaymentId);
+					uploadDBImpl.saveUserBookingPayment(userBookingPayment);
+				}
 				
 				CsvTenantDetails tenantDetails=userCsvDetails.get(booking.getTenantId());
 				if(tenantDetails.getRentPaid().equals("Yes")) {
@@ -322,10 +356,17 @@ public class UploadService {
 					dues.setUserMoneyDueAmount(booking.getCalFixedRent());
 					dues.setUserMoneyDueBillEndDate(getMonthStartEndDate().getSecond());
 					dues.setUserMoneyDueBillStartDate(booking.getInDate());
-					dues.setUserMoneyDueDescription("");
+					dues.setUserMoneyDueDescription(ZoyConstant.RENT_DUE);
 					dues.setUserMoneyDueBillingType(duesType.get(0)[1]);
 					dues.setUserMoneyDueTimestamp(Timestamp.valueOf(LocalDateTime.now()));
 					dues.setUserMoneyDueType(duesType.get(0)[0]);
+					dues.setUserDueAmount(booking.getCalFixedRent());
+					dues.setUserCgstAmount(BigDecimal.ZERO);
+					dues.setUserSgstAmount(BigDecimal.ZERO);
+					dues.setUserIgstAmount(BigDecimal.ZERO);
+					dues.setUserCgstPercentage(BigDecimal.ZERO);
+					dues.setUserSgstPercentage(BigDecimal.ZERO);
+					dues.setUserIgstPercentage(BigDecimal.ZERO);
 					UserDues paidDue=uploadDBImpl.saveUserDues(dues);
 
 					UserPayment rentPayment=new UserPayment();
@@ -337,6 +378,12 @@ public class UploadService {
 					rentPayment.setUserPaymentPaymentStatus("success");
 					rentPayment.setUserPaymentZoyPaymentMode("Cash");
 					rentPayment.setUserPaymentZoyPaymentType("dues");
+					rentPayment.setUserPaymentSgst(BigDecimal.ZERO);
+					rentPayment.setUserPaymentCgst(BigDecimal.ZERO);
+					rentPayment.setUserPaymentIgst(BigDecimal.ZERO);
+					rentPayment.setUserPaymentSgstPercentage(BigDecimal.ZERO);
+					rentPayment.setUserPaymentCgstPercentage(BigDecimal.ZERO);
+					rentPayment.setUserPaymentIgstPercentage(BigDecimal.ZERO);
 					paidRentPayment=uploadDBImpl.saveUserPayment(rentPayment);
 					settleAmount=settleAmount.add(paidRentPayment.getUserPaymentPayableAmount());
 					

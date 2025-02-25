@@ -343,4 +343,8 @@ public class UploadServiceImpl {
 		
 	}
 
+	public UserMaster findUserMaster(String phoneNumber) {
+		 return userMasterRepository.findUserMaster(phoneNumber).orElse(null);
+	}
+
 }
