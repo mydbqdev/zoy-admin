@@ -985,10 +985,10 @@ public class AdminReportService implements AdminReportImpl{
 	        data.put("tenantFullName", tenantReport.getTenantName() != null ? tenantReport.getTenantName() : "");
 	        data.put("tenantContact", tenantReport.getTenantContactNumber() != null ? tenantReport.getTenantContactNumber() : "");
 	        data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
-	        data.put("propertyName", tenantReport.getBookedProperyName() != null ? tenantReport.getBookedProperyName() : "");
+	        data.put("propertyName", tenantReport.getCurrentPropertName() != null ? tenantReport.getCurrentPropertName() : "");
 	        data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
 	        data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
-	        data.put("checkInDate", tenantReport.getExpectedCheckIndate() != null ? tenantReport.getExpectedCheckIndate() : "");
+	        data.put("checkInDate", tenantReport.getCheckInDate() != null ? tenantReport.getCheckInDate() : "");
 	        data.put("checkOutDate", tenantReport.getExpectedCheckOutdate() != null ? tenantReport.getExpectedCheckOutdate() : "");
 
 	        // Common fields
@@ -1017,14 +1017,13 @@ public class AdminReportService implements AdminReportImpl{
 	    for (Object item : dataItems) {
 	        Map<String, Object> data = new HashMap<>();
 	        TenantResportsDTO tenantReport = (TenantResportsDTO) item;
-
 	        data.put("tenantName", tenantReport.getTenantName() != null ? tenantReport.getTenantName() : "");
 	        data.put("tenantContact", tenantReport.getTenantContactNumber() != null ? tenantReport.getTenantContactNumber() : "");
 	        data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
-	        data.put("previousPropert", tenantReport.getBookedProperyName() != null ? tenantReport.getBookedProperyName() : "");
+	        data.put("previousPropert", tenantReport.getPreviousPropertName() != null ? tenantReport.getPreviousPropertName() : "");
 	        data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
 	        data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
-	        data.put("checkedOutDate", tenantReport.getExpectedCheckOutdate() != null ? tenantReport.getExpectedCheckOutdate() : "");
+	        data.put("checkedOutDate", tenantReport.getCheckedOutDate() != null ? tenantReport.getCheckedOutDate() : "");
 
 	        // Common fields
 	        Timestamp fromDateTimestamp = filterRequest.getFromDate();
@@ -1056,9 +1055,9 @@ public class AdminReportService implements AdminReportImpl{
 	        data.put("tenantName", tenantReport.getTenantName() != null ? tenantReport.getTenantName() : "");
 	        data.put("tenantContact", tenantReport.getTenantContactNumber() != null ? tenantReport.getTenantContactNumber() : "");
 	        data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
-	        data.put("previousPropert", tenantReport.getBookedProperyName() != null ? tenantReport.getBookedProperyName() : "");
+	        data.put("previousPropert", tenantReport.getPreviousPropertName() != null ? tenantReport.getPreviousPropertName() : "");
 	        data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
-	        data.put("checkedOutDate", tenantReport.getExpectedCheckOutdate() != null ? tenantReport.getExpectedCheckOutdate() : "");
+	        data.put("checkedOutDate", tenantReport.getCheckedOutDate() != null ? tenantReport.getCheckedOutDate() : "");
 	        data.put("suspendedDate", tenantReport.getSuspendedDate() != null ? tenantReport.getSuspendedDate() : "");
 	        data.put("reason", tenantReport.getReasonForSuspension() != null ? tenantReport.getReasonForSuspension() : "");
 
