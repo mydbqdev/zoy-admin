@@ -37,5 +37,10 @@
   color: white; 
 }
 
+.mat-mdc-option {
+  font-size: 12px;
+  min-height: 12px;
+}
+
 
  

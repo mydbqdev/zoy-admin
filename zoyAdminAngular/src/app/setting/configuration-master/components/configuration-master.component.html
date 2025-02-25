@@ -23,7 +23,7 @@
                   <div class="d-sm-flex align-items-center justify-content-between mb-0">
                     <h3 class="h3 mb-0">
                       <span class="text-header-800 text-header-border">{{settingType}} PG Master</span><span class="text-header-800-blue">Configuration</span></h3> 
-                      <div class="ml-auto">
+                      <div class="ml-auto" *ngIf="pgTypes.length>0" >
                         <div class="d-flex">
                             <select class="form-select form-select-sm"  style="min-width: 200px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
                             <option *ngFor="let type of pgTypes"  [value]="type.pg_type_name" >{{type.pg_type_name}}</option>
@@ -48,8 +48,13 @@
                   </div>
                 -->
                 </div>
-                  <div class="card-body">
-                   <div class="card">
+                  <div class="card-body" style="height: calc(100vh - 120px);">
+                    <div class="card align-items-center pt-4 " *ngIf="pgTypes.length == 0">
+                      <p>
+                        The <a href="javascript:void(0)" (click)="navigateInitialConfig()" >Initial Configuration (PG Type)</a> must be configured before setting up the Master Configuration.<a href="javascript:void(0)" title="Navigate to Initial Configuration screen" (click)="navigateInitialConfig()"> Click here</a> to configure PG Type.
+                      </p>
+                    </div>
+                   <div class="card" *ngIf="pgTypes.length>0">
                       <div>
                           <!--Total Advance section-->
                           <div class="p-3">
