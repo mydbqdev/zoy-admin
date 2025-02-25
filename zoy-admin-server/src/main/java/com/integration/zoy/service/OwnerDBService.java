@@ -65,6 +65,7 @@ import com.integration.zoy.repository.ZoyPgOwnerBookingDetailsRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
 import com.integration.zoy.repository.ZoyPgPropertyAmenetiesRepository;
 import com.integration.zoy.repository.ZoyPgPropertyDetailsRepository;
+import com.integration.zoy.repository.ZoyPgPropertyDuesRepository;
 import com.integration.zoy.repository.ZoyPgPropertyFloorDetailsRepository;
 import com.integration.zoy.repository.ZoyPgRentCycleMasterRepository;
 import com.integration.zoy.repository.ZoyPgRentingDurationRepository;
@@ -176,6 +177,9 @@ public class OwnerDBService implements OwnerDBImpl{
 	
 	@Autowired
 	private ZoyPgRentingDurationRepository rentingDurationRepo;
+	
+	@Autowired
+	private ZoyPgPropertyDuesRepository zoyPgPropertyDuesRepository;
 	
 	@Autowired
 	ZoyCompanyMasterRepository zoyCompanyMasterRepository;
@@ -815,6 +819,11 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public ZoyCompanyMaster saveCompanyMaster(ZoyCompanyMaster master) throws WebServiceException {
 		return zoyCompanyMasterRepository.save(master);
+	}
+
+	@Override
+	public List<String[]> getPropertyDueDetails(String propertyId, String dueName) {
+		return zoyPgPropertyDuesRepository.getPropertyDueDetails(propertyId, dueName) ;
 	}
 	
 }

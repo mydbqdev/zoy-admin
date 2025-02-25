@@ -46,6 +46,27 @@ public class UserDues {
     
     @Column(name = "user_booking_id")
     private String userBookingId;
+    
+    @Column(name = "user_due_amount", nullable = false, precision = 10, scale = 2)
+    private BigDecimal userDueAmount = BigDecimal.ZERO;
+
+    @Column(name = "user_sgst_amount", nullable = false, precision = 20, scale = 2)
+    private BigDecimal userSgstAmount = BigDecimal.ZERO;
+
+    @Column(name = "user_igst_amount", nullable = false, precision = 20, scale = 2)
+    private BigDecimal userIgstAmount = BigDecimal.ZERO;
+
+    @Column(name = "user_cgst_amount", nullable = false, precision = 20, scale = 2)
+    private BigDecimal userCgstAmount = BigDecimal.ZERO;
+
+    @Column(name = "user_sgst_percentage", nullable = false, precision = 10, scale = 2)
+    private BigDecimal userSgstPercentage = BigDecimal.ZERO;
+
+    @Column(name = "user_cgst_percentage", nullable = false, precision = 10, scale = 2)
+    private BigDecimal userCgstPercentage = BigDecimal.ZERO;
+
+    @Column(name = "user_igst_percentage", nullable = false, precision = 10, scale = 2)
+    private BigDecimal userIgstPercentage = BigDecimal.ZERO;
 
     // Getters and Setters
     public String getUserMoneyDueId() {
@@ -135,7 +156,63 @@ public class UserDues {
 	public void setUserBookingId(String userBookingId) {
 		this.userBookingId = userBookingId;
 	}
-    
+	
+	public BigDecimal getUserDueAmount() {
+		return userDueAmount;
+	}
+
+	public void setUserDueAmount(BigDecimal userDueAmount) {
+		this.userDueAmount = userDueAmount;
+	}
+
+	public BigDecimal getUserSgstAmount() {
+		return userSgstAmount;
+	}
+
+	public void setUserSgstAmount(BigDecimal userSgstAmount) {
+		this.userSgstAmount = userSgstAmount;
+	}
+
+	public BigDecimal getUserIgstAmount() {
+		return userIgstAmount;
+	}
+
+	public void setUserIgstAmount(BigDecimal userIgstAmount) {
+		this.userIgstAmount = userIgstAmount;
+	}
+
+	public BigDecimal getUserCgstAmount() {
+		return userCgstAmount;
+	}
+
+	public void setUserCgstAmount(BigDecimal userCgstAmount) {
+		this.userCgstAmount = userCgstAmount;
+	}
+
+	public BigDecimal getUserSgstPercentage() {
+		return userSgstPercentage;
+	}
+
+	public void setUserSgstPercentage(BigDecimal userSgstPercentage) {
+		this.userSgstPercentage = userSgstPercentage;
+	}
+
+	public BigDecimal getUserCgstPercentage() {
+		return userCgstPercentage;
+	}
+
+	public void setUserCgstPercentage(BigDecimal userCgstPercentage) {
+		this.userCgstPercentage = userCgstPercentage;
+	}
+
+	public BigDecimal getUserIgstPercentage() {
+		return userIgstPercentage;
+	}
+
+	public void setUserIgstPercentage(BigDecimal userIgstPercentage) {
+		this.userIgstPercentage = userIgstPercentage;
+	}
+
 	@PrePersist
     private void generateDueId() {
         if (this.userMoneyDueId == null || this.userMoneyDueId.isEmpty()) {

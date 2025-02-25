@@ -26,14 +26,14 @@ public class ZoyConstant {
 	public static final String ZOY_OWNER_MOVE_OUT="6f2aca8f-de00-4b2c-a92a-374988e135b9";
 	public static final String ZOY_USER_CHECKOUT_REQ_APPROVED="7c675aef-e56b-42c3-89e0-aa4a8c1bcaa7";
 	public static final String ZOY_USER_CHECKOUT_REQ_REJECTED="bc8054dc-9f1d-4046-bd76-a8bc3040f1e9";
-	
+
 	public static final String ZOY_OWNER_APP="Owner";
 	public static final String ZOY_USER_APP="User";
-	
+
 	public static final String RENTAL_AGGREMENT_PDF_NAME="RentalAgreement.pdf";
 	public static final String CANCELLATION_PDF_NAME ="Cancellation.pdf";
-	
-	
+
+
 	public static final String ZOY_ADMIN_LOGIN="USER_LOGIN";
 	public static final String ZOY_ADMIN_LOGOUT="USER_LOGOUT";
 	public static final String ZOY_ADMIN_USER_CREATE="USER_ADD";
@@ -57,7 +57,7 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_USER_UNLOCK = "USER_UNLOCK";
 	public static final String IST="Asia/Kolkata";
 	public static final Double DAY_24_HRS=24.0;
-	
+
 	public static final String ZOY_ADMIN_ZOY_SHARE ="ZOY_SHARE_UPDATE";
 	public static final String ZOY_ADMIN_UPLOAD_PROFILE_PICTURE ="ZOY_UPLOADED_PROFILE_PICTURE";
 	public static final String ZOY_ADMIN_AUDIT_REPORT_DOWNLOAD ="ZOY_AUDIT_REPORT_DOWNLOAD";
@@ -66,6 +66,17 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_PROPERTY_FILE_UPLOAD ="ZOY_PROPERTY_REPORT_UPLOAD";
 	public static final String ZOY_TENANT_USER_STATUS_UPDATE="ZOY_TENANT_USER_STATUS_UPDATE";
 
+	//Default Dues Categories 
+	public static final String RENT_DUE = "Rent"; 
+	public static final String SECURITY_DEPOSIT = "Security Deposit"; 
+	public static final String TOKEN = "Token"; 
+	public static final String CHECKOUT_SETTLEMENT = "CheckOut Settlement"; 
+	public static final String DUE_ADJUSTMENT = "Due Adjustment"; 
+	public static final String DOCUMENT_CHARGES = "Document Charges"; 
+	public static final String EKYC_CHARGES = "Ekyc Charges"; 
 
+	//Due Factor 
+	public static final String FIXED = "Fixed"; 
+	public static final String VARIABLE = "Variable";
 
 }
