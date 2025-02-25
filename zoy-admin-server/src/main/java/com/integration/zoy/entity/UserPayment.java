@@ -154,6 +154,24 @@ public class UserPayment {
     @Column(name = "user_gst_number")
     private String userGstNumber;
 
+    @Column(name = "user_payment_sgst", nullable = false, precision = 20, scale = 2)
+    private BigDecimal userPaymentSgst = BigDecimal.ZERO;
+
+    @Column(name = "user_payment_cgst", nullable = false, precision = 20, scale = 2)
+    private BigDecimal userPaymentCgst = BigDecimal.ZERO;
+
+    @Column(name = "user_payment_igst", nullable = false, precision = 20, scale = 2)
+    private BigDecimal userPaymentIgst = BigDecimal.ZERO;
+
+    @Column(name = "user_payment_sgst_percentage", nullable = false, precision = 10, scale = 2)
+    private BigDecimal userPaymentSgstPercentage = BigDecimal.ZERO;
+
+    @Column(name = "user_payment_cgst_percentage", nullable = false, precision = 10, scale = 2)
+    private BigDecimal userPaymentCgstPercentage = BigDecimal.ZERO;
+
+    @Column(name = "user_payment_igst_percentage", nullable = false, precision = 10, scale = 2)
+    private BigDecimal userPaymentIgstPercentage = BigDecimal.ZERO;
+
 
 	public String getUserPaymentId() {
 		return userPaymentId;
@@ -513,6 +531,54 @@ public class UserPayment {
 
 	public void setUserPaymentResultReason(String userPaymentResultReason) {
 		this.userPaymentResultReason = userPaymentResultReason;
+	}
+
+	public BigDecimal getUserPaymentSgst() {
+		return userPaymentSgst;
+	}
+
+	public void setUserPaymentSgst(BigDecimal userPaymentSgst) {
+		this.userPaymentSgst = userPaymentSgst;
+	}
+
+	public BigDecimal getUserPaymentCgst() {
+		return userPaymentCgst;
+	}
+
+	public void setUserPaymentCgst(BigDecimal userPaymentCgst) {
+		this.userPaymentCgst = userPaymentCgst;
+	}
+
+	public BigDecimal getUserPaymentIgst() {
+		return userPaymentIgst;
+	}
+
+	public void setUserPaymentIgst(BigDecimal userPaymentIgst) {
+		this.userPaymentIgst = userPaymentIgst;
+	}
+
+	public BigDecimal getUserPaymentSgstPercentage() {
+		return userPaymentSgstPercentage;
+	}
+
+	public void setUserPaymentSgstPercentage(BigDecimal userPaymentSgstPercentage) {
+		this.userPaymentSgstPercentage = userPaymentSgstPercentage;
+	}
+
+	public BigDecimal getUserPaymentCgstPercentage() {
+		return userPaymentCgstPercentage;
+	}
+
+	public void setUserPaymentCgstPercentage(BigDecimal userPaymentCgstPercentage) {
+		this.userPaymentCgstPercentage = userPaymentCgstPercentage;
+	}
+
+	public BigDecimal getUserPaymentIgstPercentage() {
+		return userPaymentIgstPercentage;
+	}
+
+	public void setUserPaymentIgstPercentage(BigDecimal userPaymentIgstPercentage) {
+		this.userPaymentIgstPercentage = userPaymentIgstPercentage;
 	}
 
 	@PrePersist

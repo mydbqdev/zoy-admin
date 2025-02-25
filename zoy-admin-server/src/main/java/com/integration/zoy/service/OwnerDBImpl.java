@@ -161,4 +161,5 @@ public interface OwnerDBImpl {
 	void deleteCompanyProfile(String profileiD)throws WebServiceException;
 	ZoyCompanyMaster findcompanyMaster() throws WebServiceException;
 	ZoyCompanyMaster saveCompanyMaster(ZoyCompanyMaster master) throws WebServiceException;
+	List<String[]> getPropertyDueDetails(String propertyId, String securityDeposit);
 }
