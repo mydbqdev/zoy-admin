@@ -21,18 +21,32 @@ import org.jodconverter.core.DocumentConverter;
 import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
 import org.jodconverter.core.office.OfficeManager;
 import org.jodconverter.local.LocalConverter;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 @Service
 public class WordToPdfConverterService {
     private static final Logger logger = LoggerFactory.getLogger(WordToPdfConverterService.class);
 
     @Autowired
     private OfficeManager officeManager;
+    
+    public void setLandscapeOrientation(XWPFDocument document) {
+        CTBody body = document.getDocument().getBody();
+        if (!body.isSetSectPr()) {
+            body.addNewSectPr();
+        }
+        CTSectPr section = body.getSectPr();
+        if (!section.isSetPgSz()) {
+            section.addNewPgSz();
+        }
+        section.getPgSz().setOrient(STPageOrientation.LANDSCAPE);
+    }
 
     public byte[] generateWordDocument(String templatePath, List<Map<String, Object>> dataList) {
     	if (dataList == null || dataList.isEmpty()) {
@@ -41,7 +55,7 @@ public class WordToPdfConverterService {
     	try (InputStream fis = getClass().getClassLoader().getResourceAsStream(templatePath);
              XWPFDocument document = new XWPFDocument(fis);
              ByteArrayOutputStream docxOutputStream = new ByteArrayOutputStream()) {
-
+    		 setLandscapeOrientation(document);
     		 adjustHeaderFooterMargins(document);
             // Replace placeholders in headers
             for (XWPFHeader header : document.getHeaderList()) {
@@ -82,7 +96,6 @@ public class WordToPdfConverterService {
                 table.addRow(newRow);
             }
             table.removeRow(templateRowId);
-            removeTrailingEmptyParagraphs(document);
 
             document.write(docxOutputStream);
             return convertToPdf(docxOutputStream);
@@ -167,23 +180,10 @@ public class WordToPdfConverterService {
         for (XWPFParagraph paragraph : cell.getParagraphs()) {
             for (XWPFRun run : paragraph.getRuns()) {
                 run.setFontFamily("Consolas");
-                run.setFontSize(6); 
+                run.setFontSize(8); 
             }
         }
     }
-    
-    private void removeTrailingEmptyParagraphs(XWPFDocument document) {
-        List<XWPFParagraph> paragraphs = document.getParagraphs();
-        for (int i = paragraphs.size() - 1; i >= 0; i--) {
-            XWPFParagraph paragraph = paragraphs.get(i);
-            if (paragraph.getText().trim().isEmpty()) {
-                document.removeBodyElement(document.getPosOfParagraph(paragraph));
-            } else {
-                break;
-            }
-        }
-    }
-
     private byte[] convertToPdf(ByteArrayOutputStream docxBytes) {
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(docxBytes.toByteArray());
              ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream()) {
