@@ -48,6 +48,9 @@ public class UserPaymentDTO {
 
 	@SerializedName("tenantContactNum")
 	private String tenantContactNum;
+	
+	@SerializedName("failedReason")
+	private String failedReason;
 
 	public Timestamp getTransactionDate() {
 		return transactionDate;
@@ -159,6 +162,14 @@ public class UserPaymentDTO {
 
 	public void setPropertyId(String propertyId) {
 		this.propertyId = propertyId;
+	}
+
+	public String getFailedReason() {
+		return failedReason;
+	}
+
+	public void setFailedReason(String failedReason) {
+		this.failedReason = failedReason;
 	}
 
 }

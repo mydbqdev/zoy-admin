@@ -76,7 +76,7 @@ public class CsvGenerateService {
     private void createCsvHeaderRow(PrintWriter writer, Object dto, String reportType) {
         switch (reportType) {
             case "userTransactionReport":
-                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Invoice No,Transaction Status,Due Amount(₹),GST Amount(₹),Total Amount(₹),Category,Mode of Payment");
+                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Invoice No,Transaction Status,Due Amount(₹),GST Amount(₹),Total Amount(₹),Category,Mode of Payment,Failure Reason");
                 break;
             case "userPaymentGstReport":
                 writer.println("Transaction Date,Invoice No,Tenant Name,PG Name,PG Address,Total Amount(₹),GST Amount(₹),Due Amount(₹),Mode of Payment");
@@ -118,7 +118,7 @@ public class CsvGenerateService {
         case "userTransactionReport":
             if (dto instanceof UserPaymentDTO) {
                 UserPaymentDTO userPayment = (UserPaymentDTO) dto;
-                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                     safeToString(userPayment.getUserPersonalName()),
                     safeToString(userPayment.getTenantContactNum()),
                     safeToString(userPayment.getUserPgPropertyName()),
@@ -131,7 +131,9 @@ public class CsvGenerateService {
                     formatAmountWithCommas(userPayment.getGstAmount()),
                     formatAmountWithCommas(userPayment.getTotalAmount()),
                     safeToString(userPayment.getCategory()),
-                    safeToString(userPayment.getPaymentMode()));
+                    safeToString(userPayment.getPaymentMode()),
+                    safeToString(userPayment.getFailedReason())
+                    );
             }
             break;
 

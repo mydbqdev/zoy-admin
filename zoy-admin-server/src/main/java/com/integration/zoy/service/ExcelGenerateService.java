@@ -114,6 +114,7 @@ public class ExcelGenerateService {
 			row.createCell(10).setCellValue("Total Amount(₹)");
 			row.createCell(11).setCellValue("Category");
 			row.createCell(12).setCellValue("Mode of Payment");
+			row.createCell(13).setCellValue("Failure Reason");
 			break;
 		case "userPaymentGstReport":
 			row.createCell(0).setCellValue("Transaction Date");
@@ -257,6 +258,7 @@ public class ExcelGenerateService {
 					setCurrencyCell(row, 10, nullSafe(userPayment.getTotalAmount()));
 					row.createCell(11).setCellValue(nullSafe(userPayment.getCategory()));
 					row.createCell(12).setCellValue(nullSafe(userPayment.getPaymentMode()));
+					row.createCell(13).setCellValue(nullSafe(userPayment.getFailedReason()));
 				}
 			}
 			break;
