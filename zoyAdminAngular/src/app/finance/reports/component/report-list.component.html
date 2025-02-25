@@ -78,16 +78,24 @@
                               </div>
                             </div>
                            
-                            <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName =='Tenant Refunds Report' || reportName =='Ratings and Reviews Report'">
+                            <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName =='Tenant Refunds Report' || reportName =='Ratings and Reviews Report' 
+                                        || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'">
                               <div class="form-group">
                                 <label for="tenantName" class="text-search-header">Tenant Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantName" name="tenantName" />
                               </div>
                             </div>
-                            <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName =='Tenant Refunds Report'">
+                            <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName =='Tenant Refunds Report'
+                                    || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'">
                               <div class="form-group">
                                 <label for="tenantContactNum" class="text-search-header">Tenant contact</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantContactNum" name="tenantContactNum" />
+                              </div>
+                            </div>
+                            <div class="col-sm-6" *ngIf=" reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'">
+                              <div class="form-group">
+                                <label for="bedNumber" class="text-search-header">Bed Number</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.bedNumber" name="bedNumber" />
                               </div>
                             </div>
                             <div class="col-sm-6" *ngIf="reportName =='Tenant Refunds Report'">
@@ -113,7 +121,8 @@
                             </div>
                           
                             <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' ||  reportName =='Tenant Transactions Report' 
-                                                       || reportName == 'Owner Payments Report' || reportName =='Tenant Payments GST Report' || reportName == 'Tenant Dues Report' || reportName =='Ratings and Reviews Report'">
+                                                       || reportName == 'Owner Payments Report' || reportName =='Tenant Payments GST Report' || reportName == 'Tenant Dues Report' || reportName =='Ratings and Reviews Report'
+                                                       || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'">
                               <div class="form-group">
                                 <label for="pgName" class="text-search-header">PG Property Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgName" name="pgName" />
