@@ -96,8 +96,7 @@ public class ExcelValidationService {
 	}
 
 	private void validateCell(Cell cell, String fieldName, int rowIndex, int colIndex, List<ErrorDetail> errors, Integer minLength) {
-		if (cell == null
-				|| /* cell.getCellType() != CellType.STRING || */ (minLength != null && cell.getStringCellValue().length() > minLength)) {
+		if (cell == null || cell.getCellType() != CellType.STRING || (minLength != null && cell.getStringCellValue().length() > minLength)) {
 			String errorDesc = minLength != null ? fieldName + " must be with in " + minLength + " characters long." : fieldName + " is required.";
 			errors.add(new ErrorDetail(rowIndex, colIndex, fieldName, errorDesc));
 		}
