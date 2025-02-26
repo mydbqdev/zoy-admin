@@ -28,7 +28,7 @@
                             <div class="d-flex justify-content-end">
                             <!-- Search User -->
                             <div class="form-group mr-2">
-                              <input class="form-select form-select-sm" style="width: 280px;" type="search" placeholder="Select User" [formControl]="searchControl" aria-label="Select User" [matAutocomplete]="userAuto" formControlName="username" [(ngModel)]="username"/>
+                              <input class="form-select form-select-sm" style="width: 200px;" type="search" placeholder="Select User" [formControl]="searchControl" aria-label="Select User" [matAutocomplete]="userAuto" formControlName="username" [(ngModel)]="username"/>
                               <mat-autocomplete #userAuto="matAutocomplete">
                                 <mat-option *ngFor="let user of filteredUsers | async" [value]="user.username" >
                                   {{ user.username }}
@@ -37,7 +37,7 @@
                             </div>                          
                             <!-- Select Type -->
                             <div class="form-group mr-2">
-                              <input class="form-select form-select-sm" style="width: 280px;" type="search" placeholder="Select Type" [formControl]="searchActivitiesControl" aria-label="Select Type" [matAutocomplete]="typeAuto" formControlName="type"  [(ngModel)]="selectedValue"/>
+                              <input class="form-select form-select-sm" style="width: 200px;" type="search" placeholder="Select Type" [formControl]="searchActivitiesControl" aria-label="Select Type" [matAutocomplete]="typeAuto" formControlName="type"  [(ngModel)]="selectedValue"/>
                               <mat-autocomplete #typeAuto="matAutocomplete">
                                 <mat-option *ngFor="let activities of filteredActivities | async" [value]="activities.value">
                                   {{ activities.value }}
@@ -46,7 +46,7 @@
                             </div>
                             <!-- Search by Keyword for user audit -->
                             <div class="form-group mr-2">
-                              <input type="text" class="form-control form-control-sm" style="width: 250px; border-radius: 20px; padding-left: 15px;" placeholder="Search by keyword for user audit" [(ngModel)]="searchText" maxlength="30" aria-label="Search"/>
+                              <input type="text" class="form-control form-control-sm" style="width: 250px; border-radius: 20px; padding-left: 15px;" placeholder="Search by keyword" [(ngModel)]="searchText" maxlength="30" aria-label="Search"/>
                             </div>
                             <!-- Search Button -->
                             <div class="form-group mr-2">
