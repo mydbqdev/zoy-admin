@@ -107,7 +107,13 @@ public class CsvGenerateService {
                 break; 
             case "ActiveTenantsReport":
                 writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Property Name,Property Address,Room Number/Bed Allocation, Check-in Date,Expected Checked-out Date");
-                break;  
+                break;
+            case "InactiveTenantsReport":
+            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Room Number/Bed Allocation, Checked-out Date");
+                break;
+            case "SuspendedTenantsReport":
+            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Room Number/Bed Allocation, Checked-out Date,Suspended Date,Reason for suspension");
+                break;    
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }
@@ -264,32 +270,60 @@ public class CsvGenerateService {
                 break;    
             case "UpcomingTenantsReport":
             	if (dto instanceof TenantResportsDTO) {
-            		TenantResportsDTO ratingsAndReviews = (TenantResportsDTO) dto;
+            		TenantResportsDTO upcomingTenants = (TenantResportsDTO) dto;
             		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
-                            safeToString(ratingsAndReviews.getTenantName()),
-                            safeToString(ratingsAndReviews.getTenantContactNumber()),
-                            safeToString(ratingsAndReviews.getTenantEmailAddress()),
-                            safeToString(ratingsAndReviews.getBookedProperyName()),
-                            safeToString(ratingsAndReviews.getPropertAddress()),
-                            safeToString(ratingsAndReviews.getRoomNumber()),
-                            formatDate(ratingsAndReviews.getExpectedCheckIndate()),
-                            formatDate(ratingsAndReviews.getExpectedCheckOutdate()));
+                            safeToString(upcomingTenants.getTenantName()),
+                            safeToString(upcomingTenants.getTenantContactNumber()),
+                            safeToString(upcomingTenants.getTenantEmailAddress()),
+                            safeToString(upcomingTenants.getBookedProperyName()),
+                            safeToString(upcomingTenants.getPropertAddress()),
+                            safeToString(upcomingTenants.getRoomNumber()),
+                            formatDate(upcomingTenants.getExpectedCheckIndate()),
+                            formatDate(upcomingTenants.getExpectedCheckOutdate()));
                 }
                 break;
             case "ActiveTenantsReport":
             	if (dto instanceof TenantResportsDTO) {
-            		TenantResportsDTO ratingsAndReviews = (TenantResportsDTO) dto;
+            		TenantResportsDTO activeTenants = (TenantResportsDTO) dto;
             		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
-                            safeToString(ratingsAndReviews.getTenantName()),
-                            safeToString(ratingsAndReviews.getTenantContactNumber()),
-                            safeToString(ratingsAndReviews.getTenantEmailAddress()),
-                            safeToString(ratingsAndReviews.getBookedProperyName()),
-                            safeToString(ratingsAndReviews.getPropertAddress()),
-                            safeToString(ratingsAndReviews.getRoomNumber()),
-                            formatDate(ratingsAndReviews.getExpectedCheckIndate()),
-                            formatDate(ratingsAndReviews.getExpectedCheckOutdate()));
+                            safeToString(activeTenants.getTenantName()),
+                            safeToString(activeTenants.getTenantContactNumber()),
+                            safeToString(activeTenants.getTenantEmailAddress()),
+                            safeToString(activeTenants.getCurrentPropertName()),
+                            safeToString(activeTenants.getPropertAddress()),
+                            safeToString(activeTenants.getRoomNumber()),
+                            formatDate(activeTenants.getCheckInDate()),
+                            formatDate(activeTenants.getExpectedCheckOutdate()));
                 }
                 break; 
+            case "InactiveTenantsReport":
+            	if (dto instanceof TenantResportsDTO) {
+            		TenantResportsDTO inActiveTenants = (TenantResportsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(inActiveTenants.getTenantName()),
+                            safeToString(inActiveTenants.getTenantContactNumber()),
+                            safeToString(inActiveTenants.getTenantEmailAddress()),
+                            safeToString(inActiveTenants.getPreviousPropertName()),
+                            safeToString(inActiveTenants.getPropertAddress()),
+                            safeToString(inActiveTenants.getRoomNumber()),
+                            formatDate(inActiveTenants.getCheckedOutDate()));
+                }
+                break;
+            case "SuspendedTenantsReport":
+            	if (dto instanceof TenantResportsDTO) {
+            		TenantResportsDTO suspendedTenant = (TenantResportsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(suspendedTenant.getTenantName()),
+                            safeToString(suspendedTenant.getTenantContactNumber()),
+                            safeToString(suspendedTenant.getTenantEmailAddress()),
+                            safeToString(suspendedTenant.getPreviousPropertName()),
+                            safeToString(suspendedTenant.getPropertAddress()),
+                            safeToString(suspendedTenant.getRoomNumber()),
+                            formatDate(suspendedTenant.getCheckedOutDate()),
+                            formatDate(suspendedTenant.getCheckedOutDate()),
+                            safeToString(suspendedTenant.getReasonForSuspension()));
+                }
+                break;   
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }
