@@ -222,6 +222,26 @@ public class ExcelGenerateService {
 			row.createCell(6).setCellValue("Check-in Date");
 			row.createCell(7).setCellValue("Expected Check-out Date");
 			break;
+		case "InactiveTenantsReport":
+			row.createCell(0).setCellValue("Tenant Full Name");
+			row.createCell(1).setCellValue("Tenant Contact Number");
+			row.createCell(2).setCellValue("Tenant Email Address");
+			row.createCell(3).setCellValue("Previous Property Name");
+			row.createCell(4).setCellValue("Property Address");
+			row.createCell(5).setCellValue("Room Number/Bed Allocation");
+			row.createCell(6).setCellValue("Checked-out Date");
+			break;
+		case "SuspendedTenantsReport":
+			row.createCell(0).setCellValue("Tenant Full Name");
+			row.createCell(1).setCellValue("Tenant Contact Number");
+			row.createCell(2).setCellValue("Tenant Email Address");
+			row.createCell(3).setCellValue("Previous Property Name");
+			row.createCell(4).setCellValue("Property Address");
+			row.createCell(5).setCellValue("Room Number/Bed Allocation");
+			row.createCell(6).setCellValue("Checked-out Date");
+			row.createCell(6).setCellValue("Suspended Date");
+			row.createCell(6).setCellValue("Reason for suspension");
+			break;	
 		default:
 			throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 		}
@@ -381,18 +401,44 @@ public class ExcelGenerateService {
 			
 		case "ActiveTenantsReport":
 			if (dto instanceof TenantResportsDTO) {
-				TenantResportsDTO upcomingTenant = (TenantResportsDTO) dto;
-				row.createCell(0).setCellValue(nullSafe(upcomingTenant.getTenantName()));
-				row.createCell(1).setCellValue(nullSafe(upcomingTenant.getTenantContactNumber()));
-				row.createCell(2).setCellValue(nullSafe(upcomingTenant.getTenantEmailAddress()));
-				row.createCell(3).setCellValue(nullSafe(upcomingTenant.getBookedProperyName()));
-				row.createCell(4).setCellValue(nullSafe(upcomingTenant.getPropertAddress()));
-				row.createCell(5).setCellValue(nullSafe(upcomingTenant.getRoomNumber()));
-				row.createCell(6).setCellValue(nullSafe(upcomingTenant.getExpectedCheckIndate()));
-				row.createCell(7).setCellValue(nullSafe(upcomingTenant.getExpectedCheckOutdate()));
+				TenantResportsDTO activeTenants = (TenantResportsDTO) dto;
+				row.createCell(0).setCellValue(nullSafe(activeTenants.getTenantName()));
+				row.createCell(1).setCellValue(nullSafe(activeTenants.getTenantContactNumber()));
+				row.createCell(2).setCellValue(nullSafe(activeTenants.getTenantEmailAddress()));
+				row.createCell(3).setCellValue(nullSafe(activeTenants.getCurrentPropertName()));
+				row.createCell(4).setCellValue(nullSafe(activeTenants.getPropertAddress()));
+				row.createCell(5).setCellValue(nullSafe(activeTenants.getRoomNumber()));
+				row.createCell(6).setCellValue(nullSafe(activeTenants.getCheckInDate()));
+				row.createCell(7).setCellValue(nullSafe(activeTenants.getExpectedCheckOutdate()));
 				
 			}
 			break;
+		case "InactiveTenantsReport":
+			if (dto instanceof TenantResportsDTO) {
+				TenantResportsDTO inActiveTenants = (TenantResportsDTO) dto;
+				row.createCell(0).setCellValue(nullSafe(inActiveTenants.getTenantName()));
+				row.createCell(1).setCellValue(nullSafe(inActiveTenants.getTenantContactNumber()));
+				row.createCell(2).setCellValue(nullSafe(inActiveTenants.getTenantEmailAddress()));
+				row.createCell(3).setCellValue(nullSafe(inActiveTenants.getPreviousPropertName()));
+				row.createCell(4).setCellValue(nullSafe(inActiveTenants.getPropertAddress()));
+				row.createCell(5).setCellValue(nullSafe(inActiveTenants.getRoomNumber()));
+				row.createCell(6).setCellValue(nullSafe(inActiveTenants.getCheckedOutDate()));				
+			}
+			break;	
+		case "SuspendedTenantsReport":
+			if (dto instanceof TenantResportsDTO) {
+				TenantResportsDTO suspendedTenant = (TenantResportsDTO) dto;
+				row.createCell(0).setCellValue(nullSafe(suspendedTenant.getTenantName()));
+				row.createCell(1).setCellValue(nullSafe(suspendedTenant.getTenantContactNumber()));
+				row.createCell(2).setCellValue(nullSafe(suspendedTenant.getTenantEmailAddress()));
+				row.createCell(3).setCellValue(nullSafe(suspendedTenant.getPreviousPropertName()));
+				row.createCell(4).setCellValue(nullSafe(suspendedTenant.getPropertAddress()));
+				row.createCell(5).setCellValue(nullSafe(suspendedTenant.getRoomNumber()));
+				row.createCell(6).setCellValue(nullSafe(suspendedTenant.getCheckedOutDate()));
+				row.createCell(6).setCellValue(nullSafe(suspendedTenant.getSuspendedDate()));				
+				row.createCell(6).setCellValue(nullSafe(suspendedTenant.getReasonForSuspension()));				
+			}
+			break;		
 		default:
 			//throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 			new ZoyAdminApplicationException(new Exception() ,"Invalid report type provided: " + reportType);
