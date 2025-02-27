@@ -37,12 +37,13 @@
                         <label for="email">Report Type</label>
                         <form  (submit)="searchMenus($event)">
                           <div class="input-group ">
-                            <input class="form-select form-select-sm" type="text"  style="width:300px;border-radius: 5px;cursor: pointer;font-size: 12px;"
-                             [title]="reportName" [placeholder]="reportName" [formControl]="reportControl" matInput [matAutocomplete]="auto"/>
+                            <input class="form-select form-select-sm" type="search" style="width:300px;border-radius: 5px;cursor: pointer;font-size: 12px;"
+                             [title]="reportName" [placeholder]="reportName" [formControl]="reportControl" matInput [matAutocomplete]="auto"
+                             formControlName="reportControl" />
                             <div class="input-group-append">
                             </div>
                           </div>
-                          
+                         
                           <mat-autocomplete #auto="matAutocomplete">
                             <mat-option *ngFor="let menu of filteredOptions | async" [value]="menu.name" (click)="selectedReport(menu.name)">
                             <span >{{ menu.name }}</span>  
