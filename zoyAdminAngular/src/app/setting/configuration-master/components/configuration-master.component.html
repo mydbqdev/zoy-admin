@@ -23,15 +23,6 @@
                   <div class="d-sm-flex align-items-center justify-content-between mb-0">
                     <h3 class="h3 mb-0">
                       <span class="text-header-800 text-header-border">{{settingType}} PG Master</span><span class="text-header-800-blue">Configuration</span></h3> 
-                      <div class="ml-auto" *ngIf="pgTypes.length>0" >
-                        <div class="d-flex">
-                            <select class="form-select form-select-sm"  style="min-width: 200px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
-                            <option *ngFor="let type of pgTypes"  [value]="type.pg_type_name" >{{type.pg_type_name}}</option>
-                        </select>
-                        </div>
-                      </div>
-                    <div>
-                    </div>
                   </div>
                    <!--
                   <div class="d-flex align-items-center justify-content-between w-100" style="display: block;margin: 0px;padding: 2px;">
@@ -49,20 +40,15 @@
                 -->
                 </div>
                   <div class="card-body" style="height: calc(100vh - 120px);">
-                    <div class="card align-items-center pt-4 " *ngIf="pgTypes.length == 0">
-                      <p>
-                        The <a href="javascript:void(0)" (click)="navigateInitialConfig()" >Initial Configuration (PG Type)</a> must be configured before setting up the Master Configuration.<a href="javascript:void(0)" title="Navigate to Initial Configuration screen" (click)="navigateInitialConfig()"> Click here</a> to configure PG Type.
-                      </p>
-                    </div>
-                   <div class="card" *ngIf="pgTypes.length>0">
+                   <div class="card">
                       <div>
                           <!--Total Advance section-->
                           <div class="p-3">
                             <div>
-                              <div><span style="font-size: 16px;color:#78177e;">Token Advance (%)</span></div>
+                              <div><span style="font-size: 16px;color:#78177e;">Token Advance</span></div>
                               <div>
                                 <p class="small text-muted" style="font-size: 12px;">
-                                  <em>Specify the percentage of the total amount to be collected as a token advance during booking.
+                                  <em>Token Advance amount will be calculated between the Fixed amount and variable percentage whichever is higher.
                                   </em>
                                 </p>
                               </div>
@@ -86,7 +72,7 @@
                                   </p>
                                 </div>
                                 <div class="col-sm-4">
-                                  <div>Percentage</div>
+                                  <div>% of Security Deposit</div>
                                       <div class="input-group input-group-sm" >
                                         <input 
                                           type="text" 
@@ -96,16 +82,26 @@
                                           style="max-width: 70px !important;" [disabled]="tokenAdvancDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
-                                  <p class="small text-muted " style="font-size: 12px;"><em>Percentage of the token advance required during booking.</em></p>
+                                  <p class="small text-muted " style="font-size: 12px;"><em>Percentage of security deposit required as the token advance during booking.</em></p>
                       
                                 </div>
-                                <div class="col-sm-3 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
-                                    <div *ngIf="tokenAdvancDisabled">
+                                <div class="col-sm-2">
+                                  <div>Effective On</div>
+                                  <div class="input-group input-group-sm">
+                                    <input 
+                                      type="date" 
+                                      class="form-control form-control-sm"/>
+                                  </div>
+                               </div>
+                                <div class="col-sm-2 mt-4" >
+                                  <div class="d-flex">
+                                  <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                    <div *ngIf="tokenAdvancDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')" class="btn-group">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="tokenAdvancDisabled = false">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                     </div>
-                                    <div class="btn-group" *ngIf="!tokenAdvancDisabled">
+                                    <div class="btn-group" *ngIf="!tokenAdvancDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="tokenAdvancSubmit()">
                                         <i class="fas fa-check"></i>
                                       </button>
@@ -113,9 +109,44 @@
                                         <i class="fas fa-redo" style="color: red;"></i>
                                       </button>
                                     </div>
+                                    </div>
                                 </div>
                               </div>
-                                 </div>
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <div class="input-group input-group-sm">
+                                    <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                    <input 
+                                      type="text" 
+                                      class="form-control form-control-sm" 
+                                      [(ngModel)]="configMasterModel.tokenDetails.fixedToken" disabled 
+                                      style="max-width: 90px !important;" />
+                                  </div>
+                                </div>
+                                <div class="col-sm-4">
+                                      <div class="input-group input-group-sm" >
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm" 
+                                          [(ngModel)]="configMasterModel.tokenDetails.variableToken" disabled />
+                                         <span class="input-group-text">%</span>
+                                  </div>
+                                  
+                                </div>
+                                <div class="col-sm-2">
+                                  <div class="input-group input-group-sm">
+                                    <input 
+                                      type="text" 
+                                      class="form-control form-control-sm" disabled/>
+                                  </div>
+                               </div>
+                                <div class="col-sm-2 mt-1" >
+                                  <div class="d-flex">
+                                  <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <hr class="solid"> 
@@ -164,9 +195,19 @@
                                   <em>Set the maximum allowed deposit amount.</em>
                                   </p>
                                 </div>
+                                <div class="col-sm-2">
+                                  <div>Effective On</div>
+                                  <div class="input-group input-group-sm">
+                                    <input 
+                                      type="date" 
+                                      class="form-control form-control-sm"/>
+                                  </div>
+                               </div>
                                 <!-- Action Button -->
-                                <div class="col-sm-3 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
-                                  <div class="btn-group">
+                                <div class="col-sm-2 mt-4"  >
+                                  <div class="d-flex">
+                                  <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                  <div class="btn-group" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                     <button 
                                       class="btn btn-sm btn-outline-secondary" 
                                       *ngIf="securityDepositLimitsDisabled"
@@ -186,6 +227,43 @@
                                       <i class="fas fa-redo" style="color: red;"></i>
                                     </button>
                                   </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <!-- Minimum Security Deposit -->
+                                <div class="col-sm-4">
+                                  <div class="input-group input-group-sm">
+                                    <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                    <input 
+                                      type="text" 
+                                      class="form-control form-control-sm"
+                                      [(ngModel)]="configMasterModel.depositDetails.minimumDeposit"  disabled style="max-width: 140px !important;" />
+                                  </div>
+                                </div>
+                                <!-- Maximum Security Deposit -->
+                                <div class="col-sm-4">
+                                  <div class="input-group input-group-sm">
+                                    <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                    <input 
+                                      type="text" 
+                                      class="form-control form-control-sm"
+                                      [(ngModel)]="configMasterModel.depositDetails.maximumDeposit"  disabled style="max-width: 140px !important;"/>
+                                  </div>
+                                </div>
+                                <div class="col-sm-2">
+                                  <div class="input-group input-group-sm">
+                                    <input 
+                                      type="text" 
+                                      class="form-control form-control-sm" disabled/>
+                                  </div>
+                               </div>
+                                <!-- Action Button -->
+                                <div class="col-sm-2 mt-1"  >
+                                  <div class="d-flex">
+                                  <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -197,7 +275,7 @@
                           <div class="p-3">
                             <div>
                               <div><span style="font-size: 16px;color:#78177e;">GST Charges</span></div>
-                              <div><p class="small text-muted " style="font-size: 12px;"><em>Specify the GST percentage to be applied.</em></p></div>
+                              <div><p class="small text-muted " style="font-size: 12px;"><em>Specify the GST percentage to be applied on rent.</em></p></div>
                             </div>
                             
                             <div>
@@ -233,7 +311,7 @@
                                   <p class="small text-muted " style="font-size: 12px;"><em>Set the Central Goods and Services Tax percentage. </em></p>
                       
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                   <div>SGST</div>
                                       <div class="input-group input-group-sm" >
                                         <input 
@@ -247,7 +325,7 @@
                                   <p class="small text-muted " style="font-size: 12px;"><em>Set the State Goods and Services Tax percentage.</em></p>
                       
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                   <div>IGST</div>
                                       <div class="input-group input-group-sm" >
                                         <input 
@@ -261,15 +339,25 @@
                                   <p class="small text-muted " style="font-size: 12px;"><em>Set the Integrated Goods and Services Tax percentage. </em></p>
                       
                                 </div>
+                                <div class="col-sm-2">
+                                  <div>Effective On</div>
+                                  <div class="input-group input-group-sm">
+                                    <input 
+                                      type="date" 
+                                      class="form-control form-control-sm"/>
+                                  </div>
+                               </div>
                               </div>
                               </div>
-                                <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
-                                    <div *ngIf="gstChargesDisabled">
+                                <div class="col-sm-1 mt-4" >
+                                  <div class="d-flex">
+                                  <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                    <div *ngIf="gstChargesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="gstChargesDisabled = false">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                     </div>
-                                    <div class="btn-group" *ngIf="!gstChargesDisabled">
+                                    <div class="btn-group" *ngIf="!gstChargesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="gstChargesSubmit()">
                                         <i class="fas fa-check"></i>
                                       </button>
@@ -277,6 +365,66 @@
                                         <i class="fas fa-redo" style="color: red;"></i>
                                       </button>
                                     </div>
+                                    </div>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <div class="col-sm-10">
+                                <div class="row">
+                                <div class="col-sm-3">
+                                  <div class="input-group input-group-sm">
+                                    <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                    <input 
+                                      type="text" 
+                                      class="form-control form-control-sm" 
+                                      [(ngModel)]="configMasterModel.gstCharges.monthlyRent" disabled
+                                      style="max-width: 90px !important;" />
+                                  </div>
+                                </div>
+                                <div class="col-sm-3">
+                                      <div class="input-group input-group-sm" >
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm" 
+                                          [(ngModel)]="configMasterModel.gstCharges.cgstPercentage" disabled style="max-width: 70px !important;"  />
+                                         <span class="input-group-text">%</span>
+                                  </div>
+                                </div>
+                                <div class="col-sm-2">
+                                      <div class="input-group input-group-sm" >
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm" 
+                                          [(ngModel)]="configMasterModel.gstCharges.sgstPercentage" disabled 
+                                          style="max-width: 70px !important;" />
+                                         <span class="input-group-text">%</span>
+                                  </div>
+                                </div>
+                                <div class="col-sm-2">
+                                      <div class="input-group input-group-sm" >
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm" 
+                                          [(ngModel)]="configMasterModel.gstCharges.igstPercentage"  
+                                          style="max-width: 70px !important;" disabled />
+                                         <span class="input-group-text">%</span>
+                                  </div>
+                                  
+                                </div>
+                                <div class="col-sm-2">
+                                  <div class="input-group input-group-sm">
+                                    <input 
+                                      type="text" 
+                                      class="form-control form-control-sm"/>
+                                  </div>
+                               </div>
+                              </div>
+                              </div>
+                                <div class="col-sm-1 mt-1" >
+                                  <div class="d-flex">
+                                  <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -293,7 +441,7 @@
                                 </p>
                               </div>
                               <div class="row marginRow align-items-center">
-                              <div class="col-sm-11">
+                              <div class="col-sm-9">
                                 <div class="card card-body">
                                 <div class="row">
                                   <!-- eKYC Charges for Owners -->
@@ -383,20 +531,112 @@
                                   </div>
                                 </div>
                               </div>
+                              </div>
+                              <div class="col-sm-2">
+                                <div>Effective On</div>
+                                <div class="input-group input-group-sm">
+                                  <input 
+                                    type="date" 
+                                    class="form-control form-control-sm"/>
+                                </div>
                             </div>
-                            <div class="col-sm-1" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                              <div *ngIf="otherChargesDisabled">
+                            <div class="col-sm-1 mt-4">
+                              <div class="d-flex">
+                                <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                              <div *ngIf="otherChargesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                 <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesDisabled = false">
                                   <i class="fas fa-edit"></i>
                                 </button>
                               </div>
-                              <div class="btn-group" *ngIf="!otherChargesDisabled">
+                              <div class="btn-group" *ngIf="!otherChargesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                 <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesSubmit()">
                                   <i class="fas fa-check"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesReset()">
                                   <i class="fas fa-redo" style="color: red;"></i>
                                 </button>
+                              </div>
+                              </div>
+                            </div> 
+                            </div> 
+
+                            <div class="row marginRow align-items-center">
+                              <div class="col-sm-9">
+                                <div class="card card-body">
+                                <div class="row">
+                                  <!-- eKYC Charges for Owners -->
+                                  <div class="col-sm-6">
+                                    <label for="ownerEkycCharges" class="form-label">eKYC Charges for Owners </label>
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                      <input
+                                        type="text"
+                                        id="ownerEkycCharges"
+                                        class="form-control form-control-sm"
+                                         style="max-width: 100px !important;" 
+                                        [(ngModel)]="configMasterModel.otherCharges.ownerEkycCharges" disabled
+                                      />
+                                    </div>
+                                  </div>
+                            
+                                  <!-- eKYC Charges for Tenants -->
+                                  <div class="col-sm-6">
+                                    <label for="tenantEkycCharges" class="form-label">eKYC Charges for Tenants</label>
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                      <input
+                                        type="text"
+                                        id="tenantEkycCharges"
+                                        class="form-control form-control-sm"
+                                         style="max-width: 100px !important;" disabled
+                                        [(ngModel)]="configMasterModel.otherCharges.tenantEkycCharges" 
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                            
+                                <div class="row">
+                                  <!-- Documentation Charges for Owners -->
+                                  <div class="col-sm-6">
+                                    <label for="ownerDocumentCharges" class="form-label">Documentation Charges for Owners</label>
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                      <input
+                                        type="text"
+                                        id="ownerDocumentCharges"
+                                        class="form-control form-control-sm"  style="max-width: 100px !important;" 
+                                        [(ngModel)]="configMasterModel.otherCharges.ownerDocumentCharges" disabled
+                                      />
+                                    </div>
+                                  </div>
+                            
+                                  <!-- Documentation Charges for Tenants -->
+                                  <div class="col-sm-6">
+                                    <label for="tenantDocumentCharges" class="form-label">Documentation Charges for Tenants</label>
+                                    <div class="input-group input-group-sm">
+                                      <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+                                      <input
+                                        type="text"
+                                        id="tenantDocumentCharges"
+                                        class="form-control form-control-sm"
+                                          style="max-width: 100px !important;" 
+                                        [(ngModel)]="configMasterModel.otherCharges.tenantDocumentCharges" disabled
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              </div>
+                              <div class="col-sm-2">
+                                <div class="input-group input-group-sm">
+                                  <input 
+                                    type="text" 
+                                    class="form-control form-control-sm"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-1 mt-1">
+                              <div class="d-flex">
+                                <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
                               </div>
                             </div> 
                             </div> 
@@ -414,8 +654,9 @@
                               </div>
                               <div>
                                <div class="row">
-                                  <span>Trending PG Configuration</span>
+                                  
                                   <div class="col-sm-3">
+                                    <div>Trending PG Configuration</div>
                                   <div class="input-group input-group-sm">
                                     <input 
                                     type="text" 
@@ -426,13 +667,23 @@
                                     <span class="input-group-text">Days</span>
                                   </div>
                                   </div>
-                                  <div class="col-sm-2" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                    <div *ngIf="dataGroupingDisabled">
+                                  <div class="col-sm-2">
+                                    <div>Effective On</div>
+                                    <div class="input-group input-group-sm">
+                                      <input 
+                                        type="date" 
+                                        class="form-control form-control-sm"/>
+                                    </div>
+                                 </div>
+                                  <div class="col-sm-2 mt-4">
+                                    <div class="d-flex">
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                    <div *ngIf="dataGroupingDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="dataGroupingDisabled = false">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                     </div>
-                                    <div class="btn-group" *ngIf="!dataGroupingDisabled">
+                                    <div class="btn-group" *ngIf="!dataGroupingDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGSubmit()">
                                         <i class="fas fa-check"></i>
                                       </button>
@@ -440,9 +691,34 @@
                                         <i class="fas fa-redo" style="color: red;"></i>
                                       </button>
                                     </div>
+                                    </div>
                                 </div>
-                                  </div>
+                               </div>
                                
+                               <div class="row mt-2">                               
+                                <div class="col-sm-3">
+                                <div class="input-group input-group-sm">
+                                  <input 
+                                  type="text" 
+                                  class="form-control form-control-sm"
+                                  [(ngModel)]="configMasterModel.dataGrouping.considerDays" disabled 
+                                  style="max-width: 70px !important;" />
+                                  <span class="input-group-text">Days</span>
+                                </div>
+                                </div>
+                                <div class="col-sm-2">
+                                  <div class="input-group input-group-sm">
+                                    <input 
+                                      type="text" 
+                                      class="form-control form-control-sm" disabled/>
+                                  </div>
+                               </div>
+                                <div class="col-sm-2 mt-1">
+                                  <div class="d-flex">
+                                    <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                  </div>
+                              </div>
+                             </div>
                               </div>
                             </div>
                           </div>
@@ -452,13 +728,13 @@
                               <div>
                                 <span style="font-size: 16px;color:#78177e;">Force Checkout </span>
                                 <p class="small text-muted" style="font-size: 12px;">
-                                  <em>Specify the number of days that are to be considered for enabling force checkout in case the tenant is not meeting the expectations.</em>
+                                  <em>Specify the number of days that are to be considered for enabling force checkout for owner in some special situations.</em>
                                 </p>
                               </div>
                               <div>
-                                <div class="row">
-                                  <span>Force Checkout Enabling Days</span>
+                                <div class="row">                                 
                                   <div class="col-sm-3">
+                                    <div>Force Checkout Enabling Days</div>
                                     <div class="input-group input-group-sm">
                                       <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
                                         [(ngModel)]="configMasterModel.forceCheckOut.forceCheckOutDays" 
@@ -468,13 +744,23 @@
                                       <span class="input-group-text">Days </span>
                                     </div>
                                   </div>
-                                  <div class="col-sm-2" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                    <div *ngIf="forceCheckoutDisabled">
+                                  <div class="col-sm-2">
+                                    <div>Effective On</div>
+                                    <div class="input-group input-group-sm">
+                                      <input 
+                                        type="date" 
+                                        class="form-control form-control-sm"/>
+                                    </div>
+                                 </div>
+                                  <div class="col-sm-2 mt-4">
+                                    <div class="d-flex">
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                    <div *ngIf="forceCheckoutDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="forceCheckoutDisabled = false;">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                     </div>
-                                    <div class="btn-group" *ngIf="!forceCheckoutDisabled">
+                                    <div class="btn-group" *ngIf="!forceCheckoutDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="forceCheckoutSubmit()">
                                         <i class="fas fa-check"></i>
                                       </button>
@@ -482,9 +768,31 @@
                                         <i class="fas fa-redo" style="color: red;"></i>
                                       </button>
                                     </div>
+                                    </div>
                                   </div>
                                 </div>
-                                
+                                <div class="row mt-1">                                 
+                                  <div class="col-sm-3">
+                                    <div class="input-group input-group-sm">
+                                      <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
+                                        [(ngModel)]="configMasterModel.forceCheckOut.forceCheckOutDays" 
+                                         disabled />
+                                      <span class="input-group-text">Days </span>
+                                    </div>
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <div class="input-group input-group-sm">
+                                      <input 
+                                        type="text" 
+                                        class="form-control form-control-sm" disabled/>
+                                    </div>
+                                 </div>
+                                  <div class="col-sm-2 mt-1">
+                                    <div class="d-flex">
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                             
@@ -495,13 +803,13 @@
                               <div>
                                 <span style="font-size: 16px;color:#78177e;">No Rental Agreement </span>
                                 <p class="small text-muted" style="font-size: 12px;">
-                                  <em>Specify the number of days that are to be considered for No Rental Agreement generate.</em>
+                                  <em>Specify the number of days that are to be considered for No Rental Agreement generation.</em>
                                 </p>
                               </div>
                               <div>
-                                <div class="row">
-                                  <span>No Rental agreement upto</span>
-                                  <div class="col-sm-3">
+                                <div class="row">                                  
+                                  <div class="col-sm-4">
+                                    <div>No Rental agreement upto</div>
                                     <div class="input-group input-group-sm">
                                       <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
                                         [(ngModel)]="configMasterModel.noRentalAgreement.noRentalAgreementDays" 
@@ -511,13 +819,23 @@
                                       <span class="input-group-text">Days </span>
                                     </div>
                                   </div>
-                                  <div class="col-sm-2" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                    <div *ngIf="noRentalAgreementDisabled">
+                                  <div class="col-sm-2">
+                                    <div>Effective On</div>
+                                    <div class="input-group input-group-sm">
+                                      <input 
+                                        type="date" 
+                                        class="form-control form-control-sm"/>
+                                    </div>
+                                 </div>
+                                  <div class="col-sm-2 mt-4">
+                                    <div class="d-flex">
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                    <div *ngIf="noRentalAgreementDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="noRentalAgreementDisabled = false;">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                     </div>
-                                    <div class="btn-group" *ngIf="!noRentalAgreementDisabled">
+                                    <div class="btn-group" *ngIf="!noRentalAgreementDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="noRentalAgreementSubmit()">
                                         <i class="fas fa-check"></i>
                                       </button>
@@ -525,9 +843,31 @@
                                         <i class="fas fa-redo" style="color: red;"></i>
                                       </button>
                                     </div>
+                                    </div>
                                   </div>
                                 </div>
-                                
+                                <div class="row mt-2">                                  
+                                  <div class="col-sm-4">
+                                    <div class="input-group input-group-sm">
+                                      <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
+                                        [(ngModel)]="configMasterModel.noRentalAgreement.noRentalAgreementDays" 
+                                        disabled />
+                                      <span class="input-group-text">Days </span>
+                                    </div>
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <div class="input-group input-group-sm">
+                                      <input 
+                                        type="text" 
+                                        class="form-control form-control-sm" disabled/>
+                                    </div>
+                                 </div>
+                                  <div class="col-sm-2 mt-1">
+                                    <div class="d-flex">
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                             
@@ -558,7 +898,7 @@
                                         </select>
                                       </div>
                                      </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-2">
                                       <div>Before check-in</div>
                                       <div class="input-group input-group-sm">
                                         <input 
@@ -600,10 +940,19 @@
                                       <em>Percentage of security deposit to deduct.</em>
                                       </p>
                                     </div>
-                                   
+                                    <div class="col-sm-2">
+                                      <div>Effective On</div>
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="date" 
+                                          class="form-control form-control-sm"/>
+                                      </div>
+                                   </div>
                                     <!-- Action Button -->
-                                    <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <div class="btn-group">
+                                    <div class="col-sm-1 mt-4">
+                                      <div class="d-flex" >
+                                        <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                      <div class="btn-group"  *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                         <button 
                                           class="btn btn-sm btn-outline-secondary" 
                                           *ngIf="securityDepositDeadLineDisabled"
@@ -623,6 +972,53 @@
                                           <i class="fas fa-redo" style="color: red;"></i>
                                         </button>
                                       </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <!-- Auto-Cancellation after Check-in Dates -->
+                                    <div class="col-sm-2">
+                                      <div class="input-group input-group-sm" >
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_condition" disabled /> 
+                                      </div> 
+                                     </div>
+                                    <div class="col-sm-2">
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm"
+                                          [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.auto_cancellation_day" disabled style="max-width: 70px !important;" />
+                                          <span class="input-group-text">Days</span>
+                                      </div>
+                                     
+                                    </div>
+                                    <div class="col-sm-3">
+                                      <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_value" disabled /> 
+                                      </div>
+                                    </div>
+                                     <!-- Deduction Percentage -->
+                                     <div class="col-sm-2">
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm"
+                                          [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.deduction_percentage" disabled style="max-width: 70px !important;"/>
+                                          <span class="input-group-text">%</span>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm" disabled/>
+                                      </div>
+                                   </div>
+                                    <!-- Action Button -->
+                                    <div class="col-sm-1 mt-2">
+                                      <div class="d-flex" >
+                                        <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -633,91 +1029,115 @@
                          <!--Cancellation And Refund Policy-->
                          <div>
                           <div class="p-3">
-                            <div >
-                              <span style="font-size: 16px;color:#78177e;">Cancellation And Refund Policy</span>
-                              <p class="small text-muted" style="font-size: 12px;"><em>Define the deduction percentage and time frame for cancellation before check in.</em></p>
+                            <div class="row">
+                              <div class="col-sm-10">
+                                <div >
+                                  <span style="font-size: 16px;color:#78177e;">Cancellation And Refund Policy (Before check in)</span>
+                                  <p class="small text-muted" style="font-size: 12px;"><em>Define the deduction percentage, Deduction Type and time frame for tenant cancellations before check in.</em></p>
+                                </div>
+                              </div>
+                              <div class="col-sm-2">
+                                <div *ngIf="pgTypes.length>0" class="mr-4">
+                                      <select class="form-select form-select-sm" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
+                                      <option *ngFor="let type of pgTypes"  [value]="type.pg_type_name" >{{type.pg_type_name}}</option>
+                                     </select>
+                                </div>
+                              </div>
                             </div>
-                            <div>
-                              <div>Before check in</div>
+
+                            <div class="card align-items-center pt-4 " *ngIf="pgTypes.length == 0">
+                              <p>
+                                The <a href="javascript:void(0)" (click)="navigateInitialConfig()" >Initial Configuration (PG Type)</a> must be configured before setting up the Master Configuration.<a href="javascript:void(0)" title="Navigate to Initial Configuration screen" (click)="navigateInitialConfig()"> Click here</a> to configure PG Type.
+                              </p>
+                            </div>
+                            
+                            <div  *ngIf="pgTypes.length > 0">
+                              <div class="pt-2 pb-2" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
+                                <div class="d-flex">
+                                  <div style="width: 40px;"></div>
+                                  <div class="mr-3" style="width: 80px;">
+                                    <div>Condition</div>
+                                    <div class="input-group input-group-sm">
+                                      <select class="form-select form-select-sm" style="max-width: 80px !important;"  [(ngModel)]="beforeCheckInCRfModel.trigger_condition"
+                                      [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.trigger_condition}" >
+                                      <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                      <div class="mr-3" style="width: 155px;">
+                                        <div class="input-group input-group-sm mt-4">
+                                          <input 
+                                          type="text" 
+                                          class="form-control form-control-sm"
+                                          [(ngModel)]="beforeCheckInCRfModel.before_checkin_days" (keypress)="numberOnly($event)" maxlength="3"
+                                          [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && isNotValidNumber(beforeCheckInCRfModel.before_checkin_days)  }" 
+                                          style="max-width: 84px !important;"
+                                          />
+                                          <span class="input-group-text">Days</span>
+                                        </div>
+                                        <p class="small text-muted" style="font-size: 12px;"><em>Enter maximum days before check in.</em></p>
+                                      </div>
+                                      <div class="mr-3" style="width: 190px;">
+                                        <div>Deduction Type</div>
+                                        <div class="input-group input-group-sm">
+                                          <input type="text" class="form-control form-control-sm" [(ngModel)]="beforeCheckInCRfModel.trigger_value" disabled /> 
+                                        </div>
+                                        <!--div class="input-group input-group-sm">
+                                          <select class="form-select form-select-sm" [(ngModel)]="beforeCheckInCRfModel.trigger_value" 
+                                          [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.trigger_value}" >
+                                          <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
+                                          </select>
+                                        </div -->
+                                      </div>
+                                      <div style="width: 160px;">
+                                          <div>Deduction</div>
+                                          <div class="input-group input-group-sm">
+                                            <input 
+                                            type="text" 
+                                            class="form-control form-control-sm"
+                                            [(ngModel)]="beforeCheckInCRfModel.deduction_percentage" (keypress)="percentageOnlyWithZero($event)" maxlength="5"
+                                            [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali &&  isNotValidNumber(beforeCheckInCRfModel.deduction_percentage) }" 
+                                            style="max-width: 90px !important;"
+                                            />
+                                            <span class="input-group-text">%</span>
+                                           </div>
+                                          <p class="small text-muted" style="font-size: 12px;"><em>Percentage of booking amount to deduct.</em></p>
+                                      </div>
+                                      <div class="ml-1">
+                                        <div style="height: 23px;"></div>
+                                        <div>
+                                          <button type="button" class="btn btn-sm btn-primary" (click)="beforeCheckInCRfAdd()" >Add</button>
+                                        </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="d-flex mb-1" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
+                                <div><span style="color: red; font-size: 14px; margin-top: 15px;" >{{!canSubmit ? 'Data will be saved to the database only after clicking the update button.':''}}</span></div>
+                                
+                                <div class="ml-auto mr-1 d-flex">
+                                  <div style="margin-right: 8px;margin-top:3px;">Effective On</div>
+                                  <div style="width: 120px;margin-right: 10px;">
+                                    <div class="input-group input-group-sm">
+                                      <input 
+                                        type="date" 
+                                        class="form-control form-control-sm"/>
+                                    </div>
+                                 </div>
+                                  <button type="button" class="btn btn-sm btn-primary" [disabled]="canSubmit" (click)="beforeCheckInCRfUpDate()">Update</button>
+                                  <button class="btn btn-sm btn-outline-secondary ml-1" (click)="beforeCheckInCRDatafReset()"  ><i class="fas fa-redo" style="color: red;"></i></button>
+                                </div>
+                              </div>
                                   <div class="card card-body m-0 p-0">
                                     <div>
-                                      <div class="pt-2 pb-2" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
-                                        <div class="d-flex">
-                                          <div style="width: 40px;"></div>
-                                          <div class="mr-3" style="width: 80px;">
-                                            <div>Condition</div>
-                                            <div class="input-group input-group-sm">
-                                              <select class="form-select form-select-sm" style="max-width: 80px !important;"  [(ngModel)]="beforeCheckInCRfModel.trigger_condition"
-                                              [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.trigger_condition}" >
-                                              <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
-                                              </select>
-                                            </div>
-                                          </div>
-                                              <div class="mr-3" style="width: 155px;">
-                                                <div class="input-group input-group-sm mt-4">
-                                                  <input 
-                                                  type="text" 
-                                                  class="form-control form-control-sm"
-                                                  [(ngModel)]="beforeCheckInCRfModel.before_checkin_days" (keypress)="numberOnly($event)" maxlength="3"
-                                                  [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && isNotValidNumber(beforeCheckInCRfModel.before_checkin_days)  }" 
-                                                  style="max-width: 84px !important;"
-                                                  />
-                                                  <span class="input-group-text">Days</span>
-                                                </div>
-                                                <p class="small text-muted" style="font-size: 12px;"><em>Enter maximum days before check in.</em></p>
-                                              </div>
-                                              <div class="mr-3" style="width: 190px;">
-                                                <div>Deduction Type</div>
-                                                <div class="input-group input-group-sm">
-                                                  <input type="text" class="form-control form-control-sm" [(ngModel)]="beforeCheckInCRfModel.trigger_value" disabled /> 
-                                                </div>
-                                                <!--div class="input-group input-group-sm">
-                                                  <select class="form-select form-select-sm" [(ngModel)]="beforeCheckInCRfModel.trigger_value" 
-                                                  [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali && !beforeCheckInCRfModel.trigger_value}" >
-                                                  <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
-                                                  </select>
-                                                </div -->
-                                              </div>
-                                              <div style="width: 160px;">
-                                                  <div>Deduction</div>
-                                                  <div class="input-group input-group-sm">
-                                                    <input 
-                                                    type="text" 
-                                                    class="form-control form-control-sm"
-                                                    [(ngModel)]="beforeCheckInCRfModel.deduction_percentage" (keypress)="percentageOnlyWithZero($event)" maxlength="5"
-                                                    [ngClass]="{'is-invalid': beforeCheckInCRfSaveVali &&  isNotValidNumber(beforeCheckInCRfModel.deduction_percentage) }" 
-                                                    style="max-width: 90px !important;"
-                                                    />
-                                                    <span class="input-group-text">%</span>
-                                                   </div>
-                                                  <p class="small text-muted" style="font-size: 12px;"><em>Percentage of booking amount to deduct.</em></p>
-                                              </div>
-                                              <div class="ml-1">
-                                                <div style="height: 23px;"></div>
-                                                <div>
-                                                  <button type="button" class="btn btn-sm btn-primary" (click)="beforeCheckInCRfAdd()" >Add</button>
-                                                </div>
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <div >
-                                      
-                                      </div>
                                        <div>
-                                        <div class="d-flex mb-1" style="margin-top:-30px;" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
-                                          <div></div>
-                                          <div class="ml-auto mr-1">
-                                            <span style="color: red; font-size: 14px; margin-top: 15px;" >{{!canSubmit ? 'Data will be saved to the database only after clicking the update button.':''}}</span>
-                                            <button type="button" class="btn btn-sm btn-primary" [disabled]="canSubmit" (click)="beforeCheckInCRfUpDate()">Update</button>
-                                            <button class="btn btn-sm btn-outline-secondary ml-1" (click)="beforeCheckInCRDatafReset()"  ><i class="fas fa-redo" style="color: red;"></i></button>
-                                          </div>
-                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-9">
                                         <mat-table [dataSource]="dataSource"
                                                     #table
                                                     class="example-list"
                                                     cdkDropList
                                                     [cdkDropListData]="dataSource.data"
-                                                    (cdkDropListDropped)="drop($event)" style="border:0px;border-top:1px solid #ccc;">
+                                                    (cdkDropListDropped)="drop($event)" style="border:0px;">
                         
                                           <ng-container matColumnDef="trigger_condition" class="example-box">
                                             <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
@@ -818,11 +1238,135 @@
                                         </mat-table>
                                       <!-- </div> -->
                                         <div cdkDropList [cdkDropListData]="dataSource.data" (cdkDropListDropped)="drop($event)"></div>
+                                        </div>
+                                        <div class="col-sm-2">
+
+                                        </div>
+                                        <div class="col-sm-1">
+
+                                        </div>
+                                        </div>
                                     </div>
                                     </div>
                                   </div>
- 
-                               </div>
+                                  <div class="card card-body m-0 p-0 mt-3">
+                                    <div class="row">
+                                       <div class="col-sm-9">
+                                        <mat-table [dataSource]="dataSource"
+                                                    #table
+                                                    class="example-list" style="border:0px;">
+                        
+                                          <ng-container matColumnDef="trigger_condition" >
+                                            <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
+                                            <mat-cell data-label="trigger_condition" *matCellDef="let element" style="width: 130px;flex:none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'"  >
+                                            <span style="min-width:20px" > {{ element.priority }} </span> 
+                                              <div class="ml-1" *ngIf="!element.isConfirm || element.isDelete" >
+                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_condition" [disabled]="!element.isConfirm || element.isDelete" style="width: 80px !important;" /> 
+                                              </div> 
+                                              <div class="ml-1" *ngIf="!element.isDelete && element.isConfirm" >
+                                                <select class="form-select form-select-sm" style="width: 80px !important;"  [(ngModel)]="element.trigger_condition"
+                                                [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && !element.trigger_condition  }" >
+                                                <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
+                                                </select>
+                                              </div>
+                                             </mat-cell>
+                                          </ng-container>
+                                        
+                                          <ng-container matColumnDef="before_checkin_days" >
+                                            <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
+                                            <mat-cell data-label="before_checkin_days" *matCellDef="let element" style="width: 154px;flex: none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'" > 
+                                              <div class="d-flex input-group input-group-sm">
+                                                <input type="text" 
+                                                        class="form-control form-control-sm"
+                                                        [(ngModel)]="element.before_checkin_days" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.isDelete || !element.isConfirm"
+                                                        [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.before_checkin_days) }" 
+                                                        style="max-width: 84px !important;" />
+                                                <span class="input-group-text">Days</span>
+                                              </div>
+                                              </mat-cell>
+                                          </ng-container>
+                                          
+                                          <ng-container matColumnDef="trigger_value" >
+                                            <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
+                                            <mat-cell data-label="requirePayslip" *matCellDef="let element"  style="width: 210px;padding-right: 0px;flex: none;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'" > 
+                                              <div >
+                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_value" disabled style="width: 190px !important;"/> 
+                                              </div>
+                                              <!--div *ngIf="!element.isEdit || element.isDelete">
+                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_value" [disabled]="!element.isEdit || element.isDelete" style="width: 190px !important;"/> 
+                                              </div-->
+                                              <!--div *ngIf="!element.isDelete && element.isEdit" >
+                                                <select class="form-select form-select-sm" [(ngModel)]="element.trigger_value" style="width: 190px !important;" 
+                                                [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && !element.trigger_value }" >
+                                                <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
+                                                </select>
+                                              </div-->
+                                            </mat-cell>
+                                          </ng-container>
+
+                                          <ng-container matColumnDef="deduction_percentage" >
+                                            <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
+                                            <mat-cell data-label="requirePayslip" *matCellDef="let element"  style="width: 150px !important;flex:none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'"> 
+                                              <div class="d-flex input-group input-group-sm">
+                                                <input  type="text" 
+                                                        class="form-control form-control-sm"
+                                                        [(ngModel)]="element.deduction_percentage" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.isDelete || !element.isConfirm"
+                                                        [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.deduction_percentage) }" 
+                                                        style="max-width: 90px !important;"
+                                                        disabled />
+                                                <span class="input-group-text">%</span>
+                                               </div>                                              
+                                            </mat-cell>
+                                          </ng-container>
+                                        
+                                          <ng-container matColumnDef="action" >
+                                            <!-- <mat-header-cell *matHeaderCellDef></mat-header-cell> -->
+                                            <mat-cell data-label="action" *matCellDef="let element ;let i=index"  style="padding-left:0px;flex:none;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'">
+                                              <div class="input-group" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
+                                                <div class="btn-group">
+                                                  <button class="btn btn-sm btn-outline-secondary"  *ngIf="!element.isDelete && !element.isConfirm"
+                                                    (click)="element.isConfirm = true;" title="Edit The Item"> 
+                                                     <i class="fas fa-edit"></i>
+                                                  </button>
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete && element.isConfirm"
+                                                    (click)="beforeCheckInCRfModify(element)" title="Edit The Item">
+                                                     <i class="fas fa-check"></i>
+                                                  </button>
+                                                <button class="btn btn-sm btn-outline-secondary" *ngIf="!element.isDelete" 
+                                                    (click)="beforeCheckInCRfDelete(element,i)" title="Delete The Item"> 
+                                                    <i class="fas fa-trash" style="color: red;"></i>
+                                                </button>
+                                                  
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete || element.isEdit"
+                                                    (click)="undoEditItem(element,i);undoDelete(element);" title="Undo Edit Item">
+                                                    <i class="fas fa-redo" style="color: red;"></i>
+                                                  </button>
+                                                  <!--button class="btn btn-sm btn-outline-secondary" *ngIf="element.isDelete"
+                                                    (click)="undoDelete(element)" title="Undo Delete Item">
+                                                    <i class="fas fa-redo" style="color: red;" ></i>
+                                                  </button -->
+                                                </div>
+                                               </div>
+                                            </mat-cell>
+                                            
+                                          </ng-container>          
+                                          <!-- <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row> -->
+                                          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                        </mat-table>
+                                      <!-- </div> -->
+                                        </div>
+                                        <div class="col-sm-2">
+                                          <div>Effective On</div>
+                                          <div class="input-group input-group-sm">
+                                            <input 
+                                              type="text" 
+                                              class="form-control form-control-sm" disabled/>
+                                          </div>
+                                       </div>
+                                       <div class="col-sm-1"><div class="mt-4"><i class="fas fa-thumbs-up" style="color:rgb(153, 243, 94) !important"></i></div></div>
+                                    </div>
+                                  </div>
+                            </div>
                            </div>
                         </div>
                         <hr class="solid">
@@ -836,8 +1380,9 @@
                               </div>
                               <div>
                                 <div class="row">
-                                  <span>Short term </span>
+                                  
                                   <div class="col-sm-3">
+                                    <div>Short term </div>
                                     <div class="input-group input-group-sm">
                                       <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
                                         [(ngModel)]="configMasterModel.shortTermRentingDuration.rentingDurationDays" 
@@ -847,19 +1392,30 @@
                                       <span class="input-group-text">Days </span>
                                     </div>
                                   </div>
-                                  <div class="col-sm-2" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                    <div *ngIf="shortTermRentingDurationDisabled">
+                                  <div class="col-sm-2">
+                                    <div>Effective On</div>
+                                    <div class="input-group input-group-sm">
+                                      <input 
+                                        type="date" 
+                                        class="form-control form-control-sm"/>
+                                    </div>
+                                 </div>
+                                  <div class="col-sm-2 mt-4" >
+                                    <div class="d-flex" >
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                    <div *ngIf="shortTermRentingDurationDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationDisabled = false;">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                     </div>
-                                    <div class="btn-group" *ngIf="!shortTermRentingDurationDisabled">
+                                    <div class="btn-group" *ngIf="!shortTermRentingDurationDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationSubmit()">
                                         <i class="fas fa-check"></i>
                                       </button>
                                       <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationReset()">
                                         <i class="fas fa-redo" style="color: red;"></i>
                                       </button>
+                                    </div>
                                     </div>
                                   </div>
                                 </div>
@@ -880,10 +1436,14 @@
                                 </div>
                                 <div>
                                   <div class="row">
-                                    <span>Short term Packages</span>
-                                  <div class="col-sm-5">
+                                  <div class="col-sm-12">
+                                   <div class="row">
+                                    <div class="col-sm-4">Short term Packages</div>
+                                    <div class="col-sm-2">Effective On</div>
+                                    <div class="col-sm-2"></div>
+                                   </div>
                                    <div class="row p-1" *ngFor="let shortTerm of configMasterModel.shortTerm ;let i=index" >
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-4">
                                       <div class="input-group input-group-sm">
                                         <span class="input-group-text">{{shortTerm.days}} Days</span>
                                         <input type="text" class="form-control form-control-sm" style="max-width: 70px !important;" 
@@ -893,19 +1453,29 @@
                                           <span class="input-group-text">%</span>
                                       </div>
                                     </div>
-                                    <div class="col-sm-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <div *ngIf="!shortTerm.termDisabled">
+                                    <div class="col-sm-2">
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="date" 
+                                          class="form-control form-control-sm"/>
+                                      </div>
+                                   </div>
+                                    <div class="col-sm-2">
+                                      <div class="d-flex" >
+                                        <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                      <div *ngIf="!shortTerm.termDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                         <button class="btn btn-sm btn-outline-secondary" (click)="shortTerm.termDisabled = true;">
                                           <i class="fas fa-edit"></i>
                                         </button>
                                       </div>
-                                      <div class="btn-group" *ngIf="shortTerm.termDisabled">
+                                      <div class="btn-group" *ngIf="shortTerm.termDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                         <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingSubmit(shortTerm)">
                                           <i class="fas fa-check"></i>
                                         </button>
                                         <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingReset(i)">
                                           <i class="fas fa-redo" style="color: red;"></i>
                                         </button>
+                                      </div>
                                       </div>
                                     </div>
                                   </div>
@@ -991,13 +1561,22 @@
                                       
                                     </div>
                                     </div> -->
-                                    <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                        <div *ngIf="earlyCheckOutRulesDisabled">
+                                    <div class="col-sm-2">
+                                      <div>Effective On</div>
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="date" 
+                                          class="form-control form-control-sm"/>
+                                      </div>
+                                   </div>
+                                    <div class="col-sm-2 mt-4">
+                                        <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
+                                        <div *ngIf="earlyCheckOutRulesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')" class="btn-group">
                                           <button class="btn btn-sm btn-outline-secondary" (click)="earlyCheckOutRulesDisabled = false">
                                             <i class="fas fa-edit"></i>
                                           </button>
                                         </div>
-                                        <div class="btn-group" *ngIf="!earlyCheckOutRulesDisabled">
+                                        <div class="btn-group" *ngIf="!earlyCheckOutRulesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                           <button class="btn btn-sm btn-outline-secondary" (click)="earlyCheckOutRulesSubmit()">
                                             <i class="fas fa-check"></i>
                                           </button>
@@ -1024,12 +1603,10 @@
                                       </div> -->
                                       <div >
                                         <p class="small text-muted" style="font-size: 12px;">
-                                          <em>Configure the number of days after the check-in date to automatically cancel bookings if tenants fail to check-in.
-                                            If type as a selected Rent then days of rent amount dedected .
+                                          <em>Configure the number of days after the check-in date to automatically cancel the bookings if tenant fails to check-in. If type is selected as “Rent” then total days
                                             <a href="javascript:void(0)" *ngIf="!more"  (click)="more=!more">...more</a>
                                             <span *ngIf="more">
-                                              If type as a selected TotalPaidAmount then parcentage of Total Paid Amount to be dedected .
-                                              If type as a selected Security Deposit then parcentage of Security Deposit Amount to be dedected .
+                                               stayed rent amount will be deducted. If type is selected as “Total Paid Amount” then percentage of Total Paid Amount will be deducted. If type is selected as “Security Deposit” then percentage of Security Deposit Amount is to be deducted.
                                               <a href="javascript:void(0)" (click)="more=!more"><<...less</a>
                                             </span>
                                           </em>
@@ -1063,6 +1640,7 @@
                                               style="max-width: 70px !important;" />
                                               <span class="input-group-text">Days</span>
                                           </div>
+                                      
                                           <p class="small text-muted" style="font-size: 12px;">
                                           <em>Set the days to cancel if not checked in.</em>
                                           </p>
@@ -1102,6 +1680,14 @@
                                           </div>
                                           
                                         </div> -->
+                                        <div class="col-sm-2">
+                                          <div>Effective On</div>
+                                          <div class="input-group input-group-sm">
+                                            <input 
+                                              type="date" 
+                                              class="form-control form-control-sm"/>
+                                          </div>
+                                       </div> 
                                         <!-- Action Button -->
                                         <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                           <div class="btn-group">
@@ -1124,6 +1710,40 @@
                                               <i class="fas fa-redo" style="color: red;"></i>
                                             </button>
                                           </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <!-- Auto-Cancellation after Check-in Dates -->
+                                        <div class="col-sm-2">
+                                          <div class="input-group input-group-sm mt-1">
+                                            <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_condition" disabled /> 
+                                          </div>
+                                         </div>
+                                        <div class="col-sm-2">
+                                          <div class="input-group input-group-sm mt-1">
+                                            <input 
+                                              type="text" 
+                                              class="form-control form-control-sm"
+                                              [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day" disabled  
+                                              style="max-width: 70px !important;" />
+                                              <span class="input-group-text">Days</span>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                          <div class="input-group input-group-sm mt-1">
+                                            <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_value" disabled /> 
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                          <div class="input-group input-group-sm">
+                                            <input 
+                                              type="date" 
+                                              class="form-control form-control-sm"/>
+                                          </div>
+                                       </div>
+                                        <!-- Action Button -->
+                                        <div class="col-sm-1" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ')">
+                                          <div><i class="fas fa-thumbs-up" style="color:rgb(153, 243, 94) !important"></i></div>
                                         </div>
                                       </div>
                                     </div>
