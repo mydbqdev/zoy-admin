@@ -75,6 +75,8 @@ import { MessageService } from 'src/app/message.service';
       'debitAmount': 'DEBIT AMOUNT',
      // 'customerId': 'TENANT ID' ,//'CUSTOMER ID',
       'basicAmount': 'BASIC AMOUNT',
+      'failedReason':'FAILURE REASON',
+
 
       'tenantContactNum' :'TENANT CONTACT',
       'propertyHouseArea' :'PG Address',
@@ -133,7 +135,7 @@ import { MessageService } from 'src/app/message.service';
 		{
 		  'reportName': 'Tenant Transactions Report', //== User Transactions Report
 		  'columns': ['transactionDate','customerName', 'tenantContactNum','PgPropertyName','propertyHouseArea','bedNumber',  
-                  'transactionNumber', 'transactionStatus', 'baseAmount','gstAmount','totalAmount','category','paymentMethod'],
+                  'transactionNumber', 'transactionStatus', 'baseAmount','gstAmount','totalAmount','category','paymentMethod','failedReason'],
     },
 		{
 		  'reportName': 'Tenant Payments GST Report', //==User Payments GST Report
