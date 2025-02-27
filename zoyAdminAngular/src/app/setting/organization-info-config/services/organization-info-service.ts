@@ -11,6 +11,7 @@ import { MessageService } from 'src/app/message.service';
 
   export class OrganizationInfoConfigService{
     message : string;
+    API_KEY = 'AIzaSyD7PEuJ8KF2Wd6D5aQzU6hGZ5UQ3jH15TU';
     httpOptions ={
         headers :new HttpHeaders({'Content-Type':'application/json'})
     };
@@ -66,6 +67,11 @@ import { MessageService } from 'src/app/message.service';
             }
         );
     } 
+
+    getCityAndState(pincode: string): Observable<any> {
+        const url ='https://maps.googleapis.com/maps/api/geocode/json?address='+pincode+'&key='+this.API_KEY;
+        return this.httpclient.get<any>(url);
+      }
 
       private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");    
