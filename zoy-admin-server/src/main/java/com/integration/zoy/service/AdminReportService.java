@@ -681,6 +681,11 @@ public class AdminReportService implements AdminReportImpl{
 				dataListWrapper=this.generateInactivePropertiesReport(reportData,filterRequest);
 				templatePath ="templates/inActivePropertiesReport.docx";
 				break;
+			case "SuspendedPropertiesReport":
+				reportData = getSuspendedPropertyReport(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateSuspendedPropertiesReport(reportData,filterRequest);
+				templatePath ="templates/suspendedPropertiesReport.docx";
+				break;	
 			default:
 				throw new IllegalArgumentException("Invalid template name provided.");
 			}
@@ -1026,6 +1031,8 @@ public class AdminReportService implements AdminReportImpl{
 		}
 		return dataList;
 	}
+	
+	
 	public List<Map<String, Object>> generateInactivePropertiesReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
@@ -1059,6 +1066,39 @@ public class AdminReportService implements AdminReportImpl{
 		return dataList;
 	}
 	
+	public List<Map<String, Object>> generateSuspendedPropertiesReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			PropertyResportsDTO inActivePropertyReport = (PropertyResportsDTO) item;
+
+			data.put("ownerFullName", inActivePropertyReport.getOwnerFullName() != null ? inActivePropertyReport.getOwnerFullName() : "");
+			data.put("propertyName", inActivePropertyReport.getPropertyName() != null ? inActivePropertyReport.getPropertyName() : "");
+			data.put("propertyContact", inActivePropertyReport.getPropertyContactNumber() != null ? inActivePropertyReport.getPropertyContactNumber() : "");
+			data.put("propertyEmail", inActivePropertyReport.getPropertyEmailAddress() != null ? inActivePropertyReport.getPropertyEmailAddress() : "");
+			data.put("address", inActivePropertyReport.getPropertyAddress() != null ? inActivePropertyReport.getPropertyAddress() : "");
+			data.put("suspendedDate", inActivePropertyReport.getSuspendedDate() != null ? inActivePropertyReport.getSuspendedDate() : "");
+			data.put("reason", inActivePropertyReport.getReasonForSuspension() != null ? inActivePropertyReport.getReasonForSuspension() : "");
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
 	public List<Map<String, Object>> generateSuspendedTenantsReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
@@ -2027,6 +2067,117 @@ public class AdminReportService implements AdminReportImpl{
 		    }).collect(Collectors.toList());
 
 		    return new CommonResponseDTO<>(inactivePropertiesReportDto, filterCount);
+		} catch (Exception e) {
+		    throw new WebServiceException("Error retrieving Inactive Properties: " + e.getMessage());
+		}
+	}
+		
+	@Override
+	public CommonResponseDTO<PropertyResportsDTO> getSuspendedPropertyReport(UserPaymentFilterRequest filterRequest,
+			FilterData filterData, Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+				    "SELECT \r\n"
+				    + "    zpod.pg_owner_name AS ownerFullName,\r\n"
+				    + "    zppd.property_name AS propertyName,\r\n"
+				    + "    zppd.property_contact_number AS propertyContactNumber,\r\n"
+				    + "    zppd.property_pg_email AS propertyEmailAddress,\r\n"
+				    + "    zppd.property_house_area AS propertyAddress,\r\n"
+				    + "    pops.updated_timestamp as suspendedDate,\r\n"
+				    + "    pops.status_reason as statusReason,\r\n"
+				    + "     pops.status_type as statusType\r\n"
+				    + "FROM pgowners.zoy_pg_property_details zppd\r\n"
+				    + "JOIN pgcommon.pg_owner_property_status pops \r\n"
+				    + "    ON zppd.property_id = pops.property_id\r\n"
+				    + "JOIN pgowners.zoy_pg_owner_details zpod \r\n"
+				    + "    ON zppd.pg_owner_id = zpod.pg_owner_id\r\n"
+				    + "WHERE pops.status_type = 'suspend'"
+				);
+
+		    Map<String, Object> parameters = new HashMap<>();
+		    
+		    if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+		        queryBuilder.append(" AND pops.updated_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+		        parameters.put("fromDate", filterRequest.getFromDate());
+		        parameters.put("toDate", filterRequest.getToDate());
+		    }
+
+		    if (filterData.getOwnerName() != null && !filterData.getOwnerName().isEmpty()) {
+		        queryBuilder.append(" AND LOWER(zpod.pg_owner_name) LIKE LOWER(:ownerName) ");
+		        parameters.put("ownerName", "%" + filterData.getOwnerName() + "%");
+		    }
+		    if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+		        queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:propertyName) ");
+		        parameters.put("propertyName", "%" + filterData.getPgName() + "%");
+		    }
+		    if (filterData.getPropertyContactNum() != null && !filterData.getPropertyContactNum().isEmpty()) {
+		        queryBuilder.append(" AND LOWER(zppd.property_contact_number) LIKE LOWER(:propertyContactNumber) ");
+		        parameters.put("propertyContactNumber", "%" + filterData.getPropertyContactNum() + "%");
+		    }
+		    if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
+		        queryBuilder.append(" AND LOWER(zppd.property_pg_email) LIKE LOWER(:propertyEmailAddress) ");
+		        parameters.put("propertyEmailAddress", "%" + filterData.getOwnerEmail() + "%");
+		    }
+		    if (filterData.getPgAddress() != null && !filterData.getPgAddress().isEmpty()) {
+		        queryBuilder.append(" AND LOWER(zppd.property_house_area) LIKE LOWER(:propertyAddress) ");
+		        parameters.put("propertyAddress", "%" + filterData.getPgAddress() + "%");
+		    }
+
+		    if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+		            && filterRequest.getSortActive() != null) {
+		        String sort = "";
+		        switch (filterRequest.getSortActive()) {
+		            case "ownerFullName":
+		                sort = "ownerFullName";
+		                break;
+		            case "propertyName":
+		                sort = "propertyName";
+		                break;
+		            case "propertyContactNumber":
+		                sort = "propertyContactNumber";
+		                break;
+		            case "propertyEmailAddress":
+		                sort = "propertyEmailAddress";
+		                break;
+		            case "propertyAddress":
+		                sort = "propertyAddress";
+		                break;
+		            case "suspendedDate":
+		                sort = "suspendedDate";
+		                break;    
+		            default:
+		                sort = "propertyName";
+		        }
+		        String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+		        queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+		    } else {
+		        queryBuilder.append(" ORDER BY propertyName DESC ");
+		    }
+
+		    Query query = entityManager.createNativeQuery(queryBuilder.toString());
+		    parameters.forEach(query::setParameter);
+
+		    int filterCount = query.getResultList().size();
+
+		    if (applyPagination) {
+		        query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+		        query.setMaxResults(filterRequest.getPageSize());
+		    }
+
+		    List<Object[]> results = query.getResultList();
+		    List<PropertyResportsDTO> suspendedPropertiesReportDto = results.stream().map(row -> {
+		        PropertyResportsDTO dto = new PropertyResportsDTO();
+		        dto.setOwnerFullName(row[0] != null ? (String) row[0] : "");
+		        dto.setPropertyName(row[1] != null ? (String) row[1] : "");
+		        dto.setPropertyContactNumber(row[2] != null ? (String) row[2] : "");
+		        dto.setPropertyEmailAddress(row[3] != null ? (String) row[3] : "");
+		        dto.setPropertyAddress(row[4] != null ? (String) row[4] : "");
+		        dto.setSuspendedDate(row[5] != null ? (Timestamp) row[5] : null);
+		        dto.setReasonForSuspension(row[6] != null ? (String) row[6] : "");
+		        return dto;
+		    }).collect(Collectors.toList());
+
+		    return new CommonResponseDTO<>(suspendedPropertiesReportDto, filterCount);
 		} catch (Exception e) {
 		    throw new WebServiceException("Error retrieving Inactive Properties: " + e.getMessage());
 		}
