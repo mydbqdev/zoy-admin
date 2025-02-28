@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
@@ -298,12 +299,12 @@ public class UploadService {
 					UserDues userDue=new UserDues();
 					userDue.setUserId(booking.getTenantId());
 					userDue.setUserMoneyDueAmount(booking.getPaidDeposit());
-					userDue.setUserMoneyDueBillEndDate(new Timestamp(System.currentTimeMillis()));
+					userDue.setUserMoneyDueBillEndDate(booking.getCurrMonthEndDate());
 					userDue.setUserMoneyDueBillingType(duesId.get(0)[1]);
-					userDue.setUserMoneyDueBillStartDate(new Timestamp(System.currentTimeMillis()));
+					userDue.setUserMoneyDueBillStartDate(booking.getInDate());
 					userDue.setUserMoneyDueDescription(ZoyConstant.SECURITY_DEPOSIT);
 					userDue.setUserMoneyDueType(duesId.get(0)[0]);
-					userDue.setUserMoneyDueTimestamp(new Timestamp(System.currentTimeMillis()));
+					userDue.setUserMoneyDueTimestamp(booking.getInDate());
 					userDue.setUserBookingId(booking.getBookingId());
 					userDue.setUserDueAmount(booking.getSecurityDeposit());
 					userDue.setUserCgstAmount(BigDecimal.ZERO);
@@ -354,11 +355,11 @@ public class UploadService {
 					dues.setUserId(booking.getTenantId());
 					dues.setUserBookingId(booking.getBookingId());
 					dues.setUserMoneyDueAmount(booking.getCalFixedRent());
-					dues.setUserMoneyDueBillEndDate(getMonthStartEndDate().getSecond());
+					dues.setUserMoneyDueBillEndDate(booking.getCurrMonthEndDate());
 					dues.setUserMoneyDueBillStartDate(booking.getInDate());
 					dues.setUserMoneyDueDescription(ZoyConstant.RENT_DUE);
 					dues.setUserMoneyDueBillingType(duesType.get(0)[1]);
-					dues.setUserMoneyDueTimestamp(Timestamp.valueOf(LocalDateTime.now()));
+					dues.setUserMoneyDueTimestamp(booking.getInDate());
 					dues.setUserMoneyDueType(duesType.get(0)[0]);
 					dues.setUserDueAmount(booking.getCalFixedRent());
 					dues.setUserCgstAmount(BigDecimal.ZERO);
@@ -377,7 +378,7 @@ public class UploadService {
 					rentPayment.setUserPaymentGst(BigDecimal.ZERO);
 					rentPayment.setUserPaymentPaymentStatus("success");
 					rentPayment.setUserPaymentZoyPaymentMode("Cash");
-					rentPayment.setUserPaymentZoyPaymentType("dues");
+					rentPayment.setUserPaymentZoyPaymentType(ZoyConstant.RENT_DUE);
 					rentPayment.setUserPaymentSgst(BigDecimal.ZERO);
 					rentPayment.setUserPaymentCgst(BigDecimal.ZERO);
 					rentPayment.setUserPaymentIgst(BigDecimal.ZERO);
@@ -397,11 +398,11 @@ public class UploadService {
 					dues.setUserId(booking.getTenantId());
 					dues.setUserBookingId(booking.getBookingId());
 					dues.setUserMoneyDueAmount(booking.getCalFixedRent());
-					dues.setUserMoneyDueBillEndDate(booking.getInDate());
+					dues.setUserMoneyDueBillEndDate(booking.getCurrMonthEndDate());
 					dues.setUserMoneyDueBillStartDate(booking.getInDate());
-					dues.setUserMoneyDueDescription("");
+					dues.setUserMoneyDueDescription(ZoyConstant.RENT_DUE);
 					dues.setUserMoneyDueBillingType(duesType.get(0)[1]);
-					dues.setUserMoneyDueTimestamp(Timestamp.valueOf(LocalDateTime.now()));
+					dues.setUserMoneyDueTimestamp(booking.getInDate());
 					dues.setUserMoneyDueType(duesType.get(0)[0]);
 					uploadDBImpl.saveUserDues(dues);
 				}
@@ -555,8 +556,9 @@ public class UploadService {
 		bookingDetails.setName(tenantDetails.getFirstName()+" "+ tenantDetails.getLastName());
 		long noOfDays=getDiffofTimestamp(checkInDate,tenantDetails.getOutDate());
 		long noOfRentCalc=getDiffofTimestamp(checkInDate,date.getSecond());
+		long daysInMonth = checkInDate.toLocalDateTime().toLocalDate().lengthOfMonth();
 		bookingDetails.setNoOfDays(String.valueOf(noOfDays));
-		bookingDetails.setCalFixedRent(new BigDecimal((details.getRoomMonthlyRent()/30)*noOfRentCalc));
+		bookingDetails.setCalFixedRent(new BigDecimal((details.getRoomMonthlyRent()/daysInMonth)*noOfRentCalc));
 		bookingDetails.setOutDate(tenantDetails.getOutDate());
 		bookingDetails.setPhoneNumber(tenantDetails.getPhoneNumber());
 		bookingDetails.setPropertyId(propertyId);
@@ -576,7 +578,7 @@ public class UploadService {
 		//LocalDateTime startDateTime = currentDate.toLocalDateTime();
 		//LocalDateTime endDateTime = outDate.toLocalDateTime();
 		//long daysBetween = ChronoUnit.DAYS.between(startDateTime.toLocalDate(), endDateTime.toLocalDate());
-		long daysBetween = Duration.between(currentDate.toLocalDateTime(),outDate.toLocalDateTime()).toDays();
+		long daysBetween = ChronoUnit.DAYS.between(currentDate.toLocalDateTime().toLocalDate(),outDate.toLocalDateTime().toLocalDate());
 		return daysBetween;
 	}
 
@@ -589,8 +591,8 @@ public class UploadService {
 
 	public Pair<Timestamp,Timestamp> getMonthStartEndDate(){
 		LocalDate today = LocalDate.now();
-		LocalDateTime startOfMonth = today.with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay();
-		LocalDateTime endOfMonth = today.with(TemporalAdjusters.lastDayOfMonth()).atTime(23, 59, 59);
+		LocalDateTime startOfMonth = today.with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay(ZoneId.of(ZoyConstant.IST)).toLocalDateTime();
+		LocalDateTime endOfMonth = today.with(TemporalAdjusters.lastDayOfMonth()).atTime(23, 59, 59).atZone(ZoneId.of(ZoyConstant.IST)).toLocalDateTime();
 		Timestamp startTimestamp = Timestamp.valueOf(startOfMonth);
 		Timestamp endTimestamp = Timestamp.valueOf(endOfMonth);
 		return new Pair<Timestamp, Timestamp>(startTimestamp, endTimestamp);
