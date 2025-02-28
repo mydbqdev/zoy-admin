@@ -190,4 +190,14 @@ public interface ZoyAdminReportImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> getSuspendedTenantsReportDetailsByDateRange(@RequestBody UserPaymentFilterRequest filterRequest);
 	
+	@Operation(summary = "Get In-Active Property Details", description = "Getting the details of In-Active Property Details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/inactive_property_details",
+	produces = { "application/json" })
+	ResponseEntity<String> getInActivePropertyDetailsByDateRange(@RequestBody UserPaymentFilterRequest filterRequest);
 }

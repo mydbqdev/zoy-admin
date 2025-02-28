@@ -21,7 +21,7 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Organization</span><span class="text-header-800-blue">Configuration</span></h3> 
+                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Organization</span><span class="text-header-800-blue">Info</span></h3> 
                     <div>
                     </div>
                   </div>
@@ -88,7 +88,7 @@
                        </div>
                       <div class="d-sm-flex">
                         <div class="ml-auto" style="align-content: flex-end;">  
-                        <button type="button" class="btn btn-sm btn-primary" *ngIf="!editOrg" (click)="editMainBranchInfo()" > <i class="fas fa-edit" ></i>Edit</button> 
+                        <button type="button" class="btn btn-sm btn-primary" *ngIf="!editOrg" (click)="editMainBranchInfo()" > <i class="fas fa-edit" ></i></button> 
                         <button type="button" class="btn btn-sm btn-primary" *ngIf="editOrg" (click)="submitMainBranchInfo()" >Save Changes</button>
                         <button class="btn btn-sm btn-outline-secondary ml-1" *ngIf="editOrg" (click)="cancelMainBranchInfo()"> Cancel</button>
                         </div>
@@ -106,7 +106,7 @@
                       <div class="d-sm-flex mb-2">
                       <div>
                           <div style="font-size: 16px;color:#78177e;">
-                           <strong>Organization Detailed Information </strong>
+                           <strong>Branch's Information </strong>
                           </div>
                       </div>  
                       <div class="ml-auto">  
@@ -122,10 +122,10 @@
                          
                         <div>
                             <div class="scrollable-container-main">
-                                <table mat-table [dataSource]="dataSource" >                                          
+                                <table mat-table [dataSource]="dataSource" style="width: max-content;" >                                          
                                    
                                   <ng-container matColumnDef="type">
-                                      <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                      <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef >
                                          TYPE
                                           <span style="margin-left: 2px;">
                                             <span> <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'type' && sortDirection === 'asc' }" (click)= "sortChange('type','asc')" ></i></span>
@@ -133,13 +133,13 @@
                                               
                                           </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                      <td mat-cell *matCellDef="let element" >
                                           {{element.type}} 
                                       </td>
                                   </ng-container>
 
                                     <ng-container matColumnDef="addressLineOne">
-                                      <th mat-header-cell style="width: 250px;font-weight: 600;" *matHeaderCellDef >
+                                      <th mat-header-cell style="min-width: 110px;font-weight: 600;" *matHeaderCellDef >
                                          ADDRESS
                                           <span style="margin-left: 2px;">
                                             <span> <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'addressLineOne' && sortDirection === 'asc' }" (click)= "sortChange('addressLineOne','asc')" ></i></span>
@@ -147,85 +147,85 @@
                                               
                                           </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element" style="width: 200px;">
-                                          {{element.addressLineOne}} 
+                                      <td mat-cell *matCellDef="let element" >
+                                          {{element.addressLineOne}},{{element.addressLineTwo}},{{element.addressLineThree}} 
                                       </td>
                                   </ng-container>
                                   <ng-container matColumnDef="city">
-                                    <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                    <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef >
                                        CITY
                                         <span style="margin-left: 2px;">
                                             <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'city' && sortDirection === 'asc' }" (click)= "sortChange('city','asc')" ></i>
                                             <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'city' && sortDirection === 'desc' }" (click)= "sortChange('city','desc')"></i>
                                         </span>
                                     </th>
-                                    <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                    <td mat-cell *matCellDef="let element" >
                                         {{element.city}} 
                                     </td>
                                 </ng-container>
                                 <ng-container matColumnDef="state">
-                                  <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                  <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef >
                                      STATE
                                       <span style="margin-left: 2px;">
                                           <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'state' && sortDirection === 'asc' }" (click)= "sortChange('state','asc')" ></i>
                                           <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'state' && sortDirection === 'desc' }" (click)= "sortChange('state','desc')"></i>
                                       </span>
                                   </th>
-                                  <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                  <td mat-cell *matCellDef="let element" >
                                       {{element.state}} 
                                   </td>
                               </ng-container>
                               <ng-container matColumnDef="pinCode">
-                                <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                                <th mat-header-cell style="min-width: 115px;font-weight: 600;" *matHeaderCellDef >
                                    PIN CODE
                                     <span style="margin-left: 2px;">
                                         <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'pinCode' && sortDirection === 'asc' }" (click)= "sortChange('pinCode','asc')" ></i>
                                         <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'pinCode' && sortDirection === 'desc' }" (click)= "sortChange('pinCode','desc')"></i>
                                     </span>
                                 </th>
-                                <td mat-cell *matCellDef="let element" style="width: 200px;">
+                                <td mat-cell *matCellDef="let element" >
                                     {{element.pinCode}} 
                                 </td>
                             </ng-container>
                             <ng-container matColumnDef="contactNumberOne">
-                              <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                              <th mat-header-cell style="min-width: 175px;font-weight: 600;" *matHeaderCellDef >
                                 CONTACT NUMBER
                                   <span style="margin-left: 2px;">
                                       <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'contactNumberOne' && sortDirection === 'asc' }" (click)= "sortChange('contactNumberOne','asc')" ></i>
                                       <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'contactNumberOne' && sortDirection === 'desc' }" (click)= "sortChange('contactNumberOne','desc')"></i>
                                   </span>
                               </th>
-                              <td mat-cell *matCellDef="let element" style="width: 200px;">
-                                  {{element.contactNumberOne}} 
+                              <td mat-cell *matCellDef="let element" >
+                                  {{element.contactNumberOne}}  
                               </td>
                           </ng-container>
                           <ng-container matColumnDef="emailOne">
-                            <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                            <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef >
                                EMAILD ID
                                 <span style="margin-left: 2px;">
                                     <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'emailOne' && sortDirection === 'asc' }" (click)= "sortChange('emailOne','asc')" ></i>
                                     <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'emailOne' && sortDirection === 'desc' }" (click)= "sortChange('emailOne','desc')"></i>
                                 </span>
                             </th>
-                            <td mat-cell *matCellDef="let element" style="width: 200px;">
+                            <td mat-cell *matCellDef="let element" >
                                 {{element.emailOne}} 
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="status">
-                          <th mat-header-cell style="width: 200px;font-weight: 600;" *matHeaderCellDef >
+                          <th mat-header-cell style="min-width: 100px;font-weight: 600;" *matHeaderCellDef >
                             STATUS
                               <span style="margin-left: 2px;">
                                   <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': sortActive === 'status' && sortDirection === 'asc' }" (click)= "sortChange('status','asc')" ></i>
                                   <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': sortActive === 'status' && sortDirection === 'desc' }" (click)= "sortChange('status','desc')"></i>
                               </span>
                           </th>
-                          <td mat-cell *matCellDef="let element" style="width: 200px;">
+                          <td mat-cell *matCellDef="let element" >
                               {{element.status}} 
                           </td>
                       </ng-container>
                                 
                         <ng-container matColumnDef="action">
-                          <th mat-header-cell *matHeaderCellDef style="width: 50px;"></th>
+                          <th mat-header-cell *matHeaderCellDef ></th>
                           <td mat-cell style="width: 50px;" data-label="action" *matCellDef="let element">
                               <a class="dropdown no-arrow dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -358,47 +358,47 @@
         </div>
 
         <div class="row mb-2">
-          <label for="emailOne" class="col-sm-5 col-form-label" style="text-align: left;">Email One </label>
+          <label for="emailOne" class="col-sm-5 col-form-label" style="text-align: left;"> Primary Email  </label>
           <div class="col-sm-1"> <span>:</span></div>
           <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'"  style="text-align: left;">{{infoModel.emailOne}}{{validateEmailFormat(infoModel?.emailOne)}}</span>
-            <input type="email" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Email One" 
+            <input type="email" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Primary Email " 
                    [(ngModel)]="infoModel.emailOne" [ngClass]="{'is-invalid': submittedBranchInfo &&( !infoModel?.emailOne || validateEmailFormat(infoModel.emailOne) || infoModel?.emailOne === infoModel?.emailTwo)}">
           </div>
         </div>
 
         <div class="row mb-2">
-          <label for="emailTwo" class="col-sm-5 col-form-label" style="text-align: left;">Email Two </label>
+          <label for="emailTwo" class="col-sm-5 col-form-label" style="text-align: left;">Secondary Email </label>
           <div class="col-sm-1"> <span>:</span></div>
           <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'">{{infoModel.emailTwo}}</span>
-            <input type="email" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Email Two" 
+            <input type="email" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Secondary Email " 
                    [(ngModel)]="infoModel.emailTwo" [ngClass]="{'is-invalid': submittedBranchInfo && (!infoModel?.emailTwo || validateEmailFormat(infoModel?.emailTwo) || infoModel?.emailOne === infoModel?.emailTwo)}">
           </div>
         </div>
 
         <div class="row mb-2">
-          <label for="contactNumberOne" class="col-sm-5 col-form-label text-left" >Contact Number One </label>
+          <label for="contactNumberOne" class="col-sm-5 col-form-label text-left" >Primary Contact No  </label>
           <div class="col-sm-1"> <span>:</span></div>
           <div class="col-sm-6" style="text-align: justify;">
             <span class="text-left" *ngIf="task === 'View'">{{infoModel.contactNumberOne}}</span>
-            <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Contact Number One" (keypress)="numberOnly($event)"
+            <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Primary Contact No" (keypress)="numberOnly($event)"
                    [(ngModel)]="infoModel.contactNumberOne" [ngClass]="{'is-invalid': submittedBranchInfo && (!infoModel?.contactNumberOne || infoModel?.contactNumberOne === infoModel?.contactNumberTwo || validatecontactNumber(this.infoModel.contactNumberOne))}">
           </div>
         </div>
 
         <div class="row mb-2">
-          <label for="contactNumberTwo" class="col-sm-5 col-form-label text-left" >Contact Number Two </label>
+          <label for="contactNumberTwo" class="col-sm-5 col-form-label text-left" >Secondary Contact No </label>
           <div class="col-sm-1"> <span>:</span></div>
           <div class="col-sm-6" style="text-align: justify;">
             <span class="text-left" *ngIf="task === 'View'">{{infoModel.contactNumberTwo}}</span>
-            <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Contact Number Two" (keypress)="numberOnly($event)"
+            <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Secondary Contact No" (keypress)="numberOnly($event)"
                    [(ngModel)]="infoModel.contactNumberTwo" [ngClass]="{'is-invalid': submittedBranchInfo && (!infoModel?.contactNumberTwo || infoModel?.contactNumberOne === infoModel?.contactNumberTwo || validatecontactNumber(this.infoModel.contactNumberTwo) )}">
           </div>
         </div>
 
       </div>
-      <div class="modal-footer text-center">
+      <div class="modal-footer text-center"  *ngIf="task != 'View'">
         <button type="button" class="btn btn-sm btn-primary" (click)="submitBranchInfo()" >Submit</button>
         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
