@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.TenantResportsDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
+import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
@@ -241,7 +242,14 @@ public class ExcelGenerateService {
 			row.createCell(6).setCellValue("Checked-out Date");
 			row.createCell(6).setCellValue("Suspended Date");
 			row.createCell(6).setCellValue("Reason for suspension");
-			break;	
+			break;
+		case "InactivePropertiesReport":
+			row.createCell(0).setCellValue("Owner Full Name");
+			row.createCell(1).setCellValue("Inactive Property Name");
+			row.createCell(2).setCellValue("Property Contact Number");
+			row.createCell(3).setCellValue("Property Email Address");
+			row.createCell(4).setCellValue("Property Address");
+			break;
 		default:
 			throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 		}
@@ -435,10 +443,20 @@ public class ExcelGenerateService {
 				row.createCell(4).setCellValue(nullSafe(suspendedTenant.getPropertAddress()));
 				row.createCell(5).setCellValue(nullSafe(suspendedTenant.getRoomNumber()));
 				row.createCell(6).setCellValue(nullSafe(suspendedTenant.getCheckedOutDate()));
-				row.createCell(6).setCellValue(nullSafe(suspendedTenant.getSuspendedDate()));				
-				row.createCell(6).setCellValue(nullSafe(suspendedTenant.getReasonForSuspension()));				
+				row.createCell(7).setCellValue(nullSafe(suspendedTenant.getSuspendedDate()));				
+				row.createCell(8).setCellValue(nullSafe(suspendedTenant.getReasonForSuspension()));				
 			}
-			break;		
+			break;	
+		case "InactivePropertiesReport":
+			if (dto instanceof PropertyResportsDTO) {
+				PropertyResportsDTO inActivePropertyDetails = (PropertyResportsDTO) dto;
+				row.createCell(0).setCellValue(nullSafe(inActivePropertyDetails.getOwnerFullName()));
+				row.createCell(1).setCellValue(nullSafe(inActivePropertyDetails.getPropertyName()));
+				row.createCell(2).setCellValue(nullSafe(inActivePropertyDetails.getPropertyContactNumber()));
+				row.createCell(3).setCellValue(nullSafe(inActivePropertyDetails.getPropertyEmailAddress()));
+				row.createCell(4).setCellValue(nullSafe(inActivePropertyDetails.getPropertyAddress()));
+			}
+			break;	
 		default:
 			//throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 			new ZoyAdminApplicationException(new Exception() ,"Invalid report type provided: " + reportType);

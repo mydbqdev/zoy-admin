@@ -89,6 +89,9 @@ public class FilterData {
 
 	@SerializedName("suspendedReason")
 	String suspendedReason;
+	
+	@SerializedName("propertyContactNum")
+	String propertyContactNum;
 
 	public String getCheckInDate() {
 		return checkInDate;
@@ -320,6 +323,14 @@ public class FilterData {
 
 	public void setBedNumber(String bedNumber) {
 		this.bedNumber = bedNumber;
+	}
+
+	public String getPropertyContactNum() {
+		return propertyContactNum;
+	}
+
+	public void setPropertyContactNum(String propertyContactNum) {
+		this.propertyContactNum = propertyContactNum;
 	}
 
 }
