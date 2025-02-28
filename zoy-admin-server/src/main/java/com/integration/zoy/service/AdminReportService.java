@@ -1037,7 +1037,7 @@ public class AdminReportService implements AdminReportImpl{
 
 			data.put("ownerFullName", inActivePropertyReport.getOwnerFullName() != null ? inActivePropertyReport.getOwnerFullName() : "");
 			data.put("propertyName", inActivePropertyReport.getPropertyName() != null ? inActivePropertyReport.getPropertyName() : "");
-			data.put("contactNum", inActivePropertyReport.getPropertyContactNumber() != null ? inActivePropertyReport.getPropertyContactNumber() : "");
+			data.put("propertyContact", inActivePropertyReport.getPropertyContactNumber() != null ? inActivePropertyReport.getPropertyContactNumber() : "");
 			data.put("propertyEmail", inActivePropertyReport.getPropertyEmailAddress() != null ? inActivePropertyReport.getPropertyEmailAddress() : "");
 			data.put("address", inActivePropertyReport.getPropertyAddress() != null ? inActivePropertyReport.getPropertyAddress() : "");
 
