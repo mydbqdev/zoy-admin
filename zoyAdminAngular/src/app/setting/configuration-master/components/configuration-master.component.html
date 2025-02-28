@@ -1418,7 +1418,27 @@
                                     </div>
                                   </div>
                                 </div>
-                                
+                                <div class="row mt-1">                 
+                                  <div class="col-sm-3">
+                                    <div class="input-group input-group-sm">
+                                      <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
+                                        [(ngModel)]="configMasterModel.shortTermRentingDuration.rentingDurationDays" disabled />
+                                      <span class="input-group-text">Days </span>
+                                    </div>
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <div class="input-group input-group-sm">
+                                      <input 
+                                        type="text" 
+                                        class="form-control form-control-sm" disabled/>
+                                    </div>
+                                 </div>
+                                  <div class="col-sm-2 mt-1" >
+                                    <div class="d-flex" >
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                             
@@ -1480,7 +1500,32 @@
                                   </div>
                                   </div>
                                   </div>
-  
+                                  <div class="row">
+                                    <div class="col-sm-12">
+                                     <div class="row p-1" *ngFor="let shortTerm of configMasterModel.shortTerm ;let i=index" >
+                                      <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                          <span class="input-group-text">{{shortTerm.days}} Days</span>
+                                          <input type="text" class="form-control form-control-sm" style="max-width: 70px !important;" 
+                                            [(ngModel)]="shortTerm.percentage" disabled />
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-2">
+                                        <div class="input-group input-group-sm">
+                                          <input 
+                                            type="text" 
+                                            class="form-control form-control-sm" disabled/>
+                                        </div>
+                                     </div>
+                                      <div class="col-sm-2">
+                                        <div class="d-flex" >
+                                          <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    </div>
+                                    </div>
                                 </div>
                               </div>
                             </div> 
@@ -1583,6 +1628,37 @@
                                             <i class="fas fa-redo" style="color: red;"></i>
                                           </button>
                                         </div>
+                                    </div>
+                                  </div>
+                                  <div class="row mt-1">
+                                    <div class="col-sm-2">
+                                      <div class="input-group input-group-sm" *ngIf="earlyCheckOutRulesDisabled">
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_condition" disabled /> 
+                                      </div> 
+                                     </div>
+                                    <div class="col-sm-2">
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm" 
+                                          [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.check_out_day" disabled style="max-width: 70px !important;" />
+                                          <span class="input-group-text">Days</span>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                      <div class="input-group input-group-sm" >
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_value" disabled/> 
+                                      </div>
+                                      </div>
+                                    <div class="col-sm-2">
+                                      <div class="input-group input-group-sm">
+                                        <input 
+                                          type="text" 
+                                          class="form-control form-control-sm" disabled/>
+                                      </div>
+                                   </div>
+                                    <div class="col-sm-2 mt-1">
+                                        <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
                                     </div>
                                   </div>
                               </div>

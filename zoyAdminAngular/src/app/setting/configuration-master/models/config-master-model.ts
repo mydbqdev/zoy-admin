@@ -18,12 +18,16 @@ export class TokenDetailsModel{
     tokenId : string = '';
     fixedToken : number = null;
     variableToken : number = null;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
 
 export class SecurityDepositLimitsModel{
     depositId : string ='';
     minimumDeposit : number ;
     maximumDeposit : number ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
 
 export class EarlyCheckOutRuleDetails{
@@ -34,6 +38,8 @@ export class EarlyCheckOutRuleDetails{
     deduction_percentage: number ;
     deduction_day: number ;
     trigger_value : string ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
 
 export class BeforeCheckInCancellationRefundModel{
@@ -47,11 +53,15 @@ export class BeforeCheckInCancellationRefundModel{
     isDelete:boolean ;
     isEdit:boolean ;
     isConfirm:boolean ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
 
 export class DataGroupingModel{
     id : string ;
     considerDays : number ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
 
 export class SecurityDepositDeadLineAndAutoCancellationModel{
@@ -63,6 +73,8 @@ export class SecurityDepositDeadLineAndAutoCancellationModel{
     deduction_day : number ;
     cond : string ;
     trigger_value : string ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
 
 export class OtherChargesModel{
@@ -70,13 +82,17 @@ export class OtherChargesModel{
     ownerEkycCharges : number ;
     ownerDocumentCharges  : number ;
     tenantEkycCharges : number ;
-    tenantDocumentCharges : number ;   
+    tenantDocumentCharges : number ;  
+    effectiveDate:string='';
+    isApproved:boolean=false; 
 }
 
 
 export class ForceCheckoutModel{
     id : string ='';
     forceCheckOutDays  : number ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
 
 export class GstChargesModel{
@@ -85,6 +101,8 @@ export class GstChargesModel{
     sgstPercentage: number ;
     igstPercentage:number ;
     monthlyRent: number ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
 
 export class ShortTermModel{
@@ -92,13 +110,19 @@ export class ShortTermModel{
     days: string ;
     percentage: number ;
     termDisabled :boolean =true;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
 
 export class ShortTermRentingDuration  {
     rentingDurationId :string;
     rentingDurationDays: number;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
 export class NoRentalAgreement  {
     noRentalAgreementId :string;
     noRentalAgreementDays: number;
+    effectiveDate:string='';
+    isApproved:boolean=false;
 }
