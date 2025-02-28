@@ -971,6 +971,7 @@ getTriggerOn(){
 
 	beforeCheckInCRfDelete(row: BeforeCheckInCancellationRefundModel,n:number) {
 		row.isDelete = true;
+		row.isEdit = false;
 		if(!row.cancellation_id){
 			this.beforeCheckInCRDetails.splice(n, 1)
 		}
@@ -980,7 +981,7 @@ getTriggerOn(){
 		  if(element.isDelete){
 			return ;
 		  }
-		  element.isEdit = true;
+		//   element.isEdit = true;
 		  element.isConfirm=false;
 		  element.priority = i++;
 		});
