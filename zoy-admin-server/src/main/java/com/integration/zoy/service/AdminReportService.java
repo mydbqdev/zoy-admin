@@ -683,8 +683,8 @@ public class AdminReportService implements AdminReportImpl{
 				break;
 			case "SuspendedPropertiesReport":
 				reportData = getSuspendedPropertyReport(filterRequest, filterData,applyPagination);
-				dataListWrapper=this.generateInactivePropertiesReport(reportData,filterRequest);
-				templatePath ="templates/inActivePropertiesReport.docx";
+				dataListWrapper=this.generateSuspendedPropertiesReport(reportData,filterRequest);
+				templatePath ="templates/suspendedPropertiesReport.docx";
 				break;	
 			default:
 				throw new IllegalArgumentException("Invalid template name provided.");
@@ -1031,6 +1031,8 @@ public class AdminReportService implements AdminReportImpl{
 		}
 		return dataList;
 	}
+	
+	
 	public List<Map<String, Object>> generateInactivePropertiesReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
@@ -1064,6 +1066,39 @@ public class AdminReportService implements AdminReportImpl{
 		return dataList;
 	}
 	
+	public List<Map<String, Object>> generateSuspendedPropertiesReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			PropertyResportsDTO inActivePropertyReport = (PropertyResportsDTO) item;
+
+			data.put("ownerFullName", inActivePropertyReport.getOwnerFullName() != null ? inActivePropertyReport.getOwnerFullName() : "");
+			data.put("propertyName", inActivePropertyReport.getPropertyName() != null ? inActivePropertyReport.getPropertyName() : "");
+			data.put("propertyContact", inActivePropertyReport.getPropertyContactNumber() != null ? inActivePropertyReport.getPropertyContactNumber() : "");
+			data.put("propertyEmail", inActivePropertyReport.getPropertyEmailAddress() != null ? inActivePropertyReport.getPropertyEmailAddress() : "");
+			data.put("address", inActivePropertyReport.getPropertyAddress() != null ? inActivePropertyReport.getPropertyAddress() : "");
+			data.put("suspendedDate", inActivePropertyReport.getSuspendedDate() != null ? inActivePropertyReport.getSuspendedDate() : "");
+			data.put("reason", inActivePropertyReport.getReasonForSuspension() != null ? inActivePropertyReport.getReasonForSuspension() : "");
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
 	public List<Map<String, Object>> generateSuspendedTenantsReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
@@ -2138,7 +2173,7 @@ public class AdminReportService implements AdminReportImpl{
 		        dto.setPropertyEmailAddress(row[3] != null ? (String) row[3] : "");
 		        dto.setPropertyAddress(row[4] != null ? (String) row[4] : "");
 		        dto.setSuspendedDate(row[5] != null ? (Timestamp) row[5] : null);
-		        dto.setPropertyAddress(row[6] != null ? (String) row[6] : "");
+		        dto.setReasonForSuspension(row[6] != null ? (String) row[6] : "");
 		        return dto;
 		    }).collect(Collectors.toList());
 
