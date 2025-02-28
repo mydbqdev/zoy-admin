@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.integration.zoy.model.TenantResportsDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
+import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
@@ -113,7 +114,10 @@ public class CsvGenerateService {
                 break;
             case "SuspendedTenantsReport":
             	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Room Number/Bed Allocation, Checked-out Date,Suspended Date,Reason for suspension");
-                break;    
+                break; 
+            case "InactivePropertiesReport":
+            	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address");
+                break;   
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }
@@ -323,7 +327,18 @@ public class CsvGenerateService {
                             formatDate(suspendedTenant.getCheckedOutDate()),
                             safeToString(suspendedTenant.getReasonForSuspension()));
                 }
-                break;   
+                break;  
+            case "InactivePropertiesReport":
+            	if (dto instanceof PropertyResportsDTO) {
+            		PropertyResportsDTO suspendedTenant = (PropertyResportsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(suspendedTenant.getOwnerFullName()),
+                            safeToString(suspendedTenant.getPropertyName()),
+                            safeToString(suspendedTenant.getPropertyContactNumber()),
+                            safeToString(suspendedTenant.getPropertyEmailAddress()),
+                            safeToString(suspendedTenant.getPropertyAddress()));
+                }
+                break; 
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }

@@ -30,6 +30,7 @@ import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
+import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.TenentDues;
@@ -329,6 +330,22 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	        return new ResponseEntity<>(gson.toJson(upcomingTenantDetails), HttpStatus.OK);
 	    } catch (Exception e) {
 	        log.error("Error in API:/zoy_admin/suspended_tenant_details.getSuspendedTenantsReportDetailsByDateRange", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+
+	@Override
+	public ResponseEntity<String> getInActivePropertyDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+	        FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+	        boolean applyPagination = true;
+	        CommonResponseDTO<PropertyResportsDTO> upcomingTenantDetails = adminReportImpl.getInActivePropertyReport(filterRequest, filterData, applyPagination);
+	        return new ResponseEntity<>(gson.toJson(upcomingTenantDetails), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error in API:/zoy_admin/inactive_property_details.getInActivePropertyDetailsByDateRange", e);
 	        response.setStatus(HttpStatus.BAD_REQUEST.value());
 	        response.setError(e.getMessage());
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
