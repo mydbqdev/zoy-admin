@@ -351,5 +351,21 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
 	}
+
+	@Override
+	public ResponseEntity<String> getSuspendedPropertyDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+	        FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+	        boolean applyPagination = true;
+	        CommonResponseDTO<PropertyResportsDTO> SuspendedPropertyDetails = adminReportImpl.getSuspendedPropertyReport(filterRequest, filterData, applyPagination);
+	        return new ResponseEntity<>(gson.toJson(SuspendedPropertyDetails), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error in API:/zoy_admin/suspended_property_details.getSuspendedPropertyDetailsByDateRange", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
 	
 }

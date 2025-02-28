@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.integration.zoy.model.PgOwnerFilter;
 import com.integration.zoy.model.PgOwnerMasterModel;
+import com.integration.zoy.model.UserStatus;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -127,5 +128,17 @@ public interface PgOwnerMasterImpl {
 	@PutMapping(value = "/zoy_admin/updateZoyShare",
 	produces = { "application/json" })
 	ResponseEntity<String> updateOwnerZoyShare(@RequestParam("ownerid") String ownerid,@RequestParam("newZoyShare") BigDecimal newZoyShare);
+	
+	
+	@Operation(summary = "Update property Status", description = "updating the property Status", security = {
+			@SecurityRequirement(name = "basicAuth") }, tags = { "Tenant Management" })
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/updatePropertyStatus", 
+	produces = { "application/json" })
+	ResponseEntity<String> zoypropertyStatusUpdate(@RequestBody UserStatus userStatus);
 	
 }

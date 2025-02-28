@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -19,10 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +37,7 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.PgOwnerMaster;
+import com.integration.zoy.entity.PgOwnerPropertyStatus;
 import com.integration.zoy.entity.UserProfile;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.BasicPropertyInformation;
@@ -54,8 +53,10 @@ import com.integration.zoy.model.PgOwnerPropertyInformation;
 import com.integration.zoy.model.PgOwnerbasicInformation;
 import com.integration.zoy.model.PgOwnerdetailPortfolio;
 import com.integration.zoy.model.Room;
+import com.integration.zoy.model.UserStatus;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.PgOwnerMaterRepository;
+import com.integration.zoy.repository.PgOwnerPropertyStatusRepository;
 import com.integration.zoy.repository.UserProfileRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
 import com.integration.zoy.service.CommonDBImpl;
@@ -108,6 +109,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	private String userPhotoBucketName;
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
+	
+	@Autowired
+	PgOwnerPropertyStatusRepository pgOwnerPropertyStatusRepository;
 
 	private static final Gson gson = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -600,6 +604,50 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 	}
 
+	@Override
+	public ResponseEntity<String> zoypropertyStatusUpdate(UserStatus userStatus) {
+		ResponseBody response = new ResponseBody();
+		try {
+			String findProperty = pgOwnerPropertyStatusRepository.findTheProperty(userStatus.getUserId());
+			if (findProperty != null && !"".equals(findProperty) && !"null".equals(findProperty)) {
+				Optional<String[]> property = pgOwnerPropertyStatusRepository.findPropertyById(userStatus.getUserId());
 
+				if (!property.isPresent()) {
+					pgOwnerPropertyStatusRepository.updatePropertyById(userStatus.getStatus(),
+							userStatus.getReasonMessage(), userStatus.getUserId());
+					response.setStatus(HttpStatus.OK.value());
+					response.setMessage("property status and reason updated successfully.");
+
+					String historyContent = " has Updated property Status for " + userStatus.getUserId();
+					auditHistoryUtilities.auditForCommon(
+							SecurityContextHolder.getContext().getAuthentication().getName(), historyContent,
+							ZoyConstant.ZOY_OWNER_PROPERTY_STATUS_UPDATE);
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+				} else {
+					response.setStatus(HttpStatus.NOT_FOUND.value());
+					response.setError("property consists of active tenants and bookings");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+				}
+
+			} else {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setError("property does not exists");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+			}
+
+		} catch (Exception e) {
+			log.error("Error occurred while updating user status: API:/zoy_admin/updatePropertyStatus.zoyTenantStatusUpdate",e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			} catch (Exception ex) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
 
 }
