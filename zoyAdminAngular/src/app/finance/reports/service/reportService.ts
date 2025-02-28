@@ -36,7 +36,7 @@ import { MessageService } from 'src/app/message.service';
       'ActiveTenantsReport':'active_tenant_details',
      
       'upcomingPotentialPropertiesReport': 'payment_transfer_details',//'upcoming_potential_properties_details',
-      'suspendedPropertiesReport': 'payment_transfer_details',//'suspended_properties_details',
+      'suspendedPropertiesReport': 'suspended_property_details',//'suspended_properties_details',
       'inactivePropertiesReport': 'payment_transfer_details',//'inactive_properties_details',
       'nonPotentialPropertiesReport': 'payment_transfer_details',//'non_potential_properties_details',
       'potentialPropertiesReport': 'payment_transfer_details',//'potential_properties_details'
