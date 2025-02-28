@@ -117,7 +117,10 @@ public class CsvGenerateService {
                 break; 
             case "InactivePropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address");
-                break;   
+                break;
+            case "SuspendedPropertiesReport":
+            	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address,Suspended Date,Reason for suspension");
+                break;     
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }
@@ -338,7 +341,20 @@ public class CsvGenerateService {
                             safeToString(suspendedTenant.getPropertyEmailAddress()),
                             safeToString(suspendedTenant.getPropertyAddress()));
                 }
-                break; 
+                break;
+            case "SuspendedPropertiesReport":
+            	if (dto instanceof PropertyResportsDTO) {
+            		PropertyResportsDTO suspendedproperty = (PropertyResportsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(suspendedproperty.getOwnerFullName()),
+                            safeToString(suspendedproperty.getPropertyName()),
+                            safeToString(suspendedproperty.getPropertyContactNumber()),
+                            safeToString(suspendedproperty.getPropertyEmailAddress()),
+                            safeToString(suspendedproperty.getPropertyAddress()),
+                            safeToString(suspendedproperty.getSuspendedDate()),
+                            safeToString(suspendedproperty.getReasonForSuspension()));     		 
+                }
+                break;     
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }

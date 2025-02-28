@@ -250,6 +250,15 @@ public class ExcelGenerateService {
 			row.createCell(3).setCellValue("Property Email Address");
 			row.createCell(4).setCellValue("Property Address");
 			break;
+		case "SuspendedPropertiesReport":
+			row.createCell(0).setCellValue("Owner Full Name");
+			row.createCell(1).setCellValue("Inactive Property Name");
+			row.createCell(2).setCellValue("Property Contact Number");
+			row.createCell(3).setCellValue("Property Email Address");
+			row.createCell(4).setCellValue("Property Address");
+			row.createCell(5).setCellValue("Suspended Date");
+			row.createCell(6).setCellValue("Reason for suspension");
+			break;	
 		default:
 			throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 		}
@@ -455,6 +464,18 @@ public class ExcelGenerateService {
 				row.createCell(2).setCellValue(nullSafe(inActivePropertyDetails.getPropertyContactNumber()));
 				row.createCell(3).setCellValue(nullSafe(inActivePropertyDetails.getPropertyEmailAddress()));
 				row.createCell(4).setCellValue(nullSafe(inActivePropertyDetails.getPropertyAddress()));
+			}
+			break;
+		case "SuspendedPropertiesReport":
+			if (dto instanceof PropertyResportsDTO) {
+				PropertyResportsDTO suspendedPropertyDetails = (PropertyResportsDTO) dto;
+				row.createCell(0).setCellValue(nullSafe(suspendedPropertyDetails.getOwnerFullName()));
+				row.createCell(1).setCellValue(nullSafe(suspendedPropertyDetails.getPropertyName()));
+				row.createCell(2).setCellValue(nullSafe(suspendedPropertyDetails.getPropertyContactNumber()));
+				row.createCell(3).setCellValue(nullSafe(suspendedPropertyDetails.getPropertyEmailAddress()));
+				row.createCell(4).setCellValue(nullSafe(suspendedPropertyDetails.getPropertyAddress()));
+				row.createCell(5).setCellValue(nullSafe(suspendedPropertyDetails.getSuspendedDate()));
+				row.createCell(6).setCellValue(nullSafe(suspendedPropertyDetails.getReasonForSuspension()));			
 			}
 			break;	
 		default:

@@ -239,12 +239,10 @@ public class TenantMasterController implements TenantMasterImpl{
 	        try {
 	            new ZoyAdminApplicationException(e, "");
 	        } catch (Exception ex) {
-	        	System.out.println(">>>"+ex);
 	            response.setStatus(HttpStatus.BAD_REQUEST.value());
 	            response.setError(ex.getMessage());
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	        }
-	        System.out.println(">>>>>>"+e);
 	        response.setStatus(HttpStatus.BAD_REQUEST.value());
 	        response.setError(e.getMessage());
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
