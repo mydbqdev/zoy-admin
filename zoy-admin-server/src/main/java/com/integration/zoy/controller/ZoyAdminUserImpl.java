@@ -302,7 +302,7 @@ public interface ZoyAdminUserImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/userNotifications",
+	@PostMapping(value = "/zoy_admin/userNotifications",
 	produces = { "application/json" })
 	ResponseEntity<String> zoyAdminUserNotifications(@RequestBody UserPaymentFilterRequest NotificationsAndAlerts);
 	
@@ -313,7 +313,7 @@ public interface ZoyAdminUserImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_admin/userNotificationsSeen",
+	@PutMapping(value = "/zoy_admin/userNotificationsSeen",
 	produces = { "application/json" })
 	ResponseEntity<String> zoyAdminUserNotifications(@RequestBody NotificationsAndAlertsDTO NotificationsAndAlerts);
 

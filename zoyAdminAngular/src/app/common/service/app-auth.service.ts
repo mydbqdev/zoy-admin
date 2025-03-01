@@ -232,7 +232,7 @@ export class AppAuthService extends AuthService{
                 this.userService.setSessionTime(null);
                 sessionStorage.clear();
                 this.router.navigate(['/signin']); 
-                
+                this.websocketService.closeConnection('AlertNotification');
             },
             (err) =>{
                if(err.error && err.error.message){
