@@ -62,8 +62,8 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm" 
-                                      [(ngModel)]="configMasterModel.tokenDetails.fixedToken" [disabled]="tokenAdvancDisabled" (keypress)="numberOnly($event)" maxlength="7"
-                                       [ngClass]="{'is-invalid': !tokenAdvancDisabled && isNotValidNumber(configMasterModel.tokenDetails.fixedToken) }" 
+                                      [(ngModel)]="configMasterModel.tokenDetails[0].fixedToken" [disabled]="tokenAdvancDisabled" (keypress)="numberOnly($event)" maxlength="7"
+                                       [ngClass]="{'is-invalid': !tokenAdvancDisabled && isNotValidNumber(configMasterModel.tokenDetails[0]?.fixedToken) }" 
                                       style="max-width: 90px !important;" />
                                   </div>
                                   <p class="small text-muted " style="font-size: 12px;">
@@ -76,8 +76,8 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.tokenDetails.variableToken"  (keypress)="percentageOnly($event)" maxlength="5"
-                                          [ngClass]="{'is-invalid': !tokenAdvancDisabled && isNotValidNumber(configMasterModel.tokenDetails.variableToken)}" 
+                                          [(ngModel)]="configMasterModel.tokenDetails[0].variableToken"  (keypress)="percentageOnly($event)" maxlength="5"
+                                          [ngClass]="{'is-invalid': !tokenAdvancDisabled && isNotValidNumber(configMasterModel.tokenDetails[0]?.variableToken)}" 
                                           style="max-width: 70px !important;" [disabled]="tokenAdvancDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
@@ -88,13 +88,13 @@
                                   <div>Effective On</div>
                                   <div class="input-group input-group-sm">
                                     <input 
-                                      type="date" 
-                                      class="form-control form-control-sm"/>
+                                      type="text" 
+                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.tokenDetails[0].effectiveDate"/>
                                   </div>
                                </div>
                                 <div class="col-sm-2 mt-4" >
                                   <div class="d-flex">
-                                  <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                  <div><i class="fas fa-thumbs-up mr-2" *ngIf="configMasterModel.tokenDetails[0]?.isApproved" style="color:rgb(153, 243, 94) !important"></i></div>
                                     <div *ngIf="tokenAdvancDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')" class="btn-group">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="tokenAdvancDisabled = false">
                                         <i class="fas fa-edit"></i>
@@ -111,14 +111,14 @@
                                     </div>
                                 </div>
                               </div>
-                              <div class="row">
+                              <div class="row" *ngIf="configMasterModel.tokenDetails.length>1 && configMasterModel.tokenDetails[1]!=undefined && configMasterModel.tokenDetails[1]?.isApproved">
                                 <div class="col-sm-4">
                                   <div class="input-group input-group-sm">
                                     <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm" 
-                                      [(ngModel)]="configMasterModel.tokenDetails.fixedToken" disabled 
+                                      [(ngModel)]="configMasterModel.tokenDetails[1].fixedToken" disabled 
                                       style="max-width: 90px !important;" />
                                   </div>
                                 </div>
@@ -127,7 +127,7 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.tokenDetails.variableToken" disabled />
+                                          [(ngModel)]="configMasterModel.tokenDetails[1].variableToken"  style="max-width: 70px !important;" disabled />
                                          <span class="input-group-text">%</span>
                                   </div>
                                   
@@ -136,7 +136,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="text" 
-                                      class="form-control form-control-sm" disabled/>
+                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.tokenDetails[1].effectiveDate" disabled/>
                                   </div>
                                </div>
                                 <div class="col-sm-2 mt-1" >
@@ -170,8 +170,8 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.depositDetails.minimumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="7"
-                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && isNotValidNumber(configMasterModel.depositDetails.minimumDeposit) }" 
+                                      [(ngModel)]="configMasterModel.depositDetails[0].minimumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="7"
+                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && isNotValidNumber(configMasterModel.depositDetails[0]?.minimumDeposit) }" 
                                       style="max-width: 140px !important;" />
                                   </div>
                                   <p class="small text-muted" style="font-size: 12px;">
@@ -186,8 +186,8 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.depositDetails.maximumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="7"
-                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && isNotValidNumber(configMasterModel.depositDetails.maximumDeposit)}" 
+                                      [(ngModel)]="configMasterModel.depositDetails[0].maximumDeposit" [disabled]="securityDepositLimitsDisabled" (keypress)="numberOnly($event)" maxlength="7"
+                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && isNotValidNumber(configMasterModel.depositDetails[0]?.maximumDeposit)}" 
                                       style="max-width: 140px !important;"/>
                                   </div>
                                   <p class="small text-muted" style="font-size: 12px;">
@@ -199,13 +199,13 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm"/>
+                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.depositDetails[0].effectiveDate"/>
                                   </div>
                                </div>
                                 <!-- Action Button -->
                                 <div class="col-sm-2 mt-4"  >
                                   <div class="d-flex">
-                                  <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                  <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"  *ngIf="configMasterModel.depositDetails[0]?.isApproved"></i></div>
                                   <div class="btn-group" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                     <button 
                                       class="btn btn-sm btn-outline-secondary" 
@@ -230,7 +230,7 @@
                                 </div>
                               </div>
 
-                              <div class="row">
+                              <div class="row" *ngIf="configMasterModel.depositDetails.length>1 && configMasterModel.depositDetails[1]!=undefined && configMasterModel.depositDetails[1]?.isApproved">
                                 <!-- Minimum Security Deposit -->
                                 <div class="col-sm-4">
                                   <div class="input-group input-group-sm">
@@ -238,7 +238,7 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.depositDetails.minimumDeposit"  disabled style="max-width: 140px !important;" />
+                                      [(ngModel)]="configMasterModel.depositDetails[0].minimumDeposit"  disabled style="max-width: 140px !important;" />
                                   </div>
                                 </div>
                                 <!-- Maximum Security Deposit -->
@@ -248,14 +248,14 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.depositDetails.maximumDeposit"  disabled style="max-width: 140px !important;"/>
+                                      [(ngModel)]="configMasterModel.depositDetails[0].maximumDeposit"  disabled style="max-width: 140px !important;"/>
                                   </div>
                                 </div>
                                 <div class="col-sm-2">
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="text" 
-                                      class="form-control form-control-sm" disabled/>
+                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.depositDetails[0].effectiveDate" disabled/>
                                   </div>
                                </div>
                                 <!-- Action Button -->
@@ -288,8 +288,8 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm" 
-                                      [(ngModel)]="configMasterModel.gstCharges.monthlyRent" [disabled]="gstChargesDisabled" (keypress)="numberOnly($event)" maxlength="7"
-                                       [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(configMasterModel.gstCharges.monthlyRent) }" 
+                                      [(ngModel)]="configMasterModel.gstCharges[0].monthlyRent" [disabled]="gstChargesDisabled" (keypress)="numberOnly($event)" maxlength="7"
+                                       [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(configMasterModel.gstCharges[0]?.monthlyRent) }" 
                                       style="max-width: 90px !important;" />
                                   </div>
                                   <p class="small text-muted " style="font-size: 12px;">
@@ -302,8 +302,8 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.gstCharges.cgstPercentage"  (keypress)="percentageOnly($event)" maxlength="5"
-                                          [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(configMasterModel.gstCharges.cgstPercentage) }" 
+                                          [(ngModel)]="configMasterModel.gstCharges[0].cgstPercentage"  (keypress)="percentageOnly($event)" maxlength="5"
+                                          [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(configMasterModel.gstCharges[0]?.cgstPercentage) }" 
                                           style="max-width: 70px !important;" [disabled]="gstChargesDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
@@ -316,8 +316,8 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.gstCharges.sgstPercentage"  (keypress)="percentageOnly($event)" maxlength="5"
-                                          [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(configMasterModel.gstCharges.sgstPercentage) }" 
+                                          [(ngModel)]="configMasterModel.gstCharges[0].sgstPercentage"  (keypress)="percentageOnly($event)" maxlength="5"
+                                          [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(configMasterModel.gstCharges[0]?.sgstPercentage) }" 
                                           style="max-width: 70px !important;" [disabled]="gstChargesDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
@@ -330,8 +330,8 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.gstCharges.igstPercentage"  (keypress)="percentageOnly($event)" maxlength="5"
-                                          [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(configMasterModel.gstCharges.igstPercentage) }" 
+                                          [(ngModel)]="configMasterModel.gstCharges[0].igstPercentage"  (keypress)="percentageOnly($event)" maxlength="5"
+                                          [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(configMasterModel.gstCharges[0]?.igstPercentage) }" 
                                           style="max-width: 70px !important;" [disabled]="gstChargesDisabled" />
                                          <span class="input-group-text">%</span>
                                   </div>
@@ -350,7 +350,7 @@
                               </div>
                                 <div class="col-sm-1 mt-4" >
                                   <div class="d-flex">
-                                  <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                  <div><i class="fas fa-thumbs-up mr-2" *ngIf="configMasterModel.gstCharges[0].isApproved" style="color:rgb(153, 243, 94) !important"></i></div>
                                     <div *ngIf="gstChargesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="gstChargesDisabled = false">
                                         <i class="fas fa-edit"></i>
@@ -368,16 +368,16 @@
                                 </div>
                               </div>
 
-                              <div class="row">
+                              <div class="row" *ngIf="configMasterModel.gstCharges.length>1 && configMasterModel.gstCharges[1]!=undefined">
                                 <div class="col-sm-10">
-                                <div class="row">
+                                <div class="row" *ngIf="configMasterModel.gstCharges[1].isApproved">
                                 <div class="col-sm-3">
                                   <div class="input-group input-group-sm">
                                     <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm" 
-                                      [(ngModel)]="configMasterModel.gstCharges.monthlyRent" disabled
+                                      [(ngModel)]="configMasterModel.gstCharges[1].monthlyRent" disabled
                                       style="max-width: 90px !important;" />
                                   </div>
                                 </div>
@@ -386,7 +386,7 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.gstCharges.cgstPercentage" disabled style="max-width: 70px !important;"  />
+                                          [(ngModel)]="configMasterModel.gstCharges[1].cgstPercentage" disabled style="max-width: 70px !important;"  />
                                          <span class="input-group-text">%</span>
                                   </div>
                                 </div>
@@ -395,7 +395,7 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.gstCharges.sgstPercentage" disabled 
+                                          [(ngModel)]="configMasterModel.gstCharges[0].sgstPercentage" disabled 
                                           style="max-width: 70px !important;" />
                                          <span class="input-group-text">%</span>
                                   </div>
@@ -405,7 +405,7 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.gstCharges.igstPercentage"  
+                                          [(ngModel)]="configMasterModel.gstCharges[1].igstPercentage"  
                                           style="max-width: 70px !important;" disabled />
                                          <span class="input-group-text">%</span>
                                   </div>
@@ -454,8 +454,8 @@
                                         class="form-control form-control-sm"
                                         (keypress)="numberOnly($event)"
                                         maxlength="7"  style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges.ownerEkycCharges"
-                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges.ownerEkycCharges)}"
+                                        [(ngModel)]="configMasterModel.otherCharges[0].ownerEkycCharges"
+                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges[0].ownerEkycCharges)}"
                                         [disabled]="otherChargesDisabled"
                                       />
                                     </div>
@@ -475,8 +475,8 @@
                                         class="form-control form-control-sm"
                                         (keypress)="numberOnly($event)"
                                         maxlength="7"  style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges.tenantEkycCharges"
-                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges.tenantEkycCharges) }"
+                                        [(ngModel)]="configMasterModel.otherCharges[0].tenantEkycCharges"
+                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges[0].tenantEkycCharges) }"
                                         [disabled]="otherChargesDisabled"
                                       />
                                     </div>
@@ -498,8 +498,8 @@
                                         class="form-control form-control-sm"
                                         (keypress)="numberOnly($event)"
                                         maxlength="7"  style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges.ownerDocumentCharges"
-                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges.ownerDocumentCharges)}"
+                                        [(ngModel)]="configMasterModel.otherCharges[0].ownerDocumentCharges"
+                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges[0].ownerDocumentCharges)}"
                                         [disabled]="otherChargesDisabled"
                                       />
                                     </div>
@@ -519,8 +519,8 @@
                                         class="form-control form-control-sm"
                                         (keypress)="numberOnly($event)"
                                         maxlength="7"  style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges.tenantDocumentCharges"
-                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges.tenantDocumentCharges) }"
+                                        [(ngModel)]="configMasterModel.otherCharges[0].tenantDocumentCharges"
+                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges[0].tenantDocumentCharges) }"
                                         [disabled]="otherChargesDisabled"
                                       />
                                     </div>
@@ -541,7 +541,7 @@
                             </div>
                             <div class="col-sm-1 mt-4">
                               <div class="d-flex">
-                                <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important" *ngIf="configMasterModel.otherCharges[0]?.isApproved"></i></div>
                               <div *ngIf="otherChargesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                 <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesDisabled = false">
                                   <i class="fas fa-edit"></i>
@@ -559,7 +559,7 @@
                             </div> 
                             </div> 
 
-                            <div class="row marginRow align-items-center">
+                            <div class="row marginRow align-items-center mt-1" *ngIf="configMasterModel.otherCharges.length>1 && configMasterModel.otherCharges[1]!=undefined && configMasterModel.otherCharges[1]?.isApproved">
                               <div class="col-sm-9">
                                 <div class="card card-body">
                                 <div class="row">
@@ -573,7 +573,7 @@
                                         id="ownerEkycCharges"
                                         class="form-control form-control-sm"
                                          style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges.ownerEkycCharges" disabled
+                                        [(ngModel)]="configMasterModel.otherCharges[1].ownerEkycCharges" disabled
                                       />
                                     </div>
                                   </div>
@@ -588,7 +588,7 @@
                                         id="tenantEkycCharges"
                                         class="form-control form-control-sm"
                                          style="max-width: 100px !important;" disabled
-                                        [(ngModel)]="configMasterModel.otherCharges.tenantEkycCharges" 
+                                        [(ngModel)]="configMasterModel.otherCharges[1].tenantEkycCharges" 
                                       />
                                     </div>
                                   </div>
@@ -604,7 +604,7 @@
                                         type="text"
                                         id="ownerDocumentCharges"
                                         class="form-control form-control-sm"  style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges.ownerDocumentCharges" disabled
+                                        [(ngModel)]="configMasterModel.otherCharges[1].ownerDocumentCharges" disabled
                                       />
                                     </div>
                                   </div>
@@ -619,7 +619,7 @@
                                         id="tenantDocumentCharges"
                                         class="form-control form-control-sm"
                                           style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges.tenantDocumentCharges" disabled
+                                        [(ngModel)]="configMasterModel.otherCharges[1].tenantDocumentCharges" disabled
                                       />
                                     </div>
                                   </div>
@@ -660,8 +660,8 @@
                                     <input 
                                     type="text" 
                                     class="form-control form-control-sm"
-                                    [(ngModel)]="configMasterModel.dataGrouping.considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
-                                    [ngClass]="{'is-invalid': !dataGroupingDisabled && isNotValidNumber(configMasterModel.dataGrouping.considerDays) }" 
+                                    [(ngModel)]="configMasterModel.dataGrouping[0].considerDays" [disabled]="dataGroupingDisabled" (keypress)="numberOnly($event)" maxlength="3"
+                                    [ngClass]="{'is-invalid': !dataGroupingDisabled && isNotValidNumber(configMasterModel.dataGrouping[0].considerDays) }" 
                                     style="max-width: 70px !important;" />
                                     <span class="input-group-text">Days</span>
                                   </div>
@@ -676,7 +676,7 @@
                                  </div>
                                   <div class="col-sm-2 mt-4">
                                     <div class="d-flex">
-                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important" *ngIf="configMasterModel.dataGrouping[0]?.isApproved"></i></div>
                                     <div *ngIf="dataGroupingDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="dataGroupingDisabled = false">
                                         <i class="fas fa-edit"></i>
@@ -694,13 +694,13 @@
                                 </div>
                                </div>
                                
-                               <div class="row mt-2">                               
+                               <div class="row mt-2" *ngIf="configMasterModel.dataGrouping.length>1 && configMasterModel.dataGrouping[1]!=undefined && configMasterModel.dataGrouping[1]?.isApproved">                               
                                 <div class="col-sm-3">
                                 <div class="input-group input-group-sm">
                                   <input 
                                   type="text" 
                                   class="form-control form-control-sm"
-                                  [(ngModel)]="configMasterModel.dataGrouping.considerDays" disabled 
+                                  [(ngModel)]="configMasterModel.dataGrouping[1].considerDays" disabled 
                                   style="max-width: 70px !important;" />
                                   <span class="input-group-text">Days</span>
                                 </div>
@@ -736,9 +736,9 @@
                                     <div>Force Checkout Enabling Days</div>
                                     <div class="input-group input-group-sm">
                                       <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
-                                        [(ngModel)]="configMasterModel.forceCheckOut.forceCheckOutDays" 
+                                        [(ngModel)]="configMasterModel.forceCheckOut[0].forceCheckOutDays" 
                                         (keypress)="numberOnly($event)"  maxlength="3"
-                                        [ngClass]="{'is-invalid': !forceCheckoutDisabled && isNotValidNumber(configMasterModel.forceCheckOut.forceCheckOutDays)}"
+                                        [ngClass]="{'is-invalid': !forceCheckoutDisabled && isNotValidNumber(configMasterModel.forceCheckOut[0].forceCheckOutDays)}"
                                         [disabled]="forceCheckoutDisabled" />
                                       <span class="input-group-text">Days </span>
                                     </div>
@@ -753,7 +753,7 @@
                                  </div>
                                   <div class="col-sm-2 mt-4">
                                     <div class="d-flex">
-                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important" *ngIf="configMasterModel.forceCheckOut[0]?.isApproved"></i></div>
                                     <div *ngIf="forceCheckoutDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="forceCheckoutDisabled = false;">
                                         <i class="fas fa-edit"></i>
@@ -770,11 +770,11 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="row mt-1">                                 
+                                <div class="row mt-1" *ngIf="configMasterModel.forceCheckOut.length>1 && configMasterModel.forceCheckOut[1]!=undefined && configMasterModel.forceCheckOut[1]?.isApproved">                                 
                                   <div class="col-sm-3">
                                     <div class="input-group input-group-sm">
                                       <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
-                                        [(ngModel)]="configMasterModel.forceCheckOut.forceCheckOutDays" 
+                                        [(ngModel)]="configMasterModel.forceCheckOut[1].forceCheckOutDays" 
                                          disabled />
                                       <span class="input-group-text">Days </span>
                                     </div>
@@ -811,9 +811,9 @@
                                     <div>No Rental agreement upto</div>
                                     <div class="input-group input-group-sm">
                                       <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
-                                        [(ngModel)]="configMasterModel.noRentalAgreement.noRentalAgreementDays" 
+                                        [(ngModel)]="configMasterModel.noRentalAgreement[0].noRentalAgreementDays" 
                                         (keypress)="numberOnly($event)"  maxlength="3"
-                                        [ngClass]="{'is-invalid': !noRentalAgreementDisabled && isNotValidNumber(configMasterModel.noRentalAgreement.noRentalAgreementDays)}"
+                                        [ngClass]="{'is-invalid': !noRentalAgreementDisabled && isNotValidNumber(configMasterModel.noRentalAgreement[0].noRentalAgreementDays)}"
                                         [disabled]="noRentalAgreementDisabled" />
                                       <span class="input-group-text">Days </span>
                                     </div>
@@ -828,7 +828,7 @@
                                  </div>
                                   <div class="col-sm-2 mt-4">
                                     <div class="d-flex">
-                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important" *ngIf="configMasterModel.noRentalAgreement[0]?.isApproved"></i></div>
                                     <div *ngIf="noRentalAgreementDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="noRentalAgreementDisabled = false;">
                                         <i class="fas fa-edit"></i>
@@ -845,11 +845,11 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="row mt-2">                                  
+                                <div class="row mt-2" *ngIf="configMasterModel.noRentalAgreement.length>1 && configMasterModel.noRentalAgreement[1]!=undefined && configMasterModel.noRentalAgreement[1]?.isApproved">                                  
                                   <div class="col-sm-4">
                                     <div class="input-group input-group-sm">
                                       <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
-                                        [(ngModel)]="configMasterModel.noRentalAgreement.noRentalAgreementDays" 
+                                        [(ngModel)]="configMasterModel.noRentalAgreement[1].noRentalAgreementDays" 
                                         disabled />
                                       <span class="input-group-text">Days </span>
                                     </div>
@@ -889,10 +889,10 @@
                                     <div class="col-sm-2">
                                       <div>Condition</div>
                                       <div class="input-group input-group-sm" *ngIf="securityDepositDeadLineDisabled">
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_condition" [disabled]="securityDepositDeadLineDisabled" /> 
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[0].trigger_condition" [disabled]="securityDepositDeadLineDisabled" /> 
                                       </div> 
                                       <div class="input-group input-group-sm" *ngIf="!securityDepositDeadLineDisabled">
-                                        <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_condition" [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails.trigger_condition }" >
+                                        <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[0].trigger_condition" [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails[0].trigger_condition }" >
                                           <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
                                         </select>
                                       </div>
@@ -903,8 +903,8 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm"
-                                          [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.auto_cancellation_day" [disabled]="securityDepositDeadLineDisabled" (keypress)="numberOnly($event)" maxlength="3" 
-                                           [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled &&  isNotValidNumber(configMasterModel.securityDepositDeadLineDetails.auto_cancellation_day) }" 
+                                          [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[0].auto_cancellation_day" [disabled]="securityDepositDeadLineDisabled" (keypress)="numberOnly($event)" maxlength="3" 
+                                           [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled &&  isNotValidNumber(configMasterModel.securityDepositDeadLineDetails[0].auto_cancellation_day) }" 
                                           style="max-width: 70px !important;" />
                                           <span class="input-group-text">Days</span>
                                       </div>
@@ -915,7 +915,7 @@
                                     <div class="col-sm-3">
                                       <div>Deduction Type</div>
                                       <div class="input-group input-group-sm">
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_value" disabled /> 
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[0].trigger_value" disabled /> 
                                       </div>
                                       <!--div class="input-group input-group-sm" *ngIf="!securityDepositDeadLineDisabled">
                                         <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_value" [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails.trigger_value }" >
@@ -930,8 +930,8 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="5"
-                                          [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.deduction_percentage" [disabled]="securityDepositDeadLineDisabled" 
-                                           [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled && isNotValidNumber(configMasterModel.securityDepositDeadLineDetails.deduction_percentage) }" 
+                                          [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[0].deduction_percentage" [disabled]="securityDepositDeadLineDisabled" 
+                                           [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled && isNotValidNumber(configMasterModel.securityDepositDeadLineDetails[0].deduction_percentage) }" 
                                           style="max-width: 70px !important;"/>
                                           <span class="input-group-text">%</span>
                                       </div>
@@ -950,7 +950,7 @@
                                     <!-- Action Button -->
                                     <div class="col-sm-1 mt-4">
                                       <div class="d-flex" >
-                                        <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                        <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important" *ngIf="configMasterModel.securityDepositDeadLineDetails[0]?.isApproved"></i></div>
                                       <div class="btn-group"  *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                         <button 
                                           class="btn btn-sm btn-outline-secondary" 
@@ -974,11 +974,11 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div class="row">
+                                  <div class="row"  *ngIf="configMasterModel.securityDepositDeadLineDetails.length>1 && configMasterModel.securityDepositDeadLineDetails[1]!=undefined && configMasterModel.securityDepositDeadLineDetails[1]?.isApproved">
                                     <!-- Auto-Cancellation after Check-in Dates -->
                                     <div class="col-sm-2">
                                       <div class="input-group input-group-sm" >
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_condition" disabled /> 
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[1].trigger_condition" disabled /> 
                                       </div> 
                                      </div>
                                     <div class="col-sm-2">
@@ -986,14 +986,14 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm"
-                                          [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.auto_cancellation_day" disabled style="max-width: 70px !important;" />
+                                          [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[1].auto_cancellation_day" disabled style="max-width: 70px !important;" />
                                           <span class="input-group-text">Days</span>
                                       </div>
                                      
                                     </div>
                                     <div class="col-sm-3">
                                       <div class="input-group input-group-sm">
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.trigger_value" disabled /> 
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[1].trigger_value" disabled /> 
                                       </div>
                                     </div>
                                      <!-- Deduction Percentage -->
@@ -1002,7 +1002,7 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm"
-                                          [(ngModel)]="configMasterModel.securityDepositDeadLineDetails.deduction_percentage" disabled style="max-width: 70px !important;"/>
+                                          [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[1].deduction_percentage" disabled style="max-width: 70px !important;"/>
                                           <span class="input-group-text">%</span>
                                       </div>
                                     </div>
@@ -1384,9 +1384,9 @@
                                     <div>Short term </div>
                                     <div class="input-group input-group-sm">
                                       <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
-                                        [(ngModel)]="configMasterModel.shortTermRentingDuration.rentingDurationDays" 
+                                        [(ngModel)]="configMasterModel.shortTermRentingDuration[0].rentingDurationDays" 
                                         (keypress)="numberOnly($event)"  maxlength="3"
-                                        [ngClass]="{'is-invalid': !shortTermRentingDurationDisabled && isNotValidNumber(configMasterModel.shortTermRentingDuration.rentingDurationDays)}"
+                                        [ngClass]="{'is-invalid': !shortTermRentingDurationDisabled && isNotValidNumber(configMasterModel.shortTermRentingDuration[0].rentingDurationDays)}"
                                         [disabled]="shortTermRentingDurationDisabled" />
                                       <span class="input-group-text">Days </span>
                                     </div>
@@ -1401,7 +1401,7 @@
                                  </div>
                                   <div class="col-sm-2 mt-4" >
                                     <div class="d-flex" >
-                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important" *ngIf="configMasterModel.shortTermRentingDuration[0]?.isApproved"></i></div>
                                     <div *ngIf="shortTermRentingDurationDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                       <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationDisabled = false;">
                                         <i class="fas fa-edit"></i>
@@ -1418,11 +1418,11 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="row mt-1">                 
+                                <div class="row mt-1" *ngIf="configMasterModel.shortTermRentingDuration.length>1 && configMasterModel.shortTermRentingDuration[1]!=undefined && configMasterModel.shortTermRentingDuration[1]?.isApproved">                 
                                   <div class="col-sm-3">
                                     <div class="input-group input-group-sm">
                                       <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
-                                        [(ngModel)]="configMasterModel.shortTermRentingDuration.rentingDurationDays" disabled />
+                                        [(ngModel)]="configMasterModel.shortTermRentingDuration[0].rentingDurationDays" disabled />
                                       <span class="input-group-text">Days </span>
                                     </div>
                                   </div>
@@ -1547,12 +1547,12 @@
                                     <div class="col-sm-2">
                                       <div>Condition</div>
                                       <div class="input-group input-group-sm" *ngIf="earlyCheckOutRulesDisabled">
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_condition" [disabled]="earlyCheckOutRulesDisabled" /> 
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition" [disabled]="earlyCheckOutRulesDisabled" /> 
                                       </div> 
                                       <div class="input-group input-group-sm" *ngIf="!earlyCheckOutRulesDisabled">
-                                        <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_condition"
-                                        [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && (!configMasterModel.earlyCheckOutRuleDetails.trigger_condition ||
-                                                   (this.configMasterModel.earlyCheckOutRuleDetails.check_out_day == 1 && this.configMasterModel.earlyCheckOutRuleDetails.trigger_condition === '<')) }" >
+                                        <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition"
+                                        [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && (!configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition ||
+                                                   (this.configMasterModel.earlyCheckOutRuleDetails[0].check_out_day == 1 && this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition === '<')) }" >
                                           <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
                                         </select>
                                       </div>
@@ -1563,9 +1563,9 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.check_out_day" [disabled]="earlyCheckOutRulesDisabled" (keypress)="numberOnly($event)" maxlength="3"
-                                           [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && (isNotValidNumbernAndZero(configMasterModel.earlyCheckOutRuleDetails.check_out_day) ||
-                                            (configMasterModel.earlyCheckOutRuleDetails.check_out_day == 1 && configMasterModel.earlyCheckOutRuleDetails.trigger_condition === '<')) }" 
+                                          [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails[0].check_out_day" [disabled]="earlyCheckOutRulesDisabled" (keypress)="numberOnly($event)" maxlength="3"
+                                           [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && (isNotValidNumbernAndZero(configMasterModel.earlyCheckOutRuleDetails[0].check_out_day) ||
+                                            (configMasterModel.earlyCheckOutRuleDetails[0].check_out_day == 1 && configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition === '<')) }" 
                                           style="max-width: 70px !important;" />
                                           <span class="input-group-text">Days</span>
                                       </div>
@@ -1576,7 +1576,7 @@
                                     <div class="col-sm-3">
                                       <div>Deduction Type</div>
                                       <div class="input-group input-group-sm" >
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_value" disabled/> 
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails[0].trigger_value" disabled/> 
                                       </div>
                                       <!--div class="input-group input-group-sm" *ngIf="!earlyCheckOutRulesDisabled">
                                         <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_value"
@@ -1614,7 +1614,7 @@
                                       </div>
                                    </div>
                                     <div class="col-sm-2 mt-4">
-                                        <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
+                                        <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important" *ngIf="configMasterModel.earlyCheckOutRuleDetails[0]?.isApproved"></i>
                                         <div *ngIf="earlyCheckOutRulesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')" class="btn-group">
                                           <button class="btn btn-sm btn-outline-secondary" (click)="earlyCheckOutRulesDisabled = false">
                                             <i class="fas fa-edit"></i>
@@ -1630,10 +1630,10 @@
                                         </div>
                                     </div>
                                   </div>
-                                  <div class="row mt-1">
+                                  <div class="row mt-1" *ngIf="configMasterModel.earlyCheckOutRuleDetails.length>1 && configMasterModel.earlyCheckOutRuleDetails[1]!=undefined && configMasterModel.earlyCheckOutRuleDetails[1]?.isApproved">
                                     <div class="col-sm-2">
                                       <div class="input-group input-group-sm" *ngIf="earlyCheckOutRulesDisabled">
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_condition" disabled /> 
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition" disabled /> 
                                       </div> 
                                      </div>
                                     <div class="col-sm-2">
@@ -1641,13 +1641,13 @@
                                         <input 
                                           type="text" 
                                           class="form-control form-control-sm" 
-                                          [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.check_out_day" disabled style="max-width: 70px !important;" />
+                                          [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails[0].check_out_day" disabled style="max-width: 70px !important;" />
                                           <span class="input-group-text">Days</span>
                                       </div>
                                     </div>
                                     <div class="col-sm-3">
                                       <div class="input-group input-group-sm" >
-                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails.trigger_value" disabled/> 
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails[1].trigger_value" disabled/> 
                                       </div>
                                       </div>
                                     <div class="col-sm-2">
@@ -1694,11 +1694,11 @@
                                         <div class="col-sm-2">
                                           <div>Condition</div>
                                           <div class="input-group input-group-sm" *ngIf="autoCancellationDisabled">
-                                            <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_condition" [disabled]="autoCancellationDisabled" /> 
+                                            <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition" [disabled]="autoCancellationDisabled" /> 
                                           </div> 
                                           <div class="input-group input-group-sm" *ngIf="!autoCancellationDisabled">
-                                            <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_condition" [ngClass]="{'is-invalid': !autoCancellationDisabled && (!configMasterModel.cancellationAfterCheckInDetails.trigger_condition 
-                                              ||  (configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day == 1 && configMasterModel.cancellationAfterCheckInDetails.trigger_condition === '<'))}" >
+                                            <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition" [ngClass]="{'is-invalid': !autoCancellationDisabled && (!configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition 
+                                              ||  (configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day == 1 && configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition === '<'))}" >
                                               <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
                                             </select>
                                           </div>
@@ -1709,9 +1709,9 @@
                                             <input 
                                               type="text" 
                                               class="form-control form-control-sm"
-                                              [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day" [disabled]="autoCancellationDisabled" (keypress)="numberOnly($event)" maxlength="3" 
-                                               [ngClass]="{'is-invalid': !autoCancellationDisabled && (isNotValidNumbernAndZero(configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day) ||
-                                                    (configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day == 1 && configMasterModel.cancellationAfterCheckInDetails.trigger_condition === '<'))}" 
+                                              [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day" [disabled]="autoCancellationDisabled" (keypress)="numberOnly($event)" maxlength="3" 
+                                               [ngClass]="{'is-invalid': !autoCancellationDisabled && (isNotValidNumbernAndZero(configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day) ||
+                                                    (configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day == 1 && configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition === '<'))}" 
                                               style="max-width: 70px !important;" />
                                               <span class="input-group-text">Days</span>
                                           </div>
@@ -1723,10 +1723,10 @@
                                         <div class="col-sm-3">
                                           <div>Deduction Type</div>
                                           <div class="input-group input-group-sm" *ngIf="autoCancellationDisabled">
-                                            <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_value" [disabled]="autoCancellationDisabled" /> 
+                                            <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[0].trigger_value" [disabled]="autoCancellationDisabled" /> 
                                           </div>
                                           <div class="input-group input-group-sm" *ngIf="!autoCancellationDisabled">
-                                            <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_value"   [ngClass]="{'is-invalid': !autoCancellationDisabled && !configMasterModel.cancellationAfterCheckInDetails.trigger_value }" >
+                                            <select class="form-select form-select-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[0].trigger_value"   [ngClass]="{'is-invalid': !autoCancellationDisabled && !configMasterModel.cancellationAfterCheckInDetails[0]?.trigger_value }" >
                                             <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
                                             </select>
                                           </div>
@@ -1787,11 +1787,11 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="row">
+                                      <div class="row" *ngIf="configMasterModel.cancellationAfterCheckInDetails.length>1 && configMasterModel.cancellationAfterCheckInDetails[1]!=undefined && configMasterModel.cancellationAfterCheckInDetails[1]?.isApproved">
                                         <!-- Auto-Cancellation after Check-in Dates -->
                                         <div class="col-sm-2">
                                           <div class="input-group input-group-sm mt-1">
-                                            <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_condition" disabled /> 
+                                            <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[1].trigger_condition" disabled /> 
                                           </div>
                                          </div>
                                         <div class="col-sm-2">
@@ -1799,14 +1799,14 @@
                                             <input 
                                               type="text" 
                                               class="form-control form-control-sm"
-                                              [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day" disabled  
+                                              [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[1].auto_cancellation_day" disabled  
                                               style="max-width: 70px !important;" />
                                               <span class="input-group-text">Days</span>
                                           </div>
                                         </div>
                                         <div class="col-sm-3">
                                           <div class="input-group input-group-sm mt-1">
-                                            <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.trigger_value" disabled /> 
+                                            <input type="text" class="form-control form-control-sm" [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[1].trigger_value" disabled /> 
                                           </div>
                                         </div>
                                         <div class="col-sm-2">

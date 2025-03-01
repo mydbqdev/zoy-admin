@@ -1,23 +1,23 @@
 export class ConfigMasterModel{
-    tokenDetails :TokenDetailsModel = new TokenDetailsModel() ;
-    depositDetails : SecurityDepositLimitsModel = new SecurityDepositLimitsModel ();
-    dataGrouping : DataGroupingModel = new DataGroupingModel() ;
+    tokenDetails :TokenDetailsModel[]=[];// = new TokenDetailsModel() ;
+    depositDetails : SecurityDepositLimitsModel[]=[];// = new SecurityDepositLimitsModel ();
+    dataGrouping : DataGroupingModel[]=[];// = new DataGroupingModel() ;
     cancellationBeforeCheckInDetails : BeforeCheckInCancellationRefundModel[]=[];
-    earlyCheckOutRuleDetails:EarlyCheckOutRuleDetails=new EarlyCheckOutRuleDetails();
-    cancellationAfterCheckInDetails:SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
-    securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
-    otherCharges : OtherChargesModel=new OtherChargesModel();
-    forceCheckOut :ForceCheckoutModel = new ForceCheckoutModel();
-    gstCharges : GstChargesModel = new GstChargesModel();
+    earlyCheckOutRuleDetails:EarlyCheckOutRuleDetails[]=[];//=new EarlyCheckOutRuleDetails();
+    cancellationAfterCheckInDetails:SecurityDepositDeadLineAndAutoCancellationModel[]=[];//=new SecurityDepositDeadLineAndAutoCancellationModel();
+    securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel[]=[];//=new SecurityDepositDeadLineAndAutoCancellationModel();
+    otherCharges : OtherChargesModel[]=[];//=new OtherChargesModel();
+    forceCheckOut :ForceCheckoutModel[]=[];// = new ForceCheckoutModel();
+    gstCharges : GstChargesModel[]=[];// = new GstChargesModel();
     shortTerm :ShortTermModel[] = [];
-    shortTermRentingDuration:ShortTermRentingDuration = new ShortTermRentingDuration();
-    noRentalAgreement:NoRentalAgreement =new NoRentalAgreement();
+    shortTermRentingDuration:ShortTermRentingDuration[]=[];// = new ShortTermRentingDuration();
+    noRentalAgreement:NoRentalAgreement[]=[];// =new NoRentalAgreement();
 }
 
 export class TokenDetailsModel{
     tokenId : string = '';
-    fixedToken : number = null;
-    variableToken : number = null;
+    fixedToken : number ;
+    variableToken : number ;
     effectiveDate:string='';
     isApproved:boolean=false;
 }
@@ -96,7 +96,7 @@ export class ForceCheckoutModel{
 }
 
 export class GstChargesModel{
-    rentId: string ;
+    rentId: string='' ;
     cgstPercentage:number ;
     sgstPercentage: number ;
     igstPercentage:number ;

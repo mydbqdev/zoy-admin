@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { ConfigMasterService } from '../service/config-master-serive';
-import { BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermModel, ShortTermRentingDuration, TokenDetailsModel} from '../models/config-master-model';
+import { BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstChargesModel, NoRentalAgreement, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermModel, ShortTermRentingDuration, TokenDetailsModel} from '../models/config-master-model';
 import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { DbSettingDataModel } from '../../db-master-configuration/models/db-setting-models';
@@ -115,9 +115,9 @@ moreEarlyCheckout:boolean=true;
 		  this.sidemenuComp.expandMenu(4);
 		  this.sidemenuComp.activeMenu(4, 'configuration-master');
 		  this.dataService.setHeaderName("Configuration Master");
-		  this.configMasterModel.securityDepositDeadLineDetails.trigger_value="Security Deposit";
+		  this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value="Security Deposit";
 		  this.beforeCheckInCRfModel.trigger_value="TotalPaidAmount";
-		  this.configMasterModel.earlyCheckOutRuleDetails.trigger_value="Rent";
+		  this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value="Rent";
 	  }
 	  settingType:string='';
 	  pgTypes:DbSettingDataModel[]=[];
@@ -176,13 +176,51 @@ moreEarlyCheckout:boolean=true;
 		this.configMasterOrg = new ConfigMasterModel();
 		const keys = Object.keys(this.configMasterOrg);
 		keys.forEach(key => {
-			if (res.data[key]) {
+			if(!res.data[key] || res.data[key]?.length ==undefined || res.data[key]?.length==0){
+				switch (key) {
+					case "depositDetails":
+						this.configMasterOrg[key].push(new SecurityDepositLimitsModel());
+					  break;
+					case "tokenDetails":
+						this.configMasterOrg[key].push(new TokenDetailsModel());
+					  break;
+					case "gstCharges":
+						this.configMasterOrg[key].push(new GstChargesModel());
+					  break;
+					case "noRentalAgreement":
+						this.configMasterOrg[key].push(new NoRentalAgreement());
+					  break;
+					case "securityDepositDeadLineDetails":
+						this.configMasterOrg[key].push(new SecurityDepositDeadLineAndAutoCancellationModel());
+					  break;
+					case "cancellationAfterCheckInDetails":
+						this.configMasterOrg[key].push(new SecurityDepositDeadLineAndAutoCancellationModel());
+					  break;
+					case "otherCharges":
+						this.configMasterOrg[key].push(new OtherChargesModel());
+					  break;
+					case "forceCheckOut":
+						this.configMasterOrg[key].push(new ForceCheckoutModel());
+					  break;
+					case "earlyCheckOutRuleDetails":
+						this.configMasterOrg[key].push(new EarlyCheckOutRuleDetails());
+					  break;
+					case "dataGrouping":
+						this.configMasterOrg[key].push(new DataGroupingModel());
+					  break; 
+					case "shortTermRentingDuration":
+						this.configMasterOrg[key].push(new ShortTermRentingDuration());
+					  break; 
+  
+				  }
+		    }else if (res.data[key]) {
 				this.configMasterOrg[key] = res.data[key];
-			}
+			}			
 		});
+
 		this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
-		this.configMasterModel.earlyCheckOutRuleDetails.trigger_value="Rent";
-		this.configMasterModel.securityDepositDeadLineDetails.trigger_value="Security Deposit";
+		this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value="Rent";
+		this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value="Security Deposit";
 		this.getBeforeCheckInCRData();
 		// this.rentSlabsdataSource = new MatTableDataSource<RentSlabModel>(this.rentSlabs);
 		this.spinner.hide();
@@ -393,10 +431,10 @@ getTriggerOn(){
 		}
 
 	 tokenAdvancSubmit() {
-		if(this.isNotValidNumber(this.configMasterModel.tokenDetails.fixedToken) || this.isNotValidNumber(this.configMasterModel.tokenDetails.variableToken )){
+		if(this.isNotValidNumber(this.configMasterModel.tokenDetails[0].fixedToken) || this.isNotValidNumber(this.configMasterModel.tokenDetails[0].variableToken )){
 			return
 		}
-		if(Number(this.configMasterModel.tokenDetails.fixedToken) > Number(this.configMasterModel.depositDetails.maximumDeposit)){
+		if(Number(this.configMasterModel.tokenDetails[0].fixedToken) > Number(this.configMasterModel.depositDetails[0].maximumDeposit)){
 		    this.notifyService.showInfo("The token fixed amount should not be greater than the maximum security deposit.","")
 			return;
 		}
@@ -406,7 +444,7 @@ getTriggerOn(){
 			if(confirmed){
 		this.spinner.show();
 		this.authService.checkLoginUserVlidaate();
-		this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetails).subscribe(res => {
+		this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetails[0]).subscribe(res => {
 			this.configMasterOrg.tokenDetails = Object.assign(new TokenDetailsModel(), res.data );
 			this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
 			this.tokenAdvancDisabled = true;
@@ -451,14 +489,14 @@ getTriggerOn(){
 	  }
 	  
 	  securityDepositLimitsSubmit() {
-		if(this.isNotValidNumber(this.configMasterModel.depositDetails.maximumDeposit) || this.isNotValidNumber(this.configMasterModel.depositDetails.minimumDeposit) ){
+		if(this.isNotValidNumber(this.configMasterModel.depositDetails[0].maximumDeposit) || this.isNotValidNumber(this.configMasterModel.depositDetails[0].minimumDeposit) ){
 			return ;
 		}
-		if(Number(this.configMasterModel.depositDetails.maximumDeposit) < Number(this.configMasterModel.depositDetails.minimumDeposit) ){
+		if(Number(this.configMasterModel.depositDetails[0].maximumDeposit) < Number(this.configMasterModel.depositDetails[0].minimumDeposit) ){
 		    this.notifyService.showInfo("The maximum security deposit should not be less than to the minimum security deposit.","")
 			return;
 		}
-		if(Number(this.configMasterModel.depositDetails.maximumDeposit) < Number(this.configMasterModel.tokenDetails.fixedToken) ){
+		if(Number(this.configMasterModel.depositDetails[0].maximumDeposit) < Number(this.configMasterModel.tokenDetails[0].fixedToken) ){
 		    this.notifyService.showInfo("The maximum security deposit should not be less than to the token fixed amount.","")
 			return;
 		}
@@ -468,7 +506,7 @@ getTriggerOn(){
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-				this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.depositDetails).subscribe(res => {
+				this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.depositDetails[0]).subscribe(res => {
 					this.configMasterOrg.depositDetails = Object.assign(new SecurityDepositLimitsModel(), res.data );
 					this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
 					this.securityDepositLimitsDisabled = true;
@@ -514,8 +552,8 @@ getTriggerOn(){
 	}
 
 	gstChargesSubmit() {
-		if( this.isNotValidNumber(this.configMasterModel.gstCharges.monthlyRent) || this.isNotValidNumber(this.configMasterModel.gstCharges.cgstPercentage) 
-			|| this.isNotValidNumber(this.configMasterModel.gstCharges.sgstPercentage) || this.isNotValidNumber(this.configMasterModel.gstCharges.igstPercentage) ){
+		if( this.isNotValidNumber(this.configMasterModel.gstCharges[0].monthlyRent) || this.isNotValidNumber(this.configMasterModel.gstCharges[0].cgstPercentage) 
+			|| this.isNotValidNumber(this.configMasterModel.gstCharges[0].sgstPercentage) || this.isNotValidNumber(this.configMasterModel.gstCharges[0].igstPercentage) ){
 			return
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -524,7 +562,7 @@ getTriggerOn(){
 			if(confirmed){
 		this.spinner.show();
 		this.authService.checkLoginUserVlidaate();
-		this.configMasterService.updategstChargesDetails(this.configMasterModel.gstCharges).subscribe(res => {
+		this.configMasterService.updategstChargesDetails(this.configMasterModel.gstCharges[0]).subscribe(res => {
 			this.configMasterOrg.gstCharges = Object.assign(new TokenDetailsModel(), res.data );
 			this.configMasterModel.gstCharges = JSON.parse(JSON.stringify(this.configMasterOrg.gstCharges));
 			this.gstChargesDisabled = true;
@@ -569,7 +607,7 @@ getTriggerOn(){
 	  }
 	securityDepositDeadLineSubmit() {
 		this.authService.checkLoginUserVlidaate();
-		if(this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails.auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails.deduction_percentage) || !this.configMasterModel.securityDepositDeadLineDetails.trigger_condition|| !this.configMasterModel.securityDepositDeadLineDetails.trigger_value ){
+		if(this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails[0].auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails[0].deduction_percentage) || !this.configMasterModel.securityDepositDeadLineDetails[0].trigger_condition|| !this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -577,7 +615,7 @@ getTriggerOn(){
 		   (confirmed) =>{
 			if(confirmed){
 		this.spinner.show();
-		this.configMasterService.updateSecurityDepositDeadLineDetails(this.configMasterModel.securityDepositDeadLineDetails).subscribe(res => {
+		this.configMasterService.updateSecurityDepositDeadLineDetails(this.configMasterModel.securityDepositDeadLineDetails[0]).subscribe(res => {
 			this.configMasterOrg.securityDepositDeadLineDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
 			this.configMasterModel.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositDeadLineDetails));
 			this.securityDepositDeadLineDisabled = true;
@@ -620,10 +658,10 @@ getTriggerOn(){
 		this.securityDepositDeadLineDisabled = true;
 	}
 	autoCancellationSubmit() {
-		if(this.isNotValidNumbernAndZero(this.configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) || !this.configMasterModel.cancellationAfterCheckInDetails.trigger_condition|| !this.configMasterModel.cancellationAfterCheckInDetails.trigger_value ){
+		if(this.isNotValidNumbernAndZero(this.configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.cancellationAfterCheckInDetails[0].deduction_percentage) || !this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition|| !this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_value ){
 			return ;
 		}
-		if(this.configMasterModel.cancellationAfterCheckInDetails.auto_cancellation_day == 1 && this.configMasterModel.cancellationAfterCheckInDetails.trigger_condition === '<'){
+		if(this.configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day == 1 && this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition === '<'){
 			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -632,7 +670,7 @@ getTriggerOn(){
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-				this.configMasterService.updateAutoCancellationDetails(this.configMasterModel.cancellationAfterCheckInDetails).subscribe(res => {
+				this.configMasterService.updateAutoCancellationDetails(this.configMasterModel.cancellationAfterCheckInDetails[0]).subscribe(res => {
 					this.configMasterOrg.cancellationAfterCheckInDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
 					this.configMasterModel.cancellationAfterCheckInDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationAfterCheckInDetails));
 					this.autoCancellationDisabled = true;
@@ -677,7 +715,7 @@ getTriggerOn(){
 	}	
 	otherChargesSubmit() {
 		
-		if(this.isNotValidNumber(this.configMasterModel.otherCharges.ownerDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges.tenantDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges.ownerEkycCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges.tenantEkycCharges) ){
+		if(this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerEkycCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantEkycCharges) ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -686,7 +724,7 @@ getTriggerOn(){
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-				this.configMasterService.updateOtherChargesDetails(this.configMasterModel.otherCharges).subscribe(res => {
+				this.configMasterService.updateOtherChargesDetails(this.configMasterModel.otherCharges[0]).subscribe(res => {
 					this.configMasterOrg.otherCharges = Object.assign(new OtherChargesModel(), res.data );
 					this.configMasterModel.otherCharges = JSON.parse(JSON.stringify(this.configMasterOrg.otherCharges));
 					this.otherChargesDisabled = true;
@@ -731,7 +769,7 @@ getTriggerOn(){
 	}		  
 
 	trendingPGSubmit() {
-		if(this.isNotValidNumber(this.configMasterModel.dataGrouping.considerDays)){
+		if(this.isNotValidNumber(this.configMasterModel.dataGrouping[0].considerDays)){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -740,7 +778,7 @@ getTriggerOn(){
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-				this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGrouping).subscribe(res => {
+				this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGrouping[0]).subscribe(res => {
 					this.configMasterOrg.dataGrouping = Object.assign(new DataGroupingModel(), res.data );
 					this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
 					this.dataGroupingDisabled = true;
@@ -1002,10 +1040,10 @@ getTriggerOn(){
 	  }
 	
 	  earlyCheckOutRulesSubmit() {
-		if(this.isNotValidNumbernAndZero(this.configMasterModel.earlyCheckOutRuleDetails.check_out_day) || this.isNotValidNumber(this.configMasterModel.earlyCheckOutRuleDetails.deduction_percentage) || !this.configMasterModel.earlyCheckOutRuleDetails.trigger_condition || !this.configMasterModel.earlyCheckOutRuleDetails.trigger_value ){
+		if(this.isNotValidNumbernAndZero(this.configMasterModel.earlyCheckOutRuleDetails[0].check_out_day) || this.isNotValidNumber(this.configMasterModel.earlyCheckOutRuleDetails[0].deduction_percentage) || !this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition || !this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value ){
 			return;
 		}
-		if(this.configMasterModel.earlyCheckOutRuleDetails.check_out_day == 1 && this.configMasterModel.earlyCheckOutRuleDetails.trigger_condition === '<'){
+		if(this.configMasterModel.earlyCheckOutRuleDetails[0].check_out_day == 1 && this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition === '<'){
 			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -1014,7 +1052,7 @@ getTriggerOn(){
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-				this.configMasterService.updateEarlyCheckOutRulesdDetails(this.configMasterModel.earlyCheckOutRuleDetails).subscribe(res => {
+				this.configMasterService.updateEarlyCheckOutRulesdDetails(this.configMasterModel.earlyCheckOutRuleDetails[0]).subscribe(res => {
 					this.configMasterOrg.earlyCheckOutRuleDetails = Object.assign(new EarlyCheckOutRuleDetails(), res.data );
 					this.configMasterModel.earlyCheckOutRuleDetails = JSON.parse(JSON.stringify(this.configMasterOrg.earlyCheckOutRuleDetails));
 					this.earlyCheckOutRulesDisabled = true;
@@ -1059,7 +1097,7 @@ getTriggerOn(){
 		this.earlyCheckOutRulesDisabled = true;
 	  }
 	  forceCheckoutSubmit(): void {
-		if(this.isNotValidNumber(this.configMasterModel.forceCheckOut.forceCheckOutDays) ){
+		if(this.isNotValidNumber(this.configMasterModel.forceCheckOut[0].forceCheckOutDays) ){
 			return ;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
@@ -1068,7 +1106,7 @@ getTriggerOn(){
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-				this.configMasterService.updateForceCheckOutDetails(this.configMasterModel.forceCheckOut).subscribe(res => {
+				this.configMasterService.updateForceCheckOutDetails(this.configMasterModel.forceCheckOut[0]).subscribe(res => {
 					this.configMasterOrg.forceCheckOut = Object.assign(new ForceCheckoutModel(), res.data );
 					this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
 					this.forceCheckoutDisabled = true;
@@ -1177,10 +1215,10 @@ getTriggerOn(){
 			}
 
 		shortTermRentingDurationSubmit(): void {
-		    if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration.rentingDurationDays) ){
+		    if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
 			   return ;
 			}
-			if(Number(this.configMasterModel.noRentalAgreement.noRentalAgreementDays) > Number(this.configMasterModel.shortTermRentingDuration.rentingDurationDays) ){
+			if(Number(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) > Number(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
 				this.notifyService.showInfo("Short term duration should not be greater than 'No Rental agreement upto'.","");
 				return ;
 			 }
@@ -1190,7 +1228,7 @@ getTriggerOn(){
 				if(confirmed){
 					this.authService.checkLoginUserVlidaate();
 					this.spinner.show();
-					this.configMasterService.updateShortTermRentingDuration(this.configMasterModel.shortTermRentingDuration).subscribe(res => {
+					this.configMasterService.updateShortTermRentingDuration(this.configMasterModel.shortTermRentingDuration[0]).subscribe(res => {
 						this.configMasterOrg.shortTermRentingDuration = Object.assign(new ShortTermRentingDuration(), res.data );
 						this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
 						this.shortTermRentingDurationDisabled = true;
@@ -1237,10 +1275,10 @@ getTriggerOn(){
 
 		  noRentalAgreementDisabled:boolean=true;
 		  noRentalAgreementSubmit(): void {
-		    if(this.isNotValidNumber(this.configMasterModel.noRentalAgreement.noRentalAgreementDays) ){
+		    if(this.isNotValidNumber(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) ){
 			   return ;
 			}
-			if(Number(this.configMasterModel.noRentalAgreement.noRentalAgreementDays) < Number(this.configMasterModel.shortTermRentingDuration.rentingDurationDays) ){
+			if(Number(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) < Number(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
 				this.notifyService.showInfo("No Rental agreement upto should be greater than Short term duration.","");
 				return ;
 			 }
@@ -1250,7 +1288,7 @@ getTriggerOn(){
 				if(confirmed){
 					this.authService.checkLoginUserVlidaate();
 					this.spinner.show();
-					this.configMasterService.updateNoRentalAgreement(this.configMasterModel.noRentalAgreement).subscribe(res => {
+					this.configMasterService.updateNoRentalAgreement(this.configMasterModel.noRentalAgreement[0]).subscribe(res => {
 						this.configMasterOrg.noRentalAgreement = Object.assign(new ShortTermRentingDuration(), res.data );
 						this.configMasterModel.noRentalAgreement = JSON.parse(JSON.stringify(this.configMasterOrg.noRentalAgreement));
 						this.noRentalAgreementDisabled = true;
