@@ -115,8 +115,8 @@ moreEarlyCheckout:boolean=true;
 		  this.sidemenuComp.expandMenu(4);
 		  this.sidemenuComp.activeMenu(4, 'configuration-master');
 		  this.dataService.setHeaderName("Configuration Master");
-		  this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value="Security Deposit";
 		  this.beforeCheckInCRfModel.trigger_value="TotalPaidAmount";
+		  this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value="Security Deposit";
 		  this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value="Rent";
 	  }
 	  settingType:string='';

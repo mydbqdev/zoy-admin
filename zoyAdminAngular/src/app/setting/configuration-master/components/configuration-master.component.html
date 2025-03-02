@@ -22,7 +22,7 @@
                 <div class="container-fluid">
                   <div class="d-sm-flex align-items-center justify-content-between mb-0">
                     <h3 class="h3 mb-0">
-                      <span class="text-header-800 text-header-border">{{settingType}} PG Master</span><span class="text-header-800-blue">Configuration</span></h3> 
+                      <span class="text-header-800 text-header-border">Master</span><span class="text-header-800-blue">Configuration</span></h3> 
                   </div>
                    <!--
                   <div class="d-flex align-items-center justify-content-between w-100" style="display: block;margin: 0px;padding: 2px;">
@@ -54,7 +54,7 @@
                             </div>
                             
                             <div>
-                              <div class="row">
+                              <div class="row" *ngIf="configMasterModel.tokenDetails.length>0 && configMasterModel.tokenDetails[0]!=undefined">
                                 <div class="col-sm-4">
                                   <div>Fixed amount</div>
                                   <div class="input-group input-group-sm">
@@ -63,7 +63,7 @@
                                       type="text" 
                                       class="form-control form-control-sm" 
                                       [(ngModel)]="configMasterModel.tokenDetails[0].fixedToken" [disabled]="tokenAdvancDisabled" (keypress)="numberOnly($event)" maxlength="7"
-                                       [ngClass]="{'is-invalid': !tokenAdvancDisabled && isNotValidNumber(configMasterModel.tokenDetails[0]?.fixedToken) }" 
+                                       [ngClass]="{'is-invalid': !tokenAdvancDisabled && isNotValidNumber(configMasterModel.tokenDetails[0].fixedToken) }" 
                                       style="max-width: 90px !important;" />
                                   </div>
                                   <p class="small text-muted " style="font-size: 12px;">
@@ -88,8 +88,8 @@
                                   <div>Effective On</div>
                                   <div class="input-group input-group-sm">
                                     <input 
-                                      type="text" 
-                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.tokenDetails[0].effectiveDate"/>
+                                      type="date" 
+                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.tokenDetails[0].effectiveDate" [disabled]="tokenAdvancDisabled"/>
                                   </div>
                                </div>
                                 <div class="col-sm-2 mt-4" >
@@ -136,7 +136,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="text" 
-                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.tokenDetails[1].effectiveDate" disabled/>
+                                      class="form-control form-control-sm" [ngModel]="configMasterModel.tokenDetails[1].effectiveDate | date :'dd-MM-yyyy'" disabled/>
                                   </div>
                                </div>
                                 <div class="col-sm-2 mt-1" >
@@ -161,7 +161,7 @@
                               </div>
                             </div>
                             <div>
-                              <div class="row">
+                              <div class="row" *ngIf="configMasterModel.depositDetails.length>0 && configMasterModel.depositDetails[0]!=undefined">
                                 <!-- Minimum Security Deposit -->
                                 <div class="col-sm-4">
                                   <div>Minimum Security Deposit</div>
@@ -199,7 +199,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.depositDetails[0].effectiveDate"/>
+                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.depositDetails[0].effectiveDate"  [disabled]="securityDepositLimitsDisabled"/>
                                   </div>
                                </div>
                                 <!-- Action Button -->
@@ -255,7 +255,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="text" 
-                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.depositDetails[0].effectiveDate" disabled/>
+                                      class="form-control form-control-sm" [ngModel]="configMasterModel.depositDetails[0].effectiveDate | date :'dd-MM-yyyy'" disabled/>
                                   </div>
                                </div>
                                 <!-- Action Button -->
@@ -278,7 +278,7 @@
                             </div>
                             
                             <div>
-                              <div class="row">
+                              <div class="row"  *ngIf="configMasterModel.gstCharges.length>0 && configMasterModel.gstCharges[0]!=undefined">
                                 <div class="col-sm-10">
                                 <div class="row">
                                 <div class="col-sm-3">
@@ -343,7 +343,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm"/>
+                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.gstCharges[0].effectiveDate" [disabled]="gstChargesDisabled"/>
                                   </div>
                                </div>
                               </div>
@@ -415,7 +415,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="text" 
-                                      class="form-control form-control-sm"/>
+                                      class="form-control form-control-sm" [ngModel]="configMasterModel.gstCharges[1].effectiveDate | date:'dd-MM-yyyy'" disabled/>
                                   </div>
                                </div>
                               </div>
@@ -439,7 +439,7 @@
                                   <em>Configure eKYC and documentation charges for Owners and Tenants.</em>
                                 </p>
                               </div>
-                              <div class="row marginRow align-items-center">
+                              <div class="row marginRow align-items-center" *ngIf="configMasterModel.otherCharges.length>0 && configMasterModel.otherCharges[0]!=undefined">
                               <div class="col-sm-9">
                                 <div class="card card-body">
                                 <div class="row">
@@ -536,7 +536,7 @@
                                 <div class="input-group input-group-sm">
                                   <input 
                                     type="date" 
-                                    class="form-control form-control-sm"/>
+                                    class="form-control form-control-sm" [(ngModel)]="configMasterModel.otherCharges[0].effectiveDate" [disabled]="otherChargesDisabled"/>
                                 </div>
                             </div>
                             <div class="col-sm-1 mt-4">
@@ -630,7 +630,7 @@
                                 <div class="input-group input-group-sm">
                                   <input 
                                     type="text" 
-                                    class="form-control form-control-sm"/>
+                                    class="form-control form-control-sm"  [ngModel]="configMasterModel.otherCharges[1].effectiveDate | date:'dd-MM-yyyy'"/>
                                 </div>
                             </div>
                             <div class="col-sm-1 mt-1">
@@ -652,7 +652,7 @@
                                 </div>
                               </div>
                               <div>
-                               <div class="row">
+                               <div class="row" *ngIf="configMasterModel.dataGrouping.length>0 && configMasterModel.dataGrouping[0]!=undefined">
                                   
                                   <div class="col-sm-3">
                                     <div>Trending PG Configuration</div>
@@ -671,7 +671,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm"/>
+                                        class="form-control form-control-sm" [(ngModel)]="configMasterModel.dataGrouping[0].effectiveDate" [disabled]="dataGroupingDisabled"/>
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-4">
@@ -709,7 +709,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="text" 
-                                      class="form-control form-control-sm" disabled/>
+                                      class="form-control form-control-sm" [ngModel]="configMasterModel.dataGrouping[1].effectiveDate | date:'dd-MM-yyyy'"  disabled/>
                                   </div>
                                </div>
                                 <div class="col-sm-2 mt-1">
@@ -731,7 +731,7 @@
                                 </p>
                               </div>
                               <div>
-                                <div class="row">                                 
+                                <div class="row" *ngIf="configMasterModel.forceCheckOut.length>0 && configMasterModel.forceCheckOut[0]!=undefined">                                 
                                   <div class="col-sm-3">
                                     <div>Force Checkout Enabling Days</div>
                                     <div class="input-group input-group-sm">
@@ -748,7 +748,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm"/>
+                                        class="form-control form-control-sm" [(ngModel)]="configMasterModel.forceCheckOut[0].effectiveDate" [disabled]="forceCheckoutDisabled"/>
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-4">
@@ -783,7 +783,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="text" 
-                                        class="form-control form-control-sm" disabled/>
+                                        class="form-control form-control-sm" [ngModel]="configMasterModel.forceCheckOut[1].forceCheckOutDays | date:'dd-MM-yyyy'" disabled/>
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-1">
@@ -806,7 +806,7 @@
                                 </p>
                               </div>
                               <div>
-                                <div class="row">                                  
+                                <div class="row"  *ngIf="configMasterModel.noRentalAgreement.length>0 && configMasterModel.noRentalAgreement[0]!=undefined">                                  
                                   <div class="col-sm-4">
                                     <div>No Rental agreement upto</div>
                                     <div class="input-group input-group-sm">
@@ -823,7 +823,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm"/>
+                                        class="form-control form-control-sm" [(ngModel)]="configMasterModel.noRentalAgreement[0].effectiveDate" [disabled]="noRentalAgreementDisabled"/>
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-4">
@@ -858,7 +858,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="text" 
-                                        class="form-control form-control-sm" disabled/>
+                                        class="form-control form-control-sm"  [ngModel]="configMasterModel.noRentalAgreement[1].effectiveDate | date:'dd-MM-yyyy'" disabled/>
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-1">
@@ -884,7 +884,7 @@
                                   </div>
                                 </div>
                                 <div >
-                                  <div class="row">
+                                  <div class="row"  *ngIf="configMasterModel.securityDepositDeadLineDetails.length>0 && configMasterModel.securityDepositDeadLineDetails[0]!=undefined">
                                     <!-- Auto-Cancellation after Check-in Dates -->
                                     <div class="col-sm-2">
                                       <div>Condition</div>
@@ -944,7 +944,7 @@
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="date" 
-                                          class="form-control form-control-sm"/>
+                                          class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[0].effectiveDate"  [disabled]="securityDepositDeadLineDisabled"/>
                                       </div>
                                    </div>
                                     <!-- Action Button -->
@@ -1010,7 +1010,7 @@
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="text" 
-                                          class="form-control form-control-sm" disabled/>
+                                          class="form-control form-control-sm" [ngModel]="configMasterModel.securityDepositDeadLineDetails[1].effectiveDate | date:'dd-MM-yyyy'" disabled/>
                                       </div>
                                    </div>
                                     <!-- Action Button -->
@@ -1378,7 +1378,7 @@
                                 </p>
                               </div>
                               <div>
-                                <div class="row">
+                                <div class="row" *ngIf="configMasterModel.shortTermRentingDuration.length>0 && configMasterModel.shortTermRentingDuration[0]!=undefined">
                                   
                                   <div class="col-sm-3">
                                     <div>Short term </div>
@@ -1396,7 +1396,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm"/>
+                                        class="form-control form-control-sm"  [(ngModel)]="configMasterModel.shortTermRentingDuration[0].effectiveDate"  [disabled]="shortTermRentingDurationDisabled"/>
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-4" >
@@ -1430,7 +1430,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="text" 
-                                        class="form-control form-control-sm" disabled/>
+                                        class="form-control form-control-sm"  [ngModel]="configMasterModel.shortTermRentingDuration[1].rentingDurationDays | date:'dd-MM-yyyy'"  disabled/>
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-1" >
@@ -1543,7 +1543,7 @@
                                 </div>
                                 
                                 <div>
-                                  <div class="row">
+                                  <div class="row"  *ngIf="configMasterModel.earlyCheckOutRuleDetails.length>0 && configMasterModel.earlyCheckOutRuleDetails[0]!=undefined">
                                     <div class="col-sm-2">
                                       <div>Condition</div>
                                       <div class="input-group input-group-sm" *ngIf="earlyCheckOutRulesDisabled">
@@ -1610,7 +1610,7 @@
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="date" 
-                                          class="form-control form-control-sm"/>
+                                          class="form-control form-control-sm"  [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails[0].effectiveDate" [disabled]="earlyCheckOutRulesDisabled" />
                                       </div>
                                    </div>
                                     <div class="col-sm-2 mt-4">
@@ -1654,7 +1654,7 @@
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="text" 
-                                          class="form-control form-control-sm" disabled/>
+                                          class="form-control form-control-sm"  [ngModel]="configMasterModel.earlyCheckOutRuleDetails[1].effectiveDate | date:'dd-MM-yyyy'" disabled/>
                                       </div>
                                    </div>
                                     <div class="col-sm-2 mt-1">
@@ -1689,7 +1689,7 @@
                                       </div>
                                     </div>
                                     <div>
-                                      <div class="row">
+                                      <div class="row" *ngIf="configMasterModel.cancellationAfterCheckInDetails.length>0 && configMasterModel.cancellationAfterCheckInDetails[0]!=undefined">
                                         <!-- Auto-Cancellation after Check-in Dates -->
                                         <div class="col-sm-2">
                                           <div>Condition</div>
@@ -1760,7 +1760,7 @@
                                           <div class="input-group input-group-sm">
                                             <input 
                                               type="date" 
-                                              class="form-control form-control-sm"/>
+                                              class="form-control form-control-sm"  [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[0].effectiveDate" [disabled]="autoCancellationDisabled"/>
                                           </div>
                                        </div> 
                                         <!-- Action Button -->
@@ -1812,8 +1812,8 @@
                                         <div class="col-sm-2">
                                           <div class="input-group input-group-sm">
                                             <input 
-                                              type="date" 
-                                              class="form-control form-control-sm"/>
+                                              type="text" 
+                                              class="form-control form-control-sm" [ngModel]="configMasterModel.cancellationAfterCheckInDetails[1].effectiveDate | date:'dd-MM-yyyy'"/>
                                           </div>
                                        </div>
                                         <!-- Action Button -->
