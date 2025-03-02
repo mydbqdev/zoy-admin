@@ -501,13 +501,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalLabel"><span style="color: rgb(173, 5, 159);">{{doActiveteDeactiveteName}} - Status</span></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModel></button>
       </div>
       <div class="modal-body p-3">
         <div class="form-group row">
           <label for="category" class="col-sm-4 col-form-label">Status : </label>
           <div class="col-sm-8">
-            <select class="form-select form-select-sm" id="status">
+            <select class="form-select form-select-sm" id="status" [(ngModel)]="status" [ngClass]="{'is-invalid': submitted && !status}">
               <option>Active</option>
               <option>Inactive</option>
               <option>Suspended</option>
@@ -522,7 +522,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary-custom me-2" (click)="doActiveteDeactivete()" >Update</button>
+        <button type="submit" class="btn btn-primary-custom me-2" (click)="updateStatus()" >Update</button>
       </div>
     </div>
   </div>

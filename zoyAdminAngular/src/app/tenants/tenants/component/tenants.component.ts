@@ -237,12 +237,10 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 	}
 
 	statuses = [
-		{ id: 1, name: 'Blocked', selected: false },
-		{ id: 2, name: 'Checked-In', selected: false },
-		{ id: 3, name: 'Checked-Out', selected: false },
-		{ id: 4, name: 'Open', selected: false },
-		{ id: 5, name: 'Cancelled', selected: false },
-		
+		{ id: 1, name: 'Active', selected: false },
+		{ id: 2, name: 'Inactive', selected: false },
+		{ id: 3, name: 'Upcoming', selected: false },
+		{ id: 4, name: 'Suspended', selected: false },
 	  ];
 	  selectedStatuses:string[]=[]; 
 	   // Toggle the selected status for a button
@@ -258,6 +256,11 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 	  // Apply and process the selected statuses
 	  applyStatuses(): void {
 		console.log('Selected Statuses:', this.selectedStatuses);
+		
+		this.param.pageIndex=0
+		this.paginator.pageIndex=0;
+		//this.param.filter.status=this.selectedStatuses;
+		this.getTenantsList();
 	  }
 	  applyDates(): void {
 		this.param.pageIndex=0

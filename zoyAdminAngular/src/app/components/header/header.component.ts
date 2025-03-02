@@ -12,8 +12,10 @@ import { MenuService } from './menu.service';
 import { UserActivityService } from 'src/app/user-activity.service';
 import { ProfileService } from 'src/app/profile/service/profile-service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
-import { AlertNotificationModel } from 'src/app/alert-notification/model/alert-notification-model';
+import { AlertNotificationDetailsModel } from 'src/app/alert-notification/model/alert-notification-model';
 import { WebsocketService } from 'src/app/common/service/websocket.service';
+import { AlertNotificationService } from 'src/app/alert-notification/service/alert-notification-service';
+import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
 
 @Component({
   selector: 'app-header',
@@ -43,10 +45,11 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   @ViewChild('sessionModelOpen') sessionModelOpen: any;
   @ViewChild('sessionModelClose') sessionModelClose: any;
   @ViewChild('modal', { static: false }) modal: any;
-  selectedNotification: AlertNotificationModel = new AlertNotificationModel();
-  onFlyNotification: AlertNotificationModel = new AlertNotificationModel();
+  selectedNotification: AlertNotificationDetailsModel = new AlertNotificationDetailsModel();
+  onFlyNotification: AlertNotificationDetailsModel[] = [];
+  allMenuList:Menu[]=[];
   constructor( private userService: UserService, private router: Router,private dataService:DataService,private  authService: AuthService,private websocketService:WebsocketService,
-    private menuService: MenuService,private userActivityService: UserActivityService,private profileService:ProfileService,private notifyService: NotificationService
+    private menuService: MenuService,private userActivityService: UserActivityService,private profileService:ProfileService,private notifyService: NotificationService,private alertNotificationService:AlertNotificationService
     ) {
      
     this.userInfo=this.userService.getUserinfo();
@@ -90,6 +93,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
      // this.router.navigate(['/']);
       }
       this.menus = this.menuService.getAllMenus();
+      this.allMenuList = this.menuService.getAllMenuList();
       	this.filteredMenus = this.menus ;
         this.userActivityService.lastActionTime$.subscribe(time => {
           this.lastActionTime = time;
@@ -97,10 +101,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         this.getTimeSinceLastAction();
         this.startValidateToken();
         this.loadProfilePhoto();
-       
-        setTimeout(() => {
-          this.connectWebsocket();
-        }, 5000);
+        this.getUserNotifications();
        
   }
 
@@ -108,17 +109,10 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     if (this.mySubscription) {
       this.mySubscription.unsubscribe();
     }
-  //  this.websocketService.closeConnection('AlertNotification');
+  
   }
 
-  connectWebsocket(){
-    this.authService.connectWebsocket(this.userInfo.userEmail,'AlertNotification');
-    this.websocketService.getMessages('AlertNotification')?.subscribe((notifi) => {
-      console.log("notifi",notifi)
-      this.onFlyNotification =  notifi;
-    });
-    console.log("this.onFlyNotification",this.onFlyNotification);
-  }
+
 
   doSignout() {
 		this.authService.checkLogout();
@@ -161,18 +155,14 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
  
   startSessionTimeout() {
-    console.log(new Date(),"time>>",this.userActivityService.getTimeSinceLastAction());
-    console.log(new Date(),"this.nun",this.nun,'<this.interval>',this.interval);
     if (this.interval) {
       return;
     }
     this.interval = setInterval(() => {
       if (this.countdown <= 0) {
-        console.log(new Date(),"startSessionTimeout >this.countdown>>",this.countdown);
         this.nun=0;
         this.logout();
       } else {
-        console.log(new Date(),"startSessionTimeout >this.countdown>>",this.countdown);
         this.countdown--;
       }
     }, 1000); 
@@ -265,50 +255,131 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   }
     
 
-  selectNotification(notification: AlertNotificationModel): void {
+  selectNotification(notification: AlertNotificationDetailsModel): void {
     this.selectedNotification = notification;
+    console.log("this.selectedNotification",this.selectedNotification)
+   // this.updateUserNotificationsSeen();
   }
-   notifications: AlertNotificationModel[] = [
-    {
-      id: 1,
-      title:"Mothly report",
-      date: "December 12, 2019",
-      message: "A new monthly report is ready to download!",
-      iconClass: "fas fa-file-alt",
-      bgColor: "bg-primary",
-    },
-    {
-      id: 2,
-      title:"Mothly report",
-      date: "December 7, 2019",
-      message: "$290.29 has been deposited into your account!",
-      iconClass: "fas fa-donate",
-      bgColor: "bg-success",
-    },
-    {
-      id: 3,
-      title:"Mothly report",
-      date: "December 2, 2019",
-      message: "Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting",
-      iconClass: "fas fa-exclamation-triangle",
-      bgColor: "bg-warning",
-    },
-    {
-      id: 4,
-      title:"Quaterly report",
-      date: "December 7, 2019",
-      message: "$290.29 has been deposited into your account!",
-      iconClass: "fas fa-donate",
-      bgColor: "bg-success",
-    },
-    {
-      id: 5,
-      title:"Year report",
-      date: "December 2, 2019",
-      message: "Spending Alert: We've noticed unusually high spending for your account.",
-      iconClass: "fas fa-exclamation-triangle",
-      bgColor: "bg-warning",
-    },
-  ];
+  
+  getIcon(screen_name:string):string{
+    return this.allMenuList.find(menu=>menu.permission.replace('_READ','') === screen_name)?.icon || 'fas fa-exclamation-triangle'
+  }
+  
+  notificationsCount:number=0;
+  getUserNotifications(){
+    var  filtersRequest :FiltersRequestModel = new FiltersRequestModel();
+    filtersRequest.pageIndex=0;
+    filtersRequest.pageSize=5;
+    this.alertNotificationService.getUserNotifications(filtersRequest).subscribe((data) => {
+      this.notificationsCount=data?.totalCount;
+      this.onFlyNotification = Object.assign(data?.notifications);
+    }, error => {
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			}else if(error.status==401){
+				console.error("Unauthorised");
+        this.router.navigate(['/signin']);
+			}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" , str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+			});
+  }
+
+  updateUserNotificationsSeen(){
+    this.alertNotificationService.updateUserNotificationsSeen(this.selectedNotification).subscribe((data) => {
+
+    }, error => {
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			}else if(error.status==401){
+				console.error("Unauthorised");
+        this.router.navigate(['/signin']);
+			}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" , str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+			});
+  }
+
+  
+  //  notifications: AlertNotificationModel[] = [
+  //   {
+  //     id: 1,
+  //     title:"Mothly report",
+  //     date: "December 12, 2019",
+  //     message: "A new monthly report is ready to download!",
+  //     iconClass: "fas fa-file-alt",
+  //     bgColor: "bg-primary",
+  //   },
+  //   {
+  //     id: 2,
+  //     title:"Mothly report",
+  //     date: "December 7, 2019",
+  //     message: "$290.29 has been deposited into your account!",
+  //     iconClass: "fas fa-donate",
+  //     bgColor: "bg-success",
+  //   },
+  //   {
+  //     id: 3,
+  //     title:"Mothly report",
+  //     date: "December 2, 2019",
+  //     message: "Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Spending Alert: We've noticed unusually high spending for your account.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting",
+  //     iconClass: "fas fa-exclamation-triangle",
+  //     bgColor: "bg-warning",
+  //   },
+  //   {
+  //     id: 4,
+  //     title:"Quaterly report",
+  //     date: "December 7, 2019",
+  //     message: "$290.29 has been deposited into your account!",
+  //     iconClass: "fas fa-donate",
+  //     bgColor: "bg-success",
+  //   },
+  //   {
+  //     id: 5,
+  //     title:"Year report",
+  //     date: "December 2, 2019",
+  //     message: "Spending Alert: We've noticed unusually high spending for your account.",
+  //     iconClass: "fas fa-exclamation-triangle",
+  //     bgColor: "bg-warning",
+  //   },
+  // ];
 
 }
