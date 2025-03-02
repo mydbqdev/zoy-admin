@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';
@@ -11,7 +11,11 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { AlertNotificationModel } from '../model/alert-notification-model';
+import { AlertNotificationDetailsModel} from '../model/alert-notification-model';
+import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
+import { AlertNotificationService } from '../service/alert-notification-service';
+import { Menu } from 'src/app/components/header/menu';
+import { MenuService } from 'src/app/components/header/menu.service';
 
 @Component({
 	selector: 'app-alert-notification',
@@ -25,20 +29,19 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 	mySubscription: any;
 	isExpandSideBar:boolean=true;
 	dataSource:MatTableDataSource<any>=new MatTableDataSource<any>();
-
 	@ViewChild(SidebarComponent) sidemenuComp;
 	@ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild('modal', { static: false }) modal: any;
-	
-	selectedNotification: AlertNotificationModel = new AlertNotificationModel();
+	selectedNotification: AlertNotificationDetailsModel = new AlertNotificationDetailsModel();
 	public lastPageSize:number=0;
 	public totalProduct:number=0;
 	pageSize:number=10;
 	pageSizeOptions=[10,20,50];
 	public rolesArray: string[] = [];
-	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
+	allMenuList:Menu[]=[];
+	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private alertNotificationService:AlertNotificationService,
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private menuService:MenuService) {
             this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -72,6 +75,7 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 		}
 	}
 	ngOnInit() {
+		this.allMenuList = this.menuService.getAllMenuList();
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		///	this.router.navigate(['/']);
 		//}
@@ -81,10 +85,12 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 		this.sidemenuComp.expandMenu(0);
 		this.sidemenuComp.activeMenu(0, 'alert-notification');
 		this.dataService.setHeaderName("Alert & Notification");
-		
-		this.totalProduct = this.notifications.length; 
-		this.pageSize = this.pageSizeOptions[0]; 
-		this.updatePageData();
+
+		this.paginator.pageIndex=0;
+		this.pageSize = this.paginator.pageSize;
+		this.filtersRequest.pageIndex=this.paginator.pageIndex;
+		this.filtersRequest.pageSize=this.pageSize;
+		this.getUserNotifications();
 	}
 
 	pageChanged(event: any) {
@@ -93,196 +99,101 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 		  event.pageIndex = 0;
 		}
 		this.pageSize = event.pageSize;
-		this.updatePageData(); 
-	  }
-	  updatePageData() {
 		this.lastPageSize = this.pageSize;
-		const startIndex = this.paginator.pageIndex * this.pageSize;
-		const endIndex = startIndex + this.pageSize;
-		this.dataSource.data = this.notifications.slice(startIndex, endIndex); 
+		this.filtersRequest.pageIndex=this.paginator.pageIndex;
+		this.filtersRequest.pageSize=this.pageSize;
+		this.getUserNotifications();
+	  }
+
+	  
+	  getIcon(screen_name:string):string{
+		return this.allMenuList.find(menu=>menu.permission.replace('_READ','') === screen_name)?.icon || 'fas fa-exclamation-triangle'
 	  }
 		  
-	   selectNotification(notification: AlertNotificationModel): void {
+	   selectNotification(notification: AlertNotificationDetailsModel): void {
 		this.selectedNotification = notification;
 	  }
-	  notifications: AlertNotificationModel[] = [
-		  {
-			id: 1,
-			title:"Mothly report",
-			date: "July 12, 2021",
-			message: "A new monthly report is ready to download!",
-			iconClass: "fas fa-file-alt",
-			bgColor: "bg-primary",
-		  },
-		  {
-			id: 2,
-			title:"2 Years report",
-			date: "December 7, 2012",
-			message: "$290.29 has been deposited into your account!",
-			iconClass: "fas fa-donate",
-			bgColor: "bg-success",
-		  },
-		  {
-			id: 3,
-			title:"Mothly report",
-			date: "October 2, 2019",
-			message: "Spending Alert: We've noticed unusually high spending for your account. Spending Alert: We've noticed unusually high spending for your account.",
-			iconClass: "fas fa-exclamation-triangle",
-			bgColor: "bg-warning",
-		  },
-		  {
-			id: 4,
-			title:"Mothly report",
-			date: "May 7, 2019",
-			message: "$290.29 has been deposited into your account!",
-			iconClass: "fas fa-donate",
-			bgColor: "bg-success",
-		  },
-		  {
-			id: 5,
-			title:"Yearly report",
-			date: "December 31, 2024",
-			message: "Spending Alert: We've noticed unusually high spending for your account.",
-			iconClass: "fas fa-exclamation-triangle",
-			bgColor: "bg-warning",
-		  },
-		  {
-			id: 6,
-			title:"Mothly report",
-			date: "May 7, 2019",
-			message: "$290.29 has been deposited into your account!",
-			iconClass: "fas fa-donate",
-			bgColor: "bg-success",
-		  },
-		  {
-			id: 7,
-			title:"Yearly report",
-			date: "December 31, 2024",
-			message: "Spending Alert: We've noticed unusually high spending for your account.",
-			iconClass: "fas fa-exclamation-triangle",
-			bgColor: "bg-warning",
-		  },
-		  {
-			id: 8,
-			title:"Mothly report",
-			date: "May 7, 2019",
-			message: "$290.29 has been deposited into your account!",
-			iconClass: "fas fa-donate",
-			bgColor: "bg-success",
-		  },
-		  {
-			id: 9,
-			title:"Yearly report",
-			date: "December 31, 2024",
-			message: "Spending Alert: We've noticed unusually high spending for your account.",
-			iconClass: "fas fa-exclamation-triangle",
-			bgColor: "bg-warning",
-		  },
-		  {
-			id: 10,
-			title:"Mothly report",
-			date: "May 7, 2019",
-			message: "$290.29 has been deposited into your account!",
-			iconClass: "fas fa-donate",
-			bgColor: "bg-success",
-		  },
-		  {
-			id: 11,
-			title:"Yearly report",
-			date: "December 31, 2024",
-			message: "Spending Alert: We've noticed unusually high spending for your account.",
-			iconClass: "fas fa-exclamation-triangle",
-			bgColor: "bg-warning",
-		  },
-		  {
-			id: 12,
-			title:"Mothly report",
-			date: "July 12, 2021",
-			message: "A new monthly report is ready to download!",
-			iconClass: "fas fa-file-alt",
-			bgColor: "bg-primary",
-		  },
-		  {
-			id: 13,
-			title:"2 Years report",
-			date: "December 7, 2012",
-			message: "$290.29 has been deposited into your account!",
-			iconClass: "fas fa-donate",
-			bgColor: "bg-success",
-		  },
-		  {
-			id: 14,
-			title:"Mothly report",
-			date: "October 2, 2019",
-			message: "Spending Alert: We've noticed unusually high spending for your account. Spending Alert: We've noticed unusually high spending for your account.",
-			iconClass: "fas fa-exclamation-triangle",
-			bgColor: "bg-warning",
-		  },
-		  {
-			id: 15,
-			title:"Mothly report",
-			date: "May 7, 2019",
-			message: "$290.29 has been deposited into your account!",
-			iconClass: "fas fa-donate",
-			bgColor: "bg-success",
-		  },
-		  {
-			id: 16,
-			title:"Yearly report",
-			date: "December 31, 2024",
-			message: "Spending Alert: We've noticed unusually high spending for your account.",
-			iconClass: "fas fa-exclamation-triangle",
-			bgColor: "bg-warning",
-		  },
-		  {
-			id: 17,
-			title:"Mothly report",
-			date: "May 7, 2019",
-			message: "$290.29 has been deposited into your account!",
-			iconClass: "fas fa-donate",
-			bgColor: "bg-success",
-		  },
-		  {
-			id: 18,
-			title:"Yearly report",
-			date: "December 31, 2024",
-			message: "Spending Alert: We've noticed unusually high spending for your account.",
-			iconClass: "fas fa-exclamation-triangle",
-			bgColor: "bg-warning",
-		  },
-		  {
-			id: 19,
-			title:"Mothly report",
-			date: "May 7, 2019",
-			message: "$290.29 has been deposited into your account!",
-			iconClass: "fas fa-donate",
-			bgColor: "bg-success",
-		  },
-		  {
-			id: 20,
-			title:"Yearly report",
-			date: "December 31, 2024",
-			message: "Spending Alert: We've noticed unusually high spending for your account.",
-			iconClass: "fas fa-exclamation-triangle",
-			bgColor: "bg-warning",
-		  },
-		  {
-			id: 21,
-			title:"Mothly report",
-			date: "May 7, 2019",
-			message: "$290.29 has been deposited into your account!",
-			iconClass: "fas fa-donate",
-			bgColor: "bg-success",
-		  },
-		  {
-			id: 22,
-			title:"Yearly report",
-			date: "December 31, 2024",
-			message: "Spending Alert: We've noticed unusually high spending for your account.",
-			iconClass: "fas fa-exclamation-triangle",
-			bgColor: "bg-warning",
-		  },
-		];
+	  filtersRequest :FiltersRequestModel = new FiltersRequestModel();
+	  notifications: AlertNotificationDetailsModel[]=[] ;
+
+		getUserNotifications(){
+		this.lastPageSize = this.pageSize;
+		  this.alertNotificationService.getUserNotifications(this.filtersRequest).subscribe((data) => {
+			if(data?.notifications?.length >0){
+				this.totalProduct = data?.totalCount; 
+				this.notifications = Object.assign(data?.notifications);
+				this.dataSource.data =this.notifications// new MatTableDataSource(this.notifications);
+			}else{
+				this.totalProduct=0;
+				this.notifications = Object.assign([]);
+				this.dataSource.data = this.notifications//new MatTableDataSource(this.notifications);
+			}
+	  	console.log(" getUserNotifications>>>this.notifications", this.notifications)
+		  }, error => {
+				if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "")
+				}else if(error.status==401){
+					console.error("Unauthorised");
+			  this.router.navigate(['/signin']);
+				}else if(error.status==403){
+					this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+				} else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					let str;
+					if (error.status == 400) {
+						str = error.error.error;
+					} else {
+						str = error.error.message;
+						str = str.substring(str.indexOf(":") + 1);
+					}
+					console.log("Error:" , str);
+					this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				}
+				});
+		}
 	  
+		updateUserNotificationsSeen(){
+		  this.alertNotificationService.updateUserNotificationsSeen(this.selectedNotification).subscribe((data) => {
+		   
+	  
+		  }, error => {
+				if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "")
+				}else if(error.status==401){
+					console.error("Unauthorised");
+			  this.router.navigate(['/signin']);
+				}else if(error.status==403){
+					this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+				} else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					let str;
+					if (error.status == 400) {
+						str = error.error.error;
+					} else {
+						str = error.error.message;
+						str = str.substring(str.indexOf(":") + 1);
+					}
+					console.log("Error:" , str);
+					this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				}
+				});
+		}
+
 	  }
 

@@ -18,27 +18,27 @@ export class MenuService {
 	}
 
   private menuList: Menu[] = [
-    { name: "Activity Log", link: "/activity-log", permission: "DEFAULT_PERMISSION" },
-    { name: "Bulk Upload", link: "/bulk-upload", permission: "BULK_UPLOAD_READ" },
-    { name: "Tenant", link: "/tenants", permission: "TENANTSZOY_READ" },
-    { name: "Change Password", link: "/profile", permission: "DEFAULT_PERMISSION" },
-    { name: "Dashboard", link: "/home", permission: "DEFAULT_PERMISSION" },
-    { name: "Initial Configuration", link: "/db-master-configuration", permission: "DB_MASTER_CONFIGURATION_READ" },
-    { name: "Master Configuration", link: "/configuration-master", permission: "CONFIGURATION_MASTER_READ" },
-    { name: "Help", link: "/help", permission: "DEFAULT_PERMISSION" },
-    { name: "Home", link: "/home", permission: "DEFAULT_PERMISSION" },
-    { name: "Managing Users", link: "/user-master", permission: "MANAGING_USERS_READ" },
-    { name: "Manage Owners", link: "/manage-owner", permission: "MANAGING_OWNERS_READ" },
-    { name: "Payment Approval", link: "/payment-approval", permission: "PAYMENT_APPROVAL_READ" },
-    { name: "Locked User", link: "/locked-user", permission: "LOCKED_USER_READ" },
-    { name: "Permission Approval", link: "/permission-approval", permission: "PERMISSION_APPROVAL_READ" },
-    { name: "Profile", link: "/profile", permission: "DEFAULT_PERMISSION" },
-    { name: "Reports", link: "/report-list", permission: "REPORTS_READ" },
-    { name: "Role and Permission", link: "/role-master", permission: "ROLE_AND_PERMISSION_READ" },
-    { name: "Settings", link: "/settings", permission: "DEFAULT_PERMISSION" },
-    { name: "Zoy Code", link: "/zoy-code", permission: "ZOYCODES_READ" },
-    { name: "User Audit", link: "/user-audit", permission: "USER_AUDIT_READ" },
-    { name: "Organization Information", link: "/organization-info-config", permission: "ORGANIZATION_INFO_CONFIG_READ" }
+    { name: "Activity Log", link: "/activity-log", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
+    { name: "Bulk Upload", link: "/bulk-upload", permission: "BULK_UPLOAD_READ", icon:"fas fa-fw fa-door-open" },
+    { name: "Tenant", link: "/tenants", permission: "TENANTSZOY_READ", icon:"fas fa-fw fa-door-open" },
+    { name: "Change Password", link: "/profile", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
+    { name: "Dashboard", link: "/home", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list"},
+    { name: "Initial Configuration", link: "/db-master-configuration", permission: "DB_MASTER_CONFIGURATION_READ", icon:"fas fa-fw fa-cogs" },
+    { name: "Master Configuration", link: "/configuration-master", permission: "CONFIGURATION_MASTER_READ", icon:"fas fa-fw fa-cogs" },
+    { name: "Help", link: "/help", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list"},
+    { name: "Home", link: "/home", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list"},
+    { name: "Managing Users", link: "/user-master", permission: "MANAGING_USERS_READ", icon:"fas fa-fw fa-users-cog" },
+    { name: "Manage Owners", link: "/manage-owner", permission: "MANAGING_OWNERS_READ", icon:"fas fa-fw fa-users" },
+    { name: "Payment Approval", link: "/payment-approval", permission: "PAYMENT_APPROVAL_READ", icon:"fas fa-fw fa-money-check" },
+    { name: "Locked User", link: "/locked-user", permission: "LOCKED_USER_READ", icon:"fas fa-fw fa-users-cog" },
+    { name: "Permission Approval", link: "/permission-approval", permission: "PERMISSION_APPROVAL_READ", icon:"fas fa-fw fa-users-cog" },
+    { name: "Profile", link: "/profile", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
+    { name: "Reports", link: "/report-list", permission: "REPORTS_READ", icon:"fas fa-fw fa-money-check" },
+    { name: "Role and Permission", link: "/role-master", permission: "ROLE_AND_PERMISSION_READ", icon:"fas fa-fw fa-cogs"},
+    { name: "Settings", link: "/settings", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
+    { name: "Zoy Code", link: "/zoy-code", permission: "ZOYCODES_READ", icon:"fas fa-fw fa-users" },
+    { name: "User Audit", link: "/user-audit", permission: "USER_AUDIT_READ", icon:"fas fa-fw fa-cogs" },
+    { name: "Organization Information", link: "/organization-info-config", permission: "ORGANIZATION_INFO_CONFIG_READ", icon:"fas fa-fw fa-cogs" }
   ];
   
 
@@ -53,6 +53,9 @@ getAccessMenu(){
     }
   });}
 }
+getAllMenuList(): Menu[] {
+    return this.menuList;
+  }
 
 getAllMenus(): Menu[] {
   this.getAccessMenu();
@@ -73,7 +76,8 @@ getAllMenus(): Menu[] {
     { key: "ROLE AND PERMISSION", screen: "Role & Permission" ,order:6.1 },
     { key: "DB MASTER CONFIGURATION", screen: "Initial Configuration" ,order:6.2 },
     { key: "CONFIGURATION MASTER", screen: "Master Configuration" ,order:6.3 },
-    { key: "USER AUDIT", screen: "User Audit" ,order:6.4 }
+    { key: "USER AUDIT", screen: "User Audit" ,order:6.4 },
+    { key: "ORGANIZATION INFO CONFIG", screen: "Organization Information" ,order:6.5 }
   ];
 
   getAllAuthorization():any {

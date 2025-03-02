@@ -89,6 +89,7 @@ export class SigninComponent implements OnInit {
 				const res: ResponseStore = { userEmail: result.email, token: result.token };
 				this.authService.setSessionStore(res);
 				this.authService.checkLoginUser();
+				this.connectWebsocket();
 				this.router.navigate(['/home']);
 			}, error => {
 				this.sending=false;
@@ -121,7 +122,9 @@ export class SigninComponent implements OnInit {
 			   });
 		}			  
 	}
-
+	connectWebsocket(){
+		this.authService.connectWebsocket(this.username.toLowerCase(),'AlertNotification');
+	  }
 	passwordsMatch(formGroup: FormGroup) {
 		const password = formGroup.get('newPassword')?.value;
 		const confirmPassword = formGroup.get('confirmPassword')?.value;

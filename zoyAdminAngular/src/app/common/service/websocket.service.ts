@@ -30,13 +30,13 @@ export class WebsocketService {
       console.log(`WebSocket connected to ${key}`);
     };
 
-    // socket.onclose = () => {
-    //   console.log(`WebSocket disconnected from ${key}`);
-    // };
+    socket.onclose = () => {
+      console.log(`WebSocket disconnected from ${key}`);
+    };
 
-    // socket.onerror = (error) => {
-    //   console.error(`WebSocket error on ${key}:`, error);
-    // };
+    socket.onerror = (error) => {
+      console.error(`WebSocket error on ${key}:`, error);
+    };
   }
 
   getMessages(key: string) {

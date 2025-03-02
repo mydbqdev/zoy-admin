@@ -39,16 +39,16 @@
                                                     <div class="p-2">
                                                     <!-- for loop with below div -->
                                                     <div *ngFor="let notification of dataSource.data">
-                                                      <div class="d-flex w-100 m-2">
+                                                      <div class="d-flex w-100 m-2" [title]="notification.info_type == 'alert'?'Alert':'Notification'" >
                                                         <div class="mr-3">
-                                                          <div class="icon-circle" [ngClass]="notification.bgColor">
-                                                            <i class="{{ notification.iconClass }} text-white"></i>
+                                                          <div class="icon-circle" [ngClass]="notification.info_type == 'alert'?'bg-warning':'bg-success'">
+                                                            <i class="{{ getIcon(notification.screen_name) }} text-white"></i>
                                                           </div>
                                                         </div>
                                                         <div class="w-100">
                                                           <div class="d-flex">
-                                                            <div class="text-gray-500 font-weight-bold"> {{ notification.title }}</div>
-                                                            <div class="small ml-auto mr-2" style="font-style: italic;">{{ notification.date }}</div>
+                                                            <div class="text-gray-500 font-weight-bold"> {{ notification.category }}</div>
+                                                            <div class="small ml-auto mr-2" style="font-style: italic;">{{ notification.created_at | date:'hh:mm a, MMMM dd, yyyy'  }}</div>
                                                           </div>
                                                           <div *ngIf="notification.message.length > 100" class="small">
                                                             {{ notification.message | slice: 0:100 }} ...<a href="javascript:void(0)" (click)="selectNotification(notification)"  data-bs-toggle="modal" data-bs-target="#NotificationAll">more</a>
@@ -83,26 +83,26 @@
 
   <!------To view  PopUp model------->
 <div class="modal fade" id="NotificationAll" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
+  <div class="modal-dialog modal-bg modal-dialog-scrollable">
+    <div class="modal-content" style="height: fit-content; overflow-y: auto;">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">Alert & Notifications Details </h5>
+        <h5 class="modal-title" id="modalLabel">{{selectedNotification.info_type == 'alert'?'Alert':'Notification'}} Details </h5>
         <div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-0">
         <div *ngIf="selectedNotification">
-            <div class="d-flex w-100 p-2">
+            <div class="d-flex w-100 p-3">
                 <div class="mr-3">
-                  <div class="icon-circle" [ngClass]="selectedNotification.bgColor">
-                    <i class="{{ selectedNotification.iconClass }} text-white"></i>
+                  <div class="icon-circle" [ngClass]="selectedNotification.info_type == 'alert'?'bg-warning':'bg-success'">
+                    <i class="{{ getIcon(selectedNotification.screen_name) }} text-white"></i>
                 </div>
                 </div>
                 <div class="w-100">
                     <div class="d-flex">
-                        <div class="text-gray-500">{{ selectedNotification.title }}</div>
-                        <div class="small ml-auto mr-2" style="font-style: italic;"> {{ selectedNotification.date }}</div>
+                        <div class="text-gray-500">{{ selectedNotification.category }}</div>
+                        <div class="small ml-auto mr-2" style="font-style: italic;"> {{ selectedNotification.created_at | date:'hh:mm a, MMMM dd, yyyy'  }}</div>
                     </div>
                     <div class="small mr-2">{{ selectedNotification.message }}</div>
                 </div>

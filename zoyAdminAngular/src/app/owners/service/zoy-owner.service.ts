@@ -44,11 +44,11 @@ import { MessageService } from 'src/app/message.service';
         );
     } 
 
-    public doActiveteDeactiveteOwner(ownerid:any): Observable<any> {
-      const url1=this.basePath +"zoy_admin/ownerdetailsportfolio?ownerid="+ownerid;
+    public updateOwnerStatus(data:any): Observable<any> {
+      const url1=this.basePath +"zoy_admin/updateOwnerStatus";
         return  this.httpclient.post<any>(
             url1,
-            '',
+            data,
             {
                headers:ServiceHelper.buildHeaders(),
                observe : 'body',
@@ -56,11 +56,11 @@ import { MessageService } from 'src/app/message.service';
             }
         );
     } 
-    public doActiveteDeactivetePg(ownerid:any): Observable<any> {
-      const url1=this.basePath +"zoy_admin/ownerdetailsportfolio?ownerid="+ownerid;
+    public updatePropertyStatus(data:any): Observable<any> {
+      const url1=this.basePath +"zoy_admin/updatePropertyStatus";
         return  this.httpclient.post<any>(
             url1,
-            '',
+            data,
             {
                headers:ServiceHelper.buildHeaders(),
                observe : 'body',
