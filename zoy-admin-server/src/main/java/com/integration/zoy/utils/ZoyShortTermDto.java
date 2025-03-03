@@ -13,6 +13,12 @@ public class ZoyShortTermDto {
 	
 	@SerializedName("days")
 	private String days;
+	
+	@SerializedName("effectiveDate")
+	private String effectiveDate;
+	
+	@SerializedName("isApproved")
+	private boolean isApproved;
 
 	public String getShortTermId() {
 		return shortTermId;
@@ -36,6 +42,22 @@ public class ZoyShortTermDto {
 
 	public void setDays(String days) {
 		this.days = days;
+	}
+
+	public String getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(String effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	public boolean getIsApproved() {
+		return isApproved;
+	}
+
+	public void setIsApproved(boolean isApproved) {
+		this.isApproved = isApproved;
 	}
 
 	

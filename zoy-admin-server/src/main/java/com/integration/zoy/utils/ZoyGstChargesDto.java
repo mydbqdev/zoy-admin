@@ -19,6 +19,12 @@ public class ZoyGstChargesDto {
 	
 	@SerializedName("monthlyRent")
 	private BigDecimal monthlyRent;
+	
+	@SerializedName("effectiveDate")
+	private String effectiveDate;
+	
+	@SerializedName("isApproved")
+	private boolean isApproved;
 
 	public String getRentId() {
 		return rentId;
@@ -60,6 +66,22 @@ public class ZoyGstChargesDto {
 
 	public void setMonthlyRent(BigDecimal monthlyRent) {
 		this.monthlyRent = monthlyRent;
+	}
+
+	public String getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(String effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	public boolean getIsApproved() {
+		return isApproved;
+	}
+
+	public void setIsApproved(boolean isApproved) {
+		this.isApproved = isApproved;
 	}
 	
 	

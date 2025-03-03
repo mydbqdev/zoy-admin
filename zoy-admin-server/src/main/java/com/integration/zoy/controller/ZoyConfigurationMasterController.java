@@ -180,6 +180,18 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setTokenId(entity.getTokenId());
 		dto.setFixedToken(entity.getFixedToken());
 		dto.setVariableToken(entity.getVariableToken());
+		dto.setIsApproved(false);
+		dto.setEffectiveDate("2025-03-04");
+		return dto;
+	}
+	
+	private ZoyPgTokenDetailsDTO convertToDTOApproved(ZoyPgTokenDetails entity) {
+		ZoyPgTokenDetailsDTO dto = new ZoyPgTokenDetailsDTO();
+		dto.setTokenId(entity.getTokenId());
+		dto.setFixedToken(entity.getFixedToken());
+		dto.setVariableToken(entity.getVariableToken());
+		dto.setIsApproved(true);
+		dto.setEffectiveDate("2025-01-21");
 		return dto;
 	}
 
@@ -642,6 +654,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setDepositId(entity.getSecurityDepositId());
 		dto.setMinimumDeposit(entity.getSecurityDepositMin());
 		dto.setMaximumDeposit(entity.getSecurityDepositMax());
+		dto.setIsApproved(true);
+		dto.setEffectiveDate("2025-01-24");
 		return dto;
 	}
 
@@ -875,30 +889,68 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyPgForceCheckOut forceCheckOut=ownerDBImpl.findZoyForceCheckOut();
 			ZoyPgShortTermRentingDuration rentingDuration=ownerDBImpl.findZoyRentingDuration();
 			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
-			if (tokenDetails != null) 
-				configDTO.setTokenDetails(convertToDTO(tokenDetails));
-			if (depositDetails != null)
-				configDTO.setDepositDetails(convertToDTO(depositDetails));
+			if (tokenDetails != null) { 
+				List<ZoyPgTokenDetailsDTO> listToken=new ArrayList<>();
+				listToken.add(convertToDTO(tokenDetails));
+				listToken.add(convertToDTOApproved(tokenDetails));
+				configDTO.setTokenDetails(listToken);
+			}
+			if (depositDetails != null) {
+				List<ZoyPgSecurityDepositDetailsDTO> listDepositDetails=new ArrayList<>();
+				listDepositDetails.add(convertToDTO(depositDetails));
+				configDTO.setDepositDetails(listDepositDetails);
+			}
 			if (cancellationDetails != null)
 				configDTO.setCancellationBeforeCheckInDetails(convertToDTO(cancellationDetails));
 			if (earlyCheckOutDetails != null)
-				configDTO.setEarlyCheckOutRuleDetails(convertToDTO(earlyCheckOutDetails));
+			{
+				List<ZoyPgEarlyCheckOutRuleDto> listZoyearlyCheckOutDetails=new ArrayList<>();
+				listZoyearlyCheckOutDetails.add(convertToDTO(earlyCheckOutDetails));
+				configDTO.setEarlyCheckOutRuleDetails(listZoyearlyCheckOutDetails);
+			}
 			if (cancellationAfterCheckIn != null)
-				configDTO.setCancellationAfterCheckInDetails(convertToDTO(cancellationAfterCheckIn));
+			{
+				List<ZoyAfterCheckInCancellationDto> listZoycancellationAfterCheckIno=new ArrayList<>();
+				listZoycancellationAfterCheckIno.add(convertToDTO(cancellationAfterCheckIn));
+				configDTO.setCancellationAfterCheckInDetails(listZoycancellationAfterCheckIno);
+			}
 			if (securityDepositDeadLine != null)
-				configDTO.setSecurityDepositDeadLineDetails(convertToDTO(securityDepositDeadLine));
-			if (dataGrouping != null)
-				configDTO.setDataGrouping(convertToDTO(dataGrouping));
-			if (otherCharges != null)
-				configDTO.setOtherCharges(convertToDTO(otherCharges));
+			{
+				List<ZoySecurityDepositDeadLineDto> listZoysecurityDepositDeadLine=new ArrayList<>();
+				listZoysecurityDepositDeadLine.add(convertToDTO(securityDepositDeadLine));
+				configDTO.setSecurityDepositDeadLineDetails(listZoysecurityDepositDeadLine);
+			}
+			if (dataGrouping != null) {
+				List<ZoyDataGroupingDto> listdataGroupingo=new ArrayList<>();
+				listdataGroupingo.add(convertToDTO(dataGrouping));
+				configDTO.setDataGrouping(listdataGroupingo);
+			}
+			if (otherCharges != null) {
+				List<ZoyOtherChargesDto> listZoyOtherChargesDto=new ArrayList<>();
+				listZoyOtherChargesDto.add(convertToDTO(otherCharges));
+				configDTO.setOtherCharges(listZoyOtherChargesDto);
+			}
+			
 			if (gstCharges != null)
-				configDTO.setGstCharges(convertToDTO(gstCharges));
-			if (shortTermMaster != null)
+			{
+				List<ZoyGstChargesDto> listZoyGstChargesDto=new ArrayList<>();
+				listZoyGstChargesDto.add(convertToDTO(gstCharges));
+				configDTO.setGstCharges(listZoyGstChargesDto);
+			}
+			if (shortTermMaster != null) {
 				configDTO.setZoyShortTermDtos(convertShortToDTO(shortTermMaster));
-			if (forceCheckOut != null)
-				configDTO.setZoyForceCheckOutDto(convertToDTO(forceCheckOut));
-			if (rentingDuration != null) 
-				configDTO.setShortTermRentingDuration(convertToDTO(rentingDuration));
+				
+			}
+			if (forceCheckOut != null) {
+				List<ZoyForceCheckOutDto> listZoyForceCheckOutDto=new ArrayList<>();
+				listZoyForceCheckOutDto.add(convertToDTO(forceCheckOut));
+				configDTO.setZoyForceCheckOutDto(listZoyForceCheckOutDto);
+			}
+			if (rentingDuration != null) { 
+				List<ZoyRentingDuration> listZoyRentingDuration=new ArrayList<>();
+				listZoyRentingDuration.add(convertToDTO(rentingDuration));
+				configDTO.setShortTermRentingDuration(listZoyRentingDuration);
+			}
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(configDTO);
 			response.setMessage("Successfully fetched all config details");
