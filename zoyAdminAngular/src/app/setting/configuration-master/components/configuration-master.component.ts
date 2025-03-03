@@ -115,9 +115,7 @@ moreEarlyCheckout:boolean=true;
 		  this.sidemenuComp.expandMenu(4);
 		  this.sidemenuComp.activeMenu(4, 'configuration-master');
 		  this.dataService.setHeaderName("Configuration Master");
-		  this.beforeCheckInCRfModel.trigger_value="TotalPaidAmount";
-		  this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value="Security Deposit";
-		  this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value="Rent";
+		  
 	  }
 	  settingType:string='';
 	  pgTypes:DbSettingDataModel[]=[];
@@ -221,6 +219,7 @@ moreEarlyCheckout:boolean=true;
 		this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
 		this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value="Rent";
 		this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value="Security Deposit";
+		
 		this.getBeforeCheckInCRData();
 		// this.rentSlabsdataSource = new MatTableDataSource<RentSlabModel>(this.rentSlabs);
 		this.spinner.hide();
@@ -430,9 +429,14 @@ getTriggerOn(){
 		 }
 		}
 
+
 	 tokenAdvancSubmit() {
-		if(this.isNotValidNumber(this.configMasterModel.tokenDetails[0].fixedToken) || this.isNotValidNumber(this.configMasterModel.tokenDetails[0].variableToken )){
+		console.log("this.configMasterModel.tokenDetails[0]",this.configMasterModel.tokenDetails[0])
+		if(this.isNotValidNumber(this.configMasterModel.tokenDetails[0].fixedToken) || this.isNotValidNumber(this.configMasterModel.tokenDetails[0].variableToken ) || !this.configMasterModel.tokenDetails[0].effectiveDate){
 			return
+		}
+		if(this.configMasterOrg.tokenDetails[0]?.effectiveDate > this.configMasterModel.tokenDetails[0]?.effectiveDate){
+			return;
 		}
 		if(Number(this.configMasterModel.tokenDetails[0].fixedToken) > Number(this.configMasterModel.depositDetails[0].maximumDeposit)){
 		    this.notifyService.showInfo("The token fixed amount should not be greater than the maximum security deposit.","")
@@ -489,8 +493,12 @@ getTriggerOn(){
 	  }
 	  
 	  securityDepositLimitsSubmit() {
-		if(this.isNotValidNumber(this.configMasterModel.depositDetails[0].maximumDeposit) || this.isNotValidNumber(this.configMasterModel.depositDetails[0].minimumDeposit) ){
+		console.log("this.configMasterModel.depositDetails[0]",this.configMasterModel.depositDetails[0])
+		if(this.isNotValidNumber(this.configMasterModel.depositDetails[0].maximumDeposit) || this.isNotValidNumber(this.configMasterModel.depositDetails[0].minimumDeposit) || !this.configMasterModel.depositDetails[0]?.effectiveDate ){
 			return ;
+		}
+		if(this.configMasterOrg.depositDetails[0]?.effectiveDate >this.configMasterModel.depositDetails[0]?.effectiveDate){
+			return;
 		}
 		if(Number(this.configMasterModel.depositDetails[0].maximumDeposit) < Number(this.configMasterModel.depositDetails[0].minimumDeposit) ){
 		    this.notifyService.showInfo("The maximum security deposit should not be less than to the minimum security deposit.","")
@@ -553,8 +561,12 @@ getTriggerOn(){
 
 	gstChargesSubmit() {
 		if( this.isNotValidNumber(this.configMasterModel.gstCharges[0].monthlyRent) || this.isNotValidNumber(this.configMasterModel.gstCharges[0].cgstPercentage) 
-			|| this.isNotValidNumber(this.configMasterModel.gstCharges[0].sgstPercentage) || this.isNotValidNumber(this.configMasterModel.gstCharges[0].igstPercentage) ){
+			|| this.isNotValidNumber(this.configMasterModel.gstCharges[0].sgstPercentage) || this.isNotValidNumber(this.configMasterModel.gstCharges[0].igstPercentage)
+			|| !this.configMasterModel.gstCharges[0]?.effectiveDate ){
 			return
+		}
+		if(this.configMasterOrg.gstCharges[0]?.effectiveDate > this.configMasterModel.gstCharges[0]?.effectiveDate){
+			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 		.then(
@@ -607,8 +619,12 @@ getTriggerOn(){
 	  }
 	securityDepositDeadLineSubmit() {
 		this.authService.checkLoginUserVlidaate();
-		if(this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails[0].auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails[0].deduction_percentage) || !this.configMasterModel.securityDepositDeadLineDetails[0].trigger_condition|| !this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value ){
+		if(this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails[0].auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails[0].deduction_percentage) 
+			|| !this.configMasterModel.securityDepositDeadLineDetails[0].trigger_condition|| !this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value || !this.configMasterModel.securityDepositDeadLineDetails[0]?.effectiveDate){
 			return ;
+		}
+		if(this.configMasterOrg.securityDepositDeadLineDetails[0]?.effectiveDate > this.configMasterModel.securityDepositDeadLineDetails[0]?.effectiveDate){
+			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 		.then(
@@ -658,8 +674,12 @@ getTriggerOn(){
 		this.securityDepositDeadLineDisabled = true;
 	}
 	autoCancellationSubmit() {
-		if(this.isNotValidNumbernAndZero(this.configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.cancellationAfterCheckInDetails[0].deduction_percentage) || !this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition|| !this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_value ){
+		if(this.isNotValidNumbernAndZero(this.configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.cancellationAfterCheckInDetails[0].deduction_percentage) 
+			|| !this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition|| !this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_value || !this.configMasterModel.cancellationAfterCheckInDetails[0]?.effectiveDate){
 			return ;
+		}
+		if(this.configMasterOrg.cancellationAfterCheckInDetails[0]?.effectiveDate > this.configMasterModel.cancellationAfterCheckInDetails[0]?.effectiveDate){
+			return;
 		}
 		if(this.configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day == 1 && this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition === '<'){
 			return;
@@ -715,8 +735,12 @@ getTriggerOn(){
 	}	
 	otherChargesSubmit() {
 		
-		if(this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerEkycCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantEkycCharges) ){
+		if(this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantDocumentCharges) 
+			|| this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerEkycCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantEkycCharges) || !this.configMasterModel.otherCharges[0]?.effectiveDate ){
 			return ;
+		}
+		if(this.configMasterOrg.otherCharges[0]?.effectiveDate > this.configMasterModel.otherCharges[0]?.effectiveDate){
+			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 		.then(
@@ -769,8 +793,11 @@ getTriggerOn(){
 	}		  
 
 	trendingPGSubmit() {
-		if(this.isNotValidNumber(this.configMasterModel.dataGrouping[0].considerDays)){
+		if(this.isNotValidNumber(this.configMasterModel.dataGrouping[0].considerDays) || !this.configMasterModel.dataGrouping[0]?.effectiveDate){
 			return ;
+		}
+		if(this.configMasterOrg.dataGrouping[0]?.effectiveDate > this.configMasterModel.dataGrouping[0]?.effectiveDate){
+			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 		.then(
@@ -980,6 +1007,9 @@ getTriggerOn(){
 	}
 
 	beforeCheckInCRfModify(row:any){
+		if(!row.trigger_condition ||  !row.before_checkin_days ||  !row.trigger_value ||  !row.deduction_percentage){
+			return ;
+		}
 		if(this.checkDuplicateBCCR(row)){
 			return;
 		}
@@ -1043,6 +1073,9 @@ getTriggerOn(){
 		if(this.isNotValidNumbernAndZero(this.configMasterModel.earlyCheckOutRuleDetails[0].check_out_day) || this.isNotValidNumber(this.configMasterModel.earlyCheckOutRuleDetails[0].deduction_percentage) || !this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition || !this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value ){
 			return;
 		}
+		if(this.configMasterOrg.earlyCheckOutRuleDetails[0]?.effectiveDate > this.configMasterModel.earlyCheckOutRuleDetails[0]?.effectiveDate){
+			return;
+		}
 		if(this.configMasterModel.earlyCheckOutRuleDetails[0].check_out_day == 1 && this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition === '<'){
 			return;
 		}
@@ -1097,8 +1130,11 @@ getTriggerOn(){
 		this.earlyCheckOutRulesDisabled = true;
 	  }
 	  forceCheckoutSubmit(): void {
-		if(this.isNotValidNumber(this.configMasterModel.forceCheckOut[0].forceCheckOutDays) ){
+		if(this.isNotValidNumber(this.configMasterModel.forceCheckOut[0].forceCheckOutDays) || !this.configMasterModel.forceCheckOut[0]?.effectiveDate){
 			return ;
+		}
+		if(this.configMasterOrg.forceCheckOut[0]?.effectiveDate > this.configMasterModel.forceCheckOut[0]?.effectiveDate){
+			return;
 		}
 		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 		.then(
@@ -1215,8 +1251,11 @@ getTriggerOn(){
 			}
 
 		shortTermRentingDurationSubmit(): void {
-		    if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
+		    if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) || !this.configMasterModel.shortTermRentingDuration[0]?.effectiveDate){
 			   return ;
+			}
+			if(this.configMasterOrg.shortTermRentingDuration[0]?.effectiveDate > this.configMasterModel.shortTermRentingDuration[0]?.effectiveDate){
+				return;
 			}
 			if(Number(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) > Number(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
 				this.notifyService.showInfo("Short term duration should not be greater than 'No Rental agreement upto'.","");
@@ -1275,8 +1314,11 @@ getTriggerOn(){
 
 		  noRentalAgreementDisabled:boolean=true;
 		  noRentalAgreementSubmit(): void {
-		    if(this.isNotValidNumber(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) ){
+		    if(this.isNotValidNumber(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) || !this.configMasterModel.noRentalAgreement[0]?.effectiveDate){
 			   return ;
+			}
+			if(this.configMasterOrg.noRentalAgreement[0]?.effectiveDate > this.configMasterModel.noRentalAgreement[0]?.effectiveDate){
+				return;
 			}
 			if(Number(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) < Number(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
 				this.notifyService.showInfo("No Rental agreement upto should be greater than Short term duration.","");
