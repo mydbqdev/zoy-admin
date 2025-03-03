@@ -106,12 +106,12 @@ public class AdminReportService implements AdminReportImpl{
 							+ "LEFT JOIN pgusers.user_details ud \r\n"
 							+ " ON up.user_id = ud.user_id\r\n"
 							+ "LEFT JOIN pgusers.user_master um ON up.user_id = um.user_id \r\n"
-							+ "JOIN pgowners.zoy_pg_owner_booking_details bkd \r\n"
+							+ "LEFT JOIN pgowners.zoy_pg_owner_booking_details bkd \r\n"
 							+ " ON up.user_id = bkd.tenant_id \r\n"
 							+ " AND up.user_payment_booking_id = bkd.booking_id \r\n"
-							+ "JOIN pgowners.zoy_pg_property_details pgt \r\n"
+							+ "LEFT JOIN pgowners.zoy_pg_property_details pgt \r\n"
 							+ " ON pgt.property_id = bkd.property_id \r\n"
-							+ "JOIN pgowners.zoy_pg_bed_details bd \r\n"
+							+ "LEFT JOIN pgowners.zoy_pg_bed_details bd \r\n"
 							+ " ON bkd.selected_bed = bd.bed_id WHERE 1=1"
 					);
 			Map<String, Object> parameters = new HashMap<>();
