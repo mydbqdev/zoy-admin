@@ -1799,7 +1799,7 @@ public class AdminReportService implements AdminReportImpl{
 	                    sort = "outDate";
 	                    break;
 	                default:
-	                    sort = "zpobd.out_date";
+	                    sort = "outDate";
 	            }
 	            String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
 	            queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
