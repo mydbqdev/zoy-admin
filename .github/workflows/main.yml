@@ -3,10 +3,13 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - latest_main_qa
+      - latest_main_qa  # Trigger on push to the latest_main_qa branch
   pull_request:
     branches:
-      - latest_main_qa
+      - latest_main_qa  # Trigger on PR to the latest_main_qa branch
+    types:
+      - closed  # Trigger when PR is closed
+    if: github.event.pull_request.merged == true  # Ensure the PR was merged, not just closed
 
 jobs:
   build_frontend:
