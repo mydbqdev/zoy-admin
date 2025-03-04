@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';
@@ -70,7 +70,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  transactionHeader:string="";
 	  @ViewChild(MatSort) sort: MatSort;
 	  @ViewChild(MatPaginator) paginator: MatPaginator;
-	
+	  @ViewChild('closeModel') closeModel : ElementRef;
 	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService :ZoyOwnerService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private reportService : ReportService) {
 			  this.authService.checkLoginUserVlidaate();
@@ -289,20 +289,20 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		}
 	}
 
-	doActiveteDeactivete(){
+	updateStatus(){
 		this.submitted =true;
-		if(!this.reason){
-			return ;
+		if(!this.status || !this.reason){
+			return;
 		}
-		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to '+( this.status=='Active'? 'Deactivate ' : 'Activate ' )+this.doActiveteDeactiveteName+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure to '+ this.status+' ' +this.doActiveteDeactiveteName+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				if(this.doActiveteDeactiveteType === 'owner'){
-					this.doActiveteDeactiveteOwner();
+					this.updateOwnerStatus();
 				}else{
-					this.doActiveteDeactivetePg();
+					this.updatePropertyStatus();
 				}
 		}
 		}).catch(
@@ -310,16 +310,26 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		);
 	}
 
-	doActiveteDeactiveteOwner(){
-		this.pgOwnerData.profile.reason =  this.reason;
+	updateOwnerStatus(){
+		this.submitted =true;
+		
+		const userStatus={"userId":this.owenerId,"status":this.status,"reasonMessage":this.reason};
+		console.log("updateOwnerStatus>>:" , userStatus);
 		this.spinner.show();
-		this.zoyOwnerService.doActiveteDeactiveteOwner(this.pgOwnerData.profile).subscribe(res => {
+		this.zoyOwnerService.updateOwnerStatus(userStatus).subscribe(res => {
+		this.notifyService.showSuccess(res.massage,"");
+		this.closeModel.nativeElement.click(); 
 		this.submitted =false;
 		this.spinner.hide();
 		}, error => {
 		 this.spinner.hide();
+		 console.log("Error>>:" , error);
 		if(error.status == 0) {
 			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		}else if(error.status==404){
+			this.errorMsg = error.error;
+			console.log("Error:" , this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
 		}else if(error.status==403){
 				this.router.navigate(['/forbidden']);
 			}else if (error.error && error.error.message) {
@@ -346,23 +356,37 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			});
 			
 	}
-	doActiveteDeactivetePg(){
-		this.pgOwnerData.profile.reason =  this.reason;
-		this.spinner.show();
-		this.zoyOwnerService.doActiveteDeactivetePg(this.pgOwnerData.profile.owner_i_d).subscribe(res => {
+	updatePropertyStatus(){
+		this.submitted =true;
+		
+		if(this.status == 'Suspended' && this.propertyInfo.floor_information.filter(bed=> (Number(bed.occupied) | 0 ) > 0).length > 0 ){
+			this.notifyService.showInfo(this.doActiveteDeactiveteName+" has an active tenants, which cannot be suspended.","");
+			return;
+		}
 
+		const userStatus={"userId":this.property_id,"status":this.status,"reasonMessage":this.reason};
+		console.log("userStatus>>:" , userStatus);
+		this.spinner.show();
+		this.zoyOwnerService.updatePropertyStatus(userStatus).subscribe(res => {
+		this.notifyService.showSuccess(res.massage,"");
+		this.closeModel.nativeElement.click(); 
 		this.submitted =false;
 		this.spinner.hide();
 		}, error => {
+			console.log("Error>>:" , error);
 		 this.spinner.hide();
 		if(error.status == 0) {
 			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		}else if(error.status==404){
+			this.errorMsg = error.error;
+			console.log("Error:" , error?.error?.error);
+			this.notifyService.showError(error?.error?.error, "");
 		}else if(error.status==403){
 				this.router.navigate(['/forbidden']);
 			}else if (error.error && error.error.message) {
 				this.errorMsg = error.error.message;
-				console.log("Error:" + this.errorMsg);
-				this.notifyService.showError(this.errorMsg, "");
+				console.log("Error:" , this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "Error>>>>>");
 			} else {
 				if (error.status == 500 && error.statusText == "Internal Server Error") {
 				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
@@ -377,8 +401,9 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				console.log("Error:" ,str);
 				this.errorMsg = str;
 				}
-				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "Error>>");}
 				//this.notifyService.showError(this.errorMsg, "");
+				console.log("Error>>>>>:" , error);
 			}
 			});
 				
