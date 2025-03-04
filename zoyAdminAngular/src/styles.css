@@ -207,4 +207,19 @@ ngb-modal-backdrop.modal-backdrop {
 .cdk-overlay-container {
   z-index: 1050; 
 }
+
+a.more-icon{
+  cursor: pointer;
+  color: gray !important;
+}
+
+a.more-icon:hover{
+  cursor: pointer;
+  color: rgb(240, 28, 212) !important;
+}
+
+.bg-gradiant-popup-header{
+  background-image: linear-gradient(to bottom right, #D52571, #3C57CF) !important;
+  color:#ffffff;
+}
  

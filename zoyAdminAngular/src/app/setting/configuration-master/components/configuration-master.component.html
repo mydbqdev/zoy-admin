@@ -89,7 +89,9 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.tokenDetails[0].effectiveDate" [disabled]="tokenAdvancDisabled"/>
+                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.tokenDetails[0].effectiveDate" [disabled]="tokenAdvancDisabled"
+                                      [ngClass]="{'is-invalid': !tokenAdvancDisabled && (!configMasterModel.tokenDetails[0]?.effectiveDate || configMasterOrg.tokenDetails[0]?.effectiveDate > configMasterModel.tokenDetails[0]?.effectiveDate)}" 
+                                      />
                                   </div>
                                </div>
                                 <div class="col-sm-2 mt-4" >
@@ -135,13 +137,14 @@
                                 <div class="col-sm-2">
                                   <div class="input-group input-group-sm">
                                     <input 
-                                      type="text" 
-                                      class="form-control form-control-sm" [ngModel]="configMasterModel.tokenDetails[1].effectiveDate | date :'dd-MM-yyyy'" disabled/>
+                                      type="date" 
+                                      class="form-control form-control-sm" [ngModel]="configMasterModel.tokenDetails[1].effectiveDate " disabled/>
                                   </div>
                                </div>
                                 <div class="col-sm-2 mt-1" >
                                   <div class="d-flex">
                                   <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                  <div><a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord"><i class="fas fa-chevron-circle-down"></i></a></div>
                                   </div>
                                 </div>
                               </div>
@@ -199,7 +202,8 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.depositDetails[0].effectiveDate"  [disabled]="securityDepositLimitsDisabled"/>
+                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.depositDetails[0].effectiveDate"  [disabled]="securityDepositLimitsDisabled"
+                                      [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (!configMasterModel.depositDetails[0]?.effectiveDate || configMasterOrg.depositDetails[0]?.effectiveDate > configMasterModel.depositDetails[0]?.effectiveDate)}" />
                                   </div>
                                </div>
                                 <!-- Action Button -->
@@ -343,7 +347,9 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.gstCharges[0].effectiveDate" [disabled]="gstChargesDisabled"/>
+                                      class="form-control form-control-sm" [(ngModel)]="configMasterModel.gstCharges[0].effectiveDate" [disabled]="gstChargesDisabled"
+                                      [ngClass]="{'is-invalid': !gstChargesDisabled && (!configMasterModel.gstCharges[0]?.effectiveDate || configMasterOrg.gstCharges[0]?.effectiveDate > configMasterModel.gstCharges[0]?.effectiveDate)}" 
+                                      />
                                   </div>
                                </div>
                               </div>
@@ -536,7 +542,9 @@
                                 <div class="input-group input-group-sm">
                                   <input 
                                     type="date" 
-                                    class="form-control form-control-sm" [(ngModel)]="configMasterModel.otherCharges[0].effectiveDate" [disabled]="otherChargesDisabled"/>
+                                    class="form-control form-control-sm" [(ngModel)]="configMasterModel.otherCharges[0].effectiveDate" [disabled]="otherChargesDisabled"
+                                    [ngClass]="{'is-invalid': !otherChargesDisabled && (!configMasterModel.otherCharges[0]?.effectiveDate || configMasterOrg.otherCharges[0]?.effectiveDate > configMasterModel.otherCharges[0]?.effectiveDate)}" 
+                                    />
                                 </div>
                             </div>
                             <div class="col-sm-1 mt-4">
@@ -671,7 +679,9 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="configMasterModel.dataGrouping[0].effectiveDate" [disabled]="dataGroupingDisabled"/>
+                                        class="form-control form-control-sm" [(ngModel)]="configMasterModel.dataGrouping[0].effectiveDate" [disabled]="dataGroupingDisabled"
+                                        [ngClass]="{'is-invalid': !dataGroupingDisabled && (!configMasterModel.dataGrouping[0]?.effectiveDate || configMasterOrg.dataGrouping[0]?.effectiveDate > configMasterModel.dataGrouping[0]?.effectiveDate)}" 
+                                        />
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-4">
@@ -748,7 +758,9 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="configMasterModel.forceCheckOut[0].effectiveDate" [disabled]="forceCheckoutDisabled"/>
+                                        class="form-control form-control-sm" [(ngModel)]="configMasterModel.forceCheckOut[0].effectiveDate" [disabled]="forceCheckoutDisabled"
+                                        [ngClass]="{'is-invalid': !forceCheckoutDisabled && (!configMasterModel.forceCheckOut[0]?.effectiveDate || configMasterOrg.forceCheckOut[0]?.effectiveDate > configMasterModel.forceCheckOut[0]?.effectiveDate)}" 
+                                        />
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-4">
@@ -823,7 +835,9 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="configMasterModel.noRentalAgreement[0].effectiveDate" [disabled]="noRentalAgreementDisabled"/>
+                                        class="form-control form-control-sm" [(ngModel)]="configMasterModel.noRentalAgreement[0].effectiveDate" [disabled]="noRentalAgreementDisabled"
+                                        [ngClass]="{'is-invalid': !noRentalAgreementDisabled && (!configMasterModel.noRentalAgreement[0]?.effectiveDate || configMasterOrg.noRentalAgreement[0]?.effectiveDate > configMasterModel.noRentalAgreement[0]?.effectiveDate)}" 
+                                        />
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-4">
@@ -944,7 +958,9 @@
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="date" 
-                                          class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[0].effectiveDate"  [disabled]="securityDepositDeadLineDisabled"/>
+                                          class="form-control form-control-sm" [(ngModel)]="configMasterModel.securityDepositDeadLineDetails[0].effectiveDate"  [disabled]="securityDepositDeadLineDisabled"
+                                          [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled && (!configMasterModel.securityDepositDeadLineDetails[0]?.effectiveDate || configMasterOrg.securityDepositDeadLineDetails[0]?.effectiveDate > configMasterModel.securityDepositDeadLineDetails[0]?.effectiveDate)}"
+                                          />
                                       </div>
                                    </div>
                                     <!-- Action Button -->
@@ -1147,7 +1163,7 @@
                                               </div> 
                                               <div class="ml-1" *ngIf="!element.isDelete && element.isConfirm" >
                                                 <select class="form-select form-select-sm" style="width: 80px !important;"  [(ngModel)]="element.trigger_condition"
-                                                [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && !element.trigger_condition  }" >
+                                                [ngClass]="{'is-invalid': !element.isDelete && element.isConfirm && !element.trigger_condition  }" >
                                                 <option *ngFor="let cond of triggerCondition" [value]="cond.cond_name">{{cond.cond_name}}</option>
                                                 </select>
                                               </div>
@@ -1161,7 +1177,7 @@
                                                 <input type="text" 
                                                         class="form-control form-control-sm"
                                                         [(ngModel)]="element.before_checkin_days" (keypress)="numberOnly($event)" maxlength="3" [disabled]="element.isDelete || !element.isConfirm"
-                                                        [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.before_checkin_days) }" 
+                                                        [ngClass]="{'is-invalid': !element.isDelete && element.isConfirm && isNotValidNumber(element.before_checkin_days) }" 
                                                         style="max-width: 84px !important;" />
                                                 <span class="input-group-text">Days</span>
                                               </div>
@@ -1193,7 +1209,7 @@
                                                 <input  type="text" 
                                                         class="form-control form-control-sm"
                                                         [(ngModel)]="element.deduction_percentage" (keypress)="percentageOnlyWithZero($event)" maxlength="5" [disabled]="element.isDelete || !element.isConfirm"
-                                                        [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && isNotValidNumber(element.deduction_percentage) }" 
+                                                        [ngClass]="{'is-invalid': !element.isDelete && element.isConfirm && isNotValidNumber(element.deduction_percentage) }" 
                                                         style="max-width: 90px !important;"
                                                         disabled />
                                                 <span class="input-group-text">%</span>
@@ -1396,7 +1412,9 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm"  [(ngModel)]="configMasterModel.shortTermRentingDuration[0].effectiveDate"  [disabled]="shortTermRentingDurationDisabled"/>
+                                        class="form-control form-control-sm"  [(ngModel)]="configMasterModel.shortTermRentingDuration[0].effectiveDate"  [disabled]="shortTermRentingDurationDisabled"
+                                        [ngClass]="{'is-invalid': !shortTermRentingDurationDisabled && (!configMasterModel.shortTermRentingDuration[0]?.effectiveDate || configMasterOrg.shortTermRentingDuration[0]?.effectiveDate > configMasterModel.shortTermRentingDuration[0]?.effectiveDate)}" 
+                                        />
                                     </div>
                                  </div>
                                   <div class="col-sm-2 mt-4" >
@@ -1610,7 +1628,9 @@
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="date" 
-                                          class="form-control form-control-sm"  [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails[0].effectiveDate" [disabled]="earlyCheckOutRulesDisabled" />
+                                          class="form-control form-control-sm"  [(ngModel)]="configMasterModel.earlyCheckOutRuleDetails[0].effectiveDate" [disabled]="earlyCheckOutRulesDisabled" 
+                                          [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && (!configMasterModel.earlyCheckOutRuleDetails[0]?.effectiveDate || configMasterOrg.earlyCheckOutRuleDetails[0]?.effectiveDate > configMasterModel.earlyCheckOutRuleDetails[0]?.effectiveDate)}" 
+                                          />
                                       </div>
                                    </div>
                                     <div class="col-sm-2 mt-4">
@@ -1760,7 +1780,9 @@
                                           <div class="input-group input-group-sm">
                                             <input 
                                               type="date" 
-                                              class="form-control form-control-sm"  [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[0].effectiveDate" [disabled]="autoCancellationDisabled"/>
+                                              class="form-control form-control-sm"  [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails[0].effectiveDate" [disabled]="autoCancellationDisabled"
+                                              [ngClass]="{'is-invalid': !autoCancellationDisabled && (!configMasterModel.cancellationAfterCheckInDetails[0]?.effectiveDate || configMasterOrg.cancellationAfterCheckInDetails[0]?.effectiveDate > configMasterModel.cancellationAfterCheckInDetails[0]?.effectiveDate)}" 
+                                              />
                                           </div>
                                        </div> 
                                         <!-- Action Button -->
@@ -1841,5 +1863,88 @@
   <!-- End of Page Wrapper -->
 </div>
 
-
-
+<div class="modal fade" id="popupMoreRecord" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-whatever="@mdo">
+  <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable modal-lg">
+    <div class="modal-content" style="text-align: center;">
+      <div class="modal-header bg-gradiant-popup-header">
+        <h5 class="modal-title" id="formtitle">Token Advance History </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"  #closeModel>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" *ngIf="configMasterModel.tokenDetails.length>1 && configMasterModel.tokenDetails[1]!=undefined && configMasterModel.tokenDetails[1]?.isApproved">
+          <div class="col-sm-4">
+            <div style="text-align: left;">Fixed amount</div>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+              <input 
+                type="text" 
+                class="form-control form-control-sm" 
+                [(ngModel)]="configMasterModel.tokenDetails[1].fixedToken" disabled 
+                style="max-width: 90px !important;" />
+            </div>
+          </div>
+          <div class="col-sm-4">
+                <div style="text-align: left;">% of Security Deposit</div>
+                <div class="input-group input-group-sm" >
+                  <input 
+                    type="text" 
+                    class="form-control form-control-sm" 
+                    [(ngModel)]="configMasterModel.tokenDetails[1].variableToken"  style="max-width: 70px !important;" disabled />
+                   <span class="input-group-text">%</span>
+            </div>
+            
+          </div>
+          <div class="col-sm-2">
+            <div style="text-align: left;">Effective On</div>
+            <div class="input-group input-group-sm">
+              <input 
+                type="date" 
+                class="form-control form-control-sm" [ngModel]="configMasterModel.tokenDetails[1].effectiveDate " disabled/>
+            </div>
+         </div>
+          <div class="col-sm-2 mt-4" >
+            <div class="d-flex">
+            <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-1" *ngIf="configMasterModel.tokenDetails.length>1 && configMasterModel.tokenDetails[1]!=undefined && configMasterModel.tokenDetails[1]?.isApproved">
+          <div class="col-sm-4">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+              <input 
+                type="text" 
+                class="form-control form-control-sm" 
+                [(ngModel)]="configMasterModel.tokenDetails[1].fixedToken" disabled 
+                style="max-width: 90px !important;" />
+            </div>
+          </div>
+          <div class="col-sm-4">
+                <div class="input-group input-group-sm" >
+                  <input 
+                    type="text" 
+                    class="form-control form-control-sm" 
+                    [(ngModel)]="configMasterModel.tokenDetails[1].variableToken"  style="max-width: 70px !important;" disabled />
+                   <span class="input-group-text">%</span>
+            </div>
+            
+          </div>
+          <div class="col-sm-2">
+            <div class="input-group input-group-sm">
+              <input 
+                type="date" 
+                class="form-control form-control-sm" [ngModel]="configMasterModel.tokenDetails[1].effectiveDate " disabled/>
+            </div>
+         </div>
+          <div class="col-sm-2 mt-1" >
+            <div class="d-flex">
+            <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
