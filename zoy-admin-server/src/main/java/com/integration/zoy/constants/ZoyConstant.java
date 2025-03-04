@@ -80,5 +80,9 @@ public class ZoyConstant {
 	//Due Factor 
 	public static final String FIXED = "Fixed"; 
 	public static final String VARIABLE = "Variable";
+	
+	public static final String ACTIVE = "Active";
+	public static final String INACTIVE = "Inactive";
+	public static final String SUSPENDED="Suspended";
 
 }

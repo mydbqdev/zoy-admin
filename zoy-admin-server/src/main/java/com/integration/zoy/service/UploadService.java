@@ -186,6 +186,7 @@ public class UploadService {
 					.withIgnoreLeadingWhiteSpace(true)
 					.build();
 			List<UserDetails> userDetails=new ArrayList<>();
+			List<UserMaster> userMasters=new ArrayList<>();
 			List<ZoyPgOwnerBookingDetails> zoyPgOwnerBookingDetails = new ArrayList<>();
 			List<UserBookings> userBookingDetails=new ArrayList<>();
 			List<PgOwnerUserStatus> userStatus=new ArrayList<>();
@@ -212,9 +213,10 @@ public class UploadService {
 			List<ZoyPgOwnerBookingDetails> bookingDetails=uploadDBImpl.saveAllOwnerBooking(zoyPgOwnerBookingDetails);
 			List<String[]> dues=ownerDBImpl.findRentDue(propertyId);
 			for(ZoyPgOwnerBookingDetails booking:bookingDetails) {
-				createWebcheckIn(ownerId,booking,userBookingDetails,userStatus,userPgDetails,bedDetails,userCsvDetails,dues);
+				createWebcheckIn(ownerId,booking,userBookingDetails,userStatus,userPgDetails,bedDetails,userCsvDetails,dues,userMasters);
 			}
 			uploadDBImpl.saveAllUserBookings(userBookingDetails);
+			uploadDBImpl.saveAllUserMaster(userMasters);
 			uploadDBImpl.saveAllUserPgDetails(userPgDetails);
 			uploadDBImpl.saveAllOwnerUserStatus(userStatus);
 			uploadDBImpl.updateAllBeds(bedDetails);
@@ -255,7 +257,7 @@ public class UploadService {
 
 	private void createWebcheckIn(String ownerId,ZoyPgOwnerBookingDetails booking, List<UserBookings> userBookingDetails, 
 			List<PgOwnerUserStatus> userStatus, List<UserPgDetails> userPgDetails,List<ZoyPgBedDetails> bedDetails,
-			Map<String,CsvTenantDetails> userCsvDetails,List<String[]> duesType) {
+			Map<String,CsvTenantDetails> userCsvDetails,List<String[]> duesType,List<UserMaster> userMasters) {
 		try {
 			ZoyPgRentCycleMaster rentCycle=uploadDBImpl.findRentCycle(booking.getLockInPeriod());
 			if(rentCycle!=null) {
@@ -274,6 +276,13 @@ public class UploadService {
 				details.setUserBookingsWebCheckOut(false);
 				details.setUserBookingsIsCancelled(false);
 				userBookingDetails.add(details);
+				
+				
+				UserMaster master=userDBImpl.findUserMaster(booking.getTenantId());
+				if(master!=null) {
+					master.setUserStatus(ZoyConstant.ACTIVE);
+					userMasters.add(master);
+				}
 
 				UserPgDetails userPgDetail=new UserPgDetails();
 				userPgDetail.setUserId(booking.getTenantId());
@@ -463,6 +472,7 @@ public class UploadService {
 		master.setUserEkycIsEkycVerified(false);
 		master.setUserEkycIsVideoVerified(false);
 		master.setUserEkycPaid(false);
+		master.setUserStatus(ZoyConstant.INACTIVE);
 		uploadDBImpl.saveUser(master);
 		List<NotificationModeMaster> modeMaster=uploadDBImpl.findAllNotificationMode();
 		List<UserNotifications> notifications =new ArrayList<>();
