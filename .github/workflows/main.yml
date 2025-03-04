@@ -81,13 +81,13 @@ jobs:
           echo "Backing up existing files and copying new files to server..."
           ssh ubuntu@45.129.87.152 << 'EOF'
           # Navigate to the deployment directory
-          cd /var/www/html
+          cd /var/www/html/admin
 
           # Create the backup directories if they don't exist
           mkdir -p /home/ubuntu/backup/frontendbackup
 
           # Check if any files or directories exist in /var/www/html
-          if [ -n "$(ls -A /var/www/html)" ]; then
+          if [ -n "$(ls -A /var/www/html/admin)" ]; then
             # Generate a base folder name with the current date
             base_folder="frontend_backup_$(date +'%Y-%m-%d')"
 
@@ -102,7 +102,7 @@ jobs:
             mkdir -p "/home/ubuntu/backup/frontendbackup/$backup_folder"
 
             # Move existing files to the backup folder
-            mv /var/www/html/* "/home/ubuntu/backup/frontendbackup/$backup_folder/"
+            mv /var/www/html/admin/* "/home/ubuntu/backup/frontendbackup/$backup_folder/"
 
             # Ensure only the latest 3 backups are retained
             cd /home/ubuntu/backup/frontendbackup
@@ -117,11 +117,11 @@ jobs:
 
           # Copy the new files to the server using rsync
           rsync -avz --progress -e "ssh" ./frontend-build/ ubuntu@45.129.87.152:/tmp/frontend/
-          ssh ubuntu@45.129.87.152 "sudo rsync -av /tmp/frontend/ /var/www/html/"
+          ssh ubuntu@45.129.87.152 "sudo rsync -av /tmp/frontend/ /var/www/html/admin"
 
       # Step 6: Debug server directory contents
       - name: Debug server directory contents
-        run: ssh ubuntu@45.129.87.152 "ls -l /var/www/html/"
+        run: ssh ubuntu@45.129.87.152 "ls -l /var/www/html/admin"
 
   build_backend:
     runs-on: ubuntu-latest
