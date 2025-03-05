@@ -6,8 +6,6 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +24,6 @@ import com.integration.zoy.utils.VendorPaymentsGst;
 
 @Service
 public class CsvGenerateService {
-	 private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
     public byte[] generateCsvFile(String reportType, Map<String, Object> data) {
         List<?> reportData = (List<?>) data.get("reportData");
         
@@ -137,7 +133,7 @@ public class CsvGenerateService {
                     safeToString(userPayment.getUserPgPropertyName()),
                     safeToString(userPayment.getPropertyHouseArea()),
                     safeToString(userPayment.getRoomBedNumber()),
-                    formatDate(userPayment.getTransactionDate()),
+                    safeToString(userPayment.getTransactionDate()),
                     safeToString(userPayment.getTransactionNumber()),
                     safeToString(userPayment.getTransactionStatus()),
                     formatAmountWithCommas(userPayment.getDueAmount()),
@@ -154,7 +150,7 @@ public class CsvGenerateService {
             if (dto instanceof UserPaymentDTO) {
                 UserPaymentDTO userPayment = (UserPaymentDTO) dto;
                 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
-                	formatDate(userPayment.getTransactionDate()),
+                	safeToString(userPayment.getTransactionDate()),
                     safeToString(userPayment.getTransactionNumber()),
                     safeToString(userPayment.getUserPersonalName()),
                     safeToString(userPayment.getUserPgPropertyName()),
@@ -170,7 +166,7 @@ public class CsvGenerateService {
                 if (dto instanceof ConsilidatedFinanceDetails) {
                     ConsilidatedFinanceDetails finance = (ConsilidatedFinanceDetails) dto;
                     writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
-                    		formatDate(finance.getUserPaymentTimestamp()),
+                    		safeToString(finance.getUserPaymentTimestamp()),
                             safeToString(finance.getUserPaymentBankTransactionId()),
                             safeToString(finance.getPayerPayeeType()),
                             safeToString(finance.getPayerPayeeName()),
@@ -191,7 +187,7 @@ public class CsvGenerateService {
                             safeToString(dues.getUserPgPropertyAddress()),
                             safeToString(dues.getBedNumber()),
                             formatAmountWithCommas(dues.getPendingAmount()),
-                            formatDate(dues.getPendingDueDate()));
+                            safeToString(dues.getPendingDueDate()));
                 }
                 break;
 
@@ -206,7 +202,7 @@ public class CsvGenerateService {
                             formatAmountWithCommas(vendor.getTotalAmountFromTenants()),
                             formatAmountWithCommas(vendor.getAmountPaidToOwner()),
                             formatAmountWithCommas(vendor.getZoyShare()),
-                            formatDate(vendor.getTransactionDate()),
+                            safeToString(vendor.getTransactionDate()),
                             safeToString(vendor.getTransactionNumber()),
                             safeToString(vendor.getPaymentStatus()),
                             safeToString(vendor.getOwnerApprovalStatus()));
@@ -220,7 +216,7 @@ public class CsvGenerateService {
                             vendorDues.getOwnerId(),
                             safeToString(vendorDues.getOwnerName()),
                             formatAmountWithCommas(vendorDues.getPendingAmount()),
-                            formatDate(vendorDues.getPendingDueDate()),
+                            safeToString(vendorDues.getPendingDueDate()),
                             safeToString(vendorDues.getPgId()),
                             safeToString(vendorDues.getPgName()),
                             formatAmountWithCommas(vendorDues.getTotalAmountPaid()),
@@ -232,7 +228,7 @@ public class CsvGenerateService {
                 if (dto instanceof VendorPaymentsGst) {
                     VendorPaymentsGst vendorGst = (VendorPaymentsGst) dto;
                     writer.printf("%s,%s,%s,%s,%s,%s,%s,%s%n",
-                    		formatDate(vendorGst.getTransactionDate()),
+                    		safeToString(vendorGst.getTransactionDate()),
                             safeToString(vendorGst.getTransactionNo()),
                             safeToString(vendorGst.getPgId()),
                             safeToString(vendorGst.getPgName()),
@@ -255,7 +251,7 @@ public class CsvGenerateService {
                             safeToString(tenentRefund.getRefundTitle()),
                             formatAmountWithCommas(tenentRefund.getRefundableAmount()),
                             formatAmountWithCommas(tenentRefund.getAmountPaid()),
-                            formatDate(tenentRefund.getPaymentDate()),
+                            safeToString(tenentRefund.getPaymentDate()),
                             safeToString(tenentRefund.getTransactionNumber()),
                             safeToString(tenentRefund.getPaymentStatus()));
                 }
@@ -265,7 +261,7 @@ public class CsvGenerateService {
                 if (dto instanceof RatingsAndReviewsReport) {
                 	RatingsAndReviewsReport ratingsAndReviews = (RatingsAndReviewsReport) dto;
                    writer.printf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
-                		    formatDate(ratingsAndReviews.getReviewDate()),
+                		    safeToString(ratingsAndReviews.getReviewDate()),
                             safeToString(ratingsAndReviews.getCustomerName()),
                             safeToString(ratingsAndReviews.getPropertyName()),
                             safeToString(ratingsAndReviews.getCustomerMobileNo()),
@@ -287,8 +283,8 @@ public class CsvGenerateService {
                             safeToString(upcomingTenants.getBookedProperyName()),
                             safeToString(upcomingTenants.getPropertAddress()),
                             safeToString(upcomingTenants.getRoomNumber()),
-                            formatDate(upcomingTenants.getExpectedCheckIndate()),
-                            formatDate(upcomingTenants.getExpectedCheckOutdate()));
+                            safeToString(upcomingTenants.getExpectedCheckIndate()),
+                            safeToString(upcomingTenants.getExpectedCheckOutdate()));
                 }
                 break;
             case "ActiveTenantsReport":
@@ -301,8 +297,8 @@ public class CsvGenerateService {
                             safeToString(activeTenants.getCurrentPropertName()),
                             safeToString(activeTenants.getPropertAddress()),
                             safeToString(activeTenants.getRoomNumber()),
-                            formatDate(activeTenants.getCheckInDate()),
-                            formatDate(activeTenants.getExpectedCheckOutdate()));
+                            safeToString(activeTenants.getCheckInDate()),
+                            safeToString(activeTenants.getExpectedCheckOutdate()));
                 }
                 break; 
             case "InactiveTenantsReport":
@@ -315,7 +311,7 @@ public class CsvGenerateService {
                             safeToString(inActiveTenants.getPreviousPropertName()),
                             safeToString(inActiveTenants.getPropertAddress()),
                             safeToString(inActiveTenants.getRoomNumber()),
-                            formatDate(inActiveTenants.getCheckedOutDate()));
+                            safeToString(inActiveTenants.getCheckedOutDate()));
                 }
                 break;
             case "SuspendedTenantsReport":
@@ -328,8 +324,8 @@ public class CsvGenerateService {
                             safeToString(suspendedTenant.getPreviousPropertName()),
                             safeToString(suspendedTenant.getPropertAddress()),
                             safeToString(suspendedTenant.getRoomNumber()),
-                            formatDate(suspendedTenant.getCheckedOutDate()),
-                            formatDate(suspendedTenant.getCheckedOutDate()),
+                            safeToString(suspendedTenant.getCheckedOutDate()),
+                            safeToString(suspendedTenant.getCheckedOutDate()),
                             safeToString(suspendedTenant.getReasonForSuspension()));
                 }
                 break;  
@@ -365,15 +361,5 @@ public class CsvGenerateService {
     private Object safeToString(Object obj) {
         return obj == null ? "N/A" : obj;
     }
-    
-   
-
-    private String formatDate(Object dateObject) {
-        if (dateObject instanceof Date) {
-            return dateFormat.format((Date) dateObject); 
-        }
-        return String.valueOf(dateObject);
-    }
-    
   
 }

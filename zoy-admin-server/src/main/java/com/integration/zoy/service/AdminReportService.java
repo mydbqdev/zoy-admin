@@ -3,6 +3,7 @@ package com.integration.zoy.service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -354,7 +355,7 @@ public class AdminReportService implements AdminReportImpl{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT\r\n"
 							+ "ud.user_money_due_amount,\r\n"
-							+ "ud.user_money_due_bill_start_date,\r\n"
+							+ "ud.user_money_due_bill_end_date,\r\n"
 							+ "um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
 							+ "pgt.property_name,\r\n"
 							+ "pgt.property_house_area,\r\n"
@@ -373,7 +374,7 @@ public class AdminReportService implements AdminReportImpl{
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND ud.user_money_due_bill_start_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				queryBuilder.append(" AND ud.user_money_due_bill_end_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -413,17 +414,17 @@ public class AdminReportService implements AdminReportImpl{
 				} else if ("pendingAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "ud.user_money_due_amount";
 				} else if ("pendingDueDate".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "ud.user_money_due_bill_start_date";
+					sort = "ud.user_money_due_bill_end_date";
 				}else if ("tenantMobileNum".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "um.user_mobile";
 				}else {
-					sort = "ud.user_money_due_bill_start_date";
+					sort = "ud.user_money_due_bill_end_date";
 				}
 
 				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
 				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
 			} else {
-				queryBuilder.append(" ORDER BY ud.user_money_due_id,ud.user_money_due_bill_start_date DESC");
+				queryBuilder.append(" ORDER BY ud.user_money_due_id,ud.user_money_due_bill_end_date DESC");
 			}
 
 
@@ -449,7 +450,12 @@ public class AdminReportService implements AdminReportImpl{
 				} else {
 					dto.setPendingAmount((row[0] != null) ? ((Number) row[0]).doubleValue() : 0.0);
 				}
-				dto.setPendingDueDate((Timestamp) row[1]);
+				Timestamp pendingDueDate = (Timestamp) row[1];
+			    if (pendingDueDate != null) {
+			        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			        String formattedDate = dateFormat.format(pendingDueDate);
+			        dto.setPendingDueDate(formattedDate);
+			    }
 				dto.setUserPersonalName(row[2] != null ? (String) row[2] : "");
 				dto.setUserPgPropertyName(row[3] != null ? (String) row[3] : "");
 				dto.setUserPgPropertyAddress(row[4] != null ? (String) row[4] : "");
@@ -857,7 +863,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("pgAddress", tenantDues.getUserPgPropertyAddress());
 			data.put("bedNumber", tenantDues.getBedNumber());
 			data.put("pendingAmount", tenantDues.getPendingAmount());
-			data.put("paymentDueDate", tenantDues.getPendingDueDate().toLocalDateTime().toLocalDate().toString());
+			data.put("paymentDueDate", tenantDues.getPendingDueDate());
 
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
