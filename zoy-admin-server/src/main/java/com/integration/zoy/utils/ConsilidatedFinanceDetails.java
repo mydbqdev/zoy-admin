@@ -22,6 +22,12 @@ public class ConsilidatedFinanceDetails {
 
 	@SerializedName("debitAmount")
 	private double debitAmount;
+	
+	@SerializedName("pgName")
+	private String pgName;
+	
+	@SerializedName("contactNum")
+	private String contactNum;
 
 	
 	public String getPayerPayeeType() {
@@ -72,4 +78,21 @@ public class ConsilidatedFinanceDetails {
 		this.debitAmount = debitAmount;
 	}
 
+	public String getPgName() {
+		return pgName;
+	}
+
+	public void setPgName(String pgName) {
+		this.pgName = pgName;
+	}
+
+	public String getContactNum() {
+		return contactNum;
+	}
+
+	public void setContactNum(String contactNum) {
+		this.contactNum = contactNum;
+	}
+
+	
 }
