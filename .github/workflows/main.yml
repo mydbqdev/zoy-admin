@@ -3,46 +3,34 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - latest_main_qa  # Trigger on push to the latest_main_qa branch
-  pull_request:
-    branches:
-      - latest_main_qa  # Trigger on PR to the latest_main_qa branch
-    types:
-      - closed  # Trigger when PR is closed
-    if: github.event.pull_request.merged == true  # Ensure the PR was merged, not just closed
+      - latest_main_qa  # Trigger only on push to latest_main_qa (includes PR merge)
 
 jobs:
   build_frontend:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # Step 3: Install Angular CLI globally
       - name: Install Angular CLI
         run: npm install -g @angular/cli
 
-      # Step 4: Install frontend dependencies
       - name: Install frontend dependencies
         run: |
           cd zoyAdminAngular
           npm install
 
-      # Step 5: Build the Angular frontend for production
       - name: Build frontend
         run: |
           cd zoyAdminAngular
           ng build --configuration production --base-href /admin/
 
-      # Step 6: Upload the build artifacts (using v4)
       - name: Upload frontend build as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -55,74 +43,50 @@ jobs:
     needs: build_frontend
 
     steps:
-      # Step 1: Download the build artifacts from the previous job
       - name: Download frontend build artifact
         uses: actions/download-artifact@v4
         with:
           name: frontend-build
           path: ./frontend-build
 
-      # Step 2: Set up SSH keys for secure deployment
       - name: Set up SSH keys
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # Step 3: Add server's SSH host key to known_hosts
       - name: Add server SSH host key to known_hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H 45.129.87.152 >> ~/.ssh/known_hosts
 
-      # Step 4: Debug frontend-build contents
       - name: Debug frontend-build contents
         run: ls -R ./frontend-build/
 
-      # Step 5: Backup existing files and copy new files to server
       - name: Backup existing files and copy new files to server
         run: |
-          echo "Backing up existing files and copying new files to server..."
           ssh ubuntu@45.129.87.152 << 'EOF'
-          # Navigate to the deployment directory
           cd /var/www/html/admin
-
-          # Create the backup directories if they don't exist
           mkdir -p /home/ubuntu/backup/frontendbackup
-
-          # Check if any files or directories exist in /var/www/html
           if [ -n "$(ls -A /var/www/html/admin)" ]; then
-            # Generate a base folder name with the current date
             base_folder="frontend_backup_$(date +'%Y-%m-%d')"
-
-            # Find the next available folder name with a suffix
             folder_suffix=1
             while [ -d "/home/ubuntu/backup/frontendbackup/${base_folder}_${folder_suffix}" ]; do
               folder_suffix=$((folder_suffix + 1))
             done
             backup_folder="${base_folder}_${folder_suffix}"
-
-            # Create the new backup folder
             mkdir -p "/home/ubuntu/backup/frontendbackup/$backup_folder"
-
-            # Move existing files to the backup folder
             mv /var/www/html/admin/* "/home/ubuntu/backup/frontendbackup/$backup_folder/"
-
-            # Ensure only the latest 3 backups are retained
             cd /home/ubuntu/backup/frontendbackup
             backup_count=$(ls -d frontend_backup_* 2>/dev/null | wc -l)
             if [ "$backup_count" -gt 3 ]; then
-              # Delete the oldest backup folder
               oldest_backup=$(ls -d frontend_backup_* | sort | head -n 1)
               rm -rf "$oldest_backup"
             fi
           fi
           EOF
-
-          # Copy the new files to the server using rsync
           rsync -avz --progress -e "ssh" ./frontend-build/ ubuntu@45.129.87.152:/tmp/frontend/
           ssh ubuntu@45.129.87.152 "sudo rsync -av /tmp/frontend/ /var/www/html/admin"
 
-      # Step 6: Debug server directory contents
       - name: Debug server directory contents
         run: ssh ubuntu@45.129.87.152 "ls -l /var/www/html/admin"
 
@@ -130,28 +94,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up JDK (Java Development Kit)
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '11'  # Use Java 11 as specified in your Dockerfile
+          java-version: '11'
           distribution: 'temurin'
 
-      # Step 3: Install Maven dependencies and build the backend
       - name: Build Backend with Maven
         run: |
           cd zoy-admin-server
           mvn clean install -DskipTests=true -Pqa
 
-      # Step 4: Debug zoy-admin-server contents
       - name: Debug zoy-admin-server contents
         run: ls -R zoy-admin-server/
 
-      # Step 5: Upload JAR as artifact
       - name: Upload JAR as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -164,97 +123,79 @@ jobs:
     needs: build_backend
 
     steps:
-      # Step 1: Download the JAR file from the previous job
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: backend-artifacts
           path: ./backend-artifacts
 
-      # Step 2: Debug backend-artifacts contents
       - name: Debug backend-artifacts contents
         run: ls -R ./backend-artifacts/
 
-      # Step 3: Set up SSH keys for secure deployment
       - name: Set up SSH keys
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # Step 4: Add server's SSH host key to known_hosts
       - name: Add server SSH host key to known_hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H 45.129.87.152 >> ~/.ssh/known_hosts
 
-      # Step 5: Test SSH connectivity
       - name: Test SSH connectivity
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@45.129.87.152 "echo 'SSH connection successful'"
 
-      # Step 6: Stop and remove the running container
       - name: Stop and remove running container
         run: |
           ssh ubuntu@45.129.87.152 << 'EOF'
-          # Stop and remove any existing container (if running)
           sudo docker stop zoy-admin-container || true
           sudo docker rm zoy-admin-container || true
           EOF
 
-      # Step 7: Backup existing .jar file
       - name: Backup existing .jar file
         run: |
           ssh ubuntu@45.129.87.152 << 'EOF'
-          # Navigate to the deployment directory
           cd /home/ubuntu/zoyserver
-
-          # Create the backup directory if it doesn't exist
           mkdir -p /home/ubuntu/backup/backendbackup
-
-          # Check if the .jar file exists
           if [ -f zoy-admin-server.jar ]; then
-            # Generate a base folder name with the current date
             base_folder="backend_backup_$(date +'%Y-%m-%d')"
-
-            # Find the next available folder name with a suffix
             folder_suffix=1
             while [ -d "/home/ubuntu/backup/backendbackup/${base_folder}_${folder_suffix}" ]; do
               folder_suffix=$((folder_suffix + 1))
             done
             backup_folder="${base_folder}_${folder_suffix}"
-
-            # Create the new backup folder
             mkdir -p "/home/ubuntu/backup/backendbackup/$backup_folder"
-
-            # Move the existing .jar file to the backup folder
             mv zoy-admin-server.jar "/home/ubuntu/backup/backendbackup/$backup_folder/"
-
-            # Ensure only the latest 3 backups are retained
             cd /home/ubuntu/backup/backendbackup
             backup_count=$(ls -d backend_backup_* 2>/dev/null | wc -l)
             if [ "$backup_count" -gt 3 ]; then
-              # Delete the oldest backup folder
               oldest_backup=$(ls -d backend_backup_* | sort | head -n 1)
               rm -rf "$oldest_backup"
             fi
           fi
           EOF
 
-      # Step 8: Copy the new .jar file to the server
       - name: Copy the new .jar file to the server
         run: |
           rsync -avz --progress -e "ssh" ./backend-artifacts/zoy-admin-server.jar ubuntu@45.129.87.152:/home/ubuntu/zoyserver/
 
-      # Step 9: Build and Run Docker Container on Server
       - name: Build and Run Docker Container on Server
         run: |
           ssh ubuntu@45.129.87.152 << 'EOF'
           # Navigate to the directory containing the Dockerfile
           cd /home/ubuntu/zoyserver
 
-          # Build the Docker image using the Dockerfile
+          # Build the Docker image
           sudo docker build -t zoy-admin-app .
 
-          # Run the new container
-          sudo docker run -d --name zoy-admin-container -p 8082:8082 -p 2002:2002 zoy-admin-app
+          # Run the container with persistent logs and port mappings
+          sudo docker run -d \
+            --rm \
+            -v ~/build/input:/input \
+            -v ~/docs:/docs \
+            -v /home/ubuntu/bv/logs:/home/ubuntu/bv/logs \
+            -p 8082:8082 \
+            -p 2002:2002 \
+            zoy-admin-app
           EOF
