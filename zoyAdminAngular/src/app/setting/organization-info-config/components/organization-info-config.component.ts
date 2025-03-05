@@ -352,6 +352,10 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
         const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
         return !panRegex.test(panNumber);
       }
+      validateGstNumber(gstNumber) {
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
+        return !gstRegex.test(gstNumber); 
+    }
 
       submitBranchInfo(){
         this.submittedBranchInfo=true;
@@ -452,7 +456,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
 
        submitMainBranchInfo(){
         this.submittedMainInfo = true ;
-        if (!this.mainBranchInfo.companyName || !this.mainBranchInfo.gstNumber || 
+        if (!this.mainBranchInfo.companyName || !this.mainBranchInfo.gstNumber || this.validateGstNumber(this.mainBranchInfo.gstNumber) ||
           !this.mainBranchInfo.panNumber || this.validatePanNumber(this.mainBranchInfo.panNumber) ||
           !this.mainBranchInfo.url || this.validateUrl(this.mainBranchInfo.url) || !this.fileUploadSizeStatus
         ){

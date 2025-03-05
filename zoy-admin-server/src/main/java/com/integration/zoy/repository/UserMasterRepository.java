@@ -25,8 +25,9 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
 			"um.user_mobile AS contactNumber, " +
 			"um.user_email AS userEmail, " +
 			"CASE " +
-			"    WHEN um.user_pin IS NOT NULL THEN 'Active' " +
-			"    ELSE 'inactive' " +
+			"    WHEN um.user_status = 'Active' THEN 'Active' " +
+			"    WHEN um.user_status = 'Inactive' THEN 'Inactive' " +
+			"    ELSE 'Suspended' "+
 			"END AS status, " +
 			"CASE " +
 			"    WHEN um.user_pin IS NOT NULL THEN 'Yes' " +
@@ -44,37 +45,38 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
 			"LOWER(CAST(CONCAT(um.user_first_name, ' ', um.user_last_name) AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 			"LOWER(CAST(um.user_mobile AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 			"LOWER(CAST(um.user_email AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
-			"LOWER(CAST(CASE WHEN um.user_pin IS NOT NULL THEN 'active' ELSE 'inactive' END AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
+			"LOWER(CAST(CASE WHEN um.user_status = 'Active' THEN 'Active'WHEN um.user_status = 'Inactive' THEN 'Inactive'ELSE 'Suspended' END AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 			"LOWER(CAST(CASE WHEN um.user_pin IS NOT NULL THEN 'Yes' ELSE 'No' END AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 			"LOWER(CAST(CASE WHEN um.user_ekyc_isekycverified = true AND um.user_ekyc_isvideo_verified = true THEN 'Verified' " +
 			"    WHEN um.user_ekyc_isekycverified = true AND (um.user_ekyc_isvideo_verified = false OR um.user_ekyc_isvideo_verified IS NULL) THEN 'Partially Verified' " +
 			"    ELSE 'Pending' END AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 			"LOWER(CAST(um.user_created_at AS text)) LIKE LOWER(CONCAT('%', :searchText, '%'))) " +
 			"AND ((:startDate = '1970-01-01 00:00:00' or :endDate = '9999-12-31 23:59:59') or ((:startDate != '1970-01-01 00:00:00' AND :endDate != '9999-12-31 23:59:59') and um.user_created_at BETWEEN CAST(:startDate AS timestamp) AND CAST(:endDate AS timestamp)))" +
-			"AND (:status IS NULL OR LOWER(CAST(CASE WHEN um.user_pin IS NOT NULL THEN 'active' ELSE 'inactive' END AS text)) = LOWER(CAST(:status AS text)))",
+			"AND um.user_status  in (:status) ",
 			countQuery = "SELECT COUNT(*) FROM pgusers.user_master um " +
 					"WHERE (:searchText IS NULL OR " +
 					"LOWER(CAST(CONCAT(um.user_first_name, ' ', um.user_last_name) AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 					"LOWER(CAST(um.user_mobile AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 					"LOWER(CAST(um.user_email AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
-					"LOWER(CAST(CASE WHEN um.user_pin IS NOT NULL THEN 'active' ELSE 'inactive' END AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
+					"LOWER(CAST(CASE WHEN um.user_status = 'Active' THEN 'Active'WHEN um.user_status = 'Inactive' THEN 'Inactive'ELSE 'Suspended' END AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 					"LOWER(CAST(CASE WHEN um.user_pin IS NOT NULL THEN 'Yes' ELSE 'No' END AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 					"LOWER(CAST(CASE WHEN um.user_ekyc_isekycverified = true AND um.user_ekyc_isvideo_verified = true THEN 'Verified' " +
 					"    WHEN um.user_ekyc_isekycverified = true AND (um.user_ekyc_isvideo_verified = false OR um.user_ekyc_isvideo_verified IS NULL) THEN 'Partially Verified' " +
 					"    ELSE 'Pending' END AS text)) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 					"LOWER(CAST(um.user_created_at AS text)) LIKE LOWER(CONCAT('%', :searchText, '%'))) " +
 					"AND  ((:startDate = '1970-01-01 00:00:00' or :endDate = '9999-12-31 23:59:59') or ((:startDate != '1970-01-01 00:00:00' AND :endDate != '9999-12-31 23:59:59') AND um.user_created_at BETWEEN CAST(:startDate AS timestamp) AND CAST(:endDate AS timestamp)))" +
-					"AND (:status IS NULL OR LOWER(CAST(CASE WHEN um.user_pin IS NOT NULL THEN 'active' ELSE 'inactive' END AS text)) = LOWER(CAST(:status AS text)))",
+					"AND um.user_status  in (:status) ",
 					nativeQuery = true)
-	Page<Object[]> getTenantDetails(Pageable pageable, @Param("searchText") String searchText, @Param("startDate") String startDate, @Param("endDate") String endDate, @Param("status") String status);
+	Page<Object[]> getTenantDetails(Pageable pageable, @Param("searchText") String searchText, @Param("startDate") String startDate, @Param("endDate") String endDate, @Param("status") List<String> status);
 
 	@Query(value = "SELECT " +
 			"CONCAT(um.user_first_name, ' ', um.user_last_name) AS tenantName, " +
 			"um.user_mobile AS contactNumber, " +
 			"um.user_email AS userEmail, " +
 			"CASE " +
-			"    WHEN um.user_pin IS NOT NULL THEN 'Active' " +
-			"    ELSE 'Inactive' " +
+			"    WHEN um.user_status = 'Active' THEN 'Active' " +
+			"    WHEN um.user_status = 'Inactive' THEN 'Inactive'"+
+			"    ELSE 'Suspended' " +
 			"END AS status, " +
 			"CASE " +
 			"    WHEN um.user_ekyc_isekycverified = true AND um.user_ekyc_isvideo_verified = true THEN 'Verified' " +
