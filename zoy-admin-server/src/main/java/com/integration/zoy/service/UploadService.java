@@ -329,6 +329,7 @@ public class UploadService {
 					payment.setUserId(booking.getTenantId());
 					payment.setUserPaymentBookingId(booking.getBookingId());
 					payment.setUserPaymentPayableAmount(booking.getPaidDeposit());
+					payment.setUserPaymentTimestamp(new Timestamp(System.currentTimeMillis()));
 					payment.setUserPaymentGst(BigDecimal.ZERO);
 					payment.setUserPaymentPaymentStatus("success");
 					payment.setUserPaymentZoyPaymentMode("Cash");
@@ -384,6 +385,7 @@ public class UploadService {
 					rentPayment.setUserPaymentBookingId(booking.getBookingId());
 					rentPayment.setUserMoneyDueId(paidDue.getUserMoneyDueId());
 					rentPayment.setUserPaymentPayableAmount(booking.getCalFixedRent());
+					rentPayment.setUserPaymentTimestamp(new Timestamp(System.currentTimeMillis()));
 					rentPayment.setUserPaymentGst(BigDecimal.ZERO);
 					rentPayment.setUserPaymentPaymentStatus("success");
 					rentPayment.setUserPaymentZoyPaymentMode("Cash");
