@@ -189,9 +189,10 @@ jobs:
           # Build the Docker image
           sudo docker build -t zoy-admin-app .
 
-          # Run the container with persistent logs and port mappings
+          # Run the container with persistent logs, port mappings, and a specific container name
           sudo docker run -d \
             --rm \
+            --name zoy-admin-container \
             -v ~/build/input:/input \
             -v ~/docs:/docs \
             -v /home/ubuntu/bv/logs:/home/ubuntu/bv/logs \
