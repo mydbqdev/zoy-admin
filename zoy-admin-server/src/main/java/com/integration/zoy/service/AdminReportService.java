@@ -963,16 +963,14 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantName", review.getCustomerName() != null ? review.getCustomerName() : "");
 			data.put("pgName", review.getPropertyName() != null ? review.getPropertyName() : "");
 			data.put("tenantContact", review.getCustomerMobileNo() != null ? review.getCustomerMobileNo() : "");
-			data.put("cleanliness", review.getCleanliness() != null ? review.getCleanliness() : "");
-			data.put("accommodation", review.getAccommodation() != null ? review.getAccommodation() : "");
-			data.put("amenities", review.getAmenities() != null ? review.getAmenities() : "");
+			data.put("cleaniliness", review.getCleanliness() != null ? review.getCleanliness() : "");
+			data.put("accomodation", review.getAccommodation() != null ? review.getAccommodation() : "");
+			data.put("aminities", review.getAmenities() != null ? review.getAmenities() : "");
 			data.put("maintenance", review.getMaintenance() != null ? review.getMaintenance() : "");
 			data.put("valueForMoney", review.getValueForMoney() != null ? review.getValueForMoney() : "");
 			data.put("overallRating", review.getOverallRating() != null ? review.getOverallRating() : "");
-
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
-
 			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
