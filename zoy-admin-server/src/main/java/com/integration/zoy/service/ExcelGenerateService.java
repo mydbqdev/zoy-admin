@@ -135,7 +135,11 @@ public class ExcelGenerateService {
 			row.createCell(3).setCellValue("Name of the Payer/Payee");
 			row.createCell(4).setCellValue("Debit(₹)");
 			row.createCell(5).setCellValue("Credit(₹)");
+			row.createCell(6).setCellValue("Pg Name");
+			row.createCell(7).setCellValue("Contact Number");
+			
 			break;
+			
 		case "tenantDuesReport":
 			row.createCell(0).setCellValue("Tenant Name");
 			row.createCell(1).setCellValue("Tenant Mobile Number");
@@ -309,6 +313,8 @@ public class ExcelGenerateService {
 				row.createCell(3).setCellValue(nullSafe(finance.getPayerPayeeName()));
 				setCurrencyCell(row,4,nullSafe(finance.getDebitAmount()));
 				setCurrencyCell(row,5,nullSafe(finance.getCreditAmount()));
+				row.createCell(6).setCellValue(nullSafe(finance.getPgName()));
+				row.createCell(7).setCellValue(nullSafe(finance.getContactNum()));
 			}
 			break;
 

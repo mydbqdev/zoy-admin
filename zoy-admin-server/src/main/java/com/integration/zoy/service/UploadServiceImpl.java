@@ -61,92 +61,92 @@ import com.integration.zoy.repository.ZoyPgShareMasterRepository;
 public class UploadServiceImpl {
 	@Autowired
 	private ZoyPgOwnerDetailsRepository repository;
-	
+
 	@Autowired
 	private UserMasterRepository userMasterRepository;
-	
+
 	@Autowired
 	private UserDetailsRepository userDetailsRepository;
-	
+
 	@Autowired
 	private ZoyPgOwnerBookingDetailsRepository zoyPgOwnerBookingDetailsRepository;
-	
+
 	@Autowired
 	private UserBookingsRepository userBookingsRepository;
-	
+
 	@Autowired
 	private UserPgDetailsRepository userPgDetailsRepository;
-	
+
 	@Autowired
 	private PgOwnerUserStatusRepository ownerUserStatusRepository;
-	
+
 	@Autowired
 	private ZoyPgRentCycleMasterRepository zoyPgRentCycleMasterRepository;
-	
+
 	@Autowired
 	private NotificationModeMasterRepository notificationModeMasterRepository;
-	
+
 	@Autowired
 	private UserNotificationsRepository userNotificationsRepository;
-	
+
 	@Autowired
 	private ZoyPgRoomDetailsRepository zoyPgRoomDetailsRepository;
-	
+
 	@Autowired
 	private ZoyPgPropertyFloorsRepository floorsRepository;
-	
+
 	@Autowired
 	private ZoyPgBedDetailsRepository zoyPgBedDetailsRepository;
-	
+
 	@Autowired
 	private ZoyPgPropertyFloorDetailsRepository floorDetailsRepository;
-	
+
 	@Autowired
 	private ZoyPgRoomTypeMasterRepository roomTypeRepository;
-	
+
 	@Autowired
 	private ZoyPgShareMasterRepository zoyPgShareMasterRepository;
-	
+
 	@Autowired
 	private ZoyPgRoomBedsRepository zoyPgRoomBedsRepository;
-	
+
 	@Autowired
 	private ZoyPgAmenetiesMasterRepository zoyPgAmenetiesMasterRepository;
-	
+
 	@Autowired
 	private ZoyPgRoomAmenetiesRepository zoyPgRoomAmenetiesRepository;
-	
+
 	@Autowired
 	private ZoyPgFloorRoomsRepository zoyPgFloorRoomsRepository;
-	
+
 	@Autowired
 	private ZoyPgPropertyRentCycleRepository zoyPgPropertyRentCycleRepository;
 
 	@Autowired
 	private ZoyPgRoomDetailsRepository detailsRepository;
-	
+
 	@Autowired
 	private UserPaymentRepository userPaymentRepository;
-	
+
 	@Autowired
 	private UserDuesRepository userDuesRepository;
-	
+
 	@Autowired
 	private ZoyPgOwnerSettlementStatusRepository zoyPgOwnerSettlementStatusRepository;
-	
+
 	@Autowired
 	private ZoyPgOwnerSettlementSplitUpRepository zoyPgOwnerSettlementSplitUpRepository;
-	
+
 	@Autowired
 	private UserPaymentDueRepository userPaymentDueRepository;
-	
+
 	@Autowired
 	private UserBookingPaymentRepository userBookingPaymentRepository;
-	
+
 	public ZoyPgOwnerDetails findPgOwnerById(String ownerId) {
 		return repository.findById(ownerId).orElse(null);
 	}
-	
+
 	public UserMaster findUserMaster(String mobile,String email) {
 		return userMasterRepository.findUserMaster(mobile,email).orElse(null);
 	}
@@ -158,35 +158,35 @@ public class UploadServiceImpl {
 	public List<ZoyPgOwnerBookingDetails> saveAllOwnerBooking(List<ZoyPgOwnerBookingDetails> tenantBooking){
 		return zoyPgOwnerBookingDetailsRepository.saveAll(tenantBooking);
 	}
-	
+
 	public List<UserBookings> saveAllUserBookings(List<UserBookings> bookings){
 		return userBookingsRepository.saveAll(bookings);
 	}
-	
+
 	public List<UserPgDetails> saveAllUserPgDetails(List<UserPgDetails> details){
 		return userPgDetailsRepository.saveAll(details);
 	}
-	
+
 	public List<PgOwnerUserStatus> saveAllOwnerUserStatus(List<PgOwnerUserStatus> userStatus) {
 		return ownerUserStatusRepository.saveAll(userStatus);
 	}
-	
+
 	public ZoyPgRentCycleMaster findRentCycle(String rentCycelId) {
 		return zoyPgRentCycleMasterRepository.findById(rentCycelId).orElse(null);
 	}
-	
+
 	public UserMaster saveUser(UserMaster userMaster) {
 		return userMasterRepository.save(userMaster);
 	}
-	
+
 	public List<NotificationModeMaster> findAllNotificationMode() {
 		return notificationModeMasterRepository.findAll();
 	}
-	
+
 	public List<UserNotifications> saveAllUserNotification(List<UserNotifications> userNotifications) {
 		return userNotificationsRepository.saveAll(userNotifications);
 	}
-	
+
 	public UserDetails findUserDetails(String userId) {
 		return userDetailsRepository.findById(userId).orElse(null);
 	}
@@ -194,15 +194,15 @@ public class UploadServiceImpl {
 	public List<String[]> findFloorRoomBedIdsByPropertyName(String propertyId, String room, String selectedBed,String lockInPeriod) {
 		return zoyPgOwnerBookingDetailsRepository.findFloorRoomBedIdsByPropertyName(propertyId, room, selectedBed,lockInPeriod);
 	}
-	
+
 	public List<String[]> findFloorRoomBedNameByPropertyName(String propertyId, String room, String selectedBed,String lockInPeriod) {
 		return zoyPgOwnerBookingDetailsRepository.findFloorRoomBedNameByPropertyName(propertyId, room, selectedBed,lockInPeriod);
 	}
-	
+
 	public List<ZoyPgOwnerBookingDetails> findAllBookingByPropertyId(String propertyId) {
 		return zoyPgOwnerBookingDetailsRepository.findAllBookingByPropertyId(propertyId);
 	}
-	
+
 	public List<String> getFloorIdsByPropertyId(String propertyId) {
 		return floorsRepository.findAllFloorIdsByPropertyId(propertyId);
 	}
@@ -213,19 +213,19 @@ public class UploadServiceImpl {
 	public List<String> getBedIdsByPropertyId(String propertyId) {
 		return zoyPgBedDetailsRepository.findAllBedIdsByPropertyId(propertyId);
 	}
-	
+
 	public void deleteBedsByIds(List<String> bedIds) {
 		if (bedIds != null && !bedIds.isEmpty()) {
 			zoyPgBedDetailsRepository.deleteByBedIds(bedIds);
 		}
 	};
-	
+
 	public void deleteRoomsByIds(List<String> roomIds) {
 		if (roomIds != null && !roomIds.isEmpty()) {
 			zoyPgRoomDetailsRepository.deleteByRoomIds(roomIds);
 		}
 	}
-	
+
 	public void deleteFloorsByIds(List<String> floorIds) {
 		if (floorIds != null && !floorIds.isEmpty()) {
 			floorsRepository.deleteByFloorIds(floorIds);
@@ -235,39 +235,39 @@ public class UploadServiceImpl {
 	public String checkDuplicateFloorName(String floorName, String propertyId) {
 		return floorDetailsRepository.checkDuplicateFloorName(floorName, propertyId);
 	}
-	
+
 	public ZoyPgPropertyFloorDetails createFloorDetail(ZoyPgPropertyFloorDetails floorDetail) {
 		return floorDetailsRepository.save(floorDetail);
 	}
-	
+
 	public ZoyPgBedDetails createBed(ZoyPgBedDetails bedDetails) {
 		return zoyPgBedDetailsRepository.save(bedDetails);
 	}
-	
+
 	public String getRoomTypeIdByRoomType(String roomTypeName) {
 		return roomTypeRepository.findRoomTypeIdByName(roomTypeName);
 	}
-	
+
 	public String getShareIdByShareType(String ShareType) {
 		String id=zoyPgShareMasterRepository.findShareIdByShareType(ShareType);
 		return id ;
 	}
-	
+
 	public String checkDuplicateRoomName(String roomName, String floorId, String propertyId) {
 		return zoyPgRoomDetailsRepository.checkDuplicateRoomName(roomName, floorId, propertyId);
 	}
 	public ZoyPgRoomDetails createRoom(ZoyPgRoomDetails roomDetails) {
 		return zoyPgRoomDetailsRepository.save(roomDetails);
 	}
-	
+
 	public void saveAllRoomBedIds(List<ZoyPgRoomBeds>  multipleData) {
 		zoyPgRoomBedsRepository.saveAll(multipleData);
 	}
-	
+
 	public List<String>  getIdsOfByAmenitiesList(List<String> amenities){
 		return zoyPgAmenetiesMasterRepository.getAmenityIdsByNames(amenities);
 	}	
-	
+
 	public void saveMultipleAmenetiRoomMap(List<ZoyPgRoomAmeneties> multiAmenetiRoom) {
 		zoyPgRoomAmenetiesRepository.saveAll(multiAmenetiRoom);
 	};
@@ -275,7 +275,7 @@ public class UploadServiceImpl {
 	public void saveAllFloorRooms(List<ZoyPgFloorRooms>  floorRoomMap) {
 		zoyPgFloorRoomsRepository.saveAll(floorRoomMap);
 	}
-	
+
 	public  List<ZoyPgPropertyFloors> saveAllPropertyFloor(List<ZoyPgPropertyFloors> multipleData) {
 		return floorsRepository.saveAll(multipleData);
 	}
@@ -286,7 +286,7 @@ public class UploadServiceImpl {
 
 	public ZoyPgPropertyRentCycle saveRentCycle(ZoyPgPropertyRentCycle cycle) {
 		return zoyPgPropertyRentCycleRepository.save(cycle);
-		
+
 	}
 
 	public ZoyPgRoomDetails getRoomDetails(String roomId) {
@@ -295,7 +295,7 @@ public class UploadServiceImpl {
 
 	public List<UserPayment> saveAllUserPayment(List<UserPayment> payment) {
 		return userPaymentRepository.saveAll(payment);
-		
+
 	}
 
 	public List<ZoyPgBedDetails> updateAllBeds(List<ZoyPgBedDetails> bedDetails) {
@@ -308,7 +308,7 @@ public class UploadServiceImpl {
 
 	public List<UserDues> saveAllUserDues(List<UserDues> userDues) {
 		return userDuesRepository.saveAll(userDues);
-		
+
 	}
 
 	public List<ZoyPgOwnerSettlementStatus> saveAllOwnerSettlementStatus(List<ZoyPgOwnerSettlementStatus> settlementStatus) {
@@ -325,26 +325,30 @@ public class UploadServiceImpl {
 
 	public ZoyPgOwnerSettlementStatus saveOwnerSettlementStatus(ZoyPgOwnerSettlementStatus settlementStatus) {
 		return zoyPgOwnerSettlementStatusRepository.save(settlementStatus);
-		
+
 	}
 
 	public ZoyPgOwnerSettlementSplitUp saveOwnerSettlementSlipUp(ZoyPgOwnerSettlementSplitUp firstPayment) {
 		return zoyPgOwnerSettlementSplitUpRepository.save(firstPayment);
-		
+
 	}
 
 	public UserPaymentDue saveUserPaymentDue(UserPaymentDue due) {
 		return userPaymentDueRepository.save(due);
-		
+
 	}
 
 	public UserBookingPayment saveUserBookingPayment(UserBookingPayment userBookingPayment) {
 		return userBookingPaymentRepository.save(userBookingPayment);
-		
+
 	}
 
 	public UserMaster findUserMaster(String phoneNumber) {
-		 return userMasterRepository.findUserMaster(phoneNumber).orElse(null);
+		return userMasterRepository.findUserMaster(phoneNumber).orElse(null);
+	}
+
+	public List<UserMaster> saveAllUserMaster(List<UserMaster> userMasters) {
+		return userMasterRepository.saveAll(userMasters);		
 	}
 
 }

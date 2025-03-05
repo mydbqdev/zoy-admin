@@ -236,18 +236,23 @@ public class AdminReportService implements AdminReportImpl{
 	public CommonResponseDTO<ConsilidatedFinanceDetails> getConsolidatedFinanceDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException{
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
-					"SELECT DISTINCT up.user_payment_timestamp AS transaction_date, " +
-							"up.user_payment_result_invoice_id AS transaction_number, " +
-							"'Tenant' AS payer_payee_type, " +
-							"ud.user_personal_name, " +
-							"up.user_payment_payable_amount, " +
-							"up.user_payment_gst, " +
-							"pgt.property_city " +
-							"FROM pgusers.user_payments up " +
-							"JOIN pgusers.user_details ud ON up.user_id = ud.user_id " +
-							"JOIN pgowners.zoy_pg_owner_booking_details bkd ON up.user_id = bkd.tenant_id " +
-							"JOIN pgowners.zoy_pg_property_details pgt ON bkd.property_id = pgt.property_id " + // Join to get city details
-					"WHERE 1=1 ");
+						    "SELECT  up.user_payment_timestamp AS transaction_date, " +
+						            "up.user_payment_result_invoice_id AS transaction_number, " +
+						            "'Tenant' AS payer_payee_type, " +
+						            "um.user_first_name || ' ' || um.user_last_name AS user_personal_name, " +
+						            "up.user_payment_payable_amount, " +
+						            "up.user_payment_gst, " +
+						            "pgt.property_city, " +
+						            "pgt.property_name, " +
+						            "um.user_mobile " +
+						            "FROM pgowners.zoy_pg_owner_booking_details zpobd " +
+						            "JOIN pgusers.user_payments up ON up.user_payment_booking_id = zpobd.booking_id " +
+						            "JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id " +
+						            "JOIN pgowners.zoy_pg_property_details pgt ON zpobd.property_id = pgt.property_id " +
+						            "WHERE 1=1"
+						);
+			
+			
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
@@ -258,12 +263,18 @@ public class AdminReportService implements AdminReportImpl{
 
 
 			if (filterData.getPayerName() != null && !filterData.getPayerName().isEmpty()) {
-				queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:userPersonalName)");
+				queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:userPersonalName)");
 				parameters.put("userPersonalName", "%" + filterData.getPayerName() + "%");
 			}
+
 			if (filterData.getPayerType() != null && !filterData.getPayerType().isEmpty()) {
 				queryBuilder.append(" AND 'Tenant' = :payerPayeeType");
 				parameters.put("payerPayeeType", filterData.getPayerType());
+			}
+
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(pgt.property_name) LIKE LOWER(CONCAT('%', :pgName, '%'))");
+				parameters.put("pgName", filterData.getPgName() + "%");
 			}
 
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
@@ -274,6 +285,10 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append(" AND LOWER(up.user_payment_result_invoice_id) LIKE LOWER(:transactionNumber)");
 				parameters.put("transactionNumber", "%" + filterData.getTransactionNumber() + "%");
 			}
+			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_mobile) LIKE LOWER(:tenantContactNum)");
+				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
+			}
 			String sort = "up.user_payment_timestamp";
 
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
@@ -282,11 +297,15 @@ public class AdminReportService implements AdminReportImpl{
 				} else if ("transactionNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_result_invoice_id";
 				} else if ("payerPayeeName".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "ud.user_personal_name";
+					sort = "um.user_first_name || ' ' || um.user_last_name";
 				} else if ("creditAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "(up.user_payment_payable_amount)";
 				} else if ("debitAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_payable_amount";
+				}else if ("pgName".equalsIgnoreCase(filterRequest.getSortActive())) {
+					sort = "pgt.property_name";
+				}else if ("tenantContactNum".equalsIgnoreCase(filterRequest.getSortActive())) {
+					sort = "um.user_mobile";
 				}else {
 					sort = "up.user_payment_timestamp";
 				}
@@ -317,6 +336,8 @@ public class AdminReportService implements AdminReportImpl{
 				//BigDecimal totalAmount = payableAmount;
 				dto.setCreditAmount((payableAmount != null) ? ((Number) payableAmount).doubleValue() : 0.0);
 				dto.setDebitAmount(BigDecimal.valueOf(0).doubleValue());
+				dto.setPgName(row[7] != null ? (String) row[7] : "");
+				dto.setContactNum(row[8] != null ? (String) row[8] : "");
 				return dto;
 			}).collect(Collectors.toList());
 
@@ -802,6 +823,8 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("payeePayerName", financeDetails.getPayerPayeeName());
 			data.put("debit", financeDetails.getDebitAmount());
 			data.put("credit", financeDetails.getCreditAmount());
+			data.put("pgName", financeDetails.getPgName());
+			data.put("contactNum", financeDetails.getContactNum());
 
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
@@ -940,16 +963,14 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantName", review.getCustomerName() != null ? review.getCustomerName() : "");
 			data.put("pgName", review.getPropertyName() != null ? review.getPropertyName() : "");
 			data.put("tenantContact", review.getCustomerMobileNo() != null ? review.getCustomerMobileNo() : "");
-			data.put("cleanliness", review.getCleanliness() != null ? review.getCleanliness() : "");
-			data.put("accommodation", review.getAccommodation() != null ? review.getAccommodation() : "");
-			data.put("amenities", review.getAmenities() != null ? review.getAmenities() : "");
+			data.put("cleaniliness", review.getCleanliness() != null ? review.getCleanliness() : "");
+			data.put("accomodation", review.getAccommodation() != null ? review.getAccommodation() : "");
+			data.put("aminities", review.getAmenities() != null ? review.getAmenities() : "");
 			data.put("maintenance", review.getMaintenance() != null ? review.getMaintenance() : "");
 			data.put("valueForMoney", review.getValueForMoney() != null ? review.getValueForMoney() : "");
 			data.put("overallRating", review.getOverallRating() != null ? review.getOverallRating() : "");
-
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
-
 			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
@@ -1031,8 +1052,8 @@ public class AdminReportService implements AdminReportImpl{
 		}
 		return dataList;
 	}
-	
-	
+
+
 	public List<Map<String, Object>> generateInactivePropertiesReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
@@ -1065,7 +1086,7 @@ public class AdminReportService implements AdminReportImpl{
 		}
 		return dataList;
 	}
-	
+
 	public List<Map<String, Object>> generateSuspendedPropertiesReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
@@ -1468,506 +1489,506 @@ public class AdminReportService implements AdminReportImpl{
 
 
 	public CommonResponseDTO<TenantResportsDTO> getUpcomingTenantsReport(UserPaymentFilterRequest filterRequest,
-	        FilterData filterData, Boolean applyPagination) throws WebServiceException {
-	    try {
-	        StringBuilder queryBuilder = new StringBuilder("SELECT \r\n"
-	        		+ "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
-	        		+ "    um.user_mobile,\r\n"
-	        		+ "    um.user_email,\r\n"
-	        		+ "    zpd.property_name,\r\n"
-	        		+ "    zpd.property_house_area,\r\n"
-	        		+ "    bd.bed_name,\r\n"
-	        		+ "    zpqbd.in_date, \r\n"
-	        		+ "    zpqbd.out_date\r\n"
-	        		+ "FROM pgusers.user_master um\r\n"
-	        		+ "JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
-	        		+ "    ON um.user_id = zpqbd.tenant_id \r\n"
-	        		+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
-	        		+ "    ON zpqbd.property_id = zpd.property_id \r\n"
-	        		+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
-	        		+ "    ON zpqbd.selected_bed = bd.bed_id\r\n"
-	        		+ "WHERE 1=1 and zpqbd.in_date > CURRENT_DATE");
+			FilterData filterData, Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder("SELECT \r\n"
+					+ "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+					+ "    um.user_mobile,\r\n"
+					+ "    um.user_email,\r\n"
+					+ "    zpd.property_name,\r\n"
+					+ "    zpd.property_house_area,\r\n"
+					+ "    bd.bed_name,\r\n"
+					+ "    zpqbd.in_date, \r\n"
+					+ "    zpqbd.out_date\r\n"
+					+ "FROM pgusers.user_master um\r\n"
+					+ "JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
+					+ "    ON um.user_id = zpqbd.tenant_id \r\n"
+					+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
+					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
+					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
+					+ "    ON zpqbd.selected_bed = bd.bed_id\r\n"
+					+ "WHERE 1=1 and zpqbd.in_date > CURRENT_DATE");
 
-	        Map<String, Object> parameters = new HashMap<>();
-	        
-	        if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+			Map<String, Object> parameters = new HashMap<>();
+
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
 				queryBuilder.append(" AND zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
-	        if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
-	            parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
-	        }
+			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
+				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+			}
 
-	        if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
-	            queryBuilder.append(" AND um.user_mobile LIKE :tenantContactNum ");
-	            parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
-	        }
+			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+				queryBuilder.append(" AND um.user_mobile LIKE :tenantContactNum ");
+				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
+			}
 
-	        if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
-	            parameters.put("pgName", "%" + filterData.getPgName() + "%");
-	        }
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
+				parameters.put("pgName", "%" + filterData.getPgName() + "%");
+			}
 
-	        if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(bd.bed_name) LIKE LOWER(:bedNumber) ");
-	            parameters.put("bedNumber", "%" + filterData.getBedNumber() + "%");
-	        }
+			if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
+				queryBuilder.append(" AND LOWER(bd.bed_name) LIKE LOWER(:bedNumber) ");
+				parameters.put("bedNumber", "%" + filterData.getBedNumber() + "%");
+			}
 
-	        if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
 				queryBuilder.append(" AND LOWER(zpd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
-	        
-	        if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
-	                && filterRequest.getSortActive() != null) {
-	            String sort = "";
-	            switch (filterRequest.getSortActive()) {
-	                case "tenantName":
-	                    sort = "um.user_first_name || ' ' || um.user_last_name";
-	                    break;
-	                case "tenantContactNumber":
-	                    sort = "um.user_mobile";
-	                    break;
-	                case "tenantEmailAddress":
-	                	sort="um.user_email";
-	                	break;
-	                case "bookedProperyName":
-	                    sort = "zpd.property_name";
-	                    break;
-	                case "propertAddress":
-	                    sort = "zpd.property_house_area";
-	                    break;
-	                case "roomNumber":
-	                    sort = "bd.bed_name";
-	                    break;
-	                case "expectedCheckIndate":
-	                    sort = "zpqbd.in_date";
-	                    break;
-	                case "expectedCheckOutdate" :
-	                	sort="zpqbd.out_date";   	
-	                default:
-	                    sort = "zpqbd.in_date";
-	            }
-	            String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
-	            queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
-	        } else {
-	            queryBuilder.append(" ORDER BY zpqbd.in_date DESC");
-	        }
 
-	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
-	        parameters.forEach(query::setParameter);
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "tenantName":
+					sort = "um.user_first_name || ' ' || um.user_last_name";
+					break;
+				case "tenantContactNumber":
+					sort = "um.user_mobile";
+					break;
+				case "tenantEmailAddress":
+					sort="um.user_email";
+					break;
+				case "bookedProperyName":
+					sort = "zpd.property_name";
+					break;
+				case "propertAddress":
+					sort = "zpd.property_house_area";
+					break;
+				case "roomNumber":
+					sort = "bd.bed_name";
+					break;
+				case "expectedCheckIndate":
+					sort = "zpqbd.in_date";
+					break;
+				case "expectedCheckOutdate" :
+					sort="zpqbd.out_date";   	
+				default:
+					sort = "zpqbd.in_date";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY zpqbd.in_date DESC");
+			}
 
-	        int filterCount = query.getResultList().size();
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
 
-	        if (applyPagination) {
-	            query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
-	            query.setMaxResults(filterRequest.getPageSize());
-	        }
+			int filterCount = query.getResultList().size();
 
-	        List<Object[]> results = query.getResultList();
-	        List<TenantResportsDTO> upcomingTenantsReportDto = results.stream().map(row -> {
-	        	TenantResportsDTO dto = new TenantResportsDTO();
-	            dto.setTenantName(row[0] != null ? (String) row[0] : "");
-	            dto.setTenantContactNumber(row[1] != null ? (String) row[1] : "");
-	            dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : "");
-	            dto.setBookedProperyName(row[3] != null ? (String) row[3] : "");
-	            dto.setPropertAddress(row[4] != null ? (String) row[4] : "");
-	            dto.setRoomNumber(row[5] != null ? (String) row[5] : "");
-	            dto.setExpectedCheckIndate(row[6] != null ? (Timestamp)(row[6]) : null);
-	            dto.setExpectedCheckOutdate(row[7] != null ? (Timestamp)(row[7]) : null);
-	            return dto;
-	        }).collect(Collectors.toList());
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
 
-	        return new CommonResponseDTO<>(upcomingTenantsReportDto, filterCount);
-	    } catch (Exception e) {
-	        throw new WebServiceException("Error retrieving Upcoming Tenants: " + e.getMessage());
-	    }
+			List<Object[]> results = query.getResultList();
+			List<TenantResportsDTO> upcomingTenantsReportDto = results.stream().map(row -> {
+				TenantResportsDTO dto = new TenantResportsDTO();
+				dto.setTenantName(row[0] != null ? (String) row[0] : "");
+				dto.setTenantContactNumber(row[1] != null ? (String) row[1] : "");
+				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : "");
+				dto.setBookedProperyName(row[3] != null ? (String) row[3] : "");
+				dto.setPropertAddress(row[4] != null ? (String) row[4] : "");
+				dto.setRoomNumber(row[5] != null ? (String) row[5] : "");
+				dto.setExpectedCheckIndate(row[6] != null ? (Timestamp)(row[6]) : null);
+				dto.setExpectedCheckOutdate(row[7] != null ? (Timestamp)(row[7]) : null);
+				return dto;
+			}).collect(Collectors.toList());
+
+			return new CommonResponseDTO<>(upcomingTenantsReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Upcoming Tenants: " + e.getMessage());
+		}
 	}
-	
-	
+
+
 	public CommonResponseDTO<TenantResportsDTO> getActiveTenantsReport(UserPaymentFilterRequest filterRequest,
-	        FilterData filterData, Boolean applyPagination) throws WebServiceException {
-	    try {
-	        StringBuilder queryBuilder = new StringBuilder("SELECT \r\n"
-	        		+ "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
-	        		+ "    um.user_mobile,\r\n"
-	        		+ "    um.user_email,\r\n"
-	        		+ "    zpd.property_name,\r\n"
-	        		+ "    zpd.property_house_area,\r\n"
-	        		+ "    bd.bed_name,\r\n"
-	        		+ "    zpqbd.in_date, \r\n"
-	        		+ "    zpqbd.out_date\r\n, "
-	        		+ "    zpd.property_city\r\n "
-	        		+ "FROM pgusers.user_master um\r\n"
-	        		+ "JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
-	        		+ "    ON um.user_id = zpqbd.tenant_id \r\n"
-	        		+ "join pgusers.user_bookings ub\r\n"
-	        		+ "    on zpqbd.booking_id = ub.user_bookings_id \r\n"
-	        		+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
-	        		+ "    ON zpqbd.property_id = zpd.property_id \r\n"
-	        		+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
-	        		+ "    ON zpqbd.selected_bed = bd.bed_id \r\n"
-	        		+ "WHERE 1=1 and \r\n"
-	        		+ "    ub.user_bookings_web_check_in = True\r\n"
-	        		+ "	AND ub.user_bookings_web_check_out = FALSE\r\n"
-	        		+ "	AND ub.user_bookings_is_cancelled = False");
+			FilterData filterData, Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder("SELECT \r\n"
+					+ "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+					+ "    um.user_mobile,\r\n"
+					+ "    um.user_email,\r\n"
+					+ "    zpd.property_name,\r\n"
+					+ "    zpd.property_house_area,\r\n"
+					+ "    bd.bed_name,\r\n"
+					+ "    zpqbd.in_date, \r\n"
+					+ "    zpqbd.out_date\r\n, "
+					+ "    zpd.property_city\r\n "
+					+ "FROM pgusers.user_master um\r\n"
+					+ "JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
+					+ "    ON um.user_id = zpqbd.tenant_id \r\n"
+					+ "join pgusers.user_bookings ub\r\n"
+					+ "    on zpqbd.booking_id = ub.user_bookings_id \r\n"
+					+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
+					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
+					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
+					+ "    ON zpqbd.selected_bed = bd.bed_id \r\n"
+					+ "WHERE 1=1 and \r\n"
+					+ "    ub.user_bookings_web_check_in = True\r\n"
+					+ "	AND ub.user_bookings_web_check_out = FALSE\r\n"
+					+ "	AND ub.user_bookings_is_cancelled = False");
 
-	        Map<String, Object> parameters = new HashMap<>();
-	        
-	        if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+			Map<String, Object> parameters = new HashMap<>();
+
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
 				queryBuilder.append(" AND zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
-	        if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
-	            parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
-	        }
+			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
+				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+			}
 
-	        if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
-	            queryBuilder.append(" AND um.user_mobile LIKE :tenantContactNum ");
-	            parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
-	        }
+			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+				queryBuilder.append(" AND um.user_mobile LIKE :tenantContactNum ");
+				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
+			}
 
-	        if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
-	            parameters.put("pgName", "%" + filterData.getPgName() + "%");
-	        }
-	        
-	        if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(bd.bed_name) LIKE LOWER(:bedNumber) ");
-	            parameters.put("bedNumber", "%" + filterData.getBedNumber() + "%");
-	        }
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
+				parameters.put("pgName", "%" + filterData.getPgName() + "%");
+			}
 
-	        if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+			if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
+				queryBuilder.append(" AND LOWER(bd.bed_name) LIKE LOWER(:bedNumber) ");
+				parameters.put("bedNumber", "%" + filterData.getBedNumber() + "%");
+			}
+
+			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
 				queryBuilder.append(" AND LOWER(zpd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
-	        
-	        if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
-	                && filterRequest.getSortActive() != null) {
-	            String sort = "";
-	            switch (filterRequest.getSortActive()) {
-	                case "tenantName":
-	                    sort = "um.user_first_name || ' ' || um.user_last_name";
-	                    break;
-	                case "tenantContactNumber":
-	                    sort = "um.user_mobile";
-	                    break;
-	                case "tenantEmailAddress":
-	                	sort="um.user_email";
-	                	break;
-	                case "currentPropertName":
-	                    sort = "zpd.property_name";
-	                    break;
-	                case "propertAddress":
-	                    sort = "zpd.property_house_area";
-	                    break;
-	                case "roomNumber":
-	                    sort = "bd.bed_name";
-	                    break;
-	                case "checkInDate":
-	                    sort = "zpqbd.in_date";
-	                    break;
-	                case "expectedCheckOutdate" :
-	                	sort="zpqbd.out_date";   	
-	                default:
-	                    sort = "zpqbd.in_date";
-	            }
-	            String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
-	            queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
-	        } else {
-	            queryBuilder.append(" ORDER BY zpqbd.in_date DESC");
-	        }
 
-	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
-	        parameters.forEach(query::setParameter);
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "tenantName":
+					sort = "um.user_first_name || ' ' || um.user_last_name";
+					break;
+				case "tenantContactNumber":
+					sort = "um.user_mobile";
+					break;
+				case "tenantEmailAddress":
+					sort="um.user_email";
+					break;
+				case "currentPropertName":
+					sort = "zpd.property_name";
+					break;
+				case "propertAddress":
+					sort = "zpd.property_house_area";
+					break;
+				case "roomNumber":
+					sort = "bd.bed_name";
+					break;
+				case "checkInDate":
+					sort = "zpqbd.in_date";
+					break;
+				case "expectedCheckOutdate" :
+					sort="zpqbd.out_date";   	
+				default:
+					sort = "zpqbd.in_date";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY zpqbd.in_date DESC");
+			}
 
-	        int filterCount = query.getResultList().size();
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
 
-	        if (applyPagination) {
-	            query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
-	            query.setMaxResults(filterRequest.getPageSize());
-	        }
+			int filterCount = query.getResultList().size();
 
-	        List<Object[]> results = query.getResultList();
-	        List<TenantResportsDTO> activeTenantsReportDto = results.stream().map(row -> {
-	        	TenantResportsDTO dto = new TenantResportsDTO();
-	            dto.setTenantName(row[0] != null ? (String) row[0] : "");
-	            dto.setTenantContactNumber(row[1] != null ? (String) row[1] : "");
-	            dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : "");
-	            dto.setCurrentPropertName(row[3] != null ? (String) row[3] : "");
-	            dto.setPropertAddress(row[4] != null ? (String) row[4] : "");
-	            dto.setRoomNumber(row[5] != null ? (String) row[5] : "");
-	            dto.setCheckInDate(row[6] != null ? (Timestamp)(row[6]) : null);
-	            dto.setExpectedCheckOutdate(row[7] != null ? (Timestamp)(row[7]) : null);
-	            return dto;
-	        }).collect(Collectors.toList());
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
 
-	        return new CommonResponseDTO<>(activeTenantsReportDto, filterCount);
-	    } catch (Exception e) {
-	        throw new WebServiceException("Error retrieving Active Tenants: " + e.getMessage());
-	    }
+			List<Object[]> results = query.getResultList();
+			List<TenantResportsDTO> activeTenantsReportDto = results.stream().map(row -> {
+				TenantResportsDTO dto = new TenantResportsDTO();
+				dto.setTenantName(row[0] != null ? (String) row[0] : "");
+				dto.setTenantContactNumber(row[1] != null ? (String) row[1] : "");
+				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : "");
+				dto.setCurrentPropertName(row[3] != null ? (String) row[3] : "");
+				dto.setPropertAddress(row[4] != null ? (String) row[4] : "");
+				dto.setRoomNumber(row[5] != null ? (String) row[5] : "");
+				dto.setCheckInDate(row[6] != null ? (Timestamp)(row[6]) : null);
+				dto.setExpectedCheckOutdate(row[7] != null ? (Timestamp)(row[7]) : null);
+				return dto;
+			}).collect(Collectors.toList());
+
+			return new CommonResponseDTO<>(activeTenantsReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Active Tenants: " + e.getMessage());
+		}
 	}
-	
-	
+
+
 	public CommonResponseDTO<TenantResportsDTO> getInActiveTenantsReport(UserPaymentFilterRequest filterRequest,
-	        FilterData filterData, Boolean applyPagination) throws WebServiceException {
-	    try {
-	        StringBuilder queryBuilder = new StringBuilder(
-	                "SELECT * FROM ( " +
-	                        "    SELECT DISTINCT ON (zpobd.tenant_id) " +
-	                        "       um.user_first_name, " +
-	                        "       um.user_last_name, " +
-	                        "       um.user_first_name || ' ' || um.user_last_name AS username, " +
-	                        "       um.user_mobile AS mobileNumber, " +
-	                        "       um.user_email AS emailId, " +
-	                        "       zppd.property_name AS propertyName, " +
-	                        "       zppd.property_house_area AS propertyAddress, " +
-	                        "       bd.bed_name AS bedName , " +
-	                        "       zpobd.out_date AS outDate " +
-	                        "    FROM pgowners.zoy_pg_owner_booking_details zpobd " +
-	                        "    JOIN pgusers.user_bookings ub ON zpobd.booking_id = ub.user_bookings_id " +
-	                        "    AND ub.user_bookings_web_check_out = TRUE"+
-	                        "    JOIN pgusers.user_master um ON um.user_id = zpobd.tenant_id " +
-	                        "    JOIN pgowners.zoy_pg_property_details zppd ON zppd.property_id = zpobd.property_id " +
-	                        "    JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id " +
-	                        "    WHERE 1=1 "
-	        );
+			FilterData filterData, Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+					"SELECT * FROM ( " +
+							"    SELECT DISTINCT ON (zpobd.tenant_id) " +
+							"       um.user_first_name, " +
+							"       um.user_last_name, " +
+							"       um.user_first_name || ' ' || um.user_last_name AS username, " +
+							"       um.user_mobile AS mobileNumber, " +
+							"       um.user_email AS emailId, " +
+							"       zppd.property_name AS propertyName, " +
+							"       zppd.property_house_area AS propertyAddress, " +
+							"       bd.bed_name AS bedName , " +
+							"       zpobd.out_date AS outDate " +
+							"    FROM pgowners.zoy_pg_owner_booking_details zpobd " +
+							"    JOIN pgusers.user_bookings ub ON zpobd.booking_id = ub.user_bookings_id " +
+							"    AND ub.user_bookings_web_check_out = TRUE"+
+							"    JOIN pgusers.user_master um ON um.user_id = zpobd.tenant_id " +
+							"    JOIN pgowners.zoy_pg_property_details zppd ON zppd.property_id = zpobd.property_id " +
+							"    JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id " +
+							"    WHERE 1=1 "
+					);
 
-	        Map<String, Object> parameters = new HashMap<>();
+			Map<String, Object> parameters = new HashMap<>();
 
-	        if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-	            queryBuilder.append(" AND zpobd.out_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
-	            parameters.put("fromDate", filterRequest.getFromDate());
-	            parameters.put("toDate", filterRequest.getToDate());
-	        }
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND zpobd.out_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
 
-	        if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
-	            parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
-	        }
+			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
+				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+			}
 
-	        if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
-	            queryBuilder.append(" AND um.user_mobile LIKE :tenantContactNum ");
-	            parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
-	        }
+			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+				queryBuilder.append(" AND um.user_mobile LIKE :tenantContactNum ");
+				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
+			}
 
-	        if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:pgName) ");
-	            parameters.put("pgName", "%" + filterData.getPgName() + "%");
-	        }
-	        
-	        if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(bd.bed_name) LIKE LOWER(:bedNumber) ");
-	            parameters.put("bedNumber", "%" + filterData.getBedNumber() + "%");
-	        }
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:pgName) ");
+				parameters.put("pgName", "%" + filterData.getPgName() + "%");
+			}
 
-	        if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
-	            parameters.put("cityLocation", filterRequest.getCityLocation());
-	        }
+			if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
+				queryBuilder.append(" AND LOWER(bd.bed_name) LIKE LOWER(:bedNumber) ");
+				parameters.put("bedNumber", "%" + filterData.getBedNumber() + "%");
+			}
 
-	        queryBuilder.append(" ORDER BY zpobd.tenant_id " +
-	                ") sub ");
+			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
+				parameters.put("cityLocation", filterRequest.getCityLocation());
+			}
 
-	        if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
-	                && filterRequest.getSortActive() != null) {
-	            String sort = "";
-	            switch (filterRequest.getSortActive()) {
-	                case "tenantName":
-	                    sort = "username";
-	                    break;
-	                case "tenantContactNumber":
-	                    sort = "mobileNumber";
-	                    break;
-	                case "tenantEmailAddress":
-	                    sort = "emailId";
-	                    break;
-	                case "previousPropertName":
-	                    sort = "propertyName";
-	                    break;
-	                case "propertAddress":
-	                    sort = "propertyAddress";
-	                    break;
-	                case "roomNumber":
-	                    sort = "bedName";
-	                    break;
-	                case "checkedOutDate":
-	                    sort = "outDate";
-	                    break;
-	                default:
-	                    sort = "outDate";
-	            }
-	            String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
-	            queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
-	        } else {
-	            queryBuilder.append(" ORDER BY suspendedDate DESC ");
-	        }
+			queryBuilder.append(" ORDER BY zpobd.tenant_id " +
+					") sub ");
 
-	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
-	        parameters.forEach(query::setParameter);
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "tenantName":
+					sort = "username";
+					break;
+				case "tenantContactNumber":
+					sort = "mobileNumber";
+					break;
+				case "tenantEmailAddress":
+					sort = "emailId";
+					break;
+				case "previousPropertName":
+					sort = "propertyName";
+					break;
+				case "propertAddress":
+					sort = "propertyAddress";
+					break;
+				case "roomNumber":
+					sort = "bedName";
+					break;
+				case "checkedOutDate":
+					sort = "outDate";
+					break;
+				default:
+					sort = "outDate";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY suspendedDate DESC ");
+			}
 
-	        int filterCount = query.getResultList().size();
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
 
-	        if (applyPagination) {
-	            query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
-	            query.setMaxResults(filterRequest.getPageSize());
-	        }
+			int filterCount = query.getResultList().size();
 
-	        List<Object[]> results = query.getResultList();
-	        List<TenantResportsDTO> inActiveTenantsReportDto = results.stream().map(row -> {
-	            TenantResportsDTO dto = new TenantResportsDTO();
-	            dto.setTenantName(row[2] != null ? (String) row[2] : ""); 
-	            dto.setTenantContactNumber(row[3] != null ? (String) row[3] : "");
-	            dto.setTenantEmailAddress(row[4] != null ? (String) row[4] : ""); 
-	            dto.setPreviousPropertName(row[5] != null ? (String) row[5] : ""); 
-	            dto.setPropertAddress(row[6] != null ? (String) row[6] : ""); 
-	            dto.setRoomNumber(row[7] != null ? (String) row[7] : ""); 
-	            dto.setCheckedOutDate(row[8] != null ? (Timestamp) row[8] : null);
-	            return dto;
-	        }).collect(Collectors.toList());
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
 
-	        return new CommonResponseDTO<>(inActiveTenantsReportDto, filterCount);
-	    } catch (Exception e) {
-	        throw new WebServiceException("Error retrieving inActive Tenants: " + e.getMessage());
-	    }
+			List<Object[]> results = query.getResultList();
+			List<TenantResportsDTO> inActiveTenantsReportDto = results.stream().map(row -> {
+				TenantResportsDTO dto = new TenantResportsDTO();
+				dto.setTenantName(row[2] != null ? (String) row[2] : ""); 
+				dto.setTenantContactNumber(row[3] != null ? (String) row[3] : "");
+				dto.setTenantEmailAddress(row[4] != null ? (String) row[4] : ""); 
+				dto.setPreviousPropertName(row[5] != null ? (String) row[5] : ""); 
+				dto.setPropertAddress(row[6] != null ? (String) row[6] : ""); 
+				dto.setRoomNumber(row[7] != null ? (String) row[7] : ""); 
+				dto.setCheckedOutDate(row[8] != null ? (Timestamp) row[8] : null);
+				return dto;
+			}).collect(Collectors.toList());
+
+			return new CommonResponseDTO<>(inActiveTenantsReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving inActive Tenants: " + e.getMessage());
+		}
 	}
-	
-	
+
+
 	public CommonResponseDTO<TenantResportsDTO> getSuspendedTenantsReport(UserPaymentFilterRequest filterRequest,
-	        FilterData filterData, Boolean applyPagination) throws WebServiceException {
-	    try {
-	        StringBuilder queryBuilder = new StringBuilder(
-	                "SELECT * FROM ( " +
-	                        "    SELECT DISTINCT ON (zpobd.tenant_id) " +
-	                        "       um.user_first_name, " +
-	                        "       um.user_last_name, " +
-	                        "       um.user_first_name || ' ' || um.user_last_name AS username, " +
-	                        "       um.user_mobile AS mobileNumber, " +
-	                        "       um.user_email AS emailId, " +
-	                        "       zppd.property_name AS propertyName, " +
-	                        "       zppd.property_house_area AS propertyAddress, " +
-	                        "       bd.bed_name AS bedName , " +
-	                        "       zpobd.out_date AS outDate, " +
-	                        "       um.user_modified_at AS suspendedDate, " +
-	                        "       um.reason_message AS reasonForSuspension " +
-	                        "    FROM pgowners.zoy_pg_owner_booking_details zpobd " +
-	                        "    JOIN pgusers.user_bookings ub ON zpobd.booking_id = ub.user_bookings_id " +
-//	                        "    AND ub.user_bookings_web_check_out = TRUE"+
-	                        "    JOIN pgusers.user_master um ON um.user_id = zpobd.tenant_id " +
-	                        "    JOIN pgowners.zoy_pg_property_details zppd ON zppd.property_id = zpobd.property_id " +
-	                        "    JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id " +
-	                        "    WHERE um.user_status = 'Suspended' "
-	        );
+			FilterData filterData, Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+					"SELECT * FROM ( " +
+							"    SELECT DISTINCT ON (zpobd.tenant_id) " +
+							"       um.user_first_name, " +
+							"       um.user_last_name, " +
+							"       um.user_first_name || ' ' || um.user_last_name AS username, " +
+							"       um.user_mobile AS mobileNumber, " +
+							"       um.user_email AS emailId, " +
+							"       zppd.property_name AS propertyName, " +
+							"       zppd.property_house_area AS propertyAddress, " +
+							"       bd.bed_name AS bedName , " +
+							"       zpobd.out_date AS outDate, " +
+							"       um.user_modified_at AS suspendedDate, " +
+							"       um.reason_message AS reasonForSuspension " +
+							"    FROM pgowners.zoy_pg_owner_booking_details zpobd " +
+							"    JOIN pgusers.user_bookings ub ON zpobd.booking_id = ub.user_bookings_id " +
+							//	                        "    AND ub.user_bookings_web_check_out = TRUE"+
+							"    JOIN pgusers.user_master um ON um.user_id = zpobd.tenant_id " +
+							"    JOIN pgowners.zoy_pg_property_details zppd ON zppd.property_id = zpobd.property_id " +
+							"    JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id " +
+							"    WHERE um.user_status = 'Suspended' "
+					);
 
-	        Map<String, Object> parameters = new HashMap<>();
+			Map<String, Object> parameters = new HashMap<>();
 
-	        if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-	            queryBuilder.append(" AND zpobd.out_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
-	            parameters.put("fromDate", filterRequest.getFromDate());
-	            parameters.put("toDate", filterRequest.getToDate());
-	        }
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND zpobd.out_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
 
-	        if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
-	            parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
-	        }
+			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
+				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+			}
 
-	        if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
-	            queryBuilder.append(" AND um.user_mobile LIKE :tenantContactNum ");
-	            parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
-	        }
+			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+				queryBuilder.append(" AND um.user_mobile LIKE :tenantContactNum ");
+				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
+			}
 
-	        if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:pgName) ");
-	            parameters.put("pgName", "%" + filterData.getPgName() + "%");
-	        }
-	        
-	        if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(bd.bed_name) LIKE LOWER(:bedNumber) ");
-	            parameters.put("bedNumber", "%" + filterData.getBedNumber() + "%");
-	        }
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:pgName) ");
+				parameters.put("pgName", "%" + filterData.getPgName() + "%");
+			}
 
-	        if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-	            queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
-	            parameters.put("cityLocation", filterRequest.getCityLocation());
-	        }
+			if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
+				queryBuilder.append(" AND LOWER(bd.bed_name) LIKE LOWER(:bedNumber) ");
+				parameters.put("bedNumber", "%" + filterData.getBedNumber() + "%");
+			}
 
-	        queryBuilder.append(" ORDER BY zpobd.tenant_id " +
-	                ") sub ");
+			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
+				parameters.put("cityLocation", filterRequest.getCityLocation());
+			}
 
-	        if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
-	                && filterRequest.getSortActive() != null) {
-	            String sort = "";
-	            switch (filterRequest.getSortActive()) {
-	                case "tenantName":
-	                    sort = "username";
-	                    break;
-	                case "tenantContactNumber":
-	                    sort = "mobileNumber";
-	                    break;
-	                case "tenantEmailAddress":
-	                    sort = "emailId";
-	                    break;
-	                case "previousPropertName":
-	                    sort = "propertyName";
-	                    break;
-	                case "propertAddress":
-	                    sort = "propertyAddress";
-	                    break;
-	                case "roomNumber":
-	                    sort = "bedName";
-	                    break;
-	                case "checkedOutDate":
-	                    sort = "outDate";
-	                    break;
-	                case "suspendedDate":
-	                    sort = "suspendedDate";
-	                    break;
-	                case "reasonForSuspension":
-	                    sort = "reasonForSuspension";
-	                    break;
-	                default:
-	                    sort = "suspendedDate";
-	            }
-	            String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
-	            queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
-	        } else {
-	            queryBuilder.append(" ORDER BY suspendedDate DESC ");
-	        }
+			queryBuilder.append(" ORDER BY zpobd.tenant_id " +
+					") sub ");
 
-	        Query query = entityManager.createNativeQuery(queryBuilder.toString());
-	        parameters.forEach(query::setParameter);
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "tenantName":
+					sort = "username";
+					break;
+				case "tenantContactNumber":
+					sort = "mobileNumber";
+					break;
+				case "tenantEmailAddress":
+					sort = "emailId";
+					break;
+				case "previousPropertName":
+					sort = "propertyName";
+					break;
+				case "propertAddress":
+					sort = "propertyAddress";
+					break;
+				case "roomNumber":
+					sort = "bedName";
+					break;
+				case "checkedOutDate":
+					sort = "outDate";
+					break;
+				case "suspendedDate":
+					sort = "suspendedDate";
+					break;
+				case "reasonForSuspension":
+					sort = "reasonForSuspension";
+					break;
+				default:
+					sort = "suspendedDate";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY suspendedDate DESC ");
+			}
 
-	        int filterCount = query.getResultList().size();
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
 
-	        if (applyPagination) {
-	            query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
-	            query.setMaxResults(filterRequest.getPageSize());
-	        }
+			int filterCount = query.getResultList().size();
 
-	        List<Object[]> results = query.getResultList();
-	        List<TenantResportsDTO> suspendedTenantsReportDto = results.stream().map(row -> {
-	            TenantResportsDTO dto = new TenantResportsDTO();
-	            dto.setTenantName(row[2] != null ? (String) row[2] : ""); 
-	            dto.setTenantContactNumber(row[3] != null ? (String) row[3] : "");
-	            dto.setTenantEmailAddress(row[4] != null ? (String) row[4] : ""); 
-	            dto.setPreviousPropertName(row[5] != null ? (String) row[5] : ""); 
-	            dto.setPropertAddress(row[6] != null ? (String) row[6] : ""); 
-	            dto.setRoomNumber(row[7] != null ? (String) row[7] : ""); 
-	            dto.setCheckedOutDate(row[8] != null ? (Timestamp) row[8] : null);
-	            dto.setSuspendedDate(row[9] != null ? (Timestamp) row[9] : null); 
-	            dto.setReasonForSuspension(row[10] != null ? (String) row[10] : "");
-	            return dto;
-	        }).collect(Collectors.toList());
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
 
-	        return new CommonResponseDTO<>(suspendedTenantsReportDto, filterCount);
-	    } catch (Exception e) {
-	        throw new WebServiceException("Error retrieving Suspended Tenants: " + e.getMessage());
-	    }
+			List<Object[]> results = query.getResultList();
+			List<TenantResportsDTO> suspendedTenantsReportDto = results.stream().map(row -> {
+				TenantResportsDTO dto = new TenantResportsDTO();
+				dto.setTenantName(row[2] != null ? (String) row[2] : ""); 
+				dto.setTenantContactNumber(row[3] != null ? (String) row[3] : "");
+				dto.setTenantEmailAddress(row[4] != null ? (String) row[4] : ""); 
+				dto.setPreviousPropertName(row[5] != null ? (String) row[5] : ""); 
+				dto.setPropertAddress(row[6] != null ? (String) row[6] : ""); 
+				dto.setRoomNumber(row[7] != null ? (String) row[7] : ""); 
+				dto.setCheckedOutDate(row[8] != null ? (Timestamp) row[8] : null);
+				dto.setSuspendedDate(row[9] != null ? (Timestamp) row[9] : null); 
+				dto.setReasonForSuspension(row[10] != null ? (String) row[10] : "");
+				return dto;
+			}).collect(Collectors.toList());
+
+			return new CommonResponseDTO<>(suspendedTenantsReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Suspended Tenants: " + e.getMessage());
+		}
 	}
 
 	@Override
@@ -1975,211 +1996,211 @@ public class AdminReportService implements AdminReportImpl{
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder(
-				    "SELECT " +
-				            "   zpod.pg_owner_name AS ownerFullName, " +
-				            "   zppd.property_name AS propertyName, " +
-				            "   zppd.property_contact_number AS propertyContactNumber, " +
-				            "   zppd.property_pg_email AS propertyEmailAddress, " +
-				            "   zppd.property_house_area AS propertyAddress " +
-				            "FROM pgowners.zoy_pg_property_details zppd " +
-				            "JOIN pgcommon.pg_owner_property_status pops ON zppd.property_id = pops.property_id " +
-				            "JOIN pgowners.zoy_pg_owner_details zpod ON zppd.pg_owner_id = zpod.pg_owner_id " +
-				            "WHERE pops.status = false "
-				);
+					"SELECT " +
+							"   zpod.pg_owner_name AS ownerFullName, " +
+							"   zppd.property_name AS propertyName, " +
+							"   zppd.property_contact_number AS propertyContactNumber, " +
+							"   zppd.property_pg_email AS propertyEmailAddress, " +
+							"   zppd.property_house_area AS propertyAddress " +
+							"FROM pgowners.zoy_pg_property_details zppd " +
+							"JOIN pgcommon.pg_owner_property_status pops ON zppd.property_id = pops.property_id " +
+							"JOIN pgowners.zoy_pg_owner_details zpod ON zppd.pg_owner_id = zpod.pg_owner_id " +
+							"WHERE pops.status = false "
+					);
 
-		    Map<String, Object> parameters = new HashMap<>();
-		    
-		    if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-		        queryBuilder.append(" AND pops.updated_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
-		        parameters.put("fromDate", filterRequest.getFromDate());
-		        parameters.put("toDate", filterRequest.getToDate());
-		    }
+			Map<String, Object> parameters = new HashMap<>();
 
-		    if (filterData.getOwnerName() != null && !filterData.getOwnerName().isEmpty()) {
-		        queryBuilder.append(" AND LOWER(zpod.pg_owner_name) LIKE LOWER(:ownerName) ");
-		        parameters.put("ownerName", "%" + filterData.getOwnerName() + "%");
-		    }
-		    if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-		        queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:propertyName) ");
-		        parameters.put("propertyName", "%" + filterData.getPgName() + "%");
-		    }
-		    if (filterData.getPropertyContactNum() != null && !filterData.getPropertyContactNum().isEmpty()) {
-		        queryBuilder.append(" AND LOWER(zppd.property_contact_number) LIKE LOWER(:propertyContactNumber) ");
-		        parameters.put("propertyContactNumber", "%" + filterData.getPropertyContactNum() + "%");
-		    }
-		    if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
-		        queryBuilder.append(" AND LOWER(zppd.property_pg_email) LIKE LOWER(:propertyEmailAddress) ");
-		        parameters.put("propertyEmailAddress", "%" + filterData.getOwnerEmail() + "%");
-		    }
-		    if (filterData.getPgAddress() != null && !filterData.getPgAddress().isEmpty()) {
-		        queryBuilder.append(" AND LOWER(zppd.property_house_area) LIKE LOWER(:propertyAddress) ");
-		        parameters.put("propertyAddress", "%" + filterData.getPgAddress() + "%");
-		    }
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND pops.updated_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
+
+			if (filterData.getOwnerName() != null && !filterData.getOwnerName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpod.pg_owner_name) LIKE LOWER(:ownerName) ");
+				parameters.put("ownerName", "%" + filterData.getOwnerName() + "%");
+			}
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:propertyName) ");
+				parameters.put("propertyName", "%" + filterData.getPgName() + "%");
+			}
+			if (filterData.getPropertyContactNum() != null && !filterData.getPropertyContactNum().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_contact_number) LIKE LOWER(:propertyContactNumber) ");
+				parameters.put("propertyContactNumber", "%" + filterData.getPropertyContactNum() + "%");
+			}
+			if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_pg_email) LIKE LOWER(:propertyEmailAddress) ");
+				parameters.put("propertyEmailAddress", "%" + filterData.getOwnerEmail() + "%");
+			}
+			if (filterData.getPgAddress() != null && !filterData.getPgAddress().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_house_area) LIKE LOWER(:propertyAddress) ");
+				parameters.put("propertyAddress", "%" + filterData.getPgAddress() + "%");
+			}
 
 
-		    if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
-		            && filterRequest.getSortActive() != null) {
-		        String sort = "";
-		        switch (filterRequest.getSortActive()) {
-		            case "ownerFullName":
-		                sort = "ownerFullName";
-		                break;
-		            case "propertyName":
-		                sort = "propertyName";
-		                break;
-		            case "propertyContactNumber":
-		                sort = "propertyContactNumber";
-		                break;
-		            case "propertyEmailAddress":
-		                sort = "propertyEmailAddress";
-		                break;
-		            case "propertyAddress":
-		                sort = "propertyAddress";
-		                break;
-		            default:
-		                sort = "propertyName";
-		        }
-		        String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
-		        queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
-		    } else {
-		        queryBuilder.append(" ORDER BY propertyName DESC ");
-		    }
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "ownerFullName":
+					sort = "ownerFullName";
+					break;
+				case "propertyName":
+					sort = "propertyName";
+					break;
+				case "propertyContactNumber":
+					sort = "propertyContactNumber";
+					break;
+				case "propertyEmailAddress":
+					sort = "propertyEmailAddress";
+					break;
+				case "propertyAddress":
+					sort = "propertyAddress";
+					break;
+				default:
+					sort = "propertyName";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY propertyName DESC ");
+			}
 
-		    Query query = entityManager.createNativeQuery(queryBuilder.toString());
-		    parameters.forEach(query::setParameter);
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
 
-		    int filterCount = query.getResultList().size();
+			int filterCount = query.getResultList().size();
 
-		    if (applyPagination) {
-		        query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
-		        query.setMaxResults(filterRequest.getPageSize());
-		    }
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
 
-		    List<Object[]> results = query.getResultList();
-		    List<PropertyResportsDTO> inactivePropertiesReportDto = results.stream().map(row -> {
-		        PropertyResportsDTO dto = new PropertyResportsDTO();
-		        dto.setOwnerFullName(row[0] != null ? (String) row[0] : "");
-		        dto.setPropertyName(row[1] != null ? (String) row[1] : "");
-		        dto.setPropertyContactNumber(row[2] != null ? (String) row[2] : "");
-		        dto.setPropertyEmailAddress(row[3] != null ? (String) row[3] : "");
-		        dto.setPropertyAddress(row[4] != null ? (String) row[4] : "");
-		        return dto;
-		    }).collect(Collectors.toList());
+			List<Object[]> results = query.getResultList();
+			List<PropertyResportsDTO> inactivePropertiesReportDto = results.stream().map(row -> {
+				PropertyResportsDTO dto = new PropertyResportsDTO();
+				dto.setOwnerFullName(row[0] != null ? (String) row[0] : "");
+				dto.setPropertyName(row[1] != null ? (String) row[1] : "");
+				dto.setPropertyContactNumber(row[2] != null ? (String) row[2] : "");
+				dto.setPropertyEmailAddress(row[3] != null ? (String) row[3] : "");
+				dto.setPropertyAddress(row[4] != null ? (String) row[4] : "");
+				return dto;
+			}).collect(Collectors.toList());
 
-		    return new CommonResponseDTO<>(inactivePropertiesReportDto, filterCount);
+			return new CommonResponseDTO<>(inactivePropertiesReportDto, filterCount);
 		} catch (Exception e) {
-		    throw new WebServiceException("Error retrieving Inactive Properties: " + e.getMessage());
+			throw new WebServiceException("Error retrieving Inactive Properties: " + e.getMessage());
 		}
 	}
-		
+
 	@Override
 	public CommonResponseDTO<PropertyResportsDTO> getSuspendedPropertyReport(UserPaymentFilterRequest filterRequest,
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder(
-				    "SELECT \r\n"
-				    + "    zpod.pg_owner_name AS ownerFullName,\r\n"
-				    + "    zppd.property_name AS propertyName,\r\n"
-				    + "    zppd.property_contact_number AS propertyContactNumber,\r\n"
-				    + "    zppd.property_pg_email AS propertyEmailAddress,\r\n"
-				    + "    zppd.property_house_area AS propertyAddress,\r\n"
-				    + "    pops.updated_timestamp as suspendedDate,\r\n"
-				    + "    pops.status_reason as statusReason,\r\n"
-				    + "     pops.status_type as statusType\r\n"
-				    + "FROM pgowners.zoy_pg_property_details zppd\r\n"
-				    + "JOIN pgcommon.pg_owner_property_status pops \r\n"
-				    + "    ON zppd.property_id = pops.property_id\r\n"
-				    + "JOIN pgowners.zoy_pg_owner_details zpod \r\n"
-				    + "    ON zppd.pg_owner_id = zpod.pg_owner_id\r\n"
-				    + "WHERE pops.status_type = 'suspend'"
-				);
+					"SELECT \r\n"
+							+ "    zpod.pg_owner_name AS ownerFullName,\r\n"
+							+ "    zppd.property_name AS propertyName,\r\n"
+							+ "    zppd.property_contact_number AS propertyContactNumber,\r\n"
+							+ "    zppd.property_pg_email AS propertyEmailAddress,\r\n"
+							+ "    zppd.property_house_area AS propertyAddress,\r\n"
+							+ "    pops.updated_timestamp as suspendedDate,\r\n"
+							+ "    pops.status_reason as statusReason,\r\n"
+							+ "     pops.status_type as statusType\r\n"
+							+ "FROM pgowners.zoy_pg_property_details zppd\r\n"
+							+ "JOIN pgcommon.pg_owner_property_status pops \r\n"
+							+ "    ON zppd.property_id = pops.property_id\r\n"
+							+ "JOIN pgowners.zoy_pg_owner_details zpod \r\n"
+							+ "    ON zppd.pg_owner_id = zpod.pg_owner_id\r\n"
+							+ "WHERE pops.status_type = 'suspend'"
+					);
 
-		    Map<String, Object> parameters = new HashMap<>();
-		    
-		    if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-		        queryBuilder.append(" AND pops.updated_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
-		        parameters.put("fromDate", filterRequest.getFromDate());
-		        parameters.put("toDate", filterRequest.getToDate());
-		    }
+			Map<String, Object> parameters = new HashMap<>();
 
-		    if (filterData.getOwnerName() != null && !filterData.getOwnerName().isEmpty()) {
-		        queryBuilder.append(" AND LOWER(zpod.pg_owner_name) LIKE LOWER(:ownerName) ");
-		        parameters.put("ownerName", "%" + filterData.getOwnerName() + "%");
-		    }
-		    if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-		        queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:propertyName) ");
-		        parameters.put("propertyName", "%" + filterData.getPgName() + "%");
-		    }
-		    if (filterData.getPropertyContactNum() != null && !filterData.getPropertyContactNum().isEmpty()) {
-		        queryBuilder.append(" AND LOWER(zppd.property_contact_number) LIKE LOWER(:propertyContactNumber) ");
-		        parameters.put("propertyContactNumber", "%" + filterData.getPropertyContactNum() + "%");
-		    }
-		    if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
-		        queryBuilder.append(" AND LOWER(zppd.property_pg_email) LIKE LOWER(:propertyEmailAddress) ");
-		        parameters.put("propertyEmailAddress", "%" + filterData.getOwnerEmail() + "%");
-		    }
-		    if (filterData.getPgAddress() != null && !filterData.getPgAddress().isEmpty()) {
-		        queryBuilder.append(" AND LOWER(zppd.property_house_area) LIKE LOWER(:propertyAddress) ");
-		        parameters.put("propertyAddress", "%" + filterData.getPgAddress() + "%");
-		    }
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND pops.updated_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
 
-		    if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
-		            && filterRequest.getSortActive() != null) {
-		        String sort = "";
-		        switch (filterRequest.getSortActive()) {
-		            case "ownerFullName":
-		                sort = "ownerFullName";
-		                break;
-		            case "propertyName":
-		                sort = "propertyName";
-		                break;
-		            case "propertyContactNumber":
-		                sort = "propertyContactNumber";
-		                break;
-		            case "propertyEmailAddress":
-		                sort = "propertyEmailAddress";
-		                break;
-		            case "propertyAddress":
-		                sort = "propertyAddress";
-		                break;
-		            case "suspendedDate":
-		                sort = "suspendedDate";
-		                break;    
-		            default:
-		                sort = "propertyName";
-		        }
-		        String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
-		        queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
-		    } else {
-		        queryBuilder.append(" ORDER BY propertyName DESC ");
-		    }
+			if (filterData.getOwnerName() != null && !filterData.getOwnerName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpod.pg_owner_name) LIKE LOWER(:ownerName) ");
+				parameters.put("ownerName", "%" + filterData.getOwnerName() + "%");
+			}
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:propertyName) ");
+				parameters.put("propertyName", "%" + filterData.getPgName() + "%");
+			}
+			if (filterData.getPropertyContactNum() != null && !filterData.getPropertyContactNum().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_contact_number) LIKE LOWER(:propertyContactNumber) ");
+				parameters.put("propertyContactNumber", "%" + filterData.getPropertyContactNum() + "%");
+			}
+			if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_pg_email) LIKE LOWER(:propertyEmailAddress) ");
+				parameters.put("propertyEmailAddress", "%" + filterData.getOwnerEmail() + "%");
+			}
+			if (filterData.getPgAddress() != null && !filterData.getPgAddress().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_house_area) LIKE LOWER(:propertyAddress) ");
+				parameters.put("propertyAddress", "%" + filterData.getPgAddress() + "%");
+			}
 
-		    Query query = entityManager.createNativeQuery(queryBuilder.toString());
-		    parameters.forEach(query::setParameter);
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "ownerFullName":
+					sort = "ownerFullName";
+					break;
+				case "propertyName":
+					sort = "propertyName";
+					break;
+				case "propertyContactNumber":
+					sort = "propertyContactNumber";
+					break;
+				case "propertyEmailAddress":
+					sort = "propertyEmailAddress";
+					break;
+				case "propertyAddress":
+					sort = "propertyAddress";
+					break;
+				case "suspendedDate":
+					sort = "suspendedDate";
+					break;    
+				default:
+					sort = "propertyName";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY propertyName DESC ");
+			}
 
-		    int filterCount = query.getResultList().size();
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
 
-		    if (applyPagination) {
-		        query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
-		        query.setMaxResults(filterRequest.getPageSize());
-		    }
+			int filterCount = query.getResultList().size();
 
-		    List<Object[]> results = query.getResultList();
-		    List<PropertyResportsDTO> suspendedPropertiesReportDto = results.stream().map(row -> {
-		        PropertyResportsDTO dto = new PropertyResportsDTO();
-		        dto.setOwnerFullName(row[0] != null ? (String) row[0] : "");
-		        dto.setPropertyName(row[1] != null ? (String) row[1] : "");
-		        dto.setPropertyContactNumber(row[2] != null ? (String) row[2] : "");
-		        dto.setPropertyEmailAddress(row[3] != null ? (String) row[3] : "");
-		        dto.setPropertyAddress(row[4] != null ? (String) row[4] : "");
-		        dto.setSuspendedDate(row[5] != null ? (Timestamp) row[5] : null);
-		        dto.setReasonForSuspension(row[6] != null ? (String) row[6] : "");
-		        return dto;
-		    }).collect(Collectors.toList());
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
 
-		    return new CommonResponseDTO<>(suspendedPropertiesReportDto, filterCount);
+			List<Object[]> results = query.getResultList();
+			List<PropertyResportsDTO> suspendedPropertiesReportDto = results.stream().map(row -> {
+				PropertyResportsDTO dto = new PropertyResportsDTO();
+				dto.setOwnerFullName(row[0] != null ? (String) row[0] : "");
+				dto.setPropertyName(row[1] != null ? (String) row[1] : "");
+				dto.setPropertyContactNumber(row[2] != null ? (String) row[2] : "");
+				dto.setPropertyEmailAddress(row[3] != null ? (String) row[3] : "");
+				dto.setPropertyAddress(row[4] != null ? (String) row[4] : "");
+				dto.setSuspendedDate(row[5] != null ? (Timestamp) row[5] : null);
+				dto.setReasonForSuspension(row[6] != null ? (String) row[6] : "");
+				return dto;
+			}).collect(Collectors.toList());
+
+			return new CommonResponseDTO<>(suspendedPropertiesReportDto, filterCount);
 		} catch (Exception e) {
-		    throw new WebServiceException("Error retrieving Inactive Properties: " + e.getMessage());
+			throw new WebServiceException("Error retrieving Inactive Properties: " + e.getMessage());
 		}
 	}
 }

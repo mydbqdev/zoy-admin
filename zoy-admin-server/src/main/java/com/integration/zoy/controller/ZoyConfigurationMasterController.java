@@ -205,7 +205,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						//audit history here
 						String historyContent=" has deleted the Cancellation And Refund Policy for, Days before check in = "+cancelDetails.getBeforeCheckinDays()+" , Deduction percentage ="+cancelDetails.getDeductionPercentage();
 						auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_DELETE);
-					} else if (ObjectUtils.isNotEmpty(details.getIsEdit()) && details.getIsEdit()) {
+					}else {
 						ZoyPgCancellationDetails cancelDetails = ownerDBImpl.findBeforeCancellationDetails(details.getCancellationId());
 						if (cancelDetails == null) {
 							response.setStatus(HttpStatus.CONFLICT.value());
@@ -231,6 +231,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 							historyContent.append(" , Deduction percentage from "+oldVariable+" to "+details.getDeductionPercentage());
 						}
 						auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+
 					}
 				} else {
 					ZoyPgCancellationDetails newCancelDetails = new ZoyPgCancellationDetails();
@@ -1353,7 +1354,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	public ResponseEntity<String> zoyAdminCompanyProfileMaster(String  data,
 			MultipartFile companyLogo) {
 		ResponseBody response = new ResponseBody();
-		
+
 		try {
 			ZoyCompanyMasterModal companyMaster=gson2.fromJson(data,ZoyCompanyMasterModal.class);
 			if (companyMaster == null) {
@@ -1373,7 +1374,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 				String historyContent=" has Updated Master Company Profile Details ";
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
-				
+
 				ZoyCompanyMasterDto dto =convertToDTO(companyDetails);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -1391,7 +1392,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 				String historyContent=" has Updated Master Company Profile Details ";
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
-				
+
 				ZoyCompanyMasterDto dto =convertToDTO(companyDetails);
 				response.setStatus(HttpStatus.OK.value());
 				response.setData(dto);
@@ -1425,17 +1426,17 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyCompanyMasterDto dto = null;
 
 			if (company != null) {
-			    dto = convertToDTO(company);
+				dto = convertToDTO(company);
 			}
 
 			if (dto == null) {
-			    response.setData(new ZoyCompanyMasterDto()); 
-			    response.setMessage("Company profile details not found");
-			    response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setData(new ZoyCompanyMasterDto()); 
+				response.setMessage("Company profile details not found");
+				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {
-			    response.setData(dto);
-			    response.setMessage("Fetched master Company Profile details successfully");
-			    response.setStatus(HttpStatus.CREATED.value());
+				response.setData(dto);
+				response.setMessage("Fetched master Company Profile details successfully");
+				response.setStatus(HttpStatus.CREATED.value());
 			}
 
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.CREATED);
