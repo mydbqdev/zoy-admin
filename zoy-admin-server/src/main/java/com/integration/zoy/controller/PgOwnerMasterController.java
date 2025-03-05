@@ -606,48 +606,50 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 	@Override
 	public ResponseEntity<String> zoypropertyStatusUpdate(UserStatus userStatus) {
-		ResponseBody response = new ResponseBody();
-		try {
-			String findProperty = pgOwnerPropertyStatusRepository.findTheProperty(userStatus.getUserId());
-			if (findProperty != null && !"".equals(findProperty) && !"null".equals(findProperty)) {
-				Optional<String[]> property = pgOwnerPropertyStatusRepository.findPropertyById(userStatus.getUserId());
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        String findProperty = pgOwnerPropertyStatusRepository.findTheProperty(userStatus.getUserId());
+	        
+	        if (findProperty != null && !findProperty.isEmpty() && !"null".equals(findProperty)) {
 
-				if (!property.isPresent()) {
-					pgOwnerPropertyStatusRepository.updatePropertyById(userStatus.getStatus(),
-							userStatus.getReasonMessage(), userStatus.getUserId());
-					response.setStatus(HttpStatus.OK.value());
-					response.setMessage("property status and reason updated successfully.");
+	            if ("Suspended".equals(userStatus.getStatus())) {
+	                Optional<String[]> property = pgOwnerPropertyStatusRepository.findPropertyById(userStatus.getUserId());
 
-					String historyContent = " has Updated property Status for " + userStatus.getUserId();
-					auditHistoryUtilities.auditForCommon(
-							SecurityContextHolder.getContext().getAuthentication().getName(), historyContent,
-							ZoyConstant.ZOY_OWNER_PROPERTY_STATUS_UPDATE);
-					return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-				} else {
-					response.setStatus(HttpStatus.NOT_FOUND.value());
-					response.setError("property consists of active tenants and bookings");
-					return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
-				}
+	                if (!property.isPresent()) {
+	                    pgOwnerPropertyStatusRepository.updatePropertyById(userStatus.getStatus(), userStatus.getReasonMessage(), userStatus.getUserId());
+	                    response.setStatus(HttpStatus.OK.value());
+	                    response.setMessage("Property status and reason updated successfully.");
+	                    String historyContent = " has updated property status for user " + userStatus.getUserId();
+	                    auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_OWNER_PROPERTY_STATUS_UPDATE);
+	                    return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	                } else {
+	                    response.setStatus(HttpStatus.NOT_FOUND.value());
+	                    response.setError("Property consists of active tenants and bookings.");
+	                    return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+	                }
+	            }
 
-			} else {
-				response.setStatus(HttpStatus.NOT_FOUND.value());
-				response.setError("property does not exists");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
-			}
+	            pgOwnerPropertyStatusRepository.updatePropertyById(userStatus.getStatus(), userStatus.getReasonMessage(), userStatus.getUserId());
+	            response.setStatus(HttpStatus.OK.value());
+	            response.setMessage("Property status and reason updated successfully.");
+	            String historyContent = " has updated property status for user " + userStatus.getUserId();
+	            auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_OWNER_PROPERTY_STATUS_UPDATE);
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
-		} catch (Exception e) {
-			log.error("Error occurred while updating user status: API:/zoy_admin/updatePropertyStatus.zoyTenantStatusUpdate",e);
-			try {
-				new ZoyAdminApplicationException(e, "");
-			} catch (Exception ex) {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError(ex.getMessage());
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
+	        } else {
+	            response.setStatus(HttpStatus.NOT_FOUND.value());
+	            response.setError("Property does not exist.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+	        }
+	        
+	    } catch (Exception e) {
+	        log.error("Error occurred while updating user status: API:/zoy_admin/updatePropertyStatus.zoyTenantStatusUpdate", e);
+	        
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError("An error occurred: " + e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
 	}
+
 
 }

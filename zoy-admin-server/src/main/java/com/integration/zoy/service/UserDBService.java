@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.NotificationModeMaster;
 import com.integration.zoy.entity.UserBillingMaster;
 import com.integration.zoy.entity.UserCurrencyMaster;
@@ -494,7 +496,9 @@ public class UserDBService implements UserDBImpl{
 					Optional.ofNullable(paginationRequest.getFilter().getSearchText()).orElse(""), 
 					Optional.ofNullable(paginationRequest.getFilter().getStartDate()).orElse("1970-01-01 00:00:00"), 
 					Optional.ofNullable(paginationRequest.getFilter().getEndDate()).orElse("9999-12-31 23:59:59"),
-					Optional.ofNullable(paginationRequest.getFilter().getStatus()).orElse(null)
+					(List<String>) Optional.ofNullable(paginationRequest.getFilter().getStatus()!=null ?
+							Arrays.asList(paginationRequest.getFilter().getStatus().split(",")): 
+								Arrays.asList(ZoyConstant.ACTIVE,ZoyConstant.INACTIVE,ZoyConstant.SUSPENDED)).orElse(new ArrayList<>())
 					);
 			return results.map(result -> new TenantDetails(
 					result[0] != null ? (String) result[0] : "",
