@@ -222,4 +222,26 @@ a.more-icon:hover{
   background-image: linear-gradient(to bottom right, #D52571, #3C57CF) !important;
   color:#ffffff;
 }
+
+.color-bg-green{
+  color:rgb(153, 243, 94) !important;
+}
+
+.color-bg-orange{
+  color:rgb(253, 193, 63) !important;
+}
  
+
+.color-bg-gray{
+  color:rgb(204, 204, 203) !important;
+}
+
+a.approve-icon{
+  color:rgb(253, 193, 63) !important;
+  cursor: pointer;
+}
+
+a.approve-icon:hover{
+  color:rgb(240, 28, 212) !important;
+  cursor: pointer;
+}
