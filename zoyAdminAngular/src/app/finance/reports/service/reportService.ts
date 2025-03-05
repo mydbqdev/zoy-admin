@@ -76,8 +76,7 @@ import { MessageService } from 'src/app/message.service';
      // 'customerId': 'TENANT ID' ,//'CUSTOMER ID',
       'basicAmount': 'BASIC AMOUNT',
       'failedReason':'FAILURE REASON',
-
-
+      'contactNum':"CONTACT NUMBER",
       'tenantContactNum' :'TENANT CONTACT',
       'propertyHouseArea' :'PG Address',
       'payerPayeeType':'PAYER/PAYEE TYPE',
@@ -163,7 +162,7 @@ import { MessageService } from 'src/app/message.service';
 		},
     {
 		  'reportName': 'Consolidated Finance Report',
-		  'columns': ['transactionDate', 'transactionNumber','payerPayeeType', 'payerPayeeName', 'creditAmount', 'debitAmount']
+		  'columns': ['transactionDate', 'transactionNumber','payerPayeeType', 'payerPayeeName', 'creditAmount', 'debitAmount','pgName','contactNum']
 		},
     {
 		  'reportName': 'Ratings and Reviews Report',

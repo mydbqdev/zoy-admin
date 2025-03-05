@@ -259,7 +259,7 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
-		//this.param.filter.status=this.selectedStatuses;
+		this.param.filter.status=this.selectedStatuses.join(",");
 		this.getTenantsList();
 	  }
 	  applyDates(): void {
