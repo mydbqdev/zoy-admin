@@ -173,11 +173,10 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			nativeQuery = true)
 	List<Object[]> getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
 	
-	@Query(value = "SELECT " +
-	        "(SELECT COUNT(*) FROM pgusers.user_bookings ub WHERE ub.user_bookings_web_check_in = TRUE AND ub.user_bookings_web_check_out = FALSE AND ub.user_bookings_is_cancelled = FALSE) AS activeTenants, " +
-	        "(SELECT COUNT(*) FROM pgowners.zoy_pg_owner_booking_details zpqbd WHERE zpqbd.in_date > CURRENT_DATE) AS upcomingTenantsCount, " +
-	        "(SELECT COUNT(DISTINCT zpobd.tenant_id) FROM pgowners.zoy_pg_owner_booking_details zpobd JOIN pgusers.user_bookings ub ON zpobd.booking_id = ub.user_bookings_id WHERE ub.user_bookings_web_check_out = TRUE) AS inactiveTenantsCount, " +
-	        "(SELECT COUNT(DISTINCT zpobd.tenant_id) FROM pgowners.zoy_pg_owner_booking_details zpobd JOIN pgusers.user_bookings ub ON zpobd.booking_id = ub.user_bookings_id JOIN pgusers.user_master um ON um.user_id = zpobd.tenant_id WHERE ub.user_bookings_web_check_out = TRUE AND um.user_status = 'Suspended') AS suspendedTenantsCount",
+	@Query(value = "select (select count(*) from pgusers.user_master um where um.user_status ='Active') as activeTenants,\r\n"
+			+ "(SELECT COUNT(*) FROM pgowners.zoy_pg_owner_booking_details zpqbd  WHERE zpqbd.in_date > CURRENT_DATE) AS upcomingTenantsCount, \r\n"
+			+ "(select count(*) from pgusers.user_master um where um.user_status ='Inactive') as inactiveTenantsCount,\r\n"
+			+ "(select count(*) from pgusers.user_master um where um.user_status ='Suspended') as suspendedTenantsCount",
 	        nativeQuery = true)
 	List<Object[]> getTenantCardsDetails();
 			
