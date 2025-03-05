@@ -83,7 +83,7 @@ public class CsvGenerateService {
                 writer.println("Transaction Date,Invoice No,Tenant Name,PG Name,PG Address,Total Amount(₹),GST Amount(₹),Due Amount(₹),Mode of Payment");
                 break;
             case "consolidatedFinanceReport":
-                writer.println("Transaction Date,Invoice Number,Payer/Payee Type,Name of the Payer/Payee,Debit(₹),Credit(₹)");
+                writer.println("Transaction Date,Invoice Number,Payer/Payee Type,Name of the Payer/Payee,Debit(₹),Credit(₹),PG Name,Contact Number");
                 break;
             case "tenantDuesReport":
                 writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,Bed No,Pending Amount(₹),Payment Due Date");
@@ -169,13 +169,15 @@ public class CsvGenerateService {
             case "consolidatedFinanceReport":
                 if (dto instanceof ConsilidatedFinanceDetails) {
                     ConsilidatedFinanceDetails finance = (ConsilidatedFinanceDetails) dto;
-                    writer.printf("%s,%s,%s,%s,%s,%s%n",
-                            finance.getUserPaymentTimestamp(),
+                    writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                    		formatDate(finance.getUserPaymentTimestamp()),
                             safeToString(finance.getUserPaymentBankTransactionId()),
                             safeToString(finance.getPayerPayeeType()),
                             safeToString(finance.getPayerPayeeName()),
                             formatAmountWithCommas(finance.getDebitAmount()),
-                            formatAmountWithCommas(finance.getCreditAmount()));
+                            formatAmountWithCommas(finance.getCreditAmount()),
+                            safeToString(finance.getPgName()),
+                            safeToString(finance.getContactNum()));
                 }
                 break;
 
