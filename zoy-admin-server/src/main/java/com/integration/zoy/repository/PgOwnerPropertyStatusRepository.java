@@ -21,7 +21,8 @@ public interface PgOwnerPropertyStatusRepository extends JpaRepository<PgOwnerPr
 	boolean findOwnerPropertyStatus(String ownerId);
 
 	
-	@Query(value = "select bd.property_id from pgowners.zoy_pg_owner_booking_details bd where bd.property_id=:propertyID",nativeQuery = true)
+	@Query(value = "SELECT  bd.property_id FROM pgowners.zoy_pg_owner_booking_details bd\r\n"
+			+ "WHERE in_date >= CURRENT_DATE and bd.property_id=:propertyID",nativeQuery = true)
 	Optional<String[]> findPropertyById(String propertyID);
 	
 	
@@ -32,7 +33,7 @@ public interface PgOwnerPropertyStatusRepository extends JpaRepository<PgOwnerPr
 			+ "	    status_type = :type,\r\n"
 			+ "	    status_reason = :reason,\r\n"
 			+ "	    status = CASE \r\n"
-			+ "	                WHEN :type = 'suspend' OR :type = 'inactive' THEN false\r\n"
+			+ "	                WHEN :type = 'Inactive' OR :type = 'Suspend' THEN false\r\n"
 			+ "	                ELSE true\r\n"
 			+ "	             END\r\n"
 			+ "	WHERE property_id = :propertyID",nativeQuery = true)

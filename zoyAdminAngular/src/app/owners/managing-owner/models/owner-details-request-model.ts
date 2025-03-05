@@ -7,7 +7,7 @@ export class OwnerRequestParam {
   }
 
   export class Filter{
-    status:string[];
+    status:string;
     searchText:string;
     startDate: string;
     endDate: string;

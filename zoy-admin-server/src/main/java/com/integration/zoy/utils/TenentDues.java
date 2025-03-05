@@ -22,7 +22,7 @@ public class TenentDues {
 	private double pendingAmount;
 
 	@SerializedName("pendingDueDate")
-	private Timestamp pendingDueDate;
+	private String pendingDueDate;
 
 	@SerializedName("userPgPropertyAddress")
 	private String userPgPropertyAddress;
@@ -59,11 +59,11 @@ public class TenentDues {
 		this.pendingAmount = pendingAmount;
 	}
 
-	public Timestamp getPendingDueDate() {
+	public String getPendingDueDate() {
 		return pendingDueDate;
 	}
 
-	public void setPendingDueDate(Timestamp pendingDueDate) {
+	public void setPendingDueDate(String pendingDueDate) {
 		this.pendingDueDate = pendingDueDate;
 	}
 

@@ -359,7 +359,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	updatePropertyStatus(){
 		this.submitted =true;
 		
-		if(this.status == 'Suspended' && this.propertyInfo.floor_information.filter(bed=> (Number(bed.occupied) | 0 ) > 0).length > 0 ){
+		if(this.status == 'Suspend' && this.propertyInfo.floor_information.filter(bed=> (Number(bed.occupied) | 0 ) > 0).length > 0 ){
 			this.notifyService.showInfo(this.doActiveteDeactiveteName+" has an active tenants, which cannot be suspended.","");
 			return;
 		}
