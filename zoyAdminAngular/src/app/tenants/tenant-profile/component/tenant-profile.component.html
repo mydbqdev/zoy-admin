@@ -241,7 +241,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalLabel"><span style="color: rgb(173, 5, 159);"> {{tdpf.profile.tenantName}} - Status</span></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #statusChangeModelClose></button>
       </div>
       <div class="modal-body p-3">
         <!-- <div class="form-group row">
@@ -262,7 +262,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary-custom me-2" (click)="doInActiveSuspended()" >{{tdpf.profile?.status ==='Suspended'?'Inactive':'Suspended'}}</button>
+        <button type="submit" class="btn btn-primary-custom me-2" (click)="doInActiveSuspended()" >{{tdpf.profile?.status ==='Suspended'?'Inactive':'Suspend'}}</button>
       </div>
     </div>
   </div>
