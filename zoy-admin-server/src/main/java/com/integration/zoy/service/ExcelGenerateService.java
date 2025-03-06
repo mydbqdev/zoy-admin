@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.exception.ZoyAdminApplicationException;
@@ -29,6 +30,9 @@ import com.itextpdf.io.exceptions.IOException;
 
 @Service
 public class ExcelGenerateService {
+	
+	@Autowired
+	private TimestampFormatterUtilService tuService;
 	
 	private CellStyle currencyStyle;
 	
@@ -276,7 +280,7 @@ public class ExcelGenerateService {
 				UserPaymentDTO userPayment = (UserPaymentDTO) dto;
 
 				if ("userPaymentGstReport".equals(reportType)) {
-					row.createCell(0).setCellValue(nullSafe(userPayment.getTransactionDate()));
+					row.createCell(0).setCellValue(nullSafe(tuService.formatTimestamp(userPayment.getTransactionDate().toInstant())));
 					row.createCell(1).setCellValue(nullSafe(userPayment.getTransactionNumber()));
 					row.createCell(2).setCellValue(nullSafe(userPayment.getUserPersonalName()));
 					row.createCell(3).setCellValue(nullSafe(userPayment.getUserPgPropertyName()));
@@ -291,7 +295,7 @@ public class ExcelGenerateService {
 					row.createCell(2).setCellValue(nullSafe(userPayment.getUserPgPropertyName()));
 					row.createCell(3).setCellValue(nullSafe(userPayment.getPropertyHouseArea()));
 					row.createCell(4).setCellValue(nullSafe(userPayment.getRoomBedNumber()));
-					row.createCell(5).setCellValue(nullSafe(userPayment.getTransactionDate()));
+					row.createCell(5).setCellValue(nullSafe(tuService.formatTimestamp(userPayment.getTransactionDate().toInstant())));
 					row.createCell(6).setCellValue(nullSafe(userPayment.getTransactionNumber()));
 					row.createCell(7).setCellValue(nullSafe(userPayment.getTransactionStatus()));
 					setCurrencyCell(row, 8, nullSafe(userPayment.getDueAmount()));
@@ -307,7 +311,7 @@ public class ExcelGenerateService {
 		case "consolidatedFinanceReport":
 			if (dto instanceof ConsilidatedFinanceDetails) {
 				ConsilidatedFinanceDetails finance = (ConsilidatedFinanceDetails) dto;
-				row.createCell(0).setCellValue(nullSafe(finance.getUserPaymentTimestamp()));
+				row.createCell(0).setCellValue(nullSafe(tuService.formatTimestamp(finance.getUserPaymentTimestamp().toInstant())));
 				row.createCell(1).setCellValue(nullSafe(finance.getUserPaymentBankTransactionId()));
 				row.createCell(2).setCellValue(nullSafe(finance.getPayerPayeeType()));
 				row.createCell(3).setCellValue(nullSafe(finance.getPayerPayeeName()));
@@ -341,7 +345,7 @@ public class ExcelGenerateService {
 				setCurrencyCell(row,4,nullSafe(vendor.getTotalAmountFromTenants()));
 				setCurrencyCell(row,5,nullSafe(vendor.getAmountPaidToOwner()));
 				setCurrencyCell(row,6,nullSafe(vendor.getZoyShare()));
-				row.createCell(7).setCellValue(nullSafe(vendor.getTransactionDate()));
+				row.createCell(7).setCellValue(nullSafe(tuService.formatTimestamp(vendor.getTransactionDate().toInstant())));
 				row.createCell(8).setCellValue(nullSafe(vendor.getTransactionNumber()));
 				row.createCell(9).setCellValue(nullSafe(vendor.getPaymentStatus()));
 				row.createCell(10).setCellValue(nullSafe(vendor.getOwnerApprovalStatus()));
@@ -354,7 +358,7 @@ public class ExcelGenerateService {
 				row.createCell(0).setCellValue(nullSafe(vendorDues.getOwnerId()));
 				row.createCell(1).setCellValue(nullSafe(vendorDues.getOwnerName()));
 				setCurrencyCell(row,2,nullSafe(vendorDues.getPendingAmount()));
-				row.createCell(3).setCellValue(nullSafe(vendorDues.getPendingDueDate()));
+				row.createCell(3).setCellValue(nullSafe(tuService.formatTimestamp(vendorDues.getPendingDueDate().toInstant())));
 				row.createCell(4).setCellValue(nullSafe(vendorDues.getPgId()));
 				row.createCell(5).setCellValue(nullSafe(vendorDues.getPgName()));
 				setCurrencyCell(row,6,nullSafe(vendorDues.getTotalAmountPaid()));
@@ -365,7 +369,7 @@ public class ExcelGenerateService {
 		case "vendorPaymentsGstReport":
 			if (dto instanceof VendorPaymentsGst) {
 				VendorPaymentsGst vendorGst = (VendorPaymentsGst) dto;
-				row.createCell(0).setCellValue(nullSafe(vendorGst.getTransactionDate()));
+				row.createCell(0).setCellValue(nullSafe(tuService.formatTimestamp(vendorGst.getTransactionDate().toInstant())));
 				row.createCell(1).setCellValue(nullSafe(vendorGst.getTransactionNo()));
 				row.createCell(2).setCellValue(nullSafe(vendorGst.getPgId()));
 				row.createCell(3).setCellValue(nullSafe(vendorGst.getPgName()));
@@ -386,7 +390,7 @@ public class ExcelGenerateService {
 				row.createCell(4).setCellValue(nullSafe(tenentRefund.getBookingId()));
 				row.createCell(5).setCellValue(nullSafe(tenentRefund.getRefundTitle()));
 				setCurrencyCell(row,6,nullSafe(tenentRefund.getRefundableAmount()));
-				row.createCell(7).setCellValue(nullSafe(tenentRefund.getPaymentDate()));
+				row.createCell(7).setCellValue(nullSafe(tuService.formatTimestamp(tenentRefund.getPaymentDate().toInstant())));
 				row.createCell(8).setCellValue(nullSafe(tenentRefund.getTransactionNumber()));
 				row.createCell(9).setCellValue(nullSafe(tenentRefund.getPaymentStatus()));
 			}
@@ -395,7 +399,7 @@ public class ExcelGenerateService {
 		case "reviewsAndRatingReport":
 			if (dto instanceof RatingsAndReviewsReport) {
 				RatingsAndReviewsReport ratingsAndReviews = (RatingsAndReviewsReport) dto;
-				row.createCell(0).setCellValue(nullSafe(ratingsAndReviews.getReviewDate()));
+				row.createCell(0).setCellValue(nullSafe(tuService.formatTimestamp(ratingsAndReviews.getReviewDate().toInstant())));
 				row.createCell(1).setCellValue(nullSafe(ratingsAndReviews.getCustomerName()));
 				row.createCell(2).setCellValue(nullSafe(ratingsAndReviews.getPropertyName()));
 				row.createCell(3).setCellValue(nullSafe(ratingsAndReviews.getCustomerMobileNo()));
@@ -416,8 +420,8 @@ public class ExcelGenerateService {
 				row.createCell(3).setCellValue(nullSafe(upcomingTenant.getBookedProperyName()));
 				row.createCell(4).setCellValue(nullSafe(upcomingTenant.getPropertAddress()));
 				row.createCell(5).setCellValue(nullSafe(upcomingTenant.getRoomNumber()));
-				row.createCell(6).setCellValue(nullSafe(upcomingTenant.getExpectedCheckIndate()));
-				row.createCell(7).setCellValue(nullSafe(upcomingTenant.getExpectedCheckOutdate()));
+				row.createCell(6).setCellValue(nullSafe(tuService.formatTimestamp(upcomingTenant.getExpectedCheckIndate().toInstant())));
+				row.createCell(7).setCellValue(nullSafe(tuService.formatTimestamp(upcomingTenant.getExpectedCheckOutdate().toInstant())));
 				
 			}
 			break;
@@ -431,8 +435,8 @@ public class ExcelGenerateService {
 				row.createCell(3).setCellValue(nullSafe(activeTenants.getCurrentPropertName()));
 				row.createCell(4).setCellValue(nullSafe(activeTenants.getPropertAddress()));
 				row.createCell(5).setCellValue(nullSafe(activeTenants.getRoomNumber()));
-				row.createCell(6).setCellValue(nullSafe(activeTenants.getCheckInDate()));
-				row.createCell(7).setCellValue(nullSafe(activeTenants.getExpectedCheckOutdate()));
+				row.createCell(6).setCellValue(nullSafe(tuService.formatTimestamp(activeTenants.getCheckInDate().toInstant())));
+				row.createCell(7).setCellValue(nullSafe(tuService.formatTimestamp(activeTenants.getExpectedCheckOutdate().toInstant())));
 				
 			}
 			break;
@@ -445,7 +449,7 @@ public class ExcelGenerateService {
 				row.createCell(3).setCellValue(nullSafe(inActiveTenants.getPreviousPropertName()));
 				row.createCell(4).setCellValue(nullSafe(inActiveTenants.getPropertAddress()));
 				row.createCell(5).setCellValue(nullSafe(inActiveTenants.getRoomNumber()));
-				row.createCell(6).setCellValue(nullSafe(inActiveTenants.getCheckedOutDate()));				
+				row.createCell(6).setCellValue(nullSafe(tuService.formatTimestamp(inActiveTenants.getCheckedOutDate().toInstant())));				
 			}
 			break;	
 		case "SuspendedTenantsReport":
@@ -457,8 +461,8 @@ public class ExcelGenerateService {
 				row.createCell(3).setCellValue(nullSafe(suspendedTenant.getPreviousPropertName()));
 				row.createCell(4).setCellValue(nullSafe(suspendedTenant.getPropertAddress()));
 				row.createCell(5).setCellValue(nullSafe(suspendedTenant.getRoomNumber()));
-				row.createCell(6).setCellValue(nullSafe(suspendedTenant.getCheckedOutDate()));
-				row.createCell(7).setCellValue(nullSafe(suspendedTenant.getSuspendedDate()));				
+				row.createCell(6).setCellValue(nullSafe(tuService.formatTimestamp(suspendedTenant.getCheckedOutDate().toInstant())));
+				row.createCell(7).setCellValue(nullSafe(tuService.formatTimestamp(suspendedTenant.getSuspendedDate().toInstant())));				
 				row.createCell(8).setCellValue(nullSafe(suspendedTenant.getReasonForSuspension()));				
 			}
 			break;	
@@ -480,7 +484,7 @@ public class ExcelGenerateService {
 				row.createCell(2).setCellValue(nullSafe(suspendedPropertyDetails.getPropertyContactNumber()));
 				row.createCell(3).setCellValue(nullSafe(suspendedPropertyDetails.getPropertyEmailAddress()));
 				row.createCell(4).setCellValue(nullSafe(suspendedPropertyDetails.getPropertyAddress()));
-				row.createCell(5).setCellValue(nullSafe(suspendedPropertyDetails.getSuspendedDate()));
+				row.createCell(5).setCellValue(nullSafe(tuService.formatTimestamp(suspendedPropertyDetails.getSuspendedDate().toInstant())));
 				row.createCell(6).setCellValue(nullSafe(suspendedPropertyDetails.getReasonForSuspension()));			
 			}
 			break;	
