@@ -222,7 +222,7 @@
                                   <div class="d-flex">
                                   <div><i class="fas fa-thumbs-up mr-2 mt-1" [ngClass]="configMasterModel.depositDetails[0]?.isApproved?'color-bg-green':'color-bg-gray'"></i></div>
                                   <!-- <div *ngIf="configMasterOrg.depositDetails.length>1 && configMasterOrg.depositDetails[0]?.isApproved"> -->
-                                    <div *ngIf=" securityDepositLimitsDisabled && !configMasterModel.depositDetails[0]?.isApproved" title="Approve the Rule" >
+                                    <div *ngIf=" securityDepositLimitsDisabled && !configMasterModel.depositDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                       <a class="approve-icon" (click)="approveTheRule('depositDetails',configMasterModel.depositDetails[0]) ">
                                         <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                       </a>
@@ -384,7 +384,7 @@
                                   <div>
                                     <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='GST Charges'" >
                                       <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
-                                      <div *ngIf=" gstChargesDisabled && !configMasterModel.gstCharges[0]?.isApproved" title="Approve the Rule" >
+                                      <div *ngIf=" gstChargesDisabled && !configMasterModel.gstCharges[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                         <a class="approve-icon" (click)="approveTheRule('gstCharges',configMasterModel.gstCharges[0]) ">
                                           <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                         </a>
@@ -589,7 +589,7 @@
                                   <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Service Charges'" >
                                     <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a>
                                   </div>
-                                    <div *ngIf=" otherChargesDisabled && !configMasterModel.otherCharges[0]?.isApproved" title="Approve the Rule" >
+                                    <div *ngIf=" otherChargesDisabled && !configMasterModel.otherCharges[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                       <a class="approve-icon" (click)="approveTheRule('otherCharges',configMasterModel.otherCharges[0]) ">
                                         <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                       </a>
@@ -737,7 +737,7 @@
                                       <div>
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Data Grouping'" >
                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
-                                         <div *ngIf=" dataGroupingDisabled && !configMasterModel.dataGrouping[0]?.isApproved" title="Approve the Rule" >
+                                         <div *ngIf=" dataGroupingDisabled && !configMasterModel.dataGrouping[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                           <a class="approve-icon" (click)="approveTheRule('dataGrouping',configMasterModel.dataGrouping[0]) ">
                                             <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                           </a>
@@ -827,7 +827,7 @@
                                       <div>
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Force Checkout'" >
                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
-                                         <div *ngIf=" forceCheckoutDisabled && !configMasterModel.forceCheckOut[0]?.isApproved" title="Approve the Rule" >
+                                         <div *ngIf=" forceCheckoutDisabled && !configMasterModel.forceCheckOut[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                           <a class="approve-icon" (click)="approveTheRule('forceCheckOut',configMasterModel.forceCheckOut[0]) ">
                                             <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                           </a>
@@ -915,7 +915,7 @@
                                       <div>
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='No Rental agreement'" >
                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
-                                         <div *ngIf=" noRentalAgreementDisabled && !configMasterModel.noRentalAgreement[0]?.isApproved" title="Approve the Rule" >
+                                         <div *ngIf=" noRentalAgreementDisabled && !configMasterModel.noRentalAgreement[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                           <a class="approve-icon" (click)="approveTheRule('noRentalAgreement',configMasterModel.noRentalAgreement[0]) ">
                                             <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                           </a>
@@ -1050,7 +1050,7 @@
                                         <div>
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Security Deposit Deadline'" >
                                            <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
-                                           <div *ngIf=" securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails[0]?.isApproved" title="Approve the Rule" >
+                                           <div *ngIf=" securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                             <a class="approve-icon" (click)="approveTheRule('securityDepositDeadLineDetails',configMasterModel.securityDepositDeadLineDetails[0]) ">
                                               <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                             </a>
@@ -1514,7 +1514,7 @@
                                       <div>
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Short term duration'" >
                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
-                                         <div *ngIf=" shortTermRentingDurationDisabled && !configMasterModel.shortTermRentingDuration[0]?.isApproved" title="Approve the Rule" >
+                                         <div *ngIf=" shortTermRentingDurationDisabled && !configMasterModel.shortTermRentingDuration[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                           <a class="approve-icon" (click)="approveTheRule('shortTermRentingDuration',configMasterModel.shortTermRentingDuration[0]) ">
                                             <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                           </a>
@@ -1741,7 +1741,7 @@
                                         <div>
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Early Check-out Rules'" >
                                            <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
-                                           <div *ngIf=" earlyCheckOutRulesDisabled && !configMasterModel.earlyCheckOutRuleDetails[0]?.isApproved" title="Approve the Rule" >
+                                           <div *ngIf=" earlyCheckOutRulesDisabled && !configMasterModel.earlyCheckOutRuleDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                             <a class="approve-icon" (click)="approveTheRule('earlyCheckOutRuleDetails',configMasterModel.earlyCheckOutRuleDetails[0]) ">
                                               <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                             </a>
@@ -1909,7 +1909,7 @@
                                           <div>
                                             <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='After check-in Date'" >
                                              <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
-                                             <div *ngIf=" autoCancellationDisabled && !configMasterModel.cancellationAfterCheckInDetails[0]?.isApproved" title="Approve the Rule" >
+                                             <div *ngIf=" autoCancellationDisabled && !configMasterModel.cancellationAfterCheckInDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                               <a class="approve-icon" (click)="approveTheRule('cancellationAfterCheckInDetails',configMasterModel.cancellationAfterCheckInDetails[0]) ">
                                                 <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                               </a>
