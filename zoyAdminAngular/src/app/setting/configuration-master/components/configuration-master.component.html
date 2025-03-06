@@ -911,10 +911,10 @@
                                  </div>
                                   <div class="col-sm-2 mt-4">
                                     <div class="d-flex">
-                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important" *ngIf="configMasterModel.noRentalAgreement[0]?.isApproved"></i></div>
+                                      <div><i class="fas fa-thumbs-up mr-2 mt-1"  [ngClass]="configMasterModel.noRentalAgreement[0]?.isApproved?'color-bg-green':'color-bg-gray'"></i></div>
                                       <div>
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='No Rental agreement'" >
-                                         <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
+                                         <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                          <div *ngIf=" noRentalAgreementDisabled && !configMasterModel.noRentalAgreement[0]?.isApproved" title="Approve the Rule" >
                                           <a class="approve-icon" (click)="approveTheRule('noRentalAgreement',configMasterModel.noRentalAgreement[0]) ">
                                             <i class="far fa-hand-point-up mt-1 mr-2"></i>
@@ -954,10 +954,10 @@
                                  </div>
                                   <div class="col-sm-2 mt-1">
                                     <div class="d-flex">
-                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                      <div><i class="fas fa-thumbs-up mr-2 mt-1 color-bg-green"></i></div>
                                       <div>
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='No Rental agreement'" >
-                                         <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
+                                         <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                     </div>
                                   </div>
                                 </div>
@@ -1046,10 +1046,10 @@
                                     <!-- Action Button -->
                                     <div class="col-sm-1 mt-4">
                                       <div class="d-flex" >
-                                        <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important" *ngIf="configMasterModel.securityDepositDeadLineDetails[0]?.isApproved"></i></div>
+                                        <div><i class="fas fa-thumbs-up mr-2" [ngClass]="configMasterModel.securityDepositDeadLineDetails[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i></div>
                                         <div>
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Security Deposit Deadline'" >
-                                           <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
+                                           <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                            <div *ngIf=" securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails[0]?.isApproved" title="Approve the Rule" >
                                             <a class="approve-icon" (click)="approveTheRule('securityDepositDeadLineDetails',configMasterModel.securityDepositDeadLineDetails[0]) ">
                                               <i class="far fa-hand-point-up mt-1 mr-2"></i>
@@ -1120,10 +1120,10 @@
                                     <!-- Action Button -->
                                     <div class="col-sm-1 mt-2">
                                       <div class="d-flex" >
-                                        <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                        <div><i class="fas fa-thumbs-up mr-2 color-bg-green mt-1"></i></div>
                                         <div>
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Security Deposit Deadline'" >
-                                           <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
+                                           <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                       </div>
                                     </div>
                                   </div>
@@ -1469,7 +1469,7 @@
                                               class="form-control form-control-sm" disabled/>
                                           </div>
                                        </div>
-                                       <div class="col-sm-1"><div class="mt-4"><i class="fas fa-thumbs-up" style="color:rgb(153, 243, 94) !important"></i></div></div>
+                                       <div class="col-sm-1"><div class="mt-4"><i class="fas fa-thumbs-up mt-1 color-bg-green"></i></div></div>
                                     </div>
                                   </div>
                             </div>
@@ -1510,10 +1510,10 @@
                                  </div>
                                   <div class="col-sm-2 mt-4" >
                                     <div class="d-flex" >
-                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important" *ngIf="configMasterModel.shortTermRentingDuration[0]?.isApproved"></i></div>
+                                      <div><i class="fas fa-thumbs-up mr-2 mt-1"  [ngClass]="configMasterModel.shortTermRentingDuration[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i></div>
                                       <div>
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Short term duration'" >
-                                         <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
+                                         <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                          <div *ngIf=" shortTermRentingDurationDisabled && !configMasterModel.shortTermRentingDuration[0]?.isApproved" title="Approve the Rule" >
                                           <a class="approve-icon" (click)="approveTheRule('shortTermRentingDuration',configMasterModel.shortTermRentingDuration[0]) ">
                                             <i class="far fa-hand-point-up mt-1 mr-2"></i>
@@ -1552,7 +1552,7 @@
                                  </div>
                                   <div class="col-sm-2 mt-1" >
                                     <div class="d-flex" >
-                                      <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                      <div><i class="fas fa-thumbs-up mr-2 mt-1 color-bg-green"></i></div>
                                       <div>
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Short term duration'" >
                                          <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
@@ -1601,7 +1601,7 @@
                                    </div>
                                     <div class="col-sm-2">
                                       <div class="d-flex" >
-                                        <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                        <div><i class="fas fa-thumbs-up mr-2 mt-1 color-bg-green"></i></div>
                                       <div *ngIf="!shortTerm.termDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                         <button class="btn btn-sm btn-outline-secondary" (click)="shortTerm.termDisabled = true;">
                                           <i class="fas fa-edit"></i>
@@ -1640,7 +1640,7 @@
                                      </div>
                                       <div class="col-sm-2">
                                         <div class="d-flex" >
-                                          <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                          <div><i class="fas fa-thumbs-up mr-2 mt-1" style="color:rgb(153, 243, 94) !important"></i></div>
                                         </div>
                                       </div>
                                     </div>
@@ -1791,10 +1791,10 @@
                                    </div>
                                     <div class="col-sm-2 mt-1">
                                       <div class="d-flex" >
-                                        <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+                                        <div><i class="fas fa-thumbs-up mr-2 color-bg-green"></i></div>
                                         <div>
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Early Check-out Rules'" >
-                                           <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
+                                           <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                         </div>
                                     </div>
                                   </div>
@@ -1969,10 +1969,10 @@
                                         <!-- Action Button -->
                                         <div class="col-sm-1" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ')">
                                           <div class="d-flex" >
-                                          <div><i class="fas fa-thumbs-up" style="color:rgb(153, 243, 94) !important"></i></div>
+                                          <div><i class="fas fa-thumbs-up mt-1" style="color:rgb(153, 243, 94) !important"></i></div>
                                           <div>
                                             <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='After check-in Date'" >
-                                             <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
+                                             <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                         </div>
                                       </div>
                                       </div>
