@@ -3,7 +3,9 @@ package com.integration.zoy.service;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -23,6 +25,7 @@ public class ExcelValidationService {
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
 
+	Set<String> uniqueKey=new HashSet<>();
 	public List<ErrorDetail> validateExcel(byte[] file) {
 		List<ErrorDetail> errors = new ArrayList<>();
 		try (ByteArrayInputStream is = new ByteArrayInputStream(file); Workbook workbook = new XSSFWorkbook(is)) {
@@ -93,6 +96,15 @@ public class ExcelValidationService {
 		if (remarksCell != null && remarksCell.getStringCellValue().length() > 300) {
 			errors.add(new ErrorDetail(rowIndex, 9, "Remarks About Room", "Remarks must not exceed 300 characters."));
 		}
+		String floorName=row.getCell(0).getStringCellValue();
+		String roomName=row.getCell(1).getStringCellValue();
+		String key= floorName+"-"+roomName;
+		if(uniqueKey.contains(key)) {
+			errors.add(new ErrorDetail(rowIndex, 1, "Room Name", "Duplicate room name with same floor"));
+		} else {
+			uniqueKey.add(key);
+		}
+		
 	}
 
 	private void validateCell(Cell cell, String fieldName, int rowIndex, int colIndex, List<ErrorDetail> errors, Integer minLength) {
