@@ -113,7 +113,7 @@
     </div>
    </li>
    <!-- Nav Item - Settings Collapse Menu -->
-    <li class="nav-item" [ngClass]="{'active':menu41}" id="menu4" *ngIf="defMenu.settings && (rolesArray.includes('ROLE_AND_PERMISSION_READ') || rolesArray.includes('DB_MASTER_CONFIGURATION_READ') || rolesArray.includes('CONFIGURATION_MASTER_READ') || rolesArray.includes('CANCELLATION_AND_REFUND_RULES_READ') 
+    <li class="nav-item" [ngClass]="{'active':menu41}" id="menu4" *ngIf="defMenu.settings && (rolesArray.includes('ROLE_AND_PERMISSION_READ') || rolesArray.includes('DB_MASTER_CONFIGURATION_READ') || rolesArray.includes('CONFIGURATION_MASTER_READ') || rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_READ') || rolesArray.includes('CANCELLATION_AND_REFUND_RULES_READ') 
             || rolesArray.includes('PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ') || rolesArray.includes('PROMOTION_AND_OFFER_MANAGEMENT_READ') || rolesArray.includes('USER_AUDIT_READ') || rolesArray.includes('ORGANIZATION_INFO_CONFIG_READ')) "> 
         <a [ngClass]="menu4 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(4)" data-target="#collapseSettings"
         [attr.aria-expanded]="!menu4" aria-controls="collapseSettings">
@@ -127,7 +127,7 @@
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/db-master-configuration" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_READ')" [ngClass]="{'active':activeSubNenuName=='db-master-configuration'}">Initial Configuration</a>
                 <div class="p-1"></div>
-                <a class="collapse-item" routerLink="/configuration-master" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ')" [ngClass]="{'active':activeSubNenuName=='configuration-master'}">Master Configuration</a>
+                <a class="collapse-item" routerLink="/configuration-master"  *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ')|| rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_READ')" [ngClass]="{'active':activeSubNenuName=='configuration-master'}">Master Configuration</a>
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/user-audit" *ngIf="rolesArray.includes('USER_AUDIT_READ')" [ngClass]="{'active':activeSubNenuName=='user-audit'}">User Audit</a>
                 <div class="p-1"></div>
