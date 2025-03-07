@@ -55,6 +55,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	tdpf : TenantDetailPortfolio = new TenantDetailPortfolio();
 	reason :string ='';
+	@ViewChild('statusChangeModelClose') statusChangeModelClose: any;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private reportService : ReportService,private confirmationDialogService:ConfirmationDialogService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private tenantService : TenantService) {
 			this.authService.checkLoginUserVlidaate();
@@ -312,10 +313,10 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 			return ;
 		}
 		const status = this.tdpf.profile?.status === 'Suspended'?'Inactive':'Suspended';
-		const userStatus={"userId":this.tenantId,"status":this.tdpf.profile?.status === 'inactive' ?'Suspended':'Inactive',
+		const userStatus={"userId":this.tenantId,"status":this.tdpf.profile?.status === 'Inactive' ?'Suspended':'Inactive',
 			"reasonMessage":this.reason
 		}
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want to '+(this.tdpf.profile.status == 'Suspended' ? 'Inactive ' : 'Suspended ') +this.tdpf.profile.tenantName+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want to '+(this.tdpf.profile.status == 'Suspended' ? 'Inactive ' : 'Suspend ') +this.tdpf.profile.tenantName+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -324,6 +325,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 				this.tenantService.doInActiveSuspended(userStatus).subscribe(res => {
 				this.tdpf.profile.status = status;
 				this.submitted =false;
+				this.statusChangeModelClose.nativeElement.click();
 				this.spinner.hide();
 				}, error => {
 				 this.spinner.hide();

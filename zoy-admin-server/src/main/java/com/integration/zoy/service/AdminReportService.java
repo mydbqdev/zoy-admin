@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.exception.WebServiceException;
@@ -70,6 +71,9 @@ public class AdminReportService implements AdminReportImpl{
 	private ZoyPgPropertyDetailsRepository propertyDetailsRepository;
 	@Autowired
 	private WordToPdfConverterService wordToPdfConverterService;
+	
+	@Autowired
+	private TimestampFormatterUtilService tuService;
 
 	@Value("${zoy.admin.logo}")
 	private String zoyLogoPath;
@@ -451,10 +455,10 @@ public class AdminReportService implements AdminReportImpl{
 					dto.setPendingAmount((row[0] != null) ? ((Number) row[0]).doubleValue() : 0.0);
 				}
 				Timestamp pendingDueDate = (Timestamp) row[1];
-			    if (pendingDueDate != null) {
-			        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			        String formattedDate = dateFormat.format(pendingDueDate);
-			        dto.setPendingDueDate(formattedDate);
+				String formattedDueDate =tuService.formatTimestamp(pendingDueDate.toInstant());
+				String formatteDDate = tuService.convertToDateOnly(formattedDueDate);
+				if (pendingDueDate != null) {
+			        dto.setPendingDueDate(formatteDDate);
 			    }
 				dto.setUserPersonalName(row[2] != null ? (String) row[2] : "");
 				dto.setUserPgPropertyName(row[3] != null ? (String) row[3] : "");
@@ -745,7 +749,7 @@ public class AdminReportService implements AdminReportImpl{
 			Map<String, Object> data = new HashMap<>();
 			UserPaymentDTO userPayment = (UserPaymentDTO) item;
 
-			data.put("transactionDate", userPayment.getTransactionDate());
+			data.put("transactionDate", tuService.formatTimestamp(userPayment.getTransactionDate().toInstant()));
 			data.put("transactionNo", userPayment.getTransactionNumber());
 			data.put("transactionStatus", userPayment.getTransactionStatus());
 			data.put("dueAmount", userPayment.getDueAmount());
@@ -786,7 +790,7 @@ public class AdminReportService implements AdminReportImpl{
 			Map<String, Object> data = new HashMap<>();
 			UserPaymentDTO userPayment = (UserPaymentDTO) item;
 
-			data.put("txnDate", userPayment.getTransactionDate());
+			data.put("txnDate", tuService.formatTimestamp(userPayment.getTransactionDate().toInstant()));
 			data.put("invoiceNo", userPayment.getTransactionNumber());
 			data.put("txnStatus", userPayment.getTransactionStatus());
 			data.put("tenantName", userPayment.getUserPersonalName());
@@ -823,7 +827,7 @@ public class AdminReportService implements AdminReportImpl{
 			Map<String, Object> data = new HashMap<>();
 			ConsilidatedFinanceDetails financeDetails = (ConsilidatedFinanceDetails) item;
 
-			data.put("txnDate", financeDetails.getUserPaymentTimestamp());
+			data.put("txnDate", tuService.formatTimestamp(financeDetails.getUserPaymentTimestamp().toInstant()));
 			data.put("invoiceNum", financeDetails.getUserPaymentBankTransactionId());
 			data.put("payeePayerType", financeDetails.getPayerPayeeType());
 			data.put("payeePayerName", financeDetails.getPayerPayeeName());
@@ -897,7 +901,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("receivedFromTenant", vendorPayment.getTotalAmountFromTenants());
 			data.put("paidToOwner", vendorPayment.getAmountPaidToOwner());
 			data.put("zoyShare", vendorPayment.getZoyShare());
-			data.put("txnDate", vendorPayment.getTransactionDate() != null ? vendorPayment.getTransactionDate() : "");
+			data.put("txnDate", tuService.formatTimestamp(vendorPayment.getTransactionDate().toInstant()) != null ? tuService.formatTimestamp(vendorPayment.getTransactionDate().toInstant()) : "");
 			data.put("invoiceNum", vendorPayment.getTransactionNumber() != null ? vendorPayment.getTransactionNumber() : "");
 			data.put("paymentStatus", vendorPayment.getPaymentStatus() != null ? vendorPayment.getPaymentStatus() : "");
 			data.put("approvalStatus", vendorPayment.getOwnerApprovalStatus() != null ? vendorPayment.getOwnerApprovalStatus() : "");
@@ -935,7 +939,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("refundTitle", tenantRefund.getRefundTitle() != null ? tenantRefund.getRefundTitle() : "");
 			data.put("refundableAmount", tenantRefund.getRefundableAmount());
 			data.put("amountPaid", tenantRefund.getAmountPaid());
-			data.put("paymentDate", tenantRefund.getPaymentDate() != null ? tenantRefund.getPaymentDate().toLocalDateTime().toLocalDate().toString() : "");
+			data.put("paymentDate", tuService.formatTimestamp(tenantRefund.getPaymentDate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getPaymentDate().toInstant()) : "");
 			data.put("invoiceNo", tenantRefund.getTransactionNumber() != null ? tenantRefund.getTransactionNumber() : "");
 			data.put("status", tenantRefund.getPaymentStatus() != null ? tenantRefund.getPaymentStatus() : "");
 
@@ -965,7 +969,7 @@ public class AdminReportService implements AdminReportImpl{
 			Map<String, Object> data = new HashMap<>();
 			RatingsAndReviewsReport review = (RatingsAndReviewsReport) item;
 
-			data.put("reviewDate", review.getReviewDate() != null ? review.getReviewDate() : "");
+			data.put("reviewDate", tuService.formatTimestamp(review.getReviewDate().toInstant()) != null ? tuService.formatTimestamp(review.getReviewDate().toInstant()) : "");
 			data.put("tenantName", review.getCustomerName() != null ? review.getCustomerName() : "");
 			data.put("pgName", review.getPropertyName() != null ? review.getPropertyName() : "");
 			data.put("tenantContact", review.getCustomerMobileNo() != null ? review.getCustomerMobileNo() : "");
@@ -1005,8 +1009,8 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("propertyName", tenantReport.getCurrentPropertName() != null ? tenantReport.getCurrentPropertName() : "");
 			data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
 			data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
-			data.put("checkInDate", tenantReport.getCheckInDate() != null ? tenantReport.getCheckInDate() : "");
-			data.put("checkOutDate", tenantReport.getExpectedCheckOutdate() != null ? tenantReport.getExpectedCheckOutdate() : "");
+			data.put("checkInDate", tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) : "");
+			data.put("checkOutDate", tuService.formatTimestamp(tenantReport.getExpectedCheckOutdate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getExpectedCheckOutdate().toInstant()) : "");
 
 			// Common fields
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
@@ -1039,7 +1043,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("previousPropert", tenantReport.getPreviousPropertName() != null ? tenantReport.getPreviousPropertName() : "");
 			data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
 			data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
-			data.put("checkedOutDate", tenantReport.getCheckedOutDate() != null ? tenantReport.getCheckedOutDate() : "");
+			data.put("checkedOutDate", tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) : "");
 
 			// Common fields
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
@@ -1107,7 +1111,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("propertyContact", inActivePropertyReport.getPropertyContactNumber() != null ? inActivePropertyReport.getPropertyContactNumber() : "");
 			data.put("propertyEmail", inActivePropertyReport.getPropertyEmailAddress() != null ? inActivePropertyReport.getPropertyEmailAddress() : "");
 			data.put("address", inActivePropertyReport.getPropertyAddress() != null ? inActivePropertyReport.getPropertyAddress() : "");
-			data.put("suspendedDate", inActivePropertyReport.getSuspendedDate() != null ? inActivePropertyReport.getSuspendedDate() : "");
+			data.put("suspendedDate", tuService.formatTimestamp(inActivePropertyReport.getSuspendedDate().toInstant()) != null ? tuService.formatTimestamp(inActivePropertyReport.getSuspendedDate().toInstant()) : "");
 			data.put("reason", inActivePropertyReport.getReasonForSuspension() != null ? inActivePropertyReport.getReasonForSuspension() : "");
 			// Common fields
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
@@ -1140,8 +1144,8 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
 			data.put("previousPropert", tenantReport.getPreviousPropertName() != null ? tenantReport.getPreviousPropertName() : "");
 			data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
-			data.put("checkedOutDate", tenantReport.getCheckedOutDate() != null ? tenantReport.getCheckedOutDate() : "");
-			data.put("suspendedDate", tenantReport.getSuspendedDate() != null ? tenantReport.getSuspendedDate() : "");
+			data.put("checkedOutDate", tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) : "");
+			data.put("suspendedDate", tuService.formatTimestamp(tenantReport.getSuspendedDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getSuspendedDate().toInstant()) : "");
 			data.put("reason", tenantReport.getReasonForSuspension() != null ? tenantReport.getReasonForSuspension() : "");
 
 			// Common fields
@@ -1180,8 +1184,8 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("propertyName", tenantRefund.getBookedProperyName() != null ? tenantRefund.getBookedProperyName() : "");
 			data.put("propertyAddress", tenantRefund.getPropertAddress() != null ? tenantRefund.getPropertAddress() : "");
 			data.put("bedAllocation", tenantRefund.getRoomNumber() != null ? tenantRefund.getRoomNumber() : "");
-			data.put("expectedCheckin", tenantRefund.getExpectedCheckIndate() != null ? tenantRefund.getExpectedCheckIndate() : "");
-			data.put("expectedCheckOut", tenantRefund.getExpectedCheckOutdate() != null ? tenantRefund.getExpectedCheckOutdate() : "");
+			data.put("expectedCheckin", tuService.formatTimestamp(tenantRefund.getExpectedCheckIndate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getExpectedCheckIndate().toInstant()) : "");
+			data.put("expectedCheckOut", tuService.formatTimestamp(tenantRefund.getExpectedCheckOutdate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getExpectedCheckOutdate().toInstant()) : "");
 
 			// Common fields
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
@@ -1573,7 +1577,8 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "zpqbd.in_date";
 					break;
 				case "expectedCheckOutdate" :
-					sort="zpqbd.out_date";   	
+					sort="zpqbd.out_date";
+					break;
 				default:
 					sort = "zpqbd.in_date";
 				}
@@ -1699,7 +1704,8 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "zpqbd.in_date";
 					break;
 				case "expectedCheckOutdate" :
-					sort="zpqbd.out_date";   	
+					sort="zpqbd.out_date";
+					break;
 				default:
 					sort = "zpqbd.in_date";
 				}
