@@ -12,6 +12,7 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
+          "proxyConfig": "src/proxy.conf.json",
           "options": {
             "outputPath": "dist/zoyadminportal",
             "index": "src/index.html",
@@ -82,11 +83,13 @@
           "options": {
             "browserTarget": "zoyadminangular:build",
             "host":"0.0.0.0",
-            "port":4200
+            "port":4200,
+            "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
             "production": {
-              "browserTarget": "zoyadminangular:build:production"
+              "browserTarget": "zoyadminangular:build:production",
+              "proxyConfig": "src/proxy.conf.json"
             },
             "development": {
               "browserTarget": "zoyadminangular:build:development"
