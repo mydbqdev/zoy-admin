@@ -18,7 +18,6 @@ export class BulkUploadService {
   constructor(
     private httpclient: HttpClient,
     @Inject(BASE_PATH) private basePath: string,
-    @Inject(BASE_PATH_EXTERNAL_SERVER) private basePathExternalServer: string,
     private messageService: MessageService
   ) {}
 
