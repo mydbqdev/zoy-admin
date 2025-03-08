@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   basePath:'http://localhost:8082/api-admin/',
   websocketBasePath:'ws://localhost:8082/api-admin/',
-  basePathExternal:'http://localhost:8081/',
+  basePathExternal:'/api/',
   version:'1.0.0-04-05-2020-11:41:00',
   oDataBlockSize:100,
   defMenuEnable:{

@@ -68,18 +68,6 @@ import { MessageService } from 'src/app/message.service';
         );
     } 
 
-    getCityAndState(pincode: string): Observable<any> {
-        const url = 'https://maps.googleapis.com/maps/api/geocode/json?address='+pincode+'&key='+this.API_KEY;
-        return this.httpclient.get<any>(
-            url,
-            {
-                headers:ServiceHelper.buildHeaders(),
-                observe : 'body',
-                withCredentials:true
-            }
-        );
-      }
-
       private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");    
     }

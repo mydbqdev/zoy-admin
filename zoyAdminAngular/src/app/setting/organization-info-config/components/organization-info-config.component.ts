@@ -14,6 +14,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { OrganizationBranchInfoModel, OrganizationMainBranchInfoModel } from '../models/organization-info-config-model';
+import { GoogleAPIService } from '../services/google.api.service';
 
 @Component({
   selector: 'app-organization-info-config',
@@ -59,7 +60,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
   OrganizationMainBranchInfoModel
   mainBranchInfo:OrganizationMainBranchInfoModel = new OrganizationMainBranchInfoModel();
   constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private dataService: DataService, private organizationInfoConfigService :OrganizationInfoConfigService,private userService:UserService,
-      private spinner: NgxSpinnerService, private authService:AuthService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
+      private spinner: NgxSpinnerService, private authService:AuthService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private googleAPIService:GoogleAPIService) {
         this.authService.checkLoginUserVlidaate();
         this.userNameSession = userService.getUsername();
 
@@ -464,7 +465,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
       }
 
       getCityAndState(pincode){
-        this.organizationInfoConfigService.getCityAndState(pincode).subscribe(res => {
+        this.googleAPIService.getCityAndState(pincode).subscribe(res => {
         if (res.results && res.results?.length > 0 ) {
           const addressComponents = res.results[0].address_components;
           this.infoModel.city = this.extractCity(addressComponents);
