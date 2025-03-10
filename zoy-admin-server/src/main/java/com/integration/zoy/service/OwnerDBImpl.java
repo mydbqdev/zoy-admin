@@ -162,4 +162,5 @@ public interface OwnerDBImpl {
 	ZoyCompanyMaster findcompanyMaster() throws WebServiceException;
 	ZoyCompanyMaster saveCompanyMaster(ZoyCompanyMaster master) throws WebServiceException;
 	List<String[]> getPropertyDueDetails(String propertyId, String securityDeposit);
+	List<ZoyPgSecurityDepositDetails> findAllSortedByEffectiveDate() throws WebServiceException;
 }

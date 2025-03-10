@@ -5,20 +5,17 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,20 +46,18 @@ import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgShortTermRentingDuration;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
-import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
 import com.integration.zoy.model.ZoyCompanyMasterModal;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
+import com.integration.zoy.repository.ZoyPgSecurityDepositDetailsRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.PdfGenerateService;
 import com.integration.zoy.utils.AuditHistoryUtilities;
-import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
-import com.integration.zoy.utils.UploadTenant;
 import com.integration.zoy.utils.ZoyAdminConfigDTO;
 import com.integration.zoy.utils.ZoyAfterCheckInCancellationDto;
 import com.integration.zoy.utils.ZoyBeforeCheckInCancellationDto;
@@ -116,8 +111,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	@Autowired
 	PdfGenerateService pdfGenerateService;
+	
+	@Autowired
+	ZoyPgSecurityDepositDetailsRepository zoyPgSecurityDepositDetailsRepository;
 
-
+	
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetailsDTO details) {
 		ResponseBody response = new ResponseBody();
@@ -595,59 +593,86 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	@Override
 	public ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositLimits(ZoyPgSecurityDepositDetailsDTO details) {
-		ResponseBody response = new ResponseBody();
-		try {
-			if (details == null) {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Required SecurityDeposit Limit details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
-			ZoyPgSecurityDepositDetails limits = ownerDBImpl.findZoySecurityDeposit();      
-			if (limits != null) {
-				final BigDecimal oldFixed=limits.getSecurityDepositMax();
-				final BigDecimal oldVariable=limits.getSecurityDepositMin();
-				// Update the existing record
-				limits.setSecurityDepositMax(details.getMaximumDeposit());
-				limits.setSecurityDepositMin(details.getMinimumDeposit());
-				ownerDBImpl.saveZoySecurityDepositLimits(limits);
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        if (details == null) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError("Required SecurityDeposit Limit details");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
 
-				//audit history here
-				StringBuffer historyContent=new StringBuffer(" has updated the Security Deposit Limit for");
-				if(oldFixed!=details.getMaximumDeposit()) {
-					historyContent.append(", Max from "+oldFixed+" to "+details.getMaximumDeposit());
-				}
-				if(oldVariable!=details.getMinimumDeposit()) {
-					historyContent.append(" ,  Min from "+oldVariable+" to "+details.getMinimumDeposit());
-				}
+	        if (details.getDepositId() != null && !"".equals(details.getDepositId())) {
 
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+	            Optional<ZoyPgSecurityDepositDetails> depositDetails = zoyPgSecurityDepositDetailsRepository.findById(details.getDepositId());
 
-				ZoyPgSecurityDepositDetailsDTO dto = convertToDTO(limits);
-				response.setStatus(HttpStatus.OK.value());
-				response.setData(dto);
-				response.setMessage("Updated Security Deposits Limit Details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-			} else {
-				ZoyPgSecurityDepositDetails newSecurityLimit = new ZoyPgSecurityDepositDetails();
-				newSecurityLimit.setSecurityDepositMax(details.getMaximumDeposit());
-				newSecurityLimit.setSecurityDepositMin(details.getMinimumDeposit());
-				ownerDBImpl.saveZoySecurityDepositLimits(newSecurityLimit);
-				//audit history here
-				String historyContent=" has created the Security Deposit Limit for, Max = "+details.getMaximumDeposit()+" , Min="+details.getMinimumDeposit();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+	            if (depositDetails.isEmpty()) {
+	                response.setStatus(HttpStatus.BAD_REQUEST.value());
+	                response.setError("Required SecurityDeposit Limit details not found");
+	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	            } else {
+	                ZoyPgSecurityDepositDetails oldDetails = depositDetails.get();
+	                BigDecimal oldFixed = oldDetails.getSecurityDepositMax();
+	                BigDecimal oldVariable = oldDetails.getSecurityDepositMin();
 
-				ZoyPgSecurityDepositDetailsDTO dto = convertToDTO(newSecurityLimit);
-				response.setStatus(HttpStatus.OK.value());
-				response.setData(dto);
-				response.setMessage("Saved Security Deposits Limit details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-			}
-		} catch (Exception e) {
-			log.error("Error saving/updating Security Deposits Limit details: API:/zoy_admin/config/security-deposit-limits ", e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
+	                oldDetails.setEffectiveDate(details.getEffectiveDate());
+	                oldDetails.setIsApproved(details.getIsApproved());
+	                oldDetails.setSecurityDepositMax(details.getMaximumDeposit());
+	                oldDetails.setSecurityDepositMin(details.getMinimumDeposit());
+	                
+	                if (details.getIsApproved()) {
+	                    oldDetails.setApprovedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+	                } else {
+	                    oldDetails.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+	                }
+
+	                zoyPgSecurityDepositDetailsRepository.save(oldDetails);
+
+	                // Build history for audit
+	                StringBuffer historyContent = new StringBuffer(" has updated the Security Deposit Limit for ");
+	                if (oldFixed != details.getMaximumDeposit()) {
+	                    historyContent.append("Max from ").append(oldFixed).append(" to ").append(details.getMaximumDeposit());
+	                }
+	                if (oldVariable != details.getMinimumDeposit()) {
+	                    historyContent.append(" , Min from ").append(oldVariable).append(" to ").append(details.getMinimumDeposit());
+	                }
+
+	                // Audit history
+	                auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+	            }
+
+	        } else {
+	            ZoyPgSecurityDepositDetails newDetails = new ZoyPgSecurityDepositDetails();
+	            newDetails.setSecurityDepositMax(details.getMaximumDeposit());
+	            newDetails.setSecurityDepositMin(details.getMinimumDeposit());
+	            newDetails.setIsApproved(details.getIsApproved());
+
+	            newDetails.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+	            newDetails.setIsApproved(false);
+
+	            zoyPgSecurityDepositDetailsRepository.save(newDetails);
+
+	            // Audit history for creation
+	            String historyContent = " has created the Security Deposit Limit for Max = " 
+	                + details.getMaximumDeposit() + " , Min = " + details.getMinimumDeposit();
+	            auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+	        }
+
+	        List<ZoyPgSecurityDepositDetails> allDetails = ownerDBImpl.findAllSortedByEffectiveDate();
+	        List<ZoyPgSecurityDepositDetailsDTO> dto = allDetails.stream()
+	            .map(this::convertToDTO) 
+	            .collect(Collectors.toList());
+
+	        response.setStatus(HttpStatus.OK.value());
+	        response.setData(dto);
+	        response.setMessage("Saved/Updated Security Deposit Limit details");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error saving/updating Security Deposits Limit details: API:/zoy_admin/config/security-deposit-limits ", e);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError("Internal server error");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
 	private ZoyPgSecurityDepositDetailsDTO convertToDTO(ZoyPgSecurityDepositDetails entity) {
@@ -656,7 +681,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setMinimumDeposit(entity.getSecurityDepositMin());
 		dto.setMaximumDeposit(entity.getSecurityDepositMax());
 		dto.setIsApproved(true);
-		dto.setEffectiveDate("2025-01-24");
+		dto.setEffectiveDate(entity.getEffectiveDate());
+		dto.setIsApproved(entity.getIsApproved()!= null ? entity.getIsApproved():false);
+	    dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
+		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
 		return dto;
 	}
 
