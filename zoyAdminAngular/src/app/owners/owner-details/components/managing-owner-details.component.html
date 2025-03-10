@@ -50,7 +50,7 @@
                                     </div>
                                     <div class="ml-auto">
                                       <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                      <i class="fas fa-ellipsis-v fa-sm fa-fw" style="color: #000000;"></i>
                                       </a>
                                       <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                         <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="openModelDoActiveteDeactivete('owner')" >Status</a>
@@ -193,7 +193,7 @@
                                       <div style="font-size: 18px;">Property Information</div>
                                       <div class="ml-auto">
                                         <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        <i class="fas fa-ellipsis-v fa-sm fa-fw " style="color:#000000;"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                           <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="openModelDoActiveteDeactivete('pg')"
@@ -499,8 +499,8 @@
 <div class="modal fade" id="reactivateReason" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-small ">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel"><span style="color: rgb(173, 5, 159);">{{doActiveteDeactiveteName}} - Status</span></h5>
+      <div class="modal-header bg-gradiant-popup-header">
+        <h5 class="modal-title" id="modalLabel"><span >{{doActiveteDeactiveteName}} - Status</span></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModel></button>
       </div>
       <div class="modal-body p-3">
