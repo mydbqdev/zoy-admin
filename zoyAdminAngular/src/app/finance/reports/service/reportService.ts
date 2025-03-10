@@ -174,10 +174,10 @@ import { MessageService } from 'src/app/message.service';
 		  'reportName': 'Upcoming Tenants Report',
 		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'bookedProperyName','propertAddress', 'roomNumber', 'expectedCheckIndate','expectedCheckOutdate']
 		},
-    {
-		  'reportName': 'Suspended Tenants Report',
-		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'roomNumber', 'checkedOutDate','suspendedDate','reasonForSuspension']
-		},
+   // {
+		//   'reportName': 'Suspended Tenants Report',
+		//   'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'roomNumber', 'checkedOutDate','suspendedDate','reasonForSuspension']
+		// },
     {
 		  'reportName': 'Inactive Tenants Report',
 		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'roomNumber', 'checkedOutDate']
@@ -187,10 +187,10 @@ import { MessageService } from 'src/app/message.service';
 		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'currentPropertName', 'propertAddress','roomNumber', 'checkInDate','expectedCheckOutdate']
 		},
 
-    { 
-      'reportName': 'Suspended Properties Report', 
-      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'suspendedDate', 'reasonForSuspension'] 
-    }, 
+    // { 
+    //   'reportName': 'Suspended Properties Report', 
+    //   'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'suspendedDate', 'reasonForSuspension'] 
+    // }, 
     { 
       'reportName': 'Inactive Properties Report', 
       'columns': ['ownerFullName', 'inactivePropertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress'] 
