@@ -37,11 +37,12 @@
                                 <div class="mr-1"  style="border:1px solid rgb(226, 224, 224);border-radius: 10px;height: calc(100vh - 191px)">
                                   <div style="text-align: end;padding-right: 20px;margin-top: 10px;">
                                   <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                  <i class="fas fa-sm fa-fw text-gray-400"></i>
+                                  <!-- <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i> -->
                                 </a>
-                                  <div class="dropdown-menu dropdown-menu-left shadow animated--fade-in" aria-labelledby="dropdownMenuLink" *ngIf="tdpf.profile?.status != 'Active' ">
+                                  <!-- <div class="dropdown-menu dropdown-menu-left shadow animated--fade-in" aria-labelledby="dropdownMenuLink" *ngIf="tdpf.profile?.status != 'Active' ">
                                       <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reactivateReason" (click)="reason='';submitted=false" >Status</a>
-                                  </div>
+                                  </div> -->
                                 </div>
                                   <div class="d-flex justify-content-center" style="margin-top: -25px;">
                                     <div style="width: 55px;"></div>
@@ -181,8 +182,8 @@
 <div class="modal fade" id="paymentHistory" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">{{transactionHeader}} - [<span style="color: rgb(173, 5, 159);">{{tdpf.profile.tenantName}}</span>]</h5>
+      <div class="modal-header bg-gradiant-popup-header">
+        <h5 class="modal-title" id="modalLabel">{{transactionHeader}} - [<span style="color: #28f20b;">{{tdpf.profile.tenantName}}</span>]</h5>
         <div>
           <div class="d-flex pl-5 ">
             <div class="mr-1 mt-1">Date Range</div>
@@ -197,7 +198,7 @@
                                     [title]="!toDate? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
                             
             <!-- <input type="datetime-local" class="form-control" style="width: 130px; font-size: 12px;" id="toDate"  /> -->
-            <div class="ml-1"><button class="btn btn-sm btn-primary-custom" (click)="getReportSearchBy()" ><i class="fas fa-search fa-sm"></i></button></div>
+            <div class="ml-1"><button class="btn btn-sm btn-primary-custom" (click)="getReportSearchBy()" style="line-height: normal" ><i class="fas fa-search fa-sm"></i></button></div>
           </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
