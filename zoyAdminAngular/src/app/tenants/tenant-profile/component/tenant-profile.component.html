@@ -63,7 +63,7 @@
                                     <div style="margin-top: 70px;"><img [src]="tdpf.profile.ekycStatus == 'Verified'? 'assets/images/ekyc-verified.png':'assets/images/ekyc-pending.png'" class="image-responsive" style="height: 25px; width: 55px;margin-left: -12px;"></div>
                                   </div>
                                   
-                                  <div style="text-align: center;margin-top:30px;">{{tdpf.profile.tenantName}}</div>
+                                  <div style="text-align: center;margin-top:30px;color:#000000;">{{tdpf.profile.tenantName}}</div>
                                   <div class="pl-3" style="font-size: 14px;color:#707070;">
                                     <div class="mb-1">Contact : {{tdpf.profile.contactNumber}}</div>
                                     <div class="mb-1">Email Id : {{tdpf.profile.userEmail}}</div>
@@ -98,30 +98,30 @@
                                       <div style="height: calc(100vh - 275px);padding:5px 10px;">
                                         <div *ngIf="selectedTab==1">
                                           <div class="pl-3" style="font-size: 14px;color: #707070;">
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Emergency Number</div><div><span class="mr-2">:</span></div>{{tdpf.profile.emergencyContactNumber}}</div>
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Alternative Phone Number</div><div><span class="mr-2">:</span>{{tdpf.profile.alternatePhone}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Tenant Type</div><div><span class="mr-2">:</span>{{tdpf.profile.tenantType}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Gender</div><div><span class="mr-2">:</span>{{tdpf.profile.gender}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Date of Birth</div><div><span class="mr-2">:</span>{{tdpf.profile.dateOfBirth | date: 'yyyy-MM-dd'}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Blood Group</div><div><span class="mr-2">:</span>{{tdpf.profile.bloodGroup}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Father's Name</div><div><span class="mr-2">:</span>{{tdpf.profile.fatherName}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Present Address</div><div><span class="mr-2">:</span>{{tdpf.profile.currentAddress}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Permanent Address</div><div><span class="mr-2">:</span>{{tdpf.profile.permanentAddress}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Nationality</div><div><span class="mr-2">:</span>{{tdpf.profile.nationality}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 180px;">Mother Tongue</div><div><span class="mr-2">:</span>{{tdpf.profile.motherTongue}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Emergency Number</div><div><span class="mr-2">:</span></div>{{tdpf.profile.emergencyContactNumber}}</div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Alternative Phone Number</div><div><span class="mr-2">:</span>{{tdpf.profile.alternatePhone}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Tenant Type</div><div><span class="mr-2">:</span>{{tdpf.profile.tenantType}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Gender</div><div><span class="mr-2">:</span>{{tdpf.profile.gender}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Date of Birth</div><div><span class="mr-2">:</span>{{tdpf.profile.dateOfBirth | date: 'yyyy-MM-dd'}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Blood Group</div><div><span class="mr-2">:</span>{{tdpf.profile.bloodGroup}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Father's Name</div><div><span class="mr-2">:</span>{{tdpf.profile.fatherName}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Present Address</div><div><span class="mr-2">:</span>{{tdpf.profile.currentAddress}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Permanent Address</div><div><span class="mr-2">:</span>{{tdpf.profile.permanentAddress}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Nationality</div><div><span class="mr-2">:</span>{{tdpf.profile.nationality}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 180px;color:#000000;">Mother Tongue</div><div><span class="mr-2">:</span>{{tdpf.profile.motherTongue}}</div></div>
                                           </div>
                                         </div>
                                         <div *ngIf="selectedTab==2 && sectionTabHeader=='Active Booking Details'">
                                           <div class="pl-3" style="font-size: 14px;color: #707070;" *ngIf="tdpf.activeBookings.pgName" >
-                                            <div class="d-flex mb-1"><div style="width: 130px;">PG Name</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.pgName}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Monthly Rent/Bed</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.monthlyRent}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Security Deposit</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.securityDeposit}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Dues</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.totalDueAmount}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Room / Bed No</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.roomBedName}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Check In</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.checkInDate}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Check Out</div><div><span class="mr-2">:</span>-</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Rent Cycle</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.rentCycle}}</div></div>
-                                            <div class="d-flex mb-1"><div style="width: 130px;">Notice Period</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.noticePeriod}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">PG Name</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.pgName}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Monthly Rent/Bed</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.monthlyRent}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Security Deposit</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.securityDeposit}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Dues</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.totalDueAmount}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Room / Bed No</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.roomBedName}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Check In</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.checkInDate}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Check Out</div><div><span class="mr-2">:</span>-</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Rent Cycle</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.rentCycle}}</div></div>
+                                            <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Notice Period</div><div><span class="mr-2">:</span>{{tdpf.activeBookings.noticePeriod}}</div></div>
                                           </div>
                                           <div style="text-align: center; padding-top:15px;" *ngIf="!tdpf.activeBookings.pgName">No data found. </div>
                                         </div>
@@ -131,12 +131,12 @@
                                               <div class="p-3" style="font-size: 14px;color: #525151;">
                                                 <div class="p-2" style="border:1px solid #603ebb;background-color: #faf9ff ;border-radius: 7px;">
                                                 <div class="d-flex mb-1"><div style="font-size: 20px;color: #4108ad;margin-right: 10px;">{{cbs.propertyName}} </div><div style="padding-top:5px"><i class="fas fa-circle mr-1" style="font-size: 8px;"></i> Bed No. {{cbs.bedNumber}}</div><div class="ml-auto" style="padding-top:5px"><span class="mr-2">Booking Id : {{cbs.bookingId}}</span></div></div>
-                                                <div class="d-flex mb-1"><div style="width: 130px;">Booking Date</div><div><span class="mr-2">:</span>{{cbs.bookingDate}}</div></div>
-                                                <div class="d-flex mb-1"><div style="width: 130px;">Cancellation Date</div><div><span class="mr-2">:</span>{{cbs.cancellationDate}}</div></div>
-                                                <div class="d-flex mb-1"><div style="width: 130px;">Monthly Rent</div><div><span class="mr-2">:</span>{{cbs.monthlyRent}}</div></div>
-                                                <div class="d-flex mb-1"><div style="width: 130px;">Security Deposit</div><div><span class="mr-2">:</span>{{cbs.securityDeposit}}</div></div>
-                                                <div class="d-flex mb-1"><div style="width: 130px;">Address</div><div><span class="mr-2">:</span>{{cbs.propertyAddress}}</div></div>
-                                                <div class="d-flex mb-1"><div style="width: 130px;">Contact</div><div><span class="mr-2">:</span>{{cbs.propertyContactNumber}}</div><div class="ml-auto"><a class="btn btn-sm btn-cancelled mr-2">{{cbs.bookingStatus}}</a></div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Booking Date</div><div><span class="mr-2">:</span>{{cbs.bookingDate}}</div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Cancellation Date</div><div><span class="mr-2">:</span>{{cbs.cancellationDate}}</div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Monthly Rent</div><div><span class="mr-2">:</span>{{cbs.monthlyRent}}</div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Security Deposit</div><div><span class="mr-2">:</span>{{cbs.securityDeposit}}</div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Address</div><div><span class="mr-2">:</span>{{cbs.propertyAddress}}</div></div>
+                                                <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Contact</div><div><span class="mr-2">:</span>{{cbs.propertyContactNumber}}</div><div class="ml-auto"><a class="btn btn-sm btn-cancelled mr-2">{{cbs.bookingStatus}}</a></div></div>
                                                 </div>
                                               </div>
                                          </div>
@@ -149,11 +149,11 @@
                                             <div class="p-3" style="font-size: 14px;color: #525151;">
                                               <div class="p-2" style="border:1px solid rgb(169, 3, 175);background-color: rgb(247, 247, 247);border-radius: 7px;">
                                               <div class="d-flex mb-1"><div style="font-size: 20px;color: #4108ad;margin-right: 10px;">{{ubs.propertyName}} </div><div style="padding-top:5px"><i class="fas fa-circle mr-1" style="font-size: 8px;"></i> Bed No. {{ubs.bedNumber}}</div><div class="ml-auto" style="padding-top:5px"><span class="mr-2">Booking Id : {{ubs.bookingId}}</span></div></div>
-                                              <div class="d-flex mb-1"><div style="width: 130px;">Booking Date</div><div><span class="mr-2">:</span>{{ubs.bookingDate}}</div></div>
-                                              <div class="d-flex mb-1"><div style="width: 130px;">Monthly Rent</div><div><span class="mr-2">:</span>{{ubs.monthlyRent}}</div></div>
-                                              <div class="d-flex mb-1"><div style="width: 130px;">Security Deposit</div><div><span class="mr-2">:</span>{{ubs.securityDeposit}}</div><div class="ml-2" style="color: rgb(236, 136, 136);"><i class="fas fa-circle mr-1" style="font-size: 5px;"></i>{{ubs.securityDepositStatus}}</div></div>
-                                              <div class="d-flex mb-1"><div style="width: 130px;">Address</div><div><span class="mr-2">:</span>{{ubs.propertyAddress}}</div></div>
-                                              <div class="d-flex mb-1"><div style="width: 130px;">Contact</div><div><span class="mr-2">:</span>{{ubs.propertyContactNumber}}</div></div>
+                                              <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Booking Date</div><div><span class="mr-2">:</span>{{ubs.bookingDate}}</div></div>
+                                              <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Monthly Rent</div><div><span class="mr-2">:</span>{{ubs.monthlyRent}}</div></div>
+                                              <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Security Deposit</div><div><span class="mr-2">:</span>{{ubs.securityDeposit}}</div><div class="ml-2" style="color: rgb(236, 136, 136);"><i class="fas fa-circle mr-1" style="font-size: 5px;"></i>{{ubs.securityDepositStatus}}</div></div>
+                                              <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Address</div><div><span class="mr-2">:</span>{{ubs.propertyAddress}}</div></div>
+                                              <div class="d-flex mb-1"><div style="width: 130px;color:#000000;">Contact</div><div><span class="mr-2">:</span>{{ubs.propertyContactNumber}}</div></div>
                                               </div>
                                             </div>
                                             </div>
