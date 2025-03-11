@@ -98,7 +98,7 @@
                                   <div class="d-flex">
                                   <div><i class="fas fa-thumbs-up mr-2 mt-1" [ngClass]="configMasterModel.tokenDetails[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i></div>
                                   <div *ngIf=" tokenAdvancDisabled && !configMasterModel.tokenDetails[0]?.isApproved" title="Approve the Rule" >
-                                    <a class="approve-icon" (click)="approveTheRule('tokenDetails',configMasterModel.tokenDetails[0]) ">
+                                    <a class="approve-icon" (click)="tokenAdvancSubmit('approve')">
                                       <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                     </a>
                                   </div>
@@ -112,7 +112,7 @@
                                       </button>
                                     </div>
                                     <div class="btn-group" *ngIf="!tokenAdvancDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="tokenAdvancSubmit()">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="tokenAdvancSubmit('update')">
                                         <i class="fas fa-check"></i>
                                       </button>
                                       <button class="btn btn-sm btn-outline-secondary" (click)="tokenAdvanceReset()">
@@ -223,12 +223,12 @@
                                   <div><i class="fas fa-thumbs-up mr-2 mt-1" [ngClass]="configMasterModel.depositDetails[0]?.isApproved?'color-bg-green':'color-bg-gray'"></i></div>
                                   <!-- <div *ngIf="configMasterOrg.depositDetails.length>1 && configMasterOrg.depositDetails[0]?.isApproved"> -->
                                     <div *ngIf=" securityDepositLimitsDisabled && !configMasterModel.depositDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                      <a class="approve-icon" (click)="approveTheRule('depositDetails',configMasterModel.depositDetails[0]) ">
+                                      <a class="approve-icon" (click)="securityDepositLimitsSubmit('approve')">
                                         <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                       </a>
                                     </div>
-                                  <div>
-                                    <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Security Deposit Limits'" >
+                                  <div *ngIf="configMasterModel.depositDetails[0]?.isApproved">
+                                    <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Security Deposit Limits'"  >
                                       <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
 
                                   <div class="btn-group" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
@@ -241,7 +241,7 @@
                                     <button 
                                       class="btn btn-sm btn-outline-secondary" 
                                       *ngIf="!securityDepositLimitsDisabled"
-                                      (click)="securityDepositLimitsSubmit()">
+                                      (click)="securityDepositLimitsSubmit('update')">
                                       <i class="fas fa-check"></i>
                                     </button>
                                     <button 
@@ -255,7 +255,7 @@
                                 </div>
                               </div>
 
-                              <div class="row" *ngIf="configMasterModel.depositDetails.length>1 && configMasterModel.depositDetails[1]!=undefined && configMasterModel.depositDetails[1]?.isApproved">
+                              <div class="row" *ngIf="configMasterModel.depositDetails.length>1 && configMasterModel.depositDetails[1]!=undefined && !configMasterModel.depositDetails[0]?.isApproved">
                                 <!-- Minimum Security Deposit -->
                                 <div class="col-sm-4">
                                   <div class="input-group input-group-sm">
@@ -263,7 +263,7 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.depositDetails[0].minimumDeposit"  disabled style="max-width: 140px !important;" />
+                                      [(ngModel)]="configMasterModel.depositDetails[1].minimumDeposit"  disabled style="max-width: 140px !important;" />
                                   </div>
                                 </div>
                                 <!-- Maximum Security Deposit -->
@@ -273,14 +273,14 @@
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm"
-                                      [(ngModel)]="configMasterModel.depositDetails[0].maximumDeposit"  disabled style="max-width: 140px !important;"/>
+                                      [(ngModel)]="configMasterModel.depositDetails[1].maximumDeposit"  disabled style="max-width: 140px !important;"/>
                                   </div>
                                 </div>
                                 <div class="col-sm-2">
                                   <div class="input-group input-group-sm">
                                     <input 
-                                      type="text" 
-                                      class="form-control form-control-sm" [ngModel]="configMasterModel.depositDetails[0].effectiveDate | date :'dd-MM-yyyy'" disabled/>
+                                      type="date" 
+                                      class="form-control form-control-sm" [ngModel]="configMasterModel.depositDetails[1].effectiveDate " disabled/>
                                   </div>
                                </div>
                                 <!-- Action Button -->
@@ -381,11 +381,11 @@
                                 <div class="col-sm-1 mt-4" >
                                   <div class="d-flex">
                                   <div><i class="fas fa-thumbs-up mr-2" [ngClass]="configMasterModel.gstCharges[0].isApproved?'color-bg-green':'color-bg-gray'"></i></div>
-                                  <div>
+                                  <div *ngIf="configMasterModel.gstCharges[0].isApproved">
                                     <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='GST Charges'" >
                                       <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
                                       <div *ngIf=" gstChargesDisabled && !configMasterModel.gstCharges[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                        <a class="approve-icon" (click)="approveTheRule('gstCharges',configMasterModel.gstCharges[0]) ">
+                                        <a class="approve-icon" (click)="gstChargesSubmit('approve')">
                                           <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                         </a>
                                       </div>
@@ -395,7 +395,7 @@
                                       </button>
                                     </div>
                                     <div class="btn-group" *ngIf="!gstChargesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="gstChargesSubmit()">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="gstChargesSubmit('update')">
                                         <i class="fas fa-check"></i>
                                       </button>
                                       <button class="btn btn-sm btn-outline-secondary" (click)="gstChargesReset()">
@@ -585,12 +585,12 @@
                             <div class="col-sm-1 mt-4">
                               <div class="d-flex">
                                 <div><i class="fas fa-thumbs-up mr-2" [ngClass]="configMasterModel.otherCharges[0]?.isApproved?'color-bg-green':'color-bg-gray'"></i></div>
-                                <div>
+                                <div *ngIf="configMasterModel.otherCharges[0]?.isApproved ">
                                   <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Service Charges'" >
                                     <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a>
                                   </div>
                                     <div *ngIf=" otherChargesDisabled && !configMasterModel.otherCharges[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                      <a class="approve-icon" (click)="approveTheRule('otherCharges',configMasterModel.otherCharges[0]) ">
+                                      <a class="approve-icon" (click)="otherChargesSubmit('approve')">
                                         <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                       </a>
                                     </div>      
@@ -600,7 +600,7 @@
                                 </button>
                               </div>
                               <div class="btn-group" *ngIf="!otherChargesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesSubmit()">
+                                <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesSubmit('update')">
                                   <i class="fas fa-check"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesReset()">
@@ -734,11 +734,11 @@
                                   <div class="col-sm-2 mt-4">
                                     <div class="d-flex">
                                       <div><i class="fas fa-thumbs-up mr-2 mt-1"  [ngClass]="configMasterModel.dataGrouping[0]?.isApproved?'color-bg-green':'color-bg-gray'"></i></div>
-                                      <div>
+                                      <div *ngIf="configMasterModel.dataGrouping[0]?.isApproved">
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Data Grouping'" >
                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                          <div *ngIf=" dataGroupingDisabled && !configMasterModel.dataGrouping[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                          <a class="approve-icon" (click)="approveTheRule('dataGrouping',configMasterModel.dataGrouping[0]) ">
+                                          <a class="approve-icon" (click)="trendingPGSubmit('approve')">
                                             <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                           </a>
                                         </div> 
@@ -748,7 +748,7 @@
                                       </button>
                                     </div>
                                     <div class="btn-group" *ngIf="!dataGroupingDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGSubmit()">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGSubmit('update')">
                                         <i class="fas fa-check"></i>
                                       </button>
                                       <button class="btn btn-sm btn-outline-secondary" (click)="trendingPGReset()">
@@ -824,11 +824,11 @@
                                   <div class="col-sm-2 mt-4">
                                     <div class="d-flex">
                                       <div><i class="fas fa-thumbs-up mr-2 mt-1" [ngClass]="configMasterModel.forceCheckOut[0]?.isApproved ?'color-bg-green':'color-bg-gray'"></i></div>
-                                      <div>
+                                      <div *ngIf="configMasterModel.forceCheckOut[0]?.isApproved">
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Force Checkout'" >
                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                          <div *ngIf=" forceCheckoutDisabled && !configMasterModel.forceCheckOut[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                          <a class="approve-icon" (click)="approveTheRule('forceCheckOut',configMasterModel.forceCheckOut[0]) ">
+                                          <a class="approve-icon" (click)="forceCheckoutSubmit('approve')">
                                             <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                           </a>
                                         </div> 
@@ -838,7 +838,7 @@
                                       </button>
                                     </div>
                                     <div class="btn-group" *ngIf="!forceCheckoutDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="forceCheckoutSubmit()">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="forceCheckoutSubmit('update')">
                                         <i class="fas fa-check"></i>
                                       </button>
                                       <button class="btn btn-sm btn-outline-secondary" (click)="forceCheckoutReset()">
@@ -912,11 +912,11 @@
                                   <div class="col-sm-2 mt-4">
                                     <div class="d-flex">
                                       <div><i class="fas fa-thumbs-up mr-2 mt-1"  [ngClass]="configMasterModel.noRentalAgreement[0]?.isApproved?'color-bg-green':'color-bg-gray'"></i></div>
-                                      <div>
+                                      <div *ngIf="configMasterModel.noRentalAgreement[0]?.isApproved">
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='No Rental agreement'" >
                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                          <div *ngIf=" noRentalAgreementDisabled && !configMasterModel.noRentalAgreement[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                          <a class="approve-icon" (click)="approveTheRule('noRentalAgreement',configMasterModel.noRentalAgreement[0]) ">
+                                          <a class="approve-icon" (click)="noRentalAgreementSubmit('approve')">
                                             <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                           </a>
                                         </div> 
@@ -926,7 +926,7 @@
                                       </button>
                                     </div>
                                     <div class="btn-group" *ngIf="!noRentalAgreementDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="noRentalAgreementSubmit()">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="noRentalAgreementSubmit('update')">
                                         <i class="fas fa-check"></i>
                                       </button>
                                       <button class="btn btn-sm btn-outline-secondary" (click)="noRentalAgreementReset()">
@@ -1047,11 +1047,11 @@
                                     <div class="col-sm-1 mt-4">
                                       <div class="d-flex" >
                                         <div><i class="fas fa-thumbs-up mr-2" [ngClass]="configMasterModel.securityDepositDeadLineDetails[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i></div>
-                                        <div>
+                                        <div *ngIf="!configMasterModel.securityDepositDeadLineDetails[0]?.isApproved" >
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Security Deposit Deadline'" >
                                            <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                            <div *ngIf=" securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                            <a class="approve-icon" (click)="approveTheRule('securityDepositDeadLineDetails',configMasterModel.securityDepositDeadLineDetails[0]) ">
+                                            <a class="approve-icon" (click)="securityDepositDeadLineSubmit('approve')">
                                               <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                             </a>
                                           </div> 
@@ -1065,7 +1065,7 @@
                                         <button 
                                           class="btn btn-sm btn-outline-secondary" 
                                           *ngIf="!securityDepositDeadLineDisabled"
-                                          (click)="securityDepositDeadLineSubmit()">
+                                          (click)="securityDepositDeadLineSubmit('update')">
                                           <i class="fas fa-check"></i>
                                         </button>
                                         <button 
@@ -1511,11 +1511,11 @@
                                   <div class="col-sm-2 mt-4" >
                                     <div class="d-flex" >
                                       <div><i class="fas fa-thumbs-up mr-2 mt-1"  [ngClass]="configMasterModel.shortTermRentingDuration[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i></div>
-                                      <div>
+                                      <div *ngIf="configMasterModel.shortTermRentingDuration[0]?.isApproved ">
                                         <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Short term duration'" >
                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                          <div *ngIf=" shortTermRentingDurationDisabled && !configMasterModel.shortTermRentingDuration[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                          <a class="approve-icon" (click)="approveTheRule('shortTermRentingDuration',configMasterModel.shortTermRentingDuration[0]) ">
+                                          <a class="approve-icon" (click)="shortTermRentingDurationSubmit('approve')">
                                             <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                           </a>
                                         </div> 
@@ -1525,7 +1525,7 @@
                                       </button>
                                     </div>
                                     <div class="btn-group" *ngIf="!shortTermRentingDurationDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationSubmit()">
+                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationSubmit('update')">
                                         <i class="fas fa-check"></i>
                                       </button>
                                       <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationReset()">
@@ -1738,11 +1738,11 @@
                                     <div class="col-sm-2 mt-4">
                                       <div class="d-flex" >
                                         <div><i class="fas fa-thumbs-up mr-2 mt-1"  [ngClass]="configMasterModel.earlyCheckOutRuleDetails[0]?.isApproved?'color-bg-green':'color-bg-gray'"></i></div>
-                                        <div>
+                                        <div *ngIf="configMasterModel.earlyCheckOutRuleDetails[0]?.isApproved">
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Early Check-out Rules'" >
                                            <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
                                            <div *ngIf=" earlyCheckOutRulesDisabled && !configMasterModel.earlyCheckOutRuleDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                            <a class="approve-icon" (click)="approveTheRule('earlyCheckOutRuleDetails',configMasterModel.earlyCheckOutRuleDetails[0]) ">
+                                            <a class="approve-icon" (click)="earlyCheckOutRulesSubmit('approve')">
                                               <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                             </a>
                                           </div> 
@@ -1752,7 +1752,7 @@
                                           </button>
                                         </div>
                                         <div class="btn-group" *ngIf="!earlyCheckOutRulesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                          <button class="btn btn-sm btn-outline-secondary" (click)="earlyCheckOutRulesSubmit()">
+                                          <button class="btn btn-sm btn-outline-secondary" (click)="earlyCheckOutRulesSubmit('update')">
                                             <i class="fas fa-check"></i>
                                           </button>
                                           <button class="btn btn-sm btn-outline-secondary" (click)="earlyCheckOutRuleReset()">
@@ -1906,11 +1906,11 @@
                                         <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                           <div class="d-flex" >
                                             <div><i class="fas fa-thumbs-up mr-2 mt-1" style="color:rgb(153, 243, 94) !important"></i></div>
-                                          <div>
+                                          <div *ngIf="configMasterModel.cancellationAfterCheckInDetails[0]?.isApproved">
                                             <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='After check-in Date'" >
                                              <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
                                              <div *ngIf=" autoCancellationDisabled && !configMasterModel.cancellationAfterCheckInDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                              <a class="approve-icon" (click)="approveTheRule('cancellationAfterCheckInDetails',configMasterModel.cancellationAfterCheckInDetails[0]) ">
+                                              <a class="approve-icon" (click)="autoCancellationSubmit('approve')">
                                                 <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                               </a>
                                             </div> 
@@ -1924,7 +1924,7 @@
                                             <button 
                                               class="btn btn-sm btn-outline-secondary" 
                                               *ngIf="!autoCancellationDisabled"
-                                              (click)="autoCancellationSubmit()">
+                                              (click)="autoCancellationSubmit('update')">
                                               <i class="fas fa-check"></i>
                                             </button>
                                             <button 
