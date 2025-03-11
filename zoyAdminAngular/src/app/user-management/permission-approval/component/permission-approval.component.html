@@ -166,7 +166,7 @@
                                                 <td mat-cell style="width: 50px;" data-label="action" *matCellDef="let element">
                                                     <a class="dropdown no-arrow dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                        <i class="fas fa-ellipsis-v fa-sm fa-fw" style="color:#000000;"></i>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                                         <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" (click)="viewUser(element)" >Check and Approve</a>
@@ -197,7 +197,7 @@
   </div>
 
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
-    <div class="offcanvas-header">
+    <div class="offcanvas-header bg-gradiant-popup-header">
         <h5 class="offcanvas-title" id="offcanvasRightLabel">Check And Approve</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #registerCloseModal></button>
     </div>
