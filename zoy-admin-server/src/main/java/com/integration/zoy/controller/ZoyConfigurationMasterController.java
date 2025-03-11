@@ -644,8 +644,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            ZoyPgSecurityDepositDetails newDetails = new ZoyPgSecurityDepositDetails();
 	            newDetails.setSecurityDepositMax(details.getMaximumDeposit());
 	            newDetails.setSecurityDepositMin(details.getMinimumDeposit());
-	            newDetails.setIsApproved(details.getIsApproved());
-
+	            newDetails.setEffectiveDate(details.getEffectiveDate());
 	            newDetails.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
 	            newDetails.setIsApproved(false);
 
@@ -677,18 +676,15 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	private ZoyPgSecurityDepositDetailsDTO convertToDTO(ZoyPgSecurityDepositDetails entity) {
 		ZoyPgSecurityDepositDetailsDTO dto = new ZoyPgSecurityDepositDetailsDTO();
-		dto.setDepositId(entity.getSecurityDepositId());
-		dto.setMinimumDeposit(entity.getSecurityDepositMin());
-		dto.setMaximumDeposit(entity.getSecurityDepositMax());
-		dto.setIsApproved(true);
+		dto.setDepositId(entity != null && entity.getSecurityDepositId() != null ? entity.getSecurityDepositId() : "");
+	    dto.setMinimumDeposit(entity != null && entity.getSecurityDepositMin() != null ? entity.getSecurityDepositMin() : BigDecimal.ZERO);
+	    dto.setMaximumDeposit(entity != null && entity.getSecurityDepositMax() != null ? entity.getSecurityDepositMax() : BigDecimal.ZERO);
 		dto.setEffectiveDate(entity.getEffectiveDate());
 		dto.setIsApproved(entity.getIsApproved()!= null ? entity.getIsApproved():false);
 	    dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
 		return dto;
 	}
-
-
 
 
 	@Override
@@ -906,7 +902,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		ResponseBody response = new ResponseBody();
 		try {
 			ZoyPgTokenDetails tokenDetails = ownerDBImpl.findTokenDetails();
-			ZoyPgSecurityDepositDetails depositDetails = ownerDBImpl.findZoySecurityDeposit();
+			List<ZoyPgSecurityDepositDetails> depositDetails = ownerDBImpl.findAllSortedByEffectiveDate();
 			List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
 			ZoyPgEarlyCheckOut earlyCheckOutDetails = ownerDBImpl.findEarlyCheckOutRule();
 			ZoyPgAutoCancellationAfterCheckIn cancellationAfterCheckIn = ownerDBImpl.findAutoCancellationAfterCheckIn();
@@ -925,9 +921,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				configDTO.setTokenDetails(listToken);
 			}
 			if (depositDetails != null) {
-				List<ZoyPgSecurityDepositDetailsDTO> listDepositDetails=new ArrayList<>();
-				listDepositDetails.add(convertToDTO(depositDetails));
-				configDTO.setDepositDetails(listDepositDetails);
+			    List<ZoyPgSecurityDepositDetailsDTO> listDepositDetails = new ArrayList<>();
+			    for (ZoyPgSecurityDepositDetails depositDetail : depositDetails) {
+			        listDepositDetails.add(convertToDTO(depositDetail));
+			    }
+			    configDTO.setDepositDetails(listDepositDetails);
 			}
 			if (cancellationDetails != null)
 				configDTO.setCancellationBeforeCheckInDetails(convertToDTO(cancellationDetails));

@@ -682,7 +682,7 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public List<ZoyPgSecurityDepositDetails> findAllSortedByEffectiveDate() throws WebServiceException {
-	    List<ZoyPgSecurityDepositDetails> results = zoySecurityDepositRepo.findAll(Sort.by(Sort.Order.asc("effectiveDate")));  
+	    List<ZoyPgSecurityDepositDetails> results = zoySecurityDepositRepo.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
 	    return results;
 	}
 	
