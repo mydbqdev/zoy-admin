@@ -449,65 +449,65 @@ getTriggerOn(){
 		 }
 		}
 
-		approveTheRule(ruleTitle:string,rule:any){
-			console.log("ruleTitle::",ruleTitle);
-			console.log("rule::",rule);
+		// approveTheRule(ruleTitle:string,rule:any){
+		// 	console.log("ruleTitle::",ruleTitle);
+		// 	console.log("rule::",rule);
 
-			if(rule?.creater == this.userInfo.userEmail){
-				this.notifyService.showInfo("Rule creator cannot approve the Rule","")
-				return ;
-			}
-			if(this.validationAllData(ruleTitle)){
-				this.notifyService.showInfo("The rule is invalid, kindly review it.","");
-				return;
-			}else{
-			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Approve ?')
-			.then(
-			   (confirmed) =>{
-				if(confirmed){
-			// this.spinner.show();
-			// this.authService.checkLoginUserVlidaate();
-			// this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetails[0]).subscribe(res => {
-			// 	this.configMasterOrg.tokenDetails = Object.assign(new TokenDetailsModel(), res.data );
-			// 	this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
-			// 	this.tokenAdvancDisabled = true;
-			// 	this.notifyService.showSuccess("Token Advance has been updated successfully", "");
-			// 	this.spinner.hide();
-			// 	}, error => {
-			// 	this.spinner.hide();
-			// 	if(error.status == 0) {
-			// 	  this.notifyService.showError("Internal Server Error/Connection not established", "");
-			//    }else if(error.status==403){
-			// 		this.router.navigate(['/forbidden']);
-			// 	}else if (error.error && error.error.message) {
-			// 		this.errorMsg = error.error.message;
-			// 		console.log("Error:" + this.errorMsg);
-			// 		this.notifyService.showError(this.errorMsg, "");
-			// 	} else {
-			// 		if (error.status == 500 && error.statusText == "Internal Server Error") {
-			// 		this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-			// 		} else {
-			// 		let str;
-			// 		if (error.status == 400) {
-			// 			str = error.error.error;
-			// 		} else {
-			// 			str = error.error.message;
-			// 			str = str.substring(str.indexOf(":") + 1);
-			// 		}
-			// 		console.log("Error:" ,str);
-			// 		this.errorMsg = str;
-			// 		}
-			// 		if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			// 		//this.notifyService.showError(this.errorMsg, "");
-			// 	}
-			// 	});	
-			}	
-			}).catch(
-				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-			);	
-			}
+		// 	if(rule?.creater == this.userInfo.userEmail){
+		// 		this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		// 		return ;
+		// 	}
+		// 	if(this.validationAllData(ruleTitle)){
+		// 		this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+		// 		return;
+		// 	}else{
+		// 	this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Approve ?')
+		// 	.then(
+		// 	   (confirmed) =>{
+		// 		if(confirmed){
+		// 	this.spinner.show();
+		// 	this.authService.checkLoginUserVlidaate();
+		// 	this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetails[0]).subscribe(res => {
+		// 		this.configMasterOrg.tokenDetails = Object.assign(new TokenDetailsModel(), res.data );
+		// 		this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
+		// 		this.tokenAdvancDisabled = true;
+		// 		this.notifyService.showSuccess("Token Advance has been updated successfully", "");
+		// 		this.spinner.hide();
+		// 		}, error => {
+		// 		this.spinner.hide();
+		// 		if(error.status == 0) {
+		// 		  this.notifyService.showError("Internal Server Error/Connection not established", "");
+		// 	   }else if(error.status==403){
+		// 			this.router.navigate(['/forbidden']);
+		// 		}else if (error.error && error.error.message) {
+		// 			this.errorMsg = error.error.message;
+		// 			console.log("Error:" + this.errorMsg);
+		// 			this.notifyService.showError(this.errorMsg, "");
+		// 		} else {
+		// 			if (error.status == 500 && error.statusText == "Internal Server Error") {
+		// 			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+		// 			} else {
+		// 			let str;
+		// 			if (error.status == 400) {
+		// 				str = error.error.error;
+		// 			} else {
+		// 				str = error.error.message;
+		// 				str = str.substring(str.indexOf(":") + 1);
+		// 			}
+		// 			console.log("Error:" ,str);
+		// 			this.errorMsg = str;
+		// 			}
+		// 			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		// 			//this.notifyService.showError(this.errorMsg, "");
+		// 		}
+		// 		});	
+		// 	}	
+		// 	}).catch(
+		// 		() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+		// 	);	
+		// 	}
 
-			}
+		// 	}
 
 		validationAllData(key:string) :boolean{
 			switch (key) {
@@ -635,25 +635,28 @@ getTriggerOn(){
 			  return false;
 		}
 
-	 tokenAdvancSubmit() {
-		console.log("this.configMasterModel.tokenDetails[0]",this.configMasterModel.tokenDetails[0])
-		// if(this.isNotValidNumber(this.configMasterModel.tokenDetails[0].fixedToken) || this.isNotValidNumber(this.configMasterModel.tokenDetails[0].variableToken ) || !this.configMasterModel.tokenDetails[0].effectiveDate){
-		// 	return
-		// }
-		// if(this.invaliedEffectiveDate('tokenDetails',this.configMasterModel.tokenDetails[0]?.effectiveDate)){
-		// 	return;
-		// }
-		// if(Number(this.configMasterModel.tokenDetails[0].fixedToken) > Number(this.configMasterModel.depositDetails[0].maximumDeposit)){
-		//     this.notifyService.showInfo("The token fixed amount should not be greater than the maximum security deposit.","")
-		// 	return;
-		// }
-		if(!this.validationAllData("tokenDetails")){
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+	 tokenAdvancSubmit(task:string) {
+		if( task === 'approve' && this.configMasterModel.tokenDetails[0]?.createdBy == this.userInfo.userEmail){
+			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+			return ;
+		}
+		if(this.validationAllData('tokenDetails')){
+			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+			return;
+		}else{
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
-		this.spinner.show();
+		if(task === 'approve'){
+			this.configMasterModel.tokenDetails[0].isApproved=true;
+		}else{
+			if(this.configMasterModel.tokenDetails[0].isApproved){
+				this.configMasterModel.tokenDetails[0].tokenId="";
+			}
+		}
 		this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
 		this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetails[0]).subscribe(res => {
 			this.configMasterOrg.tokenDetails = Object.assign(new TokenDetailsModel(), res.data );
 			this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
@@ -699,15 +702,28 @@ getTriggerOn(){
 		this.tokenAdvancDisabled = true;
 	  }
 	  
-	  securityDepositLimitsSubmit() {
-		console.log("this.configMasterModel.depositDetails[0]",this.configMasterModel.depositDetails[0])
-		if(!this.validationAllData("depositDetails")){
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+	  securityDepositLimitsSubmit(task:string) {
+		if( task === 'approve' && this.configMasterModel.depositDetails[0]?.createdBy == this.userInfo.userEmail){
+			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+			return ;
+		}
+		if(this.validationAllData('depositDetails')){
+			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+			return;
+		}else{				
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
+				if(task === 'approve'){
+					this.configMasterModel.depositDetails[0].isApproved=true;
+				}else{
+					if(this.configMasterModel.depositDetails[0].isApproved){
+						this.configMasterModel.depositDetails[0].depositId="";
+					}
+				}
 				this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.depositDetails[0]).subscribe(res => {
 					this.configMasterOrg.depositDetails = Object.assign(new SecurityDepositLimitsModel(), res.data );
 					this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
@@ -754,14 +770,27 @@ getTriggerOn(){
 		this.securityDepositLimitsDisabled = true;
 	}
 
-	gstChargesSubmit() {
-		
-		if(!this.validationAllData("gstCharges")){
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+	gstChargesSubmit(task:string) {
+		if( task === 'approve' && this.configMasterModel.gstCharges[0]?.createdBy == this.userInfo.userEmail){
+			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+			return ;
+		}
+		if(this.validationAllData('gstCharges')){
+			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+			return;
+		}else{
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
 		this.spinner.show();
+		if(task === 'approve'){
+			this.configMasterModel.gstCharges[0].isApproved=true;
+		}else{
+			if(this.configMasterModel.gstCharges[0].isApproved){
+				this.configMasterModel.gstCharges[0].rentId="";
+			}
+		}
 		this.authService.checkLoginUserVlidaate();
 		this.configMasterService.updategstChargesDetails(this.configMasterModel.gstCharges[0]).subscribe(res => {
 			this.configMasterOrg.gstCharges = Object.assign(new TokenDetailsModel(), res.data );
@@ -807,13 +836,28 @@ getTriggerOn(){
 		this.configMasterModel.gstCharges = JSON.parse(JSON.stringify(this.configMasterOrg.gstCharges));
 		this.gstChargesDisabled = true;
 	  }
-	securityDepositDeadLineSubmit() {
-		if(!this.validationAllData("securityDepositDeadLineDetails")){
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+	securityDepositDeadLineSubmit(task:string) {
+		if( task === 'approve' && this.configMasterModel.securityDepositDeadLineDetails[0]?.createdBy == this.userInfo.userEmail){
+			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+			return ;
+		}
+		if(this.validationAllData('securityDepositDeadLineDetails')){
+			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+			return;
+		}else{
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
-				this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
+		if(task === 'approve'){
+			this.configMasterModel.securityDepositDeadLineDetails[0].isApproved=true;
+		}else{
+			if(this.configMasterModel.securityDepositDeadLineDetails[0].isApproved){
+				this.configMasterModel.securityDepositDeadLineDetails[0].auto_cancellation_id="";
+			}
+		}
+		this.authService.checkLoginUserVlidaate();	
 		this.spinner.show();
 		this.configMasterService.updateSecurityDepositDeadLineDetails(this.configMasterModel.securityDepositDeadLineDetails[0]).subscribe(res => {
 			this.configMasterOrg.securityDepositDeadLineDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
@@ -858,101 +902,129 @@ getTriggerOn(){
 		this.configMasterModel.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositDeadLineDetails));
 		this.securityDepositDeadLineDisabled = true;
 	}
-	autoCancellationSubmit() {
-		if(!this.validationAllData("cancellationAfterCheckInDetails")){
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+	autoCancellationSubmit(task:string) {
+		if( task === 'approve' && this.configMasterModel.cancellationAfterCheckInDetails[0]?.createdBy == this.userInfo.userEmail){
+			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+			return ;
+		}
+		if(this.validationAllData('cancellationAfterCheckInDetails')){
+			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+			return;
+		}else{
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
-				this.authService.checkLoginUserVlidaate();
-				this.spinner.show();
-				this.configMasterService.updateAutoCancellationDetails(this.configMasterModel.cancellationAfterCheckInDetails[0]).subscribe(res => {
-					this.configMasterOrg.cancellationAfterCheckInDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
-					this.configMasterModel.cancellationAfterCheckInDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationAfterCheckInDetails));
-					this.autoCancellationDisabled = true;
-					this.notifyService.showSuccess("After check-in Date has been updated successfully", "");
-					this.spinner.hide();
-					}, error => {
-					this.spinner.hide();
-					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "");
-				}else if(error.status==403){
-						this.router.navigate(['/forbidden']);
-					}else if (error.error && error.error.message) {
-						this.errorMsg = error.error.message;
-						console.log("Error:" + this.errorMsg);
-						this.notifyService.showError(this.errorMsg, "");
-					} else {
-						if (error.status == 500 && error.statusText == "Internal Server Error") {
-						this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-						} else {
-						let str;
-						if (error.status == 400) {
-							str = error.error.error;
-						} else {
-							str = error.error.message;
-							str = str.substring(str.indexOf(":") + 1);
-						}
-						console.log("Error:" ,str);
-						this.errorMsg = str;
-						}
-						if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-						//this.notifyService.showError(this.errorMsg, "");
-					}
-					});
+		if(task === 'approve'){
+			this.configMasterModel.cancellationAfterCheckInDetails[0].isApproved=true;
+		}else{
+			if(this.configMasterModel.cancellationAfterCheckInDetails[0].isApproved){
+				this.configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_id="";
+			}
+		}
+		this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
+		this.configMasterService.updateAutoCancellationDetails(this.configMasterModel.cancellationAfterCheckInDetails[0]).subscribe(res => {
+			this.configMasterOrg.cancellationAfterCheckInDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
+			this.configMasterModel.cancellationAfterCheckInDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationAfterCheckInDetails));
+			this.autoCancellationDisabled = true;
+			this.notifyService.showSuccess("After check-in Date has been updated successfully", "");
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "");
+		}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
 				}
-			}).catch(
-				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-			);	
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}
+	}).catch(
+		() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+	);	
 		}								
 	  }
 	autoCancellationReset() {
 		this.configMasterModel.cancellationAfterCheckInDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationAfterCheckInDetails));
 		this.autoCancellationDisabled = true;
 	}	
-	otherChargesSubmit() {
-		if(!this.validationAllData("otherCharges")){
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+	otherChargesSubmit(task:string) {
+		if( task === 'approve' && this.configMasterModel.otherCharges[0]?.createdBy == this.userInfo.userEmail){
+			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+			return ;
+		}
+		if(this.validationAllData('otherCharges')){
+			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+			return;
+		}else{
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
-				this.authService.checkLoginUserVlidaate();
-				this.spinner.show();
-				this.configMasterService.updateOtherChargesDetails(this.configMasterModel.otherCharges[0]).subscribe(res => {
-					this.configMasterOrg.otherCharges = Object.assign(new OtherChargesModel(), res.data );
-					this.configMasterModel.otherCharges = JSON.parse(JSON.stringify(this.configMasterOrg.otherCharges));
-					this.otherChargesDisabled = true;
-					this.notifyService.showSuccess("Other Charges has been updated successfully", "");
-					this.spinner.hide();
-					}, error => {
-					this.spinner.hide();
-					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "");
-				}else if(error.status==403){
-						this.router.navigate(['/forbidden']);
-					}else if (error.error && error.error.message) {
-						this.errorMsg = error.error.message;
-						console.log("Error:" + this.errorMsg);
-						this.notifyService.showError(this.errorMsg, "");
-					} else {
-						if (error.status == 500 && error.statusText == "Internal Server Error") {
-						this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-						} else {
-						let str;
-						if (error.status == 400) {
-							str = error.error.error;
-						} else {
-							str = error.error.message;
-							str = str.substring(str.indexOf(":") + 1);
-						}
-						console.log("Error:" ,str);
-						this.errorMsg = str;
-						}
-						if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-						//this.notifyService.showError(this.errorMsg, "");
-					}
-					});	
+			if(task === 'approve'){
+				this.configMasterModel.otherCharges[0].isApproved=true;
+			}else{
+				if(this.configMasterModel.otherCharges[0].isApproved){
+					this.configMasterModel.otherCharges[0].otherChargesId="";
 				}
+			}
+			this.authService.checkLoginUserVlidaate();
+			this.spinner.show();
+			this.configMasterService.updateOtherChargesDetails(this.configMasterModel.otherCharges[0]).subscribe(res => {
+				this.configMasterOrg.otherCharges = Object.assign(new OtherChargesModel(), res.data );
+				this.configMasterModel.otherCharges = JSON.parse(JSON.stringify(this.configMasterOrg.otherCharges));
+				this.otherChargesDisabled = true;
+				this.notifyService.showSuccess("Other Charges has been updated successfully", "");
+				this.spinner.hide();
+				}, error => {
+				this.spinner.hide();
+				if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "");
+			}else if(error.status==403){
+					this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+				} else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					let str;
+					if (error.status == 400) {
+						str = error.error.error;
+					} else {
+						str = error.error.message;
+						str = str.substring(str.indexOf(":") + 1);
+					}
+					console.log("Error:" ,str);
+					this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+					//this.notifyService.showError(this.errorMsg, "");
+				}
+				});	
+			}
 			}).catch(
 				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 			);
@@ -963,52 +1035,66 @@ getTriggerOn(){
 		this.otherChargesDisabled = true;
 	}		  
 
-	trendingPGSubmit() {
-		if(!this.validationAllData("dataGrouping")){
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+	trendingPGSubmit(task:string) {
+		if( task === 'approve' && this.configMasterModel.dataGrouping[0]?.createdBy == this.userInfo.userEmail){
+			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+			return ;
+		}
+		if(this.validationAllData('dataGrouping')){
+			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+			return;
+		}else{
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
-				this.authService.checkLoginUserVlidaate();
-				this.spinner.show();
-				this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGrouping[0]).subscribe(res => {
-					this.configMasterOrg.dataGrouping = Object.assign(new DataGroupingModel(), res.data );
-					this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
-					this.dataGroupingDisabled = true;
-					this.notifyService.showSuccess("Data Grouping has been updated successfully", "");
-					this.spinner.hide();
-					}, error => {
-					this.spinner.hide();
-					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "");
-				}else if(error.status==403){
-						this.router.navigate(['/forbidden']);
-					}else if (error.error && error.error.message) {
-						this.errorMsg = error.error.message;
-						console.log("Error:" + this.errorMsg);
-						this.notifyService.showError(this.errorMsg, "");
-					} else {
-						if (error.status == 500 && error.statusText == "Internal Server Error") {
-						this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-						} else {
-						let str;
-						if (error.status == 400) {
-							str = error.error.error;
-						} else {
-							str = error.error.message;
-							str = str.substring(str.indexOf(":") + 1);
-						}
-						console.log("Error:" ,str);
-						this.errorMsg = str;
-						}
-						if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-						//this.notifyService.showError(this.errorMsg, "");
-					}
-					});	
+			if(task === 'approve'){
+				this.configMasterModel.dataGrouping[0].isApproved=true;
+			}else{
+				if(this.configMasterModel.dataGrouping[0].isApproved){
+					this.configMasterModel.dataGrouping[0].id="";
 				}
-			}).catch(
-				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-			);	
+			}
+			this.authService.checkLoginUserVlidaate();
+			this.spinner.show();
+			this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGrouping[0]).subscribe(res => {
+				this.configMasterOrg.dataGrouping = Object.assign(new DataGroupingModel(), res.data );
+				this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
+				this.dataGroupingDisabled = true;
+				this.notifyService.showSuccess("Data Grouping has been updated successfully", "");
+				this.spinner.hide();
+				}, error => {
+				this.spinner.hide();
+				if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "");
+			}else if(error.status==403){
+					this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+				} else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					let str;
+					if (error.status == 400) {
+						str = error.error.error;
+					} else {
+						str = error.error.message;
+						str = str.substring(str.indexOf(":") + 1);
+					}
+					console.log("Error:" ,str);
+					this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+					//this.notifyService.showError(this.errorMsg, "");
+				}
+				});	
+			}
+		}).catch(
+			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+		);	
 		}				
 	  }				
 			
@@ -1236,13 +1322,27 @@ getTriggerOn(){
 		this.canSubmit=false;
 	  }
 	
-	  earlyCheckOutRulesSubmit() {
-		if(!this.validationAllData("earlyCheckOutRuleDetails")){
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+	  earlyCheckOutRulesSubmit(task:string) {
+		if( task === 'approve' && this.configMasterModel.earlyCheckOutRuleDetails[0]?.createdBy == this.userInfo.userEmail){
+			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+			return ;
+		}
+		if(this.validationAllData('earlyCheckOutRuleDetails')){
+			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+			return;
+		}else{
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
-				this.authService.checkLoginUserVlidaate();
+			if(task === 'approve'){
+				this.configMasterModel.earlyCheckOutRuleDetails[0].isApproved=true;
+			}else{
+				if(this.configMasterModel.earlyCheckOutRuleDetails[0].isApproved){
+					this.configMasterModel.earlyCheckOutRuleDetails[0].early_check_out_id="";
+				}
+			}
+			this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
 				this.configMasterService.updateEarlyCheckOutRulesdDetails(this.configMasterModel.earlyCheckOutRuleDetails[0]).subscribe(res => {
 					this.configMasterOrg.earlyCheckOutRuleDetails = Object.assign(new EarlyCheckOutRuleDetails(), res.data );
@@ -1289,49 +1389,63 @@ getTriggerOn(){
 		this.configMasterModel.earlyCheckOutRuleDetails = JSON.parse(JSON.stringify(this.configMasterOrg.earlyCheckOutRuleDetails));
 		this.earlyCheckOutRulesDisabled = true;
 	  }
-	  forceCheckoutSubmit(): void {
-		if(!this.validationAllData("forceCheckOut")){
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+	  forceCheckoutSubmit(task:string): void {
+		if( task === 'approve' && this.configMasterModel.forceCheckOut[0]?.createdBy == this.userInfo.userEmail){
+			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+			return ;
+		}
+		if(this.validationAllData('forceCheckOut')){
+			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+			return;
+		}else{
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
-				this.authService.checkLoginUserVlidaate();
-				this.spinner.show();
-				this.configMasterService.updateForceCheckOutDetails(this.configMasterModel.forceCheckOut[0]).subscribe(res => {
-					this.configMasterOrg.forceCheckOut = Object.assign(new ForceCheckoutModel(), res.data );
-					this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
-					this.forceCheckoutDisabled = true;
-					this.notifyService.showSuccess("Force Checkout has been updated successfully", "");
-					this.spinner.hide();
-					}, error => {
-					this.spinner.hide();
-					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "");
-				}else if(error.status==403){
-						this.router.navigate(['/forbidden']);
-					}else if (error.error && error.error.message) {
-						this.errorMsg = error.error.message;
-						console.log("Error:" + this.errorMsg);
-						this.notifyService.showError(this.errorMsg, "");
-					} else {
-						if (error.status == 500 && error.statusText == "Internal Server Error") {
-						this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-						} else {
-						let str;
-						if (error.status == 400) {
-							str = error.error.error;
-						} else {
-							str = error.error.message;
-							str = str.substring(str.indexOf(":") + 1);
-						}
-						console.log("Error:" ,str);
-						this.errorMsg = str;
-						}
-						if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-						//this.notifyService.showError(this.errorMsg, "");
-					}
-					});	
+			if(task === 'approve'){
+				this.configMasterModel.forceCheckOut[0].isApproved=true;
+			}else{
+				if(this.configMasterModel.forceCheckOut[0].isApproved){
+					this.configMasterModel.forceCheckOut[0].id="";
 				}
+			}
+			this.authService.checkLoginUserVlidaate();
+			this.spinner.show();
+			this.configMasterService.updateForceCheckOutDetails(this.configMasterModel.forceCheckOut[0]).subscribe(res => {
+				this.configMasterOrg.forceCheckOut = Object.assign(new ForceCheckoutModel(), res.data );
+				this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
+				this.forceCheckoutDisabled = true;
+				this.notifyService.showSuccess("Force Checkout has been updated successfully", "");
+				this.spinner.hide();
+				}, error => {
+				this.spinner.hide();
+				if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "");
+			}else if(error.status==403){
+					this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+				} else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					let str;
+					if (error.status == 400) {
+						str = error.error.error;
+					} else {
+						str = error.error.message;
+						str = str.substring(str.indexOf(":") + 1);
+					}
+					console.log("Error:" ,str);
+					this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+					//this.notifyService.showError(this.errorMsg, "");
+				}
+				});	
+			}
 			}).catch(
 				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 			);
@@ -1406,49 +1520,63 @@ getTriggerOn(){
 
 			}
 
-		shortTermRentingDurationSubmit(): void {
-			 if(!this.validationAllData("shortTermRentingDuration")){
-			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+		shortTermRentingDurationSubmit(task:string): void {
+			if( task === 'approve' && this.configMasterModel.shortTermRentingDuration[0]?.createdBy == this.userInfo.userEmail){
+				this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+				return ;
+			}
+			if(this.validationAllData('shortTermRentingDuration')){
+				this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+				return;
+			}else{
+			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 			.then(
 			   (confirmed) =>{
 				if(confirmed){
-					this.authService.checkLoginUserVlidaate();
-					this.spinner.show();
-					this.configMasterService.updateShortTermRentingDuration(this.configMasterModel.shortTermRentingDuration[0]).subscribe(res => {
-						this.configMasterOrg.shortTermRentingDuration = Object.assign(new ShortTermRentingDuration(), res.data );
-						this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
-						this.shortTermRentingDurationDisabled = true;
-						this.notifyService.showSuccess("No Rental Agreement has been updated successfully", "");
-						this.spinner.hide();
-						}, error => {
-						this.spinner.hide();
-						if(error.status == 0) {
-						this.notifyService.showError("Internal Server Error/Connection not established", "");
-					}else if(error.status==403){
-							this.router.navigate(['/forbidden']);
-						}else if (error.error && error.error.message) {
-							this.errorMsg = error.error.message;
-							console.log("Error:" + this.errorMsg);
-							this.notifyService.showError(this.errorMsg, "");
-						} else {
-							if (error.status == 500 && error.statusText == "Internal Server Error") {
-							this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-							} else {
-							let str;
-							if (error.status == 400) {
-								str = error.error.error;
-							} else {
-								str = error.error.message;
-								str = str.substring(str.indexOf(":") + 1);
-							}
-							console.log("Error:" ,str);
-							this.errorMsg = str;
-							}
-							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-							//this.notifyService.showError(this.errorMsg, "");
-						}
-						});	
+				if(task === 'approve'){
+					this.configMasterModel.shortTermRentingDuration[0].isApproved=true;
+				}else{
+					if(this.configMasterModel.shortTermRentingDuration[0].isApproved){
+						this.configMasterModel.shortTermRentingDuration[0].rentingDurationId="";
 					}
+				}
+				this.authService.checkLoginUserVlidaate();
+				this.spinner.show();
+				this.configMasterService.updateShortTermRentingDuration(this.configMasterModel.shortTermRentingDuration[0]).subscribe(res => {
+					this.configMasterOrg.shortTermRentingDuration = Object.assign(new ShortTermRentingDuration(), res.data );
+					this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
+					this.shortTermRentingDurationDisabled = true;
+					this.notifyService.showSuccess("No Rental Agreement has been updated successfully", "");
+					this.spinner.hide();
+					}, error => {
+					this.spinner.hide();
+					if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "");
+				}else if(error.status==403){
+						this.router.navigate(['/forbidden']);
+					}else if (error.error && error.error.message) {
+						this.errorMsg = error.error.message;
+						console.log("Error:" + this.errorMsg);
+						this.notifyService.showError(this.errorMsg, "");
+					} else {
+						if (error.status == 500 && error.statusText == "Internal Server Error") {
+						this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+						} else {
+						let str;
+						if (error.status == 400) {
+							str = error.error.error;
+						} else {
+							str = error.error.message;
+							str = str.substring(str.indexOf(":") + 1);
+						}
+						console.log("Error:" ,str);
+						this.errorMsg = str;
+						}
+						if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+						//this.notifyService.showError(this.errorMsg, "");
+					}
+					});	
+				}
 				}).catch(
 					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 				);
@@ -1461,49 +1589,63 @@ getTriggerOn(){
 		  }
 
 		  noRentalAgreementDisabled:boolean=true;
-		  noRentalAgreementSubmit(): void {
-			 if(!this.validationAllData("noRentalAgreement")){
-			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+		  noRentalAgreementSubmit(task:string): void {
+			if( task === 'approve' && this.configMasterModel.noRentalAgreement[0]?.createdBy == this.userInfo.userEmail){
+				this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+				return ;
+			}
+			if(this.validationAllData('noRentalAgreement')){
+				this.notifyService.showInfo("The rule is invalid, kindly review it.","");
+				return;
+			}else{
+			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
 			.then(
 			   (confirmed) =>{
 				if(confirmed){
-					this.authService.checkLoginUserVlidaate();
-					this.spinner.show();
-					this.configMasterService.updateNoRentalAgreement(this.configMasterModel.noRentalAgreement[0]).subscribe(res => {
-						this.configMasterOrg.noRentalAgreement = Object.assign(new ShortTermRentingDuration(), res.data );
-						this.configMasterModel.noRentalAgreement = JSON.parse(JSON.stringify(this.configMasterOrg.noRentalAgreement));
-						this.noRentalAgreementDisabled = true;
-						this.notifyService.showSuccess("No Rental Agreement has been updated successfully", "");
-						this.spinner.hide();
-						}, error => {
-						this.spinner.hide();
-						if(error.status == 0) {
-						this.notifyService.showError("Internal Server Error/Connection not established", "");
-					}else if(error.status==403){
-							this.router.navigate(['/forbidden']);
-						}else if (error.error && error.error.message) {
-							this.errorMsg = error.error.message;
-							console.log("Error:" + this.errorMsg);
-							this.notifyService.showError(this.errorMsg, "");
-						} else {
-							if (error.status == 500 && error.statusText == "Internal Server Error") {
-							this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-							} else {
-							let str;
-							if (error.status == 400) {
-								str = error.error.error;
-							} else {
-								str = error.error.message;
-								str = str.substring(str.indexOf(":") + 1);
-							}
-							console.log("Error:" ,str);
-							this.errorMsg = str;
-							}
-							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-							//this.notifyService.showError(this.errorMsg, "");
-						}
-						});	
+				if(task === 'approve'){
+					this.configMasterModel.noRentalAgreement[0].isApproved=true;
+				}else{
+					if(this.configMasterModel.noRentalAgreement[0].isApproved){
+						this.configMasterModel.noRentalAgreement[0].noRentalAgreementId="";
 					}
+				}
+				this.authService.checkLoginUserVlidaate();
+				this.spinner.show();
+				this.configMasterService.updateNoRentalAgreement(this.configMasterModel.noRentalAgreement[0]).subscribe(res => {
+					this.configMasterOrg.noRentalAgreement = Object.assign(new ShortTermRentingDuration(), res.data );
+					this.configMasterModel.noRentalAgreement = JSON.parse(JSON.stringify(this.configMasterOrg.noRentalAgreement));
+					this.noRentalAgreementDisabled = true;
+					this.notifyService.showSuccess("No Rental Agreement has been updated successfully", "");
+					this.spinner.hide();
+					}, error => {
+					this.spinner.hide();
+					if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "");
+				}else if(error.status==403){
+						this.router.navigate(['/forbidden']);
+					}else if (error.error && error.error.message) {
+						this.errorMsg = error.error.message;
+						console.log("Error:" + this.errorMsg);
+						this.notifyService.showError(this.errorMsg, "");
+					} else {
+						if (error.status == 500 && error.statusText == "Internal Server Error") {
+						this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+						} else {
+						let str;
+						if (error.status == 400) {
+							str = error.error.error;
+						} else {
+							str = error.error.message;
+							str = str.substring(str.indexOf(":") + 1);
+						}
+						console.log("Error:" ,str);
+						this.errorMsg = str;
+						}
+						if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+						//this.notifyService.showError(this.errorMsg, "");
+					}
+					});	
+				}
 				}).catch(
 					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 				);

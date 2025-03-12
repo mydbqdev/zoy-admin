@@ -20,6 +20,8 @@ export class TokenDetailsModel{
     variableToken : number ;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class SecurityDepositLimitsModel{
@@ -28,6 +30,8 @@ export class SecurityDepositLimitsModel{
     maximumDeposit : number ;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class EarlyCheckOutRuleDetails{
@@ -40,6 +44,8 @@ export class EarlyCheckOutRuleDetails{
     trigger_value : string ;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class BeforeCheckInCancellationRefundModel{
@@ -55,6 +61,8 @@ export class BeforeCheckInCancellationRefundModel{
     isConfirm:boolean ;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class DataGroupingModel{
@@ -62,6 +70,8 @@ export class DataGroupingModel{
     considerDays : number ;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class SecurityDepositDeadLineAndAutoCancellationModel{
@@ -75,6 +85,8 @@ export class SecurityDepositDeadLineAndAutoCancellationModel{
     trigger_value : string ;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class OtherChargesModel{
@@ -85,6 +97,8 @@ export class OtherChargesModel{
     tenantDocumentCharges : number ;  
     effectiveDate:string='';
     isApproved:boolean=false; 
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 
@@ -93,6 +107,8 @@ export class ForceCheckoutModel{
     forceCheckOutDays  : number ;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class GstChargesModel{
@@ -103,6 +119,8 @@ export class GstChargesModel{
     monthlyRent: number ;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class ShortTermModel{
@@ -112,6 +130,8 @@ export class ShortTermModel{
     termDisabled :boolean =true;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class ShortTermRentingDuration  {
@@ -119,10 +139,14 @@ export class ShortTermRentingDuration  {
     rentingDurationDays: number;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 export class NoRentalAgreement  {
     noRentalAgreementId :string;
     noRentalAgreementDays: number;
     effectiveDate:string='';
     isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
