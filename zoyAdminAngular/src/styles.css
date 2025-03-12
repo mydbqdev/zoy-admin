@@ -245,3 +245,65 @@ a.approve-icon:hover{
   color:rgb(240, 28, 212) !important;
   cursor: pointer;
 }
+
+
+
+.bg-gradiant-popup-header{
+  background-image: linear-gradient(to bottom right, #D52571, #3C57CF) !important;
+  color:#ffffff;
+}
+
+@keyframes rotateUpToDown {
+  0% {
+    transform: rotateY(0deg) ; /* Initial state (upright) */
+  }
+  100% {
+    transform: rotateY(
+      -360deg
+    );
+  }
+}
+
+.spinner-container {
+  position: relative;
+  width: 100px; 
+  height: 100px; 
+  margin-bottom: 50px;
+}
+
+.spinner-home-logo {
+  display: block;
+  width: 80%;
+  height: 80%;
+}
+
+.spinner-location-logo {
+  position: absolute;
+  top: 18%;
+  left: 18%;
+  transform: translate(-50%, -50%);
+  width: 45px; 
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  animation: rotateUpToDown 2s infinite linear;
+}
+
+.spinner-loading {
+  color: white;
+  margin-top: 5px;
+  margin-left: 10px;
+  font-size: 15px;
+  position: relative;
+}
+
+.spinner-loading::after {
+  content: '.';
+  animation: blink 1.5s steps(3) infinite;
+}
+@keyframes blink {
+  0% { content: '.'; }
+  33% { content: '..'; }
+  66% { content: '...'; }
+  100% { content: '.'; }
+}
