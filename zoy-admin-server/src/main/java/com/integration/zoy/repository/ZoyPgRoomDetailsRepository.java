@@ -20,8 +20,8 @@ public interface ZoyPgRoomDetailsRepository extends JpaRepository<ZoyPgRoomDetai
 			+ "join pgowners.zoy_pg_property_floor_details zppfd on zppf.floor_id =zppfd.floor_id "
 			+ "join pgowners.zoy_pg_floor_rooms zpfr on zpfr.floor_id =zppfd.floor_id "
 			+ "join pgowners.zoy_pg_room_details zprd on zprd.room_id =zpfr.room_id "
-			+ "where zppd.property_id =:propertyId and zprd.room_name =:roomName",nativeQuery = true)
-	ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName);
+			+ "where zppd.property_id =:propertyId and zprd.room_name =:roomName and zppfd.floor_name =:floorName",nativeQuery = true)
+	ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName,String floorName);
 	
 	@Query(value = "SELECT rd.room_id " +
             "FROM pgowners.zoy_pg_room_details rd " +
