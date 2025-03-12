@@ -37,6 +37,9 @@ public class CSVValidationService {
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
 	
+	private String currentFloor = "";
+	private String currentRoom = "";
+	
 	public List<ErrorDetail> validateCSV(byte[] file,String propertyId) throws WebServiceException{
 		this.propertyId=propertyId;
 		List<ErrorDetail> errorDetails = new ArrayList<>();
@@ -58,6 +61,16 @@ public class CSVValidationService {
 			int phoneIndex = Arrays.asList(headers).indexOf("Phone Number");
 			for (int i = 2; i < records.size(); i++) {
 				String[] record = records.get(i);
+				int floorIndex = Arrays.asList(headers).indexOf("Floor");
+				int roomIndex = Arrays.asList(headers).indexOf("Room");
+
+				if (floorIndex >= 0 && floorIndex < record.length) {
+					currentFloor = record[floorIndex].trim();
+				}
+				if (roomIndex >= 0 && roomIndex < record.length) {
+					currentRoom = record[roomIndex].trim();
+				}
+
 				validateRow(record, headers, i + 1, errorDetails);
 
 				if (emailIndex >= 0 && emailIndex < record.length) {
@@ -72,6 +85,8 @@ public class CSVValidationService {
 						phoneTracker.computeIfAbsent(phone, k -> new ArrayList<>()).add(i + 1);
 					}
 				}
+				currentFloor = "";
+			    currentRoom = "";
 			}
 			
 			for (Map.Entry<String, List<Integer>> entry : phoneTracker.entrySet()) {
@@ -163,12 +178,12 @@ public class CSVValidationService {
 				errorDetails.add(new ErrorDetail(row, header, columnName, columnName+" is not available for the property"));
 			break;
 		case "Room":
-			ZoyPgRoomDetails roomDetails =ownerDBImpl.findRoomDetails(propertyId,value);
+			ZoyPgRoomDetails roomDetails =ownerDBImpl.findRoomDetails(propertyId,value,currentFloor);
 			if(roomDetails==null) 
 				errorDetails.add(new ErrorDetail(row, header, columnName, columnName+" is not available for the property"));
 			break;
 		case "Bed Number":
-			List<ZoyPgBedDetails> bedDetails =ownerDBImpl.findBedDetails(propertyId,value);
+			List<ZoyPgBedDetails> bedDetails =ownerDBImpl.findBedDetails(propertyId,value,currentRoom,currentFloor);
 			if(bedDetails.size()==0) 
 				errorDetails.add(new ErrorDetail(row, header, columnName, columnName+" is not available for the property"));
 			break;

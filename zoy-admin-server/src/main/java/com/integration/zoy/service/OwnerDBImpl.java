@@ -102,8 +102,8 @@ public interface OwnerDBImpl {
 	List<ZoyPgTimeMaster> getAllTime()throws WebServiceException;
 	List<String[]> getOwnerPropertyDetails() throws WebServiceException;
 	ZoyPgPropertyFloorDetails findFloorDetails(String propertyId, String floorName)throws WebServiceException;
-	ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName)throws WebServiceException;
-	List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName)throws WebServiceException;
+	ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName,String floorName)throws WebServiceException;
+	List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName,String roomName,String floorName)throws WebServiceException;
 	ZoyPgRentCycleMaster findRentCycleName(String propertyId, String rentCycle)throws WebServiceException;
 	ZoyPgOwnerDetails savePgOwner(ZoyPgOwnerDetails zoyPgOwnerDetails)throws WebServiceException;
 	List<String> getNameOfByAmenitiesList(List<String> excelAmeneties)throws WebServiceException;
