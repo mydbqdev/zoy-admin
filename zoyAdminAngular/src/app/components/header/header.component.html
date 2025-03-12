@@ -67,22 +67,29 @@
       <li class="nav-item dropdown no-arrow">
           <a class="nav-link" href="javascript:void(0)" id="userDropdown" role="button"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <div class="d-flex mt-2">
+            <div class="d-flex mt-1">
                 <div>
                     <div class="profile-top" *ngIf="!imgeURL" > 
                         {{userInfo?.firstName?.charAt(0).toUpperCase()}} 
                     </div>
                     <img [src]="imgeURL" *ngIf="imgeURL" class="profile-top" alt="User Image">                        
                 </div>
-            <div>
-                <div style="padding-top:5px">    
-                <span class="ml-2 d-none d-lg-inline small text-truncate" style="max-width: 100px;color: #000000;">
-                    {{userInfo?.firstName}} {{userInfo?.lastName}}
-                </span>
-                <i class="fas fa-chevron-circle-down text-gray-500 ml-2"></i>
+                <div>
+                    <div class="d-flex">
+                      <div>
+                        <div style="padding-top:0px">    
+                          <span class="ml-2 d-none d-lg-inline small text-truncate" style="max-width: 100px;color: #000000;">
+                              {{userInfo?.firstName}} {{userInfo?.lastName}}
+                          </span>
+                          </div>
+                          <div class="ml-2" style="font-size: 11px;color:#505050;"> {{userInfo?.designation}}</div>
+                      </div>
+                      <div style="margin-top:5px;">
+                        <i class="fas fa-chevron-circle-down text-gray-500 ml-2 mt-2"></i>
+                      </div>
+                    </div>
+                    
                 </div>
-                <div class="ml-2" style="font-size: 11px;color:#bdb9b9;"> {{userInfo?.designation}}</div>
-            </div>
             </div>
           </a>
           <!-- Dropdown - User Information -->
