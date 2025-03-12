@@ -658,10 +658,10 @@ getTriggerOn(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
 		this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetails[0]).subscribe(res => {
-			this.configMasterOrg.tokenDetails = Object.assign(new TokenDetailsModel(), res.data );
+			this.configMasterOrg.tokenDetails = JSON.parse(JSON.stringify(res.data ));  
 			this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
 			this.tokenAdvancDisabled = true;
-			this.notifyService.showSuccess("Token Advance has been updated successfully", "");
+			this.notifyService.showSuccess(res.message, "");
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -725,10 +725,10 @@ getTriggerOn(){
 					}
 				}
 				this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.depositDetails[0]).subscribe(res => {
-					this.configMasterOrg.depositDetails = Object.assign(new SecurityDepositLimitsModel(), res.data );
+					this.configMasterOrg.depositDetails =  JSON.parse(JSON.stringify( res.data));
 					this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
 					this.securityDepositLimitsDisabled = true;
-					this.notifyService.showSuccess("Security Deposit Limits has been updated successfully", "");
+					this.notifyService.showSuccess(res.message, "");
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -793,10 +793,10 @@ getTriggerOn(){
 		}
 		this.authService.checkLoginUserVlidaate();
 		this.configMasterService.updategstChargesDetails(this.configMasterModel.gstCharges[0]).subscribe(res => {
-			this.configMasterOrg.gstCharges = Object.assign(new TokenDetailsModel(), res.data );
+			this.configMasterOrg.gstCharges = JSON.parse(JSON.stringify(res.data )); 
 			this.configMasterModel.gstCharges = JSON.parse(JSON.stringify(this.configMasterOrg.gstCharges));
 			this.gstChargesDisabled = true;
-			this.notifyService.showSuccess("GST Charges has been updated successfully", "");
+			this.notifyService.showSuccess(res.message, "");
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -860,10 +860,10 @@ getTriggerOn(){
 		this.authService.checkLoginUserVlidaate();	
 		this.spinner.show();
 		this.configMasterService.updateSecurityDepositDeadLineDetails(this.configMasterModel.securityDepositDeadLineDetails[0]).subscribe(res => {
-			this.configMasterOrg.securityDepositDeadLineDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
+			this.configMasterOrg.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(res.data )); 
 			this.configMasterModel.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositDeadLineDetails));
 			this.securityDepositDeadLineDisabled = true;
-			this.notifyService.showSuccess("Security Deposit Deadline has been updated successfully", "");
+			this.notifyService.showSuccess(res.message, "");
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -925,10 +925,10 @@ getTriggerOn(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
 		this.configMasterService.updateAutoCancellationDetails(this.configMasterModel.cancellationAfterCheckInDetails[0]).subscribe(res => {
-			this.configMasterOrg.cancellationAfterCheckInDetails = Object.assign(new SecurityDepositDeadLineAndAutoCancellationModel(), res.data );
+			this.configMasterOrg.cancellationAfterCheckInDetails = JSON.parse(JSON.stringify(res.data )); 
 			this.configMasterModel.cancellationAfterCheckInDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationAfterCheckInDetails));
 			this.autoCancellationDisabled = true;
-			this.notifyService.showSuccess("After check-in Date has been updated successfully", "");
+			this.notifyService.showSuccess(res.message, "");
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -991,10 +991,10 @@ getTriggerOn(){
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
 			this.configMasterService.updateOtherChargesDetails(this.configMasterModel.otherCharges[0]).subscribe(res => {
-				this.configMasterOrg.otherCharges = Object.assign(new OtherChargesModel(), res.data );
+				this.configMasterOrg.otherCharges = JSON.parse(JSON.stringify( res.data ));
 				this.configMasterModel.otherCharges = JSON.parse(JSON.stringify(this.configMasterOrg.otherCharges));
 				this.otherChargesDisabled = true;
-				this.notifyService.showSuccess("Other Charges has been updated successfully", "");
+				this.notifyService.showSuccess(res.message, "");
 				this.spinner.hide();
 				}, error => {
 				this.spinner.hide();
@@ -1058,10 +1058,10 @@ getTriggerOn(){
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
 			this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGrouping[0]).subscribe(res => {
-				this.configMasterOrg.dataGrouping = Object.assign(new DataGroupingModel(), res.data );
+				this.configMasterOrg.dataGrouping = JSON.parse(JSON.stringify(res.data ));
 				this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
 				this.dataGroupingDisabled = true;
-				this.notifyService.showSuccess("Data Grouping has been updated successfully", "");
+				this.notifyService.showSuccess(res.message, "");
 				this.spinner.hide();
 				}, error => {
 				this.spinner.hide();
@@ -1345,10 +1345,10 @@ getTriggerOn(){
 			this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
 				this.configMasterService.updateEarlyCheckOutRulesdDetails(this.configMasterModel.earlyCheckOutRuleDetails[0]).subscribe(res => {
-					this.configMasterOrg.earlyCheckOutRuleDetails = Object.assign(new EarlyCheckOutRuleDetails(), res.data );
+					this.configMasterOrg.earlyCheckOutRuleDetails = JSON.parse(JSON.stringify(res.data ));
 					this.configMasterModel.earlyCheckOutRuleDetails = JSON.parse(JSON.stringify(this.configMasterOrg.earlyCheckOutRuleDetails));
 					this.earlyCheckOutRulesDisabled = true;
-					this.notifyService.showSuccess("Early Check-out Rules has been updated successfully", "");
+					this.notifyService.showSuccess(res.message, "");
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -1412,10 +1412,10 @@ getTriggerOn(){
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
 			this.configMasterService.updateForceCheckOutDetails(this.configMasterModel.forceCheckOut[0]).subscribe(res => {
-				this.configMasterOrg.forceCheckOut = Object.assign(new ForceCheckoutModel(), res.data );
+				this.configMasterOrg.forceCheckOut = JSON.parse(JSON.stringify(res.data));
 				this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
 				this.forceCheckoutDisabled = true;
-				this.notifyService.showSuccess("Force Checkout has been updated successfully", "");
+				this.notifyService.showSuccess(res.message, "");
 				this.spinner.hide();
 				}, error => {
 				this.spinner.hide();
@@ -1543,10 +1543,10 @@ getTriggerOn(){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
 				this.configMasterService.updateShortTermRentingDuration(this.configMasterModel.shortTermRentingDuration[0]).subscribe(res => {
-					this.configMasterOrg.shortTermRentingDuration = Object.assign(new ShortTermRentingDuration(), res.data );
+					this.configMasterOrg.shortTermRentingDuration = JSON.parse(JSON.stringify(res.data));
 					this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
 					this.shortTermRentingDurationDisabled = true;
-					this.notifyService.showSuccess("No Rental Agreement has been updated successfully", "");
+					this.notifyService.showSuccess(res.message, "");
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -1612,10 +1612,10 @@ getTriggerOn(){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
 				this.configMasterService.updateNoRentalAgreement(this.configMasterModel.noRentalAgreement[0]).subscribe(res => {
-					this.configMasterOrg.noRentalAgreement = Object.assign(new ShortTermRentingDuration(), res.data );
+					this.configMasterOrg.noRentalAgreement = JSON.parse(JSON.stringify(res.data));
 					this.configMasterModel.noRentalAgreement = JSON.parse(JSON.stringify(this.configMasterOrg.noRentalAgreement));
 					this.noRentalAgreementDisabled = true;
-					this.notifyService.showSuccess("No Rental Agreement has been updated successfully", "");
+					this.notifyService.showSuccess(res.message, "");
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
