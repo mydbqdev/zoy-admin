@@ -1750,25 +1750,31 @@ public class AdminReportService implements AdminReportImpl{
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder(
-					"SELECT * FROM ( " +
-							"    SELECT DISTINCT ON (zpobd.tenant_id) " +
-							"       um.user_first_name, " +
-							"       um.user_last_name, " +
-							"       um.user_first_name || ' ' || um.user_last_name AS username, " +
-							"       um.user_mobile AS mobileNumber, " +
-							"       um.user_email AS emailId, " +
-							"       zppd.property_name AS propertyName, " +
-							"       zppd.property_house_area AS propertyAddress, " +
-							"       bd.bed_name AS bedName , " +
-							"       zpobd.out_date AS outDate " +
-							"    FROM pgowners.zoy_pg_owner_booking_details zpobd " +
-							"    JOIN pgusers.user_bookings ub ON zpobd.booking_id = ub.user_bookings_id " +
-							"    AND ub.user_bookings_web_check_out = TRUE"+
-							"    JOIN pgusers.user_master um ON um.user_id = zpobd.tenant_id " +
-							"    JOIN pgowners.zoy_pg_property_details zppd ON zppd.property_id = zpobd.property_id " +
-							"    JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id " +
-							"    WHERE 1=1 "
-					);
+					"SELECT distinct\r\n"
+					+ "um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+					+ "um.user_mobile AS mobileNumber,\r\n"
+					+ "um.user_email AS emailId,\r\n"
+					+ "zppd.property_name AS propertyName,\r\n"
+					+ "zppd.property_house_area AS propertyAddress,\r\n"
+					+ "bd.bed_name AS bedName,\r\n"
+					+ "zpobd.out_date AS outDate \r\n"
+					+ "FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
+					+ "JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id\r\n"
+					+ "JOIN pgusers.user_bookings ub ON ub.user_bookings_id = zpobd.booking_id\r\n"
+					+ "JOIN pgowners.zoy_pg_property_details zppd ON zppd.property_id = zpobd.property_id\r\n"
+					+ "JOIN (\r\n"
+					+ "    SELECT tenant_id, MAX(out_date) AS last_out_date\r\n"
+					+ "    FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
+					+ "    JOIN pgusers.user_bookings ub ON ub.user_bookings_id = zpobd.booking_id\r\n"
+					+ "    JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id\r\n"
+					+ "    WHERE ub.user_bookings_web_check_out = TRUE \r\n"
+					+ "    AND um.user_status = 'Inactive'\r\n"
+					+ "    GROUP BY tenant_id\r\n"
+					+ ") latest_out ON zpobd.tenant_id = latest_out.tenant_id \r\n"
+					+ "JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id\r\n"
+					+ "AND zpobd.out_date = latest_out.last_out_date\r\n"
+					+ "WHERE ub.user_bookings_web_check_out = TRUE \r\n"
+					+ "AND um.user_status = 'Inactive'");
 
 			Map<String, Object> parameters = new HashMap<>();
 
@@ -1803,8 +1809,6 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
 
-			queryBuilder.append(" ORDER BY zpobd.tenant_id " +
-					") sub ");
 
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {
@@ -1837,7 +1841,7 @@ public class AdminReportService implements AdminReportImpl{
 				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
 				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
 			} else {
-				queryBuilder.append(" ORDER BY suspendedDate DESC ");
+				queryBuilder.append(" ORDER BY outDate DESC ");
 			}
 
 			Query query = entityManager.createNativeQuery(queryBuilder.toString());
@@ -1853,13 +1857,13 @@ public class AdminReportService implements AdminReportImpl{
 			List<Object[]> results = query.getResultList();
 			List<TenantResportsDTO> inActiveTenantsReportDto = results.stream().map(row -> {
 				TenantResportsDTO dto = new TenantResportsDTO();
-				dto.setTenantName(row[2] != null ? (String) row[2] : ""); 
-				dto.setTenantContactNumber(row[3] != null ? (String) row[3] : "");
-				dto.setTenantEmailAddress(row[4] != null ? (String) row[4] : ""); 
-				dto.setPreviousPropertName(row[5] != null ? (String) row[5] : ""); 
-				dto.setPropertAddress(row[6] != null ? (String) row[6] : ""); 
-				dto.setRoomNumber(row[7] != null ? (String) row[7] : ""); 
-				dto.setCheckedOutDate(row[8] != null ? (Timestamp) row[8] : null);
+				dto.setTenantName(row[0] != null ? (String) row[0] : ""); 
+				dto.setTenantContactNumber(row[1] != null ? (String) row[1] : "");
+				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : ""); 
+				dto.setPreviousPropertName(row[3] != null ? (String) row[3] : ""); 
+				dto.setPropertAddress(row[4] != null ? (String) row[4] : ""); 
+				dto.setRoomNumber(row[5] != null ? (String) row[5] : ""); 
+				dto.setCheckedOutDate(row[6] != null ? (Timestamp) row[6] : null);
 				return dto;
 			}).collect(Collectors.toList());
 

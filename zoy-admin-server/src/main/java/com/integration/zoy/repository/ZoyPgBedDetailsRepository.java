@@ -16,13 +16,16 @@ import com.integration.zoy.entity.ZoyPgBedDetails;
 public interface ZoyPgBedDetailsRepository extends JpaRepository<ZoyPgBedDetails, String> {
 
 	
-	@Query(value = "select zpbd.* from pgowners.zoy_pg_property_details zppd "
-			+ "join pgowners.zoy_pg_property_floors zppf on zppf.property_id =zppd.property_id "
-			+ "join pgowners.zoy_pg_floor_rooms zpfr on zpfr.floor_id = zppf.floor_id "
-			+ "join pgowners.zoy_pg_room_beds zprb on zprb.room_id =zpfr.room_id "
-			+ "join pgowners.zoy_pg_bed_details zpbd on zpbd.bed_id =zprb.bed_id "
-			+ "where zppd.property_id =:propertyId and zpbd.bed_name =:bedName",nativeQuery = true)
-	List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName);
+	@Query(value = "select zpbd.* from pgowners.zoy_pg_property_details zppd  "
+			+ "join pgowners.zoy_pg_property_floors zppf on zppf.property_id =zppd.property_id  "
+			+ "join pgowners.zoy_pg_property_floor_details zppfd on zppf.floor_id =zppfd.floor_id  "
+			+ "join pgowners.zoy_pg_floor_rooms zpfr on zpfr.floor_id =zppfd.floor_id  "
+			+ "join pgowners.zoy_pg_room_details zprd on zprd.room_id =zpfr.room_id  "
+			+ "join pgowners.zoy_pg_room_beds zprb on zprb.room_id =zpfr.room_id  "
+			+ "join pgowners.zoy_pg_bed_details zpbd on zpbd.bed_id =zprb.bed_id  "
+			+ "where zppd.property_id =:propertyId and zpbd.bed_name =:bedName "
+			+ "and zprd.room_name =:roomName and zppfd.floor_name =:floorName",nativeQuery = true)
+	List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName,String roomName,String floorName);
 	
 	
 	@Query(value = "SELECT bd.bed_id " +
