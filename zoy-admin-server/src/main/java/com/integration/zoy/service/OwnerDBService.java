@@ -502,13 +502,13 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName)throws WebServiceException {
-		return zoyPgRoomDetailsRepository.findRoomDetails(propertyId, roomName);
+	public ZoyPgRoomDetails findRoomDetails(String propertyId, String roomName,String floorName)throws WebServiceException {
+		return zoyPgRoomDetailsRepository.findRoomDetails(propertyId, roomName,floorName);
 	}
 
 	@Override
-	public List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName)throws WebServiceException {
-		return zoyPgBedDetailsRepository.findBedDetails(propertyId, bedName);
+	public List<ZoyPgBedDetails> findBedDetails(String propertyId, String bedName,String roomName,String floorName)throws WebServiceException {
+		return zoyPgBedDetailsRepository.findBedDetails(propertyId, bedName, roomName, floorName);
 	}
 
 	@Override

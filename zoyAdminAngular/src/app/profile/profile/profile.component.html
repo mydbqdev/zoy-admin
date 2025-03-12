@@ -24,7 +24,7 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-3">
                         <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Profile</span></h3> 
                         <div>
-                          <button class="btn btn-primary-custom btn-sm" data-bs-toggle="offcanvas" data-bs-target="#AuthorisedDetails" (click)="viewAuthorisedMe()" >Authorised Me</button>
+                          <button class="btn btn-primary-custom btn-sm" data-bs-toggle="offcanvas" data-bs-target="#AuthorisedDetails" (click)="viewAuthorisedMe()" >Granted Permission</button>
                         </div>
                     </div>
 
@@ -43,13 +43,13 @@
                                                         <div>
                                                           <div class="text-sub-header text-sub-header-border mb-3"> Information</div>
                                                           <div class="d-flex mb-2 ml-2">
-                                                              <div style="font-weight: 600;margin-right: 20px;">Name :</div>
+                                                              <div style="font-weight: 600;margin-right: 20px;color:#707070;">Name :</div>
                                                               <div>{{userInfo?.firstName}} {{userInfo?.lastName}}</div>
-                                                              <div class="ml-5" style="font-weight: 600;margin-right: 20px;">Designation :</div>
+                                                              <div class="ml-5" style="font-weight: 600;margin-right: 20px;color:#707070;">Designation :</div>
                                                               <div>{{userInfo?.designation}}</div>
                                                           </div>
                                                           <div class="d-flex mb-2 ml-2">
-                                                            <div style="font-weight: 600;margin-right: 20px;">Email :</div>
+                                                            <div style="font-weight: 600;margin-right: 20px;color:#707070;">Email :</div>
                                                             <div>{{userInfo?.userEmail}}</div>
                                                           </div>
                                                         </div>
@@ -57,8 +57,8 @@
                                                         <div class="row">
                                                           <div class="col-sm-6">
                                                             <img [src]="imgeURL2" width="160px" height="160px" class="profile-picture" alt="User Image">
-                                                            <div style="color:gray;padding: 5px 0px;font-size: 14px;"><i class="fa fa-info-circle"></i>
-                                                              <span class="ml-2" > While upload the picture should not be more than 100KB. It's size should not be greater than 180 X 200.</span> </div>
+                                                            <div style="color:#707070;padding: 5px 0px;font-size: 12px;"><i class="fa fa-info-circle"></i>
+                                                              <span class="ml-2" > Your profile picture must be under 100KB and within 180x200 pixels.</span> </div>
                                                           </div>
                                                           <div class="col-sm-6">
                                                             <form [formGroup]="formPicture" (ngSubmit)="submit()">
@@ -162,7 +162,7 @@
                                                 </div>
                                               </form>
                                             </div>
-                                            <div class="pl-3 pr-3 mb-2" style="font-size: 14px; color: gray;" >
+                                            <div class="pl-3 pr-3 mb-2" style="font-size: 12px; color: #707070;" >
                                                 <i class="fa fa-info-circle"></i>
                                                 <span class="ml-2" >
                                                   Must be 8-16 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.
@@ -196,7 +196,7 @@
 
 <!-- Authorised Details -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="AuthorisedDetails" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
-  <div class="offcanvas-header">
+  <div class="offcanvas-header bg-gradiant-popup-header">
       <h5 class="offcanvas-title" id="offcanvasRightLabel">Authorised to me</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>

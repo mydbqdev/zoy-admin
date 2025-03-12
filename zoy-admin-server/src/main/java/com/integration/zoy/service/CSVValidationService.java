@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,10 @@ public class CSVValidationService {
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
 	
+	private String currentFloor = "";
+	private String currentRoom = "";
+	private String currentBed = "";
+	
 	public List<ErrorDetail> validateCSV(byte[] file,String propertyId) throws WebServiceException{
 		this.propertyId=propertyId;
 		List<ErrorDetail> errorDetails = new ArrayList<>();
@@ -56,9 +62,24 @@ public class CSVValidationService {
 			String[] headers = records.get(0);
 			int emailIndex = Arrays.asList(headers).indexOf("eMail");
 			int phoneIndex = Arrays.asList(headers).indexOf("Phone Number");
+			Set<String> uniqueKey=new HashSet<>();
 			for (int i = 2; i < records.size(); i++) {
 				String[] record = records.get(i);
-				validateRow(record, headers, i + 1, errorDetails);
+				int floorIndex = Arrays.asList(headers).indexOf("Floor");
+				int roomIndex = Arrays.asList(headers).indexOf("Room");
+				int bedIndex = Arrays.asList(headers).indexOf("Bed Number");
+
+				if (floorIndex >= 0 && floorIndex < record.length) {
+					currentFloor = record[floorIndex].trim();
+				}
+				if (roomIndex >= 0 && roomIndex < record.length) {
+					currentRoom = record[roomIndex].trim();
+				}
+				if (bedIndex >= 0 && bedIndex < record.length) {
+                    currentBed = record[bedIndex].trim();
+                }
+
+				validateRow(record, headers, i + 1, errorDetails,uniqueKey);
 
 				if (emailIndex >= 0 && emailIndex < record.length) {
 					String email = record[emailIndex].trim();
@@ -72,6 +93,9 @@ public class CSVValidationService {
 						phoneTracker.computeIfAbsent(phone, k -> new ArrayList<>()).add(i + 1);
 					}
 				}
+				currentFloor = "";
+			    currentRoom = "";
+			    currentBed = "";
 			}
 			
 			for (Map.Entry<String, List<Integer>> entry : phoneTracker.entrySet()) {
@@ -97,7 +121,7 @@ public class CSVValidationService {
 		return errorDetails;
 	}
 
-	private void validateRow(String[] record, String[] headers, int rowNum, List<ErrorDetail> errorDetails) {
+	private void validateRow(String[] record, String[] headers, int rowNum, List<ErrorDetail> errorDetails,Set<String> uniqueKey) {
 		for (int col = 0; col < headers.length; col++) {
 			String columnName = headers[col];
 			String cellValue = record.length > col ? record[col] : "";
@@ -108,6 +132,12 @@ public class CSVValidationService {
 
 			validateFieldByType(cellValue, columnName, rowNum, col + 1, errorDetails);
 		}
+		 String key = currentFloor + "-" + currentRoom + "-" + currentBed;
+	        if (uniqueKey.contains(key)) {
+	            errorDetails.add(new ErrorDetail(rowNum, 1, "Room Name", "Duplicate room name with same floor and bed"));
+	        } else {
+	            uniqueKey.add(key);
+	        }
 	}
 
 	private void validateFieldByType(String value, String columnName, int row, int header, List<ErrorDetail> errorDetails) {
@@ -163,12 +193,12 @@ public class CSVValidationService {
 				errorDetails.add(new ErrorDetail(row, header, columnName, columnName+" is not available for the property"));
 			break;
 		case "Room":
-			ZoyPgRoomDetails roomDetails =ownerDBImpl.findRoomDetails(propertyId,value);
+			ZoyPgRoomDetails roomDetails =ownerDBImpl.findRoomDetails(propertyId,value,currentFloor);
 			if(roomDetails==null) 
 				errorDetails.add(new ErrorDetail(row, header, columnName, columnName+" is not available for the property"));
 			break;
 		case "Bed Number":
-			List<ZoyPgBedDetails> bedDetails =ownerDBImpl.findBedDetails(propertyId,value);
+			List<ZoyPgBedDetails> bedDetails =ownerDBImpl.findBedDetails(propertyId,value,currentRoom,currentFloor);
 			if(bedDetails.size()==0) 
 				errorDetails.add(new ErrorDetail(row, header, columnName, columnName+" is not available for the property"));
 			break;

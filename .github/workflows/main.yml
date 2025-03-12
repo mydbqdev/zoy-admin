@@ -1,0 +1,202 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - latest_main_qa  # Trigger only on push to latest_main_qa (includes PR merge)
+
+jobs:
+  build_frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+
+      - name: Install frontend dependencies
+        run: |
+          cd zoyAdminAngular
+          npm install
+
+      - name: Build frontend
+        run: |
+          cd zoyAdminAngular
+          ng build --configuration production --base-href /admin/
+
+      - name: Upload frontend build as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: zoyAdminAngular/dist/zoyadminportal/
+          if-no-files-found: error
+
+  deploy_frontend:
+    runs-on: ubuntu-latest
+    needs: build_frontend
+
+    steps:
+      - name: Download frontend build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: ./frontend-build
+
+      - name: Set up SSH keys
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server SSH host key to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 45.129.87.152 >> ~/.ssh/known_hosts
+
+      - name: Debug frontend-build contents
+        run: ls -R ./frontend-build/
+
+      - name: Backup existing files and copy new files to server
+        run: |
+          ssh ubuntu@45.129.87.152 << 'EOF'
+          cd /var/www/html/admin
+          mkdir -p /home/ubuntu/backup/frontendbackup
+          if [ -n "$(ls -A /var/www/html/admin)" ]; then
+            base_folder="frontend_backup_$(date +'%Y-%m-%d')"
+            folder_suffix=1
+            while [ -d "/home/ubuntu/backup/frontendbackup/${base_folder}_${folder_suffix}" ]; do
+              folder_suffix=$((folder_suffix + 1))
+            done
+            backup_folder="${base_folder}_${folder_suffix}"
+            mkdir -p "/home/ubuntu/backup/frontendbackup/$backup_folder"
+            mv /var/www/html/admin/* "/home/ubuntu/backup/frontendbackup/$backup_folder/"
+            cd /home/ubuntu/backup/frontendbackup
+            backup_count=$(ls -d frontend_backup_* 2>/dev/null | wc -l)
+            if [ "$backup_count" -gt 3 ]; then
+              oldest_backup=$(ls -d frontend_backup_* | sort | head -n 1)
+              rm -rf "$oldest_backup"
+            fi
+          fi
+          EOF
+          rsync -avz --progress -e "ssh" ./frontend-build/ ubuntu@45.129.87.152:/tmp/frontend/
+          ssh ubuntu@45.129.87.152 "sudo rsync -av /tmp/frontend/ /var/www/html/admin"
+
+      - name: Debug server directory contents
+        run: ssh ubuntu@45.129.87.152 "ls -l /var/www/html/admin"
+
+  build_backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Build Backend with Maven
+        run: |
+          cd zoy-admin-server
+          mvn clean install -DskipTests=true -Pqa
+
+      - name: Debug zoy-admin-server contents
+        run: ls -R zoy-admin-server/
+
+      - name: Upload JAR as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-artifacts
+          path: zoy-admin-server/target/zoy-admin-server.jar
+          if-no-files-found: error
+
+  deploy_backend:
+    runs-on: ubuntu-latest
+    needs: build_backend
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-artifacts
+          path: ./backend-artifacts
+
+      - name: Debug backend-artifacts contents
+        run: ls -R ./backend-artifacts/
+
+      - name: Set up SSH keys
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server SSH host key to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 45.129.87.152 >> ~/.ssh/known_hosts
+
+      - name: Test SSH connectivity
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@45.129.87.152 "echo 'SSH connection successful'"
+
+      - name: Stop and remove running container
+        run: |
+          ssh ubuntu@45.129.87.152 << 'EOF'
+          sudo docker stop zoy-admin-container || true
+          sudo docker rm zoy-admin-container || true
+          EOF
+
+      - name: Backup existing .jar file
+        run: |
+          ssh ubuntu@45.129.87.152 << 'EOF'
+          cd /home/ubuntu/zoyserver
+          mkdir -p /home/ubuntu/backup/backendbackup
+          if [ -f zoy-admin-server.jar ]; then
+            base_folder="backend_backup_$(date +'%Y-%m-%d')"
+            folder_suffix=1
+            while [ -d "/home/ubuntu/backup/backendbackup/${base_folder}_${folder_suffix}" ]; do
+              folder_suffix=$((folder_suffix + 1))
+            done
+            backup_folder="${base_folder}_${folder_suffix}"
+            mkdir -p "/home/ubuntu/backup/backendbackup/$backup_folder"
+            mv zoy-admin-server.jar "/home/ubuntu/backup/backendbackup/$backup_folder/"
+            cd /home/ubuntu/backup/backendbackup
+            backup_count=$(ls -d backend_backup_* 2>/dev/null | wc -l)
+            if [ "$backup_count" -gt 3 ]; then
+              oldest_backup=$(ls -d backend_backup_* | sort | head -n 1)
+              rm -rf "$oldest_backup"
+            fi
+          fi
+          EOF
+
+      - name: Copy the new .jar file to the server
+        run: |
+          rsync -avz --progress -e "ssh" ./backend-artifacts/zoy-admin-server.jar ubuntu@45.129.87.152:/home/ubuntu/zoyserver/
+
+      - name: Build and Run Docker Container on Server
+        run: |
+          ssh ubuntu@45.129.87.152 << 'EOF'
+          # Navigate to the directory containing the Dockerfile
+          cd /home/ubuntu/zoyserver
+
+          # Build the Docker image
+          sudo docker build -t zoy-admin-app .
+
+          # Run the container with persistent logs, port mappings, and a specific container name
+          sudo docker run -d \
+            --rm \
+            --name zoy-admin-container \
+            -v ~/build/input:/input \
+            -v ~/docs:/docs \
+            -v /home/ubuntu/bv/logs:/home/ubuntu/bv/logs \
+            -p 8082:8082 \
+            -p 2002:2002 \
+            zoy-admin-app
+          EOF

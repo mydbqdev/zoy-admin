@@ -14,6 +14,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { OrganizationBranchInfoModel, OrganizationMainBranchInfoModel } from '../models/organization-info-config-model';
+import { GoogleAPIService } from '../services/google.api.service';
 
 @Component({
   selector: 'app-organization-info-config',
@@ -59,7 +60,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
   OrganizationMainBranchInfoModel
   mainBranchInfo:OrganizationMainBranchInfoModel = new OrganizationMainBranchInfoModel();
   constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private dataService: DataService, private organizationInfoConfigService :OrganizationInfoConfigService,private userService:UserService,
-      private spinner: NgxSpinnerService, private authService:AuthService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
+      private spinner: NgxSpinnerService, private authService:AuthService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private googleAPIService:GoogleAPIService) {
         this.authService.checkLoginUserVlidaate();
         this.userNameSession = userService.getUsername();
 
@@ -387,9 +388,9 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
          this.spinner.show();
          this.organizationInfoConfigService.submitBranchInfo(this.infoModel).subscribe(res => {
           if(this.infoModel.companyProfileId){
-            this.notifyService.showSuccess("",this.infoModel.type+" has been created successfully");
-          }else{
             this.notifyService.showSuccess("",this.infoModel.type+" has been updated successfully");
+          }else{
+            this.notifyService.showSuccess("",this.infoModel.type+" has been created successfully");
           }
         
           if(res.data !=null && res.data?.length>0){
@@ -452,6 +453,77 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
         this.editOrg=!this.editOrg ;
         this.resetFileData();
        }
+
+      onPincodeChange(event: any) {
+        const pincode = event.target.value;
+        if (pincode && pincode.length === 6) {
+          this. getCityAndState(pincode);
+        } else {
+          this.infoModel.city = '';
+          this.infoModel.state = '';
+        }
+      }
+
+      getCityAndState(pincode){
+        this.googleAPIService.getCityAndState(pincode).subscribe(res => {
+        if (res.results && res.results?.length > 0 ) {
+          const addressComponents = res.results[0].address_components;
+          this.infoModel.city = this.extractCity(addressComponents);
+          this.infoModel.state = this.extractState(addressComponents);
+        } else {
+          this.infoModel.city = '';
+          this.infoModel.state = '';
+        }      
+        }, error => {
+          this.spinner.hide();
+          if(error.status == 0) {
+          this.notifyService.showError("Internal Server Error/Connection not established", "")
+          }else if(error.status==401){
+          console.error("Unauthorised");
+        }else if(error.status==403){
+            this.router.navigate(['/forbidden']);
+          }else if (error.error && error.error.message) {
+            this.errorMsg = error.error.message;
+            console.log("Error:" + this.errorMsg);
+            this.notifyService.showError(this.errorMsg, "");
+          } else {
+            if (error.status == 500 && error.statusText == "Internal Server Error") {
+              this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+            } else {
+              let str;
+              if (error.status == 400) {
+                str = error.error.error;
+              } else {
+                str = error.error.message;
+                str = str.substring(str.indexOf(":") + 1);
+              }
+              console.log("Error:" ,str);
+              this.errorMsg = str;
+            }
+            if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+          }
+        }
+      );
+
+      }
+
+      extractCity(components: any[]) {
+        for (const component of components) {
+          if (component.types.includes('locality')) {
+            return component.long_name;
+          }
+        }
+        return '';
+      }
+    
+      extractState(components: any[]) {
+        for (const component of components) {
+          if (component.types.includes('administrative_area_level_1')) {
+            return component.long_name;
+          }
+        }
+        return '';
+      }
 
 
        submitMainBranchInfo(){

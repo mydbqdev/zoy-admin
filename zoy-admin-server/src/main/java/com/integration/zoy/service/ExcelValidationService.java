@@ -25,7 +25,7 @@ public class ExcelValidationService {
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
 
-	Set<String> uniqueKey=new HashSet<>();
+	
 	public List<ErrorDetail> validateExcel(byte[] file) {
 		List<ErrorDetail> errors = new ArrayList<>();
 		try (ByteArrayInputStream is = new ByteArrayInputStream(file); Workbook workbook = new XSSFWorkbook(is)) {
@@ -40,10 +40,11 @@ public class ExcelValidationService {
 			if (!validateHeaders(headerRow, errors)) {
 				return errors;
 			}
+			Set<String> uniqueKey=new HashSet<>();
 			for (int i = 2; i <= sheet.getLastRowNum(); i++) {
 				Row row = sheet.getRow(i);
 				if (row == null) continue;
-				validateRow(row, errors, i + 1);
+				validateRow(row, errors, i + 1,uniqueKey);
 			}
 		} catch (Exception e) {
 			errors.add(new ErrorDetail(0, 0, "File", "Error reading Excel file: " + e.getMessage()));
@@ -76,7 +77,7 @@ public class ExcelValidationService {
 		return true;
 	}
 
-	private void validateRow(Row row, List<ErrorDetail> errors, int rowIndex) {
+	private void validateRow(Row row, List<ErrorDetail> errors, int rowIndex, Set<String> uniqueKey) {
 		validateCell(row.getCell(0), "Floor Name", rowIndex, 1, errors, 20);
 		validateCell(row.getCell(1), "Room Name", rowIndex, 2, errors, 20);
 		validateRoomTypeCell(row.getCell(2), "Room Type", rowIndex, 3, errors, null);
