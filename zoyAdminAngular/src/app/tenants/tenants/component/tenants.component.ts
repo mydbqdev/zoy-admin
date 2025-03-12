@@ -141,7 +141,7 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		this.dataSource.paginator = this.paginator;
 		this.param.pageIndex=this.paginator.pageIndex;
 		this.param.pageSize= this.paginator.pageSize;
-		this.param.sortDirection="asc";
+		this.param.sortDirection="desc";
 		this.param.sortActive="registeredDate";
 		this.paramFilter.searchText=null;
 		this.paramFilter.status=null;
@@ -240,7 +240,7 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 		{ id: 1, name: 'Active', selected: false },
 		{ id: 2, name: 'Inactive', selected: false },
 		{ id: 3, name: 'Upcoming', selected: false },
-		{ id: 4, name: 'Registered', selected: false },
+		// { id: 4, name: 'Registered', selected: false },
 		// { id: 4, name: 'Suspended', selected: false },
 	  ];
 	  selectedStatuses:string[]=[]; 

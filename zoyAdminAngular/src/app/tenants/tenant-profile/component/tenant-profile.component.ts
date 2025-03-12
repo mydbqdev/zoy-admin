@@ -360,4 +360,84 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 			);
 	  }
+
+	  downloadProgress:boolean=false;
+	  downloadPdf(type:string){   
+		  this.authService.checkLoginUserVlidaate();
+		  if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
+			this.downloadProgress=false;
+			return;
+		  }
+		  this.filtersRequest.sortActive=this.sortActive;
+		  this.filtersRequest.sortDirection=this.sortDirection.toUpperCase();
+		  let filterData = new FilterData();
+		  filterData.tenantContactNum = this.tdpf.profile.contactNumber;
+		  this.filtersRequest.filterData = JSON.stringify(filterData) ;
+		  this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
+		  this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
+		  this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
+		  this.filtersRequest.downloadType = type ;
+		  this.downloadProgress=true;
+		  this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
+			 if(data!=null && data!=undefined && data!='' && data.size!=0){ 
+				  let extension= 'application/pdf';
+				  switch (type) {
+					  case 'pdf':
+						  extension='application/pdf'
+						  break;
+						  case 'excel':
+						  extension='application/vnd.ms-excel'
+						  type='xlsx'
+						  break;
+						  case 'csv':
+						  extension='text/csv'
+						  break;
+					  default:
+						  break;
+				  }
+				var blob = new Blob([data], {type : extension});
+				var fileURL=URL.createObjectURL(blob);
+				
+				const link = document.createElement("a");
+				link.href = fileURL;
+				link.target = '_blank';
+				link.download = this.reportName+'.'+type;
+				document.body.appendChild(link);
+				link.click();
+				this.downloadProgress=false;
+			  }else{
+				  this.downloadProgress=false;
+				this.notifyService.showWarning("The record is not available", "");
+			  }
+			}, async error => {
+				this.downloadProgress=false;
+				if(error.status == 0) {
+				  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			  }else if(error.status==401){
+				  console.error("Unauthorised");
+			  }else if(error.status==403){
+				  this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+				  this.errorMsg = error.error.message;
+				  console.log("Error:" + this.errorMsg);
+				  this.notifyService.showError(this.errorMsg, "");
+				} else {
+				  if (error.status == 500 && error.statusText == "Internal Server Error") {
+					this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				  } else {
+					let str;
+					if (error.status == 400) {
+					  str = error.error.error;
+					} else {
+					  str = error.error.message;
+					  str = str.substring(str.indexOf(":") + 1);
+					}
+					console.log("Error:" + await str.text());
+					this.errorMsg =  await new Response(str).text()// or use await str.text();
+				  }
+				  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				}
+			  });	
+		  }
+			
 }

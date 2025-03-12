@@ -54,11 +54,21 @@
                             </div>
                             <!-- Download Options -->
                             <div class="form-group">
-                              <select class="form-select form-select-sm" [(ngModel)]="downloadType" (ngModelChange)="download()">
-                                <option value="" disabled>Download</option>
-                                <option value="excel">As Excel</option>
-                                <option value="csv">As CSV</option>
-                              </select>
+                              <div class="col-sm-1">
+                                <div style="width: 115px;" > 
+                                  <div class="dropdown no-arrow">
+                                    <button class="btn btn-primary-custom btn-sm"  role="button" id="dropdownMenuDownload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [disabled]="downloadProgress">
+                                      <i class="fas fa-download mr-2" *ngIf="!downloadProgress"></i>
+                                      <img src="assets/images/loading.gif" class="mr-1" *ngIf="downloadProgress">
+                                      <span style="font-size: 12px;" >Download<span *ngIf="downloadProgress">ing</span> </span>
+                                    </button>                           
+                                    <div class="dropdown-menu dropdown-menu-right shadow animated-fade-in" aria-labelledby="dropdownMenuDownload" style="min-width:1rem !important;">
+                                      <a class="dropdown-item" href="javascript:void(0)" (click)="download('excel')"> As Excel</a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
+                                      <a class="dropdown-item" href="javascript:void(0)" (click)="download('csv')">As CSV</a>   
+                                    </div>
+                                 </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                           </div>
