@@ -61,7 +61,6 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
     username: string = '';  
     userNameList: UserListModel[] = []; 
     selectedValue: string = '';   
-	downloadType :string='';
 	filteredUsers: Observable<UserListModel[]>;
 	constructor(private userAuditService: UserAuditService, private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
@@ -261,24 +260,25 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
        }
      });
 	}
-
-	 download(){   
+	downloadProgress:boolean=false;
+	 download(type:string){  
+		this.downloadProgress = true;
 		this.authService.checkLoginUserVlidaate();
 	    this.filtersRequest.sortActive=this.sortActive;
 		this.filtersRequest.sortDirection=this.sortDirection.toUpperCase();
 		this.filtersRequest.searchText=this.searchText;
 		this.filtersRequest.userEmail = this.userNameList.find(user => user.username === this.username)?.useremail || '';
 		this.filtersRequest.activity = this.filterActivitiesData.find(activities => activities.value === this.selectedValue)?.key || '';
-		this.filtersRequest.downloadType = this.downloadType;
+		this.filtersRequest.downloadType = type;
 		this.userAuditService.downloadReport(this.filtersRequest).subscribe((data) => { 
 	
 			if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 				let extension= 'text/csv';
-				switch (this.downloadType) {
+				switch (type) {
 					
 						case 'excel':
 						extension='application/vnd.ms-excel'
-						this.downloadType='xlsx'
+						type='xlsx'
 						break;
 						case 'csv':
 						extension='text/csv'
@@ -293,15 +293,14 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 			  const link = document.createElement("a");
 			  link.href = fileURL;
 			  link.target = '_blank';
-			  link.download = (this.filtersRequest.userEmail == '' ? 'User Audit Report.' : (this.filtersRequest.userEmail +' Audit Report.'))+this.downloadType;
+			  link.download = (this.filtersRequest.userEmail == '' ? 'User Audit Report.' : (this.filtersRequest.userEmail +' Audit Report.'))+type;
 			  document.body.appendChild(link);
 			  link.click();
 			}else{
 			  this.notifyService.showWarning("The record is not available", "");
 			}
-			this.downloadType='';
+			this.downloadProgress = false;
 		  }, async error => {
-			this.downloadType='';
 			  this.spinner.hide();
 			  if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
@@ -338,7 +337,7 @@ export class UserAuditComponent implements OnInit, AfterViewInit {
 			{ key: 'USER_UPDATE', value: 'Update User' },
 			{ key: 'USER_ACTIVE', value: 'Activate User' },
 			{ key: 'USER_INACTIVE', value: 'Deactivate User' },
-			{ key: 'USER_DELETE', value: 'Delete User' },	
+			// { key: 'USER_DELETE', value: 'Delete User' },	
 			{ key: 'USER_ROLE_APPROVED', value: 'Role Approved for User' },
 			{ key: 'USER_ROLE_REJECTED', value: 'Role Rejected for User' },
 			{ key: 'ZOY_CODE_GENERATE', value: 'Generate Zoy Code' },

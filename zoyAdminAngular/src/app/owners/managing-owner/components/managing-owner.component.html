@@ -1,5 +1,12 @@
-<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
+<!-- <ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
     <p style="color: white;">Loading ...</p>
+  </ngx-spinner> -->
+    
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
+  <div class="spinner-container"><img class="spinner-home-logo" src="assets/images/home-logo.png" alt="Home"/>
+    <img class="spinner-location-logo" src="assets/images/location-logo.png" alt="User"/>
+    <div class="spinner-loading">Loading</div>
+  </div>
   </ngx-spinner>
   <div id="page-top">
       <!-- Page Wrapper -->
@@ -22,7 +29,7 @@
                   <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between mb-3">
                       <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Manage</span><span class="text-header-800-blue">Owners</span></h3> 
-                      <div class="input-group ml-4 w-75" >
+                      <div class="input-group ml-4 w-75" hidden>
                         <div class="btn-group" role="group" aria-label="Basic outlined example">
                           <button class="btn btn-outline-secondary" style="color:rgb(56, 56, 56);font-size: 14px;border-right: 0px;" disabled><i class="fas fa-filter mr-2"></i> </button>
                           <button type="button" class="btn btn-outline-secondary" style="color:rgb(56, 56, 56);font-size: 14px;border-left: 0px;background-color: #F7F8FB;" id="menuLink"

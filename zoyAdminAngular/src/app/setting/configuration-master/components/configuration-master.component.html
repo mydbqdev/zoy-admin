@@ -669,7 +669,11 @@
                                               <div class="mr-3" style="width: 190px;">
                                                 <div>Deduction Type</div>
                                                 <div class="input-group input-group-sm">
-                                                  <input type="text" class="form-control form-control-sm" [(ngModel)]="beforeCheckInCRfModel.trigger_value" disabled /> 
+                                                  <span class="form-control form-control-sm" style="background-color: #eaecf4;">
+                                                    {{ configMasterModel.earlyCheckOutRuleDetails.trigger_value }}
+                                                  </span>
+                                                  
+                                                  <!-- <input type="text" class="form-control form-control-sm" [(ngModel)]="beforeCheckInCRfModel.trigger_value" readonly />  -->
                                                 </div>
                                                 <!--div class="input-group input-group-sm">
                                                   <select class="form-select form-select-sm" [(ngModel)]="beforeCheckInCRfModel.trigger_value" 
