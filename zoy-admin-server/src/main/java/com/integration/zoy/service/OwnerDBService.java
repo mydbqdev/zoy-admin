@@ -562,6 +562,13 @@ public class OwnerDBService implements OwnerDBImpl{
 		List<ZoyPgTokenDetails> results = zoyPgTokenDetailsRepository.findAll(PageRequest.of(0, 1)).getContent();
 		return results.isEmpty() ? null : results.get(0);
 	}
+	
+	@Override
+	public List<ZoyPgTokenDetails> findAllTokenDetailsSorted() throws WebServiceException {
+	    List<ZoyPgTokenDetails> results = zoyPgTokenDetailsRepository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
 
 	@Override
 	public ZoyPgTokenDetails saveToken(ZoyPgTokenDetails tokenDetails) throws WebServiceException{
@@ -680,6 +687,12 @@ public class OwnerDBService implements OwnerDBImpl{
 		return zoySecurityDepositRepo.save(depositLimits);
 	}
 
+	@Override
+	public List<ZoyPgSecurityDepositDetails> findAllSortedByEffectiveDate() throws WebServiceException {
+	    List<ZoyPgSecurityDepositDetails> results = zoySecurityDepositRepo.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
 	@Override
 	public ZoyPgRoomDetails findRoomName(String roomId) {
 		return zoyPgRoomDetailsRepository.findRoomNameByRoomId(roomId);

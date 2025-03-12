@@ -1,29 +1,37 @@
 export class ConfigMasterModel{
-    tokenDetails :TokenDetailsModel = new TokenDetailsModel() ;
-    depositDetails : SecurityDepositLimitsModel = new SecurityDepositLimitsModel ();
-    dataGrouping : DataGroupingModel = new DataGroupingModel() ;
+    tokenDetails :TokenDetailsModel[]=[];// = new TokenDetailsModel() ;
+    depositDetails : SecurityDepositLimitsModel[]=[];// = new SecurityDepositLimitsModel ();
+    dataGrouping : DataGroupingModel[]=[];// = new DataGroupingModel() ;
     cancellationBeforeCheckInDetails : BeforeCheckInCancellationRefundModel[]=[];
-    earlyCheckOutRuleDetails:EarlyCheckOutRuleDetails=new EarlyCheckOutRuleDetails();
-    cancellationAfterCheckInDetails:SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
-    securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel=new SecurityDepositDeadLineAndAutoCancellationModel();
-    otherCharges : OtherChargesModel=new OtherChargesModel();
-    forceCheckOut :ForceCheckoutModel = new ForceCheckoutModel();
-    gstCharges : GstChargesModel = new GstChargesModel();
+    earlyCheckOutRuleDetails:EarlyCheckOutRuleDetails[]=[];//=new EarlyCheckOutRuleDetails();
+    cancellationAfterCheckInDetails:SecurityDepositDeadLineAndAutoCancellationModel[]=[];//=new SecurityDepositDeadLineAndAutoCancellationModel();
+    securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel[]=[];//=new SecurityDepositDeadLineAndAutoCancellationModel();
+    otherCharges : OtherChargesModel[]=[];//=new OtherChargesModel();
+    forceCheckOut :ForceCheckoutModel[]=[];// = new ForceCheckoutModel();
+    gstCharges : GstChargesModel[]=[];// = new GstChargesModel();
     shortTerm :ShortTermModel[] = [];
-    shortTermRentingDuration:ShortTermRentingDuration = new ShortTermRentingDuration();
-    noRentalAgreement:NoRentalAgreement =new NoRentalAgreement();
+    shortTermRentingDuration:ShortTermRentingDuration[]=[];// = new ShortTermRentingDuration();
+    noRentalAgreement:NoRentalAgreement[]=[];// =new NoRentalAgreement();
 }
 
 export class TokenDetailsModel{
     tokenId : string = '';
-    fixedToken : number = null;
-    variableToken : number = null;
+    fixedToken : number ;
+    variableToken : number ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class SecurityDepositLimitsModel{
     depositId : string ='';
     minimumDeposit : number ;
     maximumDeposit : number ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class EarlyCheckOutRuleDetails{
@@ -34,6 +42,10 @@ export class EarlyCheckOutRuleDetails{
     deduction_percentage: number ;
     deduction_day: number ;
     trigger_value : string ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class BeforeCheckInCancellationRefundModel{
@@ -47,11 +59,19 @@ export class BeforeCheckInCancellationRefundModel{
     isDelete:boolean ;
     isEdit:boolean ;
     isConfirm:boolean ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class DataGroupingModel{
     id : string ;
     considerDays : number ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class SecurityDepositDeadLineAndAutoCancellationModel{
@@ -63,6 +83,10 @@ export class SecurityDepositDeadLineAndAutoCancellationModel{
     deduction_day : number ;
     cond : string ;
     trigger_value : string ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class OtherChargesModel{
@@ -70,21 +94,33 @@ export class OtherChargesModel{
     ownerEkycCharges : number ;
     ownerDocumentCharges  : number ;
     tenantEkycCharges : number ;
-    tenantDocumentCharges : number ;   
+    tenantDocumentCharges : number ;  
+    effectiveDate:string='';
+    isApproved:boolean=false; 
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 
 export class ForceCheckoutModel{
     id : string ='';
     forceCheckOutDays  : number ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class GstChargesModel{
-    rentId: string ;
+    rentId: string='' ;
     cgstPercentage:number ;
     sgstPercentage: number ;
     igstPercentage:number ;
     monthlyRent: number ;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class ShortTermModel{
@@ -92,13 +128,25 @@ export class ShortTermModel{
     days: string ;
     percentage: number ;
     termDisabled :boolean =true;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 
 export class ShortTermRentingDuration  {
     rentingDurationId :string;
     rentingDurationDays: number;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }
 export class NoRentalAgreement  {
     noRentalAgreementId :string;
     noRentalAgreementDays: number;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
 }

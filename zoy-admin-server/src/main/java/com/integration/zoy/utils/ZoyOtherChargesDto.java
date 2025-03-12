@@ -21,6 +21,13 @@ public class ZoyOtherChargesDto {
 	@SerializedName("tenantEkycCharges")
 	private BigDecimal tenantEkycCharges;
 	
+	@SerializedName("effectiveDate")
+	private String effectiveDate;
+	
+	@SerializedName("isApproved")
+	private boolean isApproved;
+	
+	
 	public String getOtherChargesId() {
 		return otherChargesId;
 	}
@@ -59,6 +66,22 @@ public class ZoyOtherChargesDto {
 
 	public void setTenantEkycCharges(BigDecimal tenantEkycCharges) {
 		this.tenantEkycCharges = tenantEkycCharges;
+	}
+
+	public String getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(String effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	public boolean getIsApproved() {
+		return isApproved;
+	}
+
+	public void setIsApproved(boolean isApproved) {
+		this.isApproved = isApproved;
 	}
 
 	

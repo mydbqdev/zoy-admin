@@ -33,6 +33,18 @@ public class ZoyPgAutoCancellationAfterCheckIn {
 
     @Column(name = "trigger_value", length = 100)
     private String triggerValue;
+    
+    @Column(name = "is_Approved")
+	private Boolean isApproved;
+
+	@Column(name = "effective_Date")
+	private String effectiveDate;
+	
+	@Column(name="created_by")
+	private String createdBy;
+	
+	@Column(name="approved_by")
+	private String approvedBy;
 
     // Getters and Setters
 
@@ -91,4 +103,37 @@ public class ZoyPgAutoCancellationAfterCheckIn {
     public void setTriggerValue(String triggerValue) {
         this.triggerValue = triggerValue;
     }
+
+	public Boolean getIsApproved() {
+		return isApproved;
+	}
+
+	public void setIsApproved(Boolean isApproved) {
+		this.isApproved = isApproved;
+	}
+
+	public String getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(String effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getApprovedBy() {
+		return approvedBy;
+	}
+
+	public void setApprovedBy(String approvedBy) {
+		this.approvedBy = approvedBy;
+	}
+    
 }
