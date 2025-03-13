@@ -26,6 +26,7 @@ import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AdminUserTemporaryRepository;
 import com.integration.zoy.repository.AppRoleRepository;
 import com.integration.zoy.repository.BulkUploadDetailsRepository;
+import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
 import com.integration.zoy.repository.RoleScreenRepository;
 import com.integration.zoy.repository.TriggeredCondRepository;
 import com.integration.zoy.repository.TriggeredOnRepository;
@@ -60,6 +61,9 @@ public  class AdminDBService implements AdminDBImpl {
 	
 	@Autowired
 	TriggeredValueRepository triggeredValueRepository;
+	
+	@Autowired
+	RegisteredPartnerDetailsRepository registeredPartnerDetailsRepo;
 
 	@Override
 	public AdminUserMaster saveAdminUser(AdminUserMaster master) throws WebServiceException {
@@ -290,6 +294,13 @@ public  class AdminDBService implements AdminDBImpl {
 	@Override
 	public List<Object[]> findTenantsCardsDetails() throws WebServiceException {
 		return userMasterRepository.getTenantCardsDetails();
+	}
+
+
+
+	@Override
+	public List<Object[]> findOwnerCardsDetails() throws WebServiceException {
+		return registeredPartnerDetailsRepo.getOwnerCardsDetails();
 	}
 	
 }
