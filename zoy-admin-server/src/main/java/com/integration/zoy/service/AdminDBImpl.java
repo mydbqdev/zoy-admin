@@ -79,6 +79,8 @@ public interface AdminDBImpl {
 	
 	List<Object[]> findTenantsCardsDetails() throws WebServiceException;
 	
+	List<Object[]> findOwnerCardsDetails() throws WebServiceException;
+	
 	void doUserActiveteDeactivete(String user_email ,boolean status)throws WebServiceException;
 
 	List<TriggeredCond> findTriggeredCond();
