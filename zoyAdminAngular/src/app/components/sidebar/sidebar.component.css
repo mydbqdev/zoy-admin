@@ -1,3 +1,31 @@
 .sidebar {
     width: max-content !important
 }
+
+/* Style the scrollbar for vertical and horizontal scrollbars */
+.sidebar-scrollable-container::-webkit-scrollbar{
+    width: 8px;  /* Width of the vertical scrollbar */
+    height: 8px; /* Height of the horizontal scrollbar */
+}
+
+.sidebar-scrollable-container::-webkit-scrollbar-thumb {
+    background-color: #E814E8;  /* Color of the scrollbar */
+    border-radius: 10px;     /* Rounded corners */
+}
+
+.sidebar-scrollable-container::-webkit-scrollbar-thumb:hover {
+    background-color: #aa0faa;  /* Darker color on hover */
+    cursor: pointer;
+}
+
+/* Set styles for the scrollable container */
+.sidebar-scrollable-container {
+    height: calc(100vh - 90px);  /* Set a max height to enable vertical scrolling */
+    overflow-y: auto;   /* Enable vertical scrolling */
+    padding-right: 1px; /* Optional: prevent scrollbar overlap */
+    box-sizing: border-box; /* Prevents padding from affecting width */
+}
+.collapse-inner .rounded .collapse-item::before{
+    width: 15px;
+    border-bottom: 2px solid #ffffff;
+}
