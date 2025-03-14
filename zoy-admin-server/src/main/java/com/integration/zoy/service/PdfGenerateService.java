@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.hc.core5.http.ContentType;
@@ -21,18 +20,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Image;
 import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 public class PdfGenerateService {
@@ -53,75 +41,6 @@ private static final Logger log = LoggerFactory.getLogger(PdfGenerateService.cla
     @Autowired
     ZoyS3Service s3Service;
     
-    public byte[] generatePdfFile(InputStream reportStream,Map<String, Object> data) throws FileNotFoundException  {
-    	List<?> reportData = (List<?>) data.get("reportData");
-        if (data == null || data.isEmpty() || reportData == null || reportData.isEmpty()) {
-            return new byte[0]; 
-        }
-    	
-    	
-        if (reportStream == null) {
-            log.error("Report template not found.");
-            throw new FileNotFoundException("Report template not found.");
-        }
-        
-        JRDataSource dataSource = new JRBeanCollectionDataSource(reportData);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-            JasperPrint jasperPrint = JasperFillManager.fillReport(reportStream, data, dataSource);
-
-            JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
-
-            byte[] watermarkedPdf = addWatermark(outputStream.toByteArray());
-            return watermarkedPdf;
-
-        } catch (JRException e) {
-            log.error("Error generating PDF: " + e.getMessage(), e);
-            return new byte[0];  
-        }
-    }
-    
-    private byte[] addWatermark(byte[] pdfBytes) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PdfReader reader = null;
-        PdfStamper stamper = null;
-        try {
-            reader = new PdfReader(new ByteArrayInputStream(pdfBytes));
-            stamper = new PdfStamper(reader, outputStream);
-            
-            InputStream inputStreamImg = getClass().getResourceAsStream(watermarkImagePath);
-            String base64Logo = imageToBase64(inputStreamImg);
-            byte[] imageBytes = Base64.getDecoder().decode(base64Logo);
-            Image watermarkImage = Image.getInstance(imageBytes);
-            
-            watermarkImage.scaleToFit(300, 300);
-
-            int totalPages = reader.getNumberOfPages();
-            for (int i = 1; i <= totalPages; i++) {
-                float pageWidth = reader.getPageSize(i).getWidth();
-                float pageHeight = reader.getPageSize(i).getHeight();
-
-                float xPos = (pageWidth - watermarkImage.getScaledWidth()) / 2;
-                float yPos = (pageHeight - watermarkImage.getScaledHeight()) / 2;
-
-                watermarkImage.setAbsolutePosition(xPos, yPos);
-                PdfContentByte content = stamper.getOverContent(i);
-                content.addImage(watermarkImage);
-            }
-        } catch (IOException | DocumentException e) {
-            log.error("Error adding watermark: " + e.getMessage(), e);
-        } finally {
-            try {
-                if (stamper != null) stamper.close();
-                if (reader != null) reader.close();
-            } catch (IOException | DocumentException e) {
-                log.error("Error closing PDF stamper/reader: " + e.getMessage(), e);
-            }
-        }
-        return outputStream.toByteArray();
-    }
-
     public String imageToBase64(InputStream inputStream) {
         byte[] imageBytes = null;
         try {
