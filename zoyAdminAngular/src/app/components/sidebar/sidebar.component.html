@@ -108,7 +108,9 @@
     </a>
     <div id="collapseSupports" [ngClass]="menu6 ? 'collapse show':'collapse'" *ngIf="rolesArray.includes('TICKETS_READ')"  aria-labelledby="headingSupport" data-parent="#accordionSidebar">
         <div class="py-2 collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
-            <a class="collapse-item" >Tickets</a>
+            <a class="collapse-item" routerLink="/tickets" [ngClass]="{'active':activeSubNenuName=='tickets'}">Tickets</a>
+            <div class="p-1"></div>
+            <a class="collapse-item" routerLink="/leads" [ngClass]="{'active':activeSubNenuName=='leads'}">Leads</a>
         </div>
     </div>
    </li>
