@@ -1,8 +1,8 @@
 <!-- Sidebar -->
-<ul class="navbar-nav fixed-left sidebar sidebar-light accordion" id="accordionSidebar" style="position: fixed;z-index: 1030;">
+<ul class="navbar-nav fixed-left sidebar sidebar-light accordion" id="accordionSidebar" style="position: fixed;z-index: 1030;background-image: linear-gradient(to bottom right, #f510ea, #3C57CF);">
   <!-- Sidebar - Brand -->
-  <a href="javascript:void(0)" class="sidebar-brand d-flex align-items-center justify-content-center">
-      <div class="sidebar-brand-icon">
+  <a href="javascript:void(0)" class="sidebar-brand d-flex align-items-center justify-content-center" style="margin-top:5px;">
+      <div class="sidebar-brand-icon" style="padding: 5px 16px;border-radius: 50%;background-color: #ffffff;">
           <img src="assets/images/ZOY-logo.svg" style="height: 60px;width: auto;" />
       </div>
       <!--div class="sidebar-brand-text mx-3" style="margin-top:-15px">Admin</div>
@@ -13,14 +13,14 @@
     </div -->
   </a>
   <!-- Divider -->
-  <hr class="sidebar-divider my-0">
-  <div class="my-1"></div>
-  <div style="overflow-y: auto;height: calc(100vh - 90px);">
+  <!--hr class="sidebar-divider my-0">
+  <div class="my-1"></div -->
+  <div class="sidebar-scrollable-container">
   <!-- Nav Item - Dashboard -->
   <li class="nav-item" [ngClass]="{'active':activeSubNenuName=='home'}">
       <a class="nav-link" routerLink="/home" (click)="setHeaderName('Dashboard');expandMenu(1)">
           <i class="fas fa-th-list"></i>
-          <span>Dashboard</span></a>
+          <span class="ml-2">Dashboard</span></a>
   </li>
 
   
@@ -29,11 +29,11 @@
     <a [ngClass]="menu2 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(2)" data-target="#collapseOwners"
     aria-expanded="false" aria-controls="collapseOwners">
         <i class="fas fa-fw fa-users"></i>
-        <span>Owners</span>
+        <span class="ml-2">Owners</span>
         <i class="fas mt-2" [ngClass]="menu2 ? 'fa fa-chevron-down' : 'fa fa-chevron-right'" style="float: right;"></i>
     </a>
     <div id="collapseOwners" [ngClass]="menu2 ? 'collapse show':'collapse'" aria-labelledby="headingOwners" data-parent="#accordionSidebar">
-        <div class="bg-white collapse-inner rounded">
+        <div class="collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
             <a class="collapse-item" routerLink="/zoy-code" [ngClass]="{'active':activeSubNenuName=='zoy-code'}" *ngIf="rolesArray.includes('ZOYCODES_READ')" (click)="setHeaderName('Zoy Code')">Zoy Code</a>
             <div class="p-1"></div>
             <a class="collapse-item" routerLink="/manage-owner" [ngClass]="{'active':activeSubNenuName=='manage-owner'}" *ngIf="rolesArray.includes('MANAGING_OWNERS_READ')" (click)="setHeaderName('Manage Owners');setOwnerResetId()" >Manage Owners</a>
@@ -48,11 +48,11 @@
         <a [ngClass]="menu3 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(3)" data-target="#collapseUsers"
         [attr.aria-expanded]="!menu3" aria-controls="collapseUsers">
             <i class="fas fa-fw fa-users-cog"></i>
-            <span>Users</span>
+            <span class="ml-2">Users</span>
             <i class="fas mt-2" [ngClass]="menu3 ? 'fa fa-chevron-down' : 'fa fa-chevron-right'" style="float: right;"></i>
         </a>
         <div id="collapseUsers" [ngClass]="menu3 ? 'collapse show':'collapse'" aria-labelledby="headingUsers" data-parent="#accordionSidebar">
-            <div class="bg-white collapse-inner rounded">
+            <div class="collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
                 <a class="collapse-item" routerLink="/user-master" [ngClass]="{'active':activeSubNenuName=='user-master'}" *ngIf="rolesArray.includes('MANAGING_USERS_READ')" (click)="setHeaderName('Managing Users')">Managing Users</a>
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/permission-approval" [ngClass]="{'active':activeSubNenuName=='permission-approval'}" *ngIf="rolesArray.includes('PERMISSION_APPROVAL_READ')" (click)="setHeaderName('Permission Approval')">Permission Approval</a>
@@ -67,11 +67,11 @@
     <a [ngClass]="menu7 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(7)" data-target="#collapseTenants"
     aria-expanded="false" aria-controls="collapseTenants">
         <i class="fas fa-fw fa-door-open"></i>
-        <span>Tenants</span>
+        <span class="ml-2">Tenants</span>
         <i class="fas mt-2" [ngClass]="menu7 ? 'fa fa-chevron-down' : 'fa fa-chevron-right'" style="float: right;"></i>
     </a>
     <div id="collapseTenants" [ngClass]="menu7 ? 'collapse show':'collapse'" aria-labelledby="headingTenants" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
+        <div class="py-2 collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
             <a class="collapse-item" routerLink="/tenants" *ngIf="defMenu.tenantsSubMenu.tenantzoy && rolesArray.includes('TENANTSZOY_READ')" [ngClass]="{'active':activeSubNenuName=='tenants'}" (click)="setHeaderName('Tenants');setOwnerResetId()" >Tenant </a>
             <div class="p-1"></div>
             <a class="collapse-item" routerLink="/bulk-upload" *ngIf="defMenu.tenantsSubMenu.bulkUpload && rolesArray.includes('BULK_UPLOAD_READ')" [ngClass]="{'active':activeSubNenuName=='bulk-upload'}" (click)="setHeaderName('Bulk Upload')" >Bulk Upload</a>
@@ -83,12 +83,12 @@
     <a [ngClass]="menu5 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" *ngIf="defMenu.finances && rolesArray.includes('REPORTS_READ')" (click)="expandMenu(5)" data-target="#collapseFinances"
    [attr.aria-expanded]="!menu5" aria-controls="collapseFinances">
         <i class="fas fa-fw fa-money-check"></i>
-        <span>Finance</span>
+        <span class="ml-2">Finance</span>
         <i class="fas mt-2" [ngClass]="menu5 ? 'fa fa-chevron-down' : 'fa fa-chevron-right'" style="float: right;"></i>
     </a>
     <div id="collapseFinances" [ngClass]="menu5 ? 'collapse show':'collapse'" aria-labelledby="headingFinances"
         data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
+        <div class="py-2 collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
             <a class="collapse-item" routerLink="/report-list" *ngIf="rolesArray.includes('REPORTS_READ')" [ngClass]="{'active':activeSubNenuName=='report-list'}" (click)="setHeaderName('Reports')">Reports</a>
             <div class="p-1"></div>
             <a class="collapse-item" routerLink="/payment-approval" [ngClass]="{'active':activeSubNenuName=='payment-approval'}" *ngIf="rolesArray.includes('PAYMENT_APPROVAL_READ')" >Payment Approval</a>
@@ -103,12 +103,14 @@
     <a [ngClass]="menu6 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(6)" data-target="#collapseSupports"
     aria-expanded="false" aria-controls="collapseSupports">
         <i class="fas fa-fw fa-headset"></i>
-        <span>Support</span>
+        <span class="ml-2">Support</span>
         <i class="fas mt-2" [ngClass]="menu6 ? 'fa fa-chevron-down' : 'fa fa-chevron-right'" style="float: right;"></i>
     </a>
     <div id="collapseSupports" [ngClass]="menu6 ? 'collapse show':'collapse'" *ngIf="rolesArray.includes('TICKETS_READ')"  aria-labelledby="headingSupport" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" >Tickets</a>
+        <div class="py-2 collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
+            <a class="collapse-item" routerLink="/tickets" [ngClass]="{'active':activeSubNenuName=='tickets'}">Tickets</a>
+            <div class="p-1"></div>
+            <a class="collapse-item" routerLink="/leads" [ngClass]="{'active':activeSubNenuName=='leads'}">Leads</a>
         </div>
     </div>
    </li>
@@ -118,11 +120,11 @@
         <a [ngClass]="menu4 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(4)" data-target="#collapseSettings"
         [attr.aria-expanded]="!menu4" aria-controls="collapseSettings">
             <i class="fas fa-fw fa-cogs"></i>
-            <span>Settings</span>
+            <span class="ml-2">Settings</span>
             <i class="fas mt-2" [ngClass]="menu4 ? 'fa fa-chevron-down' : 'fa fa-chevron-right'" style="float: right;"></i>
         </a>
         <div id="collapseSettings" [ngClass]="menu4 ? 'collapse show':'collapse'" aria-labelledby="headingSettings" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
+            <div class="py-2 collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
                 <a class="collapse-item" routerLink="/role-master" *ngIf="rolesArray.includes('ROLE_AND_PERMISSION_READ')" [ngClass]="{'active':activeSubNenuName=='role-master'}" (click)="setHeaderName('Role and Permission')" >Role & Permission</a>
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/db-master-configuration" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_READ')" [ngClass]="{'active':activeSubNenuName=='db-master-configuration'}">Initial Configuration</a>

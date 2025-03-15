@@ -45,7 +45,7 @@ import { ZoyCodeComponent } from './owners/zoy-code/components/zoy-code.componen
 import { ProfileComponent } from './profile/profile/profile.component';
 import { ActivityLogComponent } from './profile/activity-log/activity-log.component';
 import { SettingsComponent } from './profile/settings/settings.component';
-import { TicketsComponent } from './supports/tickets/tickets.component';
+import { TicketsComponent } from './supports/tickets/component/tickets.component';
 import { TenantMenuRoutingModule } from './tenants/tenents-menu-routing.module';
 import { BulkUploadComponent } from './tenants/bulk-upload/component/bulk-upload.component';
 import { PaymentApprovalComponent } from './finance/payment-appoval/component/payment-approval.component';
@@ -66,6 +66,8 @@ import { TenantProfileComponent } from './tenants/tenant-profile/component/tenan
 import { AlertNotificationComponent } from './alert-notification/component/alert-notification.component';
 import { AppNotificationRoutingModule } from './alert-notification/notification-routing.module';
 import { OrganizationInfoConfigComponent } from './setting/organization-info-config/components/organization-info-config.component';
+import { SupportMenuRoutingModule } from './supports/supports-menu-routing.module';
+import { LeadsComponent } from './supports/leads/component/leads.component';
 
 
 const appRoutes: Routes = [
@@ -112,7 +114,7 @@ const appRoutes: Routes = [
     ConfigurationMasterComponent,
     UserAuditComponent,
     AlertNotificationComponent,
-   
+    LeadsComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -137,7 +139,7 @@ const appRoutes: Routes = [
     NgxChartsModule,
     AppDocumentUploadRoutingModule,
     AppNotificationRoutingModule,
-    
+    SupportMenuRoutingModule,
     ],
   providers: [
     {

@@ -245,13 +245,10 @@ a.approve-icon:hover{
   color:rgb(240, 28, 212) !important;
   cursor: pointer;
 }
-
-
-
-.bg-gradiant-popup-header{
-  background-image: linear-gradient(to bottom right, #D52571, #3C57CF) !important;
-  color:#ffffff;
+.sidebar-light .nav-item .nav-link i {
+    color: #ffffff !important;
 }
+
 
 @keyframes rotateUpToDown {
   0% {
