@@ -27,8 +27,8 @@ public class TenantResportsDTO {
 	@SerializedName("propertAddress")
 	private String propertAddress;
 
-	@SerializedName("roomNumber")
-	private String roomNumber;
+	@SerializedName("bedNumber")
+	private String bedNumber;
 
 	@SerializedName("expectedCheckIndate")
 	private Timestamp expectedCheckIndate;
@@ -118,12 +118,12 @@ public class TenantResportsDTO {
 		this.propertAddress = propertAddress;
 	}
 
-	public String getRoomNumber() {
-		return roomNumber;
+	public String getBedNumber() {
+		return bedNumber;
 	}
 
-	public void setRoomNumber(String roomNumber) {
-		this.roomNumber = roomNumber;
+	public void setBedNumber(String bedNumber) {
+		this.bedNumber = bedNumber;
 	}
 
 	public Timestamp getExpectedCheckIndate() {

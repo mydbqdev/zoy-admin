@@ -42,7 +42,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   isCreated :boolean=true;
   shortTermData:ShortTermDataModel = new ShortTermDataModel();
   shortTermDataList:ShortTermDataModel[] = [];
-  shortTermduration:number=30;
+  shortTermduration:number=0;
   @ViewChild('closeModel') closeModel: ElementRef;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private confirmationDialogService:ConfirmationDialogService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,
@@ -109,12 +109,20 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     this.settingTypeDetails = this.settingTypeObjClmApiDetailsList.find(t=>t.type == this.settingType);
     this.selectedsettingColumns = this.settingTypeDetails.columns ;
     this.getDbSettingDetails() ;
+    if(this.settingType == 'Short Term' ){
+      this.getShortTermDuration() ;
+    }
+   
   }
 
   getShortTermDuration(){
       this.authService.checkLoginUserVlidaate();
-     this.dbMasterConfigurationService.getShortTermDuration().subscribe(data => {
-      this.shortTermduration = data;
+     this.dbMasterConfigurationService.getShortTermDuration().subscribe(res => {
+      if(res.data){
+        this.shortTermduration = res.data?.rentingDurationDays | 0;
+      }else{
+        this.shortTermduration = 0;
+      }
      }, error => {
      this.spinner.hide();
      if(error.status == 0) {
@@ -144,8 +152,15 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
      if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
      }
    });
-   
    }
+
+   navigateMasterConfig(){
+		if(this.rolesArray.includes('CONFIGURATION_MASTER_WRITE') || this.rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')){
+			this.router.navigate(['/configuration-master']);
+		}else{
+			this.notifyService.showInfo("Please contact a higher-level admin","You do not have permission.");
+		}
+	  }
     getDbSettingDetails(){
        this.authService.checkLoginUserVlidaate();
       this.spinner.show();

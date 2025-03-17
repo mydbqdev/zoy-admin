@@ -166,7 +166,7 @@ export class DbMasterConfigurationService {
         );
   } 
   getShortTermDuration(): Observable<any> {
-    const url1=this.basePath +'zoy_admin/shortTermRenting';
+    const url1=this.basePath +'zoy_admin/config/fetch-renting-duration';
         return  this.httpclient.get<any>(
             url1,
             {
