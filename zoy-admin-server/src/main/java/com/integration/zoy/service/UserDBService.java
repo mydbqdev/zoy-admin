@@ -18,6 +18,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.DataFormat;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -399,15 +403,15 @@ public class UserDBService implements UserDBImpl{
 		try (XSSFWorkbook workbook = new XSSFWorkbook()) {			
 			Sheet sheet = workbook.createSheet("User Audit Report");
 			Row headerRow = sheet.createRow(0);
-
+			
 			if(isUserActivity) {
 				headerRow.createCell(0).setCellValue("CREATED ON");
 				headerRow.createCell(1).setCellValue("HISTORY DATA");
 
 				for (int i = 0; i < reportData.size(); i++) {
 					Row dataRow = sheet.createRow(i + 1);
-					dataRow.createCell(0).setCellValue(reportData.get(i).getCreatedOn());
-					dataRow.createCell(1).setCellValue(reportData.get(i).getHistoryData());
+					dataRow.createCell(0).setCellValue(nullSafe(reportData.get(i).getCreatedOn()));
+					dataRow.createCell(1).setCellValue(nullSafe(reportData.get(i).getHistoryData()));
 				}
 			}else {
 				for (int i = 0; i < headers.length; i++) {
@@ -415,10 +419,10 @@ public class UserDBService implements UserDBImpl{
 				}				
 				for (int i = 0; i < reportData.size(); i++) {
 					Row dataRow = sheet.createRow(i + 1);
-					dataRow.createCell(0).setCellValue(reportData.get(i).getUserName());
-					dataRow.createCell(1).setCellValue(reportData.get(i).getCreatedOn());
-					dataRow.createCell(2).setCellValue(reportData.get(i).getType());
-					dataRow.createCell(3).setCellValue(reportData.get(i).getHistoryData());
+					dataRow.createCell(0).setCellValue(nullSafe(reportData.get(i).getUserName()));
+					dataRow.createCell(1).setCellValue(nullSafe(reportData.get(i).getCreatedOn()));
+					dataRow.createCell(2).setCellValue(nullSafe(reportData.get(i).getType()));
+					dataRow.createCell(3).setCellValue(nullSafe(reportData.get(i).getHistoryData()));
 				}
 			}
 
@@ -428,6 +432,10 @@ public class UserDBService implements UserDBImpl{
 		} catch (Exception e) {
 			throw new RuntimeException("Error generating Excel file", e);
 		}
+	}
+	
+	private String nullSafe(Object value) {
+		return (value == null) ? "N/A" : value.toString();
 	}
 
 	public byte[] generateCsvFile(CommonResponseDTO<AuditActivitiesLogDTO> data,String[] headers ,boolean isUserActivity ) {
