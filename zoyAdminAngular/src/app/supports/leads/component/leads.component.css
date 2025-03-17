@@ -68,3 +68,36 @@ th, td {
     font-size: 13px;
     min-height: 12px;
   }
+
+  .common-status {
+    width: 100px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+  }
+  
+  .btn-inprogress {
+    background-color:  orange;
+    color:  #000303;
+  }
+  
+  .btn-new {
+    background-color:#a582f8; 
+    color: #000000;
+  }
+
+  .btn-converted {
+    background-color:green; 
+    color: #ffffff;
+  }
+
+  .btn-lost {
+    background-color:  red;
+    color:  #ffffff;
+  }
+
+  .btn-follow-up {
+    background-color:blue; 
+    color: #ffffff;
+  }

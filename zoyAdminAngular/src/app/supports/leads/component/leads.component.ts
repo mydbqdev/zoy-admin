@@ -93,6 +93,8 @@ export class LeadsComponent implements OnInit, AfterViewInit {
 		this.sidemenuComp.expandMenu(6);
 		this.sidemenuComp.activeMenu(6, 'leads');
 		this.dataService.setHeaderName("Leads");
+
+		this.loadLeads();
 	}
 
 	getColumnsForSelectedReport(name:string) {
@@ -116,5 +118,13 @@ export class LeadsComponent implements OnInit, AfterViewInit {
 		this.sortActive=sort.active;
 		this.paginator.pageIndex=0;
 		// this.getReportDetails(this.paginator.pageIndex, this.pageSize,this.sortActive,this.sortDirection);
+	   }
+	   loadLeads(){
+		this.sortActive = this.getColumnsForSelectedReport(this.reportName)[0] || this.sortActive;
+		this.paginator.pageIndex=0;
+		this.pageSize = this.paginator.pageSize;
+		this.totalProduct=5;
+		this.reportDataList=Object.assign([],this.leadService.leadData);
+		this.reportDataSource = new MatTableDataSource(this.reportDataList);
 	   }
 }

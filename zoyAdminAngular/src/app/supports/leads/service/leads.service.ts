@@ -50,6 +50,50 @@ import { MessageService } from 'src/app/message.service';
       { name: "Tickets", key: "ticketsReport" },
       ];
 
+
+      leadData:{uniqueInquiryNumber:string,name:string,inquiredFor:string,date:string,assignTo:string,status:string}[]= [
+        {
+            "uniqueInquiryNumber":"2500001",
+            "name":"Abdul T",
+            "inquiredFor":"PG Accommodation",
+            "date": "2025-02-21 14:39:08",
+            "assignTo": "",
+            "status": "New"
+        },
+        {
+          "uniqueInquiryNumber":"2500002",
+          "name":"Mahendra B",
+          "inquiredFor":"Partner inquiry",
+          "date": "2025-02-21 14:39:08",
+          "assignTo": "",
+          "status": "In Progress"
+        },
+        {
+          "uniqueInquiryNumber":"2500003",
+          "name":"Keerthi D",
+          "inquiredFor":"Business inquiry",
+          "date": "2025-02-21 14:39:08",
+          "assignTo": "",
+          "status": "Follow-up"
+        },
+        {
+          "uniqueInquiryNumber":"2500004",
+          "name":"Madhan Ram",
+          "inquiredFor":"Support inquiry",
+          "date": "2025-02-21 14:39:08",
+          "assignTo": "",
+          "status": "Converted"
+        },
+        {
+          "uniqueInquiryNumber":"2500005",
+          "name":"Aparna",
+          "inquiredFor":"Others",
+          "date": "2025-02-21 14:39:08",
+          "assignTo": "",
+          "status": "Lost"
+        }
+    ];
+
   private errorHandler(error:HttpErrorResponse){
     return of(error.message || "server error");
     
