@@ -27,5 +27,5 @@ export class TenantsCardModel{
     activeTenantsCount : number = 0 ;
     upcomingTenantsCount : number = 0 ;
     inactiveTenantsCount : number = 0 ;
-    suspendedTenantsCount : number = 0 ;
+    registerTenantsCount : number = 0 ;
 }
