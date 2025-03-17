@@ -105,7 +105,6 @@ import { MessageService } from 'src/app/message.service';
       'previousPropertName' : 'PREVIOUS PROPERTY NAME',
       'currentPropertName' : 'CURRENT PROPERTY NAME',
       'propertAddress' : 'PROPERTY ADDRESS',
-      'roomNumber' : 'ROOM NUMBER',
       'expectedCheckIndate' : 'EXPECTED CHECK-IN DATE',
       'expectedCheckOutdate' : 'EXPECTED CHECK-OUT DATE',
       'checkInDate' : 'CHECK-IN DATE',
@@ -172,19 +171,19 @@ import { MessageService } from 'src/app/message.service';
     ,
     {
 		  'reportName': 'Upcoming Tenants Report',
-		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'bookedProperyName','propertAddress', 'roomNumber', 'expectedCheckIndate','expectedCheckOutdate']
+		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'bookedProperyName','propertAddress', 'bedNumber', 'expectedCheckIndate','expectedCheckOutdate']
 		},
    // {
 		//   'reportName': 'Suspended Tenants Report',
-		//   'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'roomNumber', 'checkedOutDate','suspendedDate','reasonForSuspension']
+		//   'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'bedNumber', 'checkedOutDate','suspendedDate','reasonForSuspension']
 		// },
     {
 		  'reportName': 'Inactive Tenants Report',
-		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'roomNumber', 'checkedOutDate']
+		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'bedNumber', 'checkedOutDate']
 		},
     {
 		  'reportName': 'Active Tenants Report',
-		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'currentPropertName', 'propertAddress','roomNumber', 'checkInDate','expectedCheckOutdate']
+		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'currentPropertName', 'propertAddress','bedNumber', 'checkInDate','expectedCheckOutdate']
 		},
 
     // { 
@@ -222,11 +221,11 @@ import { MessageService } from 'src/app/message.service';
       { name: "Ratings and Reviews Report", key: "reviewsAndRatingReport" },
     
       { name: "Upcoming Tenants Report", key: "UpcomingTenantsReport" },
-      { name: "Suspended Tenants Report", key: "SuspendedTenantsReport" },
+      // { name: "Suspended Tenants Report", key: "SuspendedTenantsReport" },
       { name: "Inactive Tenants Report", key: "InactiveTenantsReport" },
       { name: "Active Tenants Report", key: "ActiveTenantsReport" },
 
-      { name: "Suspended Properties Report", key: "suspendedPropertiesReport" }, 
+      // { name: "Suspended Properties Report", key: "suspendedPropertiesReport" }, 
       { name: "Inactive Properties Report", key: "inactivePropertiesReport" }, 
       { name: "Upcoming Potential Properties Report", key: "upcomingPotentialPropertiesReport" }, 
       { name: "Non-Potential Properties Report", key: "nonPotentialPropertiesReport" }, 

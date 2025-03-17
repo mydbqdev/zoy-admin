@@ -1008,7 +1008,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
 			data.put("propertyName", tenantReport.getCurrentPropertName() != null ? tenantReport.getCurrentPropertName() : "");
 			data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
-			data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
+			data.put("roomNumber", tenantReport.getBedNumber() != null ? tenantReport.getBedNumber() : "");
 			data.put("checkInDate", tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) : "");
 			data.put("checkOutDate", tuService.formatTimestamp(tenantReport.getExpectedCheckOutdate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getExpectedCheckOutdate().toInstant()) : "");
 
@@ -1042,7 +1042,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
 			data.put("previousPropert", tenantReport.getPreviousPropertName() != null ? tenantReport.getPreviousPropertName() : "");
 			data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
-			data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
+			data.put("roomNumber", tenantReport.getBedNumber() != null ? tenantReport.getBedNumber() : "");
 			data.put("checkedOutDate", tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) : "");
 
 			// Common fields
@@ -1143,7 +1143,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantContact", tenantReport.getTenantContactNumber() != null ? tenantReport.getTenantContactNumber() : "");
 			data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
 			data.put("previousPropert", tenantReport.getPreviousPropertName() != null ? tenantReport.getPreviousPropertName() : "");
-			data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
+			data.put("roomNumber", tenantReport.getBedNumber() != null ? tenantReport.getBedNumber() : "");
 			data.put("checkedOutDate", tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) : "");
 			data.put("suspendedDate", tuService.formatTimestamp(tenantReport.getSuspendedDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getSuspendedDate().toInstant()) : "");
 			data.put("reason", tenantReport.getReasonForSuspension() != null ? tenantReport.getReasonForSuspension() : "");
@@ -1183,7 +1183,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantEmail", tenantRefund.getTenantEmailAddress() != null ? tenantRefund.getTenantEmailAddress() : "");
 			data.put("propertyName", tenantRefund.getBookedProperyName() != null ? tenantRefund.getBookedProperyName() : "");
 			data.put("propertyAddress", tenantRefund.getPropertAddress() != null ? tenantRefund.getPropertAddress() : "");
-			data.put("bedAllocation", tenantRefund.getRoomNumber() != null ? tenantRefund.getRoomNumber() : "");
+			data.put("bedAllocation", tenantRefund.getBedNumber() != null ? tenantRefund.getBedNumber() : "");
 			data.put("expectedCheckin", tuService.formatTimestamp(tenantRefund.getExpectedCheckIndate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getExpectedCheckIndate().toInstant()) : "");
 			data.put("expectedCheckOut", tuService.formatTimestamp(tenantRefund.getExpectedCheckOutdate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getExpectedCheckOutdate().toInstant()) : "");
 
@@ -1606,7 +1606,7 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : "");
 				dto.setBookedProperyName(row[3] != null ? (String) row[3] : "");
 				dto.setPropertAddress(row[4] != null ? (String) row[4] : "");
-				dto.setRoomNumber(row[5] != null ? (String) row[5] : "");
+				dto.setBedNumber(row[5] != null ? (String) row[5] : "");
 				dto.setExpectedCheckIndate(row[6] != null ? (Timestamp)(row[6]) : null);
 				dto.setExpectedCheckOutdate(row[7] != null ? (Timestamp)(row[7]) : null);
 				return dto;
@@ -1733,7 +1733,7 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : "");
 				dto.setCurrentPropertName(row[3] != null ? (String) row[3] : "");
 				dto.setPropertAddress(row[4] != null ? (String) row[4] : "");
-				dto.setRoomNumber(row[5] != null ? (String) row[5] : "");
+				dto.setBedNumber(row[5] != null ? (String) row[5] : "");
 				dto.setCheckInDate(row[6] != null ? (Timestamp)(row[6]) : null);
 				dto.setExpectedCheckOutdate(row[7] != null ? (Timestamp)(row[7]) : null);
 				return dto;
@@ -1862,9 +1862,10 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : ""); 
 				dto.setPreviousPropertName(row[3] != null ? (String) row[3] : ""); 
 				dto.setPropertAddress(row[4] != null ? (String) row[4] : ""); 
-				dto.setRoomNumber(row[5] != null ? (String) row[5] : ""); 
+				dto.setBedNumber(row[5] != null ? (String) row[5] : ""); 
 				dto.setCheckedOutDate(row[6] != null ? (Timestamp) row[6] : null);
 				return dto;
+			
 			}).collect(Collectors.toList());
 
 			return new CommonResponseDTO<>(inActiveTenantsReportDto, filterCount);
@@ -1994,7 +1995,7 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setTenantEmailAddress(row[4] != null ? (String) row[4] : ""); 
 				dto.setPreviousPropertName(row[5] != null ? (String) row[5] : ""); 
 				dto.setPropertAddress(row[6] != null ? (String) row[6] : ""); 
-				dto.setRoomNumber(row[7] != null ? (String) row[7] : ""); 
+				dto.setBedNumber(row[7] != null ? (String) row[7] : ""); 
 				dto.setCheckedOutDate(row[8] != null ? (Timestamp) row[8] : null);
 				dto.setSuspendedDate(row[9] != null ? (Timestamp) row[9] : null); 
 				dto.setReasonForSuspension(row[10] != null ? (String) row[10] : "");

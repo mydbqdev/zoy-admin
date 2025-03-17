@@ -9,7 +9,6 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { ProfileComponent } from './profile/profile/profile.component';
 import { ActivityLogComponent } from './profile/activity-log/activity-log.component';
 import { SettingsComponent } from './profile/settings/settings.component';
-import { TicketsComponent } from './supports/tickets/tickets.component';
 import { PaymentApprovalComponent } from './finance/payment-appoval/component/payment-approval.component';
 
 const routes: Routes = [
@@ -23,7 +22,6 @@ const routes: Routes = [
 	{ path: 'profile', component: ProfileComponent },
 	{ path: 'activity-log', component: ActivityLogComponent },
 	{ path: 'settings', component: SettingsComponent },
-	{ path: 'tickets', component: TicketsComponent },
 	{path: 'payment-approval', component: PaymentApprovalComponent}
 ];
 @NgModule({
