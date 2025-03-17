@@ -217,7 +217,7 @@ public class ExcelGenerateService {
 			row.createCell(2).setCellValue("Tenant Email Address");
 			row.createCell(3).setCellValue("Booked Property Name");
 			row.createCell(4).setCellValue("Property Address");
-			row.createCell(5).setCellValue("Room Number/Bed Allocation");
+			row.createCell(5).setCellValue("Bed Number");
 			row.createCell(6).setCellValue("Expected Check-in Date");
 			row.createCell(7).setCellValue("Expected Checked-out Date");
 			break;
@@ -227,7 +227,7 @@ public class ExcelGenerateService {
 			row.createCell(2).setCellValue("Tenant Email Address");
 			row.createCell(3).setCellValue("Property Name");
 			row.createCell(4).setCellValue("Property Address");
-			row.createCell(5).setCellValue("Room Number/Bed Allocation");
+			row.createCell(5).setCellValue("Bed Number");
 			row.createCell(6).setCellValue("Check-in Date");
 			row.createCell(7).setCellValue("Expected Check-out Date");
 			break;
@@ -237,7 +237,7 @@ public class ExcelGenerateService {
 			row.createCell(2).setCellValue("Tenant Email Address");
 			row.createCell(3).setCellValue("Previous Property Name");
 			row.createCell(4).setCellValue("Property Address");
-			row.createCell(5).setCellValue("Room Number/Bed Allocation");
+			row.createCell(5).setCellValue("Bed Number");
 			row.createCell(6).setCellValue("Checked-out Date");
 			break;
 		case "SuspendedTenantsReport":
@@ -246,7 +246,7 @@ public class ExcelGenerateService {
 			row.createCell(2).setCellValue("Tenant Email Address");
 			row.createCell(3).setCellValue("Previous Property Name");
 			row.createCell(4).setCellValue("Property Address");
-			row.createCell(5).setCellValue("Room Number/Bed Allocation");
+			row.createCell(5).setCellValue("Bed Number");
 			row.createCell(6).setCellValue("Checked-out Date");
 			row.createCell(6).setCellValue("Suspended Date");
 			row.createCell(6).setCellValue("Reason for suspension");
@@ -419,7 +419,7 @@ public class ExcelGenerateService {
 				row.createCell(2).setCellValue(nullSafe(upcomingTenant.getTenantEmailAddress()));
 				row.createCell(3).setCellValue(nullSafe(upcomingTenant.getBookedProperyName()));
 				row.createCell(4).setCellValue(nullSafe(upcomingTenant.getPropertAddress()));
-				row.createCell(5).setCellValue(nullSafe(upcomingTenant.getRoomNumber()));
+				row.createCell(5).setCellValue(nullSafe(upcomingTenant.getBedNumber()));
 				row.createCell(6).setCellValue(nullSafe(tuService.formatTimestamp(upcomingTenant.getExpectedCheckIndate().toInstant())));
 				row.createCell(7).setCellValue(nullSafe(tuService.formatTimestamp(upcomingTenant.getExpectedCheckOutdate().toInstant())));
 				
@@ -434,7 +434,7 @@ public class ExcelGenerateService {
 				row.createCell(2).setCellValue(nullSafe(activeTenants.getTenantEmailAddress()));
 				row.createCell(3).setCellValue(nullSafe(activeTenants.getCurrentPropertName()));
 				row.createCell(4).setCellValue(nullSafe(activeTenants.getPropertAddress()));
-				row.createCell(5).setCellValue(nullSafe(activeTenants.getRoomNumber()));
+				row.createCell(5).setCellValue(nullSafe(activeTenants.getBedNumber()));
 				row.createCell(6).setCellValue(nullSafe(tuService.formatTimestamp(activeTenants.getCheckInDate().toInstant())));
 				row.createCell(7).setCellValue(nullSafe(tuService.formatTimestamp(activeTenants.getExpectedCheckOutdate().toInstant())));
 				
@@ -448,7 +448,7 @@ public class ExcelGenerateService {
 				row.createCell(2).setCellValue(nullSafe(inActiveTenants.getTenantEmailAddress()));
 				row.createCell(3).setCellValue(nullSafe(inActiveTenants.getPreviousPropertName()));
 				row.createCell(4).setCellValue(nullSafe(inActiveTenants.getPropertAddress()));
-				row.createCell(5).setCellValue(nullSafe(inActiveTenants.getRoomNumber()));
+				row.createCell(5).setCellValue(nullSafe(inActiveTenants.getBedNumber()));
 				row.createCell(6).setCellValue(nullSafe(tuService.formatTimestamp(inActiveTenants.getCheckedOutDate().toInstant())));				
 			}
 			break;	
@@ -460,7 +460,7 @@ public class ExcelGenerateService {
 				row.createCell(2).setCellValue(nullSafe(suspendedTenant.getTenantEmailAddress()));
 				row.createCell(3).setCellValue(nullSafe(suspendedTenant.getPreviousPropertName()));
 				row.createCell(4).setCellValue(nullSafe(suspendedTenant.getPropertAddress()));
-				row.createCell(5).setCellValue(nullSafe(suspendedTenant.getRoomNumber()));
+				row.createCell(5).setCellValue(nullSafe(suspendedTenant.getBedNumber()));
 				row.createCell(6).setCellValue(nullSafe(tuService.formatTimestamp(suspendedTenant.getCheckedOutDate().toInstant())));
 				row.createCell(7).setCellValue(nullSafe(tuService.formatTimestamp(suspendedTenant.getSuspendedDate().toInstant())));				
 				row.createCell(8).setCellValue(nullSafe(suspendedTenant.getReasonForSuspension()));				

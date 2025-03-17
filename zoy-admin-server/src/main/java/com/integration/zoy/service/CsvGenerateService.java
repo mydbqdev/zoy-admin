@@ -107,16 +107,16 @@ public class CsvGenerateService {
                 writer.println("Review Date,Tenant Name,PG Name,Tenant Contact,Cleanliness,Accommodation,Aminities,Maintenance,Value For Money,Overall Rating");
                 break; 
             case "UpcomingTenantsReport":
-                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address,Booked Property Name,Property Address,Room Number/Bed Allocation,Expected Check-in Date,Expected Checked-out Date");
+                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address,Booked Property Name,Property Address,Bed Number,Expected Check-in Date,Expected Checked-out Date");
                 break; 
             case "ActiveTenantsReport":
-                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Property Name,Property Address,Room Number/Bed Allocation, Check-in Date,Expected Checked-out Date");
+                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Property Name,Property Address,Bed Number, Check-in Date,Expected Checked-out Date");
                 break;
             case "InactiveTenantsReport":
-            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Room Number/Bed Allocation, Checked-out Date");
+            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Bed Number, Checked-out Date");
                 break;
             case "SuspendedTenantsReport":
-            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Room Number/Bed Allocation, Checked-out Date,Suspended Date,Reason for suspension");
+            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Bed Number, Checked-out Date,Suspended Date,Reason for suspension");
                 break; 
             case "InactivePropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address");
@@ -289,7 +289,7 @@ public class CsvGenerateService {
                             safeToString(upcomingTenants.getTenantEmailAddress()),
                             safeToString(upcomingTenants.getBookedProperyName()),
                             safeToString(upcomingTenants.getPropertAddress()),
-                            safeToString(upcomingTenants.getRoomNumber()),
+                            safeToString(upcomingTenants.getBedNumber()),
                             tuService.formatTimestamp(upcomingTenants.getExpectedCheckIndate().toInstant()),
                             tuService.formatTimestamp(upcomingTenants.getExpectedCheckOutdate().toInstant()));
                 }
@@ -303,7 +303,7 @@ public class CsvGenerateService {
                             safeToString(activeTenants.getTenantEmailAddress()),
                             safeToString(activeTenants.getCurrentPropertName()),
                             safeToString(activeTenants.getPropertAddress()),
-                            safeToString(activeTenants.getRoomNumber()),
+                            safeToString(activeTenants.getBedNumber()),
                             tuService.formatTimestamp(activeTenants.getCheckInDate().toInstant()),
                             tuService.formatTimestamp(activeTenants.getExpectedCheckOutdate().toInstant()));
                 }
@@ -317,7 +317,7 @@ public class CsvGenerateService {
                             safeToString(inActiveTenants.getTenantEmailAddress()),
                             safeToString(inActiveTenants.getPreviousPropertName()),
                             safeToString(inActiveTenants.getPropertAddress()),
-                            safeToString(inActiveTenants.getRoomNumber()),
+                            safeToString(inActiveTenants.getBedNumber()),
                             tuService.formatTimestamp(inActiveTenants.getCheckedOutDate().toInstant()));
                 }
                 break;
@@ -330,7 +330,7 @@ public class CsvGenerateService {
                             safeToString(suspendedTenant.getTenantEmailAddress()),
                             safeToString(suspendedTenant.getPreviousPropertName()),
                             safeToString(suspendedTenant.getPropertAddress()),
-                            safeToString(suspendedTenant.getRoomNumber()),
+                            safeToString(suspendedTenant.getBedNumber()),
                             tuService.formatTimestamp(suspendedTenant.getCheckedOutDate().toInstant()),
                             tuService.formatTimestamp(suspendedTenant.getCheckedOutDate().toInstant()),
                             safeToString(suspendedTenant.getReasonForSuspension()));
