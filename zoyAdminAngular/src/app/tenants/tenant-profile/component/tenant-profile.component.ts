@@ -31,7 +31,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	public rolesArray: string[] = [];
 	submitted=false;
 	public selectedTab:number=1;
-	public sectionTabHeader:string="Persional Details";
+	public sectionTabHeader:string="Personal Details";
 	tenantId:string='';
 	pageSize = 25;
 	pageSizeOptions: number[] = [25, 50,100,200];
