@@ -103,7 +103,7 @@ import { MessageService } from 'src/app/message.service';
       'tenantEmailAddress' : 'TENANT EMAIL ADDRESS',
       'bookedProperyName' : 'BOOKED PROPERTY NAME',
       'previousPropertName' : 'PREVIOUS PROPERTY NAME',
-      'currentPropertName' : 'CURRENT PROPERTY NAME',
+      'currentPropertName' : 'PROPERTY NAME',
       'propertAddress' : 'PROPERTY ADDRESS',
       'expectedCheckIndate' : 'EXPECTED CHECK-IN DATE',
       'expectedCheckOutdate' : 'EXPECTED CHECK-OUT DATE',
