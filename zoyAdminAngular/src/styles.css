@@ -270,8 +270,8 @@ a.approve-icon:hover{
 
 .spinner-home-logo {
   display: block;
-  width: 80%;
-  height: 80%;
+  width: 75%;
+  height: 75%;
 }
 
 .spinner-location-logo {
@@ -279,8 +279,8 @@ a.approve-icon:hover{
   top: 18%;
   left: 18%;
   transform: translate(-50%, -50%);
-  width: 45px; 
-  height: 60px;
+  width: 40px; 
+  height: 53px;
   border-radius: 50%;
   object-fit: cover;
   animation: rotateUpToDown 2s infinite linear;

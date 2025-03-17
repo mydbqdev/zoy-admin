@@ -1,5 +1,8 @@
-<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
-  <p style="color: white;">Loading ...</p>
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
+  <div class="spinner-container"><img class="spinner-home-logo" src="assets/images/home-logo.png" alt="Home"/>
+    <img class="spinner-location-logo" src="assets/images/location-logo.png" alt="User"/>
+    <div class="spinner-loading">Loading</div>
+  </div>
 </ngx-spinner>
 <div id="page-top">
   <!-- Page Wrapper -->
@@ -20,7 +23,7 @@
         </div>
 
         <!-- Begin Page Content -->
-        <div class="container-fluid">
+        <div class="container-fluid" style="height: calc(100vh - 120px);" >
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-3">
             <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Initial</span><span
@@ -30,7 +33,7 @@
             <div class="ml-auto">
               <div class="d-flex">
                 <div>
-                  <button class="btn btn-primary-custom  btn-sm  mr-2" (click)="createSetting()"  *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE')" 
+                  <button class="btn btn-primary-custom  btn-sm  mr-2" (click)="createSetting()"  *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE') && !(shortTermduration == 0 && settingType == 'Short Term')" 
                   data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails"> {{settingType == 'Short Term' && dbSettingDataList.length > 0 ?'Update':'Create' }}</button></div>
                   <select class="form-select form-select-sm"  style="min-width: 150px;" [(ngModel)]="settingType" (ngModelChange)="changeSettingType()" > 
                   <option *ngFor="let type of settingTypeObjClmApiDetailsList"  [value]="type.type" >{{type.type}}</option>
@@ -42,7 +45,12 @@
           <!-- Content Row -->
           <div class="card shadow mb-2">
                   <div class="card-body" style="padding: 2px;margin: 0px;" >
-                    <div class="scrollable-container-main">    
+                    <div class="card align-items-center p-4 " *ngIf="shortTermduration == 0 && settingType == 'Short Term'">
+                      <p>
+                        The Short term duration in <a href="javascript:void(0)" (click)="navigateMasterConfig()" >Master Configuration </a>  must be configured before setting up the Short Term.<a href="javascript:void(0)" title="Navigate to Initial Configuration screen" (click)="navigateMasterConfig()"> Click here</a> to configure the Short term duration.
+                      </p>
+                    </div>
+                    <div *ngIf="! (shortTermduration == 0 && settingType == 'Short Term')" class="scrollable-container-main">    
 
                       <div class="card-body" style="padding:2px;margin:0px;">
                         <div style="max-height: calc(100vh - 155px); overflow: auto;">
