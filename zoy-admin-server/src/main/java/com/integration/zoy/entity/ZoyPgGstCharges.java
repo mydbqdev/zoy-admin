@@ -2,6 +2,9 @@ package com.integration.zoy.entity;
 
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -10,6 +13,8 @@ import java.time.LocalDateTime;
 public class ZoyPgGstCharges {
 
     @Id
+	@GeneratedValue(generator = "UUID")
+   	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "rent_id", nullable = false, length = 36)
     private String rentId;
 

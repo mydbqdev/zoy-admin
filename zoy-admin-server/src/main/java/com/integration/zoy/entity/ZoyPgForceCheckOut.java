@@ -2,12 +2,16 @@ package com.integration.zoy.entity;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
+
 
 @Entity
 @Table(name = "zoy_pg_force_check_out", schema = "pgowners")
 public class ZoyPgForceCheckOut {
 
-    @Id
+	@Id
+	@GeneratedValue(generator = "UUID")
+   	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "force_check_out_id", nullable = false, length = 36)
     private String forceCheckOutId;
 

@@ -3,7 +3,8 @@ package com.integration.zoy.utils;
 import com.google.gson.annotations.SerializedName;
 
 public class ZoyForceCheckOutDto {
-	@SerializedName("id")
+	
+	@SerializedName("forceCheckOutId")
 	private String forceCheckOutId;
 
 	@SerializedName("forceCheckOutDays")
@@ -14,6 +15,12 @@ public class ZoyForceCheckOutDto {
 	
 	@SerializedName("isApproved")
 	private boolean isApproved;
+	
+	@SerializedName("approvedBy")
+	private String approvedBy;
+
+	@SerializedName("createdBy")
+	private String createdBy;
 	
 	public String getForceCheckOutId() {
 		return forceCheckOutId;
@@ -47,8 +54,24 @@ public class ZoyForceCheckOutDto {
 		this.isApproved = isApproved;
 	}
 
-	
-	
+	public String getApprovedBy() {
+		return approvedBy;
+	}
 
+	public void setApprovedBy(String approvedBy) {
+		this.approvedBy = approvedBy;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public void setApproved(boolean isApproved) {
+		this.isApproved = isApproved;
+	}
 
 }

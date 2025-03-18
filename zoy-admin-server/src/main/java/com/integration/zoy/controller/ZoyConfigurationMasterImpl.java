@@ -26,6 +26,7 @@ import com.integration.zoy.utils.ZoyDataGroupingDto;
 import com.integration.zoy.utils.ZoyForceCheckOutDto;
 import com.integration.zoy.utils.ZoyGstChargesDto;
 import com.integration.zoy.utils.ZoyOtherChargesDto;
+import com.integration.zoy.utils.ZoyPgNoRentalAgreementDto;
 import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
 import com.integration.zoy.utils.ZoyPgTokenDetailsDTO;
 import com.integration.zoy.utils.ZoyRentingDuration;
@@ -223,6 +224,19 @@ public interface ZoyConfigurationMasterImpl {
 	produces = { "application/json" },
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminConfigUpdateForceCheckOut(@RequestBody ZoyForceCheckOutDto forceCheckOut);
+	
+	@Operation(summary = "Admin Configration for  No Rental Agreement", description = "Creating/Updating Admin Configration for No Rental Agreement", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/noRentalAgreement",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminConfigUpdateNoRentalAgreement(@RequestBody ZoyPgNoRentalAgreementDto NoRentalAgreement);
+	
 
 	@Operation(summary = "Create and Update Company Profile master", description = "Creating/Updating Company Profile Master", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })

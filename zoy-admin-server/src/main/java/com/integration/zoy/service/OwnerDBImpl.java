@@ -18,6 +18,7 @@ import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
 import com.integration.zoy.entity.ZoyPgForceCheckOut;
 import com.integration.zoy.entity.ZoyPgGstCharges;
+import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
@@ -164,4 +165,13 @@ public interface OwnerDBImpl {
 	List<String[]> getPropertyDueDetails(String propertyId, String securityDeposit);
 	List<ZoyPgSecurityDepositDetails> findAllSortedByEffectiveDate() throws WebServiceException;
 	List<ZoyPgTokenDetails> findAllTokenDetailsSorted() throws WebServiceException;
+	List<ZoyDataGrouping> findAllDataGroupingSorted() throws WebServiceException;
+	List<ZoyPgForceCheckOut> findAllForceCheckOutDetailsSorted() throws WebServiceException;
+	List<ZoyPgNoRentalAgreement> findAllNoRentalAgreementDetailsSorted() throws WebServiceException;
+	List<ZoyPgEarlyCheckOut> findAllEarlyCheckOutRulesSorted() throws WebServiceException;
+	List<ZoyPgAutoCancellationAfterCheckIn> findAllAfterCheckInDatesSorted() throws WebServiceException;
+	List<ZoyPgShortTermRentingDuration> findAllShortTermRentingDurationDetailsSorted() throws WebServiceException;
+	List<ZoyPgAutoCancellationMaster> findAllSecurityDepositDeadlineSorted() throws WebServiceException;
+	List<ZoyPgGstCharges> findAllGstChargesDetailsSorted() throws WebServiceException;
+	List<ZoyPgOtherCharges> findAllOtherChargesDetailsSorted() throws WebServiceException;
 }
