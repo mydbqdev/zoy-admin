@@ -1517,9 +1517,11 @@ public class AdminReportService implements AdminReportImpl{
 					+ "    ON um.user_id = zpqbd.tenant_id \r\n"
 					+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
 					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
+					+ "JOIN pgusers.user_bookings ub \r\n"
+					+ "	   ON zpqbd.booking_id = ub.user_bookings_id "
 					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
 					+ "    ON zpqbd.selected_bed = bd.bed_id\r\n"
-					+ "WHERE 1=1 and zpqbd.in_date > CURRENT_DATE");
+					+ "WHERE 1=1 and zpqbd.in_date > CURRENT_DATE and ub.user_bookings_is_cancelled = false ");
 
 			Map<String, Object> parameters = new HashMap<>();
 
