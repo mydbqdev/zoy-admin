@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.annotations.SerializedName;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.FilterData;
@@ -35,6 +36,7 @@ import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
+import com.integration.zoy.utils.RegisterTenantsDTO;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentDTO;
@@ -2218,6 +2220,84 @@ public class AdminReportService implements AdminReportImpl{
 			return new CommonResponseDTO<>(suspendedPropertiesReportDto, filterCount);
 		} catch (Exception e) {
 			throw new WebServiceException("Error retrieving Inactive Properties: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public CommonResponseDTO<RegisterTenantsDTO> getRegisterTenantsReport(UserPaymentFilterRequest filterRequest,
+			Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+				    "SELECT \r\n"
+				    + "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+				    + "    um.user_mobile,\r\n"
+				    + "    um.user_email,\r\n"
+				    + "    um.user_created_at\r\n"
+				    + "FROM pgusers.user_master um\r\n"
+				    + "WHERE um.user_status = 'Register'\r\n"
+				    + "AND NOT EXISTS (\r\n"
+				    + "    SELECT 1\r\n"
+				    + "    FROM pgusers.user_bookings ub\r\n"
+				    + "    WHERE ub.user_id = um.user_id\r\n"
+				    + ")"
+				);
+
+			Map<String, Object> parameters = new HashMap<>();
+
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND um.user_created_at BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
+			
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "tenantName":
+					sort = "username";
+					break;
+				case "tenantContactNumber":
+					sort = "um.user_mobile";
+					break;
+				case "tenantEmailAddress":
+					sort = "um.user_email";
+					break;
+				case "registrationDate":
+					sort = "um.user_created_at";
+					break;
+				default:
+					sort = "um.user_created_at";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY um.user_created_at DESC ");
+			}
+
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
+			
+			int filterCount = query.getResultList().size();
+
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
+		    
+			List<Object[]> results = query.getResultList();
+			List<RegisterTenantsDTO> registerTenantsReportDto = results.stream().map(row -> {
+				RegisterTenantsDTO dto = new RegisterTenantsDTO();
+				dto.setTenantName(row[0] != null ? (String) row[0] : "");
+				dto.setTenantContactNumber(row[1] != null ? (String) row[1] : "");
+				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : "");
+				dto.setRegistrationDate(row[3] != null ? (Timestamp) row[3] : null);
+				return dto;
+			}).collect(Collectors.toList());
+
+			return new CommonResponseDTO<>(registerTenantsReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Register Tenants Details: " + e.getMessage());
 		}
 	}
 }

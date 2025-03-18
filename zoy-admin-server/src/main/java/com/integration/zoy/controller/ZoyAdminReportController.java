@@ -32,6 +32,7 @@ import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
+import com.integration.zoy.utils.RegisterTenantsDTO;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
@@ -362,6 +363,21 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	        return new ResponseEntity<>(gson.toJson(SuspendedPropertyDetails), HttpStatus.OK);
 	    } catch (Exception e) {
 	        log.error("Error in API:/zoy_admin/suspended_property_details.getSuspendedPropertyDetailsByDateRange", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+
+	@Override
+	public ResponseEntity<String> getRegisterTenantsDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+	        boolean applyPagination = true;
+	        CommonResponseDTO<RegisterTenantsDTO>registerTenantsDetails = adminReportImpl.getRegisterTenantsReport(filterRequest, applyPagination);
+	        return new ResponseEntity<>(gson.toJson(registerTenantsDetails), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error in API:/zoy_admin/register_tenants_details.getRegisterTenantsDetailsByDateRange", e);
 	        response.setStatus(HttpStatus.BAD_REQUEST.value());
 	        response.setError(e.getMessage());
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
