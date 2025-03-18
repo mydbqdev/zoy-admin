@@ -412,7 +412,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setTenantEkycCharges(tenantEkycCharges);
 					oldDetails.setIsApproved(details.getIsApproved());
 
-					if (oldDetails.getIsApproved()) {
+					if (details.getIsApproved()) {
 						oldDetails.setApprovedBy(currentUser);
 					} else {
 						oldDetails.setCreatedBy(currentUser);
@@ -459,7 +459,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newOtherCharges.setTenantEkycCharges(tenantEkycCharges);
 
 				newOtherCharges.setEffectiveDate(details.getEffectiveDate());
-				newOtherCharges.setCreatedBy(details.getCreatedBy());
+				newOtherCharges.setCreatedBy(currentUser);
 				newOtherCharges.setIsApproved(false);
 				ownerDBImpl.saveOtherCharges(newOtherCharges);
 
@@ -506,7 +506,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			BigDecimal igstPercentage;
 			BigDecimal monthlyRent;
 
-			if (details.getRentId() != null && !details.getRentId().isEmpty()) {
+;			if (details.getRentId() != null && !details.getRentId().isEmpty()) {
 				Optional<ZoyPgGstCharges> PgGstChargesDetails = zoyPgGstChargesRepository.findById(details.getRentId());
 
 				if (!PgGstChargesDetails.isPresent()) {
@@ -535,8 +535,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setIgstPercentage(igstPercentage);
 					oldDetails.setMonthlyRent(monthlyRent);
 					oldDetails.setComponentName("RENT");
+					oldDetails.setIsApproved(details.getIsApproved());
 
-					if (oldDetails.getIsApproved()) {
+					if (details.getIsApproved()) {
 						oldDetails.setApprovedBy(currentUser);
 					} else {
 						oldDetails.setCreatedBy(currentUser);
@@ -582,7 +583,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newGstCharges.setComponentName("RENT");
 
 				newGstCharges.setEffectiveDate(details.getEffectiveDate());
-				newGstCharges.setCreatedBy(details.getCreatedBy());
+				newGstCharges.setCreatedBy(currentUser);
 				newGstCharges.setIsApproved(false);
 				ownerDBImpl.saveGstCharges(newGstCharges);
 

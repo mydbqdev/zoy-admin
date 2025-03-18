@@ -21,9 +21,6 @@ public class ZoyPgGstCharges {
     @Column(name = "monthly_rent", nullable = false, precision = 10, scale = 2)
     private BigDecimal monthlyRent;
 
-    @Column(name = "gst_percentae", nullable = false, precision = 10, scale = 2)
-    private BigDecimal gstPercentage;
-
     @Column(name = "component_name", nullable = false, length = 50)
     private String componentName;
     
@@ -71,14 +68,6 @@ public class ZoyPgGstCharges {
 
     public void setMonthlyRent(BigDecimal monthlyRent) {
         this.monthlyRent = monthlyRent;
-    }
-
-    public BigDecimal getGstPercentage() {
-        return gstPercentage;
-    }
-
-    public void setGstPercentage(BigDecimal gstPercentage) {
-        this.gstPercentage = gstPercentage;
     }
 
     public String getComponentName() {
