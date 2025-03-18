@@ -222,7 +222,7 @@ public class ExcelGenerateService {
 			row.createCell(7).setCellValue("Expected Checked-out Date");
 			break;
 		case "ActiveTenantsReport":
-			row.createCell(0).setCellValue("Tenant Full Name");
+			row.createCell(0).setCellValue("Tenant Name");
 			row.createCell(1).setCellValue("Tenant Contact Number");
 			row.createCell(2).setCellValue("Tenant Email Address");
 			row.createCell(3).setCellValue("Property Name");
@@ -232,7 +232,7 @@ public class ExcelGenerateService {
 			row.createCell(7).setCellValue("Expected Check-out Date");
 			break;
 		case "InactiveTenantsReport":
-			row.createCell(0).setCellValue("Tenant Full Name");
+			row.createCell(0).setCellValue("Tenant Name");
 			row.createCell(1).setCellValue("Tenant Contact Number");
 			row.createCell(2).setCellValue("Tenant Email Address");
 			row.createCell(3).setCellValue("Previous Property Name");
@@ -241,7 +241,7 @@ public class ExcelGenerateService {
 			row.createCell(6).setCellValue("Checked-out Date");
 			break;
 		case "SuspendedTenantsReport":
-			row.createCell(0).setCellValue("Tenant Full Name");
+			row.createCell(0).setCellValue("Tenant Name");
 			row.createCell(1).setCellValue("Tenant Contact Number");
 			row.createCell(2).setCellValue("Tenant Email Address");
 			row.createCell(3).setCellValue("Previous Property Name");
