@@ -9,14 +9,3 @@
   border-radius: 5px;
   padding: 5px;
 }
-
-.status-active {
-  background-color:  #cefbf5;
-  color: #585757;
-}
-
-.status-inactive {
-  background-color: #e67e77;
-  color: #585757;
-}
-  

@@ -1,8 +1,8 @@
 <!-- Sidebar -->
 <ul class="navbar-nav fixed-left sidebar sidebar-light accordion" id="accordionSidebar" style="position: fixed;z-index: 1030;background-image: linear-gradient(to bottom right, #f510ea, #3C57CF);">
   <!-- Sidebar - Brand -->
-  <a href="javascript:void(0)" class="sidebar-brand d-flex align-items-center justify-content-center" style="margin-top:5px;">
-      <div class="sidebar-brand-icon" style="padding: 5px 16px;border-radius: 50%;background-color: #ffffff;">
+  <a href="javascript:void(0)" class="sidebar-brand d-flex align-items-center justify-content-center" style="margin:10px 0px;">
+      <div class="sidebar-brand-icon" style="padding: 5px 14px;border-radius: 50%;background-color: #ffffff;">
           <img src="assets/images/ZOY-logo.svg" style="height: 60px;width: auto;" />
       </div>
       <!--div class="sidebar-brand-text mx-3" style="margin-top:-15px">Admin</div>
@@ -24,25 +24,6 @@
   </li>
 
   
- <!-- Nav Item - Owners Collapse Menu -->
- <li class="nav-item" [ngClass]="{'active':menu21}" id="menu2" *ngIf="defMenu.owners && (rolesArray.includes('ZOYCODES_READ') || rolesArray.includes('MANAGING_OWNERS_READ'))" >
-    <a [ngClass]="menu2 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(2)" data-target="#collapseOwners"
-    aria-expanded="false" aria-controls="collapseOwners">
-        <i class="fas fa-fw fa-users"></i>
-        <span class="ml-2">Owners</span>
-        <i class="fas mt-2" [ngClass]="menu2 ? 'fa fa-chevron-down' : 'fa fa-chevron-right'" style="float: right;"></i>
-    </a>
-    <div id="collapseOwners" [ngClass]="menu2 ? 'collapse show':'collapse'" aria-labelledby="headingOwners" data-parent="#accordionSidebar">
-        <div class="collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
-            <a class="collapse-item" routerLink="/zoy-code" [ngClass]="{'active':activeSubNenuName=='zoy-code'}" *ngIf="rolesArray.includes('ZOYCODES_READ')" (click)="setHeaderName('Zoy Code')">Zoy Code</a>
-            <div class="p-1"></div>
-            <a class="collapse-item" routerLink="/manage-owner" [ngClass]="{'active':activeSubNenuName=='manage-owner'}" *ngIf="rolesArray.includes('MANAGING_OWNERS_READ')" (click)="setHeaderName('Manage Owners');setOwnerResetId()" >Manage Owners</a>
-        </div>
-    </div>
-</li>
-
-
-
     <!-- Nav Item - Users Collapse Menu -->
     <li class="nav-item" [ngClass]="{'active':menu31}" id="menu3" *ngIf="defMenu.users && (rolesArray.includes('MANAGING_USERS_READ') || rolesArray.includes('PERMISSION_APPROVAL_READ')  || rolesArray.includes('LOCKED_USER_READ'))">
         <a [ngClass]="menu3 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(3)" data-target="#collapseUsers"
@@ -61,6 +42,24 @@
             </div>
         </div>
     </li>
+
+ <!-- Nav Item - Owners Collapse Menu -->
+ <li class="nav-item" [ngClass]="{'active':menu21}" id="menu2" *ngIf="defMenu.owners && (rolesArray.includes('ZOYCODES_READ') || rolesArray.includes('MANAGING_OWNERS_READ'))" >
+    <a [ngClass]="menu2 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(2)" data-target="#collapseOwners"
+    aria-expanded="false" aria-controls="collapseOwners">
+        <i class="fas fa-fw fa-users"></i>
+        <span class="ml-2">Owners</span>
+        <i class="fas mt-2" [ngClass]="menu2 ? 'fa fa-chevron-down' : 'fa fa-chevron-right'" style="float: right;"></i>
+    </a>
+    <div id="collapseOwners" [ngClass]="menu2 ? 'collapse show':'collapse'" aria-labelledby="headingOwners" data-parent="#accordionSidebar">
+        <div class="collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
+            <a class="collapse-item" routerLink="/zoy-code" [ngClass]="{'active':activeSubNenuName=='zoy-code'}" *ngIf="rolesArray.includes('ZOYCODES_READ')" (click)="setHeaderName('Zoy Code')">Zoy Code</a>
+            <div class="p-1"></div>
+            <a class="collapse-item" routerLink="/manage-owner" [ngClass]="{'active':activeSubNenuName=='manage-owner'}" *ngIf="rolesArray.includes('MANAGING_OWNERS_READ')" (click)="setHeaderName('Manage Owners');setOwnerResetId()" >Manage Owners</a>
+        </div>
+    </div>
+</li>
+
 
 <!-- Nav Item - Tenants Collapse Menu -->
 <li class="nav-item"  [ngClass]="{'active':menu71}" id="menu7" *ngIf="defMenu.tenants && (rolesArray.includes('TENANTSZOY_READ') ||rolesArray.includes('BULK_UPLOAD'))"> 
