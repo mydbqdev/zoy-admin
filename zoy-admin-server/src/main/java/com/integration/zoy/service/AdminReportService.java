@@ -1521,15 +1521,10 @@ public class AdminReportService implements AdminReportImpl{
 					+ "	   ON zpqbd.booking_id = ub.user_bookings_id "
 					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
 					+ "    ON zpqbd.selected_bed = bd.bed_id\r\n"
-					+ "WHERE 1=1 and zpqbd.in_date > CURRENT_DATE and ub.user_bookings_is_cancelled = false ");
+					+ "WHERE 1=1  and ub.user_bookings_is_cancelled = false AND ub.user_bookings_web_check_in = false");
 
 			Map<String, Object> parameters = new HashMap<>();
-
-			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
-				parameters.put("fromDate", filterRequest.getFromDate());
-				parameters.put("toDate", filterRequest.getToDate());
-			}
+			
 			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
 				queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
 				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
