@@ -88,39 +88,47 @@ public class AdminReportService implements AdminReportImpl{
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT \r\n"
-							+ " up.user_payment_timestamp, \r\n"
-							+ " up.user_payment_result_invoice_id, \r\n"
-							+ " CASE \r\n"
-							+ " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' \r\n"
-							+ " ELSE up.user_payment_payment_status \r\n"
-							+ " END AS user_payment_payment_status, \r\n"
-							+ " up.user_payment_payable_amount, \r\n"
-							+ " up.user_payment_gst, \r\n"
-							+ " ud.user_personal_name, \r\n"
-							+ " pgt.property_name AS user_pg_propertyname, \r\n"
-							+ " bd.bed_name, \r\n"
-							+ " up.user_payment_zoy_payment_type, \r\n"
-							+ " CASE \r\n"
-							+ " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Cash' \r\n"
-							+ " ELSE up.user_payment_result_method \r\n"
-							+ " END AS user_payment_result_method, \r\n"
-							+ " pgt.property_city, \r\n"
-							+ " pgt.property_house_area, \r\n"
-							+ " um.user_mobile, \r\n"
-							+ " pgt.property_id, \r\n"
-							+ " up.user_payment_result_reason \r\n"
-							+ "FROM pgusers.user_payments up \r\n"
-							+ "LEFT JOIN pgusers.user_details ud \r\n"
-							+ " ON up.user_id = ud.user_id\r\n"
-							+ "LEFT JOIN pgusers.user_master um ON up.user_id = um.user_id \r\n"
-							+ "LEFT JOIN pgowners.zoy_pg_owner_booking_details bkd \r\n"
-							+ " ON up.user_id = bkd.tenant_id \r\n"
-							+ " AND up.user_payment_booking_id = bkd.booking_id \r\n"
-							+ "LEFT JOIN pgowners.zoy_pg_property_details pgt \r\n"
-							+ " ON pgt.property_id = bkd.property_id \r\n"
-							+ "LEFT JOIN pgowners.zoy_pg_bed_details bd \r\n"
-							+ " ON bkd.selected_bed = bd.bed_id WHERE 1=1"
-					);
+				            + " up.user_payment_created_at, \r\n"
+				            + " up.user_payment_result_invoice_id, \r\n"
+				            + " CASE \r\n"
+				            + " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' \r\n"
+				            + " ELSE up.user_payment_payment_status \r\n"
+				            + " END AS user_payment_payment_status, \r\n"
+				            + " up.user_payment_payable_amount, \r\n"
+				            + " up.user_payment_gst, \r\n"
+				            + " ud.user_personal_name, \r\n"
+				            + " pgt.property_name AS user_pg_propertyname, \r\n"
+				            + " bd.bed_name, \r\n"
+				            + " STRING_AGG(zpdm.due_name, ', ') AS user_money_due_descriptions, \r\n"
+				            + " CASE \r\n"
+				            + " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Cash' \r\n"
+				            + " ELSE up.user_payment_result_method \r\n"
+				            + " END AS user_payment_result_method, \r\n"
+				            + " pgt.property_city, \r\n"
+				            + " pgt.property_house_area, \r\n"
+				            + " um.user_mobile, \r\n"
+				            + " pgt.property_id \r\n"
+				            + "FROM pgusers.user_payments up \r\n"
+				            + "LEFT JOIN pgusers.user_details ud \r\n"
+				            + " ON up.user_id = ud.user_id\r\n"
+				            + "LEFT JOIN pgusers.user_master um \r\n"
+				            + " ON up.user_id = um.user_id \r\n"
+				            + "LEFT JOIN pgowners.zoy_pg_owner_booking_details bkd \r\n"
+				            + " ON up.user_id = bkd.tenant_id \r\n"
+				            + " AND up.user_payment_booking_id = bkd.booking_id \r\n"
+				            + "LEFT JOIN pgowners.zoy_pg_property_details pgt \r\n"
+				            + " ON pgt.property_id = bkd.property_id \r\n"
+				            + "LEFT JOIN pgowners.zoy_pg_bed_details bd \r\n"
+				            + " ON bkd.selected_bed = bd.bed_id \r\n"
+				            + "LEFT JOIN pgusers.user_payment_due due \r\n"
+				            + " ON up.user_payment_id = due.user_payment_id \r\n"
+				            + "LEFT JOIN pgusers.user_dues dues \r\n"
+				            + " ON due.user_money_due_id = dues.user_money_due_id \r\n"
+				            + "JOIN pgowners.zoy_pg_due_type_master zpdtm \r\n"
+				            + " ON zpdtm.due_id = dues.user_money_due_type \r\n"
+				            + "JOIN pgowners.zoy_pg_due_master zpdm \r\n"
+				            + " ON zpdm.due_type_id = zpdtm.due_type \r\n"
+				            + "WHERE 1=1 \r\n");
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterData.getTransactionStatus() != null && !filterData.getTransactionStatus().isEmpty()) {
@@ -147,7 +155,7 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND up.user_payment_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				queryBuilder.append(" AND up.user_payment_created_at BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -164,7 +172,7 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("transactionNumber", "%" + filterData.getTransactionNumber() + "%");
 			}
 
-			String sort = "up.user_payment_timestamp";
+			String sort = "up.user_payment_created_at";
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
 				if ("transactionNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_result_invoice_id";
@@ -183,23 +191,46 @@ public class AdminReportService implements AdminReportImpl{
 				} else if ("bedNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "bd.bed_name";
 				} else if ("category".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "up.user_payment_zoy_payment_type";
+					sort = "zpdm.due_name";
 				} else if ("paymentMethod".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_result_method";
 				} else if("propertyHouseArea".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "pgt.property_house_area";
 				} else if("tenantContactNum".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "ud.user_personal_phone_num";
+					sort = "um.user_mobile";
 				}
 				else {
-					sort = "up.user_payment_timestamp";
+					sort = "up.user_payment_created_at";
 				}
-
+				queryBuilder.append(" GROUP BY \r\n"
+					    + " up.user_payment_created_at, \r\n"
+					    + " up.user_payment_result_invoice_id, \r\n"
+					    + " CASE \r\n"
+					    + " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' \r\n"
+					    + " ELSE up.user_payment_payment_status \r\n"
+					    + " END, \r\n"
+					    + " up.user_payment_payable_amount, \r\n"
+					    + " up.user_payment_gst, \r\n"
+					    + " ud.user_personal_name, \r\n"
+					    + " pgt.property_name, \r\n"
+					    + " bd.bed_name, \r\n"
+					    + " CASE \r\n"
+					    + " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Cash' \r\n"
+					    + " ELSE up.user_payment_result_method \r\n"
+					    + " END, \r\n"
+					    + " pgt.property_city, \r\n"
+					    + " pgt.property_house_area, \r\n"
+					    + " um.user_mobile, \r\n"
+					    + " pgt.property_id, \r\n"
+					    + " up.user_payment_result_method, \r\n"
+					    + " up.user_payment_payment_status, \r\n"
+					    + " up.user_payment_result_reason \r\n");
+				
 				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
 
 				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
 			} else {
-				queryBuilder.append(" ORDER BY up.user_payment_timestamp DESC");
+				queryBuilder.append(" ORDER BY up.user_payment_created_at DESC");
 			}
 			Query query = entityManager.createNativeQuery(queryBuilder.toString());
 			parameters.forEach(query::setParameter);
@@ -229,7 +260,6 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setPropertyHouseArea(row[11] != null ? (String) row[11] : "");
 				dto.setTenantContactNum(row[12] != null ? (String) row[12] : "");
 				dto.setPropertyId(row[13] != null ? (String) row[13] : "");
-				dto.setFailedReason(row[14] != null ? (String) row[14] : "");
 				return dto;
 			}).collect(Collectors.toList());
 			return new CommonResponseDTO<>(userPaymentDTOs, filterCount);
@@ -714,6 +744,11 @@ public class AdminReportService implements AdminReportImpl{
 				dataListWrapper=this.generateInactivePropertiesReport(reportData,filterRequest);
 				templatePath ="templates/inActivePropertiesReport.docx";
 				break;
+			case "RegesterTenantsReport":
+				reportData = getRegisterTenantsReport(filterRequest,applyPagination);
+				dataListWrapper=this.generateRegisterTenantReport(reportData,filterRequest);
+				templatePath ="templates/regesterTenantsReport.docx";
+				break;
 			case "SuspendedPropertiesReport":
 				reportData = getSuspendedPropertyReport(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateSuspendedPropertiesReport(reportData,filterRequest);
@@ -765,7 +800,6 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("modeOfPayment", userPayment.getPaymentMode());
 			data.put("pgAddress", userPayment.getPropertyHouseArea());
 			data.put("tenantMobile", userPayment.getTenantContactNum());
-			data.put("failureReason", userPayment.getFailedReason());
 
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
@@ -1080,6 +1114,38 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("propertyContact", inActivePropertyReport.getPropertyContactNumber() != null ? inActivePropertyReport.getPropertyContactNumber() : "");
 			data.put("propertyEmail", inActivePropertyReport.getPropertyEmailAddress() != null ? inActivePropertyReport.getPropertyEmailAddress() : "");
 			data.put("address", inActivePropertyReport.getPropertyAddress() != null ? inActivePropertyReport.getPropertyAddress() : "");
+
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
+	
+	public List<Map<String, Object>> generateRegisterTenantReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			RegisterTenantsDTO registerTenantsReport = (RegisterTenantsDTO) item;
+
+			data.put("tenantName", registerTenantsReport.getTenantName() != null ? registerTenantsReport.getTenantName() : "");
+			data.put("tenantContactNumber", registerTenantsReport.getTenantContactNumber() != null ? registerTenantsReport.getTenantContactNumber() : "");
+			data.put("tenantEmailAddress", registerTenantsReport.getTenantEmailAddress() != null ? registerTenantsReport.getTenantEmailAddress() : "");
+			data.put("registrationDate", tuService.formatTimestamp(registerTenantsReport.getRegistrationDate().toInstant()) != null ? tuService.formatTimestamp(registerTenantsReport.getRegistrationDate().toInstant()) : "");
 
 			// Common fields
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();

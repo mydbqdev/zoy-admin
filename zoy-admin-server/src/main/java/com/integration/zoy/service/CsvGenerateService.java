@@ -19,6 +19,7 @@ import com.integration.zoy.model.TenantResportsDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
+import com.integration.zoy.utils.RegisterTenantsDTO;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentDTO;
@@ -80,7 +81,7 @@ public class CsvGenerateService {
     private void createCsvHeaderRow(PrintWriter writer, Object dto, String reportType) {
         switch (reportType) {
             case "userTransactionReport":
-                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Invoice No,Transaction Status,Due Amount(₹),GST Amount(₹),Total Amount(₹),Category,Mode of Payment,Failure Reason");
+                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Invoice No,Transaction Status,Due Amount(₹),GST Amount(₹),Total Amount(₹),Category,Mode of Payment");
                 break;
             case "userPaymentGstReport":
                 writer.println("Transaction Date,Invoice No,Tenant Name,PG Name,PG Address,Total Amount(₹),GST Amount(₹),Due Amount(₹),Mode of Payment");
@@ -121,6 +122,9 @@ public class CsvGenerateService {
             case "InactivePropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address");
                 break;
+            case "RegesterTenantsReport":
+            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address,Registration Date");
+                break;
             case "SuspendedPropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address,Suspended Date,Reason for suspension");
                 break;     
@@ -134,7 +138,7 @@ public class CsvGenerateService {
         case "userTransactionReport":
             if (dto instanceof UserPaymentDTO) {
                 UserPaymentDTO userPayment = (UserPaymentDTO) dto;
-                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                     safeToString(userPayment.getUserPersonalName()),
                     safeToString(userPayment.getTenantContactNum()),
                     safeToString(userPayment.getUserPgPropertyName()),
@@ -147,8 +151,7 @@ public class CsvGenerateService {
                     formatAmountWithCommas(userPayment.getGstAmount()),
                     formatAmountWithCommas(userPayment.getTotalAmount()),
                     safeToString(userPayment.getCategory()),
-                    safeToString(userPayment.getPaymentMode()),
-                    safeToString(userPayment.getFailedReason())
+                    safeToString(userPayment.getPaymentMode())
                     );
             }
             break;
@@ -345,6 +348,16 @@ public class CsvGenerateService {
                             safeToString(suspendedTenant.getPropertyContactNumber()),
                             safeToString(suspendedTenant.getPropertyEmailAddress()),
                             safeToString(suspendedTenant.getPropertyAddress()));
+                }
+                break;
+            case "RegesterTenantsReport":
+            	if (dto instanceof RegisterTenantsDTO) {
+            		RegisterTenantsDTO registerTenant = (RegisterTenantsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(registerTenant.getTenantName()),
+                            safeToString(registerTenant.getTenantContactNumber()),
+                            safeToString(registerTenant.getTenantEmailAddress()),
+                            tuService.formatTimestamp(registerTenant.getRegistrationDate().toInstant()));
                 }
                 break;
             case "SuspendedPropertiesReport":
