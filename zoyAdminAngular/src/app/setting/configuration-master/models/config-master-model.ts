@@ -52,7 +52,7 @@ export class BeforeCheckInCancellationRefundModel{
     cancellation_id : string ='';
     before_checkin_days : number ;
     deduction_percentage : number ;
-    trigger_value : string ;
+    trigger_value : string ='TotalPaidAmount';
     trigger_on : string  ="WebCheckIn";
     trigger_condition : string ;
     priority: number ;
@@ -66,7 +66,7 @@ export class BeforeCheckInCancellationRefundModel{
 }
 
 export class DataGroupingModel{
-    id : string ;
+    dataGroupingId : string ;
     considerDays : number ;
     effectiveDate:string='';
     isApproved:boolean=false;
@@ -91,10 +91,10 @@ export class SecurityDepositDeadLineAndAutoCancellationModel{
 
 export class OtherChargesModel{
     otherChargesId : string ='';
+    tenantDocumentCharges : number ;  
     ownerEkycCharges : number ;
     ownerDocumentCharges  : number ;
     tenantEkycCharges : number ;
-    tenantDocumentCharges : number ;  
     effectiveDate:string='';
     isApproved:boolean=false; 
     createdBy:string='';
@@ -103,7 +103,7 @@ export class OtherChargesModel{
 
 
 export class ForceCheckoutModel{
-    id : string ='';
+    forceCheckOutId : string ='';
     forceCheckOutDays  : number ;
     effectiveDate:string='';
     isApproved:boolean=false;
