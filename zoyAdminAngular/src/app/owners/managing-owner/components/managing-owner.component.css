@@ -67,15 +67,6 @@
   padding: 5px;
 }
 
-.btn-registered {
-  background-color:  #cefbf5;
-  color:  #246359;
-}
-
-.btn-pending {
-  background-color:#e6dff7; 
-    color: #470ecf;
-}
 .custom-dropdown-width {
   width: 326px;               
   margin-left: -119px;        
@@ -93,7 +84,7 @@
   border-radius: 8px;
 }
 tr.mat-mdc-row:hover {
-  background-color: #eae6f6;
+  background-color: #f7f5fb;
   cursor: pointer;
 }
 

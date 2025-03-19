@@ -2350,13 +2350,13 @@ fieldset:disabled a.btn {
 
 .btn-primary-custom {
   color: #fff;
-  background-color: #925FE2;
+  background-color:#8b67de;
   border-color: #955cf1;
 }
 
 .btn-primary-custom:hover {
   color: #fff;
-  background-color:#9960f5;
+  background-color:#7E56DA ;
   border-color: #8e4ef5;
 }
 
@@ -10454,22 +10454,29 @@ a:focus {
 
 .sidebar .nav-item .collapse .collapse-inner .collapse-item:hover,
 .sidebar .nav-item .collapsing .collapse-inner .collapse-item:hover {
-  background-image: linear-gradient(to top right, #fbabf8, #ffffff);
+  color: white;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .sidebar .nav-item .collapse .collapse-inner .collapse-item:active,
 .sidebar .nav-item .collapsing .collapse-inner .collapse-item:active {
-  background-image: linear-gradient(to top right, #fbabf8, #ffffff);
+  opacity: 20px;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.3);
+  border:2px solid #ffffff;
 }
 
 .sidebar .nav-item .collapse .collapse-inner .collapse-item.active,
 .sidebar .nav-item .collapsing .collapse-inner .collapse-item.active {
-  color: #754949;
     font-weight: 700;
-    background-image: linear-gradient(to top right, #fbabf8, #ffffff);
-    border-left:2px solid #ffffff;
+    /* opacity: 20px; */
+    color: white;
+    border:1.5px solid #ffffff;
+    background-color: rgba(255, 255, 255, 0.3);
+    /* background-image: linear-gradient(to top right, #fbabf8, #ffffff); */
+    /* border-left:2px solid #ffffff;
     border-top:2px solid #ffffff;
-    border-bottom:2px solid #ffffff;
+    border-bottom:2px solid #ffffff; */
 }
 
 .sidebar #sidebarToggle {
