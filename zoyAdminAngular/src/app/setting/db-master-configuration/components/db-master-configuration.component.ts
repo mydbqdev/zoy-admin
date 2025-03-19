@@ -678,7 +678,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   submitShortTermData() {   
     let finalSubmitShortList = [];
     this.submitShortTerm = true;
-    let startDay = 30;
+    let startDay = this.shortTermduration;
     let endDay = 0;
    
     for (let i = 0; i < this.shortTermDataList.length; i++) {
@@ -704,9 +704,9 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
           
         }
 
-        const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1))
-        if(term.end_day !=30 && ranges.length === 0 ){
-           this.notifyService.showWarning("The Short term duration period must be within the defined ranges of 1-30 days.","")
+        const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1));
+        if(term.end_day != this.shortTermduration && ranges.length === 0 ){
+           this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.',"")
            return;
          }
 
@@ -719,8 +719,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       return;
     }
    
-    if( Number(startDay) != 1 || Number(endDay) !=30){
-      this.notifyService.showInfo("The Short term duration period must be within the defined ranges of 1-30 days.", "");
+    if( Number(startDay) != 1 || Number(endDay) !=this.shortTermduration){
+      this.notifyService.showInfo('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.', "");
       return
     }
 
