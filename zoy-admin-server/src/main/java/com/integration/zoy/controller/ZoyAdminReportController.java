@@ -383,5 +383,21 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
 	}
+
+	@Override
+	public ResponseEntity<String> getFailureTransactionDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+			 FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+	        boolean applyPagination = true;
+	        CommonResponseDTO<UserPaymentDTO>failureTransactionDetails = adminReportImpl.getfailureTransactionReport(filterRequest,filterData, applyPagination);
+	        return new ResponseEntity<>(gson.toJson(failureTransactionDetails), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error in API:/zoy_admin/failure_transactions_details.getFailureTransactionDetailsByDateRange", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
 	
 }
