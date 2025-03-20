@@ -148,4 +148,13 @@
       .text-muted {
         color: #858796 !important;
       }
+
+      .rule-header{
+        text-align: justify; 
+        color: #000000;
+      }
+      .rule-data{
+        text-align: justify;
+         color: #505050;
+      }
       

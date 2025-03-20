@@ -513,136 +513,10 @@
                                   <em>Configure eKYC and documentation charges for Owners and Tenants.</em>
                                 </p>
                               </div>
-                              <!-- <div class="row marginRow align-items-center" >
-                              <div class="col-sm-8">
-                                <div class="card card-body">
-                                <div class="row">
-                                  <div class="col-sm-6">
-                                    <label for="ownerEkycCharges" class="form-label">eKYC Charges for Owners </label>
-                                    <div class="input-group input-group-sm">
-                                      <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                                      <input
-                                        type="text"
-                                        id="ownerEkycCharges"
-                                        class="form-control form-control-sm"
-                                        (keypress)="numberOnly($event)"
-                                        maxlength="7"  style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges[0].ownerEkycCharges"
-                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges[0].ownerEkycCharges)}"
-                                        [disabled]="otherChargesDisabled"
-                                      />
-                                    </div>
-                                    <p class="small text-muted mt-1" style="font-size: 12px;">
-                                      <em>Enter the one-time eKYC charge to be charged to Owners.</em>
-                                    </p>
-                                  </div>
-                                  <div class="col-sm-6">
-                                    <label for="tenantEkycCharges" class="form-label">eKYC Charges for Tenants</label>
-                                    <div class="input-group input-group-sm">
-                                      <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                                      <input
-                                        type="text"
-                                        id="tenantEkycCharges"
-                                        class="form-control form-control-sm"
-                                        (keypress)="numberOnly($event)"
-                                        maxlength="7"  style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges[0].tenantEkycCharges"
-                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges[0].tenantEkycCharges) }"
-                                        [disabled]="otherChargesDisabled"
-                                      />
-                                    </div>
-                                    <p class="small text-muted mt-1" style="font-size: 12px;">
-                                      <em>Enter the one-time eKYC charge to be charged to Tenants.</em>
-                                    </p>
-                                  </div>
-                                </div>
-                            
-                                <div class="row">
-                            
-                                  <div class="col-sm-6">
-                                    <label for="ownerDocumentCharges" class="form-label">Documentation Charges for Owners</label>
-                                    <div class="input-group input-group-sm">
-                                      <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                                      <input
-                                        type="text"
-                                        id="ownerDocumentCharges"
-                                        class="form-control form-control-sm"
-                                        (keypress)="numberOnly($event)"
-                                        maxlength="7"  style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges[0].ownerDocumentCharges"
-                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges[0].ownerDocumentCharges)}"
-                                        [disabled]="otherChargesDisabled"
-                                      />
-                                    </div>
-                                    <p class="small text-muted mt-1" style="font-size: 12px;">
-                                      <em>Enter the one-time amount to be charged to Owners for documentation.</em>
-                                    </p>
-                                  </div>
-                            
-                                  <div class="col-sm-6">
-                                    <label for="tenantDocumentCharges" class="form-label">Documentation Charges for Tenants</label>
-                                    <div class="input-group input-group-sm">
-                                      <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                                      <input
-                                        type="text"
-                                        id="tenantDocumentCharges"
-                                        class="form-control form-control-sm"
-                                        (keypress)="numberOnly($event)"
-                                        maxlength="7"  style="max-width: 100px !important;" 
-                                        [(ngModel)]="configMasterModel.otherCharges[0].tenantDocumentCharges"
-                                        [ngClass]="{'is-invalid': !otherChargesDisabled && isNotValidNumber(configMasterModel.otherCharges[0].tenantDocumentCharges) }"
-                                        [disabled]="otherChargesDisabled"
-                                      />
-                                    </div>
-                                    <p class="small text-muted mt-1" style="font-size: 12px;">
-                                      <em>Enter the one-time amount to be charged to Tenants for documentation.</em>
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                              </div>
-                              <div class="col-sm-2">
-                                <div>Effective On</div>
-                                <div class="input-group input-group-sm">
-                                  <input 
-                                    type="date" 
-                                    class="form-control form-control-sm" [(ngModel)]="configMasterModel.otherCharges[0].effectiveDate" [disabled]="otherChargesDisabled"
-                                    [ngClass]="{'is-invalid': !otherChargesDisabled && (!configMasterModel.otherCharges[0]?.effectiveDate || invaliedEffectiveDate('otherCharges',configMasterModel.otherCharges[0]?.effectiveDate ) )}" 
-                                    />
-                                </div>
-                            </div>
-                            <div class="col-sm-1 mt-4">
-                              <div class="d-flex">
-                                <div><i class="fas fa-thumbs-up mr-2" [ngClass]="configMasterModel.otherCharges[0]?.isApproved?'color-bg-green':'color-bg-gray'"></i></div>
-                                <div *ngIf="configMasterModel.otherCharges[0]?.isApproved ">
-                                  <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Service Charges'" >
-                                    <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a>
-                                  </div>
-                                    <div *ngIf=" otherChargesDisabled && !configMasterModel.otherCharges[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                      <a class="approve-icon" (click)="otherChargesSubmit('approve')">
-                                        <i class="far fa-hand-point-up mt-1 mr-2"></i>
-                                      </a>
-                                    </div>      
-                              <div *ngIf="otherChargesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesDisabled = false">
-                                  <i class="fas fa-edit"></i>
-                                </button>
-                              </div>
-                              <div class="btn-group" *ngIf="!otherChargesDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesSubmit('update')">
-                                  <i class="fas fa-check"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-secondary" (click)="otherChargesReset()">
-                                  <i class="fas fa-redo" style="color: red;"></i>
-                                </button>
-                              </div>
-                              </div>
-                            </div> 
-                            </div>  -->
                             <div class="ml-2">
                               <div class="row mr-2">
-                                <div class="col-sm-4 mr-3" style="text-align: center;border-bottom:2px solid gray ;">eKYC Charges</div>
-                                <div class="col-sm-4" style="text-align: center;border-bottom:2px solid gray ;">Documentation Charges </div>
+                                <div class="col-sm-4 mr-3" style="text-align: center;border-bottom:1px solid gray ;">eKYC Charges</div>
+                                <div class="col-sm-4" style="text-align: center;border-bottom:1px solid gray ;">Documentation Charges </div>
                               </div>
                               <div class="row mb-2">
                                 <div class="col-sm-2">
@@ -662,7 +536,7 @@
                                 </div>
                               </div>
                             
-                               <div class="row">
+                               <div class="row" *ngIf="configMasterModel.otherCharges.length>0 && configMasterModel.otherCharges[0]!=undefined">
                                   <div class="col-sm-2">
                                     <div class="input-group input-group-sm">
                                       <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
@@ -1111,7 +985,6 @@
                           </div>
                           <hr class="solid"> 
                             <div>
-                              <!--Security Deposit Deadline-->
                               <div class="p-3 ">
                                 <div>
                                   <div><span style="font-size: 16px;color:#78177e;">Security Deposit Deadline </span></div>
@@ -1123,7 +996,6 @@
                                 </div>
                                 <div >
                                   <div class="row"  *ngIf="configMasterModel.securityDepositDeadLineDetails.length>0 && configMasterModel.securityDepositDeadLineDetails[0]!=undefined">
-                                    <!-- Auto-Cancellation after Check-in Dates -->
                                     <div class="col-sm-2">
                                       <div>Condition</div>
                                       <div class="input-group input-group-sm" *ngIf="securityDepositDeadLineDisabled">
@@ -1158,7 +1030,6 @@
                                         </span>
                                       </div>
                                     </div>
-                                     <!-- Deduction Percentage -->
                                      <div class="col-sm-2">
                                       <div>Deduction</div>
                                       <div class="input-group input-group-sm">
@@ -1188,7 +1059,7 @@
                                     <div class="col-sm-1 mt-4">
                                       <div class="d-flex" >
                                         <div><i class="fas fa-thumbs-up mr-2" [ngClass]="configMasterModel.securityDepositDeadLineDetails[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i></div>
-                                        <div *ngIf="!configMasterModel.securityDepositDeadLineDetails[0]?.isApproved" >
+                                        <div *ngIf="configMasterModel.securityDepositDeadLineDetails[0]?.isApproved" >
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Security Deposit Deadline'" >
                                            <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                            <div *ngIf=" securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
@@ -1220,7 +1091,6 @@
                                     </div>
                                   </div>
                                   <div class="row"  *ngIf="configMasterModel.securityDepositDeadLineDetails.length>1 && configMasterModel.securityDepositDeadLineDetails[1]!=undefined && !configMasterModel.securityDepositDeadLineDetails[0]?.isApproved">
-                                    <!-- Auto-Cancellation after Check-in Dates -->
                                     <div class="col-sm-2">
                                       <div class="input-group input-group-sm" >
                                         <span class="form-control form-control-sm" style="background-color: #eaecf4;">
@@ -1244,7 +1114,6 @@
                                         </span>
                                       </div>
                                     </div>
-                                     <!-- Deduction Percentage -->
                                      <div class="col-sm-2">
                                       <div class="input-group input-group-sm">
                                         <span class="form-control form-control-sm" style="background-color: #eaecf4;max-width: 70px !important;">
@@ -1260,7 +1129,6 @@
                                         </span>
                                       </div>
                                    </div>
-                                    <!-- Action Button -->
                                     <div class="col-sm-1 mt-2">
                                       <div class="d-flex" >
                                         <div><i class="fas fa-thumbs-up mr-2 color-bg-green mt-1"></i></div>
@@ -1275,7 +1143,6 @@
                              
                             </div>
                             <hr class="solid"> 
-                         <!--Cancellation And Refund Policy-->
                          <div>
                           <div class="p-3">
                             <div class="row">
@@ -1956,11 +1823,6 @@
                                   <div class="p-3">
                                     <div>
                                       <div><span style="font-size: 16px;color:#78177e;">After check-in Date </span></div>
-                                      <!-- <div>
-                                        <p class="small text-muted" style="font-size: 12px;">
-                                        <em>Configure the number of days after the check-in date to automatically cancel bookings if tenants fail to check-in.</em>
-                                        </p>
-                                      </div> -->
                                       <div >
                                         <p class="small text-muted" style="font-size: 12px;">
                                           <em>Configure the number of days after the check-in date to automatically cancel the bookings if tenant fails to check-in. If type is selected as “Rent” then total days
@@ -1975,7 +1837,6 @@
                                     </div>
                                     <div>
                                       <div class="row" *ngIf="configMasterModel.cancellationAfterCheckInDetails.length>0 && configMasterModel.cancellationAfterCheckInDetails[0]!=undefined">
-                                        <!-- Auto-Cancellation after Check-in Dates -->
                                         <div class="col-sm-2">
                                           <div>Condition</div>
                                           <div class="input-group input-group-sm" *ngIf="autoCancellationDisabled">
@@ -2013,32 +1874,8 @@
                                             </span>
                                           </div>
                                         </div>
-                                        <!-- Deduction Percentage -->
-                                        <!-- <div class="col-sm-4">
-                                          <div>Deduction</div>
-                                          <div class="row">
-                                            <div class="col-sm-8">
-                                              <div class="input-group input-group-sm">
-                                                <input 
-                                                  type="text" 
-                                                  class="form-control form-control-sm" (keypress)="percentageOnly($event)" maxlength="5"
-                                                  [(ngModel)]="configMasterModel.cancellationAfterCheckInDetails.deduction_percentage" [disabled]="autoCancellationDisabled" 
-                                                   [ngClass]="{'is-invalid': !autoCancellationDisabled && isNotValidNumber(configMasterModel.cancellationAfterCheckInDetails.deduction_percentage) }" 
-                                                  style="max-width: 70px !important;"/>
-                                                  <span class="input-group-text" *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value!='Rent'">%</span>
-                                                  <span class="input-group-text" *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='Rent'">Days</span>
-                                                 
-                                              </div>
-                                                <p class="small text-muted"  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='TotalPaidAmount'" style="font-size: 12px;"><em>Enter deduction percentage from Total Paid Amount.</em></p>
-                                                <p class="small text-muted"  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value!='Rent' && configMasterModel.cancellationAfterCheckInDetails.trigger_value!='TotalPaidAmount'" style="font-size: 12px;"><em>Enter deduction percentage from security deposit.</em></p>                                 
-                                                <p class="small text-muted"  *ngIf="configMasterModel.cancellationAfterCheckInDetails.trigger_value=='Rent'" style="font-size: 12px;"><em>Enter deduction days from rent deposit.</em></p>
-                                            </div>
-                                            
-                                          </div>
-                                          
-                                        </div> -->
                                         <div class="col-sm-2">
-                                          <div>Effective On</div>
+                                          <div>Effective On {{configMasterModel.cancellationAfterCheckInDetails[0]?.isApproved}}</div>
                                           <div class="input-group input-group-sm">
                                             <input 
                                               type="date" 
@@ -2050,7 +1887,7 @@
                                         <!-- Action Button -->
                                         <div class="col-sm-1 mt-4" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
                                           <div class="d-flex" >
-                                            <div><i class="fas fa-thumbs-up mr-2 mt-1" style="color:rgb(153, 243, 94) !important"></i></div>
+                                            <div><i class="fas fa-thumbs-up mr-2 mt-1" [ngClass]="configMasterModel.cancellationAfterCheckInDetails[0]?.isApproved?'color-bg-green':'color-bg-gray'"></i></div>
                                           <div *ngIf="configMasterModel.cancellationAfterCheckInDetails[0]?.isApproved">
                                             <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='After check-in Date'" >
                                              <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
@@ -2083,7 +1920,6 @@
                                         </div>
                                       </div>
                                       <div class="row" *ngIf="configMasterModel.cancellationAfterCheckInDetails.length>1 && configMasterModel.cancellationAfterCheckInDetails[1]!=undefined && !configMasterModel.cancellationAfterCheckInDetails[0]?.isApproved">
-                                        <!-- Auto-Cancellation after Check-in Dates -->
                                         <div class="col-sm-2">
                                           <div class="input-group input-group-sm mt-1">
                                             <span class="form-control form-control-sm" style="background-color: #eaecf4;">
@@ -2154,50 +1990,23 @@
       </div>
       <div class="modal-body">
         <div class="mr-1">
-        <!-- <div  *ngIf="configMasterOrg.tokenDetails.length>1 && configMasterOrg.tokenDetails[1]!=undefined && configMasterModel.tokenDetails[1]?.isApproved"> -->
         <div *ngIf="popupMoreRecordHeader === 'Token Advance'">
-          <div class="row">
-            <div class="col-sm-2">
-              <div style="text-align: left;">Fixed amount</div></div>
-              <div class="col-sm-2">
-                <div style="text-align: left;">% of Security Deposit</div>
-            </div>
-            <div class="col-sm-2">
-              <div style="text-align: left;">Effective On</div></div>
-              <div class="col-sm-2">
-            <div style="text-align: left;">Create By</div></div>
-            <div class="col-sm-2">
-            <div style="text-align: left;">Approved By</div></div>
+          <div class="row rule-header">
+            <div class="col-sm-3">Fixed amount</div>
+            <div class="col-sm-3">% of Security Deposit</div>
+            <div class="col-sm-3">Effective On</div>
+            <div class="col-sm-2" ></div>
           </div>
-          <div class="mt-2" *ngFor="let tokenDetails of configMasterModel.tokenDetails" >
-            <div class="row" *ngIf="tokenDetails.isApproved" >
-          <div class="col-sm-2">
-            <!-- <div style="text-align: left;">Fixed amount</div> -->
-            <div class="input-group input-group-sm">
-              <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-              <span class="form-control form-control-sm" style="background-color: #eaecf4;max-width: 90px !important;">
-                {{ tokenDetails.fixedToken }}
-              </span>
-            </div>
+          <hr/>
+          <div *ngFor="let tokenDetails of configMasterModel.tokenDetails" >
+            <div class="row rule-data" *ngIf="tokenDetails.isApproved" >
+          <div class="col-sm-3">
+              <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
+              <span> {{ tokenDetails.fixedToken }} </span>
           </div>
-          <div class="col-sm-2">
-                <!-- <div style="text-align: left;">% of Security Deposit</div> -->
-                <div class="input-group input-group-sm" >
-                  <span class="form-control form-control-sm" style="background-color: #eaecf4;max-width: 70px !important;">
-                    {{ tokenDetails.variableToken }}
-                  </span>
-                   <span class="input-group-text">%</span>
-            </div>
-            
-          </div>
-          <div class="col-sm-2">
-            <div class="input-group input-group-sm">
-              <span class="form-control form-control-sm" style="background-color: #eaecf4;">
-                {{ tokenDetails.effectiveDate }}
-              </span>
-            </div>
-         </div>
-         <div class="col-sm-2" >
+          <div class="col-sm-3"> {{ tokenDetails.variableToken }} % </div>
+          <div class="col-sm-3"> {{ tokenDetails.effectiveDate }} </div>
+         <!-- <div class="col-sm-2" >
               <div class="input-group input-group-sm">
                 <span class="form-control form-control-sm" style="background-color: #eaecf4;">
                   {{ tokenDetails.createdBy }}
@@ -2210,65 +2019,39 @@
               {{ tokenDetails.approvedBy }}
             </span>
           </div>
-      </div>
-          <!-- <div class="col-sm-2" >
-            <div class="d-flex">
-            <div *ngIf="tokenDetails.isApproved" title="Rule Approved" ><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-            <div *ngIf="!tokenDetails.isApproved" title="Waiting for Approval" ><i class="far fa-clock mr-2" style="color:rgb(144, 94, 243) !important"></i></div>
-            </div>
-          </div> -->
+      </div> -->
+          <div class="col-sm-2" ><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+          </div>
         </div>
         </div>
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'Security Deposit Limits'">
-        <div class="row">
-          <div class="col-sm-3">
-            <div style="text-align: left;">Minimum Security Deposit</div></div>
-            <div class="col-sm-3">
-              <div style="text-align: left;">Maximum Security Deposit</div>
-          </div>
-          <div class="col-sm-2">
-            <div style="text-align: left;">Effective On</div></div>
-            <div class="col-sm-2">
+        <div class="row rule-header" >
+          <div class="col-sm-3">Minimum Security Deposit</div>
+          <div class="col-sm-3">Maximum Security Deposit</div>
+          <div class="col-sm-2">Effective On</div>
+          <div class="col-sm-2" ></div>
+            <!-- <div class="col-sm-2">
               <div style="text-align: left;">Create By</div></div>
               <div class="col-sm-2">
-              <div style="text-align: left;">Approved By</div></div>
+              <div style="text-align: left;">Approved By</div></div> -->
         </div>
-        <div class="mt-2" *ngFor="let depositDetails of configMasterModel.depositDetails" >
-          <div class="row" *ngIf="depositDetails.isApproved" >
-          <!-- Minimum Security Deposit -->
+        <hr/>
+        <div *ngFor="let depositDetails of configMasterModel.depositDetails" >
+          <div class="row rule-data" *ngIf="depositDetails.isApproved" >
           <div class="col-sm-3">
-            <div class="input-group input-group-sm">
-              <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-              <span class="form-control form-control-sm" style="background-color: #eaecf4;max-width: 140px !important;">
-                {{ depositDetails.minimumDeposit }}
-              </span>
-            </div>
+              <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
+              <span> {{ depositDetails.minimumDeposit }}</span>
           </div>
-          <!-- Maximum Security Deposit -->
           <div class="col-sm-3">
-            <div class="input-group input-group-sm">
-              <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-              <span class="form-control form-control-sm" style="background-color: #eaecf4;max-width: 140px !important;">
-                {{ depositDetails.maximumDeposit }}
-              </span>
-            </div>
+              <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
+              <span> {{ depositDetails.maximumDeposit }} </span>
           </div>
-          <div class="col-sm-2">
-            <div class="input-group input-group-sm">
-              <span class="form-control form-control-sm" style="background-color: #eaecf4;">
-                {{ depositDetails.effectiveDate }}
-              </span>
-            </div>
-         </div>
-          <!-- Action Button -->
-          <!-- <div class="col-sm-2 mt-1"  >
-            <div class="d-flex">
-            <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-            </div>
-          </div> -->
-          <div class="col-sm-2" >
+          <div class="col-sm-2"> {{ depositDetails.effectiveDate }} </div>
+          <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+          </div>
+          <!-- <div class="col-sm-2" >
             <div class="input-group input-group-sm">
               <span class="form-control form-control-sm" style="background-color: #eaecf4;">
                 {{ depositDetails.createdBy }}
@@ -2281,486 +2064,192 @@
             {{ depositDetails.approvedBy }}
           </span>
         </div>
+        </div> -->
         </div>
-        </div>
-      </div>
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'GST Charges'">
-        <div class="row">
-          <div class="col-sm-3">
-            <div style="text-align: left;">Monthly Rent</div>
-          </div>
-          <div class="col-sm-3">
-            <div style="text-align: left;">CGST</div>
-          </div>
-          <div class="col-sm-2">
-            <div style="text-align: left;">SGST</div>
-          </div>
-          <div class="col-sm-2">
-            <div style="text-align: left;">IGST</div>
-          </div>
-          <div class="col-sm-2">
-            <div style="text-align: left;">Effective On</div>
-          </div>
+        <div class="row rule-header">
+          <div class="col-sm-2"> Monthly Rent </div>
+          <div class="col-sm-2"> CGST </div>
+          <div class="col-sm-2"> SGST </div>
+          <div class="col-sm-2"> IGST </div>
+          <div class="col-sm-2"> Effective On </div>
         </div>
-        
-        <div class="mt-2" *ngFor="let gstDetail of configMasterModel.gstCharges">
-          <div class="row" >
-            <div class="col-sm-3">
-              <div class="input-group input-group-sm">
-                <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                <input 
-                  type="text" 
-                  class="form-control form-control-sm" 
-                  [(ngModel)]="gstDetail.monthlyRent" disabled 
-                  style="max-width: 90px !important;" />
-              </div>
-            </div>
-      
-            <div class="col-sm-3">
-              <div class="input-group input-group-sm">
-                <input 
-                  type="text" 
-                  class="form-control form-control-sm" 
-                  [(ngModel)]="gstDetail.cgstPercentage" disabled 
-                  style="max-width: 70px !important;" />
-                <span class="input-group-text">%</span>
-              </div>
-            </div>
-      
+        <hr/>
+        <div *ngFor="let gstDetail of configMasterModel.gstCharges">
+          <div class="row rule-data"  *ngIf="gstDetail.isApproved"  >
             <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <input 
-                  type="text" 
-                  class="form-control form-control-sm" 
-                  [(ngModel)]="gstDetail.sgstPercentage" disabled 
-                  style="max-width: 70px !important;" />
-                <span class="input-group-text">%</span>
-              </div>
+                <span><i class="fas fa-rupee-sign" style="font-size: small;" ></i></span>
+                <span> {{gstDetail.monthlyRent}} </span>
             </div>
-      
-            <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <input 
-                  type="text" 
-                  class="form-control form-control-sm" 
-                  [(ngModel)]="gstDetail.igstPercentage" disabled 
-                  style="max-width: 70px !important;" />
-                <span class="input-group-text">%</span>
-              </div>
-            </div>
-      
-            <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <input 
-                  type="text" 
-                  class="form-control form-control-sm" 
-                  [ngModel]="gstDetail.effectiveDate | date:'dd-MM-yyyy'" 
-                  disabled />
-              </div>
-            </div>
-      
-            <div class="col-sm-2">
-              <div class="d-flex">
-                <div *ngIf="gstDetail.isApproved" title="Rule Approved">
-                  <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
-                </div>
-              </div>
-            </div>
+            <div class="col-sm-2"> {{gstDetail.cgstPercentage}}  % </div>
+            <div class="col-sm-2"> {{gstDetail.sgstPercentage}}  % </div>
+            <div class="col-sm-2"> {{gstDetail.igstPercentage}}  % </div>
+            <div class="col-sm-2"> {{gstDetail.effectiveDate}}  </div>
+            <div class="col-sm-2"> <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
           </div>
         </div>
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'Service Charges'">
         <div class="row mr-2">
-          <div class="col-sm-4 mr-3" style="text-align: center;border-bottom:2px solid gray ;">eKYC Charges</div>
-          <div class="col-sm-4" style="text-align: center;border-bottom:2px solid gray ;">Documentation Charges </div>
+          <div class="col-sm-4 mr-3" style="text-align: center;border-bottom:2px solid gray ;color: #000;">eKYC Charges</div>
+          <div class="col-sm-4" style="text-align: center;border-bottom:2px solid gray;color: #000 ;">Documentation Charges </div>
         </div>
-        <div class="row">
-          <div class="col-sm-2">
-            <div style="text-align: left;">For Owners</div>
-          </div>
-          <div class="col-sm-2">
-            <div style="text-align: left;">For Tenants</div>
-          </div>
-          <div class="col-sm-2">
-              <div style="text-align: left;">For Owners</div>
-          </div>
-          <div class="col-sm-2">
-              <div style="text-align: left;">For Tenants</div>
-          </div>
-          <div class="col-sm-2">
-            <div style="text-align: left;">Effective Date</div>
-          </div>
+        <div class="row rule-header">
+          <div class="col-sm-2"> For Owners</div>
+          <div class="col-sm-2"> For Tenants</div>
+          <div class="col-sm-2"> For Owners</div>
+          <div class="col-sm-2"> For Tenants</div>
+          <div class="col-sm-2"> Effective Date</div>
         </div>
-      
-        <div class="mt-2" *ngFor="let otherCharges of configMasterModel.otherCharges">
-          <div class="row">
+      <hr/>
+        <div *ngFor="let otherCharges of configMasterModel.otherCharges">
+          <div class="row rule-data" *ngIf="otherCharges.isApproved" >
             <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                <input 
-                  type="text" 
-                  class="form-control form-control-sm" 
-                  [(ngModel)]="otherCharges.ownerEkycCharges" disabled 
-                  style="max-width: 100px !important;" />
-              </div>
+                <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
+                <span> {{otherCharges.ownerEkycCharges}}</span>
             </div>
             <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                <input
-                  type="text"
-                  id="ownerDocumentCharges"
-                  class="form-control form-control-sm"
-                  [(ngModel)]="otherCharges.tenantEkycCharges"
-                  style="max-width: 100px !important;" disabled
-                />
-              </div>
+              <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
+                <span> {{otherCharges.tenantEkycCharges}}</span>
             </div>
             <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                <input
-                  type="text"
-                  id="ownerDocumentCharges"
-                  class="form-control form-control-sm"
-                  [(ngModel)]="otherCharges.ownerDocumentCharges"
-                  style="max-width: 100px !important;"
-                  disabled
-                />
-              </div>
+                <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
+                <span> {{otherCharges.ownerDocumentCharges}} </span>
             </div>
             <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
-                <input
-                  type="text"
-                  id="ownerDocumentCharges"
-                  class="form-control form-control-sm"
-                  [(ngModel)]="otherCharges.tenantDocumentCharges"
-                  style="max-width: 100px !important;"
-                  disabled
-                />
-              </div>
+                <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
+                <span> {{otherCharges.tenantDocumentCharges}} </span>
             </div>
-      
-            <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <input 
-                  type="text" 
-                  class="form-control form-control-sm" 
-                  [ngModel]="otherCharges.effectiveDate | date:'dd-MM-yyyy'" 
-                  disabled />
-              </div>
-            </div>
-            <div class="col-sm-1">
-              <div class="d-flex">
-                <div title="Approved">
-                  <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
-                </div>
-              </div>
+            <div class="col-sm-2">{{otherCharges.effectiveDate}} </div>
+            <div class="col-sm-1"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
             </div>
           </div>
         </div>
-      </div>
 
       <div *ngIf="popupMoreRecordHeader === 'Data Grouping'">  
-        <div class="row">
-          <div class="col-sm-3">
-            <div style="text-align: left;">Days</div>
-          </div>
-          <div class="col-sm-3">
-            <div style="text-align: left;">Effective Date</div>
-          </div>
+        <div class="row rule-header">
+          <div class="col-sm-3">Days</div>
+          <div class="col-sm-3">Effective Date</div>
         </div>
-        <div class="mt-2" *ngFor="let dataGrouping of configMasterModel.dataGrouping">
-        <div class="row">
-          <div class="col-sm-3">
-        <div class="input-group input-group-sm">
-          <input 
-          type="text" 
-          class="form-control form-control-sm"
-          [(ngModel)]="dataGrouping.considerDays" disabled 
-          style="max-width: 70px !important;" />
-          <span class="input-group-text">Days</span>
+        <hr/>
+        <div *ngFor="let dataGrouping of configMasterModel.dataGrouping">
+        <div class="row rule-data" *ngIf="dataGrouping.isApproved">
+          <div class="col-sm-3"> {{dataGrouping.considerDays}} Days </div>
+          <div class="col-sm-3"> {{dataGrouping.effectiveDate}} </div>
+          <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
         </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="input-group input-group-sm">
-            <input 
-              type="text" 
-              class="form-control form-control-sm" [ngModel]="dataGrouping.effectiveDate | date:'dd-MM-yyyy'"  disabled/>
-          </div>
-       </div>
-        <div class="col-sm-2 mt-1">
-          <div class="d-flex">
-            <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-          </div>
       </div>
-        </div>
      </div>
-      </div>
+
       <div *ngIf="popupMoreRecordHeader === 'Force Checkout'">  
-        <div class="row">
-          <div class="col-sm-3">
-            <div style="text-align: left;">Days</div>
-          </div>
-          <div class="col-sm-3">
-            <div style="text-align: left;">Effective Date</div>
-          </div>
+        <div class="row rule-header">
+          <div class="col-sm-3">Days</div>
+          <div class="col-sm-3">Effective Date</div>
         </div>
-        <div class="mt-2" *ngFor="let forceCheckOut of configMasterModel.forceCheckOut">
-        <div class="row">
-          <div class="col-sm-3">
-        <div class="input-group input-group-sm">
-          <input 
-          type="text" 
-          class="form-control form-control-sm"
-          [(ngModel)]="forceCheckOut.forceCheckOutDays" disabled 
-          style="max-width: 70px !important;" />
-          <span class="input-group-text">Days</span>
-        </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="input-group input-group-sm">
-            <input 
-              type="text" 
-              class="form-control form-control-sm" [ngModel]="forceCheckOut.effectiveDate | date:'dd-MM-yyyy'"  disabled/>
-          </div>
-       </div>
-        <div class="col-sm-2 mt-1">
-          <div class="d-flex">
-            <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-          </div>
-      </div>
-        </div>
+        <hr/>
+        <div *ngFor="let forceCheckOut of configMasterModel.forceCheckOut">
+        <div class="row rule-data" *ngIf="forceCheckOut.isApproved">
+          <div class="col-sm-3"> {{forceCheckOut.forceCheckOutDays}} Days </div>
+          <div class="col-sm-3"> {{forceCheckOut.effectiveDate}}</div>
+          <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+         </div>
      </div>
       </div>
       
       <div *ngIf="popupMoreRecordHeader === 'No Rental agreement'">  
-        <div class="row">
-          <div class="col-sm-3" >
-            <div style="text-align: left;">No Rental agreement upto </div>
-          </div>
-          <div class="col-sm-3">
-            <div style="text-align: left;">Effective Date</div>
-          </div>
+        <div class="row rule-header">
+          <div class="col-sm-3">No Rental agreement upto </div>
+          <div class="col-sm-3">Effective Date</div>
         </div>
-        <div class="mt-2" *ngFor="let noRentalAgreement of configMasterModel.noRentalAgreement">
-        <div class="row">
-          <div class="col-sm-3">
-        <div class="input-group input-group-sm">
-          <input 
-          type="text" 
-          class="form-control form-control-sm"
-          [(ngModel)]="noRentalAgreement.noRentalAgreementDays" disabled 
-          style="max-width: 70px !important;" />
-          <span class="input-group-text">Days</span>
-        </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="input-group input-group-sm">
-            <input 
-              type="text" 
-              class="form-control form-control-sm" [ngModel]="noRentalAgreement.effectiveDate | date:'dd-MM-yyyy'"  disabled/>
-          </div>
-       </div>
-        <div class="col-sm-2 mt-1">
-          <div class="d-flex">
-            <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-          </div>
-      </div>
+        <hr/>
+        <div *ngFor="let noRentalAgreement of configMasterModel.noRentalAgreement">
+        <div class="row rule-data" *ngIf="noRentalAgreement.isApproved">
+        <div class="col-sm-3"> {{noRentalAgreement.noRentalAgreementDays}} Days </div>
+        <div class="col-sm-3"> {{noRentalAgreement.effectiveDate}} </div>
+        <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
         </div>
      </div>
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'Security Deposit Deadline'">  
-        <div class="row" style="text-align: left;">
+        <div class="row rule-header">
           <div class="col-sm-2">Condition</div>
           <div class="col-sm-2">Before check-in</div>
           <div class="col-sm-3">Deduction Type</div>
           <div class="col-sm-2">Deduction</div>
           <div class="col-sm-2">Effective On</div>
         </div>
-        <div class="mt-2" *ngFor="let securityDepositDeadLineDetails of configMasterModel.securityDepositDeadLineDetails">
-          <div class="row" >
-            <!-- Auto-Cancellation after Check-in Dates -->
-            <div class="col-sm-2">
-              <div class="input-group input-group-sm" >
-                <input type="text" class="form-control form-control-sm" [(ngModel)]="securityDepositDeadLineDetails.trigger_condition" disabled /> 
-              </div> 
-             </div>
-            <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <input 
-                  type="text" 
-                  class="form-control form-control-sm"
-                  [(ngModel)]="securityDepositDeadLineDetails.auto_cancellation_day" disabled style="max-width: 70px !important;" />
-                  <span class="input-group-text">Days</span>
-              </div>
-             
-            </div>
-            <div class="col-sm-3">
-              <div class="input-group input-group-sm">
-                <input type="text" class="form-control form-control-sm" [(ngModel)]="securityDepositDeadLineDetails.trigger_value" disabled /> 
-              </div>
-            </div>
-             <!-- Deduction Percentage -->
-             <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <input 
-                  type="text" 
-                  class="form-control form-control-sm"
-                  [(ngModel)]="securityDepositDeadLineDetails.deduction_percentage" disabled style="max-width: 70px !important;"/>
-                  <span class="input-group-text">%</span>
-              </div>
-            </div>
-            <div class="col-sm-2">
-              <div class="input-group input-group-sm">
-                <input 
-                  type="text" 
-                  class="form-control form-control-sm" [ngModel]="securityDepositDeadLineDetails.effectiveDate | date:'dd-MM-yyyy'" disabled/>
-              </div>
-           </div>
-            <!-- Action Button -->
-            <div class="col-sm-1 mt-2">
-              <div class="d-flex" >
-                <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-              </div>
+        <div *ngFor="let securityDepositDeadLineDetails of configMasterModel.securityDepositDeadLineDetails">
+          <div class="row rule-data" *ngIf="securityDepositDeadLineDetails.isApproved">
+            <div class="col-sm-2"> {{ securityDepositDeadLineDetails.trigger_condition }} </div>
+            <div class="col-sm-2"> {{ securityDepositDeadLineDetails.auto_cancellation_day }} Days </div>
+            <div class="col-sm-3"> {{securityDepositDeadLineDetails.trigger_value}} </div>
+            <div class="col-sm-2"> {{securityDepositDeadLineDetails.deduction_percentage}}  % </div>
+            <div class="col-sm-2"> {{securityDepositDeadLineDetails.effectiveDate}} </div>
+            <div class="col-sm-1">
+               <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div *ngIf="popupMoreRecordHeader === 'Security Deposit Deadline'">  
-        <div class="row" style="text-align: left;">
-        </div>
-        
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'Short term duration'">  
-        <div class="row" style="text-align: left;">
-          <div class="col-sm-3" >Short term  </div>
+        <div class="row rule-header" >
+          <div class="col-sm-3">Short term  </div>
           <div class="col-sm-3">Effective Date</div>
         </div>
-        <div class="mt-2" *ngFor="let shortTermRentingDuration of configMasterModel.shortTermRentingDuration">
-        <div class="row">
-          <div class="col-sm-3">
-        <div class="input-group input-group-sm">
-          <input 
-          type="text" 
-          class="form-control form-control-sm"
-          [(ngModel)]="shortTermRentingDuration.rentingDurationDays" disabled 
-          style="max-width: 70px !important;" />
-          <span class="input-group-text">Days</span>
-        </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="input-group input-group-sm">
-            <input 
-              type="text" 
-              class="form-control form-control-sm" [ngModel]="shortTermRentingDuration.effectiveDate | date:'dd-MM-yyyy'"  disabled/>
-          </div>
-       </div>
-        <div class="col-sm-2 mt-1">
-          <div class="d-flex">
+        <hr/>
+        <div *ngFor="let shortTermRentingDuration of configMasterModel.shortTermRentingDuration">
+        <div class="row rule-data" *ngIf="shortTermRentingDuration.isApproved">
+          <div class="col-sm-3"> {{shortTermRentingDuration.rentingDurationDays}} Days </div>
+          <div class="col-sm-3"> {{shortTermRentingDuration.effectiveDate}} </div>
+          <div class="col-sm-2">
             <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
           </div>
-      </div>
         </div>
-     </div>
+       </div>
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'Early Check-out Rules'">  
-        <div class="row" style="text-align: left;">
+        <div class="row rule-header">
           <div class="col-sm-2">Condition</div>
           <div class="col-sm-2">Eligibility</div>
           <div class="col-sm-3">Deduction Type</div>
           <div class="col-sm-2">Effective On</div>
         </div>
-        <div class="mt-2" *ngFor="let earlyCheckOutRuleDetails of configMasterModel.earlyCheckOutRuleDetails">
-          <div class="row">
-              <div class="col-sm-2">
-                <div class="input-group input-group-sm" >
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="earlyCheckOutRuleDetails.trigger_condition" disabled /> 
-                </div> 
-               </div>
-              <div class="col-sm-2">
-                <div class="input-group input-group-sm">
-                  <input 
-                    type="text" 
-                    class="form-control form-control-sm" 
-                    [(ngModel)]="earlyCheckOutRuleDetails.check_out_day" disabled 
-                    style="max-width: 70px !important;" />
-                    <span class="input-group-text">Days</span>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="input-group input-group-sm" >
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="earlyCheckOutRuleDetails.trigger_value" disabled/> 
-                </div>
-                </div>
-              <div class="col-sm-2">
-                <div class="input-group input-group-sm">
-                  <input 
-                    type="text" 
-                    class="form-control form-control-sm"  [ngModel]="earlyCheckOutRuleDetails.effectiveDate | date:'dd-MM-yyyy'" disabled/>
-                </div>
-             </div>
-              <div class="col-sm-2 mt-1">
-                  <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
-              </div>
+        <hr/>
+        <div *ngFor="let earlyCheckOutRuleDetails of configMasterModel.earlyCheckOutRuleDetails">
+          <div class="row rule-data" *ngIf="earlyCheckOutRuleDetails.isApproved">
+              <div class="col-sm-2"> {{earlyCheckOutRuleDetails.trigger_condition}} </div>
+              <div class="col-sm-2"> {{earlyCheckOutRuleDetails.check_out_day}} Days </div>
+              <div class="col-sm-3"> {{earlyCheckOutRuleDetails.trigger_value}} </div>
+              <div class="col-sm-2"> {{earlyCheckOutRuleDetails.effectiveDate}} </div>
+              <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
           </div>
         </div>
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'After check-in Date'">  
-        <div class="row" style="text-align: left;">
+        <div class="row rule-header">
           <div class="col-sm-2">Condition</div>
           <div class="col-sm-2">After check-in</div>
           <div class="col-sm-3">Deduction Type</div>
           <div class="col-sm-2">Effective On</div>
         </div>
-        <div class="mt-2" *ngFor="let cancellationAfterCheckInDetails of configMasterModel.cancellationAfterCheckInDetails">
-          <div class="row">
-              <div class="col-sm-2">
-                <div class="input-group input-group-sm mt-1">
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="cancellationAfterCheckInDetails.trigger_condition" disabled /> 
-                </div>
-               </div>
-              <div class="col-sm-2">
-                <div class="input-group input-group-sm mt-1">
-                  <input 
-                    type="text" 
-                    class="form-control form-control-sm"
-                    [(ngModel)]="cancellationAfterCheckInDetails.auto_cancellation_day" disabled  
-                    style="max-width: 70px !important;" />
-                    <span class="input-group-text">Days</span>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="input-group input-group-sm mt-1">
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="cancellationAfterCheckInDetails.trigger_value" disabled /> 
-                </div>
-              </div>
-              <div class="col-sm-2">
-                <div class="input-group input-group-sm">
-                  <input 
-                    type="text" 
-                    class="form-control form-control-sm" [ngModel]="cancellationAfterCheckInDetails.effectiveDate | date:'dd-MM-yyyy'"disabled />
-                </div>
-             </div>
-              <!-- Action Button -->
-              <div class="col-sm-1">
-                <i class="fas fa-thumbs-up" style="color:rgb(153, 243, 94) !important"></i>
-            </div>
+        <hr/>
+        <div *ngFor="let cancellationAfterCheckInDetails of configMasterModel.cancellationAfterCheckInDetails">
+          <div class="row rule-data" *ngIf="cancellationAfterCheckInDetails.isApproved">
+              <div class="col-sm-2"> {{cancellationAfterCheckInDetails.trigger_condition}} </div>
+              <div class="col-sm-2"> {{cancellationAfterCheckInDetails.auto_cancellation_day}} Days </div>
+              <div class="col-sm-3"> {{cancellationAfterCheckInDetails.trigger_value}} </div>
+              <div class="col-sm-2"> {{cancellationAfterCheckInDetails.effectiveDate}} </div>
+              <div class="col-sm-1"> <i class="fas fa-thumbs-up" style="color:rgb(153, 243, 94) !important"></i></div>
           </div>
         </div>
       </div>
-
-    </div>
       </div>
     </div>
   </div>
