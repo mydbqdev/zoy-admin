@@ -191,7 +191,7 @@ public class AdminReportService implements AdminReportImpl{
 				} else if ("bedNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "bd.bed_name";
 				} else if ("category".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "zpdm.due_name";
+					sort = "user_money_due_descriptions";
 				} else if ("paymentMethod".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_result_method";
 				} else if("propertyHouseArea".equalsIgnoreCase(filterRequest.getSortActive())) {
@@ -749,6 +749,11 @@ public class AdminReportService implements AdminReportImpl{
 				dataListWrapper=this.generateRegisterTenantReport(reportData,filterRequest);
 				templatePath ="templates/regesterTenantsReport.docx";
 				break;
+			case "FailedTransactionReport":
+				reportData = getfailureTransactionReport(filterRequest,filterData,applyPagination);
+				dataListWrapper=this.generateFailureTransactionReport(reportData,filterRequest);
+				templatePath ="templates/failureTransactionReport.docx";
+				break;
 			case "SuspendedPropertiesReport":
 				reportData = getSuspendedPropertyReport(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateSuspendedPropertiesReport(reportData,filterRequest);
@@ -1147,6 +1152,39 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantEmailAddress", registerTenantsReport.getTenantEmailAddress() != null ? registerTenantsReport.getTenantEmailAddress() : "");
 			data.put("registrationDate", tuService.formatTimestamp(registerTenantsReport.getRegistrationDate().toInstant()) != null ? tuService.formatTimestamp(registerTenantsReport.getRegistrationDate().toInstant()) : "");
 
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
+	
+	public List<Map<String, Object>> generateFailureTransactionReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			UserPaymentDTO failedTransactioData = (UserPaymentDTO) item;
+
+			data.put("transactionDate", tuService.formatTimestamp(failedTransactioData.getTransactionDate().toInstant()) != null ? failedTransactioData.getTransactionDate() : "");
+			data.put("tenantName", failedTransactioData.getUserPersonalName() != null ? failedTransactioData.getUserPersonalName() : "");
+			data.put("contactNumber", failedTransactioData.getTenantContactNum() != null ? failedTransactioData.getTenantContactNum() : "");
+			data.put("email", failedTransactioData.getEmail() != null ? failedTransactioData.getEmail() : "");
+			data.put("amount", failedTransactioData.getTotalAmount());
+			data.put("reason", failedTransactioData.getFailedReason() != null ? failedTransactioData.getFailedReason() : "");
 			// Common fields
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
@@ -1706,15 +1744,15 @@ public class AdminReportService implements AdminReportImpl{
 					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
 					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
 					+ "    ON zpqbd.selected_bed = bd.bed_id \r\n"
-					+ "WHERE 1=1 and \r\n"
-					+ "    ub.user_bookings_web_check_in = True\r\n"
-					+ "	AND ub.user_bookings_web_check_out = FALSE\r\n"
-					+ "	AND ub.user_bookings_is_cancelled = False");
+					+ "WHERE 1=1");
 
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				queryBuilder.append(" and zpqbd.in_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "or zpqbd.out_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
+						+ "or CAST(:fromDate AS TIMESTAMP) between zpqbd.in_date and zpqbd.out_date\r\n"
+						+ "or CAST(:toDate AS TIMESTAMP) between  zpqbd.in_date and zpqbd.out_date");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -2361,6 +2399,106 @@ public class AdminReportService implements AdminReportImpl{
 			return new CommonResponseDTO<>(registerTenantsReportDto, filterCount);
 		} catch (Exception e) {
 			throw new WebServiceException("Error retrieving Register Tenants Details: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public CommonResponseDTO<UserPaymentDTO> getfailureTransactionReport(UserPaymentFilterRequest filterRequest,FilterData filterData,
+			Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+					"SELECT \r\n"
+				            + "    up.user_payment_created_at, \r\n"
+				            + "    up.user_payment_payable_amount, \r\n"
+				            + "    up.user_payment_result_reason, \r\n"
+				            + "    um.user_first_name || ' ' || um.user_last_name  AS username, \r\n"
+				            + "    um.user_mobile, \r\n"
+				            + "    um.user_email \r\n"
+				            + "FROM pgusers.user_payments up \r\n"
+				            + "JOIN pgusers.user_master um ON up.user_id = um.user_id \r\n"
+				            + "WHERE (LOWER(up.user_payment_payment_status) LIKE LOWER('%failed%') \r\n"
+				            + "   OR up.user_payment_payment_status IS NULL)"
+				);
+
+			Map<String, Object> parameters = new HashMap<>();
+
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND up.user_payment_created_at BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
+			
+			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName)");
+				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+			}
+			
+			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_mobile) LIKE LOWER(:tenantContactNum)");
+				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
+			}
+			
+			if (filterData.getTenantEmail() != null && !filterData.getTenantEmail().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_email) LIKE LOWER(:tenantEmail)");
+				parameters.put("tenantEmail", "%" + filterData.getTenantEmail() + "%");
+			}
+			
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "customerName":
+					sort = "username";
+					break;
+				case "transactionDate":
+					sort = "up.user_payment_created_at";
+					break;
+				case "totalAmount":
+					sort = "up.user_payment_payable_amount";
+					break;
+				case "failedReason":
+					sort = "up.user_payment_result_reason";
+					break;
+				case "tenantContactNum":
+					sort = "um.user_mobile";
+					break;
+				case "email":
+					sort = "um.user_email";
+					break;
+				default:
+					sort = "up.user_payment_created_at";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY up.user_payment_created_at DESC ");
+			}
+
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
+			
+			int filterCount = query.getResultList().size();
+
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
+		    
+			List<Object[]> results = query.getResultList();
+			List<UserPaymentDTO> failureTransactionReportDto = results.stream().map(row -> {
+				UserPaymentDTO dto = new UserPaymentDTO();
+				dto.setTransactionDate(row[0] != null ? (Timestamp) row[0] : null);
+				dto.setTotalAmount((row[1] != null) ? ((Number) row[1]).doubleValue() : 0.0);
+				dto.setFailedReason(row[2] != null ? (String) row[2] : "");
+				dto.setUserPersonalName(row[3] != null ? (String) row[3] : "");
+				dto.setTenantContactNum(row[4] != null ? (String) row[4] : "");
+				dto.setEmail(row[5] != null ? (String) row[5] : "");
+				return dto;
+			}).collect(Collectors.toList());
+
+			return new CommonResponseDTO<>(failureTransactionReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Failure Transaction Details: " + e.getMessage());
 		}
 	}
 }

@@ -179,7 +179,7 @@
                                         </th>
                                         <td mat-cell *matCellDef="let element" style="padding: 4px;">
                                           <span class="common-status"
-                                               [ngClass]="element.ekycStatus === 'Pending' ? 'btn-pending' : ( element.ekycStatus === 'Partially Verified' ?  'btn-partially' : 'btn-registered')" >
+                                               [ngClass]="element.ekycStatus === 'Pending' ? 'status-pending' : ( element.ekycStatus === 'Partially Verified' ?  'status-upcoming' : 'status-active')" >
                                             {{element.ekycStatus}}
                                           </span>
                                         </td>

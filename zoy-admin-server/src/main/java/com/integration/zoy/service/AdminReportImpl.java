@@ -36,5 +36,6 @@ public interface AdminReportImpl {
 	String[] getDistinctCities() throws WebServiceException;
 	CommonResponseDTO<PropertyResportsDTO> getSuspendedPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<RegisterTenantsDTO> getRegisterTenantsReport(UserPaymentFilterRequest filterRequest,Boolean applyPagination) throws WebServiceException;
+	CommonResponseDTO<UserPaymentDTO> getfailureTransactionReport(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException;
 	
 }
