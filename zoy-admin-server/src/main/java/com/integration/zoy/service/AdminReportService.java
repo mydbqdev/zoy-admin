@@ -191,7 +191,7 @@ public class AdminReportService implements AdminReportImpl{
 				} else if ("bedNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "bd.bed_name";
 				} else if ("category".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "zpdm.due_name";
+					sort = "user_money_due_descriptions";
 				} else if ("paymentMethod".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_result_method";
 				} else if("propertyHouseArea".equalsIgnoreCase(filterRequest.getSortActive())) {
@@ -264,6 +264,7 @@ public class AdminReportService implements AdminReportImpl{
 			}).collect(Collectors.toList());
 			return new CommonResponseDTO<>(userPaymentDTOs, filterCount);
 		}catch (Exception e) {
+			System.out.println("error::::::"+e);
 			new ZoyAdminApplicationException(e, "");
 		}
 		return null;
