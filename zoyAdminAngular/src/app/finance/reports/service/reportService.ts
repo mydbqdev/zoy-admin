@@ -133,7 +133,7 @@ import { MessageService } from 'src/app/message.service';
 		{
 		  'reportName': 'Tenant Transactions Report', //== User Transactions Report
 		  'columns': ['transactionDate','customerName', 'tenantContactNum','PgPropertyName','propertyHouseArea','bedNumber',  
-                  'transactionNumber', 'transactionStatus', 'baseAmount','gstAmount','totalAmount','category','paymentMethod','failedReason'],
+                  'transactionNumber', 'transactionStatus', 'baseAmount','gstAmount','totalAmount','category','paymentMethod'],
     },
 		{
 		  'reportName': 'Tenant Payments GST Report', //==User Payments GST Report
