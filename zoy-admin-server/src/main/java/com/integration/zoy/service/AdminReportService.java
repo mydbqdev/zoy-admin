@@ -1744,15 +1744,15 @@ public class AdminReportService implements AdminReportImpl{
 					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
 					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
 					+ "    ON zpqbd.selected_bed = bd.bed_id \r\n"
-					+ "WHERE 1=1 and \r\n"
-					+ "    ub.user_bookings_web_check_in = True\r\n"
-					+ "	AND ub.user_bookings_web_check_out = FALSE\r\n"
-					+ "	AND ub.user_bookings_is_cancelled = False");
+					+ "WHERE 1=1");
 
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				queryBuilder.append(" and zpqbd.in_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "or zpqbd.out_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
+						+ "or CAST(:fromDate AS TIMESTAMP) between zpqbd.in_date and zpqbd.out_date\r\n"
+						+ "or CAST(:toDate AS TIMESTAMP) between  zpqbd.in_date and zpqbd.out_date");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
