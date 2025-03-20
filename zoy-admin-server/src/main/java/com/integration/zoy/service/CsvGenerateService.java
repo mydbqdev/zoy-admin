@@ -125,6 +125,9 @@ public class CsvGenerateService {
             case "RegesterTenantsReport":
             	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address,Registration Date");
                 break;
+            case "FailedTransactionReport":
+            	writer.println("Transaction Date,Tenant Name,Contact Number,eMail Id,Amount,Reason");
+                break;
             case "SuspendedPropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address,Suspended Date,Reason for suspension");
                 break;     
@@ -153,6 +156,19 @@ public class CsvGenerateService {
                     safeToString(userPayment.getCategory()),
                     safeToString(userPayment.getPaymentMode())
                     );
+            }
+            break;
+            
+        case "FailedTransactionReport":
+            if (dto instanceof UserPaymentDTO) {
+                UserPaymentDTO userPayment = (UserPaymentDTO) dto;
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                	tuService.formatTimestamp(userPayment.getTransactionDate().toInstant()),
+                    safeToString(userPayment.getUserPersonalName()),
+                    safeToString(userPayment.getTenantContactNum()),
+                    safeToString(userPayment.getEmail()),
+                    formatAmountWithCommas(userPayment.getTotalAmount()),
+                    safeToString(userPayment.getFailedReason()));
             }
             break;
 

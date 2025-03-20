@@ -51,6 +51,9 @@ public class UserPaymentDTO {
 	
 	@SerializedName("failedReason")
 	private String failedReason;
+	
+	@SerializedName("email")
+	private String email;
 
 	public Timestamp getTransactionDate() {
 		return transactionDate;
@@ -170,6 +173,14 @@ public class UserPaymentDTO {
 
 	public void setFailedReason(String failedReason) {
 		this.failedReason = failedReason;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 }
