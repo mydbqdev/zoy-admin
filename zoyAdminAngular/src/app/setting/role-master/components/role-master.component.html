@@ -134,6 +134,31 @@
                       <div class="col-sm-2" style="font-weight:500;font-size:14px;">Write</div>
                  </div>
               <div>    
+                <div  class="row">									         
+                  <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                  <span  class="collapsed" data-toggle="collapse" data-target="#collapseUSERSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                  <span class="title"> Users</span>
+                  </div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="usersereadAll"  (click)="onChangeCheckAll($event,'read','userse')"/></div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="usersewriteAll" (click)="onChangeCheckAll($event,'write','userse')" /></div>								                
+                 </div>
+                <div  id="collapseUSERSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #usersetab>
+                  <div class="row" >
+                     <div class="col-sm-8 pl-4">Managing Users</div>
+                     <div class="col-sm-2"><input type="checkbox" name="userseread"    value="MANAGING_USERS_READ" id="userseReadMU"  (click)="onChangeCheck($event,'read','userse','MU')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="MANAGING_USERS_WRITE"  id="userseWriteMU" (click)="onChangeCheck($event,'write','userse','MU')"/></div>
+                  </div> 
+                  <div class="row" >
+                     <div class="col-sm-8 pl-4">Permission Approval</div>
+                     <div class="col-sm-2"><input type="checkbox" name="userseread"    value="PERMISSION_APPROVAL_READ" id="userseReadPA"  (click)="onChangeCheck($event,'read','userse','PA')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="PERMISSION_APPROVAL_WRITE"  id="userseReadPA" (click)="onChangeCheck($event,'write','userse','PA')"/></div>
+                  </div>
+                  <div class="row" >
+                    <div class="col-sm-8 pl-4">Locked User</div>
+                    <div class="col-sm-2"><input type="checkbox" name="userseread"    value="LOCKED_USER_READ" id="userseReadLU"  (click)="onChangeCheck($event,'read','userse','LU')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="LOCKED_USER_WRITE"  id="userseReadLU" (click)="onChangeCheck($event,'write','userse','LU')"/></div>
+                 </div>
+               </div>
              <div  class="row">									         
               <div class="col-sm-8" style="font-weight:500;font-size:14px;">
               <span  class="collapsed" data-toggle="collapse" data-target="#collapseOWNERSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
@@ -154,31 +179,7 @@
                 <div class="col-sm-2"><input type="checkbox" name="ownersewrite"   value="MANAGING_OWNERS_WRITE"  id="ownerseWriteMO" (click)="onChangeCheck($event,'write','ownerse','MO')"/></div>
              </div>                      
              </div>
-             <div  class="row">									         
-              <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-              <span  class="collapsed" data-toggle="collapse" data-target="#collapseUSERSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-              <span class="title"> Users</span>
-              </div>
-              <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="usersereadAll"  (click)="onChangeCheckAll($event,'read','userse')"/></div>
-              <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="usersewriteAll" (click)="onChangeCheckAll($event,'write','userse')" /></div>								                
-             </div>
-            <div  id="collapseUSERSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #usersetab>
-              <div class="row" >
-                 <div class="col-sm-8 pl-4">Managing Users</div>
-                 <div class="col-sm-2"><input type="checkbox" name="userseread"    value="MANAGING_USERS_READ" id="userseReadMU"  (click)="onChangeCheck($event,'read','userse','MU')"/></div>
-                 <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="MANAGING_USERS_WRITE"  id="userseWriteMU" (click)="onChangeCheck($event,'write','userse','MU')"/></div>
-              </div> 
-              <div class="row" >
-                 <div class="col-sm-8 pl-4">Permission Approval</div>
-                 <div class="col-sm-2"><input type="checkbox" name="userseread"    value="PERMISSION_APPROVAL_READ" id="userseReadPA"  (click)="onChangeCheck($event,'read','userse','PA')"/></div>
-                 <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="PERMISSION_APPROVAL_WRITE"  id="userseReadPA" (click)="onChangeCheck($event,'write','userse','PA')"/></div>
-              </div>
-              <div class="row" >
-                <div class="col-sm-8 pl-4">Locked User</div>
-                <div class="col-sm-2"><input type="checkbox" name="userseread"    value="LOCKED_USER_READ" id="userseReadLU"  (click)="onChangeCheck($event,'read','userse','LU')"/></div>
-                <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="LOCKED_USER_WRITE"  id="userseReadLU" (click)="onChangeCheck($event,'write','userse','LU')"/></div>
-             </div>
-           </div>
+            
            <div  class="row">									         
             <div class="col-sm-8" style="font-weight:500;font-size:14px;">
             <span  class="collapsed" data-toggle="collapse" data-target="#collapseTENANTSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
@@ -324,27 +325,7 @@
                          <div class="col-sm-2" style="font-weight:500;font-size:14px;">Read</div>
                          <div class="col-sm-2" style="font-weight:500;font-size:14px;">Write</div>
                    </div>
-                 <div>    
-                  <div  class="row">									         
-                     <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-                     <span  class="collapsed" data-toggle="collapse" data-target="#collapseOWNERSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-                     <span class="title"> Owners</span>
-                     </div>
-                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerscreadAll"  (click)="onChangeCheckAll($event,'read','ownersc')"/></div>
-                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerscwriteAll" (click)="onChangeCheckAll($event,'write','ownersc')" /></div>								                
-                    </div>
-                   <div  id="collapseOWNERSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #ownersctab>
-                     <div class="row" >
-                       <div class="col-sm-8 pl-4">Zoy Code</div>
-                       <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="ZOYCODES_READ" id="ownerscReadZC"  (click)="onChangeCheck($event,'read','ownersc','ZC')"/></div>
-                       <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="ZOYCODES_WRITE"  id="ownerscWriteZC" (click)="onChangeCheck($event,'write','ownersc','ZC')"/></div>
-                    </div>                     
-                     <div class="row" >
-                       <div class="col-sm-8 pl-4">Managing Owners</div>
-                       <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="MANAGING_OWNERS_READ" id="ownerscReadMO"  (click)="onChangeCheck($event,'read','ownersc','MO')"/></div>
-                       <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="MANAGING_OWNERS_WRITE"  id="ownerscWriteMO" (click)="onChangeCheck($event,'write','ownersc','MO')"/></div>
-                    </div>                      
-                    </div>
+                 <div>  
                   <div  class="row">									         
                     <div class="col-sm-8" style="font-weight:500;font-size:14px;">
                     <span  class="collapsed" data-toggle="collapse" data-target="#collapseUSERSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
@@ -369,7 +350,27 @@
                       <div class="col-sm-2"><input type="checkbox" name="userscread"    value="LOCKED_USER_READ" id="userscReadLU"  (click)="onChangeCheck($event,'read','usersc','LU')"/></div>
                       <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="LOCKED_USER_WRITE"  id="userscReadLU" (click)="onChangeCheck($event,'write','usersc','LU')"/></div>
                    </div>
-                 </div>
+                 </div>  
+                  <div  class="row">									         
+                     <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                     <span  class="collapsed" data-toggle="collapse" data-target="#collapseOWNERSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                     <span class="title"> Owners</span>
+                     </div>
+                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerscreadAll"  (click)="onChangeCheckAll($event,'read','ownersc')"/></div>
+                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerscwriteAll" (click)="onChangeCheckAll($event,'write','ownersc')" /></div>								                
+                    </div>
+                   <div  id="collapseOWNERSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #ownersctab>
+                     <div class="row" >
+                       <div class="col-sm-8 pl-4">Zoy Code</div>
+                       <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="ZOYCODES_READ" id="ownerscReadZC"  (click)="onChangeCheck($event,'read','ownersc','ZC')"/></div>
+                       <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="ZOYCODES_WRITE"  id="ownerscWriteZC" (click)="onChangeCheck($event,'write','ownersc','ZC')"/></div>
+                    </div>                     
+                     <div class="row" >
+                       <div class="col-sm-8 pl-4">Managing Owners</div>
+                       <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="MANAGING_OWNERS_READ" id="ownerscReadMO"  (click)="onChangeCheck($event,'read','ownersc','MO')"/></div>
+                       <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="MANAGING_OWNERS_WRITE"  id="ownerscWriteMO" (click)="onChangeCheck($event,'write','ownersc','MO')"/></div>
+                    </div>                      
+                    </div>
                     <div  class="row">									         
                      <div class="col-sm-8" style="font-weight:500;font-size:14px;">
                      <span  class="collapsed" data-toggle="collapse" data-target="#collapseTENANTSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
