@@ -251,7 +251,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 				this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
 			
 				if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Owner Payments Gst Report' || this.reportName =='Suspended Properties Report'
-					|| this.reportName =='Inactive Properties Report'|| this.reportName =='Upcoming Potential Properties Report'|| this.reportName =='Non-Potential Properties Report'
+					|| this.reportName =='Upcoming Potential Properties Report'|| this.reportName =='Non-Potential Properties Report'
 					|| this.reportName =='Potential Properties Report'
 				){
 					this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
@@ -332,7 +332,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 		this.downloadProgress=true;
 		this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
 			if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Owner Payments Gst Report' || this.reportName =='Suspended Properties Report'
-				|| this.reportName =='Inactive Properties Report'|| this.reportName =='Upcoming Potential Properties Report'|| this.reportName =='Non-Potential Properties Report'
+				|| this.reportName =='Upcoming Potential Properties Report'|| this.reportName =='Non-Potential Properties Report'
 				|| this.reportName =='Potential Properties Report'
 			){
 				this.notifyService.showInfo("Under Development","")

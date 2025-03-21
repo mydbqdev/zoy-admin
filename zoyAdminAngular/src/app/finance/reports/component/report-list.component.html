@@ -57,19 +57,19 @@
                             <option *ngFor="let report of reportNamesList"  [value]="report.name" >{{report.name}}</option>
                         </select> -->
                     </div>
-                    <div class="ml-2" style="width: 340px;">
-                           <label for="category">Date Range</label>
-                            <div class="d-flex gap-2">
+                    <div class="ml-2" style="width: 340px;" >
+                           <label for="category" *ngIf="reportName != 'Upcoming Tenants Report'" >Date Range</label>
+                            <div class="d-flex gap-2" *ngIf="reportName != 'Upcoming Tenants Report'">
                               <input type="datetime-local" class="form-control form-control-sm" style="width: 160px;font-size: 12px; " id="fromDate" [(ngModel)]="fromDate" 
                                     [ngClass]="{'is-invalid': (!fromDate ||(fromDate>toDate && toDate))}" 
                                     [title]="!fromDate? 'From Date is required':((fromDate>toDate && toDate)?'Invalid date range':'') " /> - 
                               <input type="datetime-local" class="form-control form-control-sm" style="width: 160px; font-size: 12px;" id="toDate"  [(ngModel)]="toDate" 
-                                    [ngClass]="{'is-invalid': (!toDate ||(fromDate>toDate && fromDate ))}" 
+                                    [ngClass]="{'is-invalid': (!toDate ||(fromDate>toDate && fromDate ))}"  
                                     [title]="!toDate? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
                             </div>
                     </div>
                     <div class="ml-2" style="padding-top:26px;" *ngIf="reportName!='Vendor Payments Gst Report'">
-                      <a class="btn btn-dark btn-sm" title="Advance Search" id="advanceSearch"
+                      <a class="btn btn-light btn-sm" title="Advance Search" id="advanceSearch" style="line-height: normal;border: 1px solid #d2d3d8;"
                       data-toggle="dropdown"><i class="fas fa-angle-double-down"></i></a>
                       <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width p-2 shadow" style="width: 500px;margin-right: 150px;" aria-labelledby="advanceSearch" data-bs-auto-close="false">
                         <div>
@@ -83,19 +83,25 @@
                             </div>
                            
                             <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName =='Tenant Refunds Report' || reportName =='Ratings and Reviews Report' 
-                                        || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'">
+                                        || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report' || reportName =='Failure Transactions Report'">
                               <div class="form-group">
                                 <label for="tenantName" class="text-search-header">Tenant Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantName" name="tenantName" />
                               </div>
                             </div>
-                            <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName =='Tenant Refunds Report'
+                            <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName =='Tenant Refunds Report' || reportName =='Failure Transactions Report'
                                     || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report' || reportName =='Consolidated Finance Report'">
                               <div class="form-group">
                                 <label for="tenantContactNum" class="text-search-header">Tenant contact</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantContactNum" name="tenantContactNum" />
                               </div>
                             </div>
+                            <div class="col-sm-6" *ngIf=" reportName =='Failure Transactions Report'">
+                            <div class="form-group">
+                              <label for="tenantContactNum" class="text-search-header">Tenant Email</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantEmail" name="tenantEmail" />
+                              </div>
+                          </div>
                             <div class="col-sm-6" *ngIf=" reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'">
                               <div class="form-group">
                                 <label for="bedNumber" class="text-search-header">Bed Number</label>
@@ -227,7 +233,7 @@
                                     <ng-container *ngFor="let column of selectedReportColumns">
                                       <ng-container [matColumnDef]="column" *ngIf=" column != 'reviews'">
                                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 400;" [matTooltip]="columnHeaders[column] "> 
-                                          {{ columnHeaders[column] || column }}
+                                        {{ column == 'totalAmount' && reportName =='Failure Transactions Report' ? 'AMOUNT' : (columnHeaders[column] || column ) }}
                                           <i class="fas fa-lg fa-sort ml-1" style="color:#d1cfcf;margin-right: 3px;"></i>
                                           <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
                                              style="margin-right: 3px;margin-left: -14px;"></i>
