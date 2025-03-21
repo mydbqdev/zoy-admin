@@ -10,7 +10,7 @@ import { MessageService } from 'src/app/message.service';
     providedIn: 'root'
   })
 
-  export class ReportService {
+  export class OwnerReportService {
     message: string;
   
     public oDataBlockSize: number;
@@ -217,28 +217,30 @@ import { MessageService } from 'src/app/message.service';
 	  ];
   
     reportNamesList:{'name':string,'key':string}[] = [
-      { name: "Tenant Transactions Report", key: "userTransactionReport" },
-      { name: "Tenant Payments GST Report", key: "userPaymentGstReport" },
-      { name: "Tenant Dues Report", key: "tenantDuesReport" },
-      { name: "Tenant Refunds Report", key: "tenantRefundReport" },
       { name: "Owner Payments Report", key: "vendorPaymentsReport" },
       { name: "Owner Payments Dues Report", key: "vendorPaymentsDuesReport" },
-      { name: "Owner Payments Gst Report", key: "vendorPaymentsGstReport" },
-      { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
-      { name: "Ratings and Reviews Report", key: "reviewsAndRatingReport" },
-    
-      { name: "Upcoming Tenants Report", key: "UpcomingTenantsReport" },
-      // { name: "Suspended Tenants Report", key: "SuspendedTenantsReport" },
-      { name: "Inactive Tenants Report", key: "InactiveTenantsReport" },
-      { name: "Active Tenants Report", key: "ActiveTenantsReport" },
-
-      // { name: "Suspended Properties Report", key: "suspendedPropertiesReport" }, 
       { name: "Inactive Properties Report", key: "InactivePropertiesReport" }, 
       { name: "Upcoming Potential Properties Report", key: "upcomingPotentialPropertiesReport" }, 
       { name: "Non-Potential Properties Report", key: "nonPotentialPropertiesReport" }, 
       { name: "Potential Properties Report", key: "potentialPropertiesReport" },
+      // { name: "Tenant Transactions Report", key: "userTransactionReport" },
+      // { name: "Tenant Payments GST Report", key: "userPaymentGstReport" },
+      // { name: "Tenant Dues Report", key: "tenantDuesReport" },
+      // { name: "Tenant Refunds Report", key: "tenantRefundReport" },
+     
+      // { name: "Owner Payments Gst Report", key: "vendorPaymentsGstReport" },
+      // { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
+      // { name: "Ratings and Reviews Report", key: "reviewsAndRatingReport" },
+    
+      // { name: "Upcoming Tenants Report", key: "UpcomingTenantsReport" },
+      // // { name: "Suspended Tenants Report", key: "SuspendedTenantsReport" },
+      // { name: "Inactive Tenants Report", key: "InactiveTenantsReport" },
+      // { name: "Active Tenants Report", key: "ActiveTenantsReport" },
 
-      { name: "Failure Transactions Report", key: "FailedTransactionReport" }
+      // // { name: "Suspended Properties Report", key: "suspendedPropertiesReport" }, 
+      
+
+      // { name: "Failure Transactions Report", key: "FailedTransactionReport" }
 
       
 
