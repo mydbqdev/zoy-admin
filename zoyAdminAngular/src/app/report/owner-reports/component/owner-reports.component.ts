@@ -10,20 +10,20 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
-import { ReportService } from '../service/reportService';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
-import { FilterData, FiltersRequestModel } from '../model/report-filters-model';
-import { ReviewsModel } from '../model/reviews-model';
 import { FormControl } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
+import { OwnerReportService } from '../owner-reports.service';
+import { ReviewsModel } from '../../model/reviews-model';
+import { FilterData, FiltersRequestModel } from '../../model/report-filters-model';
  
 @Component({
-	selector: 'app-report-list',
-	templateUrl: './report-list.component.html',
-	styleUrls: ['./report-list.component.css']
+	selector: 'app-owner-reports',
+	templateUrl: './owner-reports.component.html',
+	styleUrls: ['./owner-reports.component.css']
 })
 
-export class ReportListComponent implements OnInit, AfterViewInit {
+export class OwnerReportsComponent implements OnInit, AfterViewInit {
 
 	reportDataList :any[]=[];
 	reportDataSource: MatTableDataSource<any>=new MatTableDataSource(this.reportDataList);;
@@ -40,14 +40,14 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	public totalProduct:number=0;
 	pageSize:number=10;
 	pageSizeOptions=[10,20,50];
-	selectedReportColumns: any[] = this.getColumnsForSelectedReport('Tenant Transactions Report');
+	selectedReportColumns: any[] = this.getColumnsForSelectedReport('Owner Payments Report');
 	filterData :FilterData=new FilterData();
 	cityLocation: string[] = [];
 	reportNamesList = this.reportService.reportNamesList;
 	cityLocationName:string='';
 	fromDate:string='';
 	toDate:string='';
-	reportName:string ='Tenant Transactions Report';
+	reportName:string ='Owner Payments Report';
 	@ViewChild('reviewsModelClose') reviewsModelClose: any;
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
 	public userNameSession: string = "";
@@ -58,7 +58,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	reviewsReplyDetails:ReviewsModel=new ReviewsModel();
 
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : ReportService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : OwnerReportService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -107,9 +107,9 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			
 	}
 	ngAfterViewInit() {
-		this.sidemenuComp.expandMenu(5);
-		this.sidemenuComp.activeMenu(5, 'report-list');
-		this.dataService.setHeaderName("Reports");
+		this.sidemenuComp.expandMenu(8);
+		this.sidemenuComp.activeMenu(8, 'owner-reports');
+		this.dataService.setHeaderName("Owner Reports");
 	}
  
 	reportNames =this.reportNamesList;

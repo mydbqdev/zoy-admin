@@ -10,20 +10,20 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
-import { ReportService } from '../service/reportService';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
-import { FilterData, FiltersRequestModel } from '../model/report-filters-model';
-import { ReviewsModel } from '../model/reviews-model';
 import { FormControl } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
+import { FilterData, FiltersRequestModel } from '../../model/report-filters-model';
+import { ReviewsModel } from '../../model/reviews-model';
+import { FinanceReportService } from '../finance.serives';
  
 @Component({
-	selector: 'app-report-list',
-	templateUrl: './report-list.component.html',
-	styleUrls: ['./report-list.component.css']
+	selector: 'app-finance-reports',
+	templateUrl: './finance-reports.component.html',
+	styleUrls: ['./finance-reports.component.css']
 })
 
-export class ReportListComponent implements OnInit, AfterViewInit {
+export class FinanceReportsComponent implements OnInit, AfterViewInit {
 
 	reportDataList :any[]=[];
 	reportDataSource: MatTableDataSource<any>=new MatTableDataSource(this.reportDataList);;
@@ -40,14 +40,14 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	public totalProduct:number=0;
 	pageSize:number=10;
 	pageSizeOptions=[10,20,50];
-	selectedReportColumns: any[] = this.getColumnsForSelectedReport('Tenant Transactions Report');
+	selectedReportColumns: any[] = this.getColumnsForSelectedReport('Tenant Payments GST Report');
 	filterData :FilterData=new FilterData();
 	cityLocation: string[] = [];
 	reportNamesList = this.reportService.reportNamesList;
 	cityLocationName:string='';
 	fromDate:string='';
 	toDate:string='';
-	reportName:string ='Tenant Transactions Report';
+	reportName:string ='Tenant Payments GST Report';
 	@ViewChild('reviewsModelClose') reviewsModelClose: any;
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
 	public userNameSession: string = "";
@@ -58,7 +58,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	reviewsReplyDetails:ReviewsModel=new ReviewsModel();
 
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : ReportService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : FinanceReportService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -107,9 +107,9 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			
 	}
 	ngAfterViewInit() {
-		this.sidemenuComp.expandMenu(5);
-		this.sidemenuComp.activeMenu(5, 'report-list');
-		this.dataService.setHeaderName("Reports");
+		this.sidemenuComp.expandMenu(8);
+		this.sidemenuComp.activeMenu(8, 'finance-reports');
+		this.dataService.setHeaderName("Finance Reports");
 	}
  
 	reportNames =this.reportNamesList;

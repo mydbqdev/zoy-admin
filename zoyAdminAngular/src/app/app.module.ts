@@ -68,6 +68,11 @@ import { AppNotificationRoutingModule } from './alert-notification/notification-
 import { OrganizationInfoConfigComponent } from './setting/organization-info-config/components/organization-info-config.component';
 import { SupportMenuRoutingModule } from './supports/supports-menu-routing.module';
 import { LeadsComponent } from './supports/leads/component/leads.component';
+import { FinanceReportsComponent } from './report/finance-reports/component/finance-reports.component';
+import { ReportsMenuRoutingModule } from './report/reports-menu-routing.module';
+import { OwnerReportsComponent } from './report/owner-reports/component/owner-reports.component';
+import { SupportReportsComponent } from './report/support-reports/component/support.reports.component';
+import { TenantReportsComponent } from './report/tenant-reports/component/tenant-reports.component';
 
 
 const appRoutes: Routes = [
@@ -114,7 +119,11 @@ const appRoutes: Routes = [
     ConfigurationMasterComponent,
     UserAuditComponent,
     AlertNotificationComponent,
-    LeadsComponent
+    LeadsComponent,
+    FinanceReportsComponent,
+    OwnerReportsComponent,
+    SupportReportsComponent,
+    TenantReportsComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -140,6 +149,7 @@ const appRoutes: Routes = [
     AppDocumentUploadRoutingModule,
     AppNotificationRoutingModule,
     SupportMenuRoutingModule,
+    ReportsMenuRoutingModule
     ],
   providers: [
     {

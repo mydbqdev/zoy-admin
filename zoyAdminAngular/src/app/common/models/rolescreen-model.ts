@@ -67,4 +67,17 @@ export class RoleScreenModel {
     ORGANIZATION_INFO_CONFIG_READ: boolean = false;
     ORGANIZATION_INFO_CONFIG_WRITE: boolean = false;
 
+    TENANT_REPORTS_READ: boolean = false;
+    TENANT_REPORTS_WRITE: boolean = false;
+
+    OWNER_REPORTS_READ: boolean = false;
+    OWNER_REPORTS_WRITE: boolean = false;
+
+    FINANCE_REPORTS_READ: boolean = false;
+    FINANCE_REPORTS_WRITE: boolean = false;
+
+    SUPPORT_REPORTS_READ: boolean = false;
+    SUPPORT_REPORTS_WRITE: boolean = false;
+    
+
 }

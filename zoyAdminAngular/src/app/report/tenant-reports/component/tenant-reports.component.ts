@@ -10,20 +10,20 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
-import { ReportService } from '../service/reportService';
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
-import { FilterData, FiltersRequestModel } from '../model/report-filters-model';
-import { ReviewsModel } from '../model/reviews-model';
 import { FormControl } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
+import { TenantReportsService } from '../tenant-reports.service';
+import { FilterData, FiltersRequestModel } from '../../model/report-filters-model';
+import { ReviewsModel } from '../../model/reviews-model';
  
 @Component({
-	selector: 'app-report-list',
-	templateUrl: './report-list.component.html',
-	styleUrls: ['./report-list.component.css']
+	selector: 'app-tenant-reports',
+	templateUrl: './tenant-reports.component.html',
+	styleUrls: ['./tenant-reports.component.css']
 })
 
-export class ReportListComponent implements OnInit, AfterViewInit {
+export class TenantReportsComponent implements OnInit, AfterViewInit {
 
 	reportDataList :any[]=[];
 	reportDataSource: MatTableDataSource<any>=new MatTableDataSource(this.reportDataList);;
@@ -58,7 +58,7 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 	reviewsReplyDetails:ReviewsModel=new ReviewsModel();
 
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : ReportService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : TenantReportsService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -107,9 +107,9 @@ export class ReportListComponent implements OnInit, AfterViewInit {
 			
 	}
 	ngAfterViewInit() {
-		this.sidemenuComp.expandMenu(5);
-		this.sidemenuComp.activeMenu(5, 'report-list');
-		this.dataService.setHeaderName("Reports");
+		this.sidemenuComp.expandMenu(8);
+		this.sidemenuComp.activeMenu(8, 'tenant-reports');
+		this.dataService.setHeaderName("Tenant Reports");
 	}
  
 	reportNames =this.reportNamesList;
