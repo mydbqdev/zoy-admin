@@ -20,6 +20,7 @@ import com.integration.zoy.model.TenantResportsDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
+import com.integration.zoy.utils.RegisterTenantsDTO;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentDTO;
@@ -119,7 +120,6 @@ public class ExcelGenerateService {
 			row.createCell(10).setCellValue("Total Amount(₹)");
 			row.createCell(11).setCellValue("Category");
 			row.createCell(12).setCellValue("Mode of Payment");
-			row.createCell(13).setCellValue("Failure Reason");
 			break;
 		case "userPaymentGstReport":
 			row.createCell(0).setCellValue("Transaction Date");
@@ -222,7 +222,7 @@ public class ExcelGenerateService {
 			row.createCell(7).setCellValue("Expected Checked-out Date");
 			break;
 		case "ActiveTenantsReport":
-			row.createCell(0).setCellValue("Tenant Full Name");
+			row.createCell(0).setCellValue("Tenant Name");
 			row.createCell(1).setCellValue("Tenant Contact Number");
 			row.createCell(2).setCellValue("Tenant Email Address");
 			row.createCell(3).setCellValue("Property Name");
@@ -232,7 +232,7 @@ public class ExcelGenerateService {
 			row.createCell(7).setCellValue("Expected Check-out Date");
 			break;
 		case "InactiveTenantsReport":
-			row.createCell(0).setCellValue("Tenant Full Name");
+			row.createCell(0).setCellValue("Tenant Name");
 			row.createCell(1).setCellValue("Tenant Contact Number");
 			row.createCell(2).setCellValue("Tenant Email Address");
 			row.createCell(3).setCellValue("Previous Property Name");
@@ -241,7 +241,7 @@ public class ExcelGenerateService {
 			row.createCell(6).setCellValue("Checked-out Date");
 			break;
 		case "SuspendedTenantsReport":
-			row.createCell(0).setCellValue("Tenant Full Name");
+			row.createCell(0).setCellValue("Tenant Name");
 			row.createCell(1).setCellValue("Tenant Contact Number");
 			row.createCell(2).setCellValue("Tenant Email Address");
 			row.createCell(3).setCellValue("Previous Property Name");
@@ -257,6 +257,20 @@ public class ExcelGenerateService {
 			row.createCell(2).setCellValue("Property Contact Number");
 			row.createCell(3).setCellValue("Property Email Address");
 			row.createCell(4).setCellValue("Property Address");
+			break;
+		case "RegesterTenantsReport":
+			row.createCell(0).setCellValue("Tenant Name");
+			row.createCell(1).setCellValue("Tenant Contact Number");
+			row.createCell(2).setCellValue("Tenant Email Address");
+			row.createCell(3).setCellValue("Registration Date");
+			break;
+		case "FailedTransactionReport":
+			row.createCell(0).setCellValue("Transaction Date");
+			row.createCell(1).setCellValue("Tenant Name");
+			row.createCell(2).setCellValue("Contact Number");
+			row.createCell(3).setCellValue("eMail Id");
+			row.createCell(4).setCellValue("Amount");
+			row.createCell(5).setCellValue("Reason");
 			break;
 		case "SuspendedPropertiesReport":
 			row.createCell(0).setCellValue("Owner Full Name");
@@ -276,6 +290,7 @@ public class ExcelGenerateService {
 		switch (reportType) {
 		case "userTransactionReport":
 		case "userPaymentGstReport":
+		case "FailedTransactionReport":
 			if (dto instanceof UserPaymentDTO) {
 				UserPaymentDTO userPayment = (UserPaymentDTO) dto;
 
@@ -289,7 +304,7 @@ public class ExcelGenerateService {
 					setCurrencyCell(row, 6, nullSafe(userPayment.getGstAmount()));
 					setCurrencyCell(row, 7, nullSafe(userPayment.getTotalAmount()));
 					row.createCell(8).setCellValue(nullSafe(userPayment.getPaymentMode()));
-				} else {
+				} else if("userTransactionReport".equals(reportType)){
 					row.createCell(0).setCellValue(nullSafe(userPayment.getUserPersonalName()));
 					row.createCell(1).setCellValue(nullSafe(userPayment.getTenantContactNum()));
 					row.createCell(2).setCellValue(nullSafe(userPayment.getUserPgPropertyName()));
@@ -303,7 +318,13 @@ public class ExcelGenerateService {
 					setCurrencyCell(row, 10, nullSafe(userPayment.getTotalAmount()));
 					row.createCell(11).setCellValue(nullSafe(userPayment.getCategory()));
 					row.createCell(12).setCellValue(nullSafe(userPayment.getPaymentMode()));
-					row.createCell(13).setCellValue(nullSafe(userPayment.getFailedReason()));
+				}else {
+					row.createCell(0).setCellValue(nullSafe(tuService.formatTimestamp(userPayment.getTransactionDate().toInstant())));
+					row.createCell(1).setCellValue(nullSafe(userPayment.getUserPersonalName()));
+					row.createCell(2).setCellValue(nullSafe(userPayment.getTenantContactNum()));
+					row.createCell(3).setCellValue(nullSafe(userPayment.getEmail()));
+					setCurrencyCell(row, 4, nullSafe(userPayment.getTotalAmount()));
+					row.createCell(5).setCellValue(nullSafe(userPayment.getFailedReason()));
 				}
 			}
 			break;
@@ -474,6 +495,15 @@ public class ExcelGenerateService {
 				row.createCell(2).setCellValue(nullSafe(inActivePropertyDetails.getPropertyContactNumber()));
 				row.createCell(3).setCellValue(nullSafe(inActivePropertyDetails.getPropertyEmailAddress()));
 				row.createCell(4).setCellValue(nullSafe(inActivePropertyDetails.getPropertyAddress()));
+			}
+			break;
+		case "RegesterTenantsReport":
+			if (dto instanceof RegisterTenantsDTO) {
+				RegisterTenantsDTO registeredTenantsDetails = (RegisterTenantsDTO) dto;
+				row.createCell(0).setCellValue(nullSafe(registeredTenantsDetails.getTenantName()));
+				row.createCell(1).setCellValue(nullSafe(registeredTenantsDetails.getTenantContactNumber()));
+				row.createCell(2).setCellValue(nullSafe(registeredTenantsDetails.getTenantEmailAddress()));
+				row.createCell(3).setCellValue(nullSafe(tuService.formatTimestamp(registeredTenantsDetails.getRegistrationDate().toInstant())));
 			}
 			break;
 		case "SuspendedPropertiesReport":

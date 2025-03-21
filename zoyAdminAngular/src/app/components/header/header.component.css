@@ -12,4 +12,14 @@
       opacity: 0;
     }
   }
+
+  .fa-bell::before{
+    color: #8b67de;
+    font-size: 27px;
+  }
+.notifications-Count{
+  font-size: 16px;
+  margin-bottom: 5px;
+  margin-right: -3px;
+}
   

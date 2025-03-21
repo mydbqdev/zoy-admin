@@ -86,6 +86,9 @@ public class UserDBService implements UserDBImpl{
 
 	@Autowired
 	private UserMasterRepository userRepo;
+	
+	@Autowired
+	private TimestampFormatterUtilService tuService;
 
 
 	//Notification Mode	
@@ -410,7 +413,7 @@ public class UserDBService implements UserDBImpl{
 
 				for (int i = 0; i < reportData.size(); i++) {
 					Row dataRow = sheet.createRow(i + 1);
-					dataRow.createCell(0).setCellValue(nullSafe(reportData.get(i).getCreatedOn()));
+					dataRow.createCell(0).setCellValue(nullSafe(tuService.formatTimestamp(reportData.get(i).getCreatedOn().toInstant())));
 					dataRow.createCell(1).setCellValue(nullSafe(reportData.get(i).getHistoryData()));
 				}
 			}else {
@@ -420,7 +423,7 @@ public class UserDBService implements UserDBImpl{
 				for (int i = 0; i < reportData.size(); i++) {
 					Row dataRow = sheet.createRow(i + 1);
 					dataRow.createCell(0).setCellValue(nullSafe(reportData.get(i).getUserName()));
-					dataRow.createCell(1).setCellValue(nullSafe(reportData.get(i).getCreatedOn()));
+					dataRow.createCell(1).setCellValue(nullSafe(tuService.formatTimestamp(reportData.get(i).getCreatedOn().toInstant())));
 					dataRow.createCell(2).setCellValue(nullSafe(reportData.get(i).getType()));
 					dataRow.createCell(3).setCellValue(nullSafe(reportData.get(i).getHistoryData()));
 				}
@@ -453,7 +456,7 @@ public class UserDBService implements UserDBImpl{
 
 				for (AuditActivitiesLogDTO dto : reportData) {
 					writer.printf("\"%s\",\"%s\"%n",
-							dto.getCreatedOn(),
+							 tuService.formatTimestamp(dto.getCreatedOn().toInstant()),
 							dto.getHistoryData()
 
 							);
@@ -463,7 +466,7 @@ public class UserDBService implements UserDBImpl{
 				for (AuditActivitiesLogDTO dto : reportData) {
 					writer.printf("\"%s\",\"%s\",\"%s\",\"%s\"%n",
 							dto.getUserName(),
-							dto.getCreatedOn(),
+							 tuService.formatTimestamp(dto.getCreatedOn().toInstant()),
 							dto.getType(),
 							dto.getHistoryData()
 

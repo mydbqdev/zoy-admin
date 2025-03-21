@@ -31,16 +31,17 @@ import { MessageService } from 'src/app/message.service';
       'tenantRefundReport':'user_refund_details',
       'reviewsAndRatingReport':'user_reviews_ratings_details',
       'UpcomingTenantsReport':'upcoming_tenant_details',
-      'SuspendedTenantsReport':'suspended_tenant_details',
+      // 'SuspendedTenantsReport':'suspended_tenant_details',
       'InactiveTenantsReport':'inactive_tenant_details',
       'ActiveTenantsReport':'active_tenant_details',
      
-      'upcomingPotentialPropertiesReport': 'payment_transfer_details',//'upcoming_potential_properties_details',
-      'suspendedPropertiesReport': 'suspended_property_details',//'suspended_properties_details',
-      'inactivePropertiesReport': 'payment_transfer_details',//'inactive_properties_details',
-      'nonPotentialPropertiesReport': 'payment_transfer_details',//'non_potential_properties_details',
-      'potentialPropertiesReport': 'payment_transfer_details',//'potential_properties_details'
+      'upcomingPotentialPropertiesReport': 'payment_transfer_details',
+     // 'suspendedPropertiesReport': 'suspended_property_details',
+      'InactivePropertiesReport': 'inactive_property_details',
+      'nonPotentialPropertiesReport': 'payment_transfer_details',
+      'potentialPropertiesReport': 'payment_transfer_details',
       
+      'FailedTransactionReport':'failure_transactions_details'
       
     };
     
@@ -103,7 +104,7 @@ import { MessageService } from 'src/app/message.service';
       'tenantEmailAddress' : 'TENANT EMAIL ADDRESS',
       'bookedProperyName' : 'BOOKED PROPERTY NAME',
       'previousPropertName' : 'PREVIOUS PROPERTY NAME',
-      'currentPropertName' : 'CURRENT PROPERTY NAME',
+      'currentPropertName' : 'PROPERTY NAME',
       'propertAddress' : 'PROPERTY ADDRESS',
       'expectedCheckIndate' : 'EXPECTED CHECK-IN DATE',
       'expectedCheckOutdate' : 'EXPECTED CHECK-OUT DATE',
@@ -124,7 +125,9 @@ import { MessageService } from 'src/app/message.service';
       'numberOfBeds' : 'NUMBER OF BEDS',
       'expectedRentPerMonth' : 'EXPECTED RENT PER MONTH',
       'lastCheckoutDate' : 'LAST CHECK-OUT DATE',
-      'numberOfBedsOccupied' : 'NUMBER OF BEDS OCCUPIED'
+      'numberOfBedsOccupied' : 'NUMBER OF BEDS OCCUPIED',
+
+      'email':'EMAIL ID'
       
       
   };
@@ -133,7 +136,7 @@ import { MessageService } from 'src/app/message.service';
 		{
 		  'reportName': 'Tenant Transactions Report', //== User Transactions Report
 		  'columns': ['transactionDate','customerName', 'tenantContactNum','PgPropertyName','propertyHouseArea','bedNumber',  
-                  'transactionNumber', 'transactionStatus', 'baseAmount','gstAmount','totalAmount','category','paymentMethod','failedReason'],
+                  'transactionNumber', 'transactionStatus', 'baseAmount','gstAmount','totalAmount','category','paymentMethod'],
     },
 		{
 		  'reportName': 'Tenant Payments GST Report', //==User Payments GST Report
@@ -192,7 +195,7 @@ import { MessageService } from 'src/app/message.service';
     // }, 
     { 
       'reportName': 'Inactive Properties Report', 
-      'columns': ['ownerFullName', 'inactivePropertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress'] 
+      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress'] 
     }, 
     { 
       'reportName': 'Upcoming Potential Properties Report',
@@ -205,6 +208,10 @@ import { MessageService } from 'src/app/message.service';
     { 
       'reportName': 'Potential Properties Report', 
       'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'numberOfBedsOccupied', 'expectedRentPerMonth']
+    },
+    { 
+      'reportName': 'Failure Transactions Report', 
+      'columns': ['transactionDate', 'customerName', 'tenantContactNum', 'email', 'totalAmount', 'failedReason']
     }
 
 	  ];
@@ -226,10 +233,14 @@ import { MessageService } from 'src/app/message.service';
       { name: "Active Tenants Report", key: "ActiveTenantsReport" },
 
       // { name: "Suspended Properties Report", key: "suspendedPropertiesReport" }, 
-      { name: "Inactive Properties Report", key: "inactivePropertiesReport" }, 
+      { name: "Inactive Properties Report", key: "InactivePropertiesReport" }, 
       { name: "Upcoming Potential Properties Report", key: "upcomingPotentialPropertiesReport" }, 
       { name: "Non-Potential Properties Report", key: "nonPotentialPropertiesReport" }, 
-      { name: "Potential Properties Report", key: "potentialPropertiesReport" }
+      { name: "Potential Properties Report", key: "potentialPropertiesReport" },
+
+      { name: "Failure Transactions Report", key: "FailedTransactionReport" }
+
+      
 
       ];
 

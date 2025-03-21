@@ -65,21 +65,22 @@
                                     </div>
                                     <div style="margin-top: 70px;"><img [src]="tdpf.profile.ekycStatus == 'Verified'? 'assets/images/ekyc-verified.png':'assets/images/ekyc-pending.png'" class="image-responsive" style="height: 25px; width: 55px;margin-left: -12px;"></div>
                                   </div>
-                                  
+                                  <div class="scrollable-container-main" style="height: calc(100vh - 300px)">
                                   <div style="text-align: left;margin-top:30px;color:#000000;" class="pl-3">{{tdpf.profile.tenantName}}</div>
                                   <div class="pl-3" style="font-size: 14px;color:#000000;">
                                     <div class="mb-1"><span style="color:#505050;">Contact </span>: {{tdpf.profile.contactNumber}}</div>
                                     <div class="mb-1"><span style="color:#505050;">Email Id </span> : {{tdpf.profile.userEmail}}</div>
                                     <div class="mb-1"><span style="color:#505050;">Member Since</span> : {{tdpf.profile.registeredDate | date: 'yyyy-MM-dd'}}</div>
-                                    <div class="mb-1"><span style="color:#505050;">Check In</span> : {{tdpf.activeBookings.pgName}} </div>
+                                    <div class="mb-1" *ngIf="tdpf.activeBookings.pgName"><span style="color:#505050;">Check In</span> : {{tdpf.activeBookings.pgName}} </div>
                                     <div class="mb-1"><span style="color:#505050;">Status</span> : {{tdpf.profile.status}}</div>
                                   </div>
+                                </div>
                                 </div>
                               </div>
                               <div class="col-sm-9">
                                 <div>
                                   <nav class="nav nav-pills nav-justified" style="background-color:#F9F9FB;border-radius: 5px;border:1px solid #dedee0">
-                                    <a class="nav-link profile-tab" [ngClass]="selectedTab==1?'active':''" aria-current="page" (click)="selectProfile(1,'Persional Details')" style="border-radius: 0px;">Tenant Profile</a>
+                                    <a class="nav-link profile-tab" [ngClass]="selectedTab==1?'active':''" aria-current="page" (click)="selectProfile(1,'Personal Details')" style="border-radius: 0px;">Tenant Profile</a>
                                     <a class="dropdown nav-link profile-tab" [ngClass]="selectedTab==2?'active':''"  id="dropdownMenuDownload" data-bs-toggle="dropdown" style="border-radius: 0px;border-left:1px solid #dedee0;border-right: 1px solid #dedee0;">Booking Details </a>
                                     <div class="dropdown-menu shadow animated-fade-in" aria-labelledby="dropdownMenuDownload" style="min-width: 263px !important;text-align: center;">
                                       <a class="dropdown-item" href="javascript:void(0)" (click)="selectProfile(2,'Active Booking Details')" >Active Bookings </a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
@@ -98,7 +99,7 @@
                                   <div class="col-sm-12">
                                     <div style="border:1px solid rgb(226, 224, 224);border-radius: 10px;">
                                       <div style="background-color: #D6CBEE;padding:5px 20px;border-top-left-radius:10px ;border-top-right-radius:10px;color: #4b2996;">{{sectionTabHeader}}</div>
-                                      <div style="height: calc(100vh - 275px);padding:5px 10px;">
+                                      <div class="scrollable-container-main" style="height: calc(100vh - 275px);padding:5px 10px;">
                                         <div *ngIf="selectedTab==1">
                                           <div class="pl-3" style="font-size: 14px;color: #000000;">
                                             <div class="d-flex mb-1"><div style="width: 180px;color:#505050;">Emergency Number</div><div><span class="mr-2">:</span></div>{{tdpf.profile.emergencyContactNumber}}</div>

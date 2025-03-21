@@ -131,7 +131,7 @@
                                       <td mat-cell *matCellDef="let element" style="padding: 4px;width: 130px;">
                                         <span
                                           class="common-status"
-                                          [ngClass]="element.status === 'pending' ? 'btn-pending' : 'btn-registered'"
+                                          [ngClass]="element.status === 'pending' ? 'status-inactive' : 'status-active'"
                                         >
                                           <span *ngIf="element.status === 'pending'">Inactive</span>
                                           <span *ngIf="element.status !== 'pending'">Active</span>
