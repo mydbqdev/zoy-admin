@@ -37,4 +37,5 @@ export class FilterData {
     bookingId: string ='';
     refundTitle: string ='';
     overallRating: string ='';
+    tenantEmail: string ='';
   }
