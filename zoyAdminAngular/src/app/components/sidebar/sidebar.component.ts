@@ -22,6 +22,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 	public menu5: boolean = false;
 	public menu6: boolean = false;
 	public menu7: boolean = false;
+	public menu8: boolean = false;
 
 	public menu11: boolean = true;
 	public menu21: boolean = false;
@@ -30,6 +31,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 	public menu51: boolean = false;
 	public menu61: boolean = false;
 	public menu71: boolean = false;
+	public menu81: boolean = false;
 
 	public activeSubNenuName: string = '';	
 	public defMenu: DefMenu;
@@ -95,6 +97,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				} else {
 					this.menu1 = false;
 					this.menu2 = false;
@@ -103,6 +106,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				}
 				break;
 			}
@@ -115,6 +119,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				} else {
 					this.menu1 = false;
 					this.menu2 = false;
@@ -123,6 +128,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				}
 				break;
 			}
@@ -135,6 +141,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				} else {
 					this.menu1 = false;
 					this.menu2 = false;
@@ -143,6 +150,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				}
 				break;
 			}
@@ -155,6 +163,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				} else {
 					this.menu1 = false;
 					this.menu2 = false;
@@ -163,6 +172,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				}
 				break;
 			}
@@ -175,6 +185,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = true;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				} else {
 					this.menu1 = false;
 					this.menu2 = false;
@@ -183,6 +194,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				}
 				break;
 			}
@@ -195,6 +207,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = true;
 					this.menu7 = false;
+					this.menu8 = false;
 				} else {
 					this.menu1 = false;
 					this.menu2 = false;
@@ -203,6 +216,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
 				}
 				break;
 			}
@@ -215,6 +229,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = true;
+					this.menu8 = false;
 				} else {
 					this.menu1 = false;
 					this.menu2 = false;
@@ -223,6 +238,29 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 					this.menu5 = false;
 					this.menu6 = false;
 					this.menu7 = false;
+					this.menu8 = false;
+				}
+				break;
+			}
+			case 8: {
+				if (!this.menu8) {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+					this.menu8 = true;
+				} else {
+					this.menu1 = false;
+					this.menu2 = false;
+					this.menu3 = false;
+					this.menu4 = false;
+					this.menu5 = false;
+					this.menu6 = false;
+					this.menu7 = false;
+					this.menu8 = false;
 				}
 				break;
 			}
@@ -235,6 +273,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 				this.menu5 = false;
 				this.menu6 = false;
 				this.menu7 = false;
+				this.menu8 = false;
 				break;
 			}
     }
@@ -250,6 +289,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 				this.menu51 = false;
 				this.menu61 = false;
 				this.menu71 = false;
+				this.menu81 = false;
 				break;
 			}
 			case 2: {
@@ -260,6 +300,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 				this.menu51 = false;
 				this.menu61 = false;
 				this.menu71 = false;
+				this.menu81 = false;
 				break;
 			}
 			case 3: {
@@ -270,6 +311,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 				this.menu51 = false;
 				this.menu61 = false;
 				this.menu71 = false;
+				this.menu81 = false;
 				break;
 			}
 			case 4: {
@@ -280,6 +322,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 				this.menu51 = false;
 				this.menu61 = false;
 				this.menu71 = false;
+				this.menu81 = false;
 				break;
 			}
 			case 5: {
@@ -290,6 +333,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 				this.menu51 = true;
 				this.menu61 = false;
 				this.menu71 = false;
+				this.menu81 = false;
 				break;
 			}
 			case 6: {
@@ -300,6 +344,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 				this.menu51 = false;
 				this.menu61 = true;
 				this.menu71 = false;
+				this.menu81 = false;
 				break;
 			}
 			case 7: {
@@ -310,6 +355,18 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 				this.menu51 = false;
 				this.menu61 = false;
 				this.menu71 = true;
+				this.menu81 = false;
+				break;
+			}
+			case 8: {
+				this.menu11 = false;
+				this.menu21 = false;
+				this.menu31 = false;
+				this.menu41 = false;
+				this.menu51 = false;
+				this.menu61 = false;
+				this.menu71 = false;
+				this.menu81 = true;
 				break;
 			}
 
@@ -321,6 +378,7 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 				this.menu51 = false;
 				this.menu61 = false;
 				this.menu71 = false;
+				this.menu81 = false;
 				break;
 			}
 

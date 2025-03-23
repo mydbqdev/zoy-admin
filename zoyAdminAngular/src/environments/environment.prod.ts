@@ -41,7 +41,13 @@ export const environment = {
       "cancellationAndRefundRules":true,
       "percentageAndChargeConfigurations":true,
       "promotionAndOffersManagement":true
-      
+    },
+    "reports":true,
+    "reportsSubMenu":{
+      "tenantReports": true,
+      "ownerReports": true,
+      "supportReports": true,
+      "financeReports": true
     },
 
   
