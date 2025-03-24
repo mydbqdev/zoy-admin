@@ -1288,13 +1288,14 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	@Override
 	public ResponseEntity<String> zoyAdminUserNotifications(UserPaymentFilterRequest FilterRequest) {
 		ResponseBody response = new ResponseBody();
+		String currentUser=SecurityContextHolder.getContext().getAuthentication().getName();
 		try {
 
 			int pageNumber = FilterRequest.getPageIndex();
 			int pageSize = FilterRequest.getPageSize();
 			Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-			Page<Object[]> userNotifications = notificationsAndAlertsRepository.findNotification(SecurityContextHolder.getContext().getAuthentication().getName(), pageable);
+			Page<Object[]> userNotifications = notificationsAndAlertsRepository.findNotification(currentUser, pageable);
 			List<NotificationsAndAlertsDTO> usernotificationsList = new ArrayList<>();
 
 			for (Object[] details : userNotifications) {
@@ -1316,6 +1317,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			  Map<String, Object> responseMap = new HashMap<>();
 		        responseMap.put("notifications", usernotificationsList);
 		        responseMap.put("totalCount", userNotifications.getTotalElements());
+		        responseMap.put("isSeenCount", notificationsAndAlertsRepository.isSeencount(currentUser));
 
 		        return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
 		} catch (Exception e) {

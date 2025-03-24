@@ -114,7 +114,7 @@ public class CsvGenerateService {
                 writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Property Name,Property Address,Bed Number, Check-in Date,Expected Checked-out Date");
                 break;
             case "InactiveTenantsReport":
-            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Bed Number, Checked-out Date");
+            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Bed Number,Check-in Date, Checked-out Date");
                 break;
             case "SuspendedTenantsReport":
             	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Bed Number, Checked-out Date,Suspended Date,Reason for suspension");
@@ -337,13 +337,14 @@ public class CsvGenerateService {
                             safeToString(inActiveTenants.getPreviousPropertName()),
                             safeToString(inActiveTenants.getPropertAddress()),
                             safeToString(inActiveTenants.getBedNumber()),
+                            tuService.formatTimestamp(inActiveTenants.getCheckInDate().toInstant()),
                             tuService.formatTimestamp(inActiveTenants.getCheckedOutDate().toInstant()));
                 }
                 break;
             case "SuspendedTenantsReport":
             	if (dto instanceof TenantResportsDTO) {
             		TenantResportsDTO suspendedTenant = (TenantResportsDTO) dto;
-            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                             safeToString(suspendedTenant.getTenantName()),
                             safeToString(suspendedTenant.getTenantContactNumber()),
                             safeToString(suspendedTenant.getTenantEmailAddress()),
