@@ -16,6 +16,7 @@ import { map, Observable, startWith } from 'rxjs';
 import { SupportReportsService } from '../support-reports.service';
 import { ReviewsModel } from '../../model/reviews-model';
 import { FilterData, FiltersRequestModel } from '../../model/report-filters-model';
+import { ReportsService } from '../../service/reportService';
  
 @Component({
 	selector: 'app-support.reports',
@@ -43,7 +44,7 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 	selectedReportColumns: any[] = this.getColumnsForSelectedReport('Ratings and Reviews Report');
 	filterData :FilterData=new FilterData();
 	cityLocation: string[] = [];
-	reportNamesList = this.reportService.reportNamesList;
+	reportNamesList = this.supportReportService.reportNamesList;
 	cityLocationName:string='';
 	fromDate:string='';
 	toDate:string='';
@@ -58,7 +59,7 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 	reviewsReplyDetails:ReviewsModel=new ReviewsModel();
 
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : SupportReportsService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private supportReportService : SupportReportsService,private reportsService : ReportsService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -86,8 +87,8 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 		});
 		this.fromDate=this.getLastMonthDate();
 		this.toDate=this.getCurrentDate();
-		this.reportColumnsList=reportService.reportColumnsList;
-		this.columnHeaders = reportService.columnHeaders;
+		this.reportColumnsList=supportReportService.reportColumnsList;
+		this.columnHeaders = reportsService.columnHeaders;
 		 this.filteredOptions = this.reportControl.valueChanges.pipe(
 					startWith(''),
 					map(value => this.filter(value))
@@ -135,7 +136,7 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 	  }
 
 	getColumnsForSelectedReport(name:string) {
-		const report = this.reportService.reportColumnsList.find(n => n.reportName === name);
+		const report = this.supportReportService.reportColumnsList.find(n => n.reportName === name);
 		return report?report.columns:[];
 	 }
 
@@ -163,7 +164,7 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 	  getCityList(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
-		this.reportService.getCityList().subscribe(data => {
+		this.reportsService.getCityList().subscribe(data => {
 		this.cityLocation=data;
 		this.cityLocationName =this.cityLocation?.length>0?this.cityLocation[0]:"";
 		this.generateReport();
@@ -261,7 +262,7 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 					this.notifyService.showInfo("Under Development","")
 				}else{
 				this.spinner.show();
-				this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+				this.supportReportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
 				this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
 
 				  if(data?.data?.length >0){
@@ -307,11 +308,7 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 				}); 
 			}
 	 	}	 
-	
-	onExport(element: any): void {
-		console.log('Export action triggered for:', element);
-	}
-	
+
 	downloadProgress:boolean=false;
 	downloadPdf(type:string){   
 		this.authService.checkLoginUserVlidaate();
@@ -330,7 +327,7 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
 		this.filtersRequest.downloadType = type ;
 		this.downloadProgress=true;
-		this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
+		this.reportsService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
 			if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Owner Payments Gst Report' || this.reportName =='Suspended Properties Report'
 				|| this.reportName =='Upcoming Potential Properties Report'|| this.reportName =='Non-Potential Properties Report'
 				|| this.reportName =='Potential Properties Report'

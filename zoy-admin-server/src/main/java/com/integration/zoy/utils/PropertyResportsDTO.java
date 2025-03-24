@@ -28,10 +28,10 @@ public class PropertyResportsDTO {
     private String reasonForSuspension;
 
     @SerializedName("numberOfBeds")
-    private String numberOfBeds;
+    private int numberOfBeds;
 
     @SerializedName("expectedRentPerMonth")
-    private String expectedRentPerMonth;
+    private double expectedRentPerMonth;
 
     @SerializedName("lastCheckOutDate")
     private Timestamp lastCheckOutDate;
@@ -92,19 +92,19 @@ public class PropertyResportsDTO {
 		this.reasonForSuspension = reasonForSuspension;
 	}
 
-	public String getNumberOfBeds() {
+	public int getNumberOfBeds() {
 		return numberOfBeds;
 	}
 
-	public void setNumberOfBeds(String numberOfBeds) {
+	public void setNumberOfBeds(int numberOfBeds) {
 		this.numberOfBeds = numberOfBeds;
 	}
 
-	public String getExpectedRentPerMonth() {
+	public double getExpectedRentPerMonth() {
 		return expectedRentPerMonth;
 	}
 
-	public void setExpectedRentPerMonth(String expectedRentPerMonth) {
+	public void setExpectedRentPerMonth(double expectedRentPerMonth) {
 		this.expectedRentPerMonth = expectedRentPerMonth;
 	}
 

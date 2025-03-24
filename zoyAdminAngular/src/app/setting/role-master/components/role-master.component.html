@@ -169,7 +169,7 @@
              </div>
             <div  id="collapseOWNERSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #ownersetab>
               <div class="row" >
-                <div class="col-sm-8 pl-4">Zoy Code</div>
+                <div class="col-sm-8 pl-4">Owner Registration</div>
                 <div class="col-sm-2"><input type="checkbox" name="ownerseread"    value="ZOYCODES_READ" id="ownerseReadZC"  (click)="onChangeCheck($event,'read','ownerse','ZC')"/></div>
                 <div class="col-sm-2"><input type="checkbox" name="ownersewrite"   value="ZOYCODES_WRITE"  id="ownerseWriteZC" (click)="onChangeCheck($event,'write','ownerse','ZC')"/></div>
              </div>                     
@@ -177,7 +177,13 @@
                 <div class="col-sm-8 pl-4">Managing Owners</div>
                 <div class="col-sm-2"><input type="checkbox" name="ownerseread"    value="MANAGING_OWNERS_READ" id="ownerseReadMO"  (click)="onChangeCheck($event,'read','ownerse','MO')"/></div>
                 <div class="col-sm-2"><input type="checkbox" name="ownersewrite"   value="MANAGING_OWNERS_WRITE"  id="ownerseWriteMO" (click)="onChangeCheck($event,'write','ownerse','MO')"/></div>
-             </div>                      
+             </div>
+             
+            <div class="row" >
+              <div class="col-sm-8 pl-4">Bulk upload</div>
+              <div class="col-sm-2"><input type="checkbox" name="ownerseread"    value="BULK_UPLOAD_READ" id="ownerseReadBU"  (click)="onChangeCheck($event,'read','ownerse','BU')"/></div>
+              <div class="col-sm-2"><input type="checkbox" name="ownersewrite"   value="BULK_UPLOAD_WRITE"  id="ownerseWriteBU" (click)="onChangeCheck($event,'write','ownerse','BU')"/></div>
+           </div>                      
              </div>
             
            <div  class="row">									         
@@ -190,15 +196,10 @@
            </div>
           <div  id="collapseTENANTSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #tenantsetab>
             <div class="row" >
-               <div class="col-sm-8 pl-4">Tenants Zoy</div>
+               <div class="col-sm-8 pl-4">Manage Tenants</div>
                <div class="col-sm-2"><input type="checkbox" name="tenantseread"    value="TENANTSZOY_READ" id="tenantseReadTZ"  (click)="onChangeCheck($event,'read','tenantse','TZ')"/></div>
                <div class="col-sm-2"><input type="checkbox" name="tenantsewrite"   value="TENANTSZOY_WRITE"  id="tenantseWriteTZ" (click)="onChangeCheck($event,'write','tenantse','TZ')"/></div>
             </div> 
-            <div class="row" >
-              <div class="col-sm-8 pl-4">Bulk upload</div>
-              <div class="col-sm-2"><input type="checkbox" name="tenantseread"    value="BULK_UPLOAD_READ" id="tenantseReadBU"  (click)="onChangeCheck($event,'read','tenantse','BU')"/></div>
-              <div class="col-sm-2"><input type="checkbox" name="tenantsewrite"   value="BULK_UPLOAD_WRITE"  id="tenantseWriteBU" (click)="onChangeCheck($event,'write','tenantse','BU')"/></div>
-           </div>
          </div>
          <div  class="row">									         
           <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -209,11 +210,6 @@
           <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="financesewriteAll" (click)="onChangeCheckAll($event,'write','financese')" /></div>								                
          </div>
         <div  id="collapseFINANCESE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #financesetab>
-          <div class="row" >
-            <div class="col-sm-8 pl-4">Reports</div>
-            <div class="col-sm-2"><input type="checkbox" name="financeseread"    value="REPORTS_READ" id="financeseReadRT"  (click)="onChangeCheck($event,'read','financese','RT')"/></div>
-            <div class="col-sm-2"><input type="checkbox" name="financesewrite"   value="REPORTS_WRITE"  id="financeseWriteRT" (click)="onChangeCheck($event,'write','financese','RT')"/></div>
-         </div> 
          <div class="row" >
           <div class="col-sm-8 pl-4">Payment Approval</div>
           <div class="col-sm-2"><input type="checkbox" name="financeseread"    value="PAYMENT_APPROVAL_READ" id="financeseReadPA"  (click)="onChangeCheck($event,'read','financese','PA')"/></div>
@@ -392,7 +388,7 @@
                     </div>
                    <div  id="collapseOWNERSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #ownersctab>
                      <div class="row" >
-                       <div class="col-sm-8 pl-4">Zoy Code</div>
+                       <div class="col-sm-8 pl-4">Owner Registration</div>
                        <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="ZOYCODES_READ" id="ownerscReadZC"  (click)="onChangeCheck($event,'read','ownersc','ZC')"/></div>
                        <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="ZOYCODES_WRITE"  id="ownerscWriteZC" (click)="onChangeCheck($event,'write','ownersc','ZC')"/></div>
                     </div>                     
@@ -400,7 +396,13 @@
                        <div class="col-sm-8 pl-4">Managing Owners</div>
                        <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="MANAGING_OWNERS_READ" id="ownerscReadMO"  (click)="onChangeCheck($event,'read','ownersc','MO')"/></div>
                        <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="MANAGING_OWNERS_WRITE"  id="ownerscWriteMO" (click)="onChangeCheck($event,'write','ownersc','MO')"/></div>
-                    </div>                      
+                    </div> 
+                     
+                    <div class="row" >
+                      <div class="col-sm-8 pl-4">Bulk upload</div>
+                      <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="BULK_UPLOAD_READ" id="ownerscReadBU"  (click)="onChangeCheck($event,'read','ownersc','BU')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="BULK_UPLOAD_WRITE"  id="ownerscWriteBU" (click)="onChangeCheck($event,'write','ownersc','BU')"/></div>
+                   </div>                     
                     </div>
                     <div  class="row">									         
                      <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -412,15 +414,10 @@
                     </div>
                    <div  id="collapseTENANTSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #tenantsctab>
                      <div class="row" >
-                        <div class="col-sm-8 pl-4">Tenants Zoy</div>
+                        <div class="col-sm-8 pl-4">Manage Tenants</div>
                         <div class="col-sm-2"><input type="checkbox" name="tenantscread"    value="TENANTSZOY_READ" id="tenantscReadTZ"  (click)="onChangeCheck($event,'read','tenantsc','TZ')"/></div>
                         <div class="col-sm-2"><input type="checkbox" name="tenantscwrite"   value="TENANTSZOY_WRITE"  id="tenantscWriteTZ" (click)="onChangeCheck($event,'write','tenantsc','TZ')"/></div>
-                     </div> 
-                     <div class="row" >
-                      <div class="col-sm-8 pl-4">Bulk upload</div>
-                      <div class="col-sm-2"><input type="checkbox" name="tenantscread"    value="BULK_UPLOAD_READ" id="tenantscReadBU"  (click)="onChangeCheck($event,'read','tenantsc','BU')"/></div>
-                      <div class="col-sm-2"><input type="checkbox" name="tenantscwrite"   value="BULK_UPLOAD_WRITE"  id="tenantscWriteBU" (click)="onChangeCheck($event,'write','tenantsc','BU')"/></div>
-                   </div>
+                     </div>
                   </div>
                   <div  class="row">									         
                     <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -431,11 +428,6 @@
                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="financescwriteAll" (click)="onChangeCheckAll($event,'write','financesc')" /></div>								                
                    </div>
                   <div  id="collapseFINANCESC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #financesctab>
-                    <div class="row" >
-                      <div class="col-sm-8 pl-4">Reports</div>
-                      <div class="col-sm-2"><input type="checkbox" name="financescread"    value="REPORTS_READ" id="financescReadRT"  (click)="onChangeCheck($event,'read','financesc','RT')"/></div>
-                      <div class="col-sm-2"><input type="checkbox" name="financescwrite"   value="REPORTS_WRITE"  id="financescWriteRT" (click)="onChangeCheck($event,'write','financesc','RT')"/></div>
-                   </div> 
                    <div class="row" >
                     <div class="col-sm-8 pl-4">Payment Approval</div>
                     <div class="col-sm-2"><input type="checkbox" name="financescread"    value="PAYMENT_APPROVAL_READ" id="financescReadPA"  (click)="onChangeCheck($event,'read','financesc','PA')"/></div>

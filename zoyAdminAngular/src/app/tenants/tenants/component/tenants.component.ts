@@ -13,9 +13,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { OwnerRequestParam, Filter } from 'src/app/owners/managing-owner/models/owner-details-request-model';
-import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
 import { TenantService } from '../../tenant.service';
 import { ManageTenant } from '../../tenant-profile/model/manage.tenant';
+import { FiltersRequestModel } from 'src/app/report/model/report-filters-model';
 
 @Component({
 	selector: 'app-tenants',

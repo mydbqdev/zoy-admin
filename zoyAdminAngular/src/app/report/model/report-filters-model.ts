@@ -38,4 +38,6 @@ export class FilterData {
     refundTitle: string ='';
     overallRating: string ='';
     tenantEmail: string ='';
+    propertyContactNum : string ='';
+    pgAddress:string ='';
   }
