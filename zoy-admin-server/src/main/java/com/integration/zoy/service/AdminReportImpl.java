@@ -19,7 +19,7 @@ import com.integration.zoy.utils.VendorPaymentsDues;
 import com.integration.zoy.utils.VendorPaymentsGst;
 
 public interface AdminReportImpl {
-	CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException;
+	CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination,Boolean isGstReport) throws WebServiceException;
 	CommonResponseDTO<ConsilidatedFinanceDetails> getConsolidatedFinanceDetails( UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<TenentDues> getTenentDuesDetails( UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<VendorPayments> getVendorPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException;
@@ -37,5 +37,6 @@ public interface AdminReportImpl {
 	CommonResponseDTO<PropertyResportsDTO> getSuspendedPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<RegisterTenantsDTO> getRegisterTenantsReport(UserPaymentFilterRequest filterRequest,Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<UserPaymentDTO> getfailureTransactionReport(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException;
+	CommonResponseDTO<PropertyResportsDTO> getpotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	
 }

@@ -1,6 +1,7 @@
 package com.integration.zoy.service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -82,7 +83,7 @@ public class AdminReportService implements AdminReportImpl{
 
 
 	@Override
-	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException {
+	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination,Boolean isGstReport) throws WebServiceException {
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT \r\n"
@@ -199,6 +200,10 @@ public class AdminReportService implements AdminReportImpl{
 				}
 				else {
 					sort = "up.user_payment_created_at";
+				}
+				if(isGstReport) {
+					 queryBuilder.append(" AND  up.user_payment_gst IS NOT NULL AND up.user_payment_gst <> 0 \r\n");
+					
 				}
 				queryBuilder.append(" GROUP BY \r\n"
 					    + " up.user_payment_created_at, \r\n"
@@ -680,12 +685,14 @@ public class AdminReportService implements AdminReportImpl{
 			String templatePath ="";
 			switch (filterRequest.getReportType()) {
 			case "userTransactionReport":
-				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
+				boolean isGstReport=false;
+				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination,isGstReport);
 				dataListWrapper=this.generateUserTransactionDataList(reportData,filterRequest);
 				templatePath = "templates/userTransactionReport.docx";
 				break;
 			case "userPaymentGstReport":
-				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
+				boolean isGst=true;
+				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination,isGst);
 				dataListWrapper=this.generateUserPaymentGstReport(reportData,filterRequest);
 				templatePath ="templates/userPaymentGstReport.docx";
 				break;
@@ -2505,6 +2512,109 @@ public class AdminReportService implements AdminReportImpl{
 			return new CommonResponseDTO<>(failureTransactionReportDto, filterCount);
 		} catch (Exception e) {
 			throw new WebServiceException("Error retrieving Failure Transaction Details: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public CommonResponseDTO<PropertyResportsDTO> getpotentialPropertyReport(UserPaymentFilterRequest filterRequest,
+			FilterData filterData, Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+					"SELECT \r\n" +
+							"    zpod.pg_owner_name, \r\n" +
+							"    zppd.property_name, \r\n" +
+							"    zppd.property_contact_number, \r\n" +
+							"    zppd.property_pg_email, \r\n" +
+							"    zppd.property_house_area, \r\n" +
+							"    zpb.fixed_rent, \r\n" +
+							"    COUNT(zpb.*) AS occupied_bed \r\n" +
+							"FROM pgowners.zoy_pg_property_details zppd \r\n" +
+							"JOIN pgowners.zoy_pg_owner_booking_details zpb ON zppd.property_id = zpb.property_id \r\n" +
+							"JOIN pgowners.zoy_pg_owner_details zpod ON zppd.pg_owner_id = zpod.pg_owner_id \r\n" +
+							"JOIN pgusers.user_bookings ub ON zpb.booking_id = ub.user_bookings_id \r\n" +
+							"WHERE ub.user_bookings_web_check_in = true \r\n" +
+							"  AND ub.user_bookings_web_check_out = false \r\n" +
+							"  AND ub.user_bookings_is_cancelled = false \r\n"
+
+					);
+			Map<String, Object> parameters = new HashMap<>();
+
+			 if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+			        queryBuilder.append(" AND zpb.in_date >= CAST(:fromDate AS TIMESTAMP) ");
+			        queryBuilder.append(" AND zpb.out_date <= CAST(:toDate AS TIMESTAMP) ");
+			        parameters.put("fromDate", filterRequest.getFromDate());
+			        parameters.put("toDate", filterRequest.getToDate());
+			    }
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "ownerFullName":
+					sort = "zpod.pg_owner_name";
+					break;
+				case "propertyName":
+					sort = "zppd.property_name";
+					break;
+				case "propertyContactNumber":
+					sort = "zppd.property_contact_number";
+					break;
+				case "propertyEmailAddress":
+					sort = "zppd.property_pg_email";
+					break;
+				case "propertyAddress":
+					sort = "zppd.property_house_area";
+					break;
+				case "expectedRentPerMonth":
+					sort = "zpb.fixed_rent";
+					break;
+				case "numberOfBeds":
+					sort = "occupied_bed";
+					break;
+				default:
+					sort = "zpod.pg_owner_name";
+				}
+
+				 queryBuilder.append(
+					        "GROUP BY  zpod.pg_owner_name, \r\n" +
+					        "         zppd.property_name, \r\n" +
+					        "         zppd.property_contact_number, \r\n" +
+					        "         zppd.property_pg_email, \r\n" +
+					        "         zppd.property_house_area, \r\n" +
+					        "         zpb.fixed_rent, \r\n" +
+					        "         zpb.in_date, \r\n" +
+					        "         zpb.out_date \r\n" +
+					        "HAVING COUNT(zpb.booking_id) > 0"
+					    );
+
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY zpod.pg_owner_name DESC ");
+			}
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
+
+			int filterCount = query.getResultList().size();
+
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
+			List<Object[]> results = query.getResultList();
+			List<PropertyResportsDTO> potentialPropertyReportDto = results.stream().map(row -> {
+				PropertyResportsDTO dto = new PropertyResportsDTO();
+				dto.setOwnerFullName(row[0] != null ? (String) row[0] : "");
+				dto.setPropertyName(row[1] != null ? (String) row[1] : "");
+				dto.setPropertyContactNumber(row[2] != null ? (String) row[2] : "");
+				dto.setPropertyEmailAddress(row[3] != null ? (String) row[3] : "");
+				dto.setPropertyAddress(row[4] != null ? (String) row[4] : "");
+				dto.setExpectedRentPerMonth((row[5] != null) ? ((Number) row[5]).doubleValue() : 0.0);
+				dto.setNumberOfBeds(row[6] != null ? ((BigInteger) row[6]).intValue() : 0);
+				return dto;
+			}).collect(Collectors.toList());
+			return new CommonResponseDTO<>(potentialPropertyReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Potential Properties Details: " + e.getMessage());
 		}
 	}
 }
