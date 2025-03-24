@@ -14,7 +14,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ActivityLogService } from '../service/activity-log-service';
-import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
+import { FiltersRequestModel } from 'src/app/report/model/report-filters-model';
 
 
 @Component({

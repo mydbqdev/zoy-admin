@@ -4,7 +4,6 @@ import { StartupComponent } from './common/startup/startup.component';
 import { NgModule } from '@angular/core';
 import { UnderConstructionComponent } from './under-construction/under-construction.component';
 import { HomeComponent } from './components/home/home.component';
-import { ReportListComponent } from './finance/reports/component/report-list.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ProfileComponent } from './profile/profile/profile.component';
 import { ActivityLogComponent } from './profile/activity-log/activity-log.component';
@@ -17,7 +16,6 @@ const routes: Routes = [
 	{ path: 'signin', component: SigninComponent },
 	{ path: 'under-construction', component:UnderConstructionComponent},
 	{ path: 'home', component: HomeComponent },
-	{ path: 'report-list', component: ReportListComponent },
 	{ path: 'forgot-password', component: ForgotPasswordComponent },
 	{ path: 'profile', component: ProfileComponent },
 	{ path: 'activity-log', component: ActivityLogComponent },

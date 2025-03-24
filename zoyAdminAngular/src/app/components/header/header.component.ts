@@ -15,7 +15,7 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
 import { AlertNotificationDetailsModel } from 'src/app/alert-notification/model/alert-notification-model';
 import { WebsocketService } from 'src/app/common/service/websocket.service';
 import { AlertNotificationService } from 'src/app/alert-notification/service/alert-notification-service';
-import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
+import { FiltersRequestModel } from 'src/app/report/model/report-filters-model';
 
 @Component({
   selector: 'app-header',
