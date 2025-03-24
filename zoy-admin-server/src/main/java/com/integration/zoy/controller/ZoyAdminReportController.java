@@ -78,7 +78,8 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
 			boolean applyPagination = true;
-			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData,applyPagination);
+			boolean isGstReport = false;
+			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData,applyPagination,isGstReport);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getUserPaymentsByDateRange API:/zoy_admin/payment_transfer_details.getUserPaymentsByDateRange ",e);
@@ -94,7 +95,8 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		try {
 			FilterData filterData=gson.fromJson(filterRequest.getFilterData(), FilterData.class);
 			boolean applyPagination = true;
-			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData,applyPagination);
+			boolean isGstReport = true;
+			CommonResponseDTO<UserPaymentDTO> paymentDetails =  adminReportImpl.getUserPaymentDetails(filterRequest,filterData,applyPagination,isGstReport);
 			return new ResponseEntity<>(gson.toJson(paymentDetails), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getUserGstReportByDateRange API:/zoy_admin/user_gst_report_details.getUserGstReportByDateRange ",e);
