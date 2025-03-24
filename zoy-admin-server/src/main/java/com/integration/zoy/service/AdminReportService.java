@@ -3,6 +3,7 @@ package com.integration.zoy.service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -1081,6 +1082,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("previousPropert", tenantReport.getPreviousPropertName() != null ? tenantReport.getPreviousPropertName() : "");
 			data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
 			data.put("roomNumber", tenantReport.getBedNumber() != null ? tenantReport.getBedNumber() : "");
+			data.put("checkindate", tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) : "");
 			data.put("checkedOutDate", tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) : "");
 
 			// Common fields

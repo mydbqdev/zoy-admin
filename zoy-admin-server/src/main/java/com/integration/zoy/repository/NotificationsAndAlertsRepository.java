@@ -34,6 +34,9 @@ public interface NotificationsAndAlertsRepository extends JpaRepository<Notifica
 			nativeQuery = true)
 	Page<Object[]> findNotification(String emailId, Pageable pageable);
 	
+	@Query(value="SELECT COUNT(*) FROM notifications_and_alerts_table WHERE userid = :emailId AND is_seen = TRUE",nativeQuery = true)
+	String isSeencount(String emailId);
+	
 	@Transactional
 	@Modifying
     @Query(value = "UPDATE notifications_and_alerts_table SET is_seen = TRUE, updated_at = CURRENT_TIMESTAMP WHERE notification_id = :notificationId", nativeQuery = true)
