@@ -399,5 +399,21 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
 	}
+
+	@Override
+	public ResponseEntity<String> getPotentialPropertyDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+			 FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+	        boolean applyPagination = true;
+	        CommonResponseDTO<PropertyResportsDTO>potentialPropertyDetails = adminReportImpl.getpotentialPropertyReport(filterRequest,filterData, applyPagination);
+	        return new ResponseEntity<>(gson.toJson(potentialPropertyDetails), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error in API:/zoy_admin/potential_property_details.getPotentialPropertyDetailsByDateRange", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
 	
 }
