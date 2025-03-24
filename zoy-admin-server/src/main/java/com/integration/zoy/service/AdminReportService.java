@@ -1672,7 +1672,7 @@ public class AdminReportService implements AdminReportImpl{
 				case "propertAddress":
 					sort = "zpd.property_house_area";
 					break;
-				case "roomNumber":
+				case "bedNumber":
 					sort = "bd.bed_name";
 					break;
 				case "expectedCheckIndate":
@@ -1800,7 +1800,7 @@ public class AdminReportService implements AdminReportImpl{
 				case "propertAddress":
 					sort = "zpd.property_house_area";
 					break;
-				case "roomNumber":
+				case "bedNumber":
 					sort = "bd.bed_name";
 					break;
 				case "checkInDate":
@@ -1934,7 +1934,7 @@ public class AdminReportService implements AdminReportImpl{
 				case "propertAddress":
 					sort = "propertyAddress";
 					break;
-				case "roomNumber":
+				case "bedNumber":
 					sort = "bedName";
 					break;
 				case "checkInDate":
