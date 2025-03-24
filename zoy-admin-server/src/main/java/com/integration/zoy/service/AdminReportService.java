@@ -83,7 +83,7 @@ public class AdminReportService implements AdminReportImpl{
 
 
 	@Override
-	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException {
+	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination,Boolean isGstReport) throws WebServiceException {
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT \r\n"
@@ -200,6 +200,10 @@ public class AdminReportService implements AdminReportImpl{
 				}
 				else {
 					sort = "up.user_payment_created_at";
+				}
+				if(isGstReport) {
+					 queryBuilder.append(" AND  up.user_payment_gst IS NOT NULL AND up.user_payment_gst <> 0 \r\n");
+					
 				}
 				queryBuilder.append(" GROUP BY \r\n"
 					    + " up.user_payment_created_at, \r\n"
@@ -681,12 +685,12 @@ public class AdminReportService implements AdminReportImpl{
 			String templatePath ="";
 			switch (filterRequest.getReportType()) {
 			case "userTransactionReport":
-				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
+				//reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateUserTransactionDataList(reportData,filterRequest);
 				templatePath = "templates/userTransactionReport.docx";
 				break;
 			case "userPaymentGstReport":
-				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
+				//reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateUserPaymentGstReport(reportData,filterRequest);
 				templatePath ="templates/userPaymentGstReport.docx";
 				break;
