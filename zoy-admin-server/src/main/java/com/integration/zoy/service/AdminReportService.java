@@ -1082,6 +1082,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("previousPropert", tenantReport.getPreviousPropertName() != null ? tenantReport.getPreviousPropertName() : "");
 			data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
 			data.put("roomNumber", tenantReport.getBedNumber() != null ? tenantReport.getBedNumber() : "");
+			data.put("checkindate", tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) : "");
 			data.put("checkedOutDate", tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) : "");
 
 			// Common fields
