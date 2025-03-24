@@ -34,11 +34,16 @@ export class MenuService {
     { name: "Permission Approval", link: "/permission-approval", permission: "PERMISSION_APPROVAL_READ", icon:"fas fa-fw fa-users-cog" },
     { name: "Profile", link: "/profile", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
     { name: "Reports", link: "/report-list", permission: "REPORTS_READ", icon:"fas fa-fw fa-money-check" },
+    { name: "Finance Reports", link: "/finance-reports", permission: "FINANCE_REPORTS_READ", icon:"fas fa-fw fa-money-check" },
     { name: "Role and Permission", link: "/role-master", permission: "ROLE_AND_PERMISSION_READ", icon:"fas fa-fw fa-cogs"},
     { name: "Settings", link: "/settings", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
     { name: "Zoy Code", link: "/zoy-code", permission: "ZOYCODES_READ", icon:"fas fa-fw fa-users" },
     { name: "User Audit", link: "/user-audit", permission: "USER_AUDIT_READ", icon:"fas fa-fw fa-cogs" },
-    { name: "Organization Information", link: "/organization-info-config", permission: "ORGANIZATION_INFO_CONFIG_READ", icon:"fas fa-fw fa-cogs" }
+    { name: "Organization Information", link: "/organization-info-config", permission: "ORGANIZATION_INFO_CONFIG_READ", icon:"fas fa-fw fa-cogs" },
+    { name: "Tenant Reports", link: "/tenant-reports", permission: "TENANT_REPORTS_READ", icon:"fas fa-chart-bar" },
+    { name: "Owner Reports", link: "/owner-reports", permission: "OWNER_REPORTS_READ", icon:"fas fa-chart-bar" },
+    { name: "Finance Reports", link: "/finance-reports", permission: "FINANCE_REPORTS_READ", icon:"fas fa-chart-bar" },
+    { name: "Support Reports", link: "/support-reports", permission: "SUPPORT_REPORTS_READ", icon:"fas fa-chart-bar" },
   ];
   
 
@@ -77,7 +82,11 @@ getAllMenus(): Menu[] {
     { key: "DB MASTER CONFIGURATION", screen: "Initial Configuration" ,order:6.2 },
     { key: "CONFIGURATION MASTER", screen: "Master Configuration" ,order:6.3 },
     { key: "USER AUDIT", screen: "User Audit" ,order:6.4 },
-    { key: "ORGANIZATION INFO CONFIG", screen: "Organization Information" ,order:6.5 }
+    { key: "ORGANIZATION INFO CONFIG", screen: "Organization Information" ,order:6.5 },
+    { key: "TENANT REPORTS", screen: "Tenant Reports" ,order:7.1 },
+    { key: "OWNER REPORTS", screen: "Owner Reports" ,order:7.2 },
+    { key: "FINANCE REPORTS", screen: "Finance Reports" ,order:7.3 },
+    { key: "SUPPORT REPORTS", screen: "Support Reports" ,order:7.4 },
   ];
 
   getAllAuthorization():any {

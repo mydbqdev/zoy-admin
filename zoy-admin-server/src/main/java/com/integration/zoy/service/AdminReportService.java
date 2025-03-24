@@ -3,7 +3,6 @@ package com.integration.zoy.service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -21,10 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.annotations.SerializedName;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.FilterData;
@@ -1726,33 +1723,34 @@ public class AdminReportService implements AdminReportImpl{
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder("SELECT \r\n"
-					+ "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
-					+ "    um.user_mobile,\r\n"
-					+ "    um.user_email,\r\n"
-					+ "    zpd.property_name,\r\n"
-					+ "    zpd.property_house_area,\r\n"
-					+ "    bd.bed_name,\r\n"
-					+ "    zpqbd.in_date, \r\n"
-					+ "    zpqbd.out_date\r\n, "
-					+ "    zpd.property_city\r\n "
-					+ "FROM pgusers.user_master um\r\n"
-					+ "JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
-					+ "    ON um.user_id = zpqbd.tenant_id \r\n"
-					+ "join pgusers.user_bookings ub\r\n"
-					+ "    on zpqbd.booking_id = ub.user_bookings_id \r\n"
-					+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
-					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
-					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
-					+ "    ON zpqbd.selected_bed = bd.bed_id \r\n"
-					+ "WHERE 1=1");
+					+ "                 um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+					+ "                 um.user_mobile AS mobileNumber,\r\n"
+					+ "                 um.user_email AS emailId,\r\n"
+					+ "                 zpd.property_name AS propertyName,\r\n"
+					+ "                 zpd.property_house_area AS propertyAddress,\r\n"
+					+ "                 bd.bed_name AS bedName,\r\n"
+					+ "                 zpqbd.in_date AS inDate, \r\n"
+					+ "                 zpqbd.out_date AS outDate,\r\n"
+					+ "                 zpd.property_city\r\n"
+					+ "					FROM pgusers.user_master um\r\n"
+					+ "					JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
+					+ "					    ON um.user_id = zpqbd.tenant_id \r\n"
+					+ "					join pgusers.user_bookings ub\r\n"
+					+ "					    on zpqbd.booking_id = ub.user_bookings_id \r\n"
+					+ "					JOIN pgowners.zoy_pg_property_details zpd \r\n"
+					+ "					    ON zpqbd.property_id = zpd.property_id \r\n"
+					+ "					JOIN pgowners.zoy_pg_bed_details bd  \r\n"
+					+ "					    ON zpqbd.selected_bed = bd.bed_id \r\n"
+					+ "					WHERE 1=1 ");
 
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" and zpqbd.in_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) \r\n"
-						+ "or zpqbd.out_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
-						+ "or CAST(:fromDate AS TIMESTAMP) between zpqbd.in_date and zpqbd.out_date\r\n"
-						+ "or CAST(:toDate AS TIMESTAMP) between  zpqbd.in_date and zpqbd.out_date");
+				queryBuilder.append(" AND (zpqbd.in_date between CAST(:fromDate AS TIMESTAMP)  AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "						or zpqbd.out_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "						or CAST(:fromDate AS TIMESTAMP) between zpqbd.in_date and zpqbd.out_date\r\n"
+						+ "						or CAST(:toDate AS TIMESTAMP) between  zpqbd.in_date and zpqbd.out_date)\r\n"
+						+ "					 AND (ub.user_bookings_web_check_in = true OR ub.user_bookings_web_check_out = true)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -1837,8 +1835,8 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setCurrentPropertName(row[3] != null ? (String) row[3] : "");
 				dto.setPropertAddress(row[4] != null ? (String) row[4] : "");
 				dto.setBedNumber(row[5] != null ? (String) row[5] : "");
-				dto.setCheckInDate(row[6] != null ? (Timestamp)(row[6]) : null);
-				dto.setExpectedCheckOutdate(row[7] != null ? (Timestamp)(row[7]) : null);
+				dto.setCheckInDate(row[6] != null ? Timestamp.valueOf(String.valueOf(row[6])) : null);
+				dto.setExpectedCheckOutdate(row[7] != null ? Timestamp.valueOf(String.valueOf(row[7])) : null);
 				return dto;
 			}).collect(Collectors.toList());
 
@@ -1853,36 +1851,38 @@ public class AdminReportService implements AdminReportImpl{
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder(
-					"SELECT distinct\r\n"
-					+ "um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
-					+ "um.user_mobile AS mobileNumber,\r\n"
-					+ "um.user_email AS emailId,\r\n"
-					+ "zppd.property_name AS propertyName,\r\n"
-					+ "zppd.property_house_area AS propertyAddress,\r\n"
-					+ "bd.bed_name AS bedName,\r\n"
-					+ "zpobd.out_date AS outDate \r\n"
-					+ "FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
-					+ "JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id\r\n"
-					+ "JOIN pgusers.user_bookings ub ON ub.user_bookings_id = zpobd.booking_id\r\n"
-					+ "JOIN pgowners.zoy_pg_property_details zppd ON zppd.property_id = zpobd.property_id\r\n"
-					+ "JOIN (\r\n"
-					+ "    SELECT tenant_id, MAX(out_date) AS last_out_date\r\n"
-					+ "    FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
-					+ "    JOIN pgusers.user_bookings ub ON ub.user_bookings_id = zpobd.booking_id\r\n"
-					+ "    JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id\r\n"
-					+ "    WHERE ub.user_bookings_web_check_out = TRUE \r\n"
-					+ "    AND um.user_status = 'Inactive'\r\n"
-					+ "    GROUP BY tenant_id\r\n"
-					+ ") latest_out ON zpobd.tenant_id = latest_out.tenant_id \r\n"
-					+ "JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id\r\n"
-					+ "AND zpobd.out_date = latest_out.last_out_date\r\n"
-					+ "WHERE ub.user_bookings_web_check_out = TRUE \r\n"
-					+ "AND um.user_status = 'Inactive'");
+					"SELECT \r\n"
+					+ "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+					+ "    um.user_mobile AS mobileNumber,\r\n"
+					+ "    um.user_email AS emailId,\r\n"
+					+ "    zpd.property_name AS propertyName,\r\n"
+					+ "    zpd.property_house_area AS propertyAddress,\r\n"
+					+ "    bd.bed_name AS bedName,\r\n"
+					+ "    zpqbd.in_date AS inDate, \r\n"
+					+ "    zpqbd.out_date AS outDate,\r\n"
+					+ "    zpd.property_city\r\n"
+					+ "FROM pgusers.user_master um\r\n"
+					+ "JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
+					+ "    ON um.user_id = zpqbd.tenant_id \r\n"
+					+ "JOIN pgusers.user_bookings ub\r\n"
+					+ "    ON zpqbd.booking_id = ub.user_bookings_id \r\n"
+					+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
+					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
+					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
+					+ "    ON zpqbd.selected_bed = bd.bed_id\r\n"
+					+ "WHERE 1=1 ");
 
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND zpobd.out_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+				queryBuilder.append("and\r\n"
+						+ "    NOT (\r\n"
+						+ "        zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
+						+ "        OR zpqbd.out_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
+						+ "        OR CAST(:fromDate AS TIMESTAMP) BETWEEN zpqbd.in_date AND zpqbd.out_date\r\n"
+						+ "        OR CAST(:toDate AS TIMESTAMP) BETWEEN zpqbd.in_date AND zpqbd.out_date\r\n"
+						+ "    )\r\n"
+						+ "    AND (ub.user_bookings_web_check_in = true OR ub.user_bookings_web_check_out = true)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -1908,7 +1908,7 @@ public class AdminReportService implements AdminReportImpl{
 			}
 
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
+				queryBuilder.append(" AND LOWER(zpd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
 
@@ -1934,6 +1934,9 @@ public class AdminReportService implements AdminReportImpl{
 					break;
 				case "roomNumber":
 					sort = "bedName";
+					break;
+				case "checkInDate":
+					sort="inDate";
 					break;
 				case "checkedOutDate":
 					sort = "outDate";
@@ -1966,7 +1969,8 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setPreviousPropertName(row[3] != null ? (String) row[3] : ""); 
 				dto.setPropertAddress(row[4] != null ? (String) row[4] : ""); 
 				dto.setBedNumber(row[5] != null ? (String) row[5] : ""); 
-				dto.setCheckedOutDate(row[6] != null ? (Timestamp) row[6] : null);
+				dto.setCheckInDate(row[6] != null ? Timestamp.valueOf(String.valueOf(row[6])) : null);
+				dto.setCheckedOutDate(row[7] != null ? Timestamp.valueOf(String.valueOf(row[7])) : null);
 				return dto;
 			
 			}).collect(Collectors.toList());
@@ -2033,7 +2037,7 @@ public class AdminReportService implements AdminReportImpl{
 			}
 
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
+				queryBuilder.append(" AND LOWER(zpd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
 
