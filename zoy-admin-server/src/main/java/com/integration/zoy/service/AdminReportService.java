@@ -685,12 +685,14 @@ public class AdminReportService implements AdminReportImpl{
 			String templatePath ="";
 			switch (filterRequest.getReportType()) {
 			case "userTransactionReport":
-				//reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
+				boolean isGstReport=false;
+				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination,isGstReport);
 				dataListWrapper=this.generateUserTransactionDataList(reportData,filterRequest);
 				templatePath = "templates/userTransactionReport.docx";
 				break;
 			case "userPaymentGstReport":
-				//reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
+				boolean isGst=true;
+				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination,isGst);
 				dataListWrapper=this.generateUserPaymentGstReport(reportData,filterRequest);
 				templatePath ="templates/userPaymentGstReport.docx";
 				break;
