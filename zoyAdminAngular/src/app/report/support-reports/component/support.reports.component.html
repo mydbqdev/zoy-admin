@@ -24,7 +24,7 @@
               <!-- Begin Page Content -->
               <div class="container-fluid" style="margin-top: -5px;">
                 <div class="d-flex mb-3">
-                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Reports</span></h3> 
+                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Support Reports</span></h3> 
                  </div>  
                 <div class="row">
                  <div class="col-sm-11">
@@ -53,9 +53,6 @@
                             </mat-option>
                           </mat-autocomplete>
                         </form>
-                        <!-- <select class="form-select form-select-sm" aria-label="Default select example" [(ngModel)]="reportName" (ngModelChange)="changeReport()" style=" font-size: 12px;" > 
-                            <option *ngFor="let report of reportNamesList"  [value]="report.name" >{{report.name}}</option>
-                        </select> -->
                     </div>
                     <div class="ml-2" style="width: 340px;" >
                            <label for="category" *ngIf="reportName != 'Upcoming Tenants Report'" >Date Range</label>
@@ -68,7 +65,7 @@
                                     [title]="!toDate? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
                             </div>
                     </div>
-                    <div class="ml-2" style="padding-top:26px;" *ngIf="reportName!='Vendor Payments Gst Report'">
+                    <div class="ml-2" style="padding-top:26px;" *ngIf="reportName!='Regester Tenants Report'">
                       <a class="btn btn-light btn-sm" title="Advance Search" id="advanceSearch" style="line-height: normal;border: 1px solid #d2d3d8;"
                       data-toggle="dropdown"><i class="fas fa-angle-double-down"></i></a>
                       <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width p-2 shadow" style="width: 500px;margin-right: 150px;" aria-labelledby="advanceSearch" data-bs-auto-close="false">
@@ -233,7 +230,7 @@
                                     <ng-container *ngFor="let column of selectedReportColumns">
                                       <ng-container [matColumnDef]="column" *ngIf=" column != 'reviews'">
                                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 400;" [matTooltip]="columnHeaders[column] "> 
-                                        {{ column == 'totalAmount' && reportName =='Failure Transactions Report' ? 'AMOUNT' : (columnHeaders[column] || column ) }}
+                                        {{ columnHeaders[column] || column }}
                                           <i class="fas fa-lg fa-sort ml-1" style="color:#d1cfcf;margin-right: 3px;"></i>
                                           <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
                                              style="margin-right: 3px;margin-left: -14px;"></i>
@@ -258,28 +255,6 @@
                                       </ng-container>
                                     </ng-container>
 
-                                       <!-- <ng-container matColumnDef="actions">
-                                      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions"></th>
-                                      <td mat-cell *matCellDef="let element">
-                                      <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails"  (click)="viewReport(element)">
-                                          <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
-                                      </span>
-                                    
-                                      </td>
-                                  </ng-container>  -->
-
-                                 <!--   <ng-container matColumnDef="actions">
-                                      <th mat-header-cell style="" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions"></th>
-                                      <td mat-cell style="" *matCellDef="let element">
-                                      <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails"  (click)="viewReport(element)">
-                                          <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
-                                      </span>
-                                     <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
-                                          <i class="bi bi-upload" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="Export"></i>
-                                      </span
-                                      </td>
-                                  </ng-container>  -->
-                                  
                                     <tr mat-header-row *matHeaderRowDef="selectedReportColumns; sticky:true"></tr>
                                     <tr mat-row *matRowDef="let row; columns: selectedReportColumns;"></tr>
                                   </table>
@@ -309,30 +284,6 @@
   </div>
   <!-- End of Page Wrapper -->
 </div>
-
- <!-- viewDetails
-<div class="offcanvas offcanvas-end" tabindex="-1" id="viewDetails" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasRightLabel">{{reportName}} Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <hr class="sidebar-divider my-0">
-    <div class="offcanvas-body">
-     <div style="font-size: 13px;">   
-
-    <div *ngFor="let key of objectKeys(reportData)">
-      <div class="row mb-1">
-          <div class="col-sm-5 font-weight-bold">
-              {{ columnHeaders[key] || key }}
-          </div>
-          <div class="col-sm-7">: {{ reportData[key] }}</div>
-      </div>
-    </div>
-    </div>
-    </div>
-</div>
--->
-
 
 <div class="modal fade" id="reviewsModel" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog model-center" role="document">  

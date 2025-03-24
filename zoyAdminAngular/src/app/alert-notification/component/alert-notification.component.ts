@@ -12,10 +12,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { AlertNotificationDetailsModel} from '../model/alert-notification-model';
-import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
 import { AlertNotificationService } from '../service/alert-notification-service';
 import { Menu } from 'src/app/components/header/menu';
 import { MenuService } from 'src/app/components/header/menu.service';
+import { FiltersRequestModel } from 'src/app/report/model/report-filters-model';
 
 @Component({
 	selector: 'app-alert-notification',

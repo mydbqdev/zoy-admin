@@ -111,8 +111,8 @@ export class BulkUploadComponent {
   }
 
   ngAfterViewInit(){
-    this.sidemenuComp.expandMenu(7);
-    this.sidemenuComp.activeMenu(7,'bulk-upload');
+    this.sidemenuComp.expandMenu(2);
+    this.sidemenuComp.activeMenu(2,'bulk-upload');
     this.dataService.setHeaderName("Bulk Upload ");
   }
 
