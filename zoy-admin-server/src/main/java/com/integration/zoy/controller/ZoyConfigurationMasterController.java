@@ -49,11 +49,13 @@ import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
+import com.integration.zoy.model.ZoyBeforeCheckInCancellationModel;
 import com.integration.zoy.model.ZoyCompanyMasterModal;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
+import com.integration.zoy.repository.ZoyPgCancellationDetailsRepository;
 import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
 import com.integration.zoy.repository.ZoyPgForceCheckOutRepository;
 import com.integration.zoy.repository.ZoyPgGstChargesRepository;
@@ -83,6 +85,7 @@ import com.integration.zoy.utils.ZoyPgTokenDetailsDTO;
 import com.integration.zoy.utils.ZoyRentingDuration;
 import com.integration.zoy.utils.ZoySecurityDepositDeadLineDto;
 import com.integration.zoy.utils.ZoyShortTermDto;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @RestController
@@ -149,6 +152,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	@Autowired
 	ZoyPgOtherChargesRepository zoyPgOtherChargesRepository;
 
+	@Autowired
+	ZoyPgCancellationDetailsRepository ZoyPgCancellationDetailsRepo;
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetailsDTO details) {
 		ResponseBody response = new ResponseBody();
@@ -251,6 +256,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(
 			List<ZoyBeforeCheckInCancellation> zoyBeforeCheckInCancellations) {
 		ResponseBody response = new ResponseBody();
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		try {
 			if (zoyBeforeCheckInCancellations == null || zoyBeforeCheckInCancellations.size() <= 0) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -305,8 +311,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 							historyContent.append(" , Deduction percentage from " + oldVariable + " to "
 									+ details.getDeductionPercentage());
 						}
-						auditHistoryUtilities.auditForCommon(
-								SecurityContextHolder.getContext().getAuthentication().getName(),
+						auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(),
 								historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 
 					}
@@ -349,6 +354,86 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
+	  
+	    
+	@Transactional
+	public ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn1(ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation) {
+
+	    ResponseBody response = new ResponseBody();
+	    String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+	    
+	    try {
+	        if (zoyBeforeCheckInCancellation == null || 
+	            zoyBeforeCheckInCancellation.getZoyBeforeCheckInCancellationInfo() == null) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError("Required Data Grouping are missing");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        List<String> deleteList = new ArrayList<>();
+	        List<ZoyPgCancellationDetails> cancellationDetailsList = new ArrayList<>();
+
+	        for (ZoyBeforeCheckInCancellation cancellation : zoyBeforeCheckInCancellation.getZoyBeforeCheckInCancellationInfo()) {
+	            if (cancellation.getIsDelete()) {
+	            	deleteList.add(cancellation.getCancellationId());
+	            } else {
+	                ZoyPgCancellationDetails entity = new ZoyPgCancellationDetails();
+	                entity.setPriority(cancellation.getPriority());
+	                entity.setTriggerOn(cancellation.getTriggerOn());
+	                entity.setTriggerCondition(cancellation.getTriggerCondition());
+	                entity.setBeforeCheckinDays(cancellation.getBeforeCheckinDays());
+	                entity.setDeductionPercentage(cancellation.getDeductionPercentage());
+	                entity.setCond(cancellation.getCond());
+	                entity.setTriggerValue(cancellation.getTriggerValue());
+	                entity.setEffectiveDate(zoyBeforeCheckInCancellation.getEffectiveDate());
+//	                entity.setPgType(zoyBeforeCheckInCancellation.getPgType());
+
+	                if (zoyBeforeCheckInCancellation.getIscreate()) {
+	                    entity.setCreatedBy(currentUser);
+	                    entity.setIsApproved(false);
+	                } else if (zoyBeforeCheckInCancellation.getIsApproved()) {
+	                    entity.setCancellationId(cancellation.getCancellationId());
+	                    entity.setCreatedBy(zoyBeforeCheckInCancellation.getCreatedBy());
+	                    entity.setIsApproved(true);
+	                    entity.setApprovedBy(currentUser);
+	                } else {
+	                    entity.setCancellationId(cancellation.getCancellationId());
+	                    entity.setCreatedBy(zoyBeforeCheckInCancellation.getCreatedBy());
+	                    entity.setIsApproved(false);
+	                }
+	                cancellationDetailsList.add(entity);
+	            }
+	        }
+	        if (!cancellationDetailsList.isEmpty()) {
+	            ZoyPgCancellationDetailsRepo.saveAll(cancellationDetailsList);
+	        }
+
+	        if (zoyBeforeCheckInCancellation.getDelete() && !deleteList.isEmpty()) {
+	        	String[] todeleteList = deleteList.toArray(new String[0]);
+	            ZoyPgCancellationDetailsRepo.deleteBeforeCheckInCancellationbyIds(todeleteList);
+	        }
+
+	        response.setStatus(HttpStatus.OK.value());
+	        response.setMessage("Operation completed successfully");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	    
+	    } catch (Exception e) {
+	        log.error(
+	                "Error creating/updating before check-in API:/zoy_admin/config/before-check-in.zoyAdminConfigCreateUpdateBeforeCheckIn",
+	                e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError("Internal server error");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+	
+	@Override
+	public ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckInGetDetails(ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+
 
 	private ZoyBeforeCheckInCancellationDto convertToDTO(ZoyPgCancellationDetails details) {
 		ZoyBeforeCheckInCancellationDto dto = new ZoyBeforeCheckInCancellationDto();
@@ -1121,137 +1206,6 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		}
 	}
 
-	@Override
-	public ResponseEntity<String> getAllConfigurationDetails() {
-		ResponseBody response = new ResponseBody();
-		try {
-			List<ZoyPgTokenDetails> tokenDetails = ownerDBImpl.findAllTokenDetailsSorted();
-			List<ZoyPgSecurityDepositDetails> depositDetails = ownerDBImpl.findAllSortedByEffectiveDate();
-			List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
-			List<ZoyPgEarlyCheckOut> earlyCheckOutDetails = ownerDBImpl.findAllEarlyCheckOutRulesSorted();
-			List<ZoyPgAutoCancellationAfterCheckIn> cancellationAfterCheckIn = ownerDBImpl
-					.findAllAfterCheckInDatesSorted();
-			List<ZoyPgAutoCancellationMaster> securityDepositDeadLine = ownerDBImpl
-					.findAllSecurityDepositDeadlineSorted();
-			List<ZoyDataGrouping> dataGrouping = ownerDBImpl.findAllDataGroupingSorted();
-			List<ZoyPgOtherCharges> otherCharges = ownerDBImpl.findAllOtherChargesDetailsSorted();
-			List<ZoyPgGstCharges> gstCharges = ownerDBImpl.findAllGstChargesDetailsSorted();
-			List<ZoyPgShortTermMaster> shortTermMaster = ownerDBImpl.findAllShortTerm();
-			List<ZoyPgForceCheckOut> forceCheckOut = ownerDBImpl.findAllForceCheckOutDetailsSorted();
-			List<ZoyPgNoRentalAgreement> noRentalAgreement = ownerDBImpl.findAllNoRentalAgreementDetailsSorted();
-			List<ZoyPgShortTermRentingDuration> rentingDuration = ownerDBImpl
-					.findAllShortTermRentingDurationDetailsSorted();
-			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
-
-			if (tokenDetails != null) {
-				List<ZoyPgTokenDetailsDTO> listToken = new ArrayList<>();
-				for (ZoyPgTokenDetails tokenDetail : tokenDetails) {
-					listToken.add(convertToDTO(tokenDetail));
-				}
-				configDTO.setTokenDetails(listToken);
-			}
-			if (depositDetails != null) {
-				List<ZoyPgSecurityDepositDetailsDTO> listDepositDetails = new ArrayList<>();
-				for (ZoyPgSecurityDepositDetails depositDetail : depositDetails) {
-					listDepositDetails.add(convertToDTO(depositDetail));
-				}
-				configDTO.setDepositDetails(listDepositDetails);
-			}
-			if (depositDetails != null) {
-				List<ZoyPgSecurityDepositDetailsDTO> listDepositDetails = new ArrayList<>();
-				for (ZoyPgSecurityDepositDetails depositDetail : depositDetails) {
-					listDepositDetails.add(convertToDTO(depositDetail));
-				}
-				configDTO.setDepositDetails(listDepositDetails);
-			}
-			if (cancellationDetails != null)
-				configDTO.setCancellationBeforeCheckInDetails(convertToDTO(cancellationDetails));
-
-			if (earlyCheckOutDetails != null) {
-				List<ZoyPgEarlyCheckOutRuleDto> listZoyearlyCheckOutDetails = new ArrayList<>();
-				for (ZoyPgEarlyCheckOut detail : earlyCheckOutDetails) {
-					listZoyearlyCheckOutDetails.add(convertToDTO(detail));
-				}
-				configDTO.setEarlyCheckOutRuleDetails(listZoyearlyCheckOutDetails);
-			}
-
-			if (cancellationAfterCheckIn != null) {
-				List<ZoyAfterCheckInCancellationDto> listZoycancellationAfterCheckIn = new ArrayList<>();
-				for (ZoyPgAutoCancellationAfterCheckIn detail : cancellationAfterCheckIn) {
-					listZoycancellationAfterCheckIn.add(convertToDTO(detail));
-				}
-				configDTO.setCancellationAfterCheckInDetails(listZoycancellationAfterCheckIn);
-			}
-			if (securityDepositDeadLine != null) {
-				List<ZoySecurityDepositDeadLineDto> listZoysecurityDepositDeadLine = new ArrayList<>();
-				for (ZoyPgAutoCancellationMaster detail : securityDepositDeadLine) {
-					listZoysecurityDepositDeadLine.add(convertToDTO(detail));
-				}
-				configDTO.setSecurityDepositDeadLineDetails(listZoysecurityDepositDeadLine);
-			}
-
-			if (dataGrouping != null) {
-				List<ZoyDataGroupingDto> listDataGrouping = new ArrayList<>();
-				for (ZoyDataGrouping grouping : dataGrouping) {
-					listDataGrouping.add(convertToDTO(grouping));
-				}
-				configDTO.setDataGrouping(listDataGrouping);
-			}
-			if (otherCharges != null) {
-				List<ZoyOtherChargesDto> listZoyOtherChargesDto = new ArrayList<>();
-				for (ZoyPgOtherCharges detail : otherCharges) {
-					listZoyOtherChargesDto.add(convertToDTO(detail));
-				}
-				configDTO.setOtherCharges(listZoyOtherChargesDto);
-			}
-
-			if (gstCharges != null) {
-				List<ZoyGstChargesDto> listZoyGstChargesDto = new ArrayList<>();
-				for (ZoyPgGstCharges detail : gstCharges) {
-					listZoyGstChargesDto.add(convertToDTO(detail));
-				}
-				configDTO.setGstCharges(listZoyGstChargesDto);
-			}
-
-			if (shortTermMaster != null) {
-				configDTO.setZoyShortTermDtos(convertShortToDTO(shortTermMaster));
-
-			}
-			if (forceCheckOut != null) {
-				List<ZoyForceCheckOutDto> listZoyForceCheckOutDto = new ArrayList<>();
-				for (ZoyPgForceCheckOut checkOut : forceCheckOut) {
-					listZoyForceCheckOutDto.add(convertToDTO(checkOut));
-				}
-				configDTO.setZoyForceCheckOutDto(listZoyForceCheckOutDto);
-			}
-			if (noRentalAgreement != null) {
-				List<ZoyPgNoRentalAgreementDto> listAgreement = new ArrayList<>();
-				for (ZoyPgNoRentalAgreement agreementDetail : noRentalAgreement) {
-					listAgreement.add(convertToDTO(agreementDetail));
-				}
-				configDTO.setNoRentalAgreement(listAgreement);
-			}
-			if (rentingDuration != null) {
-				List<ZoyRentingDuration> listZoyRentingDuration = new ArrayList<>();
-				for (ZoyPgShortTermRentingDuration detail : rentingDuration) {
-					listZoyRentingDuration.add(convertToDTO(detail));
-				}
-				configDTO.setShortTermRentingDuration(listZoyRentingDuration);
-			}
-
-			response.setStatus(HttpStatus.OK.value());
-			response.setData(configDTO);
-			response.setMessage("Successfully fetched all config details");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error(
-					"Error fetching config details API:/zoy_admin/config/admin-configuration-details.getAllConfigurationDetails ",
-					e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-	}
 
 	private List<ZoyShortTermDto> convertShortToDTO(List<ZoyPgShortTermMaster> shortTermMaster) {
 		List<ZoyShortTermDto> dtos = new ArrayList<>();
@@ -2004,6 +1958,138 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		} catch (Exception e) {
 			log.error(
 					"Error while Fetching all  Company Profile details API:/zoy_admin/config/fetch-master-profile.fetchCompanyProfileMaster",
+					e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> getAllConfigurationDetails() {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<ZoyPgTokenDetails> tokenDetails = ownerDBImpl.findAllTokenDetailsSorted();
+			List<ZoyPgSecurityDepositDetails> depositDetails = ownerDBImpl.findAllSortedByEffectiveDate();
+			List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
+			List<ZoyPgEarlyCheckOut> earlyCheckOutDetails = ownerDBImpl.findAllEarlyCheckOutRulesSorted();
+			List<ZoyPgAutoCancellationAfterCheckIn> cancellationAfterCheckIn = ownerDBImpl
+					.findAllAfterCheckInDatesSorted();
+			List<ZoyPgAutoCancellationMaster> securityDepositDeadLine = ownerDBImpl
+					.findAllSecurityDepositDeadlineSorted();
+			List<ZoyDataGrouping> dataGrouping = ownerDBImpl.findAllDataGroupingSorted();
+			List<ZoyPgOtherCharges> otherCharges = ownerDBImpl.findAllOtherChargesDetailsSorted();
+			List<ZoyPgGstCharges> gstCharges = ownerDBImpl.findAllGstChargesDetailsSorted();
+			List<ZoyPgShortTermMaster> shortTermMaster = ownerDBImpl.findAllShortTerm();
+			List<ZoyPgForceCheckOut> forceCheckOut = ownerDBImpl.findAllForceCheckOutDetailsSorted();
+			List<ZoyPgNoRentalAgreement> noRentalAgreement = ownerDBImpl.findAllNoRentalAgreementDetailsSorted();
+			List<ZoyPgShortTermRentingDuration> rentingDuration = ownerDBImpl
+					.findAllShortTermRentingDurationDetailsSorted();
+			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
+
+			if (tokenDetails != null) {
+				List<ZoyPgTokenDetailsDTO> listToken = new ArrayList<>();
+				for (ZoyPgTokenDetails tokenDetail : tokenDetails) {
+					listToken.add(convertToDTO(tokenDetail));
+				}
+				configDTO.setTokenDetails(listToken);
+			}
+			if (depositDetails != null) {
+				List<ZoyPgSecurityDepositDetailsDTO> listDepositDetails = new ArrayList<>();
+				for (ZoyPgSecurityDepositDetails depositDetail : depositDetails) {
+					listDepositDetails.add(convertToDTO(depositDetail));
+				}
+				configDTO.setDepositDetails(listDepositDetails);
+			}
+			if (depositDetails != null) {
+				List<ZoyPgSecurityDepositDetailsDTO> listDepositDetails = new ArrayList<>();
+				for (ZoyPgSecurityDepositDetails depositDetail : depositDetails) {
+					listDepositDetails.add(convertToDTO(depositDetail));
+				}
+				configDTO.setDepositDetails(listDepositDetails);
+			}
+			if (cancellationDetails != null)
+				configDTO.setCancellationBeforeCheckInDetails(convertToDTO(cancellationDetails));
+
+			if (earlyCheckOutDetails != null) {
+				List<ZoyPgEarlyCheckOutRuleDto> listZoyearlyCheckOutDetails = new ArrayList<>();
+				for (ZoyPgEarlyCheckOut detail : earlyCheckOutDetails) {
+					listZoyearlyCheckOutDetails.add(convertToDTO(detail));
+				}
+				configDTO.setEarlyCheckOutRuleDetails(listZoyearlyCheckOutDetails);
+			}
+
+			if (cancellationAfterCheckIn != null) {
+				List<ZoyAfterCheckInCancellationDto> listZoycancellationAfterCheckIn = new ArrayList<>();
+				for (ZoyPgAutoCancellationAfterCheckIn detail : cancellationAfterCheckIn) {
+					listZoycancellationAfterCheckIn.add(convertToDTO(detail));
+				}
+				configDTO.setCancellationAfterCheckInDetails(listZoycancellationAfterCheckIn);
+			}
+			if (securityDepositDeadLine != null) {
+				List<ZoySecurityDepositDeadLineDto> listZoysecurityDepositDeadLine = new ArrayList<>();
+				for (ZoyPgAutoCancellationMaster detail : securityDepositDeadLine) {
+					listZoysecurityDepositDeadLine.add(convertToDTO(detail));
+				}
+				configDTO.setSecurityDepositDeadLineDetails(listZoysecurityDepositDeadLine);
+			}
+
+			if (dataGrouping != null) {
+				List<ZoyDataGroupingDto> listDataGrouping = new ArrayList<>();
+				for (ZoyDataGrouping grouping : dataGrouping) {
+					listDataGrouping.add(convertToDTO(grouping));
+				}
+				configDTO.setDataGrouping(listDataGrouping);
+			}
+			if (otherCharges != null) {
+				List<ZoyOtherChargesDto> listZoyOtherChargesDto = new ArrayList<>();
+				for (ZoyPgOtherCharges detail : otherCharges) {
+					listZoyOtherChargesDto.add(convertToDTO(detail));
+				}
+				configDTO.setOtherCharges(listZoyOtherChargesDto);
+			}
+
+			if (gstCharges != null) {
+				List<ZoyGstChargesDto> listZoyGstChargesDto = new ArrayList<>();
+				for (ZoyPgGstCharges detail : gstCharges) {
+					listZoyGstChargesDto.add(convertToDTO(detail));
+				}
+				configDTO.setGstCharges(listZoyGstChargesDto);
+			}
+
+			if (shortTermMaster != null) {
+				configDTO.setZoyShortTermDtos(convertShortToDTO(shortTermMaster));
+
+			}
+			if (forceCheckOut != null) {
+				List<ZoyForceCheckOutDto> listZoyForceCheckOutDto = new ArrayList<>();
+				for (ZoyPgForceCheckOut checkOut : forceCheckOut) {
+					listZoyForceCheckOutDto.add(convertToDTO(checkOut));
+				}
+				configDTO.setZoyForceCheckOutDto(listZoyForceCheckOutDto);
+			}
+			if (noRentalAgreement != null) {
+				List<ZoyPgNoRentalAgreementDto> listAgreement = new ArrayList<>();
+				for (ZoyPgNoRentalAgreement agreementDetail : noRentalAgreement) {
+					listAgreement.add(convertToDTO(agreementDetail));
+				}
+				configDTO.setNoRentalAgreement(listAgreement);
+			}
+			if (rentingDuration != null) {
+				List<ZoyRentingDuration> listZoyRentingDuration = new ArrayList<>();
+				for (ZoyPgShortTermRentingDuration detail : rentingDuration) {
+					listZoyRentingDuration.add(convertToDTO(detail));
+				}
+				configDTO.setShortTermRentingDuration(listZoyRentingDuration);
+			}
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(configDTO);
+			response.setMessage("Successfully fetched all config details");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error(
+					"Error fetching config details API:/zoy_admin/config/admin-configuration-details.getAllConfigurationDetails ",
 					e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			response.setError("Internal server error");

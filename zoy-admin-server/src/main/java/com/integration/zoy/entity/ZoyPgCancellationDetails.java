@@ -58,6 +58,9 @@ public class ZoyPgCancellationDetails {
 	@Column(name="approved_by")
 	private String approvedBy;
 
+	@Column(name="pg_type")
+	private String pgType;
+	
 	public String getCancellationId() {
 		return cancellationId;
 	}
@@ -162,13 +165,22 @@ public class ZoyPgCancellationDetails {
 		this.approvedBy = approvedBy;
 	}
 
+	public String getPgType() {
+		return pgType;
+	}
+
+	public void setPgType(String pgType) {
+		this.pgType = pgType;
+	}
+
+	
 	@Override
 	public String toString() {
 		return "ZoyPgCancellationDetails [cancellationId=" + cancellationId + ", priority=" + priority + ", triggerOn="
 				+ triggerOn + ", triggerCondition=" + triggerCondition + ", beforeCheckinDays=" + beforeCheckinDays
 				+ ", deductionPercentage=" + deductionPercentage + ", cond=" + cond + ", triggerValue=" + triggerValue
 				+ ", createAt=" + createAt + ", isApproved=" + isApproved + ", effectiveDate=" + effectiveDate
-				+ ", createdBy=" + createdBy + ", approvedBy=" + approvedBy + "]";
+				+ ", createdBy=" + createdBy + ", approvedBy=" + approvedBy + ", pgType=" + pgType + "]";
 	}
 
 

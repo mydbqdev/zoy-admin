@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
+import com.integration.zoy.model.ZoyBeforeCheckInCancellationModel;
 import com.integration.zoy.model.ZoyCompanyMasterModal;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
@@ -308,4 +309,14 @@ public interface ZoyConfigurationMasterImpl {
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminConfigShortTermRentingDuration(@RequestBody ZoyRentingDuration rentingDuration);
 
+	@Operation(summary = "Fetch Cancellation And Refund Policy details", description = "fetch datails related to time frame for cancellation before check in.", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/config/fetch-Cancellation-And-Refund-Policy-details",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckInGetDetails( ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation);
 }
