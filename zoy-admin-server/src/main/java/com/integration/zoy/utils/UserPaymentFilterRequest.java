@@ -43,6 +43,9 @@ public class UserPaymentFilterRequest {
 	
 	@JsonProperty("propertyId")
 	private String propertyId;
+	
+	@JsonProperty("isAlert")
+	private boolean isAlert;
 
 	public String getPropertyId() {
 		return propertyId;
@@ -131,6 +134,14 @@ public class UserPaymentFilterRequest {
 
 	public void setFilterData(String filterData) {
 		this.filterData = filterData;
+	}
+
+	public boolean getIsAlert() {
+		return isAlert;
+	}
+
+	public void setISAlert(boolean isAlert) {
+		this.isAlert = isAlert;
 	}
 	
 	
