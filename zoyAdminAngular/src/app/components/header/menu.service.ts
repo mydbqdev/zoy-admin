@@ -33,7 +33,6 @@ export class MenuService {
     { name: "Locked User", link: "/locked-user", permission: "LOCKED_USER_READ", icon:"fas fa-fw fa-users-cog" },
     { name: "Permission Approval", link: "/permission-approval", permission: "PERMISSION_APPROVAL_READ", icon:"fas fa-fw fa-users-cog" },
     { name: "Profile", link: "/profile", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
-    { name: "Finance Reports", link: "/finance-reports", permission: "FINANCE_REPORTS_READ", icon:"fas fa-fw fa-money-check" },
     { name: "Role and Permission", link: "/role-master", permission: "ROLE_AND_PERMISSION_READ", icon:"fas fa-fw fa-cogs"},
     { name: "Settings", link: "/settings", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
     { name: "Owner Registration", link: "/zoy-code", permission: "ZOYCODES_READ", icon:"fas fa-fw fa-users" },

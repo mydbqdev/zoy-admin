@@ -109,7 +109,7 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(8);
-		this.sidemenuComp.activeMenu(8, 'support.reports');
+		this.sidemenuComp.activeMenu(8, 'support-reports');
 		this.dataService.setHeaderName("Support Reports");
 	}
  
