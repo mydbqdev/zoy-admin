@@ -1288,7 +1288,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	@Override
 	public ResponseEntity<String> zoyAdminUserNotifications(UserPaymentFilterRequest FilterRequest) {
 		ResponseBody response = new ResponseBody();
-		String currentUser=SecurityContextHolder.getContext().getAuthentication().getName();
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		try {
 
 			int pageNumber = FilterRequest.getPageIndex();
@@ -1300,7 +1300,10 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 			for (Object[] details : userNotifications) {
 				NotificationsAndAlertsDTO notifications = new NotificationsAndAlertsDTO();
-
+				
+				if (FilterRequest.getIsAlert()) {
+					notificationsAndAlertsRepository.toggleNotificationStatus(Long.parseLong(details[0].toString()));
+				}
 				notifications.setNotificationId(details[0] != null ? Long.valueOf(String.valueOf(details[0])) : null);
 				notifications.setCategory(details[1] != null ? (String) details[1] : null);
 				notifications.setCreatedAt(details[2] != null ? (Timestamp) details[2] : null);
@@ -1313,15 +1316,17 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 				usernotificationsList.add(notifications);
 			}
-			
-			  Map<String, Object> responseMap = new HashMap<>();
-		        responseMap.put("notifications", usernotificationsList);
-		        responseMap.put("totalCount", userNotifications.getTotalElements());
-		        responseMap.put("isSeenCount", notificationsAndAlertsRepository.isSeencount(currentUser));
 
-		        return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
+			Map<String, Object> responseMap = new HashMap<>();
+			responseMap.put("notifications", usernotificationsList);
+			responseMap.put("totalCount", userNotifications.getTotalElements());
+			responseMap.put("isSeenCount", notificationsAndAlertsRepository.isSeencount(currentUser));
+
+			return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting the notifications of the user API:/zoy_admin/userNotifications.zoyAdminUserNotifications",e);
+			log.error(
+					"Error getting the notifications of the user API:/zoy_admin/userNotifications.zoyAdminUserNotifications",
+					e);
 			try {
 				new ZoyAdminApplicationException(e, "");
 			} catch (Exception ex) {
