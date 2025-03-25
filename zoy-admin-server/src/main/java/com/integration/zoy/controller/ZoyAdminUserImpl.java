@@ -72,6 +72,17 @@ public interface ZoyAdminUserImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> doUserlogout(HttpServletRequest request);
 	
+	@Operation(summary = "Admin User Soft Logout", description = "Admin User Soft Logout", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/userSoftlogout",
+	produces = { "application/json" })
+	ResponseEntity<String> doUserSoftLogout(@RequestBody LoginDetails details);
+	
 	
 	@Operation(summary = "Create Admin User", description = "Creating new admin User", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin User & Role" })
