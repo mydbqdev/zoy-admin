@@ -50,10 +50,10 @@
                                                         </div>
                                                         <div class="w-100">
                                                           <div class="d-flex">
-                                                            <div class="text-gray-500 font-weight-bold"> {{ notification.category }}</div>
+                                                            <div class="font-weight-bold" style="color: #000000;" > {{ notification.category }}</div>
                                                             <div class="small ml-auto mr-2" style="font-style: italic;">{{ notification.created_at | date:'hh:mm a, MMMM dd, yyyy'  }}</div>
                                                           </div>
-                                                          <div *ngIf="notification.message.length > 100" class="small">
+                                                          <div *ngIf="notification.message.length > 100" class="small" style="color: #505050;" >
                                                             {{ notification.message | slice: 0:100 }} ...<a href="javascript:void(0)" (click)="selectNotification(notification)"  data-bs-toggle="modal" data-bs-target="#NotificationAll">more</a>
                                                           </div>
                                                           <div *ngIf="notification.message.length <= 100" class="small">
@@ -88,7 +88,7 @@
 <div class="modal fade" id="NotificationAll" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-bg modal-dialog-scrollable">
     <div class="modal-content" style="height: fit-content; overflow-y: auto;">
-      <div class="modal-header">
+      <div class="modal-header bg-gradiant-popup-header">
         <h5 class="modal-title" id="modalLabel">{{selectedNotification.info_type == 'alert'?'Alert':'Notification'}} Details </h5>
         <div>
         </div>
@@ -104,10 +104,10 @@
                 </div>
                 <div class="w-100">
                     <div class="d-flex">
-                        <div class="text-gray-500">{{ selectedNotification.category }}</div>
+                        <div style="color: #000000;">{{ selectedNotification.category }}</div>
                         <div class="small ml-auto mr-2" style="font-style: italic;"> {{ selectedNotification.created_at | date:'hh:mm a, MMMM dd, yyyy'  }}</div>
                     </div>
-                    <div class="small mr-2">{{ selectedNotification.message }}</div>
+                    <div class="small mr-2" style="color: #505050;" >{{ selectedNotification.message }}</div>
                 </div>
             </div>
           </div>

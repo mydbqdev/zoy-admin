@@ -31,11 +31,11 @@ import { MessageService } from 'src/app/message.service';
 	  reportColumnsList: { 'reportName': string, 'columns': string[] }[] = [
 		{
 		  'reportName': 'Tenant Payments GST Report', //==User Payments GST Report
-		  'columns': ['transactionDate','transactionNumber','tenantContactNum','customerName','PgPropertyName','propertyHouseArea', 'totalAmount', 'gstAmount', 'paymentMethod'],
+		  'columns': ['transactionDate','transactionNumber','tenantContactNum','customerName','PgPropertyName','baseAmount', 'gstAmount','totalAmount', 'paymentMethod'],
 		},
     {
 		  'reportName': 'Owner Payments Gst Report',// == Vendor Payments Gst Report
-		  'columns': ['transactionDate','transactionNumber','ownerName','ownerEmail','pgName','pgAddress','totalAmount','gstAmount','baseAmount','paymentMethod'],
+		  'columns': ['transactionDate','transactionNumber','ownerName','ownerEmail','pgName','pgAddress','baseAmount', 'gstAmount','totalAmount','paymentMethod'],
 		},
     {
 		  'reportName': 'Consolidated Finance Report',
