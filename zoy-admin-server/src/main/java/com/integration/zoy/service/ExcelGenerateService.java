@@ -126,7 +126,7 @@ public class ExcelGenerateService {
 			row.createCell(0).setCellValue("Transaction Date");
 			row.createCell(1).setCellValue("Invoice No");
 			row.createCell(2).setCellValue("Tenant Name");
-			row.createCell(3).setCellValue("PG Name");
+			row.createCell(3).setCellValue("PG Name"); 
 			row.createCell(4).setCellValue("Basic Amount(₹)");
 			row.createCell(5).setCellValue("GST Amount(₹)");
 			row.createCell(6).setCellValue("Total Amount(₹)");
