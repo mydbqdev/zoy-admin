@@ -5,17 +5,20 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,20 +49,20 @@ import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgShortTermRentingDuration;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
+import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
 import com.integration.zoy.model.ZoyCompanyMasterModal;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
-import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
-import com.integration.zoy.repository.ZoyPgSecurityDepositDetailsRepository;
-import com.integration.zoy.repository.ZoyPgTokenDetailsRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.PdfGenerateService;
 import com.integration.zoy.utils.AuditHistoryUtilities;
+import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
+import com.integration.zoy.utils.UploadTenant;
 import com.integration.zoy.utils.ZoyAdminConfigDTO;
 import com.integration.zoy.utils.ZoyAfterCheckInCancellationDto;
 import com.integration.zoy.utils.ZoyBeforeCheckInCancellationDto;
@@ -113,103 +116,71 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	@Autowired
 	PdfGenerateService pdfGenerateService;
-	
-	@Autowired
-	ZoyPgSecurityDepositDetailsRepository zoyPgSecurityDepositDetailsRepository;
-	
-	@Autowired
-	ZoyPgTokenDetailsRepository zoyPgTokenDetailsRepository;
 
-	@Autowired
-	ZoyPgEarlyCheckOutRepository zoyPgEarlyCheckOutRepository;
-	
+
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetailsDTO details) {
-	    ResponseBody response = new ResponseBody();
-	    String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-	    
-	    try {
-	        if (details == null) {
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setError("Required token details");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        }
-	        
-	        if (details.getTokenId() != null && !details.getTokenId().isEmpty()) {
-	            Optional<ZoyPgTokenDetails> tokenDetails = zoyPgTokenDetailsRepository.findById(details.getTokenId());
-	            
-	            if (tokenDetails.isEmpty()) {
-	                response.setStatus(HttpStatus.BAD_REQUEST.value());
-	                response.setError("Required token advance details not found");
-	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	            } else {
-	                ZoyPgTokenDetails oldDetails = tokenDetails.get();
-	                BigDecimal oldFixed = oldDetails.getFixedToken();
-	                BigDecimal oldVariable = oldDetails.getVariableToken();
-	                
-	                oldDetails.setEffectiveDate(details.getEffectiveDate());
-	                oldDetails.setIsApproved(details.getIsApproved());
-	                
-	                if (details.getIsApproved()) {
-	                    oldDetails.setApprovedBy(currentUser);
-	                } else {
-	                    oldDetails.setCreatedBy(currentUser);
-	                }
+		ResponseBody response = new ResponseBody();
+		try {
+			if (details == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Required token details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			ZoyPgTokenDetails tokenDetails = ownerDBImpl.findTokenDetails();
+			if (tokenDetails != null) {
+				final BigDecimal oldFixed=tokenDetails.getFixedToken();
+				final BigDecimal oldVariable=tokenDetails.getVariableToken();
+				// Update the existing token record
+				tokenDetails.setFixedToken(details.getFixedToken() != null ? details.getFixedToken() : BigDecimal.ZERO);
+				tokenDetails.setVariableToken(details.getVariableToken() != null ? details.getVariableToken() : BigDecimal.ZERO);
+				ownerDBImpl.saveToken(tokenDetails);
 
-	                zoyPgTokenDetailsRepository.save(oldDetails);
+				//audit history here
+				StringBuffer historyContent=new StringBuffer(" has updated the Token for");
+				if(oldFixed!=tokenDetails.getFixedToken()) {
+					historyContent.append(", Fixed from "+oldFixed+" to "+tokenDetails.getFixedToken());
+				}
+				if(oldVariable!=tokenDetails.getVariableToken()) {
+					historyContent.append(" , Variable from "+oldVariable+" to "+tokenDetails.getVariableToken());
+				}
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 
-	                StringBuffer historyContent = new StringBuffer(" has updated the Token for");
-	                if (!oldFixed.equals(details.getFixedToken())) {
-	                    historyContent.append(", Fixed from ").append(oldFixed).append(" to ").append(details.getFixedToken());
-	                }
-	                if (!oldVariable.equals(details.getVariableToken())) {
-	                    historyContent.append(" , Variable from ").append(oldVariable).append(" to ").append(details.getVariableToken());
-	                }
-	                auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
-	            }
-	        } else {
-	            ZoyPgTokenDetails newTokenDetails = new ZoyPgTokenDetails();
-	            newTokenDetails.setFixedToken(details.getFixedToken() != null ? details.getFixedToken() : BigDecimal.ZERO);
-	            newTokenDetails.setVariableToken(details.getVariableToken() != null ? details.getVariableToken() : BigDecimal.ZERO);
-	            newTokenDetails.setEffectiveDate(details.getEffectiveDate());
-	            newTokenDetails.setCreatedBy(currentUser);
-	            newTokenDetails.setIsApproved(false);  
-	            zoyPgTokenDetailsRepository.save(newTokenDetails);
+				ZoyPgTokenDetailsDTO dto = convertToDTO(tokenDetails);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Updated Token details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				// Create a new token record
+				ZoyPgTokenDetails newTokenDetails = new ZoyPgTokenDetails();
+				newTokenDetails.setFixedToken(details.getFixedToken() != null ? details.getFixedToken() : BigDecimal.ZERO);
+				newTokenDetails.setVariableToken(details.getVariableToken() != null ? details.getVariableToken() : BigDecimal.ZERO);
+				ownerDBImpl.saveToken(newTokenDetails);
+				//audit history here
+				String historyContent=" has created the Token for, Fixed = "+newTokenDetails.getFixedToken()+" , Variable ="+newTokenDetails.getVariableToken();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
 
-	            String historyContent = " has created the Token for, Fixed = " + newTokenDetails.getFixedToken() + " , Variable = " + newTokenDetails.getVariableToken();
-	            auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
-	        }
-
-	        List<ZoyPgTokenDetails> allDetails = ownerDBImpl.findAllTokenDetailsSorted();
-	        List<ZoyPgTokenDetailsDTO> dto = allDetails.stream()
-	            .map(this::convertToDTO)
-	            .collect(Collectors.toList());
-
-	        response.setStatus(HttpStatus.OK.value());
-	        response.setData(dto);
-	        response.setMessage("Saved/Updated Token Advance details");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-
-	    } catch (Exception e) {
-	        log.error("Error saving/updating Token Advance details: API:/zoy_admin/config/token_advance.zoyAdminConfigCreateUpdateToken ", e);
-	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setError("Internal server error");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+				ZoyPgTokenDetailsDTO dto = convertToDTO(newTokenDetails);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Saved Token details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			log.error("Error saving/updating token details:API:/zoy_admin/config/token_advance.zoyAdminConfigCreateUpdateToken ", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	private ZoyPgTokenDetailsDTO convertToDTO(ZoyPgTokenDetails entity) {
-	    if (entity == null) return null;
-	    
-	    ZoyPgTokenDetailsDTO dto = new ZoyPgTokenDetailsDTO();
-	    dto.setTokenId(entity.getTokenId());
-	    dto.setFixedToken(entity.getFixedToken() != null ? entity.getFixedToken() : BigDecimal.ZERO);
-	    dto.setVariableToken(entity.getVariableToken() != null ? entity.getVariableToken() : BigDecimal.ZERO);
-	    dto.setIsApproved(entity.getIsApproved()!= null);
-	    dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
-	    dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
-		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
-	    return dto;
+		ZoyPgTokenDetailsDTO dto = new ZoyPgTokenDetailsDTO();
+		dto.setTokenId(entity.getTokenId());
+		dto.setFixedToken(entity.getFixedToken());
+		dto.setVariableToken(entity.getVariableToken());
+		return dto;
 	}
 
 	@Override
@@ -553,10 +524,6 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setSgstPercentage(entity.getSgstPercentage());
 		dto.setIgstPercentage(entity.getIgstPercentage());
 		dto.setMonthlyRent(entity.getMonthlyRent());
-		dto.setIsApproved(entity.getIsApproved()!= null);
-	    dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
-	    dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
-		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
 		return dto;
 	}
 
@@ -616,98 +583,70 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	@Override
 	public ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositLimits(ZoyPgSecurityDepositDetailsDTO details) {
-	    ResponseBody response = new ResponseBody();
-	    try {
-	        if (details == null) {
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setError("Required SecurityDeposit Limit details");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        }
+		ResponseBody response = new ResponseBody();
+		try {
+			if (details == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Required SecurityDeposit Limit details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			ZoyPgSecurityDepositDetails limits = ownerDBImpl.findZoySecurityDeposit();      
+			if (limits != null) {
+				final BigDecimal oldFixed=limits.getSecurityDepositMax();
+				final BigDecimal oldVariable=limits.getSecurityDepositMin();
+				// Update the existing record
+				limits.setSecurityDepositMax(details.getMaximumDeposit());
+				limits.setSecurityDepositMin(details.getMinimumDeposit());
+				ownerDBImpl.saveZoySecurityDepositLimits(limits);
 
-	        if (details.getDepositId() != null && !"".equals(details.getDepositId())) {
+				//audit history here
+				StringBuffer historyContent=new StringBuffer(" has updated the Security Deposit Limit for");
+				if(oldFixed!=details.getMaximumDeposit()) {
+					historyContent.append(", Max from "+oldFixed+" to "+details.getMaximumDeposit());
+				}
+				if(oldVariable!=details.getMinimumDeposit()) {
+					historyContent.append(" ,  Min from "+oldVariable+" to "+details.getMinimumDeposit());
+				}
 
-	            Optional<ZoyPgSecurityDepositDetails> depositDetails = zoyPgSecurityDepositDetailsRepository.findById(details.getDepositId());
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 
-	            if (depositDetails.isEmpty()) {
-	                response.setStatus(HttpStatus.BAD_REQUEST.value());
-	                response.setError("Required SecurityDeposit Limit details not found");
-	                return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	            } else {
-	                ZoyPgSecurityDepositDetails oldDetails = depositDetails.get();
-	                BigDecimal oldFixed = oldDetails.getSecurityDepositMax();
-	                BigDecimal oldVariable = oldDetails.getSecurityDepositMin();
+				ZoyPgSecurityDepositDetailsDTO dto = convertToDTO(limits);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Updated Security Deposits Limit Details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			} else {
+				ZoyPgSecurityDepositDetails newSecurityLimit = new ZoyPgSecurityDepositDetails();
+				newSecurityLimit.setSecurityDepositMax(details.getMaximumDeposit());
+				newSecurityLimit.setSecurityDepositMin(details.getMinimumDeposit());
+				ownerDBImpl.saveZoySecurityDepositLimits(newSecurityLimit);
+				//audit history here
+				String historyContent=" has created the Security Deposit Limit for, Max = "+details.getMaximumDeposit()+" , Min="+details.getMinimumDeposit();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
 
-	                oldDetails.setEffectiveDate(details.getEffectiveDate());
-	                oldDetails.setIsApproved(details.getIsApproved());
-	                oldDetails.setSecurityDepositMax(details.getMaximumDeposit());
-	                oldDetails.setSecurityDepositMin(details.getMinimumDeposit());
-	                
-	                if (details.getIsApproved()) {
-	                    oldDetails.setApprovedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-	                } else {
-	                    oldDetails.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-	                }
-
-	                zoyPgSecurityDepositDetailsRepository.save(oldDetails);
-
-	                // Build history for audit
-	                StringBuffer historyContent = new StringBuffer(" has updated the Security Deposit Limit for ");
-	                if (oldFixed != details.getMaximumDeposit()) {
-	                    historyContent.append("Max from ").append(oldFixed).append(" to ").append(details.getMaximumDeposit());
-	                }
-	                if (oldVariable != details.getMinimumDeposit()) {
-	                    historyContent.append(" , Min from ").append(oldVariable).append(" to ").append(details.getMinimumDeposit());
-	                }
-
-	                // Audit history
-	                auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
-	            }
-
-	        } else {
-	            ZoyPgSecurityDepositDetails newDetails = new ZoyPgSecurityDepositDetails();
-	            newDetails.setSecurityDepositMax(details.getMaximumDeposit());
-	            newDetails.setSecurityDepositMin(details.getMinimumDeposit());
-	            newDetails.setEffectiveDate(details.getEffectiveDate());
-	            newDetails.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-	            newDetails.setIsApproved(false);
-
-	            zoyPgSecurityDepositDetailsRepository.save(newDetails);
-
-	            // Audit history for creation
-	            String historyContent = " has created the Security Deposit Limit for Max = " 
-	                + details.getMaximumDeposit() + " , Min = " + details.getMinimumDeposit();
-	            auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
-	        }
-
-	        List<ZoyPgSecurityDepositDetails> allDetails = ownerDBImpl.findAllSortedByEffectiveDate();
-	        List<ZoyPgSecurityDepositDetailsDTO> dto = allDetails.stream()
-	            .map(this::convertToDTO) 
-	            .collect(Collectors.toList());
-
-	        response.setStatus(HttpStatus.OK.value());
-	        response.setData(dto);
-	        response.setMessage("Saved/Updated Security Deposit Limit details");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-
-	    } catch (Exception e) {
-	        log.error("Error saving/updating Security Deposits Limit details: API:/zoy_admin/config/security-deposit-limits ", e);
-	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setError("Internal server error");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+				ZoyPgSecurityDepositDetailsDTO dto = convertToDTO(newSecurityLimit);
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(dto);
+				response.setMessage("Saved Security Deposits Limit details");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			log.error("Error saving/updating Security Deposits Limit details: API:/zoy_admin/config/security-deposit-limits ", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	private ZoyPgSecurityDepositDetailsDTO convertToDTO(ZoyPgSecurityDepositDetails entity) {
 		ZoyPgSecurityDepositDetailsDTO dto = new ZoyPgSecurityDepositDetailsDTO();
-		dto.setDepositId(entity != null && entity.getSecurityDepositId() != null ? entity.getSecurityDepositId() : "");
-	    dto.setMinimumDeposit(entity != null && entity.getSecurityDepositMin() != null ? entity.getSecurityDepositMin() : BigDecimal.ZERO);
-	    dto.setMaximumDeposit(entity != null && entity.getSecurityDepositMax() != null ? entity.getSecurityDepositMax() : BigDecimal.ZERO);
-		dto.setEffectiveDate(entity.getEffectiveDate());
-		dto.setIsApproved(entity.getIsApproved()!= null ? entity.getIsApproved():false);
-	    dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
-		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setDepositId(entity.getSecurityDepositId());
+		dto.setMinimumDeposit(entity.getSecurityDepositMin());
+		dto.setMaximumDeposit(entity.getSecurityDepositMax());
 		return dto;
 	}
+
+
 
 
 	@Override
@@ -924,8 +863,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	public ResponseEntity<String> getAllConfigurationDetails() {
 		ResponseBody response = new ResponseBody();
 		try {
-			List<ZoyPgTokenDetails> tokenDetails = ownerDBImpl.findAllTokenDetailsSorted();
-			List<ZoyPgSecurityDepositDetails> depositDetails = ownerDBImpl.findAllSortedByEffectiveDate();
+			ZoyPgTokenDetails tokenDetails = ownerDBImpl.findTokenDetails();
+			ZoyPgSecurityDepositDetails depositDetails = ownerDBImpl.findZoySecurityDeposit();
 			List<ZoyPgCancellationDetails> cancellationDetails = ownerDBImpl.findAllBeforeCancellation();
 			ZoyPgEarlyCheckOut earlyCheckOutDetails = ownerDBImpl.findEarlyCheckOutRule();
 			ZoyPgAutoCancellationAfterCheckIn cancellationAfterCheckIn = ownerDBImpl.findAutoCancellationAfterCheckIn();
@@ -937,79 +876,30 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyPgForceCheckOut forceCheckOut=ownerDBImpl.findZoyForceCheckOut();
 			ZoyPgShortTermRentingDuration rentingDuration=ownerDBImpl.findZoyRentingDuration();
 			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
-			
-			if (tokenDetails != null) { 
-			    List<ZoyPgTokenDetailsDTO> listToken = new ArrayList<>();
-			    for (ZoyPgTokenDetails tokenDetail : tokenDetails) {
-			        listToken.add(convertToDTO(tokenDetail));
-			    }
-			    configDTO.setTokenDetails(listToken);
-			}
-			if (depositDetails != null) {
-			    List<ZoyPgSecurityDepositDetailsDTO> listDepositDetails = new ArrayList<>();
-			    for (ZoyPgSecurityDepositDetails depositDetail : depositDetails) {
-			        listDepositDetails.add(convertToDTO(depositDetail));
-			    }
-			    configDTO.setDepositDetails(listDepositDetails);
-			}	
-			if (depositDetails != null) {
-			    List<ZoyPgSecurityDepositDetailsDTO> listDepositDetails = new ArrayList<>();
-			    for (ZoyPgSecurityDepositDetails depositDetail : depositDetails) {
-			        listDepositDetails.add(convertToDTO(depositDetail));
-			    }
-			    configDTO.setDepositDetails(listDepositDetails);
-			}
+			if (tokenDetails != null) 
+				configDTO.setTokenDetails(convertToDTO(tokenDetails));
+			if (depositDetails != null)
+				configDTO.setDepositDetails(convertToDTO(depositDetails));
 			if (cancellationDetails != null)
 				configDTO.setCancellationBeforeCheckInDetails(convertToDTO(cancellationDetails));
 			if (earlyCheckOutDetails != null)
-			{
-				List<ZoyPgEarlyCheckOutRuleDto> listZoyearlyCheckOutDetails=new ArrayList<>();
-				listZoyearlyCheckOutDetails.add(convertToDTO(earlyCheckOutDetails));
-				configDTO.setEarlyCheckOutRuleDetails(listZoyearlyCheckOutDetails);
-			}
+				configDTO.setEarlyCheckOutRuleDetails(convertToDTO(earlyCheckOutDetails));
 			if (cancellationAfterCheckIn != null)
-			{
-				List<ZoyAfterCheckInCancellationDto> listZoycancellationAfterCheckIno=new ArrayList<>();
-				listZoycancellationAfterCheckIno.add(convertToDTO(cancellationAfterCheckIn));
-				configDTO.setCancellationAfterCheckInDetails(listZoycancellationAfterCheckIno);
-			}
+				configDTO.setCancellationAfterCheckInDetails(convertToDTO(cancellationAfterCheckIn));
 			if (securityDepositDeadLine != null)
-			{
-				List<ZoySecurityDepositDeadLineDto> listZoysecurityDepositDeadLine=new ArrayList<>();
-				listZoysecurityDepositDeadLine.add(convertToDTO(securityDepositDeadLine));
-				configDTO.setSecurityDepositDeadLineDetails(listZoysecurityDepositDeadLine);
-			}
-			if (dataGrouping != null) {
-				List<ZoyDataGroupingDto> listdataGroupingo=new ArrayList<>();
-				listdataGroupingo.add(convertToDTO(dataGrouping));
-				configDTO.setDataGrouping(listdataGroupingo);
-			}
-			if (otherCharges != null) {
-				List<ZoyOtherChargesDto> listZoyOtherChargesDto=new ArrayList<>();
-				listZoyOtherChargesDto.add(convertToDTO(otherCharges));
-				configDTO.setOtherCharges(listZoyOtherChargesDto);
-			}
-			
+				configDTO.setSecurityDepositDeadLineDetails(convertToDTO(securityDepositDeadLine));
+			if (dataGrouping != null)
+				configDTO.setDataGrouping(convertToDTO(dataGrouping));
+			if (otherCharges != null)
+				configDTO.setOtherCharges(convertToDTO(otherCharges));
 			if (gstCharges != null)
-			{
-				List<ZoyGstChargesDto> listZoyGstChargesDto=new ArrayList<>();
-				listZoyGstChargesDto.add(convertToDTO(gstCharges));
-				configDTO.setGstCharges(listZoyGstChargesDto);
-			}
-			if (shortTermMaster != null) {
+				configDTO.setGstCharges(convertToDTO(gstCharges));
+			if (shortTermMaster != null)
 				configDTO.setZoyShortTermDtos(convertShortToDTO(shortTermMaster));
-				
-			}
-			if (forceCheckOut != null) {
-				List<ZoyForceCheckOutDto> listZoyForceCheckOutDto=new ArrayList<>();
-				listZoyForceCheckOutDto.add(convertToDTO(forceCheckOut));
-				configDTO.setZoyForceCheckOutDto(listZoyForceCheckOutDto);
-			}
-			if (rentingDuration != null) { 
-				List<ZoyRentingDuration> listZoyRentingDuration=new ArrayList<>();
-				listZoyRentingDuration.add(convertToDTO(rentingDuration));
-				configDTO.setShortTermRentingDuration(listZoyRentingDuration);
-			}
+			if (forceCheckOut != null)
+				configDTO.setZoyForceCheckOutDto(convertToDTO(forceCheckOut));
+			if (rentingDuration != null) 
+				configDTO.setShortTermRentingDuration(convertToDTO(rentingDuration));
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(configDTO);
 			response.setMessage("Successfully fetched all config details");
