@@ -45,6 +45,18 @@ public class ZoyPgCancellationDetails {
 
 	@Column(name = "create_at")
 	private Timestamp createAt;
+	
+	@Column(name = "is_Approved")
+	private Boolean isApproved;
+
+	@Column(name = "effective_Date")
+	private String effectiveDate;
+	
+	@Column(name="created_by")
+	private String createdBy;
+	
+	@Column(name="approved_by")
+	private String approvedBy;
 
 	public String getCancellationId() {
 		return cancellationId;
@@ -118,12 +130,45 @@ public class ZoyPgCancellationDetails {
 		this.createAt = createAt;
 	}
 
+	public Boolean getIsApproved() {
+		return isApproved;
+	}
+
+	public void setIsApproved(Boolean isApproved) {
+		this.isApproved = isApproved;
+	}
+
+	public String getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(String effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getApprovedBy() {
+		return approvedBy;
+	}
+
+	public void setApprovedBy(String approvedBy) {
+		this.approvedBy = approvedBy;
+	}
+
 	@Override
 	public String toString() {
 		return "ZoyPgCancellationDetails [cancellationId=" + cancellationId + ", priority=" + priority + ", triggerOn="
 				+ triggerOn + ", triggerCondition=" + triggerCondition + ", beforeCheckinDays=" + beforeCheckinDays
 				+ ", deductionPercentage=" + deductionPercentage + ", cond=" + cond + ", triggerValue=" + triggerValue
-				+ ", createAt=" + createAt + "]";
+				+ ", createAt=" + createAt + ", isApproved=" + isApproved + ", effectiveDate=" + effectiveDate
+				+ ", createdBy=" + createdBy + ", approvedBy=" + approvedBy + "]";
 	}
 
 
