@@ -126,12 +126,11 @@ public class ExcelGenerateService {
 			row.createCell(0).setCellValue("Transaction Date");
 			row.createCell(1).setCellValue("Invoice No");
 			row.createCell(2).setCellValue("Tenant Name");
-			row.createCell(3).setCellValue("PG Name");
-			row.createCell(4).setCellValue("PG Address");
-			row.createCell(5).setCellValue("Total Amount(₹)");
-			row.createCell(6).setCellValue("GST Amount(₹)");
-			row.createCell(7).setCellValue("Basic Amount(₹)");
-			row.createCell(8).setCellValue("MODE OF PAYMENT");
+			row.createCell(3).setCellValue("PG Name"); 
+			row.createCell(4).setCellValue("Basic Amount(₹)");
+			row.createCell(5).setCellValue("GST Amount(₹)");
+			row.createCell(6).setCellValue("Total Amount(₹)");
+			row.createCell(7).setCellValue("MODE OF PAYMENT");
 			break;
 		case "consolidatedFinanceReport":
 			row.createCell(0).setCellValue("Transaction Date");
@@ -304,17 +303,15 @@ public class ExcelGenerateService {
 		case "FailedTransactionReport":
 			if (dto instanceof UserPaymentDTO) {
 				UserPaymentDTO userPayment = (UserPaymentDTO) dto;
-
 				if ("userPaymentGstReport".equals(reportType)) {
 					row.createCell(0).setCellValue(nullSafe(tuService.formatTimestamp(userPayment.getTransactionDate().toInstant())));
 					row.createCell(1).setCellValue(nullSafe(userPayment.getTransactionNumber()));
 					row.createCell(2).setCellValue(nullSafe(userPayment.getUserPersonalName()));
 					row.createCell(3).setCellValue(nullSafe(userPayment.getUserPgPropertyName()));
-					row.createCell(4).setCellValue(nullSafe(userPayment.getPropertyHouseArea()));
-					setCurrencyCell(row, 5, nullSafe(userPayment.getDueAmount()));
-					setCurrencyCell(row, 6, nullSafe(userPayment.getGstAmount()));
-					setCurrencyCell(row, 7, nullSafe(userPayment.getTotalAmount()));
-					row.createCell(8).setCellValue(nullSafe(userPayment.getPaymentMode()));
+					setCurrencyCell(row, 4, nullSafe(userPayment.getDueAmount()));
+					setCurrencyCell(row, 5, nullSafe(userPayment.getGstAmount()));
+					setCurrencyCell(row, 6, nullSafe(userPayment.getTotalAmount()));
+					row.createCell(7).setCellValue(nullSafe(userPayment.getPaymentMode()));
 				} else if("userTransactionReport".equals(reportType)){
 					row.createCell(0).setCellValue(nullSafe(userPayment.getUserPersonalName()));
 					row.createCell(1).setCellValue(nullSafe(userPayment.getTenantContactNum()));

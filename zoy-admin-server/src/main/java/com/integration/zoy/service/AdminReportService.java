@@ -849,7 +849,6 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantName", userPayment.getUserPersonalName());
 			data.put("tenantMobile", userPayment.getTenantContactNum());
 			data.put("pgName", userPayment.getUserPgPropertyName());
-			data.put("pgAddress", userPayment.getPropertyHouseArea());
 			data.put("totalAmount", userPayment.getTotalAmount());
 			data.put("gstAmount", userPayment.getGstAmount());
 			data.put("dueAmount", userPayment.getDueAmount());
