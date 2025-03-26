@@ -10,6 +10,7 @@ import { AESEncryptDecryptHelper } from 'src/app/common/shared/AESEncryptDecrypt
 import { ProfileService } from 'src/app/profile/service/profile-service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
+import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 
 
 @Component({
@@ -36,7 +37,7 @@ export class SigninComponent implements OnInit {
 	isPasswordVisible:boolean=false;
 
 	constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService,private dataService :DataService,
-		private encryptDecryptHelper:AESEncryptDecryptHelper,private profileService:ProfileService,
+		private encryptDecryptHelper:AESEncryptDecryptHelper,private profileService:ProfileService,private confirmationDialogService:ConfirmationDialogService,
 				private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private notifyService: NotificationService
 	) { }
 
@@ -93,7 +94,9 @@ export class SigninComponent implements OnInit {
 				this.router.navigate(['/home']);
 			}, error => {
 				this.sending=false;
-				if(error.status == 0) {
+				if(error.status == 401 && error.error.message=='Already logged in another device') {
+					this.confirmation();
+				 }else if(error.status == 0) {
 					this.error = "Internal Server Error/Connection not established";
 				 }else if(error.status==403){
 				   this.router.navigate(['/forbidden']);
@@ -122,6 +125,19 @@ export class SigninComponent implements OnInit {
 			   });
 		}			  
 	}
+	confirmation(){
+		this.confirmationDialogService.confirm('Confirmation!!', 'User already logged in in some other tab or system. Do you want to continue here?')
+		.then(
+		(confirmed) =>{
+			if(confirmed){
+				this.userSoftlogout();
+				this.doSignin();
+			}
+		}).catch(
+			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+		);
+	}
+
 	connectWebsocket(){
 		this.authService.connectWebsocket(this.username.toLowerCase(),'AlertNotification');
 	  }
@@ -143,7 +159,7 @@ export class SigninComponent implements OnInit {
 		this.resetPassword.newPassword= this.encryptDecryptHelper.encrypt(this.changePasswordDetails.newPassword);
 		this.spinner.show();	
 		this.profileService.changePassword(this.resetPassword).subscribe((res) => {
-		  this.afterChangePasswordLogout();
+		  this.userSoftlogout();
 		  this.notifyService.showSuccess(res.message, "");
 		  this.isChangePassword = false;
 		  this.error = '';
@@ -189,45 +205,46 @@ export class SigninComponent implements OnInit {
 		);  
 	  }
 	  
-	  afterChangePasswordLogout(){
-	  	this.profileService.userlogout().subscribe((res) => {
-	  		},error =>{
-	  		this.spinner.hide();
-	  		console.log("error.error",error)
-	  		this.errorMsg = (error.error.error !=undefined?(error.error.error  +"."):"")
-	  		+ (error.error.userEmail!=undefined?(error.error.userEmail+"."):"")
-	  		+(error.error.password!=undefined?(error.error.password  +"."):"");
-	  		if(error.status == 0) {
-	  			this.notifyService.showError("Internal Server Error/Connection not established", "")
-	  		}else if(error.status==401){
-	  			console.error("Unauthorised");
-	  		}else if(error.status==403){
-	  		this.router.navigate(['/forbidden']);
-	  		}else if (error.error && error.error.message) {
-	  		this.errorMsg =error.error.message;
-	  		console.log("Error:"+this.errorMsg);
-	  		this.notifyService.showError(this.errorMsg, "");
-	  		this.spinner.hide();
-	  		} else {
-	  		this.spinner.hide();
-	  		if(error.status==500 && error.statusText=="Internal Server Error"){
-	  			this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-	  		}else{
-	  		this.spinner.hide();
-	  			let str;
-	  			if(error.status==400){
-	  			str=error.error;
-	  			}else{
-	  			str=error.message;
-	  			str=str?.substring(str.indexOf(":")+1);
-	  			}
-	  			console.log("Error:"+str);
-	  			this.errorMsg=str;
-	  		}
-	  			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-	  		}
-	  		}
-	  		);  
+	  userSoftlogout(){
+		const user: User = { email: this.username.toLowerCase(), password: '' };
+	  	this.profileService.userSoftlogout(user).subscribe((res) => {
+		},error =>{
+			this.spinner.hide();
+			console.log("error.error",error)
+			this.errorMsg = (error.error.error !=undefined?(error.error.error  +"."):"")
+			+ (error.error.userEmail!=undefined?(error.error.userEmail+"."):"")
+			+(error.error.password!=undefined?(error.error.password  +"."):"");
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			}else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+			this.errorMsg =error.error.message;
+			console.log("Error:"+this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+			this.spinner.hide();
+			} else {
+			this.spinner.hide();
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			this.spinner.hide();
+				let str;
+				if(error.status==400){
+				str=error.error;
+				}else{
+				str=error.message;
+				str=str?.substring(str.indexOf(":")+1);
+				}
+				console.log("Error:"+str);
+				this.errorMsg=str;
+			}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+			}
+			);  
 	  	}
 
 }
