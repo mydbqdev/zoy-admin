@@ -130,7 +130,7 @@ public class ExcelGenerateService {
 			row.createCell(4).setCellValue("PG Address");
 			row.createCell(5).setCellValue("Total Amount(₹)");
 			row.createCell(6).setCellValue("GST Amount(₹)");
-			row.createCell(7).setCellValue("Due Amount(₹)");
+			row.createCell(7).setCellValue("Basic Amount(₹)");
 			row.createCell(8).setCellValue("MODE OF PAYMENT");
 			break;
 		case "consolidatedFinanceReport":
