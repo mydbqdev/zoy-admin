@@ -509,7 +509,7 @@ public class UserDBService implements UserDBImpl{
 					Optional.ofNullable(paginationRequest.getFilter().getEndDate()).orElse("9999-12-31 23:59:59"),
 					(List<String>) Optional.ofNullable(paginationRequest.getFilter().getStatus()!=null ?
 							Arrays.asList(paginationRequest.getFilter().getStatus().split(",")): 
-								Arrays.asList(ZoyConstant.ACTIVE,ZoyConstant.INACTIVE,ZoyConstant.SUSPENDED)).orElse(new ArrayList<>())
+								Arrays.asList(ZoyConstant.ACTIVE,ZoyConstant.INACTIVE,ZoyConstant.REGISTER,ZoyConstant.SUSPENDED)).orElse(new ArrayList<>())
 					);
 			return results.map(result -> new TenantDetails(
 					result[0] != null ? (String) result[0] : "",
