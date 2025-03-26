@@ -239,7 +239,9 @@
                                     <ng-container *ngFor="let column of selectedReportColumns">
                                       <ng-container [matColumnDef]="column" *ngIf=" column != 'reviews'">
                                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 400;" [matTooltip]="columnHeaders[column] "> 
-                                        {{ column == 'totalAmount' && reportName =='Failure Transactions Report' ? 'AMOUNT' : (columnHeaders[column] || column ) }}
+                                          {{ column == 'expectedCheckOutdate' && reportName =='Active Tenants Report' ? 'CHECK-OUT DATE' : 
+                                           (columnHeaders[column] || column 
+                                           ) }}
                                           <i class="fas fa-lg fa-sort ml-1" style="color:#d1cfcf;margin-right: 3px;"></i>
                                           <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
                                              style="margin-right: 3px;margin-left: -14px;"></i>

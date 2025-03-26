@@ -239,7 +239,7 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 	statuses = [
 		{ id: 1, name: 'Active', selected: false },
 		{ id: 2, name: 'Inactive', selected: false },
-		// { id: 3, name: 'Upcoming', selected: false },
+		{ id: 3, name: 'Register', selected: false },
 		// { id: 4, name: 'Registered', selected: false },
 		// { id: 4, name: 'Suspended', selected: false },
 	  ];

@@ -163,7 +163,7 @@
                                       </th>
                                       <td mat-cell *matCellDef="let element" style="padding: 4px;width: 120px;">
                                         <span class="common-status"
-                                              [ngClass]="element.status === 'inactive' ? 'status-inactive' : 'status-active'" >
+                                              [ngClass]="element.status === 'Inactive' ? 'status-inactive' : (element.status === 'Register' ? 'status-verified':'status-active' )" >
                                           {{element.status}}
                                         </span>
                                       </td>
