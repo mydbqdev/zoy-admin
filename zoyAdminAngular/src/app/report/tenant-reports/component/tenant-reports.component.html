@@ -1,0 +1,283 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
+  <div class="spinner-container"><img class="spinner-home-logo" src="assets/images/home-logo.png" alt="Home"/>
+    <img class="spinner-location-logo" src="assets/images/location-logo.png" alt="User"/>
+    <div class="spinner-loading">Loading</div>
+  </div>
+</ngx-spinner>
+<div id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <app-sidebar></app-sidebar>
+      <!-- End of Sidebar -->
+
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+          <!-- Main Content -->
+          <div id="content">
+                <div style="display: block;margin-bottom: 5.375rem;">
+                <!-- Topbar -->
+                <app-header></app-header>
+                <!-- End of Topbar -->
+                </div>
+
+              <!-- Begin Page Content -->
+              <div class="container-fluid" style="margin-top: -5px;">
+                <div class="d-flex mb-3">
+                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Tenant Reports</span></h3> 
+                 </div>  
+                <div class="row">
+                 <div class="col-sm-11">
+                  <div style="padding:10px 10px 5px;border:1px solid#dbdbdb;border-radius: 15px; font-size: 13px;">
+                    <div class="d-flex mb-2">
+                    <div style="width: 110px;">
+                      <label for="email">City / Location</label>
+                        <select class="form-select form-select-sm" aria-label="Default select example"   [(ngModel)]="cityLocationName" style=" font-size: 12px;">
+                            <option *ngFor="let city of cityLocation"  [value]="city" >{{city}}</option>
+                        </select>
+                    </div> 
+                    <div class="ml-2" style="width: 280px;">
+                        <label for="email">Report Type</label>
+                        <form  (submit)="searchMenus($event)">
+                          <div class="input-group ">
+                            <input class="form-select form-select-sm" type="search" style="width:300px;border-radius: 5px;cursor: pointer;font-size: 12px;"
+                             [title]="reportName" [placeholder]="reportName" [formControl]="reportControl" matInput [matAutocomplete]="auto"
+                             formControlName="reportControl" />
+                            <div class="input-group-append">
+                            </div>
+                          </div>
+                         
+                          <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let menu of filteredOptions | async" [value]="menu.name" (click)="selectedReport(menu.name)">
+                            <span >{{ menu.name }}</span>  
+                            </mat-option>
+                          </mat-autocomplete>
+                        </form>
+                    
+                    </div>
+                    <div class="ml-2" style="width: 340px;" >
+                           <label for="category" *ngIf="reportName != 'Upcoming Tenants Report'" >Date Range</label>
+                            <div class="d-flex gap-2" *ngIf="reportName != 'Upcoming Tenants Report' && reportName != 'Tenant Dues Report'">
+                              <input type="datetime-local" class="form-control form-control-sm" style="width: 160px;font-size: 12px; " id="fromDate" [(ngModel)]="fromDate" 
+                                    [ngClass]="{'is-invalid': (!fromDate ||(fromDate>toDate && toDate))}" 
+                                    [title]="!fromDate? 'From Date is required':((fromDate>toDate && toDate)?'Invalid date range':'') " /> - 
+                              <input type="datetime-local" class="form-control form-control-sm" style="width: 160px; font-size: 12px;" id="toDate"  [(ngModel)]="toDate" 
+                                    [ngClass]="{'is-invalid': (!toDate ||(fromDate>toDate && fromDate ))}"  
+                                    [title]="!toDate? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
+                            </div>
+                            <div class="d-flex gap-2" *ngIf="reportName == 'Tenant Dues Report'">
+                              <input type="date" class="form-control form-control-sm" style="width: 125px;font-size: 12px; " id="fromDate" [(ngModel)]="fromDate" 
+                                    [ngClass]="{'is-invalid': (!fromDate ||(fromDate>toDate && toDate))}" 
+                                    [title]="!fromDate? 'From Date is required':((fromDate>toDate && toDate)?'Invalid date range':'') " /> - 
+                              <input type="date" class="form-control form-control-sm" style="width: 125px; font-size: 12px;" id="toDate"  [(ngModel)]="toDate" 
+                                    [ngClass]="{'is-invalid': (!toDate ||(fromDate>toDate && fromDate ))}"  
+                                    [title]="!toDate? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
+                            </div>
+                    </div>
+                    <div class="ml-2" style="padding-top:26px;" *ngIf="reportName!='Vendor Payments Gst Report'">
+                      <a class="btn btn-light btn-sm" title="Advance Search" id="advanceSearch" style="line-height: normal;border: 1px solid #d2d3d8;"
+                      data-toggle="dropdown"><i class="fas fa-angle-double-down"></i></a>
+                      <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width p-2 shadow" style="width: 500px;margin-right: 150px;" aria-labelledby="advanceSearch" data-bs-auto-close="false">
+                        <div>
+                          <div class="row mt-2 mb-0">
+
+                            <div class="col-sm-6" *ngIf="reportName =='Ratings and Reviews Report'">
+                              <div class="form-group">
+                                <label for="overallRating" class="text-search-header">Overall Rating</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.overallRating" name="overallRating" />
+                              </div>
+                            </div>
+                           
+                            <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName =='Tenant Refunds Report' || reportName =='Ratings and Reviews Report' 
+                                        || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report' || reportName =='Failure Transactions Report'">
+                              <div class="form-group">
+                                <label for="tenantName" class="text-search-header">Tenant Name</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantName" name="tenantName" />
+                              </div>
+                            </div>
+                            <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName =='Tenant Refunds Report' || reportName =='Failure Transactions Report'
+                                    || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report' || reportName =='Consolidated Finance Report'">
+                              <div class="form-group">
+                                <label for="tenantContactNum" class="text-search-header">Tenant contact</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantContactNum" name="tenantContactNum" />
+                              </div>
+                            </div>
+                            <div class="col-sm-6" *ngIf=" reportName =='Failure Transactions Report'">
+                            <div class="form-group">
+                              <label for="tenantContactNum" class="text-search-header">Tenant Email</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantEmail" name="tenantEmail" />
+                              </div>
+                          </div>
+                            <div class="col-sm-6" *ngIf=" reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'">
+                              <div class="form-group">
+                                <label for="bedNumber" class="text-search-header">Bed Number</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.bedNumber" name="bedNumber" />
+                              </div>
+                            </div>
+                            <div class="col-sm-6" *ngIf="reportName =='Tenant Refunds Report'">
+                              <div class="form-group">
+                                <label for="refundTitle" class="text-search-header">Refund Title</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.refundTitle" name="refundTitle" />
+                              </div>
+                            </div>
+                           
+                            
+                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' || reportName == 'Owner Payments Report'" >
+                              <div class="form-group">
+                                <label for="ownerName" class="text-search-header">Owner Name</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.ownerName" name="ownerName" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' || reportName == 'Owner Payments Report' " >
+                              <div class="form-group">
+                                <label for="ownerEmail" class="text-search-header">Owner Email</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.ownerEmail" name="ownerEmail" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' ||  reportName =='Tenant Transactions Report' 
+                                                       || reportName == 'Owner Payments Report' || reportName =='Tenant Payments GST Report' || reportName == 'Tenant Dues Report' || reportName =='Ratings and Reviews Report'
+                                                       || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'
+                                                       || reportName =='Consolidated Finance Report'">
+                              <div class="form-group">
+                                <label for="pgName" class="text-search-header">PG Property Name</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgName" name="pgName" />
+                              </div>
+                            </div>
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'Consolidated Finance Report'">
+                              <div class="form-group">
+                                <label for="payerType" class="text-search-header">Payee/Payer type</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.payerType" name="payerType" />
+                              </div>
+                            </div> 
+                          
+                            <div class="col-sm-6" *ngIf="reportName == 'Consolidated Finance Report'" >
+                              <div class="form-group">
+                                <label for="payerName" class="text-search-header">Payee/Payer Name</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.payerName" name="payerName" />
+                              </div>
+                            </div>
+
+                            <div class="col-sm-6" *ngIf="reportName == 'Consolidated Finance Report' || reportName == 'Owner Payments Gst Report' || reportName =='Tenant Transactions Report' 
+                                                      || reportName =='Tenant Payments GST Report'">
+                              <div class="form-group">
+                                <label for="transactionNumber" class="text-search-header">Invoice Number</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.transactionNumber" name="transactionNumber" />
+                              </div>
+                            </div>
+                            
+                            <div class="col-sm-6" *ngIf="reportName =='Tenant Transactions Report' || reportName == 'Owner Payments Report' || reportName =='Tenant Refunds Report'">
+                              <div class="form-group">
+                                <label for="transactionStatus" class="text-search-header">Transaction Status</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.transactionStatus" name="transactionStatus" />
+                              </div>
+                            </div>
+
+                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Report'">
+                              <div class="form-group">
+                                <label for="ownerApprovalStatus" class="text-search-header">Owner Approval</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.ownerApprovalStatus" name="ownerApprovalStatus" />
+                              </div>
+                            </div>
+
+                            <div class="col-sm-6" *ngIf="reportName =='Tenant Refunds Report'">
+                              <div class="form-group">
+                                <label for="bookingId" class="text-search-header">Booking Id</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.bookingId" name="bookingId" />
+                              </div>
+                            </div>
+
+                          
+
+                          </div>
+                        </div>
+                       
+                        <!-- Apply Now button -->
+                        <div class="d-flex justify-content-center align-items-center mt-2">
+                          <button type="button" class="btn btn-primary-custom btn-sm" (click)="generateReport()"  >Search / Generate Report</button>
+                        </div>
+                     </div>
+                    </div>
+                    <div class="ml-2">
+                      <div style="padding-top:27px;">
+                        <button type="button" class="btn btn-primary-custom btn-sm" (click)="generateReport()" style=" font-size: 12px;" >Show Report</button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  </div>
+                </div>
+                  <div class="col-sm-1">
+                  <div style="padding-top:37px;margin-left:-20px;width: 115px;" > 
+                    <div class="dropdown no-arrow">
+                      <button class="btn btn-primary-custom btn-sm"  role="button" id="dropdownMenuDownload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [disabled]="downloadProgress">
+                        <i class="fas fa-download mr-2" *ngIf="!downloadProgress"></i>
+                        <img src="assets/images/loading.gif" class="mr-1" *ngIf="downloadProgress">
+                        <span style="font-size: 12px;" >Download<span *ngIf="downloadProgress">ing</span> </span>
+                      </button>                           
+                      <div class="dropdown-menu dropdown-menu-right shadow animated-fade-in" aria-labelledby="dropdownMenuDownload" style="min-width:1rem !important;">
+                        <a class="dropdown-item" href="javascript:void(0)" (click)="downloadPdf('pdf')">As Pdf </a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
+                        <a class="dropdown-item" href="javascript:void(0)" (click)="downloadPdf('excel')"> As Excel</a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
+                        <a class="dropdown-item" href="javascript:void(0)" (click)="downloadPdf('csv')">As CSV</a>   
+                      </div>
+                   </div>
+                  </div>
+                </div>
+                </div>
+                  <div class="row mt-2">
+                      <div class="col-xl-12 col-lg-12">
+                          <div class="card shadow mb-3">
+                              <!-- Card Body -->
+                              <div class="card-body" style="padding: 2px;margin: 0px;" >
+                                <div>
+                                <div class="scrollable-container-main">    
+                                  <table mat-table [dataSource]="reportDataSource" matSort
+                                           (matSortChange)="onSortData($event)" matSortActive="name" matSortDirection="asc" 
+                                           matSortDisableClear multiTemplateDataRows>
+                                    <ng-container *ngFor="let column of selectedReportColumns">
+                                      <ng-container [matColumnDef]="column" *ngIf=" column != 'reviews'">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 400;" [matTooltip]="columnHeaders[column] "> 
+                                        {{ column == 'totalAmount' && reportName =='Failure Transactions Report' ? 'AMOUNT' : (columnHeaders[column] || column ) }}
+                                          <i class="fas fa-lg fa-sort ml-1" style="color:#d1cfcf;margin-right: 3px;"></i>
+                                          <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
+                                             style="margin-right: 3px;margin-left: -14px;"></i>
+                                          <i class="fas fa-lg  fa-sort-down" *ngIf="sortActive === column && sortDirection === 'desc'" 
+                                             style="margin-right: 3px;margin-left: -14px;"></i></th>
+                                        <td mat-cell *matCellDef="let element" > 
+                                           {{  element[column] == undefined || element[column] == '' ? '-' : element[column] }} 
+                                              </td>
+                                      </ng-container>
+
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="selectedReportColumns; sticky:true"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: selectedReportColumns;"></tr>
+                                  </table>
+                                  <div style="text-align: center; min-height: 45px; padding-top: 10px;" 
+                                  *ngIf="reportDataSource.data.length === 0">
+                                    No records found
+                                  </div>
+                                   </div> 
+                                   <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" 
+                                   [pageSizeOptions]="pageSizeOptions" showFirstLastButtons 
+                                   (page)="pageChanged($event)">
+                                  </mat-paginator>
+                                  </div> 
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <!-- /.container-fluid -->
+
+          </div>
+          <!-- End of Main Content -->
+
+      </div>
+      <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+</div>

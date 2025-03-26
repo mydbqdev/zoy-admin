@@ -245,14 +245,10 @@ a.approve-icon:hover{
   color:rgb(240, 28, 212) !important;
   cursor: pointer;
 }
-
-
-
-
-.bg-gradiant-popup-header{
-  background-image: linear-gradient(to bottom right, #D52571, #3C57CF) !important;
-  color:#ffffff;
+.sidebar-light .nav-item .nav-link i {
+    color: #ffffff !important;
 }
+
 
 @keyframes rotateUpToDown {
   0% {
@@ -274,8 +270,8 @@ a.approve-icon:hover{
 
 .spinner-home-logo {
   display: block;
-  width: 80%;
-  height: 80%;
+  width: 75%;
+  height: 75%;
 }
 
 .spinner-location-logo {
@@ -283,8 +279,8 @@ a.approve-icon:hover{
   top: 18%;
   left: 18%;
   transform: translate(-50%, -50%);
-  width: 45px; 
-  height: 60px;
+  width: 40px; 
+  height: 53px;
   border-radius: 50%;
   object-fit: cover;
   animation: rotateUpToDown 2s infinite linear;
@@ -308,3 +304,24 @@ a.approve-icon:hover{
   66% { content: '...'; }
   100% { content: '.'; }
 }
+.status-active{
+  background-color: #28A74533;
+  color: #28A745;
+}
+.status-inactive{
+  background-color: #6C757D33;
+  color: #6C757D;
+}
+.status-verified{
+  background-color: #007BFF33;
+  color: #007BFF;
+}
+.status-pending{
+  background-color: #ef802633;
+  color: #ef8026;
+}
+.status-upcoming{
+  background-color: #6f42c133;
+  color: #6f42c1;
+}
+

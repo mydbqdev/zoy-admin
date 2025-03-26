@@ -19,6 +19,7 @@ import com.integration.zoy.model.TenantResportsDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
+import com.integration.zoy.utils.RegisterTenantsDTO;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentDTO;
@@ -80,10 +81,10 @@ public class CsvGenerateService {
     private void createCsvHeaderRow(PrintWriter writer, Object dto, String reportType) {
         switch (reportType) {
             case "userTransactionReport":
-                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Invoice No,Transaction Status,Due Amount(₹),GST Amount(₹),Total Amount(₹),Category,Mode of Payment,Failure Reason");
+                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Invoice No,Transaction Status,Due Amount(₹),GST Amount(₹),Total Amount(₹),Category,Mode of Payment");
                 break;
             case "userPaymentGstReport":
-                writer.println("Transaction Date,Invoice No,Tenant Name,PG Name,PG Address,Total Amount(₹),GST Amount(₹),Due Amount(₹),Mode of Payment");
+                writer.println("Transaction Date,Invoice No,Tenant Name,PG Name,Basic Amount(₹),GST Amount(₹),Total Amount(₹),Mode of Payment");
                 break;
             case "consolidatedFinanceReport":
                 writer.println("Transaction Date,Invoice Number,Payer/Payee Type,Name of the Payer/Payee,Debit(₹),Credit(₹),PG Name,Contact Number");
@@ -107,19 +108,28 @@ public class CsvGenerateService {
                 writer.println("Review Date,Tenant Name,PG Name,Tenant Contact,Cleanliness,Accommodation,Aminities,Maintenance,Value For Money,Overall Rating");
                 break; 
             case "UpcomingTenantsReport":
-                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address,Booked Property Name,Property Address,Room Number/Bed Allocation,Expected Check-in Date,Expected Checked-out Date");
+                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address,Booked Property Name,Property Address,Bed Number,Expected Check-in Date,Expected Checked-out Date");
                 break; 
             case "ActiveTenantsReport":
-                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Property Name,Property Address,Room Number/Bed Allocation, Check-in Date,Expected Checked-out Date");
+                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Property Name,Property Address,Bed Number, Check-in Date,Expected Checked-out Date");
                 break;
             case "InactiveTenantsReport":
-            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Room Number/Bed Allocation, Checked-out Date");
+            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Bed Number,Check-in Date, Checked-out Date");
                 break;
             case "SuspendedTenantsReport":
-            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Room Number/Bed Allocation, Checked-out Date,Suspended Date,Reason for suspension");
+            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Bed Number, Checked-out Date,Suspended Date,Reason for suspension");
                 break; 
             case "InactivePropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address");
+                break;
+            case "RegesterTenantsReport":
+            	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address,Registration Date");
+                break;
+            case "FailedTransactionReport":
+            	writer.println("Transaction Date,Tenant Name,Contact Number,eMail Id,Amount,Reason");
+                break;
+            case "PotentialPropertyReport":
+            	writer.println("Owner Name,Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month");
                 break;
             case "SuspendedPropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address,Suspended Date,Reason for suspension");
@@ -134,7 +144,7 @@ public class CsvGenerateService {
         case "userTransactionReport":
             if (dto instanceof UserPaymentDTO) {
                 UserPaymentDTO userPayment = (UserPaymentDTO) dto;
-                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                     safeToString(userPayment.getUserPersonalName()),
                     safeToString(userPayment.getTenantContactNum()),
                     safeToString(userPayment.getUserPgPropertyName()),
@@ -147,24 +157,35 @@ public class CsvGenerateService {
                     formatAmountWithCommas(userPayment.getGstAmount()),
                     formatAmountWithCommas(userPayment.getTotalAmount()),
                     safeToString(userPayment.getCategory()),
-                    safeToString(userPayment.getPaymentMode()),
-                    safeToString(userPayment.getFailedReason())
+                    safeToString(userPayment.getPaymentMode())
                     );
+            }
+            break;
+            
+        case "FailedTransactionReport":
+            if (dto instanceof UserPaymentDTO) {
+                UserPaymentDTO userPayment = (UserPaymentDTO) dto;
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                	tuService.formatTimestamp(userPayment.getTransactionDate().toInstant()),
+                    safeToString(userPayment.getUserPersonalName()),
+                    safeToString(userPayment.getTenantContactNum()),
+                    safeToString(userPayment.getEmail()),
+                    formatAmountWithCommas(userPayment.getTotalAmount()),
+                    safeToString(userPayment.getFailedReason()));
             }
             break;
 
         case "userPaymentGstReport":
             if (dto instanceof UserPaymentDTO) {
                 UserPaymentDTO userPayment = (UserPaymentDTO) dto;
-                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                 	tuService.formatTimestamp(userPayment.getTransactionDate().toInstant()),
                     safeToString(userPayment.getTransactionNumber()),
                     safeToString(userPayment.getUserPersonalName()),
                     safeToString(userPayment.getUserPgPropertyName()),
-                    safeToString(userPayment.getPropertyHouseArea()),
-                    formatAmountWithCommas(userPayment.getTotalAmount()),
-                    formatAmountWithCommas(userPayment.getGstAmount()),
                     formatAmountWithCommas(userPayment.getDueAmount()),
+                    formatAmountWithCommas(userPayment.getGstAmount()),
+                    formatAmountWithCommas(userPayment.getTotalAmount()),
                     safeToString(userPayment.getPaymentMode()));
             }
             break;
@@ -289,7 +310,7 @@ public class CsvGenerateService {
                             safeToString(upcomingTenants.getTenantEmailAddress()),
                             safeToString(upcomingTenants.getBookedProperyName()),
                             safeToString(upcomingTenants.getPropertAddress()),
-                            safeToString(upcomingTenants.getRoomNumber()),
+                            safeToString(upcomingTenants.getBedNumber()),
                             tuService.formatTimestamp(upcomingTenants.getExpectedCheckIndate().toInstant()),
                             tuService.formatTimestamp(upcomingTenants.getExpectedCheckOutdate().toInstant()));
                 }
@@ -303,7 +324,7 @@ public class CsvGenerateService {
                             safeToString(activeTenants.getTenantEmailAddress()),
                             safeToString(activeTenants.getCurrentPropertName()),
                             safeToString(activeTenants.getPropertAddress()),
-                            safeToString(activeTenants.getRoomNumber()),
+                            safeToString(activeTenants.getBedNumber()),
                             tuService.formatTimestamp(activeTenants.getCheckInDate().toInstant()),
                             tuService.formatTimestamp(activeTenants.getExpectedCheckOutdate().toInstant()));
                 }
@@ -317,20 +338,21 @@ public class CsvGenerateService {
                             safeToString(inActiveTenants.getTenantEmailAddress()),
                             safeToString(inActiveTenants.getPreviousPropertName()),
                             safeToString(inActiveTenants.getPropertAddress()),
-                            safeToString(inActiveTenants.getRoomNumber()),
+                            safeToString(inActiveTenants.getBedNumber()),
+                            tuService.formatTimestamp(inActiveTenants.getCheckInDate().toInstant()),
                             tuService.formatTimestamp(inActiveTenants.getCheckedOutDate().toInstant()));
                 }
                 break;
             case "SuspendedTenantsReport":
             	if (dto instanceof TenantResportsDTO) {
             		TenantResportsDTO suspendedTenant = (TenantResportsDTO) dto;
-            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                             safeToString(suspendedTenant.getTenantName()),
                             safeToString(suspendedTenant.getTenantContactNumber()),
                             safeToString(suspendedTenant.getTenantEmailAddress()),
                             safeToString(suspendedTenant.getPreviousPropertName()),
                             safeToString(suspendedTenant.getPropertAddress()),
-                            safeToString(suspendedTenant.getRoomNumber()),
+                            safeToString(suspendedTenant.getBedNumber()),
                             tuService.formatTimestamp(suspendedTenant.getCheckedOutDate().toInstant()),
                             tuService.formatTimestamp(suspendedTenant.getCheckedOutDate().toInstant()),
                             safeToString(suspendedTenant.getReasonForSuspension()));
@@ -347,6 +369,16 @@ public class CsvGenerateService {
                             safeToString(suspendedTenant.getPropertyAddress()));
                 }
                 break;
+            case "RegesterTenantsReport":
+            	if (dto instanceof RegisterTenantsDTO) {
+            		RegisterTenantsDTO registerTenant = (RegisterTenantsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(registerTenant.getTenantName()),
+                            safeToString(registerTenant.getTenantContactNumber()),
+                            safeToString(registerTenant.getTenantEmailAddress()),
+                            tuService.formatTimestamp(registerTenant.getRegistrationDate().toInstant()));
+                }
+                break;
             case "SuspendedPropertiesReport":
             	if (dto instanceof PropertyResportsDTO) {
             		PropertyResportsDTO suspendedproperty = (PropertyResportsDTO) dto;
@@ -359,7 +391,20 @@ public class CsvGenerateService {
                             tuService.formatTimestamp(suspendedproperty.getSuspendedDate().toInstant()),
                             safeToString(suspendedproperty.getReasonForSuspension()));     		 
                 }
-                break;     
+                break;
+            case "PotentialPropertyReport":
+            	if (dto instanceof PropertyResportsDTO) {
+            		PropertyResportsDTO potentialProperty = (PropertyResportsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(potentialProperty.getOwnerFullName()),
+                            safeToString(potentialProperty.getPropertyName()),
+                            safeToString(potentialProperty.getPropertyContactNumber()),
+                            safeToString(potentialProperty.getPropertyEmailAddress()),
+                            safeToString(potentialProperty.getPropertyAddress()),
+                            safeToString(potentialProperty.getNumberOfBeds()),
+                            formatAmountWithCommas(potentialProperty.getExpectedRentPerMonth()));     		 
+                }
+                break;
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }

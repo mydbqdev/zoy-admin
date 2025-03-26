@@ -535,8 +535,8 @@ onChangeCheck(id,type,sec,page){
     }
 }
 
-menuListCrete:string[]=['ownersc','usersc','tenantsc','financesc','supportsc','settingsc'];
-menuListEdit:string[]=['ownerse','userse','tenantse','financese','supportse','settingse'];
+menuListCrete:string[]=['ownersc','usersc','tenantsc','financesc','supportsc','reportsc','settingsc'];
+menuListEdit:string[]=['ownerse','userse','tenantse','financese','supportse','reportse','settingse'];
 menuSubMenus: string[] = [
  " ZOYCODES",
   "MANAGING_OWNERS",
@@ -556,7 +556,11 @@ menuSubMenus: string[] = [
   // "PERCENTAGE_AND_CHARGE_CONFIGURATIONS",
   // "PROMOTION_AND_OFFER_MANAGEMENT",
   "USER_AUDIT",
-  "ORGANIZATION_INFO_CONFIG"
+  "ORGANIZATION_INFO_CONFIG",
+  "TENANT_REPORTS",
+  "OWNER_REPORTS",
+  "FINANCE_REPORTS",
+  "SUPPORT_REPORTS"
 
 ];
 

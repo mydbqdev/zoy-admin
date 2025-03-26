@@ -39,6 +39,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -375,11 +376,48 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		}  catch (DisabledException e) {
 			response.setStatus(HttpStatus.BAD_GATEWAY.value());
 			response.setMessage("User Inactive");
-			log.error("Exception occured while dbq/userlogout: User Inactive" +e);
+			log.error("Exception occured while zoy/userlogout: User Inactive" +e);
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_GATEWAY);
 		} catch (BadCredentialsException e) {
 			//throw new InvalidUserCredentialsException("Invalid Credentials");
-			log.error("Exception occured while dbq/userlogout: Invalid Credentials" +e);
+			log.error("Exception occured while zoy/userlogout: Invalid Credentials" +e);
+			new ZoyAdminApplicationException(e, "");
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setMessage("Invalid Credentials");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+		
+	}
+	
+	@Override
+	public ResponseEntity<String> doUserSoftLogout(@RequestBody LoginDetails details) {
+		ResponseBody response = new ResponseBody();
+		try {
+		    String userEmail = details.getEmail();
+		    if (userEmail == null) {
+		        response.setStatus(HttpStatus.BAD_REQUEST.value());
+		        response.setMessage("Invalid user email.");
+		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		    }
+		    SecurityContextHolder.getContext().setAuthentication(null);
+		    SessionInfo session = zoyAdminService.getUserSingleDeviceLockMap().get(userEmail);
+		    if (session != null && session.getToken() != null) {  
+		    	String token = session.getToken().replace("Bearer ", "");
+		    	zoyAdminService.addToBlacklist(token); 
+		    	zoyAdminService.getUserSingleDeviceLockMap().remove(userEmail);
+		    }
+			auditHistoryUtilities.auditForUserLoginLogout(userEmail, false);
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("You have logged out successfully.");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		}  catch (DisabledException e) {
+			response.setStatus(HttpStatus.BAD_GATEWAY.value());
+			response.setMessage("User Inactive");
+			log.error("Exception occured while zoy/userSoftlogout: User Inactive" +e);
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_GATEWAY);
+		} catch (BadCredentialsException e) {
+			//throw new InvalidUserCredentialsException("Invalid Credentials");
+			log.error("Exception occured while zoy/userSoftlogout: Invalid Credentials" +e);
 			new ZoyAdminApplicationException(e, "");
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			response.setMessage("Invalid Credentials");
@@ -1288,18 +1326,22 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	@Override
 	public ResponseEntity<String> zoyAdminUserNotifications(UserPaymentFilterRequest FilterRequest) {
 		ResponseBody response = new ResponseBody();
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		try {
 
 			int pageNumber = FilterRequest.getPageIndex();
 			int pageSize = FilterRequest.getPageSize();
 			Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-			Page<Object[]> userNotifications = notificationsAndAlertsRepository.findNotification(SecurityContextHolder.getContext().getAuthentication().getName(), pageable);
+			Page<Object[]> userNotifications = notificationsAndAlertsRepository.findNotification(currentUser, pageable);
 			List<NotificationsAndAlertsDTO> usernotificationsList = new ArrayList<>();
 
 			for (Object[] details : userNotifications) {
 				NotificationsAndAlertsDTO notifications = new NotificationsAndAlertsDTO();
-
+				
+				if (FilterRequest.getIsAlert()) {
+					notificationsAndAlertsRepository.toggleNotificationStatus(Long.parseLong(details[0].toString()));
+				}
 				notifications.setNotificationId(details[0] != null ? Long.valueOf(String.valueOf(details[0])) : null);
 				notifications.setCategory(details[1] != null ? (String) details[1] : null);
 				notifications.setCreatedAt(details[2] != null ? (Timestamp) details[2] : null);
@@ -1312,14 +1354,17 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 
 				usernotificationsList.add(notifications);
 			}
-			
-			  Map<String, Object> responseMap = new HashMap<>();
-		        responseMap.put("notifications", usernotificationsList);
-		        responseMap.put("totalCount", userNotifications.getTotalElements());
 
-		        return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
+			Map<String, Object> responseMap = new HashMap<>();
+			responseMap.put("notifications", usernotificationsList);
+			responseMap.put("totalCount", userNotifications.getTotalElements());
+			responseMap.put("isSeenCount", notificationsAndAlertsRepository.isSeencount(currentUser));
+
+			return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("Error getting the notifications of the user API:/zoy_admin/userNotifications.zoyAdminUserNotifications",e);
+			log.error(
+					"Error getting the notifications of the user API:/zoy_admin/userNotifications.zoyAdminUserNotifications",
+					e);
 			try {
 				new ZoyAdminApplicationException(e, "");
 			} catch (Exception ex) {

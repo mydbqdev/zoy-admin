@@ -11,11 +11,12 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
-import { FilterData, FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
-import { ReportService } from 'src/app/finance/reports/service/reportService';
 import { TenantService } from '../../tenant.service';
 import { TenantDetailPortfolio } from '../model/tenant-details';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
+import { FilterData, FiltersRequestModel } from 'src/app/report/model/report-filters-model';
+import { ReportsService } from 'src/app/report/service/reportService';
+import { TenantReportsService } from 'src/app/report/tenant-reports/tenant-reports.service';
 
 @Component({
 	selector: 'app-tenant-profile',
@@ -31,7 +32,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	public rolesArray: string[] = [];
 	submitted=false;
 	public selectedTab:number=1;
-	public sectionTabHeader:string="Persional Details";
+	public sectionTabHeader:string="Personal Details";
 	tenantId:string='';
 	pageSize = 25;
 	pageSizeOptions: number[] = [25, 50,100,200];
@@ -49,14 +50,14 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	displayedColumns: string[] = [];
 	columnHeaders = {} ;
 	reportColumnsList = [] ;
-	reportNamesList = this.reportService.reportNamesList;
+	reportNamesList = this.tenantReportService.reportNamesList;
 	transactionHeader:string="";
 	@ViewChild(MatSort) sort: MatSort;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	tdpf : TenantDetailPortfolio = new TenantDetailPortfolio();
 	reason :string ='';
 	@ViewChild('statusChangeModelClose') statusChangeModelClose: any;
-	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private reportService : ReportService,private confirmationDialogService:ConfirmationDialogService,
+	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private reportsService : ReportsService,private tenantReportService : TenantReportsService,private confirmationDialogService:ConfirmationDialogService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private tenantService : TenantService) {
 			this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
@@ -98,8 +99,8 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		});
 		this.fromDate=this.getLastMonthDate();
 		this.toDate=this.getCurrentDate();
-		this.reportColumnsList=reportService.reportColumnsList;
-		this.columnHeaders = reportService.columnHeaders;
+		this.reportColumnsList=tenantReportService.reportColumnsList;
+		this.columnHeaders = reportsService.columnHeaders;
 
 	}
 
@@ -194,7 +195,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 	
 
 	getColumnsForSelectedReport(name:string) {
-		const report = this.reportService.reportColumnsList.find(n => n.reportName === name);
+		const report = this.tenantReportService.reportColumnsList.find(n => n.reportName === name);
 		return report?report.columns:[];
 	 }
 
@@ -261,7 +262,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 	
 		this.spinner.show();
-		this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+		this.tenantReportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
 		  if(data?.data?.length >0){
 				this.totalProduct=data.count;
 				this.reportDataList=Object.assign([],data.data);
@@ -378,7 +379,7 @@ export class TenantProfileComponent implements OnInit, AfterViewInit {
 		  this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 		  this.filtersRequest.downloadType = type ;
 		  this.downloadProgress=true;
-		  this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
+		  this.reportsService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
 			 if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 				  let extension= 'application/pdf';
 				  switch (type) {

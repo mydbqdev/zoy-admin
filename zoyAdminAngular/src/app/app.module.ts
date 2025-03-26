@@ -35,7 +35,6 @@ import { HeaderComponent } from './components/header/header.component';
 import { RoleMasterComponent } from './setting/role-master/components/role-master.component';
 import { AppSettingMenuRoutingModule } from './setting/settings-menu-routing.module';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
-import { ReportListComponent } from './finance/reports/component/report-list.component';
 import { AppOwnerMenuRoutingModule } from './owners/owners-menu-routing.model';
 import { AppUsersMenuRoutingModule } from './user-management/users-menu-routing.module';
 import { PermissionApprovalComponent } from './user-management/permission-approval/component/permission-approval.component';
@@ -45,9 +44,8 @@ import { ZoyCodeComponent } from './owners/zoy-code/components/zoy-code.componen
 import { ProfileComponent } from './profile/profile/profile.component';
 import { ActivityLogComponent } from './profile/activity-log/activity-log.component';
 import { SettingsComponent } from './profile/settings/settings.component';
-import { TicketsComponent } from './supports/tickets/tickets.component';
+import { TicketsComponent } from './supports/tickets/component/tickets.component';
 import { TenantMenuRoutingModule } from './tenants/tenents-menu-routing.module';
-import { BulkUploadComponent } from './tenants/bulk-upload/component/bulk-upload.component';
 import { PaymentApprovalComponent } from './finance/payment-appoval/component/payment-approval.component';
 import { OwnerDetailsComponent } from './owners/owner-details/components/managing-owner-details.component';
 import { DbMasterConfigurationComponent } from './setting/db-master-configuration/components/db-master-configuration.component';
@@ -66,6 +64,14 @@ import { TenantProfileComponent } from './tenants/tenant-profile/component/tenan
 import { AlertNotificationComponent } from './alert-notification/component/alert-notification.component';
 import { AppNotificationRoutingModule } from './alert-notification/notification-routing.module';
 import { OrganizationInfoConfigComponent } from './setting/organization-info-config/components/organization-info-config.component';
+import { SupportMenuRoutingModule } from './supports/supports-menu-routing.module';
+import { LeadsComponent } from './supports/leads/component/leads.component';
+import { FinanceReportsComponent } from './report/finance-reports/component/finance-reports.component';
+import { ReportsMenuRoutingModule } from './report/reports-menu-routing.module';
+import { OwnerReportsComponent } from './report/owner-reports/component/owner-reports.component';
+import { SupportReportsComponent } from './report/support-reports/component/support.reports.component';
+import { TenantReportsComponent } from './report/tenant-reports/component/tenant-reports.component';
+import { BulkUploadComponent } from './owners/bulk-upload/component/bulk-upload.component';
 
 
 const appRoutes: Routes = [
@@ -85,7 +91,6 @@ const appRoutes: Routes = [
     HomeComponent,
     SidebarComponent,
     HeaderComponent,
-    ReportListComponent,
     UserMasterComponent,
     RoleMasterComponent,
     ForgotPasswordComponent,
@@ -112,7 +117,11 @@ const appRoutes: Routes = [
     ConfigurationMasterComponent,
     UserAuditComponent,
     AlertNotificationComponent,
-   
+    LeadsComponent,
+    FinanceReportsComponent,
+    OwnerReportsComponent,
+    SupportReportsComponent,
+    TenantReportsComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -137,7 +146,8 @@ const appRoutes: Routes = [
     NgxChartsModule,
     AppDocumentUploadRoutingModule,
     AppNotificationRoutingModule,
-    
+    SupportMenuRoutingModule,
+    ReportsMenuRoutingModule
     ],
   providers: [
     {

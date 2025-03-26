@@ -12,8 +12,8 @@ public class TenantCardsDetails {
     @SerializedName("inactiveTenantsCount")
     private Long inactiveTenantsCount;
 
-    @SerializedName("suspendedTenantsCount")
-    private Long suspendedTenantsCount;
+    @SerializedName("registerTenantsCount")
+    private Long registerTenantsCount;
 
     public Long getActiveTenantsCount() {
 		return activeTenantsCount;
@@ -39,19 +39,19 @@ public class TenantCardsDetails {
         this.inactiveTenantsCount = inactiveTenantsCount;
     }
 
-    public Long getSuspendedTenantsCount() {
-        return suspendedTenantsCount;
-    }
+    public Long getRegisterTenantsCount() {
+		return registerTenantsCount;
+	}
 
-    public void setSuspendedTenantsCount(Long suspendedTenantsCount) {
-        this.suspendedTenantsCount = suspendedTenantsCount;
-    }
+	public void setRegisterTenantsCount(Long registerTenantsCount) {
+		this.registerTenantsCount = registerTenantsCount;
+	}
 
-    public TenantCardsDetails(Long activeTenantsCount, Long upcomingTenantsCount, Long inactiveTenantsCount, Long suspendedTenantsCount) {
+	public TenantCardsDetails(Long activeTenantsCount, Long upcomingTenantsCount, Long inactiveTenantsCount, Long registerTenantsCount) {
         super();
         this.activeTenantsCount = activeTenantsCount;
         this.upcomingTenantsCount = upcomingTenantsCount;
         this.inactiveTenantsCount = inactiveTenantsCount;
-        this.suspendedTenantsCount = suspendedTenantsCount;
+        this.registerTenantsCount = registerTenantsCount;
     }
 }

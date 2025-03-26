@@ -1,488 +1,547 @@
-<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
-  <p style="color: white;">Loading ...</p>
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
+  <div class="spinner-container"><img class="spinner-home-logo" src="assets/images/home-logo.png" alt="Home"/>
+    <img class="spinner-location-logo" src="assets/images/location-logo.png" alt="User"/>
+    <div class="spinner-loading">Loading</div>
+  </div>
 </ngx-spinner>
-<!-- Content Wrapper. Contains page content -->
-<div id="page-top">
-  <!-- Page Wrapper -->
-  <div id="wrapper">
-    <!-- Sidebar -->
-    <app-sidebar></app-sidebar>
-    <!-- End of Sidebar -->
-
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
-        <!-- Main Content -->
-        <div id="content">
-               <div style="display: block;margin-bottom:5.375rem;">
-               <!-- Topbar -->
-               <app-header></app-header>
-               <!-- End of Topbar -->
-               </div>
-
-            <!-- Begin Page Content -->
-            <div class="container-fluid">
-              <div class="d-sm-flex align-items-center justify-content-between mb-3">
-                <h3 class="h3 mb-0 text-gray-800"><span class="text-header-800 text-header-border">Role</span><span class="text-header-800-blue">& Permission</span></h3> 
-                <div>
-                  <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"  (click)="clearArrays(); myForm.reset();" aria-controls="createRole" class="btn btn-sm btn-primary-custom shadow-sm" ><i
-                    class="fas fa-user-shield text-white-50"></i> New Role</a>
-                </div>
-              </div> 
-                <!-- Content Row --> 
-                <div class="row">
-                    <!-- Area Chart -->
-                    <div class="col-xl-12 col-lg-12">
-                       <div class="card shadow mb-3">
-                           <!-- Card Body -->
-                           <div class="card-body" style="margin: 0px;padding: 2px;">
-                               <div>
-                                   <div style="height: calc(100vh - 208px);overflow: auto;">
-                                       <div class="desc-inner" style="height: auto;">
-                                   <table mat-table [dataSource]="dataSource" matSortActive="roleName" matSortDirection="asc" matSort (matSortChange)="announceSortChange($event)">                                                     
-                                       <ng-container matColumnDef="roleName">
-                                         <th mat-header-cell style="font-weight: 600;width: 300px;" *matHeaderCellDef mat-sort-header>
-                                           NAME 
-                                           <span style="margin-left: 2px;">
-                                              <!--i class="fas fa-lg fa-sort-up" [ngClass]="{'sorting-normal-color': !columnSortDirections['roleName'] }"></i-->
-                                              <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['roleName'] === 'asc' }"></i>
-                                              <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['roleName'] === 'desc'}"></i>
-                                          </span>
-                                       </th>
-                                         <td style="width: 300px;" mat-cell data-label="roleName"  *matCellDef="let element"> 
-                                           {{element.roleName}}
-                                         </td>
-                                       </ng-container>
-
-                                       <ng-container matColumnDef="desc">
-                                           <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef>DESCRIPTION</th>
-                                           <td mat-cell data-label="desc"  *matCellDef="let element;"  >
-                                             {{element.desc}}
-                                           </td>
-                                       </ng-container>
-                     
-                                         <ng-container matColumnDef="action">
-                                           <th mat-header-cell style="font-weight: 600;width: 80px;" *matHeaderCellDef></th>
-                                           <td mat-cell class="example-box" style="width: 80px;" data-label="action" *matCellDef="let element"  >
-                                               <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
-                                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                   <i class="fas fa-ellipsis-v fa-sm fa-fw" style="color:#000000;"></i>
-                                               </a>
-                                               <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                   aria-labelledby="dropdownMenuLink">
-                                                   <a class="dropdown-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUpdateLabel" aria-controls="offcanvasUpdateLabel" (click)="getEditData(element)">Edit</a>
-                                                   <a class="dropdown-item" href="javascript:void(0)"  (click)="deleteRecord(element)" >Delete</a>
-                                               </div>
-                                           </td>
-                                           
-                                         </ng-container> 
-                                      
-                                   
-                                       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                                       <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
-                                     </table>  
-                                     <div style="text-align: center;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>                       
-                                   </div> 
-                               </div> 
-                               <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
-                               </div>
-                           </div>
-                       </div>
-                    </div>
-                </div>
-            </div>
-            <!-- /.container-fluid -->
-
-        </div>
-        <!-- End of Main Content -->
-
-    </div>
-    <!-- End of Content Wrapper -->
-
-</div>
-<!-- End of Page Wrapper -->
-</div>
-
-  <!----Update Role----->
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUpdateLabel" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
-   <div class="offcanvas-header bg-gradiant-popup-header">
-       <h5 class="offcanvas-title" id="offcanvasUpdateLabel">Update Role</h5>
-       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #closeNewModal></button>
-   </div>
-   <hr class="sidebar-divider my-0">
-   <div class="offcanvas-body">
-       <form  (submit)="saveEditedData()" >
-           <div class="form-group">
-               <label for="roleName" class="col-form-label">Role Name:</label>
-               <input type="hidden" name="id" value={{editRoles.id}}  id="roleId" /><input type="text" class="form-control" id="roleName" value={{editRoles.roleName}}  name="roleName"  onkeypress="$event.value=$event.value.toUpperCase();" value="" autocomplete="off" readonly="readonly"/>
-           </div>
-           <div class="form-group">
-               <label for="description" class="col-form-label">Description<i class="fa fa-asterisk"></i></label>
-               <input type="text" class="form-control" id="description" name="description" [ngClass]="{'is-invalid':submitted &&  (editRoles.desc=='' || editRoles.desc==' ')}" [(ngModel)]="editRoles.desc" autocomplete="off" />
-               <div *ngIf="submitted &&( editRoles.desc=='' || editRoles.desc==' ')" class="text-danger">
-                <div *ngIf="submitted && editRoles.desc==''">
-                    Description is required
-                </div>
-                </div>
-             </div>
-           <div class="accordion" id="accordionRoleE">
-               <div class="row">
-                    <div class="col-sm-8" style="font-weight:500;font-size:14px;">Authorization</div>
-                    <div class="col-sm-2" style="font-weight:500;font-size:14px;">Read</div>
-                    <div class="col-sm-2" style="font-weight:500;font-size:14px;">Write</div>
-               </div>
-            <div>    
-           <div  class="row">									         
-            <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-            <span  class="collapsed" data-toggle="collapse" data-target="#collapseOWNERSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-            <span class="title"> Owners</span>
-            </div>
-            <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownersereadAll"  (click)="onChangeCheckAll($event,'read','ownerse')"/></div>
-            <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownersewriteAll" (click)="onChangeCheckAll($event,'write','ownerse')" /></div>								                
-           </div>
-          <div  id="collapseOWNERSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #ownersetab>
-            <div class="row" >
-              <div class="col-sm-8 pl-4">Zoy Code</div>
-              <div class="col-sm-2"><input type="checkbox" name="ownerseread"    value="ZOYCODES_READ" id="ownerseReadZC"  (click)="onChangeCheck($event,'read','ownerse','ZC')"/></div>
-              <div class="col-sm-2"><input type="checkbox" name="ownersewrite"   value="ZOYCODES_WRITE"  id="ownerseWriteZC" (click)="onChangeCheck($event,'write','ownerse','ZC')"/></div>
-           </div>                     
-            <div class="row" >
-              <div class="col-sm-8 pl-4">Managing Owners</div>
-              <div class="col-sm-2"><input type="checkbox" name="ownerseread"    value="MANAGING_OWNERS_READ" id="ownerseReadMO"  (click)="onChangeCheck($event,'read','ownerse','MO')"/></div>
-              <div class="col-sm-2"><input type="checkbox" name="ownersewrite"   value="MANAGING_OWNERS_WRITE"  id="ownerseWriteMO" (click)="onChangeCheck($event,'write','ownerse','MO')"/></div>
-           </div>                      
-           </div>
-           <div  class="row">									         
-            <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-            <span  class="collapsed" data-toggle="collapse" data-target="#collapseUSERSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-            <span class="title"> Users</span>
-            </div>
-            <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="usersereadAll"  (click)="onChangeCheckAll($event,'read','userse')"/></div>
-            <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="usersewriteAll" (click)="onChangeCheckAll($event,'write','userse')" /></div>								                
-           </div>
-          <div  id="collapseUSERSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #usersetab>
-            <div class="row" >
-               <div class="col-sm-8 pl-4">Managing Users</div>
-               <div class="col-sm-2"><input type="checkbox" name="userseread"    value="MANAGING_USERS_READ" id="userseReadMU"  (click)="onChangeCheck($event,'read','userse','MU')"/></div>
-               <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="MANAGING_USERS_WRITE"  id="userseWriteMU" (click)="onChangeCheck($event,'write','userse','MU')"/></div>
-            </div> 
-            <div class="row" >
-               <div class="col-sm-8 pl-4">Permission Approval</div>
-               <div class="col-sm-2"><input type="checkbox" name="userseread"    value="PERMISSION_APPROVAL_READ" id="userseReadPA"  (click)="onChangeCheck($event,'read','userse','PA')"/></div>
-               <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="PERMISSION_APPROVAL_WRITE"  id="userseReadPA" (click)="onChangeCheck($event,'write','userse','PA')"/></div>
-            </div>
-            <div class="row" >
-              <div class="col-sm-8 pl-4">Locked User</div>
-              <div class="col-sm-2"><input type="checkbox" name="userseread"    value="LOCKED_USER_READ" id="userseReadLU"  (click)="onChangeCheck($event,'read','userse','LU')"/></div>
-              <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="LOCKED_USER_WRITE"  id="userseReadLU" (click)="onChangeCheck($event,'write','userse','LU')"/></div>
-           </div>
-         </div>
-         <div  class="row">									         
-          <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-          <span  class="collapsed" data-toggle="collapse" data-target="#collapseTENANTSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-          <span class="title"> Tenants</span>
-          </div>
-          <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="tenantsereadAll"  (click)="onChangeCheckAll($event,'read','tenantse')"/></div>
-          <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="tenantsewriteAll" (click)="onChangeCheckAll($event,'write','tenantse')" /></div>								                
-         </div>
-        <div  id="collapseTENANTSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #tenantsetab>
-          <div class="row" >
-             <div class="col-sm-8 pl-4">Tenants Zoy</div>
-             <div class="col-sm-2"><input type="checkbox" name="tenantseread"    value="TENANTSZOY_READ" id="tenantseReadTZ"  (click)="onChangeCheck($event,'read','tenantse','TZ')"/></div>
-             <div class="col-sm-2"><input type="checkbox" name="tenantsewrite"   value="TENANTSZOY_WRITE"  id="tenantseWriteTZ" (click)="onChangeCheck($event,'write','tenantse','TZ')"/></div>
-          </div> 
-          <div class="row" >
-            <div class="col-sm-8 pl-4">Bulk upload</div>
-            <div class="col-sm-2"><input type="checkbox" name="tenantseread"    value="BULK_UPLOAD_READ" id="tenantseReadBU"  (click)="onChangeCheck($event,'read','tenantse','BU')"/></div>
-            <div class="col-sm-2"><input type="checkbox" name="tenantsewrite"   value="BULK_UPLOAD_WRITE"  id="tenantseWriteBU" (click)="onChangeCheck($event,'write','tenantse','BU')"/></div>
-         </div>
-       </div>
-       <div  class="row">									         
-        <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-        <span  class="collapsed" data-toggle="collapse" data-target="#collapseFINANCESE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-        <span class="title"> Finance</span>
-        </div>
-        <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="financesereadAll"  (click)="onChangeCheckAll($event,'read','financese')"/></div>
-        <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="financesewriteAll" (click)="onChangeCheckAll($event,'write','financese')" /></div>								                
-       </div>
-      <div  id="collapseFINANCESE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #financesetab>
-        <div class="row" >
-          <div class="col-sm-8 pl-4">Reports</div>
-          <div class="col-sm-2"><input type="checkbox" name="financeseread"    value="REPORTS_READ" id="financeseReadRT"  (click)="onChangeCheck($event,'read','financese','RT')"/></div>
-          <div class="col-sm-2"><input type="checkbox" name="financesewrite"   value="REPORTS_WRITE"  id="financeseWriteRT" (click)="onChangeCheck($event,'write','financese','RT')"/></div>
-       </div> 
-       <div class="row" >
-        <div class="col-sm-8 pl-4">Payment Approval</div>
-        <div class="col-sm-2"><input type="checkbox" name="financeseread"    value="PAYMENT_APPROVAL_READ" id="financeseReadPA"  (click)="onChangeCheck($event,'read','financese','PA')"/></div>
-        <div class="col-sm-2"><input type="checkbox" name="financesewrite"   value="PAYMENT_APPROVAL_WRITE"  id="financeseWritePA" (click)="onChangeCheck($event,'write','financese','PA')"/></div>
-     </div> 
-     </div>
-     <div  class="row">									         
-      <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-      <span  class="collapsed" data-toggle="collapse" data-target="#collapseSUPPORTSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-      <span class="title"> Support</span>
-      </div>
-      <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="supportsereadAll"  (click)="onChangeCheckAll($event,'read','supportse')"/></div>
-      <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="supportsewriteAll" (click)="onChangeCheckAll($event,'write','supportse')" /></div>								                
-     </div>
-    <div  id="collapseSUPPORTSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #supportsetab>
-      <div class="row" >
-        <div class="col-sm-8 pl-4">Tickets</div>
-        <div class="col-sm-2"><input type="checkbox" name="supportseread"    value="TICKETS_READ" id="supportseReadRT"  (click)="onChangeCheck($event,'read','supportse','TS')"/></div>
-        <div class="col-sm-2"><input type="checkbox" name="supportsewrite"   value="TICKETS_WRITE"  id="supportseWriteRT" (click)="onChangeCheck($event,'write','supportse','TS')"/></div>
-     </div> 
-   </div>
-   <div  class="row">									         
-    <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-    <span  class="collapsed" data-toggle="collapse" data-target="#collapseSETTINGSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-    <span class="title"> Settings</span>
-    </div>
-    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="settingsereadAll"  (click)="onChangeCheckAll($event,'read','settingse')"/></div>
-    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="settingsewriteAll" (click)="onChangeCheckAll($event,'write','settingse')" /></div>								                
-   </div>
-       <div  id="collapseSETTINGSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #settingsetab>
-        <div class="row" >
-            <div class="col-sm-8 pl-4">Role & Permission</div>
-            <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="ROLE_AND_PERMISSION_READ" id="settingseReadRP"  (click)="onChangeCheck($event,'read','settingse','RP')"/></div>
-            <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="ROLE_AND_PERMISSION_WRITE"  id="settingseWriteRP" (click)="onChangeCheck($event,'write','settingse','RP')"/></div>
-         </div>  
-         <div class="row" >
-          <div class="col-sm-8 pl-4">Initial Configuration</div>
-          <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="DB_MASTER_CONFIGURATION_READ" id="settingseReadDBM"  (click)="onChangeCheck($event,'read','settingse','DBM')"/></div>
-          <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="DB_MASTER_CONFIGURATION_WRITE"  id="settingseWriteDBM" (click)="onChangeCheck($event,'write','settingse','DBM')"/></div>
-       </div>
-       <div class="row" >
-        <div class="col-sm-8 pl-4">Master Configuration</div>
-        <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="CONFIGURATION_MASTER_READ" id="settingseReadCM"  (click)="onChangeCheck($event,'read','settingse','CM')"/></div>
-        <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="CONFIGURATION_MASTER_WRITE"  id="settingseWriteCM" (click)="onChangeCheck($event,'write','settingse','CM')"/></div>
-     </div>
-     <div class="row" >
-      <div class="col-sm-8 pl-4">Master Configuration Approval</div>
-      <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="CONFIGURATION_MASTER_APPROVAL_READ" id="settingseReadCMA"  (click)="onChangeCheck($event,'read','settingse','CMA')"/></div>
-      <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="CONFIGURATION_MASTER_APPROVAL_WRITE"  id="settingseWriteCMA" (click)="onChangeCheck($event,'write','settingse','CMA')"/></div>
-   </div>
-      <div class="row" >
-        <div class="col-sm-8 pl-4">User Audit</div>
-        <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="USER_AUDIT_READ" id="settingseReadUA"  (click)="onChangeCheck($event,'read','settingse','UA')"/></div>
-        <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="USER_AUDIT_WRITE"  id="settingseWriteUA" (click)="onChangeCheck($event,'write','settingse','UA')"/></div>
-    </div>
-    <div class="row" >
-      <div class="col-sm-8 pl-4">Organization Info Configuration</div>
-      <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="ORGANIZATION_INFO_CONFIG_READ" id="settingseReadOIC"  (click)="onChangeCheck($event,'read','settingse','OIC')"/></div>
-      <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="ORGANIZATION_INFO_CONFIG_WRITE"  id="settingseReadOIC" (click)="onChangeCheck($event,'write','settingse','OIC')"/></div>
-   </div>        
-    <!--     <div class="row" >
-            <div class="col-sm-8 pl-4">Percentage & Charge</div>
-            <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="settingseReadPCC"  (click)="onChangeCheck($event,'read','settingse','PCC')"/></div>
-            <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_WRITE"  id="settingseReadPCC" (click)="onChangeCheck($event,'write','settingse','PCC')"/></div>
-         </div>
-         <div class="row" >
-           <div class="col-sm-8 pl-4">Promotion and Offers Management</div>
-           <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="PROMOTION_AND_OFFER_MANAGEMENT_READ" id="settingseReadPOM"  (click)="onChangeCheck($event,'read','settingse','POM')"/></div>
-           <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="PROMOTION_AND_OFFER_MANAGEMENT_WRITE"  id="settingseReadPOM" (click)="onChangeCheck($event,'write','settingse','POM')"/></div>
-        </div> -->
-      </div> 
-     </div>
-        </div>
-        <div class="offcanvas-footer d-flex justify-content-start mt-3" style="align-items: center;">          
-          <input type="submit" class="btn btn-primary-custom me-2" value="Save"  *ngIf="rolesArray.includes('ROLE_AND_PERMISSION_WRITE')" />
-          <button type="button" class="btn btn-dark" data-bs-dismiss="offcanvas" aria-label="Close">Close</button>
-         </div>   
-        </form>
-   </div>
-</div>  
-
-
-     <!----Create Role----->
-     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
-      <div class="offcanvas-header bg-gradiant-popup-header">
-          <h5 class="offcanvas-title" id="offcanvasRightLabel">Create Role</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #editNewModal></button>
-      </div>
-      <hr class="sidebar-divider my-0">
-      <div class="offcanvas-body">
-          <form  (submit)="saveRoleModel()" [formGroup]="form" #myForm>
-              <div class="form-group">
-                  <label for="roleName" class="col-form-label">Role Name<i class="fa fa-asterisk"></i></label>
-                  <input type="hidden" name="id"  [(ngModel)]="id" />
-                  <input type="text" [ngClass]="{'is-invalid':submitted && form.controls.roleName.errors}" class="form-control" formControlName="roleName" id="roleName" name="roleName"  [(ngModel)]="role"  onkeyup="role=this.value.toUpperCase();"  autocomplete="off" required/>
-                  <div *ngIf="submitted && form.controls.roleName.errors" class="text-danger">
-                      <div *ngIf="submitted && form.controls.roleName.errors.required">
-                        Role is required
-                      </div>
-                      </div>
-              </div>
-              <div class="form-group">
-                  <label for="description" class="col-form-label">Description<i class="fa fa-asterisk"></i></label>
-                  <input type="text" [ngClass]="{'is-invalid':submitted && form.controls.desc.errors}"  class="form-control" formControlName="desc" id="description" name="description"  [(ngModel)]="desc"   autocomplete="off" />
-                  <div *ngIf="submitted && form.controls.desc.errors" class="text-danger">
-                      <div *ngIf="submitted && form.controls.desc.errors.required">
-                          Description is required
-                      </div>
-                      </div>
-                   </div>
-                 <div class="accordion" id="accordionRole">
-                  <div class="row">
-                       <div class="col-sm-8" style="font-weight:500;font-size:14px;">Authorization</div>
-                       <div class="col-sm-2" style="font-weight:500;font-size:14px;">Read</div>
-                       <div class="col-sm-2" style="font-weight:500;font-size:14px;">Write</div>
+  <!-- Content Wrapper. Contains page content -->
+  <div id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <app-sidebar></app-sidebar>
+      <!-- End of Sidebar -->
+  
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+          <!-- Main Content -->
+          <div id="content">
+                 <div style="display: block;margin-bottom:5.375rem;">
+                 <!-- Topbar -->
+                 <app-header></app-header>
+                 <!-- End of Topbar -->
                  </div>
-               <div>    
-                <div  class="row">									         
-                   <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-                   <span  class="collapsed" data-toggle="collapse" data-target="#collapseOWNERSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-                   <span class="title"> Owners</span>
-                   </div>
-                   <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerscreadAll"  (click)="onChangeCheckAll($event,'read','ownersc')"/></div>
-                   <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerscwriteAll" (click)="onChangeCheckAll($event,'write','ownersc')" /></div>								                
+  
+              <!-- Begin Page Content -->
+              <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                  <h3 class="h3 mb-0 text-gray-800"><span class="text-header-800 text-header-border">Role</span><span class="text-header-800-blue">& Permission</span></h3> 
+                  <div>
+                    <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"  (click)="clearArrays(); myForm.reset();" aria-controls="createRole" class="btn btn-sm btn-primary-custom shadow-sm" ><i
+                      class="fas fa-user-shield text-white-50"></i> New Role</a>
                   </div>
-                 <div  id="collapseOWNERSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #ownersctab>
-                   <div class="row" >
-                     <div class="col-sm-8 pl-4">Zoy Code</div>
-                     <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="ZOYCODES_READ" id="ownerscReadZC"  (click)="onChangeCheck($event,'read','ownersc','ZC')"/></div>
-                     <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="ZOYCODES_WRITE"  id="ownerscWriteZC" (click)="onChangeCheck($event,'write','ownersc','ZC')"/></div>
-                  </div>                     
-                   <div class="row" >
-                     <div class="col-sm-8 pl-4">Managing Owners</div>
-                     <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="MANAGING_OWNERS_READ" id="ownerscReadMO"  (click)="onChangeCheck($event,'read','ownersc','MO')"/></div>
-                     <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="MANAGING_OWNERS_WRITE"  id="ownerscWriteMO" (click)="onChangeCheck($event,'write','ownersc','MO')"/></div>
-                  </div>                      
+                </div> 
+                  <!-- Content Row --> 
+                  <div class="row">
+                      <!-- Area Chart -->
+                      <div class="col-xl-12 col-lg-12">
+                         <div class="card shadow mb-3">
+                             <!-- Card Body -->
+                             <div class="card-body" style="margin: 0px;padding: 2px;">
+                                 <div>
+                                     <div style="height: calc(100vh - 208px);overflow: auto;">
+                                         <div class="desc-inner" style="height: auto;">
+                                     <table mat-table [dataSource]="dataSource" matSortActive="roleName" matSortDirection="asc" matSort (matSortChange)="announceSortChange($event)">                                                     
+                                         <ng-container matColumnDef="roleName">
+                                           <th mat-header-cell style="font-weight: 600;width: 300px;" *matHeaderCellDef mat-sort-header>
+                                             NAME 
+                                             <span style="margin-left: 2px;">
+                                                <!--i class="fas fa-lg fa-sort-up" [ngClass]="{'sorting-normal-color': !columnSortDirections['roleName'] }"></i-->
+                                                <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['roleName'] === 'asc' }"></i>
+                                                <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['roleName'] === 'desc'}"></i>
+                                            </span>
+                                         </th>
+                                           <td style="width: 300px;" mat-cell data-label="roleName"  *matCellDef="let element"> 
+                                             {{element.roleName}}
+                                           </td>
+                                         </ng-container>
+ 
+                                         <ng-container matColumnDef="desc">
+                                             <th mat-header-cell style="font-weight: 600;" *matHeaderCellDef>DESCRIPTION</th>
+                                             <td mat-cell data-label="desc"  *matCellDef="let element;"  >
+                                               {{element.desc}}
+                                             </td>
+                                         </ng-container>
+                       
+                                           <ng-container matColumnDef="action">
+                                             <th mat-header-cell style="font-weight: 600;width: 80px;" *matHeaderCellDef></th>
+                                             <td mat-cell class="example-box" style="width: 80px;" data-label="action" *matCellDef="let element"  >
+                                                 <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
+                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                     <i class="fas fa-ellipsis-v fa-sm fa-fw"  style="color:#000000;"></i>
+                                                 </a>
+                                                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                     aria-labelledby="dropdownMenuLink">
+                                                     <a class="dropdown-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUpdateLabel" aria-controls="offcanvasUpdateLabel" (click)="getEditData(element)">Edit</a>
+                                                     <a class="dropdown-item" href="javascript:void(0)"  (click)="deleteRecord(element)" >Delete</a>
+                                                 </div>
+                                             </td>
+                                             
+                                           </ng-container> 
+                                        
+                                     
+                                         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                         <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
+                                       </table>  
+                                       <div style="text-align: center;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>                       
+                                     </div> 
+                                 </div> 
+                                 <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+                                 </div>
+                             </div>
+                         </div>
+                      </div>
                   </div>
+              </div>
+              <!-- /.container-fluid -->
+  
+          </div>
+          <!-- End of Main Content -->
+  
+      </div>
+      <!-- End of Content Wrapper -->
+  
+  </div>
+  <!-- End of Page Wrapper -->
+  </div>
+  
+    <!----Update Role----->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUpdateLabel" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+     <div class="offcanvas-header  bg-gradiant-popup-header">
+         <h5 class="offcanvas-title" id="offcanvasUpdateLabel">Update Role</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #closeNewModal></button>
+     </div>
+     <hr class="sidebar-divider my-0">
+     <div class="offcanvas-body">
+         <form  (submit)="saveEditedData()" >
+             <div class="form-group">
+                 <label for="roleName" class="col-form-label">Role Name:</label>
+                 <input type="hidden" name="id" value={{editRoles.id}}  id="roleId" /><input type="text" class="form-control" id="roleName" value={{editRoles.roleName}}  name="roleName"  onkeypress="$event.value=$event.value.toUpperCase();" value="" autocomplete="off" readonly="readonly"/>
+             </div>
+             <div class="form-group">
+                 <label for="description" class="col-form-label">Description<i class="fa fa-asterisk"></i></label>
+                 <input type="text" class="form-control" id="description" name="description" [ngClass]="{'is-invalid':submitted &&  (editRoles.desc=='' || editRoles.desc==' ')}" [(ngModel)]="editRoles.desc" autocomplete="off" />
+                 <div *ngIf="submitted &&( editRoles.desc=='' || editRoles.desc==' ')" class="text-danger">
+                  <div *ngIf="submitted && editRoles.desc==''">
+                      Description is required
+                  </div>
+                  </div>
+               </div>
+             <div class="accordion" id="accordionRoleE">
+                 <div class="row">
+                      <div class="col-sm-8" style="font-weight:500;font-size:14px;">Authorization</div>
+                      <div class="col-sm-2" style="font-weight:500;font-size:14px;">Read</div>
+                      <div class="col-sm-2" style="font-weight:500;font-size:14px;">Write</div>
+                 </div>
+              <div>    
                 <div  class="row">									         
                   <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-                  <span  class="collapsed" data-toggle="collapse" data-target="#collapseUSERSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                  <span  class="collapsed" data-toggle="collapse" data-target="#collapseUSERSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
                   <span class="title"> Users</span>
                   </div>
-                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="userscreadAll"  (click)="onChangeCheckAll($event,'read','usersc')"/></div>
-                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="userscwriteAll" (click)="onChangeCheckAll($event,'write','usersc')" /></div>								                
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="usersereadAll"  (click)="onChangeCheckAll($event,'read','userse')"/></div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="usersewriteAll" (click)="onChangeCheckAll($event,'write','userse')" /></div>								                
                  </div>
-                <div  id="collapseUSERSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #usersctab>
+                <div  id="collapseUSERSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #usersetab>
                   <div class="row" >
                      <div class="col-sm-8 pl-4">Managing Users</div>
-                     <div class="col-sm-2"><input type="checkbox" name="userscread"    value="MANAGING_USERS_READ" id="userscReadMU"  (click)="onChangeCheck($event,'read','usersc','MU')"/></div>
-                     <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="MANAGING_USERS_WRITE"  id="userscWriteMU" (click)="onChangeCheck($event,'write','usersc','MU')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="userseread"    value="MANAGING_USERS_READ" id="userseReadMU"  (click)="onChangeCheck($event,'read','userse','MU')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="MANAGING_USERS_WRITE"  id="userseWriteMU" (click)="onChangeCheck($event,'write','userse','MU')"/></div>
                   </div> 
                   <div class="row" >
                      <div class="col-sm-8 pl-4">Permission Approval</div>
-                     <div class="col-sm-2"><input type="checkbox" name="userscread"    value="PERMISSION_APPROVAL_READ" id="userscReadPA"  (click)="onChangeCheck($event,'read','usersc','PA')"/></div>
-                     <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="PERMISSION_APPROVAL_WRITE"  id="userscReadPA" (click)="onChangeCheck($event,'write','usersc','PA')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="userseread"    value="PERMISSION_APPROVAL_READ" id="userseReadPA"  (click)="onChangeCheck($event,'read','userse','PA')"/></div>
+                     <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="PERMISSION_APPROVAL_WRITE"  id="userseReadPA" (click)="onChangeCheck($event,'write','userse','PA')"/></div>
                   </div>
                   <div class="row" >
                     <div class="col-sm-8 pl-4">Locked User</div>
-                    <div class="col-sm-2"><input type="checkbox" name="userscread"    value="LOCKED_USER_READ" id="userscReadLU"  (click)="onChangeCheck($event,'read','usersc','LU')"/></div>
-                    <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="LOCKED_USER_WRITE"  id="userscReadLU" (click)="onChangeCheck($event,'write','usersc','LU')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="userseread"    value="LOCKED_USER_READ" id="userseReadLU"  (click)="onChangeCheck($event,'read','userse','LU')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="LOCKED_USER_WRITE"  id="userseReadLU" (click)="onChangeCheck($event,'write','userse','LU')"/></div>
                  </div>
                </div>
-                  <div  class="row">									         
-                   <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-                   <span  class="collapsed" data-toggle="collapse" data-target="#collapseTENANTSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-                   <span class="title"> Tenants</span>
-                   </div>
-                   <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="tenantscreadAll"  (click)="onChangeCheckAll($event,'read','tenantsc')"/></div>
-                   <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="tenantscwriteAll" (click)="onChangeCheckAll($event,'write','tenantsc')" /></div>								                
-                  </div>
-                 <div  id="collapseTENANTSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #tenantsctab>
-                   <div class="row" >
-                      <div class="col-sm-8 pl-4">Tenants Zoy</div>
-                      <div class="col-sm-2"><input type="checkbox" name="tenantscread"    value="TENANTSZOY_READ" id="tenantscReadTZ"  (click)="onChangeCheck($event,'read','tenantsc','TZ')"/></div>
-                      <div class="col-sm-2"><input type="checkbox" name="tenantscwrite"   value="TENANTSZOY_WRITE"  id="tenantscWriteTZ" (click)="onChangeCheck($event,'write','tenantsc','TZ')"/></div>
-                   </div> 
-                   <div class="row" >
-                    <div class="col-sm-8 pl-4">Bulk upload</div>
-                    <div class="col-sm-2"><input type="checkbox" name="tenantscread"    value="BULK_UPLOAD_READ" id="tenantscReadBU"  (click)="onChangeCheck($event,'read','tenantsc','BU')"/></div>
-                    <div class="col-sm-2"><input type="checkbox" name="tenantscwrite"   value="BULK_UPLOAD_WRITE"  id="tenantscWriteBU" (click)="onChangeCheck($event,'write','tenantsc','BU')"/></div>
-                 </div>
-                </div>
-                <div  class="row">									         
-                  <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-                  <span  class="collapsed" data-toggle="collapse" data-target="#collapseFINANCESC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-                  <span class="title"> Finance</span>
-                  </div>
-                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="financescreadAll"  (click)="onChangeCheckAll($event,'read','financesc')"/></div>
-                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="financescwriteAll" (click)="onChangeCheckAll($event,'write','financesc')" /></div>								                
-                 </div>
-                <div  id="collapseFINANCESC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #financesctab>
-                  <div class="row" >
-                    <div class="col-sm-8 pl-4">Reports</div>
-                    <div class="col-sm-2"><input type="checkbox" name="financescread"    value="REPORTS_READ" id="financescReadRT"  (click)="onChangeCheck($event,'read','financesc','RT')"/></div>
-                    <div class="col-sm-2"><input type="checkbox" name="financescwrite"   value="REPORTS_WRITE"  id="financescWriteRT" (click)="onChangeCheck($event,'write','financesc','RT')"/></div>
-                 </div> 
-                 <div class="row" >
-                  <div class="col-sm-8 pl-4">Payment Approval</div>
-                  <div class="col-sm-2"><input type="checkbox" name="financescread"    value="PAYMENT_APPROVAL_READ" id="financescReadPA"  (click)="onChangeCheck($event,'read','financesc','PA')"/></div>
-                  <div class="col-sm-2"><input type="checkbox" name="financescwrite"   value="PAYMENT_APPROVAL_WRITE"  id="financescWritePA" (click)="onChangeCheck($event,'write','financesc','PA')"/></div>
-               </div> 
-               </div>
-               <div  class="row">									         
-                <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-                <span  class="collapsed" data-toggle="collapse" data-target="#collapseSUPPORTSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-                <span class="title"> Support</span>
-                </div>
-                <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="supportscreadAll"  (click)="onChangeCheckAll($event,'read','supportsc')"/></div>
-                <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="supportscwriteAll" (click)="onChangeCheckAll($event,'write','supportsc')" /></div>								                
-               </div>
-              <div  id="collapseSUPPORTSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #supportsctab>
-                <div class="row" >
-                  <div class="col-sm-8 pl-4">Tickets</div>
-                  <div class="col-sm-2"><input type="checkbox" name="supportscread"    value="TICKETS_READ" id="supportscReadRT"  (click)="onChangeCheck($event,'read','supportsc','TS')"/></div>
-                  <div class="col-sm-2"><input type="checkbox" name="supportscwrite"   value="TICKETS_WRITE"  id="supportscWriteRT" (click)="onChangeCheck($event,'write','supportsc','TS')"/></div>
-               </div> 
-             </div>
              <div  class="row">									         
               <div class="col-sm-8" style="font-weight:500;font-size:14px;">
-              <span  class="collapsed" data-toggle="collapse" data-target="#collapseSETTINGSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
-              <span class="title"> Settings</span>
+              <span  class="collapsed" data-toggle="collapse" data-target="#collapseOWNERSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+              <span class="title"> Owners</span>
               </div>
-              <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="settingscreadAll"  (click)="onChangeCheckAll($event,'read','settingsc')"/></div>
-              <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="settingscwriteAll" (click)="onChangeCheckAll($event,'write','settingsc')" /></div>								                
+              <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownersereadAll"  (click)="onChangeCheckAll($event,'read','ownerse')"/></div>
+              <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownersewriteAll" (click)="onChangeCheckAll($event,'write','ownerse')" /></div>								                
              </div>
-                 <div  id="collapseSETTINGSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #settingsctab>
-                  <div class="row" >
-                      <div class="col-sm-8 pl-4">Role & Permission</div>
-                      <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="ROLE_AND_PERMISSION_READ" id="settingscReadRP"  (click)="onChangeCheck($event,'read','settingsc','RP')"/></div>
-                      <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="ROLE_AND_PERMISSION_WRITE"  id="settingscWriteRP" (click)="onChangeCheck($event,'write','settingsc','RP')"/></div>
-                   </div>  
-                   <div class="row" >
-                    <div class="col-sm-8 pl-4">Initial Configuration</div>
-                    <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="DB_MASTER_CONFIGURATION_READ" id="settingscReadDBM"  (click)="onChangeCheck($event,'read','settingsc','DBM')"/></div>
-                    <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="DB_MASTER_CONFIGURATION_WRITE"  id="settingscWriteDBM" (click)="onChangeCheck($event,'write','settingsc','DBM')"/></div>
-                 </div> 
-                 <div class="row" >
-                  <div class="col-sm-8 pl-4">Master Configuration</div>
-                  <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="CONFIGURATION_MASTER_READ" id="settingscReadCM"  (click)="onChangeCheck($event,'read','settingsc','CM')"/></div>
-                  <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="CONFIGURATION_MASTER_WRITE"  id="settingscWriteCM" (click)="onChangeCheck($event,'write','settingsc','CM')"/></div>
-               </div>
-               <div class="row" >
-                <div class="col-sm-8 pl-4">Master Configuration Approval</div>
-                <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="CONFIGURATION_MASTER_APPROVAL_READ" id="settingscReadCMA"  (click)="onChangeCheck($event,'read','settingsc','CMA')"/></div>
-                <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="CONFIGURATION_MASTER_APPROVAL_WRITE"  id="settingscWriteCMA" (click)="onChangeCheck($event,'write','settingsc','CMA')"/></div>
+            <div  id="collapseOWNERSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #ownersetab>
+              <div class="row" >
+                <div class="col-sm-8 pl-4">Owner Registration</div>
+                <div class="col-sm-2"><input type="checkbox" name="ownerseread"    value="ZOYCODES_READ" id="ownerseReadZC"  (click)="onChangeCheck($event,'read','ownerse','ZC')"/></div>
+                <div class="col-sm-2"><input type="checkbox" name="ownersewrite"   value="ZOYCODES_WRITE"  id="ownerseWriteZC" (click)="onChangeCheck($event,'write','ownerse','ZC')"/></div>
+             </div>                     
+              <div class="row" >
+                <div class="col-sm-8 pl-4">Managing Owners</div>
+                <div class="col-sm-2"><input type="checkbox" name="ownerseread"    value="MANAGING_OWNERS_READ" id="ownerseReadMO"  (click)="onChangeCheck($event,'read','ownerse','MO')"/></div>
+                <div class="col-sm-2"><input type="checkbox" name="ownersewrite"   value="MANAGING_OWNERS_WRITE"  id="ownerseWriteMO" (click)="onChangeCheck($event,'write','ownerse','MO')"/></div>
              </div>
-                  <div class="row" >
-                    <div class="col-sm-8 pl-4">User Audit</div>
-                    <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="USER_AUDIT_READ" id="settingscReadUA"  (click)="onChangeCheck($event,'read','settingsc','UA')"/></div>
-                    <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="USER_AUDIT_WRITE"  id="settingscWriteUA" (click)="onChangeCheck($event,'write','settingsc','UA')"/></div>
-                </div>
-                <div class="row" >
-                  <div class="col-sm-8 pl-4">Organization Info Configuration</div>
-                  <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="ORGANIZATION_INFO_CONFIG_READ" id="settingscReadOIC"  (click)="onChangeCheck($event,'read','settingsc','OIC')"/></div>
-                  <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="ORGANIZATION_INFO_CONFIG_READ"  id="settingscReadOIC" (click)="onChangeCheck($event,'write','settingsc','OIC')"/></div>
-               </div>        
-                <!--   <div class="row" >
-                      <div class="col-sm-8 pl-4">Percentage & Charge</div>
-                      <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="settingscReadPCC"  (click)="onChangeCheck($event,'read','settingsc','PCC')"/></div>
-                      <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_WRITE"  id="settingscReadPCC" (click)="onChangeCheck($event,'write','settingsc','PCC')"/></div>
-                   </div>
-                   <div class="row" >
-                     <div class="col-sm-8 pl-4">Promotion and Offers Management</div>
-                     <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="PROMOTION_AND_OFFER_MANAGEMENT_READ" id="settingscReadPOM"  (click)="onChangeCheck($event,'read','settingsc','POM')"/></div>
-                     <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="PROMOTION_AND_OFFER_MANAGEMENT_WRITE"  id="settingscReadPOM" (click)="onChangeCheck($event,'write','settingsc','POM')"/></div>
-                  </div> -->
-                </div> 
-               </div>
-              </div>
-              <div class="offcanvas-footer d-flex justify-content-start mt-3" style="align-items: center;">
-                  <input type="submit" class="btn btn-primary-custom me-2" value="Save"  *ngIf="rolesArray.includes('ROLE_AND_PERMISSION_WRITE')" />
-                  <button type="button" class="btn btn-dark" data-bs-dismiss="offcanvas" aria-label="Close">Close</button>
-              </div> 
-      </form>
+             
+            <div class="row" >
+              <div class="col-sm-8 pl-4">Bulk upload</div>
+              <div class="col-sm-2"><input type="checkbox" name="ownerseread"    value="BULK_UPLOAD_READ" id="ownerseReadBU"  (click)="onChangeCheck($event,'read','ownerse','BU')"/></div>
+              <div class="col-sm-2"><input type="checkbox" name="ownersewrite"   value="BULK_UPLOAD_WRITE"  id="ownerseWriteBU" (click)="onChangeCheck($event,'write','ownerse','BU')"/></div>
+           </div>                      
+             </div>
+            
+           <div  class="row">									         
+            <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+            <span  class="collapsed" data-toggle="collapse" data-target="#collapseTENANTSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+            <span class="title"> Tenants</span>
+            </div>
+            <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="tenantsereadAll"  (click)="onChangeCheckAll($event,'read','tenantse')"/></div>
+            <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="tenantsewriteAll" (click)="onChangeCheckAll($event,'write','tenantse')" /></div>								                
+           </div>
+          <div  id="collapseTENANTSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #tenantsetab>
+            <div class="row" >
+               <div class="col-sm-8 pl-4">Manage Tenants</div>
+               <div class="col-sm-2"><input type="checkbox" name="tenantseread"    value="TENANTSZOY_READ" id="tenantseReadTZ"  (click)="onChangeCheck($event,'read','tenantse','TZ')"/></div>
+               <div class="col-sm-2"><input type="checkbox" name="tenantsewrite"   value="TENANTSZOY_WRITE"  id="tenantseWriteTZ" (click)="onChangeCheck($event,'write','tenantse','TZ')"/></div>
+            </div> 
+         </div>
+         <div  class="row">									         
+          <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+          <span  class="collapsed" data-toggle="collapse" data-target="#collapseFINANCESE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+          <span class="title"> Finance</span>
+          </div>
+          <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="financesereadAll"  (click)="onChangeCheckAll($event,'read','financese')"/></div>
+          <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="financesewriteAll" (click)="onChangeCheckAll($event,'write','financese')" /></div>								                
+         </div>
+        <div  id="collapseFINANCESE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #financesetab>
+         <div class="row" >
+          <div class="col-sm-8 pl-4">Payment Approval</div>
+          <div class="col-sm-2"><input type="checkbox" name="financeseread"    value="PAYMENT_APPROVAL_READ" id="financeseReadPA"  (click)="onChangeCheck($event,'read','financese','PA')"/></div>
+          <div class="col-sm-2"><input type="checkbox" name="financesewrite"   value="PAYMENT_APPROVAL_WRITE"  id="financeseWritePA" (click)="onChangeCheck($event,'write','financese','PA')"/></div>
+       </div> 
+       </div>
+       <div  class="row">									         
+        <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+        <span  class="collapsed" data-toggle="collapse" data-target="#collapseSUPPORTSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+        <span class="title"> Support</span>
+        </div>
+        <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="supportsereadAll"  (click)="onChangeCheckAll($event,'read','supportse')"/></div>
+        <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="supportsewriteAll" (click)="onChangeCheckAll($event,'write','supportse')" /></div>								                
+       </div>
+      <div  id="collapseSUPPORTSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #supportsetab>
+        <div class="row" >
+          <div class="col-sm-8 pl-4">Tickets</div>
+          <div class="col-sm-2"><input type="checkbox" name="supportseread"    value="TICKETS_READ" id="supportseReadRT"  (click)="onChangeCheck($event,'read','supportse','TS')"/></div>
+          <div class="col-sm-2"><input type="checkbox" name="supportsewrite"   value="TICKETS_WRITE"  id="supportseWriteRT" (click)="onChangeCheck($event,'write','supportse','TS')"/></div>
+       </div> 
+     </div>
+     <div  class="row">									         
+      <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+      <span  class="collapsed" data-toggle="collapse" data-target="#collapseREPORTSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+      <span class="title"> Reports</span>
       </div>
-  </div>
+      <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="reportsereadAll"  (click)="onChangeCheckAll($event,'read','reportse')"/></div>
+      <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="reportsewriteAll" (click)="onChangeCheckAll($event,'write','reportse')" /></div>								                
+     </div>
+        <div  id="collapseREPORTSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #reportsetab>
+          <div class="row" >
+            <div class="col-sm-8 pl-4">Tenant Reports</div>
+            <div class="col-sm-2"><input type="checkbox" name="reportseread"    value="TENANT_REPORTS_READ" id="reportseReadTR"  (click)="onChangeCheck($event,'read','reportse','TR')"/></div>
+            <div class="col-sm-2"><input type="checkbox" name="reportsewrite"   value="TENANT_REPORTS_WRITE"  id="reportseWriteTR" (click)="onChangeCheck($event,'write','reportse','TR')"/></div>
+          </div> 
+          <div class="row" >
+            <div class="col-sm-8 pl-4">Owner Reports</div>
+            <div class="col-sm-2"><input type="checkbox" name="reportseread"    value="OWNER_REPORTS_READ" id="reportseReadOR"  (click)="onChangeCheck($event,'read','reportse','OR')"/></div>
+            <div class="col-sm-2"><input type="checkbox" name="reportsewrite"   value="OWNER_REPORTS_WRITE"  id="reportseWriteOR" (click)="onChangeCheck($event,'write','reportse','OR')"/></div>
+          </div> 
+          <div class="row" >
+            <div class="col-sm-8 pl-4">Finance Reports</div>
+            <div class="col-sm-2"><input type="checkbox" name="reportseread"    value="FINANCE_REPORTS_READ" id="reportseReadFR"  (click)="onChangeCheck($event,'read','reportse','FR')"/></div>
+            <div class="col-sm-2"><input type="checkbox" name="reportsewrite"   value="FINANCE_REPORTS_WRITE"  id="reportseWriteFR" (click)="onChangeCheck($event,'write','reportse','FR')"/></div>
+          </div> 
+          <div class="row" >
+            <div class="col-sm-8 pl-4">Support Reports</div>
+            <div class="col-sm-2"><input type="checkbox" name="reportseread"    value="SUPPORT_REPORTS_READ" id="reportseReadSR"  (click)="onChangeCheck($event,'read','reportse','SR')"/></div>
+            <div class="col-sm-2"><input type="checkbox" name="reportsewrite"   value="SUPPORT_REPORTS_WRITE"  id="reportseWriteSR" (click)="onChangeCheck($event,'write','reportse','SR')"/></div>
+        </div> 
+      </div>
+      
+     <div  class="row">									         
+      <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+      <span  class="collapsed" data-toggle="collapse" data-target="#collapseSETTINGSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+      <span class="title"> Settings</span>
+      </div>
+      <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="settingsereadAll"  (click)="onChangeCheckAll($event,'read','settingse')"/></div>
+      <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="settingsewriteAll" (click)="onChangeCheckAll($event,'write','settingse')" /></div>								                
+     </div>
+         <div  id="collapseSETTINGSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #settingsetab>
+          <div class="row" >
+              <div class="col-sm-8 pl-4">Role & Permission</div>
+              <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="ROLE_AND_PERMISSION_READ" id="settingseReadRP"  (click)="onChangeCheck($event,'read','settingse','RP')"/></div>
+              <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="ROLE_AND_PERMISSION_WRITE"  id="settingseWriteRP" (click)="onChangeCheck($event,'write','settingse','RP')"/></div>
+           </div>  
+           <div class="row" >
+            <div class="col-sm-8 pl-4">Initial Configuration</div>
+            <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="DB_MASTER_CONFIGURATION_READ" id="settingseReadDBM"  (click)="onChangeCheck($event,'read','settingse','DBM')"/></div>
+            <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="DB_MASTER_CONFIGURATION_WRITE"  id="settingseWriteDBM" (click)="onChangeCheck($event,'write','settingse','DBM')"/></div>
+         </div>
+         <div class="row" >
+          <div class="col-sm-8 pl-4">Master Configuration</div>
+          <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="CONFIGURATION_MASTER_READ" id="settingseReadCM"  (click)="onChangeCheck($event,'read','settingse','CM')"/></div>
+          <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="CONFIGURATION_MASTER_WRITE"  id="settingseWriteCM" (click)="onChangeCheck($event,'write','settingse','CM')"/></div>
+       </div>
+       <div class="row" >
+        <div class="col-sm-8 pl-4">Master Configuration Approval</div>
+        <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="CONFIGURATION_MASTER_APPROVAL_READ" id="settingseReadCMA"  (click)="onChangeCheck($event,'read','settingse','CMA')"/></div>
+        <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="CONFIGURATION_MASTER_APPROVAL_WRITE"  id="settingseWriteCMA" (click)="onChangeCheck($event,'write','settingse','CMA')"/></div>
+     </div>
+        <div class="row" >
+          <div class="col-sm-8 pl-4">User Audit</div>
+          <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="USER_AUDIT_READ" id="settingseReadUA"  (click)="onChangeCheck($event,'read','settingse','UA')"/></div>
+          <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="USER_AUDIT_WRITE"  id="settingseWriteUA" (click)="onChangeCheck($event,'write','settingse','UA')"/></div>
+      </div>
+      <div class="row" >
+        <div class="col-sm-8 pl-4">Organization Info Configuration</div>
+        <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="ORGANIZATION_INFO_CONFIG_READ" id="settingseReadOIC"  (click)="onChangeCheck($event,'read','settingse','OIC')"/></div>
+        <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="ORGANIZATION_INFO_CONFIG_WRITE"  id="settingseReadOIC" (click)="onChangeCheck($event,'write','settingse','OIC')"/></div>
+     </div>        
+      <!--     <div class="row" >
+              <div class="col-sm-8 pl-4">Percentage & Charge</div>
+              <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="settingseReadPCC"  (click)="onChangeCheck($event,'read','settingse','PCC')"/></div>
+              <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_WRITE"  id="settingseReadPCC" (click)="onChangeCheck($event,'write','settingse','PCC')"/></div>
+           </div>
+           <div class="row" >
+             <div class="col-sm-8 pl-4">Promotion and Offers Management</div>
+             <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="PROMOTION_AND_OFFER_MANAGEMENT_READ" id="settingseReadPOM"  (click)="onChangeCheck($event,'read','settingse','POM')"/></div>
+             <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="PROMOTION_AND_OFFER_MANAGEMENT_WRITE"  id="settingseReadPOM" (click)="onChangeCheck($event,'write','settingse','POM')"/></div>
+          </div> -->
+        </div> 
+       </div>
+          </div>
+          <div class="offcanvas-footer d-flex justify-content-start mt-3" style="align-items: center;">          
+            <input type="submit" class="btn btn-primary-custom me-2" value="Save"  *ngIf="rolesArray.includes('ROLE_AND_PERMISSION_WRITE')" />
+            <button type="button" class="btn btn-dark" data-bs-dismiss="offcanvas" aria-label="Close">Close</button>
+           </div>   
+          </form>
+     </div>
+ </div>  
+ 
+ 
+       <!----Create Role----->
+       <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+        <div class="offcanvas-header  bg-gradiant-popup-header">
+            <h5 class="offcanvas-title" id="offcanvasRightLabel">Create Role</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #editNewModal></button>
+        </div>
+        <hr class="sidebar-divider my-0">
+        <div class="offcanvas-body">
+            <form  (submit)="saveRoleModel()" [formGroup]="form" #myForm>
+                <div class="form-group">
+                    <label for="roleName" class="col-form-label">Role Name<i class="fa fa-asterisk"></i></label>
+                    <input type="hidden" name="id"  [(ngModel)]="id" />
+                    <input type="text" [ngClass]="{'is-invalid':submitted && form.controls.roleName.errors}" class="form-control" formControlName="roleName" id="roleName" name="roleName"  [(ngModel)]="role"  onkeyup="role=this.value.toUpperCase();"  autocomplete="off" required/>
+                    <div *ngIf="submitted && form.controls.roleName.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.roleName.errors.required">
+                          Role is required
+                        </div>
+                        </div>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="col-form-label">Description<i class="fa fa-asterisk"></i></label>
+                    <input type="text" [ngClass]="{'is-invalid':submitted && form.controls.desc.errors}"  class="form-control" formControlName="desc" id="description" name="description"  [(ngModel)]="desc"   autocomplete="off" />
+                    <div *ngIf="submitted && form.controls.desc.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.desc.errors.required">
+                            Description is required
+                        </div>
+                        </div>
+                     </div>
+                   <div class="accordion" id="accordionRole">
+                    <div class="row">
+                         <div class="col-sm-8" style="font-weight:500;font-size:14px;">Authorization</div>
+                         <div class="col-sm-2" style="font-weight:500;font-size:14px;">Read</div>
+                         <div class="col-sm-2" style="font-weight:500;font-size:14px;">Write</div>
+                   </div>
+                 <div>  
+                  <div  class="row">									         
+                    <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                    <span  class="collapsed" data-toggle="collapse" data-target="#collapseUSERSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                    <span class="title"> Users</span>
+                    </div>
+                    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="userscreadAll"  (click)="onChangeCheckAll($event,'read','usersc')"/></div>
+                    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="userscwriteAll" (click)="onChangeCheckAll($event,'write','usersc')" /></div>								                
+                   </div>
+                  <div  id="collapseUSERSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #usersctab>
+                    <div class="row" >
+                       <div class="col-sm-8 pl-4">Managing Users</div>
+                       <div class="col-sm-2"><input type="checkbox" name="userscread"    value="MANAGING_USERS_READ" id="userscReadMU"  (click)="onChangeCheck($event,'read','usersc','MU')"/></div>
+                       <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="MANAGING_USERS_WRITE"  id="userscWriteMU" (click)="onChangeCheck($event,'write','usersc','MU')"/></div>
+                    </div> 
+                    <div class="row" >
+                       <div class="col-sm-8 pl-4">Permission Approval</div>
+                       <div class="col-sm-2"><input type="checkbox" name="userscread"    value="PERMISSION_APPROVAL_READ" id="userscReadPA"  (click)="onChangeCheck($event,'read','usersc','PA')"/></div>
+                       <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="PERMISSION_APPROVAL_WRITE"  id="userscReadPA" (click)="onChangeCheck($event,'write','usersc','PA')"/></div>
+                    </div>
+                    <div class="row" >
+                      <div class="col-sm-8 pl-4">Locked User</div>
+                      <div class="col-sm-2"><input type="checkbox" name="userscread"    value="LOCKED_USER_READ" id="userscReadLU"  (click)="onChangeCheck($event,'read','usersc','LU')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="LOCKED_USER_WRITE"  id="userscReadLU" (click)="onChangeCheck($event,'write','usersc','LU')"/></div>
+                   </div>
+                 </div>  
+                  <div  class="row">									         
+                     <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                     <span  class="collapsed" data-toggle="collapse" data-target="#collapseOWNERSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                     <span class="title"> Owners</span>
+                     </div>
+                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerscreadAll"  (click)="onChangeCheckAll($event,'read','ownersc')"/></div>
+                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ownerscwriteAll" (click)="onChangeCheckAll($event,'write','ownersc')" /></div>								                
+                    </div>
+                   <div  id="collapseOWNERSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #ownersctab>
+                     <div class="row" >
+                       <div class="col-sm-8 pl-4">Owner Registration</div>
+                       <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="ZOYCODES_READ" id="ownerscReadZC"  (click)="onChangeCheck($event,'read','ownersc','ZC')"/></div>
+                       <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="ZOYCODES_WRITE"  id="ownerscWriteZC" (click)="onChangeCheck($event,'write','ownersc','ZC')"/></div>
+                    </div>                     
+                     <div class="row" >
+                       <div class="col-sm-8 pl-4">Managing Owners</div>
+                       <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="MANAGING_OWNERS_READ" id="ownerscReadMO"  (click)="onChangeCheck($event,'read','ownersc','MO')"/></div>
+                       <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="MANAGING_OWNERS_WRITE"  id="ownerscWriteMO" (click)="onChangeCheck($event,'write','ownersc','MO')"/></div>
+                    </div> 
+                     
+                    <div class="row" >
+                      <div class="col-sm-8 pl-4">Bulk upload</div>
+                      <div class="col-sm-2"><input type="checkbox" name="ownerscread"    value="BULK_UPLOAD_READ" id="ownerscReadBU"  (click)="onChangeCheck($event,'read','ownersc','BU')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="ownerscwrite"   value="BULK_UPLOAD_WRITE"  id="ownerscWriteBU" (click)="onChangeCheck($event,'write','ownersc','BU')"/></div>
+                   </div>                     
+                    </div>
+                    <div  class="row">									         
+                     <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                     <span  class="collapsed" data-toggle="collapse" data-target="#collapseTENANTSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                     <span class="title"> Tenants</span>
+                     </div>
+                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="tenantscreadAll"  (click)="onChangeCheckAll($event,'read','tenantsc')"/></div>
+                     <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="tenantscwriteAll" (click)="onChangeCheckAll($event,'write','tenantsc')" /></div>								                
+                    </div>
+                   <div  id="collapseTENANTSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #tenantsctab>
+                     <div class="row" >
+                        <div class="col-sm-8 pl-4">Manage Tenants</div>
+                        <div class="col-sm-2"><input type="checkbox" name="tenantscread"    value="TENANTSZOY_READ" id="tenantscReadTZ"  (click)="onChangeCheck($event,'read','tenantsc','TZ')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="tenantscwrite"   value="TENANTSZOY_WRITE"  id="tenantscWriteTZ" (click)="onChangeCheck($event,'write','tenantsc','TZ')"/></div>
+                     </div>
+                  </div>
+                  <div  class="row">									         
+                    <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                    <span  class="collapsed" data-toggle="collapse" data-target="#collapseFINANCESC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                    <span class="title"> Finance</span>
+                    </div>
+                    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="financescreadAll"  (click)="onChangeCheckAll($event,'read','financesc')"/></div>
+                    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="financescwriteAll" (click)="onChangeCheckAll($event,'write','financesc')" /></div>								                
+                   </div>
+                  <div  id="collapseFINANCESC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #financesctab>
+                   <div class="row" >
+                    <div class="col-sm-8 pl-4">Payment Approval</div>
+                    <div class="col-sm-2"><input type="checkbox" name="financescread"    value="PAYMENT_APPROVAL_READ" id="financescReadPA"  (click)="onChangeCheck($event,'read','financesc','PA')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="financescwrite"   value="PAYMENT_APPROVAL_WRITE"  id="financescWritePA" (click)="onChangeCheck($event,'write','financesc','PA')"/></div>
+                 </div> 
+                 </div>
+                 <div  class="row">									         
+                  <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                  <span  class="collapsed" data-toggle="collapse" data-target="#collapseSUPPORTSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                  <span class="title"> Support</span>
+                  </div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="supportscreadAll"  (click)="onChangeCheckAll($event,'read','supportsc')"/></div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="supportscwriteAll" (click)="onChangeCheckAll($event,'write','supportsc')" /></div>								                
+                 </div>
+                <div  id="collapseSUPPORTSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #supportsctab>
+                  <div class="row" >
+                    <div class="col-sm-8 pl-4">Tickets</div>
+                    <div class="col-sm-2"><input type="checkbox" name="supportscread"    value="TICKETS_READ" id="supportscReadRT"  (click)="onChangeCheck($event,'read','supportsc','TS')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="supportscwrite"   value="TICKETS_WRITE"  id="supportscWriteRT" (click)="onChangeCheck($event,'write','supportsc','TS')"/></div>
+                 </div> 
+               </div>
+
+               <div  class="row">									         
+                <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                <span  class="collapsed" data-toggle="collapse" data-target="#collapseREPORTSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                <span class="title"> Reports</span>
+                </div>
+                <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="reportscreadAll"  (click)="onChangeCheckAll($event,'read','reportsc')"/></div>
+                <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="reportscwriteAll" (click)="onChangeCheckAll($event,'write','reportsc')" /></div>								                
+               </div>
+                  <div  id="collapseREPORTSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #reportsctab>
+                    <div class="row" >
+                      <div class="col-sm-8 pl-4">Tenant Reports</div>
+                      <div class="col-sm-2"><input type="checkbox" name="reportscread"    value="TENANT_REPORTS_READ" id="reportscReadTR"  (click)="onChangeCheck($event,'read','reportsc','TR')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="reportscwrite"   value="TENANT_REPORTS_WRITE"  id="reportscWriteTR" (click)="onChangeCheck($event,'write','reportsc','TR')"/></div>
+                    </div> 
+                    <div class="row" >
+                      <div class="col-sm-8 pl-4">Owner Reports</div>
+                      <div class="col-sm-2"><input type="checkbox" name="reportscread"    value="OWNER_REPORTS_READ" id="reportscReadOR"  (click)="onChangeCheck($event,'read','reportsc','OR')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="reportscwrite"   value="OWNER_REPORTS_WRITE"  id="reportscWriteOR" (click)="onChangeCheck($event,'write','reportsc','OR')"/></div>
+                    </div> 
+                    <div class="row" >
+                      <div class="col-sm-8 pl-4">Finance Reports</div>
+                      <div class="col-sm-2"><input type="checkbox" name="reportscread"    value="FINANCE_REPORTS_READ" id="reportscReadFR"  (click)="onChangeCheck($event,'read','reportsc','FR')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="reportscwrite"   value="FINANCE_REPORTS_WRITE"  id="reportscWriteFR" (click)="onChangeCheck($event,'write','reportsc','FR')"/></div>
+                    </div> 
+                    <div class="row" >
+                      <div class="col-sm-8 pl-4">Support Reports</div>
+                      <div class="col-sm-2"><input type="checkbox" name="reportscread"    value="SUPPORT_REPORTS_READ" id="reportscReadSR"  (click)="onChangeCheck($event,'read','reportsc','SR')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="reportscwrite"   value="SUPPORT_REPORTS_WRITE"  id="reportscWriteSR" (click)="onChangeCheck($event,'write','reportsc','SR')"/></div>
+                  </div> 
+                </div>
+
+               <div  class="row">									         
+                <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                <span  class="collapsed" data-toggle="collapse" data-target="#collapseSETTINGSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                <span class="title"> Settings</span>
+                </div>
+                <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="settingscreadAll"  (click)="onChangeCheckAll($event,'read','settingsc')"/></div>
+                <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="settingscwriteAll" (click)="onChangeCheckAll($event,'write','settingsc')" /></div>								                
+               </div>
+                   <div  id="collapseSETTINGSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #settingsctab>
+                    <div class="row" >
+                        <div class="col-sm-8 pl-4">Role & Permission</div>
+                        <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="ROLE_AND_PERMISSION_READ" id="settingscReadRP"  (click)="onChangeCheck($event,'read','settingsc','RP')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="ROLE_AND_PERMISSION_WRITE"  id="settingscWriteRP" (click)="onChangeCheck($event,'write','settingsc','RP')"/></div>
+                     </div>  
+                     <div class="row" >
+                      <div class="col-sm-8 pl-4">Initial Configuration</div>
+                      <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="DB_MASTER_CONFIGURATION_READ" id="settingscReadDBM"  (click)="onChangeCheck($event,'read','settingsc','DBM')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="DB_MASTER_CONFIGURATION_WRITE"  id="settingscWriteDBM" (click)="onChangeCheck($event,'write','settingsc','DBM')"/></div>
+                   </div> 
+                   <div class="row" >
+                    <div class="col-sm-8 pl-4">Master Configuration</div>
+                    <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="CONFIGURATION_MASTER_READ" id="settingscReadCM"  (click)="onChangeCheck($event,'read','settingsc','CM')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="CONFIGURATION_MASTER_WRITE"  id="settingscWriteCM" (click)="onChangeCheck($event,'write','settingsc','CM')"/></div>
+                 </div>
+                 <div class="row" >
+                  <div class="col-sm-8 pl-4">Master Configuration Approval</div>
+                  <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="CONFIGURATION_MASTER_APPROVAL_READ" id="settingscReadCMA"  (click)="onChangeCheck($event,'read','settingsc','CMA')"/></div>
+                  <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="CONFIGURATION_MASTER_APPROVAL_WRITE"  id="settingscWriteCMA" (click)="onChangeCheck($event,'write','settingsc','CMA')"/></div>
+               </div>
+                    <div class="row" >
+                      <div class="col-sm-8 pl-4">User Audit</div>
+                      <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="USER_AUDIT_READ" id="settingscReadUA"  (click)="onChangeCheck($event,'read','settingsc','UA')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="USER_AUDIT_WRITE"  id="settingscWriteUA" (click)="onChangeCheck($event,'write','settingsc','UA')"/></div>
+                  </div>
+                  <div class="row" >
+                    <div class="col-sm-8 pl-4">Organization Info Configuration</div>
+                    <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="ORGANIZATION_INFO_CONFIG_READ" id="settingscReadOIC"  (click)="onChangeCheck($event,'read','settingsc','OIC')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="ORGANIZATION_INFO_CONFIG_READ"  id="settingscReadOIC" (click)="onChangeCheck($event,'write','settingsc','OIC')"/></div>
+                 </div>        
+                  <!--   <div class="row" >
+                        <div class="col-sm-8 pl-4">Percentage & Charge</div>
+                        <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="settingscReadPCC"  (click)="onChangeCheck($event,'read','settingsc','PCC')"/></div>
+                        <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_WRITE"  id="settingscReadPCC" (click)="onChangeCheck($event,'write','settingsc','PCC')"/></div>
+                     </div>
+                     <div class="row" >
+                       <div class="col-sm-8 pl-4">Promotion and Offers Management</div>
+                       <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="PROMOTION_AND_OFFER_MANAGEMENT_READ" id="settingscReadPOM"  (click)="onChangeCheck($event,'read','settingsc','POM')"/></div>
+                       <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="PROMOTION_AND_OFFER_MANAGEMENT_WRITE"  id="settingscReadPOM" (click)="onChangeCheck($event,'write','settingsc','POM')"/></div>
+                    </div> -->
+                  </div> 
+                 </div>
+                </div>
+                <div class="offcanvas-footer d-flex justify-content-start mt-3" style="align-items: center;">
+                    <input type="submit" class="btn btn-primary-custom me-2" value="Save"  *ngIf="rolesArray.includes('ROLE_AND_PERMISSION_WRITE')" />
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="offcanvas" aria-label="Close">Close</button>
+                </div> 
+        </form>
+        </div>
+    </div>

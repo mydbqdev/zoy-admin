@@ -12,13 +12,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
 import { UserAuditService } from '../service/user-audit-service';
 import { UserAuditModel } from '../models/user-audit-model';
 import { FormControl } from '@angular/forms';
 import { UserListModel } from '../models/userlist-model';
 import { startWith, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { FiltersRequestModel } from 'src/app/report/model/report-filters-model';
 
 @Component({
 	selector: 'app-user-audit',
