@@ -30,7 +30,7 @@
                  <div class="col-sm-11">
                   <div style="padding:10px 10px 5px;border:1px solid#dbdbdb;border-radius: 15px; font-size: 13px;">
                     <div class="d-flex mb-2">
-                    <div style="width: 110px;">
+                    <div style="width: 110px;" *ngIf="reportName != 'Register Tenants Report'">
                       <label for="email">City / Location</label>
                         <select class="form-select form-select-sm" aria-label="Default select example"   [(ngModel)]="cityLocationName" style=" font-size: 12px;">
                             <option *ngFor="let city of cityLocation"  [value]="city" >{{city}}</option>
@@ -65,7 +65,7 @@
                                     [title]="!toDate? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
                             </div>
                     </div>
-                    <div class="ml-2" style="padding-top:26px;" *ngIf="reportName!='Regester Tenants Report'">
+                    <div class="ml-2" style="padding-top:26px;" *ngIf="reportName != 'Register Tenants Report'">
                       <a class="btn btn-light btn-sm" title="Advance Search" id="advanceSearch" style="line-height: normal;border: 1px solid #d2d3d8;"
                       data-toggle="dropdown"><i class="fas fa-angle-double-down"></i></a>
                       <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width p-2 shadow" style="width: 500px;margin-right: 150px;" aria-labelledby="advanceSearch" data-bs-auto-close="false">
