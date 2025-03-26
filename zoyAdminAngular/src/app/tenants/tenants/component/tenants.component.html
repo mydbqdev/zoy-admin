@@ -63,11 +63,11 @@
                               <div class="d-flex justify-content-between mb-2 mt-2">
                                 <div class="d-flex">
                                  
-                                  <input type="datetime-local" class="form-control form-control-sm" style="width: 160px;font-size: 12px; " id="fromDate" [(ngModel)]="fromDate" 
+                                  <input type="date" class="form-control form-control-sm" style="width: 125px;font-size: 12px; " id="fromDate" [(ngModel)]="fromDate" 
                                         [ngClass]="{'is-invalid': ((!fromDate && toDate ) ||(fromDate>toDate && toDate))}" 
                                         [title]="!fromDate && toDate? 'From Date is required':((fromDate>toDate && toDate)?'Invalid date range':'') " /> 
                                   <div class="m-1">-</div>  
-                                  <input type="datetime-local" class="form-control form-control-sm" style="width: 160px; font-size: 12px;" id="toDate"  [(ngModel)]="toDate" 
+                                  <input type="date" class="form-control form-control-sm" style="width: 125px; font-size: 12px;" id="toDate"  [(ngModel)]="toDate" 
                                         [ngClass]="{'is-invalid': ((!toDate && fromDate) ||(fromDate>toDate && fromDate ))}" 
                                         [title]="!toDate && fromDate ? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
                                 </div> 
