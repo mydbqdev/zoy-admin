@@ -98,8 +98,6 @@ import { MessageService } from 'src/app/message.service';
       'numberOfBeds' : 'NUMBER OF BEDS',
       'expectedRentPerMonth' : 'EXPECTED RENT PER MONTH',
       'lastCheckoutDate' : 'LAST CHECK-OUT DATE',
-      'numberOfBedsOccupied' : 'NUMBER OF BEDS OCCUPIED',
-
       'email':'EMAIL ID',
       'registrationDate':'REGISTRATION DATE'
       
