@@ -56,9 +56,6 @@ public class AdminReportService implements AdminReportImpl{
 	private UserPaymentDueRepository userPaymentDueRepository;
 
 	@Autowired
-	private PdfGenerateService pdfGenerateService;
-
-	@Autowired
 	private ExcelGenerateService excelGenerateService;
 
 	@Autowired
@@ -852,7 +849,6 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantName", userPayment.getUserPersonalName());
 			data.put("tenantMobile", userPayment.getTenantContactNum());
 			data.put("pgName", userPayment.getUserPgPropertyName());
-			data.put("pgAddress", userPayment.getPropertyHouseArea());
 			data.put("totalAmount", userPayment.getTotalAmount());
 			data.put("gstAmount", userPayment.getGstAmount());
 			data.put("dueAmount", userPayment.getDueAmount());
@@ -2584,12 +2580,14 @@ public class AdminReportService implements AdminReportImpl{
 					);
 			Map<String, Object> parameters = new HashMap<>();
 
-			 if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-			        queryBuilder.append(" AND zpb.in_date >= CAST(:fromDate AS TIMESTAMP) ");
-			        queryBuilder.append(" AND zpb.out_date <= CAST(:toDate AS TIMESTAMP) ");
-			        parameters.put("fromDate", filterRequest.getFromDate());
-			        parameters.put("toDate", filterRequest.getToDate());
-			    }
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND (zpb.in_date between CAST(:fromDate AS TIMESTAMP)  AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "						or zpb.out_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "						or CAST(:fromDate AS TIMESTAMP) between zpb.in_date and zpb.out_date\r\n"
+						+ "						or CAST(:toDate AS TIMESTAMP) between  zpb.in_date and zpb.out_date)\r\n");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {
 				String sort = "";
