@@ -2,17 +2,17 @@ package com.integration.zoy.utils;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ZoyRentingDuration {
-	
-	@SerializedName("rentingDurationId")
-	private String rentingDurationId;
+public class ZoyPgNoRentalAgreementDto {
 
-	@SerializedName("rentingDurationDays")
-	private int  rentingDurationDays;
-	
+	@SerializedName("noRentalAgreementId")
+	private String noRentalAgreementId;
+
+	@SerializedName("noRentalAgreementDays")
+	private int noRentalAgreementDays;
+
 	@SerializedName("effectiveDate")
 	private String effectiveDate;
-	
+
 	@SerializedName("isApproved")
 	private boolean isApproved;
 
@@ -21,21 +21,30 @@ public class ZoyRentingDuration {
 
 	@SerializedName("createdBy")
 	private String createdBy;
+
 	
-	public String getRentingDurationId() {
-		return rentingDurationId;
+	public boolean getIsApproved() {
+		return isApproved;
 	}
 
-	public void setRentingDurationId(String rentingDurationId) {
-		this.rentingDurationId = rentingDurationId;
+	public void setIsApproved(boolean isApproved) {
+		this.isApproved = isApproved;
 	}
 
-	public int getRentingDurationDays() {
-		return rentingDurationDays;
+	public String getNoRentalAgreementId() {
+		return noRentalAgreementId;
 	}
 
-	public void setRentingDurationDays(int rentingDurationDays) {
-		this.rentingDurationDays = rentingDurationDays;
+	public void setNoRentalAgreementId(String noRentalAgreementId) {
+		this.noRentalAgreementId = noRentalAgreementId;
+	}
+
+	public int getNoRentalAgreementDays() {
+		return noRentalAgreementDays;
+	}
+
+	public void setNoRentalAgreementDays(int noRentalAgreementDays) {
+		this.noRentalAgreementDays = noRentalAgreementDays;
 	}
 
 	public String getEffectiveDate() {
@@ -45,12 +54,7 @@ public class ZoyRentingDuration {
 	public void setEffectiveDate(String effectiveDate) {
 		this.effectiveDate = effectiveDate;
 	}
-
-	public boolean getIsApproved() {
-		return isApproved;
-	}
-
-	public void setIsApproved(boolean isApproved) {
+	public void setApproved(boolean isApproved) {
 		this.isApproved = isApproved;
 	}
 
@@ -69,11 +73,5 @@ public class ZoyRentingDuration {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-
-	public void setApproved(boolean isApproved) {
-		this.isApproved = isApproved;
-	}
-	
-	
 
 }

@@ -10,9 +10,12 @@ public class ZoyShortTermDto {
 
 	@SerializedName("percentage")
 	private BigDecimal percentage;
-	
-	@SerializedName("days")
-	private String days;
+
+	@SerializedName("startDay")
+	private int startDay;
+
+	@SerializedName("endDay")
+	private int endDay;
 
 	public String getShortTermId() {
 		return shortTermId;
@@ -30,16 +33,20 @@ public class ZoyShortTermDto {
 		this.percentage = percentage;
 	}
 
-	public String getDays() {
-		return days;
+	public int getStartDay() {
+		return startDay;
 	}
 
-	public void setDays(String days) {
-		this.days = days;
+	public void setStartDay(int startDay) {
+		this.startDay = startDay;
 	}
 
-	
-	
-	
-	
+	public int getEndDay() {
+		return endDay;
+	}
+
+	public void setEndDay(int endDay) {
+		this.endDay = endDay;
+	}
+
 }
