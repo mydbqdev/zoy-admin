@@ -1771,35 +1771,53 @@ public class AdminReportService implements AdminReportImpl{
 	public CommonResponseDTO<TenantResportsDTO> getActiveTenantsReport(UserPaymentFilterRequest filterRequest,
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
-			StringBuilder queryBuilder = new StringBuilder("SELECT \r\n"
-					+ "                 um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
-					+ "                 um.user_mobile AS mobileNumber,\r\n"
-					+ "                 um.user_email AS emailId,\r\n"
-					+ "                 zpd.property_name AS propertyName,\r\n"
-					+ "                 zpd.property_house_area AS propertyAddress,\r\n"
-					+ "                 bd.bed_name AS bedName,\r\n"
-					+ "                 zpqbd.in_date AS inDate, \r\n"
-					+ "                 zpqbd.out_date AS outDate,\r\n"
-					+ "                 zpd.property_city\r\n"
-					+ "					FROM pgusers.user_master um\r\n"
-					+ "					JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
-					+ "					    ON um.user_id = zpqbd.tenant_id \r\n"
-					+ "					join pgusers.user_bookings ub\r\n"
-					+ "					    on zpqbd.booking_id = ub.user_bookings_id \r\n"
-					+ "					JOIN pgowners.zoy_pg_property_details zpd \r\n"
-					+ "					    ON zpqbd.property_id = zpd.property_id \r\n"
-					+ "					JOIN pgowners.zoy_pg_bed_details bd  \r\n"
-					+ "					    ON zpqbd.selected_bed = bd.bed_id \r\n"
-					+ "					WHERE 1=1 ");
+			StringBuilder queryBuilder = new StringBuilder("      SELECT\r\n"
+					+ "					                 um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+					+ "					                 um.user_mobile AS mobileNumber,\r\n"
+					+ "					                 um.user_email AS emailId,\r\n"
+					+ "					                 zpd.property_name AS propertyName,\r\n"
+					+ "					                 zpd.property_house_area AS propertyAddress,\r\n"
+					+ "					                 bd.bed_name AS bedName,\r\n"
+					+ "					                 zpqbd.in_date AS inDate, \r\n"
+					+ "					                 case when upd.user_pg_checkout_date is not null then upd.user_pg_checkout_date else zpqbd.out_date end as checkOutData,\r\n"
+					+ "					                 zpd.property_city\r\n"
+					+ "										FROM pgusers.user_master um\r\n"
+					+ "										JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
+					+ "										    ON um.user_id = zpqbd.tenant_id \r\n"
+					+ "										join pgusers.user_bookings ub\r\n"
+					+ "										    on zpqbd.booking_id = ub.user_bookings_id \r\n"
+					+ "										JOIN pgowners.zoy_pg_property_details zpd \r\n"
+					+ "										    ON zpqbd.property_id = zpd.property_id  \r\n"
+					+ "										join pgusers.user_pg_details upd \r\n"
+					+ "										on upd.user_pg_booking_id =zpqbd.booking_id \r\n"
+					+ "										JOIN pgowners.zoy_pg_bed_details bd  \r\n"
+					+ "										    ON zpqbd.selected_bed = bd.bed_id \r\n"
+					+ "										WHERE 1=1 ");
 
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND (zpqbd.in_date between CAST(:fromDate AS TIMESTAMP)  AND CAST(:toDate AS TIMESTAMP) \r\n"
-						+ "						or zpqbd.out_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) \r\n"
-						+ "						or CAST(:fromDate AS TIMESTAMP) between zpqbd.in_date and zpqbd.out_date\r\n"
-						+ "						or CAST(:toDate AS TIMESTAMP) between  zpqbd.in_date and zpqbd.out_date)\r\n"
-						+ "					 AND (ub.user_bookings_web_check_in = true OR ub.user_bookings_web_check_out = true)");
+				queryBuilder.append(" AND (\r\n"
+						+ "        zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "        OR \r\n"
+						+ "        (CASE \r\n"
+						+ "            WHEN upd.user_pg_checkout_date IS NOT NULL THEN upd.user_pg_checkout_date \r\n"
+						+ "            ELSE zpqbd.out_date \r\n"
+						+ "         END) BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
+						+ "        OR \r\n"
+						+ "        CAST(:fromDate AS TIMESTAMP) BETWEEN zpqbd.in_date AND \r\n"
+						+ "        (CASE \r\n"
+						+ "            WHEN upd.user_pg_checkout_date IS NOT NULL THEN upd.user_pg_checkout_date \r\n"
+						+ "            ELSE zpqbd.out_date \r\n"
+						+ "         END)\r\n"
+						+ "        OR \r\n"
+						+ "        CAST(:toDate AS TIMESTAMP) BETWEEN zpqbd.in_date AND \r\n"
+						+ "        (CASE \r\n"
+						+ "            WHEN upd.user_pg_checkout_date IS NOT NULL THEN upd.user_pg_checkout_date \r\n"
+						+ "            ELSE zpqbd.out_date \r\n"
+						+ "         END)\r\n"
+						+ "    )\r\n"
+						+ "    AND (ub.user_bookings_web_check_in = TRUE OR ub.user_bookings_web_check_out = TRUE)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -1854,7 +1872,7 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "zpqbd.in_date";
 					break;
 				case "expectedCheckOutdate" :
-					sort="zpqbd.out_date";
+					sort="checkOutData";
 					break;
 				default:
 					sort = "zpqbd.in_date";
@@ -1900,38 +1918,53 @@ public class AdminReportService implements AdminReportImpl{
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder(
-					"SELECT \r\n"
-					+ "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
-					+ "    um.user_mobile AS mobileNumber,\r\n"
-					+ "    um.user_email AS emailId,\r\n"
-					+ "    zpd.property_name AS propertyName,\r\n"
-					+ "    zpd.property_house_area AS propertyAddress,\r\n"
-					+ "    bd.bed_name AS bedName,\r\n"
-					+ "    zpqbd.in_date AS inDate, \r\n"
-					+ "    zpqbd.out_date AS outDate,\r\n"
-					+ "    zpd.property_city\r\n"
-					+ "FROM pgusers.user_master um\r\n"
-					+ "JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
-					+ "    ON um.user_id = zpqbd.tenant_id \r\n"
-					+ "JOIN pgusers.user_bookings ub\r\n"
-					+ "    ON zpqbd.booking_id = ub.user_bookings_id \r\n"
-					+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
-					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
-					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
-					+ "    ON zpqbd.selected_bed = bd.bed_id\r\n"
-					+ "WHERE 1=1 ");
+					"SELECT\r\n"
+					+ "					                 um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+					+ "					                 um.user_mobile AS mobileNumber,\r\n"
+					+ "					                 um.user_email AS emailId,\r\n"
+					+ "					                 zpd.property_name AS propertyName,\r\n"
+					+ "					                 zpd.property_house_area AS propertyAddress,\r\n"
+					+ "					                 bd.bed_name AS bedName,\r\n"
+					+ "					                 zpqbd.in_date AS inDate, \r\n"
+					+ "					                 case when upd.user_pg_checkout_date is not null then upd.user_pg_checkout_date else zpqbd.out_date end as Checkoutdate ,\r\n"
+					+ "					                 zpd.property_city\r\n"
+					+ "										FROM pgusers.user_master um\r\n"
+					+ "										JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
+					+ "										    ON um.user_id = zpqbd.tenant_id \r\n"
+					+ "										join pgusers.user_bookings ub\r\n"
+					+ "										    on zpqbd.booking_id = ub.user_bookings_id \r\n"
+					+ "										JOIN pgowners.zoy_pg_property_details zpd \r\n"
+					+ "										    ON zpqbd.property_id = zpd.property_id  \r\n"
+					+ "										join pgusers.user_pg_details upd \r\n"
+					+ "										on upd.user_pg_booking_id =zpqbd.booking_id \r\n"
+					+ "										JOIN pgowners.zoy_pg_bed_details bd  \r\n"
+					+ "										    ON zpqbd.selected_bed = bd.bed_id \r\n"
+					+ "										WHERE 1=1 ");
 
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append("and\r\n"
-						+ "    NOT (\r\n"
+				queryBuilder.append("AND NOT (\r\n"
 						+ "        zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
-						+ "        OR zpqbd.out_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
-						+ "        OR CAST(:fromDate AS TIMESTAMP) BETWEEN zpqbd.in_date AND zpqbd.out_date\r\n"
-						+ "        OR CAST(:toDate AS TIMESTAMP) BETWEEN zpqbd.in_date AND zpqbd.out_date\r\n"
+						+ "        OR \r\n"
+						+ "        (CASE \r\n"
+						+ "            WHEN upd.user_pg_checkout_date IS NOT NULL THEN upd.user_pg_checkout_date \r\n"
+						+ "            ELSE zpqbd.out_date \r\n"
+						+ "        END) BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
+						+ "        OR \r\n"
+						+ "        CAST(:fromDate AS TIMESTAMP) BETWEEN zpqbd.in_date AND \r\n"
+						+ "        (CASE \r\n"
+						+ "            WHEN upd.user_pg_checkout_date IS NOT NULL THEN upd.user_pg_checkout_date \r\n"
+						+ "            ELSE zpqbd.out_date \r\n"
+						+ "        END)\r\n"
+						+ "        OR \r\n"
+						+ "        CAST(:toDate AS TIMESTAMP) BETWEEN zpqbd.in_date AND \r\n"
+						+ "        (CASE \r\n"
+						+ "            WHEN upd.user_pg_checkout_date IS NOT NULL THEN upd.user_pg_checkout_date \r\n"
+						+ "            ELSE zpqbd.out_date \r\n"
+						+ "        END)\r\n"
 						+ "    )\r\n"
-						+ "    AND (ub.user_bookings_web_check_in = true OR ub.user_bookings_web_check_out = true)");
+						+ "    AND (ub.user_bookings_web_check_in = TRUE OR ub.user_bookings_web_check_out = TRUE)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -1947,7 +1980,7 @@ public class AdminReportService implements AdminReportImpl{
 			}
 
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-				queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:pgName) ");
+				queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
 			}
 
@@ -1988,15 +2021,15 @@ public class AdminReportService implements AdminReportImpl{
 					sort="inDate";
 					break;
 				case "checkedOutDate":
-					sort = "outDate";
+					sort = "Checkoutdate";
 					break;
 				default:
-					sort = "outDate";
+					sort = "inDate";
 				}
 				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
 				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
 			} else {
-				queryBuilder.append(" ORDER BY outDate DESC ");
+				queryBuilder.append(" ORDER BY inDate DESC ");
 			}
 
 			Query query = entityManager.createNativeQuery(queryBuilder.toString());
