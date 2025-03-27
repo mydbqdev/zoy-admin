@@ -1089,9 +1089,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		return dto;
 	}
 
-	private List<ZoyBeforeCheckInCancellationDto> convertToDTO(List<ZoyPgCancellationDetails> cancellationDetailsList) {
-		return cancellationDetailsList.stream().map(this::convertToDTO).collect(Collectors.toList());
-	}
+//	private List<ZoyBeforeCheckInCancellationDto> convertToDTO(List<ZoyPgCancellationDetails> cancellationDetailsList) {
+//		return cancellationDetailsList.stream().map(this::convertToDTO).collect(Collectors.toList());
+//	}
 
 	// @Override
 	// @Transactional
@@ -1863,94 +1863,94 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		}
 	}
 
-	@Override
-	public ResponseEntity<String> zoyAdminConfigShortTermRentingDuration(ZoyRentingDuration rentingDuration) {
-		ResponseBody response = new ResponseBody();
-		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-
-		try {
-			if (rentingDuration == null) {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Required Short Term Renting Duration Details");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
-
-			try {
-				if (rentingDuration.getRentingDurationId() != null
-						&& !rentingDuration.getRentingDurationId().isEmpty()) {
-
-					Optional<ZoyPgShortTermRentingDuration> shortTermRentingDurationDetails = zoyPgRentingDurationRepository
-							.findById(rentingDuration.getRentingDurationId());
-					if (shortTermRentingDurationDetails.isEmpty()) {
-						response.setStatus(HttpStatus.BAD_REQUEST.value());
-						response.setError("Required short Term Renting Duration Details not found");
-						return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-					} else {
-						ZoyPgShortTermRentingDuration oldDetails = shortTermRentingDurationDetails.get();
-
-						int oldFixed = oldDetails.getRentingDurationDays();
-
-						oldDetails.setEffectiveDate(rentingDuration.getEffectiveDate());
-						oldDetails.setIsApproved(rentingDuration.getIsApproved());
-
-						if (rentingDuration.getIsApproved()) {
-							oldDetails.setApprovedBy(currentUser);
-						} else {
-							oldDetails.setCreatedBy(currentUser);
-						}
-
-						zoyPgRentingDurationRepository.save(oldDetails);
-
-						// Audit history
-						String historyContent = " has updated the Renting Duration for, Considering days from "
-								+ oldFixed + " to " + rentingDuration.getRentingDurationDays();
-						auditHistoryUtilities.auditForCommon(
-								SecurityContextHolder.getContext().getAuthentication().getName(), historyContent,
-								ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
-					}
-				} else {
-					ZoyPgShortTermRentingDuration newShortTermRentingDuration = new ZoyPgShortTermRentingDuration();
-					newShortTermRentingDuration.setRentingDurationDays(rentingDuration.getRentingDurationDays());
-					newShortTermRentingDuration.setEffectiveDate(rentingDuration.getEffectiveDate()); // Removed
-																										// unnecessary
-																										// semicolon
-					newShortTermRentingDuration.setCreatedBy(currentUser);
-					newShortTermRentingDuration.setIsApproved(false);
-
-					zoyPgRentingDurationRepository.save(newShortTermRentingDuration);
-
-					// Audit history
-					String historyContent = " has created the Short Term Renting Duration for, Considering days = "
-							+ rentingDuration.getRentingDurationDays();
-					auditHistoryUtilities.auditForCommon(
-							SecurityContextHolder.getContext().getAuthentication().getName(), historyContent,
-							ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
-				}
-
-				List<ZoyPgShortTermRentingDuration> allDetails = ownerDBImpl
-						.findAllShortTermRentingDurationDetailsSorted();
-				List<ZoyRentingDuration> dto = allDetails.stream().map(this::convertToDTO).collect(Collectors.toList());
-
-				response.setStatus(HttpStatus.OK.value());
-				response.setData(dto);
-				response.setMessage("Short Term Renting Duration details successfully saved/updated");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-
-			} catch (Exception e) {
-				log.error(
-						"Error saving/updating Short Term Renting Duration API:/zoy_admin/config/renting-duration.zoyAdminConfigShortTermRentingDuration ",
-						e);
-				response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-				response.setError("Internal server error");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		} catch (Exception e) {
-			log.error("Unexpected error in zoyAdminConfigShortTermRentingDuration", e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Unexpected error occurred");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+//	@Override
+//	public ResponseEntity<String> zoyAdminConfigShortTermRentingDuration(ZoyRentingDuration rentingDuration) {
+//		ResponseBody response = new ResponseBody();
+//		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+//
+//		try {
+//			if (rentingDuration == null) {
+//				response.setStatus(HttpStatus.BAD_REQUEST.value());
+//				response.setError("Required Short Term Renting Duration Details");
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//			}
+//
+//			try {
+//				if (rentingDuration.getRentingDurationId() != null
+//						&& !rentingDuration.getRentingDurationId().isEmpty()) {
+//
+//					Optional<ZoyPgShortTermRentingDuration> shortTermRentingDurationDetails = zoyPgRentingDurationRepository
+//							.findById(rentingDuration.getRentingDurationId());
+//					if (shortTermRentingDurationDetails.isEmpty()) {
+//						response.setStatus(HttpStatus.BAD_REQUEST.value());
+//						response.setError("Required short Term Renting Duration Details not found");
+//						return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//					} else {
+//						ZoyPgShortTermRentingDuration oldDetails = shortTermRentingDurationDetails.get();
+//
+//						int oldFixed = oldDetails.getRentingDurationDays();
+//
+//						oldDetails.setEffectiveDate(rentingDuration.getEffectiveDate());
+//						oldDetails.setIsApproved(rentingDuration.getIsApproved());
+//
+//						if (rentingDuration.getIsApproved()) {
+//							oldDetails.setApprovedBy(currentUser);
+//						} else {
+//							oldDetails.setCreatedBy(currentUser);
+//						}
+//
+//						zoyPgRentingDurationRepository.save(oldDetails);
+//
+//						// Audit history
+//						String historyContent = " has updated the Renting Duration for, Considering days from "
+//								+ oldFixed + " to " + rentingDuration.getRentingDurationDays();
+//						auditHistoryUtilities.auditForCommon(
+//								SecurityContextHolder.getContext().getAuthentication().getName(), historyContent,
+//								ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+//					}
+//				} else {
+//					ZoyPgShortTermRentingDuration newShortTermRentingDuration = new ZoyPgShortTermRentingDuration();
+//					newShortTermRentingDuration.setRentingDurationDays(rentingDuration.getRentingDurationDays());
+//					newShortTermRentingDuration.setEffectiveDate(rentingDuration.getEffectiveDate()); // Removed
+//																										// unnecessary
+//																										// semicolon
+//					newShortTermRentingDuration.setCreatedBy(currentUser);
+//					newShortTermRentingDuration.setIsApproved(false);
+//
+//					zoyPgRentingDurationRepository.save(newShortTermRentingDuration);
+//
+//					// Audit history
+//					String historyContent = " has created the Short Term Renting Duration for, Considering days = "
+//							+ rentingDuration.getRentingDurationDays();
+//					auditHistoryUtilities.auditForCommon(
+//							SecurityContextHolder.getContext().getAuthentication().getName(), historyContent,
+//							ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+//				}
+//
+//				List<ZoyPgShortTermRentingDuration> allDetails = ownerDBImpl
+//						.findAllShortTermRentingDurationDetailsSorted();
+//				List<ZoyRentingDuration> dto = allDetails.stream().map(this::convertToDTO).collect(Collectors.toList());
+//
+//				response.setStatus(HttpStatus.OK.value());
+//				response.setData(dto);
+//				response.setMessage("Short Term Renting Duration details successfully saved/updated");
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+//
+//			} catch (Exception e) {
+//				log.error(
+//						"Error saving/updating Short Term Renting Duration API:/zoy_admin/config/renting-duration.zoyAdminConfigShortTermRentingDuration ",
+//						e);
+//				response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//				response.setError("Internal server error");
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+//			}
+//		} catch (Exception e) {
+//			log.error("Unexpected error in zoyAdminConfigShortTermRentingDuration", e);
+//			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//			response.setError("Unexpected error occurred");
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
 
 	private ZoyRentingDuration convertToDTO(ZoyPgShortTermRentingDuration force) {
 		ZoyRentingDuration rentingDuration = new ZoyRentingDuration();
@@ -2305,33 +2305,4 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		
 	}
 
-	@Override
-	public ResponseEntity<String> FetchShortTermRentingDuration() {
-		ResponseBody response = new ResponseBody();
-		try {
-			ZoyPgShortTermRentingDuration rentingDuration = ownerDBImpl.findZoyRentingDuration();
-			ZoyRentingDuration dto = null;
-
-			if (rentingDuration != null) {
-				dto = convertToDTO(rentingDuration);
-			}
-
-			if (dto == null) {
-				response.setData(new ZoyRentingDuration()); 
-				response.setMessage("short term renting duration details not found");
-				response.setStatus(HttpStatus.NOT_FOUND.value());
-			} else {
-				response.setData(dto);
-				response.setMessage("Fetched admin short term renting duration details successfully");
-				response.setStatus(HttpStatus.CREATED.value());
-			}
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.CREATED);
-		}catch(Exception e) {
-			log.error("Error while Fetching all  Company Profile details API:/zoy_admin/config/fetch-renting-duration.FetchShortTermRentingDuration", e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError("Internal server error");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-		
-	}
 }
