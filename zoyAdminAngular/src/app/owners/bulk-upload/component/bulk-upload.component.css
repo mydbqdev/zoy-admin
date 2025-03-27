@@ -42,5 +42,14 @@
   min-height: 12px;
 }
 
-
+.sample-files {
+  width: 100px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  color: #8b67de;
+  background-color:#fff;
+  border-color: #955cf1;
+}
  

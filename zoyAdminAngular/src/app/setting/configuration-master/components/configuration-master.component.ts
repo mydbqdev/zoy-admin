@@ -133,14 +133,12 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 
 	  getPGTypesDetails(){
-		this.authService.checkLoginUserVlidaate();
 		this.configMasterService.getPGTypesDetails().subscribe(res => {
 		this.pgTypes = res;
 		if(	this.pgTypes.length>0){
 			this.settingType= this.pgTypes[0].pg_type_name;
 		}
 		}, error => {
-		this.spinner.hide();
 		if(error.status == 0) {
 		  this.notifyService.showError("Internal Server Error/Connection not established", "")
 	   }else if(error.status==403){
@@ -218,11 +216,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		});
 
 		this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
+		this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value="TotalPaidAmount";
 		this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value="Rent";
-		this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value="Security Deposit";
+		this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_value="Rent";
 		
 		this.getBeforeCheckInCRData();
-		// this.rentSlabsdataSource = new MatTableDataSource<RentSlabModel>(this.rentSlabs);
 		this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
@@ -286,11 +284,10 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					
 	}
    
-getTriggerOn(){
+	getTriggerOn(){
 	   this.configMasterService.getTriggerOn().subscribe(res => {
 	   this.triggerOn = Object.assign([],res );
 	 },error =>{
-	   this.spinner.hide();
 	   console.log("error.error",error)
 	   if(error.status == 0) {
 		   this.notifyService.showError("Internal Server Error/Connection not established", "")
@@ -593,10 +590,10 @@ getTriggerOn(){
 				  break;
 				case "forceCheckOut":
 					if(this.isNotValidNumber(this.configMasterModel.forceCheckOut[0].forceCheckOutDays) || !this.configMasterModel.forceCheckOut[0]?.effectiveDate){
-						return ;
+						return true;
 					}
 					if(this.invaliedEffectiveDate('forceCheckOut',this.configMasterModel.forceCheckOut[0]?.effectiveDate)){
-						return;
+						return true;
 					}
 				  break;
 				case "earlyCheckOutRuleDetails":
@@ -625,7 +622,7 @@ getTriggerOn(){
 					 if(this.invaliedEffectiveDate('shortTermRentingDuration',this.configMasterModel.shortTermRentingDuration[0]?.effectiveDate)){
 						 return true;
 					 }
-					 if(Number(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) > Number(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
+					 if(Number(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) < Number(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
 						 this.notifyService.showInfo("Short term duration should not be greater than 'No Rental agreement upto'.","");
 						 return true;
 					  }
@@ -1052,7 +1049,7 @@ getTriggerOn(){
 				this.configMasterModel.dataGrouping[0].isApproved=true;
 			}else{
 				if(this.configMasterModel.dataGrouping[0].isApproved){
-					this.configMasterModel.dataGrouping[0].id="";
+					this.configMasterModel.dataGrouping[0].dataGroupingId="";
 				}
 			}
 			this.authService.checkLoginUserVlidaate();
@@ -1406,7 +1403,7 @@ getTriggerOn(){
 				this.configMasterModel.forceCheckOut[0].isApproved=true;
 			}else{
 				if(this.configMasterModel.forceCheckOut[0].isApproved){
-					this.configMasterModel.forceCheckOut[0].id="";
+					this.configMasterModel.forceCheckOut[0].forceCheckOutId="";
 				}
 			}
 			this.authService.checkLoginUserVlidaate();
