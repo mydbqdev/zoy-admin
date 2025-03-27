@@ -2621,6 +2621,11 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
+			
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:pgName) ");
+				parameters.put("pgName", "%" + filterData.getPgName() + "%");
+			}
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {
 				String sort = "";
@@ -2691,6 +2696,117 @@ public class AdminReportService implements AdminReportImpl{
 			return new CommonResponseDTO<>(potentialPropertyReportDto, filterCount);
 		} catch (Exception e) {
 			throw new WebServiceException("Error retrieving Potential Properties Details: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public CommonResponseDTO<PropertyResportsDTO> getUpcomingPotentialPropertyReport(
+			UserPaymentFilterRequest filterRequest, FilterData filterData, Boolean applyPagination)
+			throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+				    "SELECT DISTINCT \r\n" +
+				    "    zpod.pg_owner_name, \r\n" +
+				    "    zpd.property_name, \r\n" +
+				    "    zpd.property_contact_number, \r\n" +
+				    "    zpd.property_pg_email, \r\n" +
+				    "    zpd.property_house_area, \r\n" +
+				    "    zpobd.fixed_rent, \r\n" +
+				    "    (SELECT COUNT(*) \r\n" +
+				    "     FROM pgowners.zoy_pg_owner_booking_details AS zpobd2 \r\n" +
+				    "     JOIN pgusers.user_bookings AS ub2 \r\n" +
+				    "         ON zpobd2.booking_id = ub2.user_bookings_id \r\n" +
+				    "     WHERE zpobd2.property_id = zpobd.property_id \r\n" +
+				    "       AND zpobd2.in_date > CURRENT_DATE \r\n" +
+				    "       AND ub2.user_bookings_is_cancelled = false \r\n" +
+				    "       AND ub2.user_bookings_web_check_out = false \r\n" +
+				    "       AND ub2.user_bookings_web_check_in = false) AS future_bookings \r\n" +
+				    "FROM pgowners.zoy_pg_owner_booking_details AS zpobd \r\n" +
+				    "JOIN pgusers.user_bookings AS ub \r\n" +
+				    "    ON zpobd.booking_id = ub.user_bookings_id \r\n" +
+				    "JOIN pgowners.zoy_pg_property_details AS zpd \r\n" +
+				    "    ON zpobd.property_id = zpd.property_id \r\n" +
+				    "JOIN pgowners.zoy_pg_owner_details AS zpod \r\n" +
+				    "    ON zpd.pg_owner_id = zpod.pg_owner_id \r\n" +
+				    "WHERE zpobd.in_date > CURRENT_DATE \r\n" +
+				    "  AND ub.user_bookings_is_cancelled = false \r\n" +
+				    "  AND ub.user_bookings_web_check_out = false \r\n" +
+				    "  AND ub.user_bookings_web_check_in = false \r\n" +
+				    "  AND zpobd.property_id NOT IN ( \r\n" +
+				    "      SELECT DISTINCT zpobd2.property_id \r\n" +
+				    "      FROM pgowners.zoy_pg_owner_booking_details AS zpobd2 \r\n" +
+				    "      JOIN pgusers.user_bookings AS ub2 \r\n" +
+				    "          ON zpobd2.booking_id = ub2.user_bookings_id \r\n" +
+				    "      WHERE ub2.user_bookings_is_cancelled = false \r\n" +
+				    "        AND ub2.user_bookings_web_check_out = false \r\n" +
+				    "        AND ub2.user_bookings_web_check_in = true \r\n" +
+				    "  )"
+				);
+			Map<String, Object> parameters = new HashMap<>();
+			
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
+				parameters.put("pgName", "%" + filterData.getPgName() + "%");
+			}
+			
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "ownerFullName":
+					sort = "zpod.pg_owner_name";
+					break;
+				case "propertyName":
+					sort = "zpd.property_name";
+					break;
+				case "propertyContactNumber":
+					sort = "zpd.property_contact_number";
+					break;
+				case "propertyEmailAddress":
+					sort = "zpd.property_pg_email";
+					break;
+				case "propertyAddress":
+					sort = "zpd.property_house_area";
+					break;
+				case "expectedRentPerMonth":
+					sort = "zpobd.fixed_rent";
+					break;
+				case "numberOfBeds":
+					sort = "future_bookings";
+					break;
+				default:
+					sort = "zpod.pg_owner_name";
+				}
+
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY zpod.pg_owner_name DESC ");
+			}
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
+
+			int filterCount = query.getResultList().size();
+
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
+			List<Object[]> results = query.getResultList();
+			List<PropertyResportsDTO> potentialPropertyReportDto = results.stream().map(row -> {
+				PropertyResportsDTO dto = new PropertyResportsDTO();
+				dto.setOwnerFullName(row[0] != null ? (String) row[0] : "");
+				dto.setPropertyName(row[1] != null ? (String) row[1] : "");
+				dto.setPropertyContactNumber(row[2] != null ? (String) row[2] : "");
+				dto.setPropertyEmailAddress(row[3] != null ? (String) row[3] : "");
+				dto.setPropertyAddress(row[4] != null ? (String) row[4] : "");
+				dto.setExpectedRentPerMonth((row[5] != null) ? ((Number) row[5]).doubleValue() : 0.0);
+				dto.setNumberOfBeds(row[6] != null ? ((BigInteger) row[6]).intValue() : 0);
+				return dto;
+			}).collect(Collectors.toList());
+			return new CommonResponseDTO<>(potentialPropertyReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving upcoming Potential Properties Details: " + e.getMessage());
 		}
 	}
 }
