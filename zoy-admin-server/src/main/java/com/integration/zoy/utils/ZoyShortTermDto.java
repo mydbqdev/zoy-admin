@@ -11,10 +11,10 @@ public class ZoyShortTermDto {
 	@SerializedName("percentage")
 	private BigDecimal percentage;
 
-	@SerializedName("percentage")
+	@SerializedName("startDay")
 	private int startDay;
 
-	@SerializedName("percentage")
+	@SerializedName("endDay")
 	private int endDay;
 
 	public String getShortTermId() {

@@ -2114,8 +2114,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 //			List<ZoyPgShortTermMaster> shortTermMaster = ownerDBImpl.findAllShortTerm();
 			List<ZoyPgForceCheckOut> forceCheckOut = ownerDBImpl.findAllForceCheckOutDetailsSorted();
 			List<ZoyPgNoRentalAgreement> noRentalAgreement = ownerDBImpl.findAllNoRentalAgreementDetailsSorted();
-			List<ZoyPgShortTermRentingDuration> rentingDuration = ownerDBImpl
-					.findAllShortTermRentingDurationDetailsSorted();
+//			List<ZoyPgShortTermRentingDuration> rentingDuration = ownerDBImpl
+//					.findAllShortTermRentingDurationDetailsSorted();
 			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
 
 			if (tokenDetails != null) {
@@ -2206,13 +2206,13 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				}
 				configDTO.setNoRentalAgreement(listAgreement);
 			}
-			if (rentingDuration != null) {
-				List<ZoyRentingDuration> listZoyRentingDuration = new ArrayList<>();
-				for (ZoyPgShortTermRentingDuration detail : rentingDuration) {
-					listZoyRentingDuration.add(convertToDTO(detail));
-				}
-				configDTO.setShortTermRentingDuration(listZoyRentingDuration);
-			}
+//			if (rentingDuration != null) {
+//				List<ZoyRentingDuration> listZoyRentingDuration = new ArrayList<>();
+//				for (ZoyPgShortTermRentingDuration detail : rentingDuration) {
+//					listZoyRentingDuration.add(convertToDTO(detail));
+//				}
+//				configDTO.setShortTermRentingDuration(listZoyRentingDuration);
+//			}
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(configDTO);
@@ -2273,6 +2273,35 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		    }
 		}
-
 	
+	
+	@Override
+	public ResponseEntity<String> FetchShortTermRentingDuration() {
+		ResponseBody response = new ResponseBody();
+		try {
+			ZoyPgShortTermRentingDuration rentingDuration = ownerDBImpl.findZoyRentingDuration();
+			ZoyRentingDuration dto = null;
+
+			if (rentingDuration != null) {
+				dto = convertToDTO(rentingDuration);
+			}
+
+			if (dto == null) {
+				response.setData(new ZoyRentingDuration()); 
+				response.setMessage("short term renting duration details not found");
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+			} else {
+				response.setData(dto);
+				response.setMessage("Fetched admin short term renting duration details successfully");
+				response.setStatus(HttpStatus.CREATED.value());
+			}
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.CREATED);
+		}catch(Exception e) {
+			log.error("Error while Fetching all  Company Profile details API:/zoy_admin/config/fetch-renting-duration.FetchShortTermRentingDuration", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+		
+	}
 }

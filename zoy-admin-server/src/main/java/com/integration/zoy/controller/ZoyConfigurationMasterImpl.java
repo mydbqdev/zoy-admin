@@ -324,5 +324,16 @@ public interface ZoyConfigurationMasterImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> zoyAdminConfigShortTermDetails( @RequestBody ZoyShortTermDetails shortTerm);
 	
+	@Operation(summary = "Admin Configration Short Term Renting Duration", description = "Fetching Admin Configration Short Term Renting Duration", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/config/fetch-renting-duration",
+	produces = { "application/json" })
+	ResponseEntity<String>FetchShortTermRentingDuration();
+
 	
 }
