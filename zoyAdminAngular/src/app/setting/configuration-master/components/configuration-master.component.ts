@@ -327,9 +327,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	  const rules = this.configMasterOrg[key];
 	  const oldDate = rules.filter(d=>d.isApproved).sort((a, b) => new Date(b.effectiveDate).getTime() - new Date(a.effectiveDate).getTime()) .map(date=>date.effectiveDate)[0];
-	  console.log("rules",rules);
-	  console.log("oldDate",oldDate);
-	  console.log("oldDate",oldDate , new Date(newDate).setHours(0, 0, 0, 0) < new Date(oldDate).setHours(0, 0, 0, 0));
 	 if(oldDate && new Date(newDate).setHours(0, 0, 0, 0) < new Date(oldDate).setHours(0, 0, 0, 0)){
 	   return true;
 	  }
@@ -583,10 +580,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					}
 				  break;
 				case "otherCharges":
-					console.log("this.configMasterModel.otherCharges[0]",this.configMasterModel.otherCharges[0])
-					console.log(this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerDocumentCharges) , this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantDocumentCharges) 
-						, this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerEkycCharges) , this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantEkycCharges) , !this.configMasterModel.otherCharges[0]?.effectiveDate )
-						
 					if(this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantDocumentCharges) 
 						|| this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerEkycCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantEkycCharges) || !this.configMasterModel.otherCharges[0]?.effectiveDate ){
 						return true;
