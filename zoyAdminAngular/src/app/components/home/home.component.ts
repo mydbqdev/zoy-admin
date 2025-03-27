@@ -94,6 +94,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
 			 }else if(error.status==403){
 			  this.router.navigate(['/forbidden']);
+			}else if(error.status==401){
+				console.error("Unauthorised");
+		      this.router.navigate(['/signin']);
 			}else if (error.error && error.error.message) {
 			  this.errorMsg =error.error.message;
 			  console.log("Error:"+this.errorMsg);
@@ -126,6 +129,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
 			 }else if(error.status==403){
 			  this.router.navigate(['/forbidden']);
+			 }else if(error.status==401){
+		 	 this.router.navigate(['/signin']);
 			}else if (error.error && error.error.message) {
 			  this.errorMsg =error.error.message;
 			  console.log("Error:"+this.errorMsg);
@@ -199,6 +204,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
 			 }else if(error.status==403){
 			  this.router.navigate(['/forbidden']);
+			 }else if(error.status==401){
+		  	  this.router.navigate(['/signin']);
 			}else if (error.error && error.error.message) {
 			  this.errorMsg =error.error.message;
 			  console.log("Error:"+this.errorMsg);

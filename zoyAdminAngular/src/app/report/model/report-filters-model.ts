@@ -19,6 +19,8 @@ export class FiltersRequestModel{
     public filterData ?:string  ;
     public propertyId: string ='';
 
+    public isAlert :boolean;
+
 }
 
 export class FilterData {

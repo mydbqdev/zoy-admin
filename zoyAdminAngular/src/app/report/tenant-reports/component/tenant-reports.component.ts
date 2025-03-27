@@ -133,6 +133,16 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 	selectedReport(report:any ): void {
 		this.reportName = report;
 		this.changeReport();
+
+		  if(this.reportName == 'Tenant Dues Report'){
+			this.fromDate = this.fromDate.substring(0,10);
+			this.toDate = this.toDate.substring(0,10);
+			}else{
+				if(this.fromDate.length == 10){
+					this.fromDate = this.fromDate+'T00:00';
+				   	this.toDate = this.toDate+'T23:59';
+				}
+			}
 	  }
 
 	getColumnsForSelectedReport(name:string) {
@@ -245,8 +255,14 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 				this.filtersRequest.sortActive=sortActive;
 				this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 
-				this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
-				this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
+				if(this.reportName == 'Tenant Dues Report'){
+					this.filtersRequest.fromDate = this.fromDate+' 00:00:00'
+					this.filtersRequest.toDate = this.toDate+' 23:59:59';
+				}else{
+					this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
+					this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
+				}
+
 				this.filtersRequest.cityLocation = this.cityLocationName;
 				this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 				this.filtersRequest.filterData = JSON.stringify(this.filterData) ;

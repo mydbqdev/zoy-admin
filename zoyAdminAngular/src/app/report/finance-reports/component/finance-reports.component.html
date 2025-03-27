@@ -30,7 +30,7 @@
                  <div class="col-sm-11">
                   <div style="padding:10px 10px 5px;border:1px solid#dbdbdb;border-radius: 15px; font-size: 13px;">
                     <div class="d-flex mb-2">
-                    <div style="width: 110px;">
+                    <div style="width: 110px;" *ngIf="reportName != 'Failure Transactions Report'">
                       <label for="email">City / Location</label>
                         <select class="form-select form-select-sm" aria-label="Default select example"   [(ngModel)]="cityLocationName" style=" font-size: 12px;">
                             <option *ngFor="let city of cityLocation"  [value]="city" >{{city}}</option>

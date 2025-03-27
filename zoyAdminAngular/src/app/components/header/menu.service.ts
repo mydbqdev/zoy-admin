@@ -91,4 +91,3 @@ getAllMenus(): Menu[] {
       return this.authorization;
     }
 }
-

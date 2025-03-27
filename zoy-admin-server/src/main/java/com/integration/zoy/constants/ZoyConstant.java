@@ -84,5 +84,7 @@ public class ZoyConstant {
 	public static final String ACTIVE = "Active";
 	public static final String INACTIVE = "Inactive";
 	public static final String SUSPENDED="Suspended";
+	public static final String REGISTER="Register";
+	
 
 }

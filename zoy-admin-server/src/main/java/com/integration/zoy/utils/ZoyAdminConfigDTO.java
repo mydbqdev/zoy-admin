@@ -3,6 +3,7 @@ package com.integration.zoy.utils;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
+import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,31 +13,31 @@ import lombok.Setter;
 @Setter
 public class ZoyAdminConfigDTO {
 	@SerializedName("tokenDetails")
-    private ZoyPgTokenDetailsDTO tokenDetails;
+    private List<ZoyPgTokenDetailsDTO> tokenDetails;
 	@SerializedName("depositDetails")
-    private ZoyPgSecurityDepositDetailsDTO depositDetails;
+    private List<ZoyPgSecurityDepositDetailsDTO> depositDetails;
 	@SerializedName("cancellationBeforeCheckInDetails")
     private List<ZoyBeforeCheckInCancellationDto> cancellationBeforeCheckInDetails;
 	@SerializedName("earlyCheckOutRuleDetails")
-    private ZoyPgEarlyCheckOutRuleDto earlyCheckOutRuleDetails;
+    private List<ZoyPgEarlyCheckOutRuleDto> earlyCheckOutRuleDetails;
 	@SerializedName("cancellationAfterCheckInDetails")
-    private ZoyAfterCheckInCancellationDto cancellationAfterCheckInDetails;
+    private List<ZoyAfterCheckInCancellationDto> cancellationAfterCheckInDetails;
 	@SerializedName("securityDepositDeadLineDetails")
-    private ZoySecurityDepositDeadLineDto securityDepositDeadLineDetails;
+    private List<ZoySecurityDepositDeadLineDto> securityDepositDeadLineDetails;
 	@SerializedName("dataGrouping")
-    private ZoyDataGroupingDto dataGrouping;
+    private List<ZoyDataGroupingDto> dataGrouping;
 	@SerializedName("otherCharges")
-    private ZoyOtherChargesDto otherCharges;
+    private List<ZoyOtherChargesDto> otherCharges;
 	@SerializedName("gstCharges")
-	private ZoyGstChargesDto gstCharges;
+	private List<ZoyGstChargesDto> gstCharges;
 	@SerializedName("shortTerm")
 	private List<ZoyShortTermDto> zoyShortTermDtos;
 	@SerializedName("forceCheckOut")
-	private ZoyForceCheckOutDto zoyForceCheckOutDto;
+	private List<ZoyForceCheckOutDto> zoyForceCheckOutDto;
 	@SerializedName("shortTermRentingDuration")
-	private ZoyRentingDuration shortTermRentingDuration;
-	
-    
+	private List<ZoyRentingDuration> shortTermRentingDuration;
+	@SerializedName("noRentalAgreement")
+	private List<ZoyPgNoRentalAgreementDto> NoRentalAgreement;
  
 }
 
