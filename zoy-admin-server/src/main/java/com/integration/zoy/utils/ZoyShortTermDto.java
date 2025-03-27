@@ -10,15 +10,12 @@ public class ZoyShortTermDto {
 
 	@SerializedName("percentage")
 	private BigDecimal percentage;
-	
-	@SerializedName("days")
-	private String days;
-	
-	@SerializedName("effectiveDate")
-	private String effectiveDate;
-	
-	@SerializedName("isApproved")
-	private boolean isApproved;
+
+	@SerializedName("percentage")
+	private int startDay;
+
+	@SerializedName("percentage")
+	private int endDay;
 
 	public String getShortTermId() {
 		return shortTermId;
@@ -36,32 +33,20 @@ public class ZoyShortTermDto {
 		this.percentage = percentage;
 	}
 
-	public String getDays() {
-		return days;
+	public int getStartDay() {
+		return startDay;
 	}
 
-	public void setDays(String days) {
-		this.days = days;
+	public void setStartDay(int startDay) {
+		this.startDay = startDay;
 	}
 
-	public String getEffectiveDate() {
-		return effectiveDate;
+	public int getEndDay() {
+		return endDay;
 	}
 
-	public void setEffectiveDate(String effectiveDate) {
-		this.effectiveDate = effectiveDate;
+	public void setEndDay(int endDay) {
+		this.endDay = endDay;
 	}
 
-	public boolean getIsApproved() {
-		return isApproved;
-	}
-
-	public void setIsApproved(boolean isApproved) {
-		this.isApproved = isApproved;
-	}
-
-	
-	
-	
-	
 }

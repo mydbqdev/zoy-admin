@@ -1,10 +1,10 @@
-package com.integration.zoy.model;
+package com.integration.zoy.utils;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ZoyBeforeCheckInCancellationModel {
+public class ZoyShortTermDetails {
 
 	@JsonProperty("effectiveDate")
 	private String effectiveDate;
@@ -27,8 +27,8 @@ public class ZoyBeforeCheckInCancellationModel {
 	@JsonProperty("pgType")
 	private String pgType;
 
-	@JsonProperty("ZoyBeforeCheckInCancellationInfo")
-	private List<ZoyBeforeCheckInCancellation> ZoyBeforeCheckInCancellationInfo;
+	@JsonProperty("ZoyShortTermDtoInfo")
+	private List<ZoyShortTermDto> ZoyShortTermDtoInfo;
 
 	public String getEffectiveDate() {
 		return effectiveDate;
@@ -70,15 +70,6 @@ public class ZoyBeforeCheckInCancellationModel {
 		this.createdBy = createdBy;
 	}
 
-	public List<ZoyBeforeCheckInCancellation> getZoyBeforeCheckInCancellationInfo() {
-		return ZoyBeforeCheckInCancellationInfo;
-	}
-
-	public void setZoyBeforeCheckInCancellationInfo(
-			List<ZoyBeforeCheckInCancellation> zoyBeforeCheckInCancellationInfo) {
-		ZoyBeforeCheckInCancellationInfo = zoyBeforeCheckInCancellationInfo;
-	}
-
 	public boolean getDelete() {
 		return delete;
 	}
@@ -95,4 +86,14 @@ public class ZoyBeforeCheckInCancellationModel {
 		this.pgType = pgType;
 	}
 
+
+	public List<ZoyShortTermDto> getZoyShortTermDtoInfo() {
+		return ZoyShortTermDtoInfo;
+	}
+
+	public void setZoyShortTermDtoInfo(List<ZoyShortTermDto> zoyShortTermDtoInfo) {
+		ZoyShortTermDtoInfo = zoyShortTermDtoInfo;
+	}
+
+	
 }
