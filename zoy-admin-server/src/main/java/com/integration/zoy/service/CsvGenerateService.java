@@ -111,7 +111,7 @@ public class CsvGenerateService {
                 writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address,Booked Property Name,Property Address,Bed Number,Expected Check-in Date,Expected Checked-out Date");
                 break; 
             case "ActiveTenantsReport":
-                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Property Name,Property Address,Bed Number, Check-in Date,Expected Checked-out Date");
+                writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Property Name,Property Address,Bed Number, Check-in Date,Check-out Date");
                 break;
             case "InactiveTenantsReport":
             	writer.println("Tenant Name,Tenant Contact Number,Tenant Email Address, Previous Property Name,Property Address,Bed Number,Check-in Date, Checked-out Date");
