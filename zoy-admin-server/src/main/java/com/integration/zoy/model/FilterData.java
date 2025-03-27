@@ -41,6 +41,9 @@ public class FilterData {
 
 	@SerializedName("ownerEmail")
 	String ownerEmail;
+	
+	@SerializedName("tenantEmail")
+	String tenantEmail;
 
 	@SerializedName("bedNumber")
 	String bedNumber;
@@ -331,6 +334,14 @@ public class FilterData {
 
 	public void setPropertyContactNum(String propertyContactNum) {
 		this.propertyContactNum = propertyContactNum;
+	}
+
+	public String getTenantEmail() {
+		return tenantEmail;
+	}
+
+	public void setTenantEmail(String tenantEmail) {
+		this.tenantEmail = tenantEmail;
 	}
 
 }

@@ -1,8 +1,4 @@
-<!-- <ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="ball-circus" [fullScreen]="true">
-    <p style="color: white;">Loading ...</p>
-  </ngx-spinner> -->
-    
-<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
+ <ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
   <div class="spinner-container"><img class="spinner-home-logo" src="assets/images/home-logo.png" alt="Home"/>
     <img class="spinner-location-logo" src="assets/images/location-logo.png" alt="User"/>
     <div class="spinner-loading">Loading</div>
@@ -135,7 +131,7 @@
                                       <td mat-cell *matCellDef="let element" style="padding: 4px;width: 130px;">
                                         <span
                                           class="common-status"
-                                          [ngClass]="element.status === 'pending' ? 'btn-pending' : 'btn-registered'"
+                                          [ngClass]="element.status === 'pending' ? 'status-inactive' : 'status-active'"
                                         >
                                           <span *ngIf="element.status === 'pending'">Inactive</span>
                                           <span *ngIf="element.status !== 'pending'">Active</span>

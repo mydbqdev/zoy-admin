@@ -175,8 +175,32 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 	
 	@Query(value = "select (select count(*) from pgusers.user_master um where um.user_status ='Active') as activeTenants,\r\n"
 			+ "(SELECT COUNT(*) FROM pgowners.zoy_pg_owner_booking_details zpqbd  WHERE zpqbd.in_date > CURRENT_DATE) AS upcomingTenantsCount, \r\n"
-			+ "(select count(*) from pgusers.user_master um where um.user_status ='Inactive') as inactiveTenantsCount,\r\n"
-			+ "(select count(*) from pgusers.user_master um where um.user_status ='Suspended') as suspendedTenantsCount",
+			+ "(SELECT COUNT(*) \r\n"
+			+ "FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
+			+ "JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id\r\n"
+			+ "JOIN pgusers.user_bookings ub ON ub.user_bookings_id = zpobd.booking_id\r\n"
+			+ "JOIN pgowners.zoy_pg_property_details zppd ON zppd.property_id = zpobd.property_id\r\n"
+			+ "JOIN (\r\n"
+			+ "    SELECT tenant_id, MAX(out_date) AS last_out_date\r\n"
+			+ "    FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
+			+ "    JOIN pgusers.user_bookings ub ON ub.user_bookings_id = zpobd.booking_id\r\n"
+			+ "    JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id\r\n"
+			+ "    WHERE ub.user_bookings_web_check_out = TRUE \r\n"
+			+ "    AND um.user_status = 'Inactive'\r\n"
+			+ "    GROUP BY tenant_id\r\n"
+			+ ") latest_out ON zpobd.tenant_id = latest_out.tenant_id\r\n"
+			+ "JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id\r\n"
+			+ "AND zpobd.out_date = latest_out.last_out_date\r\n"
+			+ "WHERE ub.user_bookings_web_check_out = TRUE \r\n"
+			+ "AND um.user_status = 'Inactive') as inactiveTenantsCount,\r\n"
+			+ "(SELECT COUNT(*)\r\n"
+			+ "FROM pgusers.user_master um\r\n"
+			+ "WHERE um.user_status = 'Register'\r\n"
+			+ "AND NOT EXISTS (\r\n"
+			+ "    SELECT 1\r\n"
+			+ "    FROM pgusers.user_bookings ub\r\n"
+			+ "    WHERE ub.user_id = um.user_id\r\n"
+			+ ")) as registerTenantCount",
 	        nativeQuery = true)
 	List<Object[]> getTenantCardsDetails();
 			

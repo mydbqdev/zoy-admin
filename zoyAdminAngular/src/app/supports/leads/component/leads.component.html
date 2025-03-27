@@ -1,0 +1,273 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
+  <div class="spinner-container"><img class="spinner-home-logo" src="assets/images/home-logo.png" alt="Home"/>
+    <img class="spinner-location-logo" src="assets/images/location-logo.png" alt="User"/>
+    <div class="spinner-loading">Loading</div>
+  </div>
+</ngx-spinner>
+<div id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">    
+      <!-- Sidebar -->
+        <app-sidebar></app-sidebar>
+      <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+            <!-- Main Content -->
+            <div id="content">
+                <div style="display: block;margin-bottom: 5.375rem;">
+                <!-- Topbar -->
+                <app-header></app-header>
+                <!-- End of Topbar -->
+                </div>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                        <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Leads</span></h3> 
+                        <div>
+                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-11">
+                         <div style="padding:10px 10px 5px;border:1px solid#dbdbdb;border-radius: 15px; font-size: 13px;">
+                           <div class="d-flex mb-2">
+                           <div style="width: 120px;">
+                            <label for="email">Status</label>
+                            <select class="form-select form-select-sm"  style=" font-size: 12px;">
+                            </select>
+                           </div> 
+                           <div class="ml-2" style="width: 150px;">
+                               <label for="email">Inquired for</label>
+                               <form  >
+                                 <div class="input-group ">
+                                   <input class="form-select form-select-sm" type="search" style="width:300px;border-radius: 5px;cursor: pointer;font-size: 12px;"
+                                     />
+                                   <div class="input-group-append">
+                                   </div>
+                                 </div>
+                               </form>
+                           </div>
+                           <div class="ml-2" style="width: 210px;">
+                            <label for="email">Assignee By</label>
+                            <form  >
+                              <div class="input-group ">
+                                <input class="form-select form-select-sm" type="search" style="width:300px;border-radius: 5px;cursor: pointer;font-size: 12px;"
+                                  />
+                                <div class="input-group-append">
+                                </div>
+                              </div>
+                            </form>
+                        </div>
+                           <div class="ml-2" style="width: 310px;">
+                                  <label for="category">Date Range</label>
+                                   <div class="d-flex gap-2">
+                                     <input type="datetime-local" class="form-control form-control-sm" style="width: 145px;font-size: 12px; " id="fromDate" /> - 
+                                     <input type="datetime-local" class="form-control form-control-sm" style="width: 145px; font-size: 12px;" id="toDate"  />
+                                   </div>
+                           </div>
+                           <div class="ml-2" style="padding-top:26px;">
+                             <a class="btn btn-dark btn-sm" title="Advance Search" id="advanceSearch"
+                             data-toggle="dropdown"><i class="fas fa-angle-double-down"></i></a>
+                             <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width p-2 shadow" style="width: 500px;margin-right: 150px;" aria-labelledby="advanceSearch" data-bs-auto-close="false">
+                               <div>
+                                 <div class="row mt-2 mb-0">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                          <label for="overallRating" class="text-search-header">State</label>
+                                          <input type="text" class="form-control form-control-sm" />
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-6">
+                                        <div class="form-group">
+                                          <label for="overallRating" class="text-search-header">City</label>
+                                          <input type="text" class="form-control form-control-sm" />
+                                        </div>
+                                      </div>
+                                 </div>
+                                 <div class="row mt-2 mb-0">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                          <label for="overallRating" class="text-search-header">Inquired by</label>
+                                          <input type="text" class="form-control form-control-sm" />
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-6">
+                                        <div class="form-group">
+                                          <label for="overallRating" class="text-search-header">Inquiry Number</label>
+                                          <input type="text" class="form-control form-control-sm" />
+                                        </div>
+                                      </div>
+                                 </div>
+                               </div>
+                              
+                               <!-- Apply Now button -->
+                               <div class="d-flex justify-content-center align-items-center mt-2">
+                                 <button type="button" class="btn btn-primary-custom btn-sm"   >Search / Show Result</button>
+                               </div>
+                            </div>
+                           </div>
+                           <div class="ml-2">
+                             <div style="padding-top:27px;">
+                               <button type="button" class="btn btn-primary-custom btn-sm" (click)="loadLeads()" style=" font-size: 12px;max-width: 120px;" >Show Results</button>
+                             </div>
+                           </div>
+                         </div>
+                         
+                         </div>
+                        </div>
+                         <div class="col-sm-1">
+                         <div style="padding-top:37px;margin-left:-20px;width: 115px;" > 
+                           <div class="dropdown no-arrow">
+                             <button class="btn btn-primary-custom btn-sm"  role="button" id="dropdownMenuDownload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                               <i class="fas fa-download mr-2" ></i>
+                               <span style="font-size: 12px;" >Download </span>
+                             </button>                           
+                             <div class="dropdown-menu dropdown-menu-right shadow animated-fade-in" aria-labelledby="dropdownMenuDownload" style="min-width:1rem !important;">
+                               <a class="dropdown-item" href="javascript:void(0)" >As Pdf </a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
+                               <a class="dropdown-item" href="javascript:void(0)" > As Excel</a><hr style="margin-top: 0rem !important; margin-bottom: 0rem !important;">
+                               <a class="dropdown-item" href="javascript:void(0)" >As CSV</a>   
+                             </div>
+                          </div>
+                         </div>
+                         </div>
+                       </div>
+                    <!-- Content Row -->
+                    <div class="row mt-2">
+                      <div class="col-xl-12 col-lg-12">
+                          <div class="card shadow mb-3">
+                              <!-- Card Body -->
+                              <div class="card-body" style="padding: 2px;margin: 0px;" >
+                                <div>
+                                                      <div class="scrollable-container-main">
+                                                            <table mat-table [dataSource]="reportDataSource" matSort
+                                                                    (matSortChange)="onSortData($event)" matSortActive="name" matSortDirection="asc" 
+                                                                    matSortDisableClear multiTemplateDataRows>
+                                                                <ng-container *ngFor="let column of selectedReportColumns">
+                                                                <ng-container [matColumnDef]="column"  *ngIf=" column != 'action' || column != 'status'">
+                                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 400;" [matTooltip]="columnHeaders[column] "> 
+                                                                    {{ columnHeaders[column] || column }}
+                                                                    <i class="fas fa-lg fa-sort ml-1" style="color:#d1cfcf;margin-right: 3px;"></i>
+                                                                    <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
+                                                                        style="margin-right: 3px;margin-left: -14px;"></i>
+                                                                    <i class="fas fa-lg  fa-sort-down" *ngIf="sortActive === column && sortDirection === 'desc'" 
+                                                                        style="margin-right: 3px;margin-left: -14px;"></i></th>
+                                                                    <td mat-cell *matCellDef="let element" > 
+                                                                    {{  element[column] == undefined || element[column] == '' ? '-' : element[column] }} 
+                                                                    
+                                                                        </td>
+                                                                </ng-container>
+                                                                <ng-container  matColumnDef="status"  *ngIf="column == 'status'">
+                                                                  <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 400;"> 
+                                                                  Status
+                                                                  <i class="fas fa-lg fa-sort ml-1" style="color:#d1cfcf;margin-right: 3px;"></i>
+                                                                  <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
+                                                                      style="margin-right: 3px;margin-left: -14px;"></i>
+                                                                  <i class="fas fa-lg  fa-sort-down" *ngIf="sortActive === column && sortDirection === 'desc'" 
+                                                                      style="margin-right: 3px;margin-left: -14px;"></i></th>
+                                                                  <td mat-cell *matCellDef="let element" > 
+                                                                    <span
+                                                                      class="common-status"
+                                                                      [ngClass]="element.status === 'New' ? 'btn-new' : (element.status === 'In Progress' ? 'btn-inprogress': (element.status === 'Follow-up' ? 'btn-follow-up':(element.status === 'Converted' ? 'btn-converted':'btn-lost')))"
+                                                                    > {{element.status}}
+                                                                    </span>
+                                                                  </td>
+                                                              </ng-container>
+                                                                <ng-container  matColumnDef="action" *ngIf="column == 'action' " >
+                                                                  <th mat-header-cell *matHeaderCellDef style="width: 80px;">Action</th>
+                                                                  <td mat-cell *matCellDef="let element" > 
+                                                                    <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
+                                                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                        <i class="fas fa-ellipsis-v fa-sm fa-fw"  style="color:#000000;"></i>
+                                                                    </a>
+                                                                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                                        aria-labelledby="dropdownMenuLink">
+                                                                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#details">Details</a>
+                                                                        <a class="dropdown-item" href="javascript:void(0)"  >Assign / Reassign</a>
+                                                                        <a class="dropdown-item" href="javascript:void(0)"  >Status Update</a>
+                                                                    </div>
+                                                                  </td>
+                                                                </ng-container>
+                                                                </ng-container>
+                                                            
+                                                                <tr mat-header-row *matHeaderRowDef="selectedReportColumns; sticky:true"></tr>
+                                                                <tr mat-row *matRowDef="let row; columns: selectedReportColumns;"></tr>
+                                                            </table>
+                                                            <div style="text-align: center; min-height: 45px; padding-top: 10px;" 
+                                                            *ngIf="reportDataSource.data.length === 0">
+                                                                No records found
+                                                            </div>
+                                                            </div>
+                                                            <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" 
+                                                            [pageSizeOptions]="pageSizeOptions" showFirstLastButtons 
+                                                            (page)="pageChanged($event)">
+                                                            </mat-paginator>
+                                  </div>    
+                            </div>    
+                         </div>   
+                    </div> <!-- End Card Body -->
+                    </div>
+                    
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+        </div>
+        <!-- End of Content Wrapper -->
+  </div>
+  <!-- End of Page Wrapper -->
+</div>
+
+<!------To give the reason for Deactivate/Activate details PopUp model------->
+<div class="modal fade" id="details" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xl modal-fullscreen-sm-down ">
+    <div class="modal-content">
+      <div class="modal-header bg-gradiant-popup-header">
+        <h5 class="modal-title" id="modalLabel"><span >Leads Details</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModel></button>
+      </div>
+      <div class="modal-body p-3">
+        <div class="row mb-1">
+          <div class="col-sm-3">Unique Inquiry Number</div>
+          <div class="col-sm-1" style="color:#000000;">250001</div>
+          <div class="col-sm-2">Name</div>
+          <div class="col-sm-2" style="color:#000000;">Madhan Ram</div>
+          <div class="col-sm-1">Email</div>
+          <div class="col-sm-3" style="color:#000000;">-</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-3">Phone Number</div>
+          <div class="col-sm-1" style="color:#000000;">9874561230</div>
+          <div class="col-sm-2">State</div>
+          <div class="col-sm-2" style="color:#000000;">AP</div>
+          <div class="col-sm-1">City</div>
+          <div class="col-sm-3" style="color:#000000;">Guntur</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-3">Guest/ Property owner</div>
+          <div class="col-sm-1" style="color:#000000;">-</div>
+          <div class="col-sm-2">Inquired for </div>
+          <div class="col-sm-2" style="color:#000000;">Business inquiry</div>
+          <div class="col-sm-1">Description</div>
+          <div class="col-sm-3" style="color:#000000;">Description here</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-2">Date</div>
+          <div class="col-sm-2" style="color:#000000;">2025-03-15</div>
+          <div class="col-sm-2">Assign To </div>
+          <div class="col-sm-2" style="color:#000000;">Mahendra</div>
+          <div class="col-sm-1">Status</div>
+          <div class="col-sm-3"><span class="common-status btn-new">New</span></div>
+        </div>
+        <hr>
+        <div>
+          <div>Histoty Information</div> 
+          <div class="card">
+            <div class="card-body" style="padding: 2px;margin: 0px;" ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

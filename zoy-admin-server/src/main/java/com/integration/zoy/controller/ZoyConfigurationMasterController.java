@@ -2304,4 +2304,34 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		}
 		
 	}
+
+	@Override
+	public ResponseEntity<String> FetchShortTermRentingDuration() {
+		ResponseBody response = new ResponseBody();
+		try {
+			ZoyPgShortTermRentingDuration rentingDuration = ownerDBImpl.findZoyRentingDuration();
+			ZoyRentingDuration dto = null;
+
+			if (rentingDuration != null) {
+				dto = convertToDTO(rentingDuration);
+			}
+
+			if (dto == null) {
+				response.setData(new ZoyRentingDuration()); 
+				response.setMessage("short term renting duration details not found");
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+			} else {
+				response.setData(dto);
+				response.setMessage("Fetched admin short term renting duration details successfully");
+				response.setStatus(HttpStatus.CREATED.value());
+			}
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.CREATED);
+		}catch(Exception e) {
+			log.error("Error while Fetching all  Company Profile details API:/zoy_admin/config/fetch-renting-duration.FetchShortTermRentingDuration", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Internal server error");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+		
+	}
 }

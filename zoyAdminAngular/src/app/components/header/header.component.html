@@ -30,7 +30,7 @@
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-bell fa-fw"></i>
               <!-- Counter - Alerts -->
-              <span class="badge badge-danger badge-counter">{{notificationsCount > 0 ? notificationsCount:''}}</span>
+              <span class="badge badge-danger badge-counter notifications-Count">{{notificationsCount > 0 ? notificationsCount:''}}</span>
               <!-- <div class="badge badge-danger badge-counter">{{ getTimeSinceLastAction() / 1000 }}+</div> -->
           </a>
           
@@ -148,7 +148,7 @@
 <div class="modal fade" id="alertNotification" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-bg modal-dialog-scrollable">
       <div class="modal-content" style="height: fit-content; overflow-y: auto;">
-        <div class="modal-header">
+        <div class="modal-header bg-gradiant-popup-header">
           <h5 class="modal-title" id="modalLabel">{{selectedNotification.info_type == 'alert'?'Alert':'Notification'}} Details </h5>
           <div>
           </div>
@@ -164,10 +164,10 @@
                   </div>
                   <div class="w-100">
                       <div class="d-flex">
-                          <div class="text-gray-500">{{ selectedNotification.category }}</div>
+                          <div style="color: #000000;">{{ selectedNotification.category }}</div>
                           <div class="small ml-auto mr-2" style="font-style: italic;"> {{ selectedNotification.created_at | date:'hh:mm a, MMMM dd, yyyy' }}</div>
                       </div>
-                      <div class="small mr-2">{{ selectedNotification.message }}</div>
+                      <div class="small mr-2" style="color: #505050;" >{{ selectedNotification.message }}</div>
                   </div>
               </div>
             </div>

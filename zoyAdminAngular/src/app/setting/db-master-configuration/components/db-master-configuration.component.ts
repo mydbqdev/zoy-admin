@@ -42,7 +42,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   isCreated :boolean=true;
   shortTermData:ShortTermDataModel = new ShortTermDataModel();
   shortTermDataList:ShortTermDataModel[] = [];
-  shortTermduration:number=30;
+  shortTermduration:number=0;
   @ViewChild('closeModel') closeModel: ElementRef;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private confirmationDialogService:ConfirmationDialogService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,
@@ -109,12 +109,20 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     this.settingTypeDetails = this.settingTypeObjClmApiDetailsList.find(t=>t.type == this.settingType);
     this.selectedsettingColumns = this.settingTypeDetails.columns ;
     this.getDbSettingDetails() ;
+    if(this.settingType == 'Short Term' ){
+      this.getShortTermDuration() ;
+    }
+   
   }
 
   getShortTermDuration(){
       this.authService.checkLoginUserVlidaate();
-     this.dbMasterConfigurationService.getShortTermDuration().subscribe(data => {
-      this.shortTermduration = data;
+     this.dbMasterConfigurationService.getShortTermDuration().subscribe(res => {
+      if(res.data){
+        this.shortTermduration = res.data?.rentingDurationDays | 0;
+      }else{
+        this.shortTermduration = 0;
+      }
      }, error => {
      this.spinner.hide();
      if(error.status == 0) {
@@ -144,8 +152,15 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
      if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
      }
    });
-   
    }
+
+   navigateMasterConfig(){
+		if(this.rolesArray.includes('CONFIGURATION_MASTER_WRITE') || this.rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')){
+			this.router.navigate(['/configuration-master']);
+		}else{
+			this.notifyService.showInfo("Please contact a higher-level admin","You do not have permission.");
+		}
+	  }
     getDbSettingDetails(){
        this.authService.checkLoginUserVlidaate();
       this.spinner.show();
@@ -663,7 +678,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   submitShortTermData() {   
     let finalSubmitShortList = [];
     this.submitShortTerm = true;
-    let startDay = 30;
+    let startDay = this.shortTermduration;
     let endDay = 0;
    
     for (let i = 0; i < this.shortTermDataList.length; i++) {
@@ -689,9 +704,9 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
           
         }
 
-        const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1))
-        if(term.end_day !=30 && ranges.length === 0 ){
-           this.notifyService.showWarning("The Short term duration period must be within the defined ranges of 1-30 days.","")
+        const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1));
+        if(term.end_day != this.shortTermduration && ranges.length === 0 ){
+           this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.',"")
            return;
          }
 
@@ -704,8 +719,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       return;
     }
    
-    if( Number(startDay) != 1 || Number(endDay) !=30){
-      this.notifyService.showInfo("The Short term duration period must be within the defined ranges of 1-30 days.", "");
+    if( Number(startDay) != 1 || Number(endDay) !=this.shortTermduration){
+      this.notifyService.showInfo('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.', "");
       return
     }
 

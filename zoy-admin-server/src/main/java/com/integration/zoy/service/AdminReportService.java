@@ -1,6 +1,7 @@
 package com.integration.zoy.service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -21,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.exception.WebServiceException;
@@ -35,6 +36,7 @@ import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
+import com.integration.zoy.utils.RegisterTenantsDTO;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentDTO;
@@ -52,9 +54,6 @@ public class AdminReportService implements AdminReportImpl{
 
 	@Autowired
 	private UserPaymentDueRepository userPaymentDueRepository;
-
-	@Autowired
-	private PdfGenerateService pdfGenerateService;
 
 	@Autowired
 	private ExcelGenerateService excelGenerateService;
@@ -82,43 +81,51 @@ public class AdminReportService implements AdminReportImpl{
 
 
 	@Override
-	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException {
+	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination,Boolean isGstReport) throws WebServiceException {
 		try{
 			StringBuilder queryBuilder = new StringBuilder(
 					"SELECT \r\n"
-							+ " up.user_payment_timestamp, \r\n"
-							+ " up.user_payment_result_invoice_id, \r\n"
-							+ " CASE \r\n"
-							+ " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' \r\n"
-							+ " ELSE up.user_payment_payment_status \r\n"
-							+ " END AS user_payment_payment_status, \r\n"
-							+ " up.user_payment_payable_amount, \r\n"
-							+ " up.user_payment_gst, \r\n"
-							+ " ud.user_personal_name, \r\n"
-							+ " pgt.property_name AS user_pg_propertyname, \r\n"
-							+ " bd.bed_name, \r\n"
-							+ " up.user_payment_zoy_payment_type, \r\n"
-							+ " CASE \r\n"
-							+ " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Cash' \r\n"
-							+ " ELSE up.user_payment_result_method \r\n"
-							+ " END AS user_payment_result_method, \r\n"
-							+ " pgt.property_city, \r\n"
-							+ " pgt.property_house_area, \r\n"
-							+ " um.user_mobile, \r\n"
-							+ " pgt.property_id, \r\n"
-							+ " up.user_payment_result_reason \r\n"
-							+ "FROM pgusers.user_payments up \r\n"
-							+ "LEFT JOIN pgusers.user_details ud \r\n"
-							+ " ON up.user_id = ud.user_id\r\n"
-							+ "LEFT JOIN pgusers.user_master um ON up.user_id = um.user_id \r\n"
-							+ "LEFT JOIN pgowners.zoy_pg_owner_booking_details bkd \r\n"
-							+ " ON up.user_id = bkd.tenant_id \r\n"
-							+ " AND up.user_payment_booking_id = bkd.booking_id \r\n"
-							+ "LEFT JOIN pgowners.zoy_pg_property_details pgt \r\n"
-							+ " ON pgt.property_id = bkd.property_id \r\n"
-							+ "LEFT JOIN pgowners.zoy_pg_bed_details bd \r\n"
-							+ " ON bkd.selected_bed = bd.bed_id WHERE 1=1"
-					);
+				            + " up.user_payment_created_at, \r\n"
+				            + " up.user_payment_result_invoice_id, \r\n"
+				            + " CASE \r\n"
+				            + " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' \r\n"
+				            + " ELSE up.user_payment_payment_status \r\n"
+				            + " END AS user_payment_payment_status, \r\n"
+				            + " up.user_payment_payable_amount, \r\n"
+				            + " up.user_payment_gst, \r\n"
+				            + " ud.user_personal_name, \r\n"
+				            + " pgt.property_name AS user_pg_propertyname, \r\n"
+				            + " bd.bed_name, \r\n"
+				            + " STRING_AGG(zpdm.due_name, ', ') AS user_money_due_descriptions, \r\n"
+				            + " CASE \r\n"
+				            + " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Cash' \r\n"
+				            + " ELSE up.user_payment_result_method \r\n"
+				            + " END AS user_payment_result_method, \r\n"
+				            + " pgt.property_city, \r\n"
+				            + " pgt.property_house_area, \r\n"
+				            + " um.user_mobile, \r\n"
+				            + " pgt.property_id \r\n"
+				            + "FROM pgusers.user_payments up \r\n"
+				            + "LEFT JOIN pgusers.user_details ud \r\n"
+				            + " ON up.user_id = ud.user_id\r\n"
+				            + "LEFT JOIN pgusers.user_master um \r\n"
+				            + " ON up.user_id = um.user_id \r\n"
+				            + "LEFT JOIN pgowners.zoy_pg_owner_booking_details bkd \r\n"
+				            + " ON up.user_id = bkd.tenant_id \r\n"
+				            + " AND up.user_payment_booking_id = bkd.booking_id \r\n"
+				            + "LEFT JOIN pgowners.zoy_pg_property_details pgt \r\n"
+				            + " ON pgt.property_id = bkd.property_id \r\n"
+				            + "LEFT JOIN pgowners.zoy_pg_bed_details bd \r\n"
+				            + " ON bkd.selected_bed = bd.bed_id \r\n"
+				            + "LEFT JOIN pgusers.user_payment_due due \r\n"
+				            + " ON up.user_payment_id = due.user_payment_id \r\n"
+				            + "LEFT JOIN pgusers.user_dues dues \r\n"
+				            + " ON due.user_money_due_id = dues.user_money_due_id \r\n"
+				            + "JOIN pgowners.zoy_pg_due_type_master zpdtm \r\n"
+				            + " ON zpdtm.due_id = dues.user_money_due_type \r\n"
+				            + "JOIN pgowners.zoy_pg_due_master zpdm \r\n"
+				            + " ON zpdm.due_type_id = zpdtm.due_type \r\n"
+				            + "WHERE 1=1 \r\n");
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterData.getTransactionStatus() != null && !filterData.getTransactionStatus().isEmpty()) {
@@ -145,7 +152,7 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND up.user_payment_timestamp BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				queryBuilder.append(" AND up.user_payment_created_at BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -162,7 +169,7 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("transactionNumber", "%" + filterData.getTransactionNumber() + "%");
 			}
 
-			String sort = "up.user_payment_timestamp";
+			String sort = "up.user_payment_created_at";
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty() && filterRequest.getSortActive() != null) {
 				if ("transactionNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_result_invoice_id";
@@ -181,23 +188,50 @@ public class AdminReportService implements AdminReportImpl{
 				} else if ("bedNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "bd.bed_name";
 				} else if ("category".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "up.user_payment_zoy_payment_type";
+					sort = "user_money_due_descriptions";
 				} else if ("paymentMethod".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "up.user_payment_result_method";
 				} else if("propertyHouseArea".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "pgt.property_house_area";
 				} else if("tenantContactNum".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "ud.user_personal_phone_num";
+					sort = "um.user_mobile";
 				}
 				else {
-					sort = "up.user_payment_timestamp";
+					sort = "up.user_payment_created_at";
 				}
-
+				if(isGstReport) {
+					 queryBuilder.append(" AND  up.user_payment_gst IS NOT NULL AND up.user_payment_gst <> 0 \r\n");
+					
+				}
+				queryBuilder.append(" GROUP BY \r\n"
+					    + " up.user_payment_created_at, \r\n"
+					    + " up.user_payment_result_invoice_id, \r\n"
+					    + " CASE \r\n"
+					    + " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Paid-Cash' \r\n"
+					    + " ELSE up.user_payment_payment_status \r\n"
+					    + " END, \r\n"
+					    + " up.user_payment_payable_amount, \r\n"
+					    + " up.user_payment_gst, \r\n"
+					    + " ud.user_personal_name, \r\n"
+					    + " pgt.property_name, \r\n"
+					    + " bd.bed_name, \r\n"
+					    + " CASE \r\n"
+					    + " WHEN LOWER(up.user_payment_zoy_payment_mode) = 'offline' THEN 'Cash' \r\n"
+					    + " ELSE up.user_payment_result_method \r\n"
+					    + " END, \r\n"
+					    + " pgt.property_city, \r\n"
+					    + " pgt.property_house_area, \r\n"
+					    + " um.user_mobile, \r\n"
+					    + " pgt.property_id, \r\n"
+					    + " up.user_payment_result_method, \r\n"
+					    + " up.user_payment_payment_status, \r\n"
+					    + " up.user_payment_result_reason \r\n");
+				
 				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
 
 				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
 			} else {
-				queryBuilder.append(" ORDER BY up.user_payment_timestamp DESC");
+				queryBuilder.append(" ORDER BY up.user_payment_created_at DESC");
 			}
 			Query query = entityManager.createNativeQuery(queryBuilder.toString());
 			parameters.forEach(query::setParameter);
@@ -210,13 +244,14 @@ public class AdminReportService implements AdminReportImpl{
 			List<Object[]> result = query.getResultList();
 			List<UserPaymentDTO> userPaymentDTOs = result.stream().map(row -> {
 				UserPaymentDTO dto = new UserPaymentDTO();
+				try {
 				dto.setTransactionDate((Timestamp) row[0]);
 				dto.setTransactionNumber(row[1] != null ? (String) row[1] : "");
 				dto.setTransactionStatus(row[2] != null ? (String) row[2] : "");
 				double payableAmount = row[3] != null ? ((BigDecimal) row[3]).doubleValue() : 0.0;
 				double gst = row[4] != null ? ((BigDecimal) row[4]).doubleValue() : 0.0;
 				double dueamount=payableAmount-gst;
-				dto.setDueAmount(dueamount != 0.0 ? dueamount : null);
+				dto.setDueAmount(dueamount != 0.0 ? dueamount : 0.0);
 				dto.setGstAmount((row[4] != null) ? ((Number) row[4]).doubleValue() : 0.0);
 				dto.setUserPersonalName(row[5] != null ? (String) row[5] : "");
 				dto.setUserPgPropertyName(row[6] != null ? (String) row[6] : "");
@@ -227,7 +262,9 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setPropertyHouseArea(row[11] != null ? (String) row[11] : "");
 				dto.setTenantContactNum(row[12] != null ? (String) row[12] : "");
 				dto.setPropertyId(row[13] != null ? (String) row[13] : "");
-				dto.setFailedReason(row[14] != null ? (String) row[14] : "");
+				} catch (Exception e) {
+			        e.printStackTrace();
+			    }
 				return dto;
 			}).collect(Collectors.toList());
 			return new CommonResponseDTO<>(userPaymentDTOs, filterCount);
@@ -650,12 +687,14 @@ public class AdminReportService implements AdminReportImpl{
 			String templatePath ="";
 			switch (filterRequest.getReportType()) {
 			case "userTransactionReport":
-				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
+				boolean isGstReport=false;
+				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination,isGstReport);
 				dataListWrapper=this.generateUserTransactionDataList(reportData,filterRequest);
 				templatePath = "templates/userTransactionReport.docx";
 				break;
 			case "userPaymentGstReport":
-				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination);
+				boolean isGst=true;
+				reportData = getUserPaymentDetails(filterRequest, filterData,applyPagination,isGst);
 				dataListWrapper=this.generateUserPaymentGstReport(reportData,filterRequest);
 				templatePath ="templates/userPaymentGstReport.docx";
 				break;
@@ -712,6 +751,21 @@ public class AdminReportService implements AdminReportImpl{
 				dataListWrapper=this.generateInactivePropertiesReport(reportData,filterRequest);
 				templatePath ="templates/inActivePropertiesReport.docx";
 				break;
+			case "RegesterTenantsReport":
+				reportData = getRegisterTenantsReport(filterRequest,applyPagination);
+				dataListWrapper=this.generateRegisterTenantReport(reportData,filterRequest);
+				templatePath ="templates/regesterTenantsReport.docx";
+				break;
+			case "FailedTransactionReport":
+				reportData = getfailureTransactionReport(filterRequest,filterData,applyPagination);
+				dataListWrapper=this.generateFailureTransactionReport(reportData,filterRequest);
+				templatePath ="templates/failureTransactionReport.docx";
+				break;
+			case "PotentialPropertyReport":
+				reportData = getpotentialPropertyReport(filterRequest,filterData,applyPagination);
+				dataListWrapper=this.generatePotentialPropertyReport(reportData,filterRequest);
+				templatePath ="templates/potentialPropertyReport.docx";
+				break;
 			case "SuspendedPropertiesReport":
 				reportData = getSuspendedPropertyReport(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateSuspendedPropertiesReport(reportData,filterRequest);
@@ -763,7 +817,6 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("modeOfPayment", userPayment.getPaymentMode());
 			data.put("pgAddress", userPayment.getPropertyHouseArea());
 			data.put("tenantMobile", userPayment.getTenantContactNum());
-			data.put("failureReason", userPayment.getFailedReason());
 
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
@@ -796,7 +849,6 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantName", userPayment.getUserPersonalName());
 			data.put("tenantMobile", userPayment.getTenantContactNum());
 			data.put("pgName", userPayment.getUserPgPropertyName());
-			data.put("pgAddress", userPayment.getPropertyHouseArea());
 			data.put("totalAmount", userPayment.getTotalAmount());
 			data.put("gstAmount", userPayment.getGstAmount());
 			data.put("dueAmount", userPayment.getDueAmount());
@@ -1008,7 +1060,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
 			data.put("propertyName", tenantReport.getCurrentPropertName() != null ? tenantReport.getCurrentPropertName() : "");
 			data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
-			data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
+			data.put("roomNumber", tenantReport.getBedNumber() != null ? tenantReport.getBedNumber() : "");
 			data.put("checkInDate", tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) : "");
 			data.put("checkOutDate", tuService.formatTimestamp(tenantReport.getExpectedCheckOutdate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getExpectedCheckOutdate().toInstant()) : "");
 
@@ -1042,7 +1094,8 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
 			data.put("previousPropert", tenantReport.getPreviousPropertName() != null ? tenantReport.getPreviousPropertName() : "");
 			data.put("propertyAddress", tenantReport.getPropertAddress() != null ? tenantReport.getPropertAddress() : "");
-			data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
+			data.put("roomNumber", tenantReport.getBedNumber() != null ? tenantReport.getBedNumber() : "");
+			data.put("checkindate", tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckInDate().toInstant()) : "");
 			data.put("checkedOutDate", tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) : "");
 
 			// Common fields
@@ -1096,6 +1149,106 @@ public class AdminReportService implements AdminReportImpl{
 		}
 		return dataList;
 	}
+	
+	public List<Map<String, Object>> generateRegisterTenantReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			RegisterTenantsDTO registerTenantsReport = (RegisterTenantsDTO) item;
+
+			data.put("tenantName", registerTenantsReport.getTenantName() != null ? registerTenantsReport.getTenantName() : "");
+			data.put("tenantContactNumber", registerTenantsReport.getTenantContactNumber() != null ? registerTenantsReport.getTenantContactNumber() : "");
+			data.put("tenantEmailAddress", registerTenantsReport.getTenantEmailAddress() != null ? registerTenantsReport.getTenantEmailAddress() : "");
+			data.put("registrationDate", tuService.formatTimestamp(registerTenantsReport.getRegistrationDate().toInstant()) != null ? tuService.formatTimestamp(registerTenantsReport.getRegistrationDate().toInstant()) : "");
+
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
+	
+	public List<Map<String, Object>> generatePotentialPropertyReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			PropertyResportsDTO potentialPropertyData = (PropertyResportsDTO) item;
+			
+			data.put("ownerName", potentialPropertyData.getOwnerFullName() != null ? potentialPropertyData.getOwnerFullName() : "");
+			data.put("propertyName", potentialPropertyData.getPropertyName() != null ? potentialPropertyData.getPropertyName() : "");
+			data.put("contactNumber", potentialPropertyData.getPropertyContactNumber() != null ? potentialPropertyData.getPropertyContactNumber() : "");
+			data.put("email", potentialPropertyData.getPropertyEmailAddress() != null ? potentialPropertyData.getPropertyEmailAddress() : "");
+			data.put("address", potentialPropertyData.getPropertyAddress()!= null ? potentialPropertyData.getPropertyAddress() : "");
+			data.put("occupiedBeds", potentialPropertyData.getNumberOfBeds());
+			data.put("rentPerMonth", potentialPropertyData.getExpectedRentPerMonth());
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
+	
+	public List<Map<String, Object>> generateFailureTransactionReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			UserPaymentDTO failedTransactioData = (UserPaymentDTO) item;
+
+			data.put("transactionDate", tuService.formatTimestamp(failedTransactioData.getTransactionDate().toInstant()) != null ? failedTransactioData.getTransactionDate() : "");
+			data.put("tenantName", failedTransactioData.getUserPersonalName() != null ? failedTransactioData.getUserPersonalName() : "");
+			data.put("contactNumber", failedTransactioData.getTenantContactNum() != null ? failedTransactioData.getTenantContactNum() : "");
+			data.put("email", failedTransactioData.getEmail() != null ? failedTransactioData.getEmail() : "");
+			data.put("amount", failedTransactioData.getTotalAmount());
+			data.put("reason", failedTransactioData.getFailedReason() != null ? failedTransactioData.getFailedReason() : "");
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
+
 
 	public List<Map<String, Object>> generateSuspendedPropertiesReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
@@ -1143,7 +1296,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantContact", tenantReport.getTenantContactNumber() != null ? tenantReport.getTenantContactNumber() : "");
 			data.put("tenantEmail", tenantReport.getTenantEmailAddress() != null ? tenantReport.getTenantEmailAddress() : "");
 			data.put("previousPropert", tenantReport.getPreviousPropertName() != null ? tenantReport.getPreviousPropertName() : "");
-			data.put("roomNumber", tenantReport.getRoomNumber() != null ? tenantReport.getRoomNumber() : "");
+			data.put("roomNumber", tenantReport.getBedNumber() != null ? tenantReport.getBedNumber() : "");
 			data.put("checkedOutDate", tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getCheckedOutDate().toInstant()) : "");
 			data.put("suspendedDate", tuService.formatTimestamp(tenantReport.getSuspendedDate().toInstant()) != null ? tuService.formatTimestamp(tenantReport.getSuspendedDate().toInstant()) : "");
 			data.put("reason", tenantReport.getReasonForSuspension() != null ? tenantReport.getReasonForSuspension() : "");
@@ -1183,7 +1336,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantEmail", tenantRefund.getTenantEmailAddress() != null ? tenantRefund.getTenantEmailAddress() : "");
 			data.put("propertyName", tenantRefund.getBookedProperyName() != null ? tenantRefund.getBookedProperyName() : "");
 			data.put("propertyAddress", tenantRefund.getPropertAddress() != null ? tenantRefund.getPropertAddress() : "");
-			data.put("bedAllocation", tenantRefund.getRoomNumber() != null ? tenantRefund.getRoomNumber() : "");
+			data.put("bedAllocation", tenantRefund.getBedNumber() != null ? tenantRefund.getBedNumber() : "");
 			data.put("expectedCheckin", tuService.formatTimestamp(tenantRefund.getExpectedCheckIndate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getExpectedCheckIndate().toInstant()) : "");
 			data.put("expectedCheckOut", tuService.formatTimestamp(tenantRefund.getExpectedCheckOutdate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getExpectedCheckOutdate().toInstant()) : "");
 
@@ -1515,17 +1668,14 @@ public class AdminReportService implements AdminReportImpl{
 					+ "    ON um.user_id = zpqbd.tenant_id \r\n"
 					+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
 					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
+					+ "JOIN pgusers.user_bookings ub \r\n"
+					+ "	   ON zpqbd.booking_id = ub.user_bookings_id "
 					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
 					+ "    ON zpqbd.selected_bed = bd.bed_id\r\n"
-					+ "WHERE 1=1 and zpqbd.in_date > CURRENT_DATE");
+					+ "WHERE 1=1  and ub.user_bookings_is_cancelled = false AND ub.user_bookings_web_check_in = false");
 
 			Map<String, Object> parameters = new HashMap<>();
-
-			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
-				parameters.put("fromDate", filterRequest.getFromDate());
-				parameters.put("toDate", filterRequest.getToDate());
-			}
+			
 			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
 				queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName) ");
 				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
@@ -1570,7 +1720,7 @@ public class AdminReportService implements AdminReportImpl{
 				case "propertAddress":
 					sort = "zpd.property_house_area";
 					break;
-				case "roomNumber":
+				case "bedNumber":
 					sort = "bd.bed_name";
 					break;
 				case "expectedCheckIndate":
@@ -1606,7 +1756,7 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : "");
 				dto.setBookedProperyName(row[3] != null ? (String) row[3] : "");
 				dto.setPropertAddress(row[4] != null ? (String) row[4] : "");
-				dto.setRoomNumber(row[5] != null ? (String) row[5] : "");
+				dto.setBedNumber(row[5] != null ? (String) row[5] : "");
 				dto.setExpectedCheckIndate(row[6] != null ? (Timestamp)(row[6]) : null);
 				dto.setExpectedCheckOutdate(row[7] != null ? (Timestamp)(row[7]) : null);
 				return dto;
@@ -1623,33 +1773,34 @@ public class AdminReportService implements AdminReportImpl{
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder("SELECT \r\n"
-					+ "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
-					+ "    um.user_mobile,\r\n"
-					+ "    um.user_email,\r\n"
-					+ "    zpd.property_name,\r\n"
-					+ "    zpd.property_house_area,\r\n"
-					+ "    bd.bed_name,\r\n"
-					+ "    zpqbd.in_date, \r\n"
-					+ "    zpqbd.out_date\r\n, "
-					+ "    zpd.property_city\r\n "
-					+ "FROM pgusers.user_master um\r\n"
-					+ "JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
-					+ "    ON um.user_id = zpqbd.tenant_id \r\n"
-					+ "join pgusers.user_bookings ub\r\n"
-					+ "    on zpqbd.booking_id = ub.user_bookings_id \r\n"
-					+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
-					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
-					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
-					+ "    ON zpqbd.selected_bed = bd.bed_id \r\n"
-					+ "WHERE 1=1 and \r\n"
-					+ "    ub.user_bookings_web_check_in = True\r\n"
-					+ "	AND ub.user_bookings_web_check_out = FALSE\r\n"
-					+ "	AND ub.user_bookings_is_cancelled = False");
+					+ "                 um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+					+ "                 um.user_mobile AS mobileNumber,\r\n"
+					+ "                 um.user_email AS emailId,\r\n"
+					+ "                 zpd.property_name AS propertyName,\r\n"
+					+ "                 zpd.property_house_area AS propertyAddress,\r\n"
+					+ "                 bd.bed_name AS bedName,\r\n"
+					+ "                 zpqbd.in_date AS inDate, \r\n"
+					+ "                 zpqbd.out_date AS outDate,\r\n"
+					+ "                 zpd.property_city\r\n"
+					+ "					FROM pgusers.user_master um\r\n"
+					+ "					JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
+					+ "					    ON um.user_id = zpqbd.tenant_id \r\n"
+					+ "					join pgusers.user_bookings ub\r\n"
+					+ "					    on zpqbd.booking_id = ub.user_bookings_id \r\n"
+					+ "					JOIN pgowners.zoy_pg_property_details zpd \r\n"
+					+ "					    ON zpqbd.property_id = zpd.property_id \r\n"
+					+ "					JOIN pgowners.zoy_pg_bed_details bd  \r\n"
+					+ "					    ON zpqbd.selected_bed = bd.bed_id \r\n"
+					+ "					WHERE 1=1 ");
 
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)");
+				queryBuilder.append(" AND (zpqbd.in_date between CAST(:fromDate AS TIMESTAMP)  AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "						or zpqbd.out_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "						or CAST(:fromDate AS TIMESTAMP) between zpqbd.in_date and zpqbd.out_date\r\n"
+						+ "						or CAST(:toDate AS TIMESTAMP) between  zpqbd.in_date and zpqbd.out_date)\r\n"
+						+ "					 AND (ub.user_bookings_web_check_in = true OR ub.user_bookings_web_check_out = true)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -1697,7 +1848,7 @@ public class AdminReportService implements AdminReportImpl{
 				case "propertAddress":
 					sort = "zpd.property_house_area";
 					break;
-				case "roomNumber":
+				case "bedNumber":
 					sort = "bd.bed_name";
 					break;
 				case "checkInDate":
@@ -1733,9 +1884,9 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : "");
 				dto.setCurrentPropertName(row[3] != null ? (String) row[3] : "");
 				dto.setPropertAddress(row[4] != null ? (String) row[4] : "");
-				dto.setRoomNumber(row[5] != null ? (String) row[5] : "");
-				dto.setCheckInDate(row[6] != null ? (Timestamp)(row[6]) : null);
-				dto.setExpectedCheckOutdate(row[7] != null ? (Timestamp)(row[7]) : null);
+				dto.setBedNumber(row[5] != null ? (String) row[5] : "");
+				dto.setCheckInDate(row[6] != null ? Timestamp.valueOf(String.valueOf(row[6])) : null);
+				dto.setExpectedCheckOutdate(row[7] != null ? Timestamp.valueOf(String.valueOf(row[7])) : null);
 				return dto;
 			}).collect(Collectors.toList());
 
@@ -1750,36 +1901,38 @@ public class AdminReportService implements AdminReportImpl{
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder(
-					"SELECT distinct\r\n"
-					+ "um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
-					+ "um.user_mobile AS mobileNumber,\r\n"
-					+ "um.user_email AS emailId,\r\n"
-					+ "zppd.property_name AS propertyName,\r\n"
-					+ "zppd.property_house_area AS propertyAddress,\r\n"
-					+ "bd.bed_name AS bedName,\r\n"
-					+ "zpobd.out_date AS outDate \r\n"
-					+ "FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
-					+ "JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id\r\n"
-					+ "JOIN pgusers.user_bookings ub ON ub.user_bookings_id = zpobd.booking_id\r\n"
-					+ "JOIN pgowners.zoy_pg_property_details zppd ON zppd.property_id = zpobd.property_id\r\n"
-					+ "JOIN (\r\n"
-					+ "    SELECT tenant_id, MAX(out_date) AS last_out_date\r\n"
-					+ "    FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
-					+ "    JOIN pgusers.user_bookings ub ON ub.user_bookings_id = zpobd.booking_id\r\n"
-					+ "    JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id\r\n"
-					+ "    WHERE ub.user_bookings_web_check_out = TRUE \r\n"
-					+ "    AND um.user_status = 'Inactive'\r\n"
-					+ "    GROUP BY tenant_id\r\n"
-					+ ") latest_out ON zpobd.tenant_id = latest_out.tenant_id \r\n"
-					+ "JOIN pgowners.zoy_pg_bed_details bd ON zpobd.selected_bed = bd.bed_id\r\n"
-					+ "AND zpobd.out_date = latest_out.last_out_date\r\n"
-					+ "WHERE ub.user_bookings_web_check_out = TRUE \r\n"
-					+ "AND um.user_status = 'Inactive'");
+					"SELECT \r\n"
+					+ "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+					+ "    um.user_mobile AS mobileNumber,\r\n"
+					+ "    um.user_email AS emailId,\r\n"
+					+ "    zpd.property_name AS propertyName,\r\n"
+					+ "    zpd.property_house_area AS propertyAddress,\r\n"
+					+ "    bd.bed_name AS bedName,\r\n"
+					+ "    zpqbd.in_date AS inDate, \r\n"
+					+ "    zpqbd.out_date AS outDate,\r\n"
+					+ "    zpd.property_city\r\n"
+					+ "FROM pgusers.user_master um\r\n"
+					+ "JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
+					+ "    ON um.user_id = zpqbd.tenant_id \r\n"
+					+ "JOIN pgusers.user_bookings ub\r\n"
+					+ "    ON zpqbd.booking_id = ub.user_bookings_id \r\n"
+					+ "JOIN pgowners.zoy_pg_property_details zpd \r\n"
+					+ "    ON zpqbd.property_id = zpd.property_id \r\n"
+					+ "JOIN pgowners.zoy_pg_bed_details bd  \r\n"
+					+ "    ON zpqbd.selected_bed = bd.bed_id\r\n"
+					+ "WHERE 1=1 ");
 
 			Map<String, Object> parameters = new HashMap<>();
 
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-				queryBuilder.append(" AND zpobd.out_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+				queryBuilder.append("and\r\n"
+						+ "    NOT (\r\n"
+						+ "        zpqbd.in_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
+						+ "        OR zpqbd.out_date BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP)\r\n"
+						+ "        OR CAST(:fromDate AS TIMESTAMP) BETWEEN zpqbd.in_date AND zpqbd.out_date\r\n"
+						+ "        OR CAST(:toDate AS TIMESTAMP) BETWEEN zpqbd.in_date AND zpqbd.out_date\r\n"
+						+ "    )\r\n"
+						+ "    AND (ub.user_bookings_web_check_in = true OR ub.user_bookings_web_check_out = true)");
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
@@ -1805,7 +1958,7 @@ public class AdminReportService implements AdminReportImpl{
 			}
 
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
+				queryBuilder.append(" AND LOWER(zpd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
 
@@ -1829,8 +1982,11 @@ public class AdminReportService implements AdminReportImpl{
 				case "propertAddress":
 					sort = "propertyAddress";
 					break;
-				case "roomNumber":
+				case "bedNumber":
 					sort = "bedName";
+					break;
+				case "checkInDate":
+					sort="inDate";
 					break;
 				case "checkedOutDate":
 					sort = "outDate";
@@ -1862,9 +2018,11 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : ""); 
 				dto.setPreviousPropertName(row[3] != null ? (String) row[3] : ""); 
 				dto.setPropertAddress(row[4] != null ? (String) row[4] : ""); 
-				dto.setRoomNumber(row[5] != null ? (String) row[5] : ""); 
-				dto.setCheckedOutDate(row[6] != null ? (Timestamp) row[6] : null);
+				dto.setBedNumber(row[5] != null ? (String) row[5] : ""); 
+				dto.setCheckInDate(row[6] != null ? Timestamp.valueOf(String.valueOf(row[6])) : null);
+				dto.setCheckedOutDate(row[7] != null ? Timestamp.valueOf(String.valueOf(row[7])) : null);
 				return dto;
+			
 			}).collect(Collectors.toList());
 
 			return new CommonResponseDTO<>(inActiveTenantsReportDto, filterCount);
@@ -1929,7 +2087,7 @@ public class AdminReportService implements AdminReportImpl{
 			}
 
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
+				queryBuilder.append(" AND LOWER(zpd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%')) ");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
 
@@ -1994,7 +2152,7 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setTenantEmailAddress(row[4] != null ? (String) row[4] : ""); 
 				dto.setPreviousPropertName(row[5] != null ? (String) row[5] : ""); 
 				dto.setPropertAddress(row[6] != null ? (String) row[6] : ""); 
-				dto.setRoomNumber(row[7] != null ? (String) row[7] : ""); 
+				dto.setBedNumber(row[7] != null ? (String) row[7] : ""); 
 				dto.setCheckedOutDate(row[8] != null ? (Timestamp) row[8] : null);
 				dto.setSuspendedDate(row[9] != null ? (Timestamp) row[9] : null); 
 				dto.setReasonForSuspension(row[10] != null ? (String) row[10] : "");
@@ -2217,6 +2375,289 @@ public class AdminReportService implements AdminReportImpl{
 			return new CommonResponseDTO<>(suspendedPropertiesReportDto, filterCount);
 		} catch (Exception e) {
 			throw new WebServiceException("Error retrieving Inactive Properties: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public CommonResponseDTO<RegisterTenantsDTO> getRegisterTenantsReport(UserPaymentFilterRequest filterRequest,
+			Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+				    "SELECT \r\n"
+				    + "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+				    + "    um.user_mobile,\r\n"
+				    + "    um.user_email,\r\n"
+				    + "    um.user_created_at\r\n"
+				    + "FROM pgusers.user_master um\r\n"
+				    + "WHERE um.user_status = 'Register'\r\n"
+				    + "AND NOT EXISTS (\r\n"
+				    + "    SELECT 1\r\n"
+				    + "    FROM pgusers.user_bookings ub\r\n"
+				    + "    WHERE ub.user_id = um.user_id\r\n"
+				    + ")"
+				);
+
+			Map<String, Object> parameters = new HashMap<>();
+
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND um.user_created_at BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
+			
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "tenantName":
+					sort = "username";
+					break;
+				case "tenantContactNumber":
+					sort = "um.user_mobile";
+					break;
+				case "tenantEmailAddress":
+					sort = "um.user_email";
+					break;
+				case "registrationDate":
+					sort = "um.user_created_at";
+					break;
+				default:
+					sort = "um.user_created_at";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY um.user_created_at DESC ");
+			}
+
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
+			
+			int filterCount = query.getResultList().size();
+
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
+		    
+			List<Object[]> results = query.getResultList();
+			List<RegisterTenantsDTO> registerTenantsReportDto = results.stream().map(row -> {
+				RegisterTenantsDTO dto = new RegisterTenantsDTO();
+				dto.setTenantName(row[0] != null ? (String) row[0] : "");
+				dto.setTenantContactNumber(row[1] != null ? (String) row[1] : "");
+				dto.setTenantEmailAddress(row[2] != null ? (String) row[2] : "");
+				dto.setRegistrationDate(row[3] != null ? (Timestamp) row[3] : null);
+				return dto;
+			}).collect(Collectors.toList());
+
+			return new CommonResponseDTO<>(registerTenantsReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Register Tenants Details: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public CommonResponseDTO<UserPaymentDTO> getfailureTransactionReport(UserPaymentFilterRequest filterRequest,FilterData filterData,
+			Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+					"SELECT \r\n"
+				            + "    up.user_payment_created_at, \r\n"
+				            + "    up.user_payment_payable_amount, \r\n"
+				            + "    up.user_payment_result_reason, \r\n"
+				            + "    um.user_first_name || ' ' || um.user_last_name  AS username, \r\n"
+				            + "    um.user_mobile, \r\n"
+				            + "    um.user_email \r\n"
+				            + "FROM pgusers.user_payments up \r\n"
+				            + "JOIN pgusers.user_master um ON up.user_id = um.user_id \r\n"
+				            + "WHERE (LOWER(up.user_payment_payment_status) LIKE LOWER('%failed%') \r\n"
+				            + "   OR up.user_payment_payment_status IS NULL)"
+				);
+
+			Map<String, Object> parameters = new HashMap<>();
+
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND up.user_payment_created_at BETWEEN CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) ");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
+			
+			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName)");
+				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+			}
+			
+			if (filterData.getTenantContactNum() != null && !filterData.getTenantContactNum().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_mobile) LIKE LOWER(:tenantContactNum)");
+				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
+			}
+			
+			if (filterData.getTenantEmail() != null && !filterData.getTenantEmail().isEmpty()) {
+				queryBuilder.append(" AND LOWER(um.user_email) LIKE LOWER(:tenantEmail)");
+				parameters.put("tenantEmail", "%" + filterData.getTenantEmail() + "%");
+			}
+			
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "customerName":
+					sort = "username";
+					break;
+				case "transactionDate":
+					sort = "up.user_payment_created_at";
+					break;
+				case "totalAmount":
+					sort = "up.user_payment_payable_amount";
+					break;
+				case "failedReason":
+					sort = "up.user_payment_result_reason";
+					break;
+				case "tenantContactNum":
+					sort = "um.user_mobile";
+					break;
+				case "email":
+					sort = "um.user_email";
+					break;
+				default:
+					sort = "up.user_payment_created_at";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY up.user_payment_created_at DESC ");
+			}
+
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
+			
+			int filterCount = query.getResultList().size();
+
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
+		    
+			List<Object[]> results = query.getResultList();
+			List<UserPaymentDTO> failureTransactionReportDto = results.stream().map(row -> {
+				UserPaymentDTO dto = new UserPaymentDTO();
+				dto.setTransactionDate(row[0] != null ? (Timestamp) row[0] : null);
+				dto.setTotalAmount((row[1] != null) ? ((Number) row[1]).doubleValue() : 0.0);
+				dto.setFailedReason(row[2] != null ? (String) row[2] : "");
+				dto.setUserPersonalName(row[3] != null ? (String) row[3] : "");
+				dto.setTenantContactNum(row[4] != null ? (String) row[4] : "");
+				dto.setEmail(row[5] != null ? (String) row[5] : "");
+				return dto;
+			}).collect(Collectors.toList());
+
+			return new CommonResponseDTO<>(failureTransactionReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Failure Transaction Details: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public CommonResponseDTO<PropertyResportsDTO> getpotentialPropertyReport(UserPaymentFilterRequest filterRequest,
+			FilterData filterData, Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+					"SELECT \r\n" +
+							"    zpod.pg_owner_name, \r\n" +
+							"    zppd.property_name, \r\n" +
+							"    zppd.property_contact_number, \r\n" +
+							"    zppd.property_pg_email, \r\n" +
+							"    zppd.property_house_area, \r\n" +
+							"    zpb.fixed_rent, \r\n" +
+							"    COUNT(zpb.*) AS occupied_bed \r\n" +
+							"FROM pgowners.zoy_pg_property_details zppd \r\n" +
+							"JOIN pgowners.zoy_pg_owner_booking_details zpb ON zppd.property_id = zpb.property_id \r\n" +
+							"JOIN pgowners.zoy_pg_owner_details zpod ON zppd.pg_owner_id = zpod.pg_owner_id \r\n" +
+							"JOIN pgusers.user_bookings ub ON zpb.booking_id = ub.user_bookings_id \r\n" +
+							"WHERE ub.user_bookings_web_check_in = true \r\n" +
+							"  AND ub.user_bookings_web_check_out = false \r\n" +
+							"  AND ub.user_bookings_is_cancelled = false \r\n"
+
+					);
+			Map<String, Object> parameters = new HashMap<>();
+
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND (zpb.in_date between CAST(:fromDate AS TIMESTAMP)  AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "						or zpb.out_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "						or CAST(:fromDate AS TIMESTAMP) between zpb.in_date and zpb.out_date\r\n"
+						+ "						or CAST(:toDate AS TIMESTAMP) between  zpb.in_date and zpb.out_date)\r\n");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "ownerFullName":
+					sort = "zpod.pg_owner_name";
+					break;
+				case "propertyName":
+					sort = "zppd.property_name";
+					break;
+				case "propertyContactNumber":
+					sort = "zppd.property_contact_number";
+					break;
+				case "propertyEmailAddress":
+					sort = "zppd.property_pg_email";
+					break;
+				case "propertyAddress":
+					sort = "zppd.property_house_area";
+					break;
+				case "expectedRentPerMonth":
+					sort = "zpb.fixed_rent";
+					break;
+				case "numberOfBeds":
+					sort = "occupied_bed";
+					break;
+				default:
+					sort = "zpod.pg_owner_name";
+				}
+
+				 queryBuilder.append(
+					        "GROUP BY  zpod.pg_owner_name, \r\n" +
+					        "         zppd.property_name, \r\n" +
+					        "         zppd.property_contact_number, \r\n" +
+					        "         zppd.property_pg_email, \r\n" +
+					        "         zppd.property_house_area, \r\n" +
+					        "         zpb.fixed_rent, \r\n" +
+					        "         zpb.in_date, \r\n" +
+					        "         zpb.out_date \r\n" +
+					        "HAVING COUNT(zpb.booking_id) > 0"
+					    );
+
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY zpod.pg_owner_name DESC ");
+			}
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
+
+			int filterCount = query.getResultList().size();
+
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
+			List<Object[]> results = query.getResultList();
+			List<PropertyResportsDTO> potentialPropertyReportDto = results.stream().map(row -> {
+				PropertyResportsDTO dto = new PropertyResportsDTO();
+				dto.setOwnerFullName(row[0] != null ? (String) row[0] : "");
+				dto.setPropertyName(row[1] != null ? (String) row[1] : "");
+				dto.setPropertyContactNumber(row[2] != null ? (String) row[2] : "");
+				dto.setPropertyEmailAddress(row[3] != null ? (String) row[3] : "");
+				dto.setPropertyAddress(row[4] != null ? (String) row[4] : "");
+				dto.setExpectedRentPerMonth((row[5] != null) ? ((Number) row[5]).doubleValue() : 0.0);
+				dto.setNumberOfBeds(row[6] != null ? ((BigInteger) row[6]).intValue() : 0);
+				return dto;
+			}).collect(Collectors.toList());
+			return new CommonResponseDTO<>(potentialPropertyReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Potential Properties Details: " + e.getMessage());
 		}
 	}
 }

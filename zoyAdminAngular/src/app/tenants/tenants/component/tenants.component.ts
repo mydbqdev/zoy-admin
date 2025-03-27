@@ -13,9 +13,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { OwnerRequestParam, Filter } from 'src/app/owners/managing-owner/models/owner-details-request-model';
-import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
 import { TenantService } from '../../tenant.service';
 import { ManageTenant } from '../../tenant-profile/model/manage.tenant';
+import { FiltersRequestModel } from 'src/app/report/model/report-filters-model';
 
 @Component({
 	selector: 'app-tenants',
@@ -239,7 +239,7 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 	statuses = [
 		{ id: 1, name: 'Active', selected: false },
 		{ id: 2, name: 'Inactive', selected: false },
-		{ id: 3, name: 'Upcoming', selected: false },
+		{ id: 3, name: 'Register', selected: false },
 		// { id: 4, name: 'Registered', selected: false },
 		// { id: 4, name: 'Suspended', selected: false },
 	  ];
@@ -266,9 +266,8 @@ export class TenantsComponent implements OnInit, AfterViewInit {
 	  applyDates(): void {
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
-		this.param.filter.startDate=  (this.fromDate.replace('T',' '))+':00';
-		this.param.filter.endDate=  (this.toDate.replace('T',' '))+':00';
-		console.log(this.fromDate,this.fromDate);
+		this.param.filter.startDate=  (this.fromDate)+' 00:00:00';
+		this.param.filter.endDate=  (this.toDate)+' 23:59:59';
 
 		this.getTenantsList();
 	  }

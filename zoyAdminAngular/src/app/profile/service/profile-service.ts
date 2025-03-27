@@ -55,6 +55,19 @@ export class ProfileService {
                  );
   }
 
+  public userSoftlogout(data) : Observable<any>{
+    const url1=this.basePath +'zoy_admin/userSoftlogout';
+    return this.httpclient.post<any>(
+        url1,
+        data,
+        {
+            headers:ServiceHelper.buildHeaders(),
+           observe : 'body',
+           withCredentials:true
+        }
+    );
+}
+
 
 
   private errorHandler(error: HttpErrorResponse) {
