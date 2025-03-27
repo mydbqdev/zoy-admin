@@ -38,5 +38,6 @@ public interface AdminReportImpl {
 	CommonResponseDTO<RegisterTenantsDTO> getRegisterTenantsReport(UserPaymentFilterRequest filterRequest,Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<UserPaymentDTO> getfailureTransactionReport(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<PropertyResportsDTO> getpotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
+	CommonResponseDTO<PropertyResportsDTO> getUpcomingPotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	
 }
