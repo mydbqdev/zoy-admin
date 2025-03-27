@@ -229,7 +229,7 @@ public class ExcelGenerateService {
 			row.createCell(4).setCellValue("Property Address");
 			row.createCell(5).setCellValue("Bed Number");
 			row.createCell(6).setCellValue("Check-in Date");
-			row.createCell(7).setCellValue("Expected Check-out Date");
+			row.createCell(7).setCellValue("Check-out Date");
 			break;
 		case "InactiveTenantsReport":
 			row.createCell(0).setCellValue("Tenant Name");
