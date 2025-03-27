@@ -144,7 +144,7 @@
                               </div>
                             </div>
 
-                            <div class="col-sm-6" *ngIf="reportName == 'Inactive Properties Report'" >
+                            <div class="col-sm-6" *ngIf="reportName == 'Inactive Properties Report' || reportName == 'Potential Properties Report' " >
                               <div class="form-group">
                                 <label for="pgAddress" class="text-search-header">Property Address </label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgAddress" name="pgAddress" />
