@@ -32,6 +32,17 @@ public class ZoyPgOtherCharges {
 	@Column(name = "tenant_ekyc_charges", nullable = false, precision = 10, scale = 2)
 	private BigDecimal tenantEkycCharges;
 	
+	@Column(name = "is_Approved")
+	private Boolean isApproved;
+
+	@Column(name = "effective_Date")
+	private String effectiveDate;
+	
+	@Column(name="created_by")
+	private String createdBy;
+	
+	@Column(name="approved_by")
+	private String approvedBy;
 
 	// Getters and Setters
 
@@ -75,5 +86,36 @@ public class ZoyPgOtherCharges {
 		this.tenantEkycCharges = tenantEkycCharges;
 	}
 
-	
+	public Boolean getIsApproved() {
+		return isApproved;
+	}
+
+	public void setIsApproved(Boolean isApproved) {
+		this.isApproved = isApproved;
+	}
+
+	public String getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(String effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getApprovedBy() {
+		return approvedBy;
+	}
+
+	public void setApprovedBy(String approvedBy) {
+		this.approvedBy = approvedBy;
+	}
+
 }

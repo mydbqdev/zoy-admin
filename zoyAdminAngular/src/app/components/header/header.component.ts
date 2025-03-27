@@ -257,8 +257,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
   selectNotification(notification: AlertNotificationDetailsModel): void {
     this.selectedNotification = notification;
-    console.log("this.selectedNotification",this.selectedNotification)
-   // this.updateUserNotificationsSeen();
+    this.updateUserNotificationsSeen();
   }
   
   getIcon(screen_name:string):string{

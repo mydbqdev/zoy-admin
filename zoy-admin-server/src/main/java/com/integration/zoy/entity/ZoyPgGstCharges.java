@@ -2,6 +2,9 @@ package com.integration.zoy.entity;
 
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -10,14 +13,13 @@ import java.time.LocalDateTime;
 public class ZoyPgGstCharges {
 
     @Id
+	@GeneratedValue(generator = "UUID")
+   	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "rent_id", nullable = false, length = 36)
     private String rentId;
 
     @Column(name = "monthly_rent", nullable = false, precision = 10, scale = 2)
     private BigDecimal monthlyRent;
-
-    @Column(name = "gst_percentae", nullable = false, precision = 10, scale = 2)
-    private BigDecimal gstPercentage;
 
     @Column(name = "component_name", nullable = false, length = 50)
     private String componentName;
@@ -33,6 +35,18 @@ public class ZoyPgGstCharges {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+    
+    @Column(name = "is_Approved")
+	private Boolean isApproved;
+
+	@Column(name = "effective_Date")
+	private String effectiveDate;
+	
+	@Column(name="created_by")
+	private String createdBy;
+	
+	@Column(name="approved_by")
+	private String approvedBy;
 
     @PrePersist
     public void prePersist() {
@@ -54,14 +68,6 @@ public class ZoyPgGstCharges {
 
     public void setMonthlyRent(BigDecimal monthlyRent) {
         this.monthlyRent = monthlyRent;
-    }
-
-    public BigDecimal getGstPercentage() {
-        return gstPercentage;
-    }
-
-    public void setGstPercentage(BigDecimal gstPercentage) {
-        this.gstPercentage = gstPercentage;
     }
 
     public String getComponentName() {
@@ -102,6 +108,38 @@ public class ZoyPgGstCharges {
 
 	public void setSgstPercentage(BigDecimal sgstPercentage) {
 		this.sgstPercentage = sgstPercentage;
+	}
+
+	public Boolean getIsApproved() {
+		return isApproved;
+	}
+
+	public void setIsApproved(Boolean isApproved) {
+		this.isApproved = isApproved;
+	}
+
+	public String getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(String effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getApprovedBy() {
+		return approvedBy;
+	}
+
+	public void setApprovedBy(String approvedBy) {
+		this.approvedBy = approvedBy;
 	}
     
 }
