@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -53,9 +54,6 @@ public class AdminReportService implements AdminReportImpl{
 
 	@Autowired
 	private UserPaymentDueRepository userPaymentDueRepository;
-
-	@Autowired
-	private PdfGenerateService pdfGenerateService;
 
 	@Autowired
 	private ExcelGenerateService excelGenerateService;
@@ -246,13 +244,14 @@ public class AdminReportService implements AdminReportImpl{
 			List<Object[]> result = query.getResultList();
 			List<UserPaymentDTO> userPaymentDTOs = result.stream().map(row -> {
 				UserPaymentDTO dto = new UserPaymentDTO();
+				try {
 				dto.setTransactionDate((Timestamp) row[0]);
 				dto.setTransactionNumber(row[1] != null ? (String) row[1] : "");
 				dto.setTransactionStatus(row[2] != null ? (String) row[2] : "");
 				double payableAmount = row[3] != null ? ((BigDecimal) row[3]).doubleValue() : 0.0;
 				double gst = row[4] != null ? ((BigDecimal) row[4]).doubleValue() : 0.0;
 				double dueamount=payableAmount-gst;
-				dto.setDueAmount(dueamount != 0.0 ? dueamount : null);
+				dto.setDueAmount(dueamount != 0.0 ? dueamount : 0.0);
 				dto.setGstAmount((row[4] != null) ? ((Number) row[4]).doubleValue() : 0.0);
 				dto.setUserPersonalName(row[5] != null ? (String) row[5] : "");
 				dto.setUserPgPropertyName(row[6] != null ? (String) row[6] : "");
@@ -263,6 +262,9 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setPropertyHouseArea(row[11] != null ? (String) row[11] : "");
 				dto.setTenantContactNum(row[12] != null ? (String) row[12] : "");
 				dto.setPropertyId(row[13] != null ? (String) row[13] : "");
+				} catch (Exception e) {
+			        e.printStackTrace();
+			    }
 				return dto;
 			}).collect(Collectors.toList());
 			return new CommonResponseDTO<>(userPaymentDTOs, filterCount);
@@ -847,7 +849,6 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("tenantName", userPayment.getUserPersonalName());
 			data.put("tenantMobile", userPayment.getTenantContactNum());
 			data.put("pgName", userPayment.getUserPgPropertyName());
-			data.put("pgAddress", userPayment.getPropertyHouseArea());
 			data.put("totalAmount", userPayment.getTotalAmount());
 			data.put("gstAmount", userPayment.getGstAmount());
 			data.put("dueAmount", userPayment.getDueAmount());
@@ -2612,12 +2613,14 @@ public class AdminReportService implements AdminReportImpl{
 					);
 			Map<String, Object> parameters = new HashMap<>();
 
-			 if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
-			        queryBuilder.append(" AND zpb.in_date >= CAST(:fromDate AS TIMESTAMP) ");
-			        queryBuilder.append(" AND zpb.out_date <= CAST(:toDate AS TIMESTAMP) ");
-			        parameters.put("fromDate", filterRequest.getFromDate());
-			        parameters.put("toDate", filterRequest.getToDate());
-			    }
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND (zpb.in_date between CAST(:fromDate AS TIMESTAMP)  AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "						or zpb.out_date between CAST(:fromDate AS TIMESTAMP) AND CAST(:toDate AS TIMESTAMP) \r\n"
+						+ "						or CAST(:fromDate AS TIMESTAMP) between zpb.in_date and zpb.out_date\r\n"
+						+ "						or CAST(:toDate AS TIMESTAMP) between  zpb.in_date and zpb.out_date)\r\n");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {
 				String sort = "";
