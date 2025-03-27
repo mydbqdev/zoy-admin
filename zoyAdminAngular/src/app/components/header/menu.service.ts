@@ -25,7 +25,6 @@ export class MenuService {
     { name: "Dashboard", link: "/home", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list"},
     { name: "Initial Configuration", link: "/db-master-configuration", permission: "DB_MASTER_CONFIGURATION_READ", icon:"fas fa-fw fa-cogs" },
     { name: "Master Configuration", link: "/configuration-master", permission: "CONFIGURATION_MASTER_READ", icon:"fas fa-fw fa-cogs" },
-    { name: "Master Configuration Approval", link: "/configuration-master", permission: "CONFIGURATION_MASTER_APPROVAL_READ", icon:"fas fa-fw fa-cogs" },
     { name: "Help", link: "/help", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list"},
     { name: "Home", link: "/home", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list"},
     { name: "Managing Users", link: "/user-master", permission: "MANAGING_USERS_READ", icon:"fas fa-fw fa-users-cog" },
@@ -34,12 +33,15 @@ export class MenuService {
     { name: "Locked User", link: "/locked-user", permission: "LOCKED_USER_READ", icon:"fas fa-fw fa-users-cog" },
     { name: "Permission Approval", link: "/permission-approval", permission: "PERMISSION_APPROVAL_READ", icon:"fas fa-fw fa-users-cog" },
     { name: "Profile", link: "/profile", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
-    { name: "Reports", link: "/report-list", permission: "REPORTS_READ", icon:"fas fa-fw fa-money-check" },
     { name: "Role and Permission", link: "/role-master", permission: "ROLE_AND_PERMISSION_READ", icon:"fas fa-fw fa-cogs"},
     { name: "Settings", link: "/settings", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
-    { name: "Zoy Code", link: "/zoy-code", permission: "ZOYCODES_READ", icon:"fas fa-fw fa-users" },
+    { name: "Owner Registration", link: "/zoy-code", permission: "ZOYCODES_READ", icon:"fas fa-fw fa-users" },
     { name: "User Audit", link: "/user-audit", permission: "USER_AUDIT_READ", icon:"fas fa-fw fa-cogs" },
-    { name: "Organization Information", link: "/organization-info-config", permission: "ORGANIZATION_INFO_CONFIG_READ", icon:"fas fa-fw fa-cogs" }
+    { name: "Organization Information", link: "/organization-info-config", permission: "ORGANIZATION_INFO_CONFIG_READ", icon:"fas fa-fw fa-cogs" },
+    { name: "Tenant Reports", link: "/tenant-reports", permission: "TENANT_REPORTS_READ", icon:"fas fa-chart-bar" },
+    { name: "Owner Reports", link: "/owner-reports", permission: "OWNER_REPORTS_READ", icon:"fas fa-chart-bar" },
+    { name: "Finance Reports", link: "/finance-reports", permission: "FINANCE_REPORTS_READ", icon:"fas fa-chart-bar" },
+    { name: "Support Reports", link: "/support-reports", permission: "SUPPORT_REPORTS_READ", icon:"fas fa-chart-bar" },
   ];
   
 
@@ -77,9 +79,12 @@ getAllMenus(): Menu[] {
     { key: "ROLE AND PERMISSION", screen: "Role & Permission" ,order:6.1 },
     { key: "DB MASTER CONFIGURATION", screen: "Initial Configuration" ,order:6.2 },
     { key: "CONFIGURATION MASTER", screen: "Master Configuration" ,order:6.3 },
-    { key: "CONFIGURATION MASTER APPROVAL", screen: "Master Configuration Approval" ,order:6.3 },
     { key: "USER AUDIT", screen: "User Audit" ,order:6.4 },
-    { key: "ORGANIZATION INFO CONFIG", screen: "Organization Information" ,order:6.5 }
+    { key: "ORGANIZATION INFO CONFIG", screen: "Organization Information" ,order:6.5 },
+    { key: "TENANT REPORTS", screen: "Tenant Reports" ,order:7.1 },
+    { key: "OWNER REPORTS", screen: "Owner Reports" ,order:7.2 },
+    { key: "FINANCE REPORTS", screen: "Finance Reports" ,order:7.3 },
+    { key: "SUPPORT REPORTS", screen: "Support Reports" ,order:7.4 },
   ];
 
   getAllAuthorization():any {
