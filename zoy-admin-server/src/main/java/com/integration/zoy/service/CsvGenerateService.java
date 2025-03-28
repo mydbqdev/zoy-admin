@@ -131,6 +131,9 @@ public class CsvGenerateService {
             case "PotentialPropertyReport":
             	writer.println("Owner Name,Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month");
                 break;
+            case "UpComingPotentialPropertyReport":
+            	writer.println("Owner Name,Booked Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month");
+                break;
             case "SuspendedPropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address,Suspended Date,Reason for suspension");
                 break;     
@@ -393,6 +396,19 @@ public class CsvGenerateService {
                 }
                 break;
             case "PotentialPropertyReport":
+            	if (dto instanceof PropertyResportsDTO) {
+            		PropertyResportsDTO potentialProperty = (PropertyResportsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(potentialProperty.getOwnerFullName()),
+                            safeToString(potentialProperty.getPropertyName()),
+                            safeToString(potentialProperty.getPropertyContactNumber()),
+                            safeToString(potentialProperty.getPropertyEmailAddress()),
+                            safeToString(potentialProperty.getPropertyAddress()),
+                            safeToString(potentialProperty.getNumberOfBeds()),
+                            formatAmountWithCommas(potentialProperty.getExpectedRentPerMonth()));     		 
+                }
+                break;
+            case "UpComingPotentialPropertyReport":
             	if (dto instanceof PropertyResportsDTO) {
             		PropertyResportsDTO potentialProperty = (PropertyResportsDTO) dto;
             		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
