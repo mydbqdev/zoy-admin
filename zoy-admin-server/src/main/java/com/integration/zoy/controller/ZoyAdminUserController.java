@@ -1349,7 +1349,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				notifications.setMessage(details[4] != null ? (String) details[4] : null);
 				notifications.setScreenName(details[5] != null ? (String) details[5] : null);
 				notifications.setUserEmail(details[6] != null ? (String) details[6] : null);
-				notifications.setIsSeen(details[7] != null ? (Boolean) details[7] : null);
+				notifications.setIsSeen(details[7] != null ? (boolean) details[7] : null);
 				notifications.setUpdatedAt(details[8] != null ? (Timestamp) details[8] : null);
 
 				usernotificationsList.add(notifications);
