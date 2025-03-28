@@ -766,6 +766,11 @@ public class AdminReportService implements AdminReportImpl{
 				dataListWrapper=this.generatePotentialPropertyReport(reportData,filterRequest);
 				templatePath ="templates/potentialPropertyReport.docx";
 				break;
+			case "UpComingPotentialPropertyReport":
+				reportData = getUpcomingPotentialPropertyReport(filterRequest,filterData,applyPagination);
+				dataListWrapper=this.generateUpComingPotentialPropertyReport(reportData,filterRequest);
+				templatePath ="templates/upComingPotentialPropertyReport.docx";
+				break;
 			case "SuspendedPropertiesReport":
 				reportData = getSuspendedPropertyReport(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateSuspendedPropertiesReport(reportData,filterRequest);
@@ -1183,6 +1188,40 @@ public class AdminReportService implements AdminReportImpl{
 	}
 	
 	public List<Map<String, Object>> generatePotentialPropertyReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			PropertyResportsDTO potentialPropertyData = (PropertyResportsDTO) item;
+			
+			data.put("ownerName", potentialPropertyData.getOwnerFullName() != null ? potentialPropertyData.getOwnerFullName() : "");
+			data.put("propertyName", potentialPropertyData.getPropertyName() != null ? potentialPropertyData.getPropertyName() : "");
+			data.put("contactNumber", potentialPropertyData.getPropertyContactNumber() != null ? potentialPropertyData.getPropertyContactNumber() : "");
+			data.put("email", potentialPropertyData.getPropertyEmailAddress() != null ? potentialPropertyData.getPropertyEmailAddress() : "");
+			data.put("address", potentialPropertyData.getPropertyAddress()!= null ? potentialPropertyData.getPropertyAddress() : "");
+			data.put("occupiedBeds", potentialPropertyData.getNumberOfBeds());
+			data.put("rentPerMonth", potentialPropertyData.getExpectedRentPerMonth());
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
+	
+	public List<Map<String, Object>> generateUpComingPotentialPropertyReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
 		String currentDate = LocalDate.now().toString();
