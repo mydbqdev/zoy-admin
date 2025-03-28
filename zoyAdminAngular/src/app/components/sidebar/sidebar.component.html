@@ -148,7 +148,7 @@
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/db-master-configuration" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_READ')" [ngClass]="{'active':activeSubNenuName=='db-master-configuration'}">Initial Configuration</a>
                 <div class="p-1"></div>
-                <a class="collapse-item" routerLink="/configuration-master" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ')" [ngClass]="{'active':activeSubNenuName=='configuration-master'}">Master Configuration</a>
+                <a class="collapse-item" routerLink="/configuration-master" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ') || rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_READ')" [ngClass]="{'active':activeSubNenuName=='configuration-master'}">Master Configuration</a>
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/user-audit" *ngIf="rolesArray.includes('USER_AUDIT_READ')" [ngClass]="{'active':activeSubNenuName=='user-audit'}">User Audit</a>
                 <div class="p-1"></div>
