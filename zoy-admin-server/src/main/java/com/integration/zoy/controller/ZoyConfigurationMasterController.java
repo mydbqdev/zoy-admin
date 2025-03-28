@@ -970,7 +970,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setMaximumDeposit(entity != null && entity.getSecurityDepositMax() != null ? entity.getSecurityDepositMax()
 				: BigDecimal.ZERO);
 		dto.setEffectiveDate(entity.getEffectiveDate());
-		dto.setIsApproved(entity.getIsApproved());
+		dto.setIsApproved(entity.getIsApproved()!= null ? entity.getIsApproved():false);
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
 		return dto;
