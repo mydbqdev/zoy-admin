@@ -132,7 +132,7 @@ public class CsvGenerateService {
             	writer.println("Owner Name,Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month");
                 break;
             case "UpComingPotentialPropertyReport":
-            	writer.println("Owner Name,Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month");
+            	writer.println("Owner Name,Booked Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month");
                 break;
             case "SuspendedPropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address,Suspended Date,Reason for suspension");
