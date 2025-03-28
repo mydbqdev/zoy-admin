@@ -284,7 +284,7 @@ public class ExcelGenerateService {
 			break;
 		case "UpComingPotentialPropertyReport":
 			row.createCell(0).setCellValue("Owner Name");
-			row.createCell(1).setCellValue("Property Name");
+			row.createCell(1).setCellValue("Booked Property Name");
 			row.createCell(2).setCellValue("Property Contact Number");
 			row.createCell(3).setCellValue("Property Email address");
 			row.createCell(4).setCellValue("Property Address");
