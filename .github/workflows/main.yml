@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - latest_main_qa  # Trigger only on push to latest_main_qa (includes PR merge)
-
 jobs:
   build_frontend:
     runs-on: ubuntu-latest
