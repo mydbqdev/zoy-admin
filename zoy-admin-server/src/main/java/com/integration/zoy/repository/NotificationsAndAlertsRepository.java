@@ -30,7 +30,7 @@ public interface NotificationsAndAlertsRepository extends JpaRepository<Notifica
 			nativeQuery = true)
 	String[] findScreenAccess(String screenName);
 	 
-	@Query(value = "select * from notifications_and_alerts_table where userid = :emailId", 
+	@Query(value = "SELECT * FROM notifications_and_alerts_table WHERE userid = :emailId ORDER BY is_seen ", 
 			nativeQuery = true)
 	Page<Object[]> findNotification(String emailId, Pageable pageable);
 	
