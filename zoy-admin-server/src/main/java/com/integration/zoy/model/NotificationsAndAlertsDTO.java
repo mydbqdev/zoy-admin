@@ -1,5 +1,7 @@
 package com.integration.zoy.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,19 +21,21 @@ public class NotificationsAndAlertsDTO {
 	private String message;
 
 	@JsonProperty("created_at")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Timestamp createdAt;
 
 	@JsonProperty("updated_at")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Timestamp updatedAt;
 
 	@JsonProperty("user_id")
 	private String userEmail;
 
-	@JsonProperty("id")
+	@JsonProperty("notification_id")
 	private Long notificationId;
 
 	@JsonProperty("is_seen")
-	private Boolean isSeen;
+	private boolean isSeen;
 
 	public Timestamp getUpdatedAt() {
 		return updatedAt;
@@ -97,11 +101,11 @@ public class NotificationsAndAlertsDTO {
 		this.notificationId = notificationId;
 	}
 
-	public Boolean getIsSeen() {
+	public boolean getIsSeen() {
 		return isSeen;
 	}
 
-	public void setIsSeen(Boolean isSeen) {
+	public void setIsSeen(boolean isSeen) {
 		this.isSeen = isSeen;
 	}
 
