@@ -257,6 +257,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
   selectNotification(notification: AlertNotificationDetailsModel): void {
     this.selectedNotification = notification;
+    this.notificationsCount =this.notificationsCount-1;
     this.updateUserNotificationsSeen();
   }
   
