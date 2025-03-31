@@ -1264,7 +1264,7 @@ public class AdminReportService implements AdminReportImpl{
 			Map<String, Object> data = new HashMap<>();
 			UserPaymentDTO failedTransactioData = (UserPaymentDTO) item;
 
-			data.put("transactionDate", tuService.formatTimestamp(failedTransactioData.getTransactionDate().toInstant()) != null ? failedTransactioData.getTransactionDate() : "");
+			data.put("transactionDate", tuService.formatTimestamp(failedTransactioData.getTransactionDate().toInstant()) != null ? tuService.formatTimestamp(failedTransactioData.getTransactionDate().toInstant()) : "");
 			data.put("tenantName", failedTransactioData.getUserPersonalName() != null ? failedTransactioData.getUserPersonalName() : "");
 			data.put("contactNumber", failedTransactioData.getTenantContactNum() != null ? failedTransactioData.getTenantContactNum() : "");
 			data.put("email", failedTransactioData.getEmail() != null ? failedTransactioData.getEmail() : "");
