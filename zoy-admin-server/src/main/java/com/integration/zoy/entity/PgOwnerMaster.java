@@ -42,6 +42,17 @@ public class PgOwnerMaster {
 	@Column(name = "zoy_share", nullable = false)
 	private BigDecimal zoyShare;
 
+	@Column(name ="register_id")
+	private String registerId;
+	
+	public String getRegisterId() {
+		return registerId;
+	}
+
+	public void setRegisterId(String registerId) {
+		this.registerId = registerId;
+	}
+
 	public String getZoyCode() {
 		return zoyCode;
 	}

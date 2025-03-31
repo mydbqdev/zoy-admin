@@ -22,6 +22,8 @@ public class PgOwnerMasterModel {
 	    @JsonProperty("zoyShare")
 	    private BigDecimal zoyShare;
 
+	    @JsonProperty("registerId")
+	    private String registerId;
 	   
 	    public String getFirstName() {
 	        return firstName;
@@ -61,6 +63,14 @@ public class PgOwnerMasterModel {
 
 		public void setZoyShare(BigDecimal zoyShare) {
 			this.zoyShare = zoyShare;
+		}
+
+		public String getRegisterId() {
+			return registerId;
+		}
+
+		public void setRegisterId(String registerId) {
+			this.registerId = registerId;
 		}
 
 
