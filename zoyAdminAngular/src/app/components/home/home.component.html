@@ -77,10 +77,10 @@
                         <div class="col-xl-3 col-md-6 mb-3">
                           <div class="holographic-card card-2 card border-left-success shadow h-100 ">
                                   <div class="card-custom-hedder row align-items-center shadow">
-                                      <div class="col mr-2" title="Registered + Active + Inactive" >
+                                      <div class="col mr-2" title="Leads + ZOY code generated + Owner App Users" >
                                           <div class="font-weight-bold text-dark" style="font-size: 15px;">Total Owners 
                                         </div>
-                                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{tenantDetails?.activeTenantsCount +tenantDetails?.inactiveTenantsCount + tenantDetails?.registerTenantsCount}}</div>
+                                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{ownerDetails?.leadOwnersCount +ownerDetails?.zoyCodeGeneratedOwnersCount + ownerDetails?.ownerAppUsersCount}}</div>
                                       </div>
                                       <div class="col-auto">
                                           <div style="border-radius: 15px;background-color: rgb(232, 242, 247);"><i class="far fa-building text-warning" style="margin: 10px;font-size: 22px;"></i></div>
@@ -92,22 +92,22 @@
                                           <span class="suspended"></span>
                                       </div>
                                       <span class="label">Leads</span>
-                                      <span class="value" style="float: right;">{{tenantDetails.registerTenantsCount}}</span>
+                                      <span class="value" style="float: right;">{{ownerDetails.leadOwnersCount}}</span>
                                   </div>
                                   <div class="item">
                                       <div class="status-item"><span class="active"></span></div>
                                       <span class="label">ZOY code generated</span>
-                                      <span class="value" style="float: right;">{{tenantDetails.activeTenantsCount}}</span>
+                                      <span class="value" style="float: right;">{{ownerDetails.zoyCodeGeneratedOwnersCount}}</span>
                                   </div>
                                   <div class="item">
                                       <div class="status-item"><span class="upcoming"></span></div>
                                       <span class="label">Owner App Users</span>
-                                      <span class="value" style="float: right;">{{tenantDetails.upcomingTenantsCount}}</span>
+                                      <span class="value" style="float: right;">{{ownerDetails.ownerAppUsersCount}}</span>
                                   </div>
                                   <div class="item">
                                       <div class="status-item"><span class="inactive"></span></div>
                                       <span class="label">Zero Property Owners</span>
-                                      <span class="value" style="float: right;">{{tenantDetails.inactiveTenantsCount}}</span>
+                                      <span class="value" style="float: right;">{{ownerDetails.ZeroPropertyOwnersCount}}</span>
                                   </div>
                               </div>
   
