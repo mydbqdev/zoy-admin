@@ -43,6 +43,17 @@ export class AppService{
                   }
               );
       } 
+      getOwnersCardDetails(): Observable<any> {
+        const url1=this.basePath +"zoy_admin/getOwnerCardDetails";
+              return this.httpclient.get<any>(
+                  url1,
+                  {
+                      headers:ServiceHelper.buildHeaders(),
+                     observe : 'body',
+                     withCredentials:true
+                  }
+              );
+      } 
       getTotalBookings(data:any): Observable<any> {
         const url1=this.basePath +"zoy_admin/getBookingDetails";
               return this.httpclient.post<any>(

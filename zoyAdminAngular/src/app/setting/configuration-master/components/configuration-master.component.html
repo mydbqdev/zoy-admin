@@ -100,7 +100,7 @@
                                 <div class="col-sm-2 mt-4" >
                                   <div class="d-flex">
                                   <div><i class="fas fa-thumbs-up mr-2 mt-1" [ngClass]="configMasterModel.tokenDetails[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i></div>
-                                  <div *ngIf=" tokenAdvancDisabled && !configMasterModel.tokenDetails[0]?.isApproved" title="Approve the Rule" >
+                                  <div *ngIf=" tokenAdvancDisabled && !configMasterModel.tokenDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                     <a class="approve-icon" (click)="tokenAdvancSubmit('approve')">
                                       <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                     </a>
