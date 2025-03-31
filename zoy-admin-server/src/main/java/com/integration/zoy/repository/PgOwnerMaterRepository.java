@@ -16,21 +16,22 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	@Query(value = "select mobile_no from pg_owner_master where mobile_no = :mobile_no", nativeQuery = true)
 	String findPhoneNumber(String mobile_no);
 	
-	@Query(value = "SELECT "
-			+ "    pzm.zoy_code, "
-			+ "    pzm.first_name || ' ' || pzm.last_name AS owner_name, "
-			+ "    up.email_id, "
-			+ "    up.mobile_no AS contact, "
-			+ "    pzm.created_at, "
-			+ "    'pending' AS status, "
-			+ "     pzm.zoy_share "
-			+ "FROM "
-			+ "    pgadmin.pg_owner_master pzm "
-			+ "JOIN "
-			+ "    pgcommon.user_profile up ON pzm.email_id = up.email_id "
-			+ "WHERE "
-			+ "    up.enabled = false "
-			+ "ORDER BY "
+	@Query(value = " SELECT \r\n"
+			+ "    pzm.zoy_code,\r\n"
+			+ "    pzm.first_name || ' ' || pzm.last_name AS owner_name, \r\n"
+			+ "    up.email_id, \r\n"
+			+ "    up.mobile_no AS contact, \r\n"
+			+ "    pzm.created_at, \r\n"
+			+ "    'pending' AS status, \r\n"
+			+ "     pzm.zoy_share, \r\n"
+			+ "     pzm.register_id\r\n"
+			+ "FROM \r\n"
+			+ "    pgadmin.pg_owner_master pzm \r\n"
+			+ "JOIN \r\n"
+			+ "    pgcommon.user_profile up ON pzm.email_id = up.email_id \r\n"
+			+ "WHERE \r\n"
+			+ "    up.enabled = false \r\n"
+			+ "ORDER BY \r\n"
 			+ "    pzm.created_at DESC", nativeQuery = true)
 	List<Object[]> getAllPgOwnerDetails();
 

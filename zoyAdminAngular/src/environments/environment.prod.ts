@@ -37,6 +37,7 @@ export const environment = {
       "roleAndPermission":true,
       "dbMasterConfiguration":true,
       "configurationMaster":true,
+      "configurationMasterApproval":true,
       "userAudit":true,
       "cancellationAndRefundRules":true,
       "percentageAndChargeConfigurations":true,

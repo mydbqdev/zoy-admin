@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +38,7 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.PgOwnerMaster;
-import com.integration.zoy.entity.PgOwnerPropertyStatus;
+import com.integration.zoy.entity.RegisteredPartner;
 import com.integration.zoy.entity.UserProfile;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.BasicPropertyInformation;
@@ -52,11 +53,13 @@ import com.integration.zoy.model.PgOwnerProfile;
 import com.integration.zoy.model.PgOwnerPropertyInformation;
 import com.integration.zoy.model.PgOwnerbasicInformation;
 import com.integration.zoy.model.PgOwnerdetailPortfolio;
+import com.integration.zoy.model.RegisteredPgOwners;
 import com.integration.zoy.model.Room;
 import com.integration.zoy.model.UserStatus;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.PgOwnerMaterRepository;
 import com.integration.zoy.repository.PgOwnerPropertyStatusRepository;
+import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
 import com.integration.zoy.repository.UserProfileRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
 import com.integration.zoy.service.CommonDBImpl;
@@ -67,6 +70,7 @@ import com.integration.zoy.service.ZoyCodeGenerationService;
 import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.AuditHistoryUtilities;
+import com.integration.zoy.utils.PgOwnerCardDetails;
 import com.integration.zoy.utils.ResponseBody;
 
 @RestController
@@ -81,7 +85,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	private AdminUserMasterRepository adminUserMasterRepository;
 	@Autowired
 	ZoyPgOwnerDetailsRepository zoyPgOwnerDetailsRepo;
-
+	@Autowired
+	RegisteredPartnerDetailsRepository registeredPartnerDetailsRepo;
 	@Autowired
 	ZoyCodeGenerationService zoyCodeGenerationService;
 	@Autowired
@@ -165,6 +170,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			ownerData.setLastName(model.getLastName());
 			ownerData.setMobileNo(model.getMobileNo());
 			ownerData.setZoyShare(model.getZoyShare());
+			ownerData.setRegisterId(model.getRegisterId()!=null?model.getRegisterId():null);
 			pgOwnerMaterRepository.save(ownerData);
 
 			String token = UUID.randomUUID().toString();
@@ -250,6 +256,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				ownerDetails.setCreatedDate(details[4] != null ? (Timestamp) details[4] : null);
 				ownerDetails.setStatus(details[5] != null ? (String) details[5] : null);
 				ownerDetails.setZoyShare(details[6] != null ? (BigDecimal) details[6] : null);
+				ownerDetails.setRegisterId(details[7] != null ? (String) details[7] : null);
 				pgOwnerDetailsList.add(ownerDetails);
 			}
 
@@ -651,5 +658,81 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	    }
 	}
 
+	@Override
+	public ResponseEntity<String> getAllRegisterdPgOwnersData() {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<RegisteredPartner> allRegisteredPgOwnerDetails = registeredPartnerDetailsRepo.getAllRegisteredUsers();
+
+			List<RegisteredPgOwners> registeredPgOwnerDetailsList = new ArrayList<>();
+
+			for (RegisteredPartner details : allRegisteredPgOwnerDetails) {
+
+				RegisteredPgOwners ownerDetails = new RegisteredPgOwners();
+
+				ownerDetails.setAddress(details.getAddress());
+				ownerDetails.setEmail(details.getEmail());
+				ownerDetails.setFirstname(details.getEmail());
+				ownerDetails.setLastname(details.getLastname());
+				ownerDetails.setMobile(details.getMobile());
+				ownerDetails.setPincode(details.getPincode());
+				ownerDetails.setPropertyName(details.getPropertyName());
+				ownerDetails.setRegisterId(details.getRegisterId());
+
+				registeredPgOwnerDetailsList.add(ownerDetails);
+			}
+
+			return new ResponseEntity<>(gson.toJson(registeredPgOwnerDetailsList), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error getting PG Owner details API:/zoy_admin/getAllRegisterdPgOwnersData.getAllRegisterdPgOwnersData", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			} catch (Exception ex) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> getOwnerCardDetails() {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<Object[]> result=registeredPartnerDetailsRepo.getOwnerStatistics();
+			
+			if (result == null || result.isEmpty()) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("No data found for Owner card details.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			Object[] row = result.get(0);
+			Long leadOwnersCount = (row[0] != null && row[0] instanceof Number) ? ((Number) row[0]).longValue() : 0L;
+			Long zoyCodeGeneratedOwnersCount = (row[1] != null && row[1] instanceof Number) ? ((Number) row[1]).longValue() : 0L;
+			Long ownerAppUsersCount = (row[2] != null && row[2] instanceof Number) ? ((Number) row[2]).longValue() : 0L;
+			Long ZeroPropertyOwnersCount = (row[3] != null && row[3] instanceof Number) ? ((Number) row[3]).longValue() : 0L;
+			
+			PgOwnerCardDetails superAdminCardsDetails = new PgOwnerCardDetails(
+					leadOwnersCount,zoyCodeGeneratedOwnersCount,ownerAppUsersCount,ZeroPropertyOwnersCount);
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Successfully fetched Owner card details.");
+			return new ResponseEntity<>(gson.toJson(superAdminCardsDetails), HttpStatus.OK);
+		} catch (DataAccessException e) {
+			log.error("Database error API:/zoy_admin/getOwnerCardDetails.getOwnerCardDetails ", e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Database error occurred while fetching Tenant card details.");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			log.error("Unexpected error API:/zoy_admin/getOwnerCardDetails.getOwnerCardDetails", e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("An unexpected error occurred.");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
 
 }
