@@ -1,4 +1,5 @@
 package com.integration.zoy.entity;
+
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -12,30 +13,33 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "zoy_pg_registered_owner_details", schema = "pgowners")
 public class RegisteredPartner {
 	@Column(name = "firstname", nullable = false, length = 50)
-    private String firstname;
+	private String firstname;
 
-    @Column(name = "lastname", nullable = false, length = 50)
-    private String lastname;
+	@Column(name = "lastname", nullable = false, length = 50)
+	private String lastname;
 
-    @Id
-    @Column(name = "email", nullable = false, length = 100)
-    private String email;
+	@Column(name = "email", nullable = false, length = 100)
+	private String email;
 
-    @Column(name = "mobile", nullable = false, length = 15)
-    private String mobile;
+	@Id
+	@Column(name = "register_id", nullable = false, length = 100)
+	private String registerId;
 
-    @Column(name = "address", nullable = false, length = 255)
-    private String address;
+	@Column(name = "mobile", nullable = false, length = 15)
+	private String mobile;
 
-    @Column(name = "pincode", nullable = false, length = 10)
-    private String pincode;
+	@Column(name = "address", nullable = false, length = 255)
+	private String address;
 
-    @Column(name = "property_name", nullable = false, length = 100)
-    private String propertyName;
+	@Column(name = "pincode", nullable = false, length = 10)
+	private String pincode;
 
-    @Column(name = "ts", nullable = false)
-    @CreationTimestamp
-    private Timestamp ts;
+	@Column(name = "property_name", nullable = false, length = 100)
+	private String propertyName;
+
+	@Column(name = "ts", nullable = false)
+	@CreationTimestamp
+	private Timestamp ts;
 
 	public String getFirstname() {
 		return firstname;
@@ -100,4 +104,13 @@ public class RegisteredPartner {
 	public void setTs(Timestamp ts) {
 		this.ts = ts;
 	}
+
+	public String getRegisterId() {
+		return registerId;
 	}
+
+	public void setRegisterId(String registerId) {
+		this.registerId = registerId;
+	}
+
+}

@@ -8,27 +8,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PgOwnerDetails {
 
 	@JsonProperty("zoyCode")
-    private String zoyCode;
+	private String zoyCode;
 
-    @JsonProperty("ownerName")
-    private String ownerName;
+	@JsonProperty("ownerName")
+	private String ownerName;
 
-    @JsonProperty("emailId")
-    private String emailId;
+	@JsonProperty("emailId")
+	private String emailId;
 
-    @JsonProperty("mobileNo")
-    private String mobileNo;
-    
-    @JsonProperty("createdDate")
-    private Timestamp createdDate;
-    
-    @JsonProperty("status")
-    private String status;
-    
-    @JsonProperty("zoyShare")
-    private BigDecimal zoyShare;
-    
-    public String getZoyCode() {
+	@JsonProperty("mobileNo")
+	private String mobileNo;
+
+	@JsonProperty("createdDate")
+	private Timestamp createdDate;
+
+	@JsonProperty("status")
+	private String status;
+
+	@JsonProperty("zoyShare")
+	private BigDecimal zoyShare;
+
+	@JsonProperty("registerId")
+	private String registerId;
+
+	public String getZoyCode() {
 		return zoyCode;
 	}
 
@@ -84,6 +87,12 @@ public class PgOwnerDetails {
 		this.zoyShare = zoyShare;
 	}
 
-	
+	public String getRegisterId() {
+		return registerId;
+	}
+
+	public void setRegisterId(String registerId) {
+		this.registerId = registerId;
+	}
 
 }
