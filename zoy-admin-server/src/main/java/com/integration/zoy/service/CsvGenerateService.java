@@ -84,7 +84,7 @@ public class CsvGenerateService {
                 writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,BED Number,Transaction Date,Invoice No,Transaction Status,Due Amount(₹),GST Amount(₹),Total Amount(₹),Category,Mode of Payment");
                 break;
             case "userPaymentGstReport":
-                writer.println("Transaction Date,Invoice No,Tenant Name,PG Name,Basic Amount(₹),GST Amount(₹),Total Amount(₹),Mode of Payment");
+                writer.println("Transaction Date,Invoice No,Tenant Name,Tenant Mobile Number,PG Name,Basic Amount(₹),GST Amount(₹),Total Amount(₹),Mode of Payment");
                 break;
             case "consolidatedFinanceReport":
                 writer.println("Transaction Date,Invoice Number,Payer/Payee Type,Name of the Payer/Payee,Debit(₹),Credit(₹),PG Name,Contact Number");
@@ -177,14 +177,14 @@ public class CsvGenerateService {
                     safeToString(userPayment.getFailedReason()));
             }
             break;
-
         case "userPaymentGstReport":
             if (dto instanceof UserPaymentDTO) {
                 UserPaymentDTO userPayment = (UserPaymentDTO) dto;
-                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                 	tuService.formatTimestamp(userPayment.getTransactionDate().toInstant()),
                     safeToString(userPayment.getTransactionNumber()),
                     safeToString(userPayment.getUserPersonalName()),
+                    safeToString(userPayment.getTenantContactNum()),
                     safeToString(userPayment.getUserPgPropertyName()),
                     formatAmountWithCommas(userPayment.getDueAmount()),
                     formatAmountWithCommas(userPayment.getGstAmount()),
