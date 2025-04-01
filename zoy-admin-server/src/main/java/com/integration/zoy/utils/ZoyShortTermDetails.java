@@ -3,31 +3,32 @@ package com.integration.zoy.utils;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 public class ZoyShortTermDetails {
 
-	@JsonProperty("effectiveDate")
+	@SerializedName("effectiveDate")
 	private String effectiveDate;
 
-	@JsonProperty("iscreate")
+	@SerializedName("iscreate")
 	private boolean iscreate;
 
-	@JsonProperty("isApproved")
+	@SerializedName("isApproved")
 	private boolean isApproved;
 
-	@JsonProperty("approvedBy")
+	@SerializedName("approvedBy")
 	private String approvedBy;
 
-	@JsonProperty("createdBy")
+	@SerializedName("createdBy")
 	private String createdBy;
 
-	@JsonProperty("delete")
+	@SerializedName("delete")
 	private boolean delete;
 
-	@JsonProperty("pgType")
+	@SerializedName("pgType")
 	private String pgType;
 
-	@JsonProperty("ZoyShortTermDtoInfo")
+	@SerializedName("ZoyShortTermDtoInfo")
 	private List<ZoyShortTermDto> ZoyShortTermDtoInfo;
 
 	public String getEffectiveDate() {
