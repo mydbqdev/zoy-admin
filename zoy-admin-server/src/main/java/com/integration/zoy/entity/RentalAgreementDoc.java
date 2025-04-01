@@ -4,22 +4,20 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "zoy_pg_no_rental_agreement", schema = "pgowners")
-public class ZoyPgNoRentalAgreement {
+public class RentalAgreementDoc {
 
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-	@Column(name = "no_rental_agreement_id", nullable = false, length = 36)
-	private String noRentalAgreementId;
+	@Column(name = "rental_Agreement_doc_id", nullable = false, unique = true, length = 36)
+	private String rentalAgreementDocId;
 
-	@Column(name = "no_rental_agreement_days", nullable = false)
-	private int noRentalAgreementDays;
+	@Column(name = "rental_Agreement_doc")
+	private String rentalAgreementDoc;
 
 	@Column(name = "is_Approved")
 	private Boolean isApproved;
@@ -33,24 +31,26 @@ public class ZoyPgNoRentalAgreement {
 	@Column(name = "approved_by")
 	private String approvedBy;
 
-	public String getNoRentalAgreementId() {
-		return noRentalAgreementId;
-	}
-
-	public void setNoRentalAgreementId(String noRentalAgreementId) {
-		this.noRentalAgreementId = noRentalAgreementId;
-	}
-
-	public int getNoRentalAgreementDays() {
-		return noRentalAgreementDays;
-	}
-
-	public void setNoRentalAgreementDays(int noRentalAgreementDays) {
-		this.noRentalAgreementDays = noRentalAgreementDays;
-	}
+	// Getters and Setters
 
 	public Boolean getIsApproved() {
 		return isApproved;
+	}
+
+	public String getRentalAgreementDocId() {
+		return rentalAgreementDocId;
+	}
+
+	public void setRentalAgreementDocId(String rentalAgreementDocId) {
+		this.rentalAgreementDocId = rentalAgreementDocId;
+	}
+
+	public String getRentalAgreementDoc() {
+		return rentalAgreementDoc;
+	}
+
+	public void setRentalAgreementDoc(String rentalAgreementDoc) {
+		this.rentalAgreementDoc = rentalAgreementDoc;
 	}
 
 	public void setIsApproved(Boolean isApproved) {
@@ -80,12 +80,4 @@ public class ZoyPgNoRentalAgreement {
 	public void setApprovedBy(String approvedBy) {
 		this.approvedBy = approvedBy;
 	}
-
-	@Override
-	public String toString() {
-		return "ZoyPgNoRentalAgreement [noRentalAgreementId=" + noRentalAgreementId + ", noRentalAgreementDays="
-				+ noRentalAgreementDays + ", isApproved=" + isApproved + ", effectiveDate=" + effectiveDate
-				+ ", createdBy=" + createdBy + ", approvedBy=" + approvedBy + "]";
-	}
-
 }

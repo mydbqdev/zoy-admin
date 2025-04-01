@@ -3,7 +3,7 @@ package com.integration.zoy.utils;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
-import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
+import com.integration.zoy.entity.RentalAgreementDoc;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +38,8 @@ public class ZoyAdminConfigDTO {
 	private List<ZoyRentingDuration> shortTermRentingDuration;
 	@SerializedName("noRentalAgreement")
 	private List<ZoyPgNoRentalAgreementDto> NoRentalAgreement;
+	@SerializedName("rentalAgreement")
+	private List<RentalAgreementDoc> RentalAgreement;
  
 }
 

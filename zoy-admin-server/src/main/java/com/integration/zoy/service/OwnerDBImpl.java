@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.ZoyCompanyMaster;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
@@ -174,4 +175,5 @@ public interface OwnerDBImpl {
 	List<ZoyPgAutoCancellationMaster> findAllSecurityDepositDeadlineSorted() throws WebServiceException;
 	List<ZoyPgGstCharges> findAllGstChargesDetailsSorted() throws WebServiceException;
 	List<ZoyPgOtherCharges> findAllOtherChargesDetailsSorted() throws WebServiceException;
+	List<RentalAgreementDoc> findAllRentalAgreementDetailsSorted() throws WebServiceException;
 }
