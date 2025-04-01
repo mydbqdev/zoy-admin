@@ -2681,6 +2681,10 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append(" AND LOWER(zppd.property_name) LIKE LOWER(:pgName) ");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
 			}
+			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+				queryBuilder.append("AND LOWER(zppd.property_city) LIKE LOWER('%' || :cityLocation || '%')");
+				parameters.put("cityLocation", filterRequest.getCityLocation());
+			}
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {
 				String sort = "";
@@ -2803,6 +2807,11 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
 			}
+			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+				queryBuilder.append("AND LOWER(zpd.property_city) LIKE LOWER('%' || :cityLocation || '%')");
+				parameters.put("cityLocation", filterRequest.getCityLocation());
+			}
+			
 			
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {
@@ -2907,6 +2916,11 @@ public class AdminReportService implements AdminReportImpl{
 				if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
 				    queryBuilder.append("AND LOWER(zpd.property_name) LIKE LOWER(:pgName) \r\n");
 				    parameters.put("pgName", "%" + filterData.getPgName() + "%");
+				}
+				
+				if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+					queryBuilder.append("AND LOWER(zpd.property_city) LIKE LOWER('%' || :cityLocation || '%')");
+					parameters.put("cityLocation", filterRequest.getCityLocation());
 				}
 
 				queryBuilder.append(
