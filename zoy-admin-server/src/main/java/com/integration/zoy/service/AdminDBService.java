@@ -31,6 +31,7 @@ import com.integration.zoy.repository.RoleScreenRepository;
 import com.integration.zoy.repository.TriggeredCondRepository;
 import com.integration.zoy.repository.TriggeredOnRepository;
 import com.integration.zoy.repository.TriggeredValueRepository;
+import com.integration.zoy.repository.ZoyPgPropertyDetailsRepository;
 
 @Service
 public  class AdminDBService implements AdminDBImpl {
@@ -64,6 +65,9 @@ public  class AdminDBService implements AdminDBImpl {
 	
 	@Autowired
 	RegisteredPartnerDetailsRepository registeredPartnerDetailsRepo;
+	
+	@Autowired
+	ZoyPgPropertyDetailsRepository pgPropertyDetailsRepository;
 
 	@Override
 	public AdminUserMaster saveAdminUser(AdminUserMaster master) throws WebServiceException {
@@ -301,6 +305,13 @@ public  class AdminDBService implements AdminDBImpl {
 	@Override
 	public List<Object[]> findOwnerCardsDetails() throws WebServiceException {
 		return registeredPartnerDetailsRepo.getOwnerCardsDetails();
+	}
+
+
+
+	@Override
+	public List<Object[]> findPropertiesCardsDetails() throws WebServiceException {
+		return pgPropertyDetailsRepository.findPropertiesCardDetails();
 	}
 	
 }
