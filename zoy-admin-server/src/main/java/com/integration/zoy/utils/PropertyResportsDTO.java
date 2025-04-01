@@ -35,6 +35,9 @@ public class PropertyResportsDTO {
 
     @SerializedName("lastCheckOutDate")
     private Timestamp lastCheckOutDate;
+    
+    @SerializedName("lastCheckInDate")
+    private Timestamp lastCheckInDate;
 
 	public String getOwnerFullName() {
 		return ownerFullName;
@@ -114,6 +117,14 @@ public class PropertyResportsDTO {
 
 	public void setLastCheckOutDate(Timestamp lastCheckOutDate) {
 		this.lastCheckOutDate = lastCheckOutDate;
+	}
+
+	public Timestamp getLastCheckInDate() {
+		return lastCheckInDate;
+	}
+
+	public void setLastCheckInDate(Timestamp lastCheckInDate) {
+		this.lastCheckInDate = lastCheckInDate;
 	}
     
     

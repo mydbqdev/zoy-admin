@@ -434,5 +434,21 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
 	}
+
+	@Override
+	public ResponseEntity<String> getNonPotentialPropertyDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+			FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+	        boolean applyPagination = true;
+	        CommonResponseDTO<PropertyResportsDTO>nonPotentialPropertyDetails = adminReportImpl.getNonPotentialPropertyReport(filterRequest,filterData, applyPagination);
+	        return new ResponseEntity<>(gson.toJson(nonPotentialPropertyDetails), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error in API:/zoy_admin/non_potential_property_details.getNonPotentialPropertyDetailsByDateRange", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
 	
 }
