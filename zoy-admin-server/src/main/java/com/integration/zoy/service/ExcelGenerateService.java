@@ -536,8 +536,9 @@ public class ExcelGenerateService {
 				row.createCell(2).setCellValue(nullSafe(potentialPropertyReport.getPropertyContactNumber()));
 				row.createCell(3).setCellValue(nullSafe(potentialPropertyReport.getPropertyEmailAddress()));
 				row.createCell(4).setCellValue(nullSafe(potentialPropertyReport.getPropertyAddress()));
-				setCurrencyCell(row,5,nullSafe(potentialPropertyReport.getExpectedRentPerMonth()));
-				row.createCell(6).setCellValue(nullSafe(potentialPropertyReport.getNumberOfBeds()));			
+				row.createCell(5).setCellValue(nullSafe(potentialPropertyReport.getNumberOfBeds()));
+				setCurrencyCell(row,6,nullSafe(potentialPropertyReport.getExpectedRentPerMonth()));
+							
 			}
 			break;
 		case "RegesterTenantsReport":
