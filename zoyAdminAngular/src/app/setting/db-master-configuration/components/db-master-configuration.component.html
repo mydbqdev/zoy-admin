@@ -430,6 +430,20 @@
       </div>
     </div>
 
+    <div *ngIf="settingType == 'Floor Name' ">
+
+      <div class="form-group">
+        <label for="contactNumber">Floor Name :</label>
+        <input type="text" class="form-control" 
+        id="floor_name"  placeholder="Floor Name " required autocomplete="false" [(ngModel)]="this.dbSettingDataModel.floor_name"
+        [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.floor_name == null || this.dbSettingDataModel.floor_name == '' )}" >
+        <div *ngIf="submitted && (this.dbSettingDataModel.floor_name == null || this.dbSettingDataModel.floor_name == '' )" class="text-danger">
+          Floor Name is required.
+        </div>
+      </div>
+    
+     </div>
+
     <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;" >
       <button type="submit" class="btn btn-primary-custom me-2" (click)="submitData()" >Submit</button>
       <button class="btn btn-sm btn-outline-secondary ml-1" *ngIf="settingType == 'Short Term'" (click)="shortTermDataListReset()"  ><i class="fas fa-redo" style="color: red;"></i></button>

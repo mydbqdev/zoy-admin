@@ -2,7 +2,7 @@ export class ConfigMasterModel{
     tokenDetails :TokenDetailsModel[]=[];// = new TokenDetailsModel() ;
     depositDetails : SecurityDepositLimitsModel[]=[];// = new SecurityDepositLimitsModel ();
     dataGrouping : DataGroupingModel[]=[];// = new DataGroupingModel() ;
-    cancellationBeforeCheckInDetails : BeforeCheckInCancellationRefundModel[]=[];
+   // cancellationBeforeCheckInDetails : BeforeCheckInCancellationRefundModel[]=[];
     earlyCheckOutRuleDetails:EarlyCheckOutRuleDetails[]=[];//=new EarlyCheckOutRuleDetails();
     cancellationAfterCheckInDetails:SecurityDepositDeadLineAndAutoCancellationModel[]=[];//=new SecurityDepositDeadLineAndAutoCancellationModel();
     securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel[]=[];//=new SecurityDepositDeadLineAndAutoCancellationModel();
@@ -47,7 +47,16 @@ export class EarlyCheckOutRuleDetails{
     createdBy:string='';
     approvedBy:string='';
 }
+export class BeforeCheckInCancellationRefundMainObjModel{
+    effectiveDate:string;
+    iscreate:boolean;
+    isApproved:boolean;
+    approvedBy:string;
+    createdBy:string;
+    pgType:string;
+    zoy_before_check_in_cancellation_info:BeforeCheckInCancellationRefundModel[]=[];
 
+}
 export class BeforeCheckInCancellationRefundModel{
     cancellation_id : string ='';
     before_checkin_days : number ;

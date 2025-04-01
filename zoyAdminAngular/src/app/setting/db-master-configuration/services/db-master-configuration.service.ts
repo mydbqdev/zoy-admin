@@ -77,6 +77,11 @@ export class DbMasterConfigurationService {
       'type': 'Short Term',
       'columns': ['start_day','end_day'],
       'api': 'zoy_admin/shortTerm'
+    },
+    {
+      'type': 'Floor Name',
+      'columns': ['floor_name','actions'],
+      'api': 'zoy_admin/floorName'
     }
   ]
 
@@ -95,7 +100,8 @@ export class DbMasterConfigurationService {
     'ameneties_name': 'AMENITIES NAME',
     'ameneties_image':"AMENITIES PICTURE",
     'start_day' : 'START DAY',
-    'end_day' :'END DAY'
+    'end_day' :'END DAY',
+    'floor_name':'FLOOR NAME'
   }
 
   getDbSettingDetails(api:string): Observable<any> {
