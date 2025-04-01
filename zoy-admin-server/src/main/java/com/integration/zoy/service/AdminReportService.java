@@ -771,6 +771,11 @@ public class AdminReportService implements AdminReportImpl{
 				dataListWrapper=this.generateUpComingPotentialPropertyReport(reportData,filterRequest);
 				templatePath ="templates/upComingPotentialPropertyReport.docx";
 				break;
+			case "NonPotentialPropertyReport":
+				reportData = getNonPotentialPropertyReport(filterRequest,filterData,applyPagination);
+				dataListWrapper=this.generateNonPotentialPropertyReport(reportData,filterRequest);
+				templatePath ="templates/nonPotentialPropertyReport.docx";
+				break;
 			case "SuspendedPropertiesReport":
 				reportData = getSuspendedPropertyReport(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateSuspendedPropertiesReport(reportData,filterRequest);
@@ -793,6 +798,7 @@ public class AdminReportService implements AdminReportImpl{
 				throw new IllegalArgumentException("Invalid file type provided. Supported types: pdf, excel, csv");
 			}
 		}catch (Exception e) {
+			System.out.println("errorrrrr::::"+e);
 			new ZoyAdminApplicationException(e, "");
 		}
 		return null;
@@ -1220,6 +1226,39 @@ public class AdminReportService implements AdminReportImpl{
 		return dataList;
 	}
 	
+	public List<Map<String, Object>> generateNonPotentialPropertyReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			PropertyResportsDTO potentialPropertyData = (PropertyResportsDTO) item;
+			
+			data.put("ownerName", potentialPropertyData.getOwnerFullName() != null ? potentialPropertyData.getOwnerFullName() : "");
+			data.put("propertyName", potentialPropertyData.getPropertyName() != null ? potentialPropertyData.getPropertyName() : "");
+			data.put("contactNumber", potentialPropertyData.getPropertyContactNumber() != null ? potentialPropertyData.getPropertyContactNumber() : "");
+			data.put("email", potentialPropertyData.getPropertyEmailAddress() != null ? potentialPropertyData.getPropertyEmailAddress() : "");
+			data.put("address", potentialPropertyData.getPropertyAddress()!= null ? potentialPropertyData.getPropertyAddress() : "");
+			data.put("lastOutDate", potentialPropertyData.getLastCheckOutDate() != null ? tuService.formatTimestamp(potentialPropertyData.getLastCheckOutDate().toInstant()) : "-");
+            data.put("startDate", potentialPropertyData.getLastCheckInDate() != null ? tuService.formatTimestamp(potentialPropertyData.getLastCheckInDate().toInstant()) : "-");
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
 	public List<Map<String, Object>> generateUpComingPotentialPropertyReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
