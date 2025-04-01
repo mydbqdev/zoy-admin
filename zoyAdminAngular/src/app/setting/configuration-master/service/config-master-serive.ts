@@ -188,6 +188,19 @@ import { MessageService } from 'src/app/message.service';
         );
     }
 
+    public getBeforeCheckInCRDetails(pgtype:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/fetch-Cancellation-And-Refund-Policy-details";
+        return  this.httpclient.post<any>(
+            url1,
+            pgtype,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    }
+
     public updateShortTermRentingDuratioDetails(data:any): Observable<any> {
         const url1=this.basePath +"zoy_admin/config/short-term";
         return  this.httpclient.post<any>(
@@ -215,6 +228,18 @@ import { MessageService } from 'src/app/message.service';
 
     public updateNoRentalAgreement(data:any): Observable<any> {
         const url1=this.basePath +"zoy_admin/config/noRentalAgreement";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    }
+    public submitShortTermData(data:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/renting-duration";
         return  this.httpclient.post<any>(
             url1,
             data,

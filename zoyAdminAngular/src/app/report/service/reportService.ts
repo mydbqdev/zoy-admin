@@ -97,10 +97,10 @@ import { MessageService } from 'src/app/message.service';
       'bookedPropertyName' : 'BOOKED PROPERTY NAME',
       'numberOfBeds' : 'NUMBER OF BEDS',
       'expectedRentPerMonth' : 'EXPECTED RENT PER MONTH',
-      'lastCheckoutDate' : 'LAST CHECK-OUT DATE',
       'email':'EMAIL ID',
-      'registrationDate':'REGISTRATION DATE'
-      
+      'registrationDate':'REGISTRATION DATE',
+      'lastCheckOutDate' :'LAST CHECH-OUT DATE',
+      'lastCheckInDate':'LAST CHECH-IN DATE',
       
   };
   
