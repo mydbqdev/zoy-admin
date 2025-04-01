@@ -1,35 +1,29 @@
 package com.integration.zoy.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
-import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
-import com.integration.zoy.model.ZoyCompanyMasterModal;
+import com.integration.zoy.model.ZoyBeforeCheckInCancellationModel;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
-import com.integration.zoy.utils.PaginationRequest;
-import com.integration.zoy.utils.ZoyCompanyProfileMasterDto;
+import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
 import com.integration.zoy.utils.ZoyForceCheckOutDto;
 import com.integration.zoy.utils.ZoyGstChargesDto;
 import com.integration.zoy.utils.ZoyOtherChargesDto;
+import com.integration.zoy.utils.ZoyPgNoRentalAgreementDto;
 import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
 import com.integration.zoy.utils.ZoyPgTokenDetailsDTO;
-import com.integration.zoy.utils.ZoyRentingDuration;
-import com.integration.zoy.utils.ZoyShortTermDto;
+import com.integration.zoy.utils.ZoyShortTermDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -73,7 +67,7 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/before-check-in",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(@RequestBody List<ZoyBeforeCheckInCancellation> details);
+	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation);
 
 //	@Operation(summary = "Delete Admin Configuration Before Check In", description = "Deletes Admin Configuration Before Check In by cancellationId", security = {
 //			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
@@ -210,7 +204,7 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/short-term",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigUpdateShortTerm(@RequestBody ZoyShortTermDto shortTerm);
+	ResponseEntity<String> zoyAdminConfigUpdateShortTerm(@RequestBody ZoyShortTermDetails shortTerm);
 	
 	@Operation(summary = "Admin Configration Force Check Out", description = "Creating/Updating Admin Configration Force Check Out", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
@@ -223,6 +217,19 @@ public interface ZoyConfigurationMasterImpl {
 	produces = { "application/json" },
 	consumes = { "application/json"})
 	ResponseEntity<String> zoyAdminConfigUpdateForceCheckOut(@RequestBody ZoyForceCheckOutDto forceCheckOut);
+	
+	@Operation(summary = "Admin Configration for  No Rental Agreement", description = "Creating/Updating Admin Configration for No Rental Agreement", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/noRentalAgreement",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminConfigUpdateNoRentalAgreement(@RequestBody ZoyPgNoRentalAgreementDto NoRentalAgreement);
+	
 
 	@Operation(summary = "Create and Update Company Profile master", description = "Creating/Updating Company Profile Master", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
@@ -281,19 +288,30 @@ public interface ZoyConfigurationMasterImpl {
 	@GetMapping(value = "/zoy_admin/config/fetch-master-profile",
 	produces = { "application/json" })
 	ResponseEntity<String> fetchCompanyProfileMaster();
-	
-	@Operation(summary = "Admin Configration Short Term Renting Duration", description = "Creating/Updating Admin Configration Short Term Renting Duration", security = {
+
+	@Operation(summary = "Fetch Cancellation And Refund Policy details", description = "fetch datails related to time frame for cancellation before check in.", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PostMapping(value = "/zoy_admin/config/renting-duration",
-	produces = { "application/json" },
-	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigShortTermRentingDuration(@RequestBody ZoyRentingDuration rentingDuration);
-
+	@PostMapping(value = "/zoy_admin/config/fetch-Cancellation-And-Refund-Policy-details",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckInGetDetails(@RequestBody ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation);
+	
+	
+	@Operation(summary = "Fetch zoy short term details", description = "fetch datails related to zoy short term details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/fetchzoyAdminConfigShortTermDetails",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyAdminConfigShortTermDetails( @RequestBody ZoyShortTermDetails shortTerm);
+	
 	@Operation(summary = "Admin Configration Short Term Renting Duration", description = "Fetching Admin Configration Short Term Renting Duration", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
 	@ApiResponses(value = { 
@@ -305,4 +323,15 @@ public interface ZoyConfigurationMasterImpl {
 	produces = { "application/json" })
 	ResponseEntity<String>FetchShortTermRentingDuration();
 
+	@Operation(summary = "Admin Configration for  Rental Agreement document ", description = "Uploading/Updating Admin Configration for Rental Agreement document", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/RentalAgreementdocument",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(@RequestBody RentalAgreementDocDto rentalAgreementDoc);
 }

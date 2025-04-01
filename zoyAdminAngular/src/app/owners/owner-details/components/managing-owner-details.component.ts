@@ -14,11 +14,12 @@ import { GenerateZoyCodeService } from '../../service/zoy-code.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { FloorInformation, PgOwnerData, PgOwnerPropertyInformation, Room } from '../models/owner-full-details';
 import { ZoyOwnerService } from '../../service/zoy-owner.service';
-import { FilterData, FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
 import { MatTableDataSource } from '@angular/material/table';
-import { ReportService } from 'src/app/finance/reports/service/reportService';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
+import { FilterData, FiltersRequestModel } from 'src/app/report/model/report-filters-model';
+import { OwnerReportService } from 'src/app/report/owner-reports/owner-reports.service';
+import { ReportsService } from 'src/app/report/service/reportService';
 
 @Component({
   selector: 'app-managing-owner-details',
@@ -66,13 +67,13 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  displayedColumns: string[] = [];
 	  columnHeaders = {} ;
 	  reportColumnsList = [] ;
-	  reportNamesList = this.reportService.reportNamesList;
+	  reportNamesList = this.ownerReportService.reportNamesList;
 	  transactionHeader:string="";
 	  @ViewChild(MatSort) sort: MatSort;
 	  @ViewChild(MatPaginator) paginator: MatPaginator;
 	  @ViewChild('closeModel') closeModel : ElementRef;
 	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService :ZoyOwnerService,
-		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private reportService : ReportService) {
+		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private ownerReportService : OwnerReportService,private reportsService : ReportsService) {
 			  this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
 		  //this.defHomeMenu=defMenuEnable;
@@ -115,8 +116,8 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		});
 		this.fromDate=this.getLastMonthDate();
 		this.toDate=this.getCurrentDate();
-		this.reportColumnsList=reportService.reportColumnsList;
-		this.columnHeaders = reportService.columnHeaders;
+		this.reportColumnsList=ownerReportService.reportColumnsList;
+		this.columnHeaders = reportsService.columnHeaders;
 	  }
 
 	  ngOnDestroy() {
@@ -423,7 +424,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	}
 	
 	getColumnsForSelectedReport(name:string) {
-		const report = this.reportService.reportColumnsList.find(n => n.reportName === name);
+		const report = this.ownerReportService.reportColumnsList.find(n => n.reportName === name);
 		return report?report.columns:[];
 	 }
 
@@ -498,7 +499,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			return;
 		}
 	
-		this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+		this.ownerReportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
 		  if(data?.data?.length >0){
 				this.totalProduct=data.count;
 				this.reportDataList=Object.assign([],data.data);

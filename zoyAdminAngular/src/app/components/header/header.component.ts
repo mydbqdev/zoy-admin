@@ -15,7 +15,7 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
 import { AlertNotificationDetailsModel } from 'src/app/alert-notification/model/alert-notification-model';
 import { WebsocketService } from 'src/app/common/service/websocket.service';
 import { AlertNotificationService } from 'src/app/alert-notification/service/alert-notification-service';
-import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
+import { FiltersRequestModel } from 'src/app/report/model/report-filters-model';
 
 @Component({
   selector: 'app-header',
@@ -257,8 +257,8 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
   selectNotification(notification: AlertNotificationDetailsModel): void {
     this.selectedNotification = notification;
-    console.log("this.selectedNotification",this.selectedNotification)
-   // this.updateUserNotificationsSeen();
+    this.notificationsCount =this.notificationsCount-1;
+    this.updateUserNotificationsSeen();
   }
   
   getIcon(screen_name:string):string{
@@ -271,7 +271,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     filtersRequest.pageIndex=0;
     filtersRequest.pageSize=5;
     this.alertNotificationService.getUserNotifications(filtersRequest).subscribe((data) => {
-      this.notificationsCount=data?.totalCount;
+      this.notificationsCount = data?.totalCount - data?.isSeenCount;
       this.onFlyNotification = Object.assign(data?.notifications);
     }, error => {
 			if(error.status == 0) {
@@ -306,7 +306,6 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 
   updateUserNotificationsSeen(){
     this.alertNotificationService.updateUserNotificationsSeen(this.selectedNotification).subscribe((data) => {
-
     }, error => {
 			if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")

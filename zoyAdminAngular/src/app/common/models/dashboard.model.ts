@@ -29,3 +29,10 @@ export class TenantsCardModel{
     inactiveTenantsCount : number = 0 ;
     registerTenantsCount : number = 0 ;
 }
+
+export class OwnersCardModel{
+    leadOwnersCount : number = 0 ;
+    zoyCodeGeneratedOwnersCount : number = 0 ;
+    ownerAppUsersCount : number = 0 ;
+    ZeroPropertyOwnersCount : number = 0 ;
+}

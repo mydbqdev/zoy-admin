@@ -44,7 +44,7 @@
     </li>
 
  <!-- Nav Item - Owners Collapse Menu -->
- <li class="nav-item" [ngClass]="{'active':menu21}" id="menu2" *ngIf="defMenu.owners && (rolesArray.includes('ZOYCODES_READ') || rolesArray.includes('MANAGING_OWNERS_READ'))" >
+ <li class="nav-item" [ngClass]="{'active':menu21}" id="menu2" *ngIf="defMenu.owners && (rolesArray.includes('ZOYCODES_READ') || rolesArray.includes('MANAGING_OWNERS_READ') ||rolesArray.includes('BULK_UPLOAD'))" >
     <a [ngClass]="menu2 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(2)" data-target="#collapseOwners"
     aria-expanded="false" aria-controls="collapseOwners">
         <i class="fas fa-fw fa-users"></i>
@@ -53,16 +53,18 @@
     </a>
     <div id="collapseOwners" [ngClass]="menu2 ? 'collapse show':'collapse'" aria-labelledby="headingOwners" data-parent="#accordionSidebar">
         <div class="collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
-            <a class="collapse-item" routerLink="/zoy-code" [ngClass]="{'active':activeSubNenuName=='zoy-code'}" *ngIf="rolesArray.includes('ZOYCODES_READ')" (click)="setHeaderName('Zoy Code')">Zoy Code</a>
+            <a class="collapse-item" routerLink="/zoy-code" [ngClass]="{'active':activeSubNenuName=='zoy-code'}" *ngIf="rolesArray.includes('ZOYCODES_READ')" (click)="setHeaderName('Zoy Code')">Owner Registration</a>
             <div class="p-1"></div>
             <a class="collapse-item" routerLink="/manage-owner" [ngClass]="{'active':activeSubNenuName=='manage-owner'}" *ngIf="rolesArray.includes('MANAGING_OWNERS_READ')" (click)="setHeaderName('Manage Owners');setOwnerResetId()" >Manage Owners</a>
+            <div class="p-1"></div>
+            <a class="collapse-item" routerLink="/bulk-upload" *ngIf="defMenu.tenantsSubMenu.bulkUpload && rolesArray.includes('BULK_UPLOAD_READ')" [ngClass]="{'active':activeSubNenuName=='bulk-upload'}" (click)="setHeaderName('Bulk Upload')" >Bulk Upload</a>
         </div>
     </div>
 </li>
 
 
 <!-- Nav Item - Tenants Collapse Menu -->
-<li class="nav-item"  [ngClass]="{'active':menu71}" id="menu7" *ngIf="defMenu.tenants && (rolesArray.includes('TENANTSZOY_READ') ||rolesArray.includes('BULK_UPLOAD'))"> 
+<li class="nav-item"  [ngClass]="{'active':menu71}" id="menu7" *ngIf="defMenu.tenants && (rolesArray.includes('TENANTSZOY_READ') )"> 
     <a [ngClass]="menu7 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(7)" data-target="#collapseTenants"
     aria-expanded="false" aria-controls="collapseTenants">
         <i class="fas fa-fw fa-door-open"></i>
@@ -71,9 +73,7 @@
     </a>
     <div id="collapseTenants" [ngClass]="menu7 ? 'collapse show':'collapse'" aria-labelledby="headingTenants" data-parent="#accordionSidebar">
         <div class="py-2 collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
-            <a class="collapse-item" routerLink="/tenants" *ngIf="defMenu.tenantsSubMenu.tenantzoy && rolesArray.includes('TENANTSZOY_READ')" [ngClass]="{'active':activeSubNenuName=='tenants'}" (click)="setHeaderName('Tenants');setOwnerResetId()" >Tenant </a>
-            <div class="p-1"></div>
-            <a class="collapse-item" routerLink="/bulk-upload" *ngIf="defMenu.tenantsSubMenu.bulkUpload && rolesArray.includes('BULK_UPLOAD_READ')" [ngClass]="{'active':activeSubNenuName=='bulk-upload'}" (click)="setHeaderName('Bulk Upload')" >Bulk Upload</a>
+            <a class="collapse-item" routerLink="/tenants" *ngIf="defMenu.tenantsSubMenu.tenantzoy && rolesArray.includes('TENANTSZOY_READ')" [ngClass]="{'active':activeSubNenuName=='tenants'}" (click)="setHeaderName('Tenants');setOwnerResetId()" >Manage Tenants </a>
         </div>
     </div>
 </li>
@@ -88,8 +88,6 @@
     <div id="collapseFinances" [ngClass]="menu5 ? 'collapse show':'collapse'" aria-labelledby="headingFinances"
         data-parent="#accordionSidebar">
         <div class="py-2 collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
-            <a class="collapse-item" routerLink="/report-list" *ngIf="rolesArray.includes('REPORTS_READ')" [ngClass]="{'active':activeSubNenuName=='report-list'}" (click)="setHeaderName('Reports')">Reports</a>
-            <div class="p-1"></div>
             <a class="collapse-item" routerLink="/payment-approval" [ngClass]="{'active':activeSubNenuName=='payment-approval'}" *ngIf="rolesArray.includes('PAYMENT_APPROVAL_READ')" >Payment Approval</a>
             <!--a class="collapse-item" routerLink="/home">Report 3</a>
             <a class="collapse-item" routerLink="/home">Report 4</a> -->
@@ -150,7 +148,7 @@
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/db-master-configuration" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_READ')" [ngClass]="{'active':activeSubNenuName=='db-master-configuration'}">Initial Configuration</a>
                 <div class="p-1"></div>
-                <a class="collapse-item" routerLink="/configuration-master" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ')" [ngClass]="{'active':activeSubNenuName=='configuration-master'}">Master Configuration</a>
+                <a class="collapse-item" routerLink="/configuration-master" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_READ') || rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_READ')" [ngClass]="{'active':activeSubNenuName=='configuration-master'}">Master Configuration</a>
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/user-audit" *ngIf="rolesArray.includes('USER_AUDIT_READ')" [ngClass]="{'active':activeSubNenuName=='user-audit'}">User Audit</a>
                 <div class="p-1"></div>

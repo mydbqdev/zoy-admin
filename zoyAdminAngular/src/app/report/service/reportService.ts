@@ -10,7 +10,7 @@ import { MessageService } from 'src/app/message.service';
     providedIn: 'root'
   })
 
-  export class ReportService {
+  export class ReportsService {
     message: string;
   
     public oDataBlockSize: number;
@@ -20,31 +20,6 @@ import { MessageService } from 'src/app/message.service';
     };
     constructor(private httpclient: HttpClient, private router: Router, private messageService: MessageService, @Inject(BASE_PATH) private basePath: string) { }
   
-    getReportApi={
-      'userTransactionReport':'payment_transfer_details',
-      'userPaymentGstReport':'user_gst_report_details',
-      'consolidatedFinanceReport':'consolidated_finance_report_details',
-      'tenantDuesReport':'tenant-dues-report_details',
-      'vendorPaymentsReport':'vendor-payment-report_details',
-      // 'vendorPaymentsDuesReport':'vendor-payment-dues-report',
-      // 'vendorPaymentsGstReport':'vendor-payment-gst-report',
-      'tenantRefundReport':'user_refund_details',
-      'reviewsAndRatingReport':'user_reviews_ratings_details',
-      'UpcomingTenantsReport':'upcoming_tenant_details',
-      // 'SuspendedTenantsReport':'suspended_tenant_details',
-      'InactiveTenantsReport':'inactive_tenant_details',
-      'ActiveTenantsReport':'active_tenant_details',
-     
-      'upcomingPotentialPropertiesReport': 'payment_transfer_details',
-     // 'suspendedPropertiesReport': 'suspended_property_details',
-      'InactivePropertiesReport': 'inactive_property_details',
-      'nonPotentialPropertiesReport': 'payment_transfer_details',
-      'potentialPropertiesReport': 'payment_transfer_details',
-      
-      'FailedTransactionReport':'failure_transactions_details'
-      
-    };
-    
     columnHeaders = {
       'ownerId': 'OWNER ID',
       'ownerName': 'OWNER NAME',
@@ -62,7 +37,6 @@ import { MessageService } from 'src/app/message.service';
       'totalAmount': 'TOTAL AMOUNT',
       'customerName': 'TENANT NAME',//'CUSTOMER NAME',
       'PgPropertyName': 'PG PROPERTY NAME',
-    //  'PgPropertyId': 'PG PROPERTY ID',
       'bedNumber': 'BED NUMBER',
       'category': 'CATEGORY',
       'paymentMethod': 'PAYMENT METHOD',
@@ -74,7 +48,6 @@ import { MessageService } from 'src/app/message.service';
       'paymentDate': 'PAYMENT DUE DATE',
       'creditAmount': 'CREDIT AMOUNT',
       'debitAmount': 'DEBIT AMOUNT',
-     // 'customerId': 'TENANT ID' ,//'CUSTOMER ID',
       'basicAmount': 'BASIC AMOUNT',
       'failedReason':'FAILURE REASON',
       'contactNum':"CONTACT NUMBER",
@@ -125,125 +98,12 @@ import { MessageService } from 'src/app/message.service';
       'numberOfBeds' : 'NUMBER OF BEDS',
       'expectedRentPerMonth' : 'EXPECTED RENT PER MONTH',
       'lastCheckoutDate' : 'LAST CHECK-OUT DATE',
-      'numberOfBedsOccupied' : 'NUMBER OF BEDS OCCUPIED',
-
-      'email':'EMAIL ID'
+      'email':'EMAIL ID',
+      'registrationDate':'REGISTRATION DATE'
       
       
   };
   
-	  reportColumnsList: { 'reportName': string, 'columns': string[] }[] = [
-		{
-		  'reportName': 'Tenant Transactions Report', //== User Transactions Report
-		  'columns': ['transactionDate','customerName', 'tenantContactNum','PgPropertyName','propertyHouseArea','bedNumber',  
-                  'transactionNumber', 'transactionStatus', 'baseAmount','gstAmount','totalAmount','category','paymentMethod'],
-    },
-		{
-		  'reportName': 'Tenant Payments GST Report', //==User Payments GST Report
-		  'columns': ['transactionDate','transactionNumber','tenantContactNum','customerName','PgPropertyName','propertyHouseArea', 'totalAmount', 'gstAmount', 'paymentMethod'],
-		},
-    {
-		  'reportName': 'Tenant Dues Report',
-		  'columns': ['pendingDueDate','customerName', 'tenantMobileNum', 'PgPropertyName','userPgPropertyAddress','bedNumber', 'pendingAmount', ],
-		},
-    {
-		  'reportName': 'Tenant Refunds Report',
-		  'columns': ['paymentDate','customerName', 'tenantMobileNum', 'PgPropertyName','userPgPropertyAddress','bookingId', 'refundTitle','refundableAmount','amountPaid','transactionNumber','paymentStatus' ],
-		},
-    {
-		  'reportName': 'Owner Payments Report', //==Vendor Payments Report
-		  'columns': [  'transactionDate','ownerName', 'pgName','ownerEmail','pgAddress','totalAmountFromTenants', 'amountPaidToOwner','zoyShare','transactionNumber', 'paymentStatus','ownerApprovalStatus'],
-		},
-    {
-		  'reportName': 'Owner Payments Dues Report', //==Vendor Payments Dues Report
-		  'columns': ['pendingDueDate','ownerName','pgName','ownerEmail','pgAddress', 'totalAmountPayable', 'totalAmountPaid', 'pendingAmount'],
-    },
-    {
-		  'reportName': 'Owner Payments Gst Report',// == Vendor Payments Gst Report
-		  'columns': ['transactionDate','transactionNumber','ownerName','ownerEmail','pgName','pgAddress','totalAmount','gstAmount','baseAmount','paymentMethod'],
-		},
-    {
-		  'reportName': 'Consolidated Finance Report',
-		  'columns': ['transactionDate', 'transactionNumber','payerPayeeType', 'payerPayeeName', 'creditAmount', 'debitAmount','pgName','contactNum']
-		},
-    {
-		  'reportName': 'Ratings and Reviews Report',
-		  'columns': ['pgName', 'customerName','cleanliness', 'accommodation', 'amenities', 'maintenance','valueForMoney','overallRating','reviews']
-		}
-
-    ,
-    {
-		  'reportName': 'Upcoming Tenants Report',
-		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'bookedProperyName','propertAddress', 'bedNumber', 'expectedCheckIndate','expectedCheckOutdate']
-		},
-   // {
-		//   'reportName': 'Suspended Tenants Report',
-		//   'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'bedNumber', 'checkedOutDate','suspendedDate','reasonForSuspension']
-		// },
-    {
-		  'reportName': 'Inactive Tenants Report',
-		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'previousPropertName','propertAddress', 'bedNumber', 'checkedOutDate']
-		},
-    {
-		  'reportName': 'Active Tenants Report',
-		  'columns': ['tenantName', 'tenantContactNumber','tenantEmailAddress', 'currentPropertName', 'propertAddress','bedNumber', 'checkInDate','expectedCheckOutdate']
-		},
-
-    // { 
-    //   'reportName': 'Suspended Properties Report', 
-    //   'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'suspendedDate', 'reasonForSuspension'] 
-    // }, 
-    { 
-      'reportName': 'Inactive Properties Report', 
-      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress'] 
-    }, 
-    { 
-      'reportName': 'Upcoming Potential Properties Report',
-      'columns': ['ownerFullName', 'bookedPropertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'numberOfBeds', 'expectedRentPerMonth'] 
-    }, 
-    { 
-      'reportName': 'Non-Potential Properties Report', 
-      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'lastCheckoutDate'] 
-    }, 
-    { 
-      'reportName': 'Potential Properties Report', 
-      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'numberOfBedsOccupied', 'expectedRentPerMonth']
-    },
-    { 
-      'reportName': 'Failure Transactions Report', 
-      'columns': ['transactionDate', 'customerName', 'tenantContactNum', 'email', 'totalAmount', 'failedReason']
-    }
-
-	  ];
-  
-    reportNamesList:{'name':string,'key':string}[] = [
-      { name: "Tenant Transactions Report", key: "userTransactionReport" },
-      { name: "Tenant Payments GST Report", key: "userPaymentGstReport" },
-      { name: "Tenant Dues Report", key: "tenantDuesReport" },
-      { name: "Tenant Refunds Report", key: "tenantRefundReport" },
-      { name: "Owner Payments Report", key: "vendorPaymentsReport" },
-      { name: "Owner Payments Dues Report", key: "vendorPaymentsDuesReport" },
-      { name: "Owner Payments Gst Report", key: "vendorPaymentsGstReport" },
-      { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
-      { name: "Ratings and Reviews Report", key: "reviewsAndRatingReport" },
-    
-      { name: "Upcoming Tenants Report", key: "UpcomingTenantsReport" },
-      // { name: "Suspended Tenants Report", key: "SuspendedTenantsReport" },
-      { name: "Inactive Tenants Report", key: "InactiveTenantsReport" },
-      { name: "Active Tenants Report", key: "ActiveTenantsReport" },
-
-      // { name: "Suspended Properties Report", key: "suspendedPropertiesReport" }, 
-      { name: "Inactive Properties Report", key: "InactivePropertiesReport" }, 
-      { name: "Upcoming Potential Properties Report", key: "upcomingPotentialPropertiesReport" }, 
-      { name: "Non-Potential Properties Report", key: "nonPotentialPropertiesReport" }, 
-      { name: "Potential Properties Report", key: "potentialPropertiesReport" },
-
-      { name: "Failure Transactions Report", key: "FailedTransactionReport" }
-
-      
-
-      ];
-
       getCityList(): Observable<any> {
         const url1=this.basePath +"zoy_admin/city_list";
             return  this.httpclient.get<any>(
@@ -255,20 +115,7 @@ import { MessageService } from 'src/app/message.service';
                 }
             );
     } 
-    
-    getReportsDetails(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/"+this.getReportApi[data.reportType];
-            return  this.httpclient.post<any>(
-                url1,
-                data,
-                {
-                    headers:ServiceHelper.buildHeaders(),
-                   observe : 'body',
-                   withCredentials:true
-                }
-            );
-    } 
-  
+      
 
   downloadReportPdf(data:any):Observable<any>{
     const url1=this.basePath +"zoy_admin/download_report";
@@ -278,8 +125,6 @@ import { MessageService } from 'src/app/message.service';
                      { responseType: 'blob' as 'json'}
                  );
   }
-
-    
 
   exportReportsToExcelOrCSV(data:any): Observable<any> {
 

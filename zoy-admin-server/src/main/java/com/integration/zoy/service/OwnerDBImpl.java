@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.ZoyCompanyMaster;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
@@ -18,6 +19,7 @@ import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
 import com.integration.zoy.entity.ZoyPgForceCheckOut;
 import com.integration.zoy.entity.ZoyPgGstCharges;
+import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
@@ -162,4 +164,16 @@ public interface OwnerDBImpl {
 	ZoyCompanyMaster findcompanyMaster() throws WebServiceException;
 	ZoyCompanyMaster saveCompanyMaster(ZoyCompanyMaster master) throws WebServiceException;
 	List<String[]> getPropertyDueDetails(String propertyId, String securityDeposit);
+	List<ZoyPgSecurityDepositDetails> findAllSortedByEffectiveDate() throws WebServiceException;
+	List<ZoyPgTokenDetails> findAllTokenDetailsSorted() throws WebServiceException;
+	List<ZoyDataGrouping> findAllDataGroupingSorted() throws WebServiceException;
+	List<ZoyPgForceCheckOut> findAllForceCheckOutDetailsSorted() throws WebServiceException;
+	List<ZoyPgNoRentalAgreement> findAllNoRentalAgreementDetailsSorted() throws WebServiceException;
+	List<ZoyPgEarlyCheckOut> findAllEarlyCheckOutRulesSorted() throws WebServiceException;
+	List<ZoyPgAutoCancellationAfterCheckIn> findAllAfterCheckInDatesSorted() throws WebServiceException;
+	List<ZoyPgShortTermRentingDuration> findAllShortTermRentingDurationDetailsSorted() throws WebServiceException;
+	List<ZoyPgAutoCancellationMaster> findAllSecurityDepositDeadlineSorted() throws WebServiceException;
+	List<ZoyPgGstCharges> findAllGstChargesDetailsSorted() throws WebServiceException;
+	List<ZoyPgOtherCharges> findAllOtherChargesDetailsSorted() throws WebServiceException;
+	List<RentalAgreementDoc> findAllRentalAgreementDetailsSorted() throws WebServiceException;
 }

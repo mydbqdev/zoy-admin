@@ -24,7 +24,7 @@
               <!-- Begin Page Content -->
               <div class="container-fluid" style="margin-top: -5px;">
                 <div class="d-flex mb-3">
-                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Reports</span></h3> 
+                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Owner Reports</span></h3> 
                  </div>  
                 <div class="row">
                  <div class="col-sm-11">
@@ -53,13 +53,10 @@
                             </mat-option>
                           </mat-autocomplete>
                         </form>
-                        <!-- <select class="form-select form-select-sm" aria-label="Default select example" [(ngModel)]="reportName" (ngModelChange)="changeReport()" style=" font-size: 12px;" > 
-                            <option *ngFor="let report of reportNamesList"  [value]="report.name" >{{report.name}}</option>
-                        </select> -->
                     </div>
                     <div class="ml-2" style="width: 340px;" >
-                           <label for="category" *ngIf="reportName != 'Upcoming Tenants Report'" >Date Range</label>
-                            <div class="d-flex gap-2" *ngIf="reportName != 'Upcoming Tenants Report'">
+                           <label for="category" *ngIf="reportName != 'Upcoming Potential Properties Report'" >Date Range</label>
+                            <div class="d-flex gap-2" *ngIf="reportName != 'Upcoming Potential Properties Report'">
                               <input type="datetime-local" class="form-control form-control-sm" style="width: 160px;font-size: 12px; " id="fromDate" [(ngModel)]="fromDate" 
                                     [ngClass]="{'is-invalid': (!fromDate ||(fromDate>toDate && toDate))}" 
                                     [title]="!fromDate? 'From Date is required':((fromDate>toDate && toDate)?'Invalid date range':'') " /> - 
@@ -116,14 +113,14 @@
                             </div>
                            
                             
-                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' || reportName == 'Owner Payments Report'" >
+                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' || reportName == 'Owner Payments Report' || reportName == 'Inactive Properties Report' " >
                               <div class="form-group">
                                 <label for="ownerName" class="text-search-header">Owner Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.ownerName" name="ownerName" />
                               </div>
                             </div>
                           
-                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' || reportName == 'Owner Payments Report' " >
+                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' || reportName == 'Owner Payments Report' || reportName == 'Inactive Properties Report' " >
                               <div class="form-group">
                                 <label for="ownerEmail" class="text-search-header">Owner Email</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.ownerEmail" name="ownerEmail" />
@@ -133,10 +130,24 @@
                             <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' ||  reportName =='Tenant Transactions Report' 
                                                        || reportName == 'Owner Payments Report' || reportName =='Tenant Payments GST Report' || reportName == 'Tenant Dues Report' || reportName =='Ratings and Reviews Report'
                                                        || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'
-                                                       || reportName =='Consolidated Finance Report'">
+                                                       || reportName =='Consolidated Finance Report' || reportName == 'Potential Properties Report' || reportName == 'Upcoming Potential Properties Report'">
                               <div class="form-group">
                                 <label for="pgName" class="text-search-header">PG Property Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgName" name="pgName" />
+                              </div>
+                            </div>
+
+                            <div class="col-sm-6" *ngIf="reportName == 'Inactive Properties Report'" >
+                              <div class="form-group">
+                                <label for="propertyContactNum" class="text-search-header">Property Contact Number</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.propertyContactNum" name="propertyContactNum" />
+                              </div>
+                            </div>
+
+                            <div class="col-sm-6" *ngIf="reportName == 'Inactive Properties Report'" >
+                              <div class="form-group">
+                                <label for="pgAddress" class="text-search-header">Property Address </label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgAddress" name="pgAddress" />
                               </div>
                             </div>
                           
@@ -233,7 +244,10 @@
                                     <ng-container *ngFor="let column of selectedReportColumns">
                                       <ng-container [matColumnDef]="column" *ngIf=" column != 'reviews'">
                                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 400;" [matTooltip]="columnHeaders[column] "> 
-                                        {{ column == 'totalAmount' && reportName =='Failure Transactions Report' ? 'AMOUNT' : (columnHeaders[column] || column ) }}
+                                          {{ column == 'numberOfBeds' ? 'NUMBER OF BEDS OCCUPIED' :
+                                          (column == 'propertyName' && reportName == 'Upcoming Potential Properties Report' ? 'BOOKED PROPERTY NAME' :
+                                          (columnHeaders[column] || column)) }}
+
                                           <i class="fas fa-lg fa-sort ml-1" style="color:#d1cfcf;margin-right: 3px;"></i>
                                           <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
                                              style="margin-right: 3px;margin-left: -14px;"></i>
@@ -241,45 +255,9 @@
                                              style="margin-right: 3px;margin-left: -14px;"></i></th>
                                         <td mat-cell *matCellDef="let element" > 
                                            {{  element[column] == undefined || element[column] == '' ? '-' : element[column] }} 
-                                          
-                                           <!-- {{ element[column] == undefined || element[column] == '' ? '-' : 
-                                                (column.includes('ontactNum') ? (element[column] | currency:'INR':'symbol':'1.2-2') : element[column]) }} -->
-                                              </td>
-                                      </ng-container>
-
-                                      <ng-container [matColumnDef]="column" *ngIf="column == 'reviews' " >
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 400;"> 
-                                          REVIEWS</th>
-                                        <td mat-cell *matCellDef="let element" > 
-                                          <span style="cursor: pointer;"  data-toggle="modal" data-target="#reviewsModel" (click)="viweReviewsReplyDetails(element)">
-                                            <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
-                                        </span>
-                                        </td>
+                                          </td>
                                       </ng-container>
                                     </ng-container>
-
-                                       <!-- <ng-container matColumnDef="actions">
-                                      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions"></th>
-                                      <td mat-cell *matCellDef="let element">
-                                      <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails"  (click)="viewReport(element)">
-                                          <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
-                                      </span>
-                                    
-                                      </td>
-                                  </ng-container>  -->
-
-                                 <!--   <ng-container matColumnDef="actions">
-                                      <th mat-header-cell style="" *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions"></th>
-                                      <td mat-cell style="" *matCellDef="let element">
-                                      <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#viewDetails"  (click)="viewReport(element)">
-                                          <i class="bi bi-eye" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  ></i>
-                                      </span>
-                                     <span style="cursor: pointer; margin-left: 10px;" (click)="onExport(element)">
-                                          <i class="bi bi-upload" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="Export"></i>
-                                      </span
-                                      </td>
-                                  </ng-container>  -->
-                                  
                                     <tr mat-header-row *matHeaderRowDef="selectedReportColumns; sticky:true"></tr>
                                     <tr mat-row *matRowDef="let row; columns: selectedReportColumns;"></tr>
                                   </table>
@@ -308,121 +286,4 @@
 
   </div>
   <!-- End of Page Wrapper -->
-</div>
-
- <!-- viewDetails
-<div class="offcanvas offcanvas-end" tabindex="-1" id="viewDetails" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasRightLabel">{{reportName}} Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <hr class="sidebar-divider my-0">
-    <div class="offcanvas-body">
-     <div style="font-size: 13px;">   
-
-    <div *ngFor="let key of objectKeys(reportData)">
-      <div class="row mb-1">
-          <div class="col-sm-5 font-weight-bold">
-              {{ columnHeaders[key] || key }}
-          </div>
-          <div class="col-sm-7">: {{ reportData[key] }}</div>
-      </div>
-    </div>
-    </div>
-    </div>
-</div>
--->
-
-
-<div class="modal fade" id="reviewsModel" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog model-center" role="document">  
-    <div class="modal-content">
-     <div class="modal-header" style="color: #fff;background-color: #925FE2;border-color: #955cf1;"> 
-        <h5 class="modal-title ">Review Summary</h5>
-        <button type="button"  class="btn-close" data-dismiss="modal" aria-label="Close"  style="background-color: #fff;" #reviewsModelClose >
-        </button>
-      </div>
-      <div class="modal-body">
-        
-        <div class="pl-3 pr-3">
-          <div class="row">
-            <div class="col-sm-4" style="font-size: 14px;">PG Property Name</div>
-            <div class="col-sm-1 align-items-center">:</div>
-            <div class="col-sm-6" style="font-size: 14px;color: gray;">{{reviewsReplyDetails.pgName}}</div>
-            <div class="col-sm-1">
-              <div class="rating-container">
-                <div class="rating-box" [ngClass]="{'low-rating': +reviewsReplyDetails.overallRating < 3}">
-                  <span class="star">&#9733;</span> 
-                  <span class="rating-number"> {{reviewsReplyDetails.overallRating}}</span> 
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-4" style="font-size: 14px;">Tenant Name</div>
-            <div class="col-sm-1 align-items-center">:</div>
-            <div class="col-sm-7" style="font-size: 14px;color: gray;">{{reviewsReplyDetails.customerName}}</div>
-          </div>
-          <div class="row">
-            <div class="col-sm-4" style="font-size: 14px;">Tenant Mobile no.</div>
-            <div class="col-sm-1 align-items-center">:</div>
-            <div class="col-sm-7" style="font-size: 14px;color: gray;">{{reviewsReplyDetails.customerMobileNo}}</div>
-          </div>
-        
-      </div>
-        <div class="card card-body ml-2 mr-2 mb-2 p-2 " style="max-height: 400px; overflow-y: auto;">
-          <div class="mt-2 ml-2">
-            <div class="d-flex">
-            <div>
-                <div class="profile-top" *ngIf="!reviewsReplyDetails.customerImage" > 
-                    {{reviewsReplyDetails.customerName?.charAt(0).toUpperCase()}} 
-                </div>
-                <img [src]="reviewsReplyDetails.customerImage" *ngIf="reviewsReplyDetails.customerImage" class="profile-top" alt="User Image">                        
-            </div>
-            <div>
-            <div style="padding-top:5px">    
-            <span class="ml-2 d-none d-lg-inline text-gray-600 small text-truncate" style="max-width: 100px;">
-                {{reviewsReplyDetails.customerName}} 
-            </span>
-            </div>
-            <div class="ml-2" style="font-size: 11px;color:#bdb9b9;"> {{reviewsReplyDetails.reviewDate  | date: 'MMM d, y' }}</div>
-          </div>
-           </div>
-          <div> {{reviewsReplyDetails.writtenReview}} </div>
-        </div>
-        <div >
-          <div class="mt-2"  *ngFor="let review of reviewsReplyDetails.reviews" >
-              <div *ngIf="review.customerId">
-                <div class="d-flex">
-                <div>
-                    <img [src]="review.customerImage" *ngIf="review.customerImage" class="profile-top" alt="User Image">                        
-                </div>
-                <div>
-                    <div> 
-                      <span class="ml-2 d-none d-lg-inline text-gray-600 small text-truncate" style="max-width: 100px;">
-                        {{review.customerName}} 
-                    </span>
-                    </div>
-                <div class="ml-2" style="font-size: 11px;color:#bdb9b9;"> {{review.timeStamp  | date: 'MMM d, y' }} <span *ngIf="review.isEdited"> .Edited</span></div>
-              </div>
-              <div> {{review.review}} </div>
-            </div>
-          </div>
-          <div style="border-left: 2px solid #e5e3e3;" class=" d-flex ml-3" *ngIf="review.partnerId">
-              <div>
-                <div>
-                   <span class="d-none d-lg-inline text-gray-600 small text-truncate" style="max-width: 100px;">
-                    Response from Owner
-                   </span>
-                <span style="font-size: 11px;color:#bdb9b9;"> {{review.timeStamp  | date: 'MMM d, y' }} <span *ngIf="review.isEdited"> .Edited</span></span>
-                </div>
-              <div> {{review.review}} </div>
-            </div>
-        </div>
-          </div>
-        </div>
-      </div>
-      </div>
-    </div>
-  </div>
 </div>

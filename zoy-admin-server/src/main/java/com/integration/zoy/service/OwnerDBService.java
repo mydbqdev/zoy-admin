@@ -8,12 +8,11 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.ZoyCompanyMaster;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
@@ -28,6 +27,7 @@ import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
 import com.integration.zoy.entity.ZoyPgForceCheckOut;
 import com.integration.zoy.entity.ZoyPgGstCharges;
+import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
@@ -46,6 +46,7 @@ import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.exception.WebServiceException;
+import com.integration.zoy.repository.RentalAgreementDocRepository;
 import com.integration.zoy.repository.ZoyCompanyMasterRepository;
 import com.integration.zoy.repository.ZoyCompanyProfileMasterRepository;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
@@ -60,6 +61,7 @@ import com.integration.zoy.repository.ZoyPgDueTypeMasterRepository;
 import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
 import com.integration.zoy.repository.ZoyPgForceCheckOutRepository;
 import com.integration.zoy.repository.ZoyPgGstChargesRepository;
+import com.integration.zoy.repository.ZoyPgNoRentalAgreementRespository;
 import com.integration.zoy.repository.ZoyPgOtherChargesRepository;
 import com.integration.zoy.repository.ZoyPgOwnerBookingDetailsRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
@@ -79,8 +81,6 @@ import com.integration.zoy.repository.ZoyPgTimeMasterRepository;
 import com.integration.zoy.repository.ZoyPgTokenDetailsRepository;
 import com.integration.zoy.repository.ZoyPgTypeMasterRepository;
 import com.integration.zoy.repository.ZoyShareMasterRepository;
-import com.integration.zoy.utils.PaginationRequest;
-import com.integration.zoy.utils.ZoyCompanyProfileMasterDto;
 
 @Service
 public class OwnerDBService implements OwnerDBImpl{
@@ -173,6 +173,9 @@ public class OwnerDBService implements OwnerDBImpl{
 	private ZoyPgForceCheckOutRepository zoyPgForceCheckOutRepository; 
 	
 	@Autowired
+	private ZoyPgNoRentalAgreementRespository zoyPgNoRentalAgreementRespository;
+	
+	@Autowired
 	private ZoyCompanyProfileMasterRepository zoyCompanyProfileMasterRepository;
 	
 	@Autowired
@@ -180,6 +183,9 @@ public class OwnerDBService implements OwnerDBImpl{
 	
 	@Autowired
 	private ZoyPgPropertyDuesRepository zoyPgPropertyDuesRepository;
+	
+	@Autowired
+	private RentalAgreementDocRepository rentalAgreementDocRepository;
 	
 	@Autowired
 	ZoyCompanyMasterRepository zoyCompanyMasterRepository;
@@ -562,6 +568,13 @@ public class OwnerDBService implements OwnerDBImpl{
 		List<ZoyPgTokenDetails> results = zoyPgTokenDetailsRepository.findAll(PageRequest.of(0, 1)).getContent();
 		return results.isEmpty() ? null : results.get(0);
 	}
+	
+	@Override
+	public List<ZoyPgTokenDetails> findAllTokenDetailsSorted() throws WebServiceException {
+	    List<ZoyPgTokenDetails> results = zoyPgTokenDetailsRepository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
 
 	@Override
 	public ZoyPgTokenDetails saveToken(ZoyPgTokenDetails tokenDetails) throws WebServiceException{
@@ -658,7 +671,13 @@ public class OwnerDBService implements OwnerDBImpl{
 		List<ZoyDataGrouping> results=zoyDataGroupingRepository.findAll(PageRequest.of(0, 1)).getContent();
 		return results.isEmpty() ? null : results.get(0);
 	}
-
+	
+	@Override
+	public List<ZoyDataGrouping> findAllDataGroupingSorted() throws WebServiceException {
+	    List<ZoyDataGrouping> results = zoyDataGroupingRepository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
 	@Override
 	public ZoyDataGrouping saveDataGroup(ZoyDataGrouping group) throws WebServiceException {
 		return zoyDataGroupingRepository.save(group);
@@ -680,6 +699,29 @@ public class OwnerDBService implements OwnerDBImpl{
 		return zoySecurityDepositRepo.save(depositLimits);
 	}
 
+	@Override
+	public List<ZoyPgSecurityDepositDetails> findAllSortedByEffectiveDate() throws WebServiceException {
+	    List<ZoyPgSecurityDepositDetails> results = zoySecurityDepositRepo.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
+	@Override
+	public List<ZoyPgEarlyCheckOut> findAllEarlyCheckOutRulesSorted() throws WebServiceException {
+	    List<ZoyPgEarlyCheckOut> results = zoyPgEarlyCheckOutRepository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
+	@Override
+	public List<ZoyPgAutoCancellationAfterCheckIn> findAllAfterCheckInDatesSorted() throws WebServiceException {
+	    List<ZoyPgAutoCancellationAfterCheckIn> results = zoyPgAutoCancellationAfterCheckInRepository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
+	@Override
+	public List<ZoyPgAutoCancellationMaster> findAllSecurityDepositDeadlineSorted() throws WebServiceException {
+	    List<ZoyPgAutoCancellationMaster> results = zoyPgAutoCancellationMasterRepository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
 	@Override
 	public ZoyPgRoomDetails findRoomName(String roomId) {
 		return zoyPgRoomDetailsRepository.findRoomNameByRoomId(roomId);
@@ -776,7 +818,42 @@ public class OwnerDBService implements OwnerDBImpl{
 		return results.isEmpty() ? null : results.get(0);
 
 	}
+	
+	@Override
+	public List<ZoyPgForceCheckOut> findAllForceCheckOutDetailsSorted() throws WebServiceException {
+	    List<ZoyPgForceCheckOut> results = zoyPgForceCheckOutRepository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
+	@Override
+	public List<ZoyPgGstCharges> findAllGstChargesDetailsSorted() throws WebServiceException {
+	    List<ZoyPgGstCharges> results = zoyPgGstChargesRepo.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
+	@Override
+	public List<ZoyPgOtherCharges> findAllOtherChargesDetailsSorted() throws WebServiceException {
+	    List<ZoyPgOtherCharges> results = zoyPgOtherChargesRepo.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
+	@Override
+	public List<ZoyPgNoRentalAgreement> findAllNoRentalAgreementDetailsSorted() throws WebServiceException {
+	    List<ZoyPgNoRentalAgreement> results = zoyPgNoRentalAgreementRespository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
+	@Override
+	public List<RentalAgreementDoc> findAllRentalAgreementDetailsSorted() throws WebServiceException {
+	    List<RentalAgreementDoc> results = rentalAgreementDocRepository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
 
+	@Override
+	public List<ZoyPgShortTermRentingDuration> findAllShortTermRentingDurationDetailsSorted() throws WebServiceException {
+	    List<ZoyPgShortTermRentingDuration> results = rentingDurationRepo.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
 	@Override
 	public ZoyCompanyProfileMaster findCompanyProfile(String profileId) {
 		return zoyCompanyProfileMasterRepository.findById(profileId).orElse(null);

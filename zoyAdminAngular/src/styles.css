@@ -324,4 +324,11 @@ a.approve-icon:hover{
   background-color: #6f42c133;
   color: #6f42c1;
 }
+.common-status {
+  width: 110px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+}
 

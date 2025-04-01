@@ -16,6 +16,7 @@ import { map, Observable, startWith } from 'rxjs';
 import { TenantReportsService } from '../tenant-reports.service';
 import { FilterData, FiltersRequestModel } from '../../model/report-filters-model';
 import { ReviewsModel } from '../../model/reviews-model';
+import { ReportsService } from '../../service/reportService';
  
 @Component({
 	selector: 'app-tenant-reports',
@@ -40,14 +41,14 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 	public totalProduct:number=0;
 	pageSize:number=10;
 	pageSizeOptions=[10,20,50];
-	selectedReportColumns: any[] = this.getColumnsForSelectedReport('Tenant Transactions Report');
+	selectedReportColumns: any[] = this.getColumnsForSelectedReport('Active Tenants Report');
 	filterData :FilterData=new FilterData();
 	cityLocation: string[] = [];
-	reportNamesList = this.reportService.reportNamesList;
+	reportNamesList = this.tenantReportService.reportNamesList;
 	cityLocationName:string='';
 	fromDate:string='';
 	toDate:string='';
-	reportName:string ='Tenant Transactions Report';
+	reportName:string ='Active Tenants Report';
 	@ViewChild('reviewsModelClose') reviewsModelClose: any;
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
 	public userNameSession: string = "";
@@ -58,7 +59,7 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 	reviewsReplyDetails:ReviewsModel=new ReviewsModel();
 
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : TenantReportsService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private tenantReportService : TenantReportsService,private reportsService : ReportsService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -86,8 +87,8 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 		});
 		this.fromDate=this.getLastMonthDate();
 		this.toDate=this.getCurrentDate();
-		this.reportColumnsList=reportService.reportColumnsList;
-		this.columnHeaders = reportService.columnHeaders;
+		this.reportColumnsList=tenantReportService.reportColumnsList;
+		this.columnHeaders = reportsService.columnHeaders;
 		 this.filteredOptions = this.reportControl.valueChanges.pipe(
 					startWith(''),
 					map(value => this.filter(value))
@@ -132,10 +133,20 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 	selectedReport(report:any ): void {
 		this.reportName = report;
 		this.changeReport();
+
+		  if(this.reportName == 'Tenant Dues Report'){
+			this.fromDate = this.fromDate.substring(0,10);
+			this.toDate = this.toDate.substring(0,10);
+			}else{
+				if(this.fromDate.length == 10){
+					this.fromDate = this.fromDate+'T00:00';
+				   	this.toDate = this.toDate+'T23:59';
+				}
+			}
 	  }
 
 	getColumnsForSelectedReport(name:string) {
-		const report = this.reportService.reportColumnsList.find(n => n.reportName === name);
+		const report = this.tenantReportService.reportColumnsList.find(n => n.reportName === name);
 		return report?report.columns:[];
 	 }
 
@@ -163,7 +174,7 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 	  getCityList(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
-		this.reportService.getCityList().subscribe(data => {
+		this.reportsService.getCityList().subscribe(data => {
 		this.cityLocation=data;
 		this.cityLocationName =this.cityLocation?.length>0?this.cityLocation[0]:"";
 		this.generateReport();
@@ -244,8 +255,14 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 				this.filtersRequest.sortActive=sortActive;
 				this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 
-				this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
-				this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
+				if(this.reportName == 'Tenant Dues Report'){
+					this.filtersRequest.fromDate = this.fromDate+' 00:00:00'
+					this.filtersRequest.toDate = this.toDate+' 23:59:59';
+				}else{
+					this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
+					this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
+				}
+
 				this.filtersRequest.cityLocation = this.cityLocationName;
 				this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 				this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
@@ -261,7 +278,7 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 					this.notifyService.showInfo("Under Development","")
 				}else{
 				this.spinner.show();
-				this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+				this.tenantReportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
 				this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
 
 				  if(data?.data?.length >0){
@@ -330,7 +347,7 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
 		this.filtersRequest.downloadType = type ;
 		this.downloadProgress=true;
-		this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
+		this.reportsService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
 			if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Owner Payments Gst Report' || this.reportName =='Suspended Properties Report'
 				|| this.reportName =='Upcoming Potential Properties Report'|| this.reportName =='Non-Potential Properties Report'
 				|| this.reportName =='Potential Properties Report'
@@ -396,10 +413,5 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 			  }
 			});	
 		}
-		  
- viweReviewsReplyDetails(element: any): void {
-	this.reviewsReplyDetails = element;	
-}
-
-		  
+		  		  
 }

@@ -53,7 +53,6 @@
   .status-item {
     display: flex;
     align-items: start;
-    gap: 10px;
 }
 
 .card-1::before {
@@ -73,12 +72,13 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    margin-top: 3px;
 }
 .item:hover {
-  background-color: #f0f0f0; 
-  border-radius: 8px; 
+  background-color: #f0f0f0;
+  border-radius: 5px;
   transform: scale(1.07);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  padding: 0 6px;
 }
 
 .status-item span.active {
@@ -98,6 +98,33 @@
 .status-item:hover span {
   transform: scale(1.2);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.label {
+  flex: 1;
+  margin-left: 5px;
+}
+
+.value {
+  text-align: right;
+}
+.status-item {
+  display: flex;
+  align-items: start;
+}
+
+.status-item span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 
 

@@ -174,7 +174,10 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 	List<Object[]> getUsersWithNonNullPinAndActiveOwnersPropertiesCount();
 	
 	@Query(value = "select (select count(*) from pgusers.user_master um where um.user_status ='Active') as activeTenants,\r\n"
-			+ "(SELECT COUNT(*) FROM pgowners.zoy_pg_owner_booking_details zpqbd  WHERE zpqbd.in_date > CURRENT_DATE) AS upcomingTenantsCount, \r\n"
+			+ "(SELECT COUNT(*)\r\n"
+			+ "FROM pgowners.zoy_pg_owner_booking_details zpqbd  \r\n"
+			+ "join pgusers.user_bookings ub  on zpqbd.booking_id = ub.user_bookings_id \r\n"
+			+ "WHERE zpqbd.in_date > CURRENT_DATE and ub.user_bookings_is_cancelled = false AND ub.user_bookings_web_check_in = false) AS upcomingTenantsCount, \r\n"
 			+ "(SELECT COUNT(*) \r\n"
 			+ "FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
 			+ "JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id\r\n"

@@ -12,10 +12,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { AlertNotificationDetailsModel} from '../model/alert-notification-model';
-import { FiltersRequestModel } from 'src/app/finance/reports/model/report-filters-model';
 import { AlertNotificationService } from '../service/alert-notification-service';
 import { Menu } from 'src/app/components/header/menu';
 import { MenuService } from 'src/app/components/header/menu.service';
+import { FiltersRequestModel } from 'src/app/report/model/report-filters-model';
 
 @Component({
 	selector: 'app-alert-notification',
@@ -36,8 +36,8 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 	selectedNotification: AlertNotificationDetailsModel = new AlertNotificationDetailsModel();
 	public lastPageSize:number=0;
 	public totalProduct:number=0;
-	pageSize:number=10;
-	pageSizeOptions=[10,20,50];
+	pageSize:number=5;
+	pageSizeOptions=[5,10,25,50];
 	public rolesArray: string[] = [];
 	allMenuList:Menu[]=[];
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private alertNotificationService:AlertNotificationService,
@@ -115,9 +115,10 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 	  }
 	  filtersRequest :FiltersRequestModel = new FiltersRequestModel();
 	  notifications: AlertNotificationDetailsModel[]=[] ;
-
 		getUserNotifications(){
 		this.lastPageSize = this.pageSize;
+		this.filtersRequest.isAlert=true;
+		this.spinner.show();
 		  this.alertNotificationService.getUserNotifications(this.filtersRequest).subscribe((data) => {
 			if(data?.notifications?.length >0){
 				this.totalProduct = data?.totalCount; 
@@ -128,8 +129,9 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 				this.notifications = Object.assign([]);
 				this.dataSource.data = this.notifications//new MatTableDataSource(this.notifications);
 			}
-	  	console.log(" getUserNotifications>>>this.notifications", this.notifications)
+			this.spinner.hide();
 		  }, error => {
+			this.spinner.hide();
 				if(error.status == 0) {
 					this.notifyService.showError("Internal Server Error/Connection not established", "")
 				}else if(error.status==401){

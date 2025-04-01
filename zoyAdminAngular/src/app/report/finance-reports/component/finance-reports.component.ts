@@ -14,8 +14,8 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { FormControl } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 import { FilterData, FiltersRequestModel } from '../../model/report-filters-model';
-import { ReviewsModel } from '../../model/reviews-model';
 import { FinanceReportService } from '../finance.serives';
+import { ReportsService } from '../../service/reportService';
  
 @Component({
 	selector: 'app-finance-reports',
@@ -43,22 +43,20 @@ export class FinanceReportsComponent implements OnInit, AfterViewInit {
 	selectedReportColumns: any[] = this.getColumnsForSelectedReport('Tenant Payments GST Report');
 	filterData :FilterData=new FilterData();
 	cityLocation: string[] = [];
-	reportNamesList = this.reportService.reportNamesList;
+	reportNamesList = this.financeReportsService.reportNamesList;
 	cityLocationName:string='';
 	fromDate:string='';
 	toDate:string='';
 	reportName:string ='Tenant Payments GST Report';
-	@ViewChild('reviewsModelClose') reviewsModelClose: any;
 	filtersRequest :FiltersRequestModel = new FiltersRequestModel();
 	public userNameSession: string = "";
 	errorMsg: any = "";
 	mySubscription: any;
 	rolesArray:string[]=[];
 	isExpandSideBar:boolean=true;
-	reviewsReplyDetails:ReviewsModel=new ReviewsModel();
 
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private reportService : FinanceReportService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private financeReportsService : FinanceReportService,private reportsService : ReportsService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -86,8 +84,8 @@ export class FinanceReportsComponent implements OnInit, AfterViewInit {
 		});
 		this.fromDate=this.getLastMonthDate();
 		this.toDate=this.getCurrentDate();
-		this.reportColumnsList=reportService.reportColumnsList;
-		this.columnHeaders = reportService.columnHeaders;
+		this.reportColumnsList=financeReportsService.reportColumnsList;
+		this.columnHeaders = reportsService.columnHeaders;
 		 this.filteredOptions = this.reportControl.valueChanges.pipe(
 					startWith(''),
 					map(value => this.filter(value))
@@ -135,7 +133,7 @@ export class FinanceReportsComponent implements OnInit, AfterViewInit {
 	  }
 
 	getColumnsForSelectedReport(name:string) {
-		const report = this.reportService.reportColumnsList.find(n => n.reportName === name);
+		const report = this.financeReportsService.reportColumnsList.find(n => n.reportName === name);
 		return report?report.columns:[];
 	 }
 
@@ -163,7 +161,7 @@ export class FinanceReportsComponent implements OnInit, AfterViewInit {
 	  getCityList(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
-		this.reportService.getCityList().subscribe(data => {
+		this.reportsService.getCityList().subscribe(data => {
 		this.cityLocation=data;
 		this.cityLocationName =this.cityLocation?.length>0?this.cityLocation[0]:"";
 		this.generateReport();
@@ -250,10 +248,7 @@ export class FinanceReportsComponent implements OnInit, AfterViewInit {
 				this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 				this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
 			
-				if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Owner Payments Gst Report' || this.reportName =='Suspended Properties Report'
-					|| this.reportName =='Upcoming Potential Properties Report'|| this.reportName =='Non-Potential Properties Report'
-					|| this.reportName =='Potential Properties Report'
-				){
+				if( this.reportName =='Owner Payments Gst Report' ){
 					this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
 					this.totalProduct=0;
 					this.reportDataList=Object.assign([]);
@@ -261,7 +256,7 @@ export class FinanceReportsComponent implements OnInit, AfterViewInit {
 					this.notifyService.showInfo("Under Development","")
 				}else{
 				this.spinner.show();
-				this.reportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+				this.financeReportsService.getReportsDetails(this.filtersRequest).subscribe((data) => {
 				this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
 
 				  if(data?.data?.length >0){
@@ -308,10 +303,6 @@ export class FinanceReportsComponent implements OnInit, AfterViewInit {
 			}
 	 	}	 
 	
-	onExport(element: any): void {
-		console.log('Export action triggered for:', element);
-	}
-	
 	downloadProgress:boolean=false;
 	downloadPdf(type:string){   
 		this.authService.checkLoginUserVlidaate();
@@ -330,11 +321,8 @@ export class FinanceReportsComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
 		this.filtersRequest.downloadType = type ;
 		this.downloadProgress=true;
-		this.reportService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
-			if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Owner Payments Gst Report' || this.reportName =='Suspended Properties Report'
-				|| this.reportName =='Upcoming Potential Properties Report'|| this.reportName =='Non-Potential Properties Report'
-				|| this.reportName =='Potential Properties Report'
-			){
+		this.reportsService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
+			if( this.reportName =='Owner Payments Gst Report' ){
 				this.notifyService.showInfo("Under Development","")
 			}else if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 				let extension= 'application/pdf';
@@ -397,9 +385,5 @@ export class FinanceReportsComponent implements OnInit, AfterViewInit {
 			});	
 		}
 		  
- viweReviewsReplyDetails(element: any): void {
-	this.reviewsReplyDetails = element;	
-}
-
 		  
 }
