@@ -131,6 +131,9 @@ public class CsvGenerateService {
             case "PotentialPropertyReport":
             	writer.println("Owner Name,Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month");
                 break;
+            case "NonPotentialPropertyReport":
+            	writer.println("Owner Name,Property Name,Property Contact Number,Property Email address,Property Address,Last Check-out Date (Last tenant checkout Date),Last Check-in Date (Last tenant check-in  Date)");
+                break;
             case "UpComingPotentialPropertyReport":
             	writer.println("Owner Name,Booked Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month");
                 break;
@@ -395,6 +398,7 @@ public class CsvGenerateService {
                             safeToString(suspendedproperty.getReasonForSuspension()));     		 
                 }
                 break;
+                
             case "PotentialPropertyReport":
             	if (dto instanceof PropertyResportsDTO) {
             		PropertyResportsDTO potentialProperty = (PropertyResportsDTO) dto;
@@ -408,6 +412,21 @@ public class CsvGenerateService {
                             formatAmountWithCommas(potentialProperty.getExpectedRentPerMonth()));     		 
                 }
                 break;
+            case "NonPotentialPropertyReport":
+            	if (dto instanceof PropertyResportsDTO) {
+            		PropertyResportsDTO potentialProperty = (PropertyResportsDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(potentialProperty.getOwnerFullName()),
+                            safeToString(potentialProperty.getPropertyName()),
+                            safeToString(potentialProperty.getPropertyContactNumber()),
+                            safeToString(potentialProperty.getPropertyEmailAddress()),
+                            safeToString(potentialProperty.getPropertyAddress()),
+                            potentialProperty.getLastCheckOutDate() != null ? tuService.formatTimestamp(potentialProperty.getLastCheckOutDate().toInstant()) : "",
+                            potentialProperty.getLastCheckInDate() != null ? tuService.formatTimestamp(potentialProperty.getLastCheckInDate().toInstant()) : ""
+                    );
+                }
+                break;
+                
             case "UpComingPotentialPropertyReport":
             	if (dto instanceof PropertyResportsDTO) {
             		PropertyResportsDTO potentialProperty = (PropertyResportsDTO) dto;

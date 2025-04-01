@@ -283,6 +283,15 @@ public class ExcelGenerateService {
 			row.createCell(5).setCellValue("Number of beds occupied");
 			row.createCell(6).setCellValue("Expected rent per Month");
 			break;
+		case "NonPotentialPropertyReport":
+			row.createCell(0).setCellValue("Owner Name");
+			row.createCell(1).setCellValue("Property Name");
+			row.createCell(2).setCellValue("Property Contact Number");
+			row.createCell(3).setCellValue("Property Email address");
+			row.createCell(4).setCellValue("Property Address");
+			row.createCell(5).setCellValue("Last Check-out Date (Last tenant checkout Date)");
+			row.createCell(6).setCellValue("Last Check-in Date (Last tenant check-in  Date)");
+			break;
 		case "UpComingPotentialPropertyReport":
 			row.createCell(0).setCellValue("Owner Name");
 			row.createCell(1).setCellValue("Booked Property Name");
@@ -528,6 +537,27 @@ public class ExcelGenerateService {
 				setCurrencyCell(row,5,nullSafe(potentialPropertyReport.getExpectedRentPerMonth()));
 				row.createCell(6).setCellValue(nullSafe(potentialPropertyReport.getNumberOfBeds()));			
 			}
+			break;
+		case "NonPotentialPropertyReport":
+			if (dto instanceof PropertyResportsDTO) {
+				PropertyResportsDTO potentialPropertyReport = (PropertyResportsDTO) dto;
+				row.createCell(0).setCellValue(nullSafe(potentialPropertyReport.getOwnerFullName()));
+				row.createCell(1).setCellValue(nullSafe(potentialPropertyReport.getPropertyName()));
+				row.createCell(2).setCellValue(nullSafe(potentialPropertyReport.getPropertyContactNumber()));
+				row.createCell(3).setCellValue(nullSafe(potentialPropertyReport.getPropertyEmailAddress()));
+				row.createCell(4).setCellValue(nullSafe(potentialPropertyReport.getPropertyAddress()));
+				 if (potentialPropertyReport.getLastCheckOutDate() != null) {
+			            row.createCell(5).setCellValue(nullSafe(tuService.formatTimestamp(potentialPropertyReport.getLastCheckOutDate().toInstant())));
+			        } else {
+			            row.createCell(5).setCellValue("");
+			        }
+				 if (potentialPropertyReport.getLastCheckInDate() != null) {
+			            row.createCell(6).setCellValue(nullSafe(tuService.formatTimestamp(potentialPropertyReport.getLastCheckInDate().toInstant())));
+			        } else {
+			            row.createCell(6).setCellValue("");
+			        }
+			}
+			break;
 		case "UpComingPotentialPropertyReport":
 			if (dto instanceof PropertyResportsDTO) {
 				PropertyResportsDTO potentialPropertyReport = (PropertyResportsDTO) dto;
@@ -536,8 +566,9 @@ public class ExcelGenerateService {
 				row.createCell(2).setCellValue(nullSafe(potentialPropertyReport.getPropertyContactNumber()));
 				row.createCell(3).setCellValue(nullSafe(potentialPropertyReport.getPropertyEmailAddress()));
 				row.createCell(4).setCellValue(nullSafe(potentialPropertyReport.getPropertyAddress()));
-				setCurrencyCell(row,5,nullSafe(potentialPropertyReport.getExpectedRentPerMonth()));
-				row.createCell(6).setCellValue(nullSafe(potentialPropertyReport.getNumberOfBeds()));			
+				row.createCell(5).setCellValue(nullSafe(potentialPropertyReport.getNumberOfBeds()));
+				setCurrencyCell(row,6,nullSafe(potentialPropertyReport.getExpectedRentPerMonth()));
+							
 			}
 			break;
 		case "RegesterTenantsReport":

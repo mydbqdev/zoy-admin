@@ -771,6 +771,11 @@ public class AdminReportService implements AdminReportImpl{
 				dataListWrapper=this.generateUpComingPotentialPropertyReport(reportData,filterRequest);
 				templatePath ="templates/upComingPotentialPropertyReport.docx";
 				break;
+			case "NonPotentialPropertyReport":
+				reportData = getNonPotentialPropertyReport(filterRequest,filterData,applyPagination);
+				dataListWrapper=this.generateNonPotentialPropertyReport(reportData,filterRequest);
+				templatePath ="templates/nonPotentialPropertyReport.docx";
+				break;
 			case "SuspendedPropertiesReport":
 				reportData = getSuspendedPropertyReport(filterRequest, filterData,applyPagination);
 				dataListWrapper=this.generateSuspendedPropertiesReport(reportData,filterRequest);
@@ -793,6 +798,7 @@ public class AdminReportService implements AdminReportImpl{
 				throw new IllegalArgumentException("Invalid file type provided. Supported types: pdf, excel, csv");
 			}
 		}catch (Exception e) {
+			System.out.println("errorrrrr::::"+e);
 			new ZoyAdminApplicationException(e, "");
 		}
 		return null;
@@ -850,7 +856,6 @@ public class AdminReportService implements AdminReportImpl{
 
 			data.put("txnDate", tuService.formatTimestamp(userPayment.getTransactionDate().toInstant()));
 			data.put("invoiceNo", userPayment.getTransactionNumber());
-			data.put("txnStatus", userPayment.getTransactionStatus());
 			data.put("tenantName", userPayment.getUserPersonalName());
 			data.put("tenantMobile", userPayment.getTenantContactNum());
 			data.put("pgName", userPayment.getUserPgPropertyName());
@@ -1221,6 +1226,39 @@ public class AdminReportService implements AdminReportImpl{
 		return dataList;
 	}
 	
+	public List<Map<String, Object>> generateNonPotentialPropertyReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			PropertyResportsDTO potentialPropertyData = (PropertyResportsDTO) item;
+			
+			data.put("ownerName", potentialPropertyData.getOwnerFullName() != null ? potentialPropertyData.getOwnerFullName() : "");
+			data.put("propertyName", potentialPropertyData.getPropertyName() != null ? potentialPropertyData.getPropertyName() : "");
+			data.put("contactNumber", potentialPropertyData.getPropertyContactNumber() != null ? potentialPropertyData.getPropertyContactNumber() : "");
+			data.put("email", potentialPropertyData.getPropertyEmailAddress() != null ? potentialPropertyData.getPropertyEmailAddress() : "");
+			data.put("address", potentialPropertyData.getPropertyAddress()!= null ? potentialPropertyData.getPropertyAddress() : "");
+			data.put("lastOutDate", potentialPropertyData.getLastCheckOutDate() != null ? tuService.formatTimestamp(potentialPropertyData.getLastCheckOutDate().toInstant()) : "-");
+            data.put("startDate", potentialPropertyData.getLastCheckInDate() != null ? tuService.formatTimestamp(potentialPropertyData.getLastCheckInDate().toInstant()) : "-");
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
 	public List<Map<String, Object>> generateUpComingPotentialPropertyReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
@@ -1238,16 +1276,6 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("occupiedBeds", potentialPropertyData.getNumberOfBeds());
 			data.put("rentPerMonth", potentialPropertyData.getExpectedRentPerMonth());
 			// Common fields
-			Timestamp fromDateTimestamp = filterRequest.getFromDate();
-			Timestamp toDateTimestamp = filterRequest.getToDate();
-
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-			data.put("fromDate", fromDate.format(formatter));
-			data.put("toDate", toDate.format(formatter));
 			data.put("printedOn", currentDate);
 
 			dataList.add(data);
@@ -1378,18 +1406,6 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("bedAllocation", tenantRefund.getBedNumber() != null ? tenantRefund.getBedNumber() : "");
 			data.put("expectedCheckin", tuService.formatTimestamp(tenantRefund.getExpectedCheckIndate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getExpectedCheckIndate().toInstant()) : "");
 			data.put("expectedCheckOut", tuService.formatTimestamp(tenantRefund.getExpectedCheckOutdate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getExpectedCheckOutdate().toInstant()) : "");
-
-			// Common fields
-			Timestamp fromDateTimestamp = filterRequest.getFromDate();
-			Timestamp toDateTimestamp = filterRequest.getToDate();
-
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-			data.put("fromDate", fromDate.format(formatter));
-			data.put("toDate", toDate.format(formatter));
 			data.put("printedOn", currentDate);
 
 			dataList.add(data);
@@ -2846,6 +2862,127 @@ public class AdminReportService implements AdminReportImpl{
 			return new CommonResponseDTO<>(potentialPropertyReportDto, filterCount);
 		} catch (Exception e) {
 			throw new WebServiceException("Error retrieving upcoming Potential Properties Details: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public CommonResponseDTO<PropertyResportsDTO> getNonPotentialPropertyReport(UserPaymentFilterRequest filterRequest,
+			FilterData filterData, boolean applyPagination) throws WebServiceException {
+		try {
+		    
+			StringBuilder queryBuilder = new StringBuilder(
+				    "SELECT \r\n" +
+				    "    zpod.pg_owner_name, \r\n" +
+				    "    zpd.property_name, \r\n" +
+				    "    zpd.property_contact_number, \r\n" +
+				    "    zpd.property_pg_email, \r\n" +
+				    "    zpd.property_house_area, \r\n" +
+				    "    MAX(zpobd.out_date) AS last_out_date, \r\n" +
+				    "    MAX(zpobd.in_date) AS last_in_date \r\n" +
+				    "FROM pgowners.zoy_pg_property_details AS zpd \r\n" +
+				    "JOIN pgowners.zoy_pg_owner_details AS zpod \r\n" +
+				    "    ON zpd.pg_owner_id = zpod.pg_owner_id \r\n" +
+				    "LEFT JOIN pgowners.zoy_pg_owner_booking_details AS zpobd \r\n" +
+				    "    ON zpd.property_id = zpobd.property_id \r\n" +
+				    "LEFT JOIN pgusers.user_bookings AS ub \r\n" +
+				    "    ON zpobd.booking_id = ub.user_bookings_id \r\n" +
+				    "WHERE zpd.property_id NOT IN ( \r\n" +
+				    "    SELECT DISTINCT zpobd.property_id \r\n" +
+				    "    FROM pgowners.zoy_pg_owner_booking_details AS zpobd \r\n" +
+				    "    JOIN pgusers.user_bookings AS ub \r\n" +
+				    "        ON zpobd.booking_id = ub.user_bookings_id \r\n" +
+				    "    WHERE ( \r\n" +
+				    "        zpobd.in_date BETWEEN :fromDate AND :toDate \r\n" +
+				    "        OR zpobd.out_date BETWEEN :fromDate AND :toDate \r\n" +
+				    "    ) \r\n" +
+				    "    AND ( \r\n" +
+				    "        ub.user_bookings_is_cancelled = true \r\n" +
+				    "        OR ub.user_bookings_web_check_out = true \r\n" +
+				    "    ) \r\n" +
+				    ") \r\n"
+				);
+
+				Map<String, Object> parameters = new HashMap<>();
+
+				if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				    queryBuilder.append("AND LOWER(zpd.property_name) LIKE LOWER(:pgName) \r\n");
+				    parameters.put("pgName", "%" + filterData.getPgName() + "%");
+				}
+
+				queryBuilder.append(
+				    "GROUP BY \r\n" +
+				    "    zpod.pg_owner_name, \r\n" +
+				    "    zpd.property_name, \r\n" +
+				    "    zpd.property_contact_number, \r\n" +
+				    "    zpd.property_pg_email, \r\n" +
+				    "    zpd.property_house_area \r\n"
+				);
+
+				if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+				        && filterRequest.getSortActive() != null) {
+				    String sort = "";
+				    switch (filterRequest.getSortActive()) {
+				        case "ownerFullName":
+				            sort = "zpod.pg_owner_name";
+				            break;
+				        case "propertyName":
+				            sort = "zpd.property_name";
+				            break;
+				        case "propertyContactNumber":
+				            sort = "zpd.property_contact_number";
+				            break;
+				        case "propertyEmailAddress":
+				            sort = "zpd.property_pg_email";
+				            break;
+				        case "propertyAddress":
+				            sort = "zpd.property_house_area";
+				            break;
+				        case "lastCheckOutDate":
+				            sort = "last_out_date";
+				            break;
+				        case "lastCheckInDate":
+				            sort = "last_in_date";
+				            break;
+				        default:
+				            sort = "last_out_date";
+				    }
+				    String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				    queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+				} else {
+				    queryBuilder.append(" ORDER BY zpod.pg_owner_name DESC ");
+				}
+
+				if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				    parameters.put("fromDate", filterRequest.getFromDate());
+				    parameters.put("toDate", filterRequest.getToDate());
+				}
+
+				Query query = entityManager.createNativeQuery(queryBuilder.toString());
+				parameters.forEach(query::setParameter);
+
+				int filterCount = query.getResultList().size();
+
+				if (applyPagination) {
+				    query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				    query.setMaxResults(filterRequest.getPageSize());
+				}
+
+				List<Object[]> results = query.getResultList();
+				List<PropertyResportsDTO> potentialPropertyReportDto = results.stream().map(row -> {
+				    PropertyResportsDTO dto = new PropertyResportsDTO();
+				    dto.setOwnerFullName(row[0] != null ? (String) row[0] : "");
+				    dto.setPropertyName(row[1] != null ? (String) row[1] : "");
+				    dto.setPropertyContactNumber(row[2] != null ? (String) row[2] : "");
+				    dto.setPropertyEmailAddress(row[3] != null ? (String) row[3] : "");
+				    dto.setPropertyAddress(row[4] != null ? (String) row[4] : "");
+				    dto.setLastCheckOutDate(row[5] != null ? (Timestamp) row[5] : null);
+				    dto.setLastCheckInDate(row[6] != null ? (Timestamp) row[6] : null);
+				    return dto;
+				}).collect(Collectors.toList());
+
+				return new CommonResponseDTO<>(potentialPropertyReportDto, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving  Non Potential Properties Details: " + e.getMessage());
 		}
 	}
 }
