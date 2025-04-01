@@ -89,4 +89,6 @@ public interface AdminDBImpl {
 
 	List<TriggeredValue> findTriggeredValue();
 
+	List<Object[]> findPropertiesCardsDetails()throws WebServiceException;
+
 }
