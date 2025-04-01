@@ -15,6 +15,7 @@ import com.integration.zoy.model.ZoyBeforeCheckInCancellationModel;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
+import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
 import com.integration.zoy.utils.ZoyForceCheckOutDto;
 import com.integration.zoy.utils.ZoyGstChargesDto;
@@ -22,7 +23,6 @@ import com.integration.zoy.utils.ZoyOtherChargesDto;
 import com.integration.zoy.utils.ZoyPgNoRentalAgreementDto;
 import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
 import com.integration.zoy.utils.ZoyPgTokenDetailsDTO;
-import com.integration.zoy.utils.ZoyRentingDuration;
 import com.integration.zoy.utils.ZoyShortTermDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -289,7 +289,6 @@ public interface ZoyConfigurationMasterImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> fetchCompanyProfileMaster();
 
-
 	@Operation(summary = "Fetch Cancellation And Refund Policy details", description = "fetch datails related to time frame for cancellation before check in.", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
 	@ApiResponses(value = { 
@@ -324,5 +323,15 @@ public interface ZoyConfigurationMasterImpl {
 	produces = { "application/json" })
 	ResponseEntity<String>FetchShortTermRentingDuration();
 
-
+	@Operation(summary = "Admin Configration for  Rental Agreement document ", description = "Uploading/Updating Admin Configration for Rental Agreement document", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/RentalAgreementdocument",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(@RequestBody RentalAgreementDocDto rentalAgreementDoc);
 }

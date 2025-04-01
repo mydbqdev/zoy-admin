@@ -8,12 +8,11 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.ZoyCompanyMaster;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
 import com.integration.zoy.entity.ZoyDataGrouping;
@@ -47,6 +46,7 @@ import com.integration.zoy.entity.ZoyPgTokenDetails;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.exception.WebServiceException;
+import com.integration.zoy.repository.RentalAgreementDocRepository;
 import com.integration.zoy.repository.ZoyCompanyMasterRepository;
 import com.integration.zoy.repository.ZoyCompanyProfileMasterRepository;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
@@ -81,8 +81,6 @@ import com.integration.zoy.repository.ZoyPgTimeMasterRepository;
 import com.integration.zoy.repository.ZoyPgTokenDetailsRepository;
 import com.integration.zoy.repository.ZoyPgTypeMasterRepository;
 import com.integration.zoy.repository.ZoyShareMasterRepository;
-import com.integration.zoy.utils.PaginationRequest;
-import com.integration.zoy.utils.ZoyCompanyProfileMasterDto;
 
 @Service
 public class OwnerDBService implements OwnerDBImpl{
@@ -185,6 +183,9 @@ public class OwnerDBService implements OwnerDBImpl{
 	
 	@Autowired
 	private ZoyPgPropertyDuesRepository zoyPgPropertyDuesRepository;
+	
+	@Autowired
+	private RentalAgreementDocRepository rentalAgreementDocRepository;
 	
 	@Autowired
 	ZoyCompanyMasterRepository zoyCompanyMasterRepository;
@@ -839,6 +840,12 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public List<ZoyPgNoRentalAgreement> findAllNoRentalAgreementDetailsSorted() throws WebServiceException {
 	    List<ZoyPgNoRentalAgreement> results = zoyPgNoRentalAgreementRespository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	    return results;
+	}
+	
+	@Override
+	public List<RentalAgreementDoc> findAllRentalAgreementDetailsSorted() throws WebServiceException {
+	    List<RentalAgreementDoc> results = rentalAgreementDocRepository.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
 	    return results;
 	}
 
