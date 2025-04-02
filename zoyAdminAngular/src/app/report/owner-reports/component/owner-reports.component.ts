@@ -248,8 +248,7 @@ export class OwnerReportsComponent implements OnInit, AfterViewInit {
 				this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 				this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
 			
-				if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Owner Payments Gst Report' || this.reportName =='Suspended Properties Report'
-					|| this.reportName =='Non-Potential Properties Report'){
+				if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Owner Payments Gst Report' || this.reportName =='Suspended Properties Report'){
 					this.selectedReportColumns= this.getColumnsForSelectedReport(this.reportName);
 					this.totalProduct=0;
 					this.reportDataList=Object.assign([]);
@@ -323,8 +322,7 @@ export class OwnerReportsComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.downloadType = type ;
 		this.downloadProgress=true;
 		this.reportsService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
-			if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Suspended Properties Report'
-				|| this.reportName =='Non-Potential Properties Report'){
+			if( this.reportName =='Owner Payments Dues Report' || this.reportName =='Suspended Properties Report'){
 				this.notifyService.showInfo("Under Development","")
 			}else if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 				let extension= 'application/pdf';

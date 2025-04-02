@@ -25,7 +25,7 @@ import { MessageService } from 'src/app/message.service';
       'vendorPaymentsDuesReport':'vendor-payment-dues-report',
       'UpComingPotentialPropertyReport': 'up_coming_potential_property_details',
       'InactivePropertiesReport': 'inactive_property_details',
-      'nonPotentialPropertiesReport': 'payment_transfer_details',
+      'NonPotentialPropertyReport': 'non_potential_property_details',
       'PotentialPropertyReport': 'potential_property_details',
       
     };
@@ -49,7 +49,7 @@ import { MessageService } from 'src/app/message.service';
     }, 
     { 
       'reportName': 'Non-Potential Properties Report', 
-      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'lastCheckoutDate'] 
+      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'lastCheckOutDate','lastCheckInDate'] 
     }, 
     { 
       'reportName': 'Potential Properties Report', 
@@ -62,7 +62,7 @@ import { MessageService } from 'src/app/message.service';
       { name: "Owner Payments Dues Report", key: "vendorPaymentsDuesReport" },
       { name: "Inactive Properties Report", key: "InactivePropertiesReport" }, 
       { name: "Upcoming Potential Properties Report", key: "UpComingPotentialPropertyReport" }, 
-      { name: "Non-Potential Properties Report", key: "nonPotentialPropertiesReport" }, 
+      { name: "Non-Potential Properties Report", key: "NonPotentialPropertyReport" }, 
       { name: "Potential Properties Report", key: "PotentialPropertyReport" },
      
       ];

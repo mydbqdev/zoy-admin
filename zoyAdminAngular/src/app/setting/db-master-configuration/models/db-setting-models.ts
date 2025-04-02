@@ -45,6 +45,9 @@ export class DbSettingDataModel{
     ameneties_upload ?: string;
     ameneties_image ?: string;
 
+    floor_name_id ?:string;
+    floor_name ?:string;
+
 }
 
 export class DbSettingSubmitDataModel{
@@ -71,6 +74,8 @@ export class DbSettingSubmitDataModel{
     billingTypeName ?: string;
 
     ameneties ?: string;
+
+    floorName ?:string;
 
 }
 
