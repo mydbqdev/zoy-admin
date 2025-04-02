@@ -12,10 +12,11 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { ConfigMasterService } from '../service/config-master-serive';
-import { BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstChargesModel, NoRentalAgreement, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermModel, ShortTermRentingDuration, TokenDetailsModel} from '../models/config-master-model';
+import { BeforeCheckInCancellationRefundMainObjModel, BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstChargesModel, NoRentalAgreement, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermModel, ShortTermRentingDuration, TokenDetailsModel} from '../models/config-master-model';
 import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { DbSettingDataModel } from '../../db-master-configuration/models/db-setting-models';
+import { DbSettingDataModel, ShortTermDataModel } from '../../db-master-configuration/models/db-setting-models';
+import { DbMasterConfigurationService } from '../../db-master-configuration/services/db-master-configuration.service';
 
 
 @Component({
@@ -58,14 +59,16 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>([]);
 	  @ViewChild(CdkDropListGroup) listGroup: CdkDropListGroup<HTMLElement[]>;
 	  beforeCheckInCRDetails: BeforeCheckInCancellationRefundModel[] = [];
-	  backUpBeforeCheckInCRList:BeforeCheckInCancellationRefundModel[]=[];
+	 
 	  canSubmit:boolean = true;
 	  @ViewChild('table', { static: true }) table: MatTable<BeforeCheckInCancellationRefundModel>;
 	more:boolean=true;
 	moreEarlyCheckout:boolean=true;
 	popupMoreRecordHeader:string="";
 	  constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService, private configMasterService :ConfigMasterService,
-		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
+		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,
+		  private dbMasterConfigurationService:DbMasterConfigurationService
+		) {
 			  this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
 		  //this.defHomeMenu=defMenuEnable;
@@ -111,6 +114,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  this.getTriggerCondition();
 		  this.getTriggerOn();
 		  this.getPGTypesDetails();
+		  this.getDbSettingDetails();
 	  }
 	  ngAfterViewInit() {
 		  this.sidemenuComp.expandMenu(4);
@@ -121,7 +125,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  settingType:string='';
 	  pgTypes:DbSettingDataModel[]=[];
 	  changeSettingType(){
-		this. getConfigMasterDetails();
+		this.getBeforeCheckInCRDetails(this.settingType);
 	  }
 
 	  navigateInitialConfig(){
@@ -136,7 +140,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.configMasterService.getPGTypesDetails().subscribe(res => {
 		this.pgTypes = res;
 		if(	this.pgTypes.length>0){
-			this.settingType= this.pgTypes[0].pg_type_name;
+			this.settingType= this.pgTypes[0].pg_type_id;
+			this.getBeforeCheckInCRDetails(this.settingType);
 		}
 		}, error => {
 		if(error.status == 0) {
@@ -220,7 +225,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value="Rent";
 		this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_value="Rent";
 		
-		this.getBeforeCheckInCRData();
+		
 		this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
@@ -317,6 +322,43 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	 });  
 				   
    }
+
+   getBeforeCheckInCRDetails(pgTypeId:string){
+	const pgtype={'pgType':pgTypeId};
+	console.log("pgTypeId",pgTypeId)
+	this.configMasterService.getBeforeCheckInCRDetails(pgtype).subscribe(res => {
+	this.cancellationBeforeCheckInDetailsOrg = res?.data;
+	console.log("this.cancellationBeforeCheckInDetailsOrg",this.cancellationBeforeCheckInDetailsOrg)
+	this.getBeforeCheckInCRData();
+		},error =>{
+			console.log("error.error",error)
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			}else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+			this.errorMsg =error.error.message;
+			console.log("Error:"+this.errorMsg);
+
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			//  this.spinner.hide();
+			let str;
+			if(error.status==400){
+			str=error.error.error;
+			}else{
+				str=error.error.message;
+				str=str.substring(str.indexOf(":")+1);
+			}
+			console.log("Error:",str);
+			this.errorMsg=str;
+			}
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			//this.notifyService.showError(this.errorMsg, "");
+			}
+		});  
+	}
 
    
 
@@ -1123,22 +1165,42 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		} 
 			this.table?.renderRows();
 	  }
-
+	  cancellationBeforeCheckInDetailsOrg:BeforeCheckInCancellationRefundMainObjModel[]=[];
+	  cancellationBeforeCheckInDetails:BeforeCheckInCancellationRefundMainObjModel[]=[];
+	  backUpBeforeCheckInCRList:BeforeCheckInCancellationRefundModel[]=[];
 	  getBeforeCheckInCRData(){
 		this.backUpBeforeCheckInCRList=[];
-		this.configMasterOrg.cancellationBeforeCheckInDetails.forEach(element => {
-			let model : BeforeCheckInCancellationRefundModel = new BeforeCheckInCancellationRefundModel();
-			model.cancellation_id = element.cancellation_id; 
-			model.before_checkin_days = element.before_checkin_days; 
-			model.deduction_percentage = element.deduction_percentage; 
-			model.priority = element.priority;
-			model.trigger_condition = element.trigger_condition; 
-			model.trigger_on = element.trigger_on; 
-			model.trigger_value = element.trigger_value; 
+		this.cancellationBeforeCheckInDetails=[];
+		console.log("this.cancellationBeforeCheckInDetailsOrg?.zoy_before_check_in_cancellation_info",this.cancellationBeforeCheckInDetailsOrg)
+		this.cancellationBeforeCheckInDetailsOrg.forEach(rule =>{
+			var main :BeforeCheckInCancellationRefundMainObjModel=new BeforeCheckInCancellationRefundMainObjModel();
+			console.log("rule",rule)
+			main.createdBy=rule.createdBy;
+			main.approvedBy=rule.approvedBy;
+			main.effectiveDate=rule.effectiveDate;
+			main.isApproved=rule.isApproved;
+			main.iscreate=rule.iscreate;
+			main.pgType=rule.pgType;
+			console.log("main",main)
+			var subList:BeforeCheckInCancellationRefundModel[]=[];
+			rule.zoy_before_check_in_cancellation_info.forEach(element => {
+			let sub : BeforeCheckInCancellationRefundModel = new BeforeCheckInCancellationRefundModel();
+			sub.cancellation_id = element.cancellation_id; 
+			sub.before_checkin_days = element.before_checkin_days; 
+			sub.deduction_percentage = element.deduction_percentage; 
+			sub.priority = element.priority;
+			sub.trigger_condition = element.trigger_condition; 
+			sub.trigger_on = element.trigger_on; 
+			sub.trigger_value = element.trigger_value; 
 
-			this.backUpBeforeCheckInCRList.push(model);
+			subList.push(sub);
+		});
+			main.zoy_before_check_in_cancellation_info = subList;
+			this.cancellationBeforeCheckInDetails.push(main);
 		});
 		 
+		console.log("cancellationBeforeCheckInDetails",this.cancellationBeforeCheckInDetails)
+		this.backUpBeforeCheckInCRList = this.cancellationBeforeCheckInDetails[0].zoy_before_check_in_cancellation_info
 		  this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
 		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
 		  this.table?.renderRows();
@@ -1212,11 +1274,12 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.notifyService.showError("Order "+indexs+" are duplicate roles, please check.","");
 				return
 			}
-			
+			console.log("beforeCheckInCRDetails",this.beforeCheckInCRDetails)
+			return;
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
 			this.configMasterService.submitBeforeCheckInCRfDetails(this.beforeCheckInCRDetails).subscribe(res => {
-			this.configMasterOrg.cancellationBeforeCheckInDetails = res.data;
+			this.changeSettingType();
 			this.canSubmit = true;
 			this.getBeforeCheckInCRData();
 			this.notifyService.showSuccess("Before check in has been updated successfully", "");
@@ -1652,5 +1715,205 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  noRentalAgreementReset(): void {
 			this.configMasterModel.noRentalAgreement = JSON.parse(JSON.stringify(this.configMasterOrg.noRentalAgreement));
 			this.noRentalAgreementDisabled = true;
-		  }	  
+		  }	 
+		  
+		   shortTermData:ShortTermDataModel = new ShortTermDataModel();
+			shortTermDataList:ShortTermDataModel[] = [];
+			shortTermduration:number=100;
+
+		
+		  
+			convertToNumber(value: any): number {
+			  return Number(value);
+			}
+		    getDbSettingDetails(){
+				this.authService.checkLoginUserVlidaate();
+			   this.spinner.show();
+			   this.dbMasterConfigurationService.getDbSettingDetails('zoy_admin/shortTerm').subscribe(data => {
+			   this.getShortTermList(data);
+			   this.spinner.hide();
+			   }, error => {
+			   this.spinner.hide();
+			   if(error.status == 0) {
+				 this.notifyService.showError("Internal Server Error/Connection not established", "")
+				}else if(error.status==401){
+						 console.error("Unauthorised");
+					 }else if(error.status==403){
+			   this.router.navigate(['/forbidden']);
+			   }else if (error.error && error.error.message) {
+			   this.errorMsg = error.error.message;
+			   console.log("Error:" + this.errorMsg);
+			   this.notifyService.showError(this.errorMsg, "");
+			   } else {
+			   if (error.status == 500 && error.statusText == "Internal Server Error") {
+				 this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+			   } else {
+				 let str;
+				 if (error.status == 400) {
+				 str = error.error.error;
+				 } else {
+				 str = error.error.message;
+				 str = str.substring(str.indexOf(":") + 1);
+				 }
+				 console.log("Error:" ,str);
+				 this.errorMsg = str;
+			   }
+			   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			   }
+			 });
+			 
+			 }
+			 backUpshortTermDataList :ShortTermDataModel[]=[];
+			   getShortTermList(data:any){
+				this.backUpshortTermDataList = [];
+				data.forEach(element => {
+				  let model : ShortTermDataModel = new ShortTermDataModel();
+				  model.zoy_pg_short_term_master_id = element.zoy_pg_short_term_master_id; 
+				  model.start_day = element.start_day; 
+				  model.end_day = element.end_day;  
+			 
+				  this.backUpshortTermDataList.push(model);
+				});
+				 
+				  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpshortTermDataList));
+			 
+				}
+		  
+				addShortTermVali:boolean=false
+			 addShortTerm() {
+			  this.addShortTermVali = true;
+			  if(!this.shortTermData.start_day|| this.shortTermData.start_day>this.shortTermduration || Number(this.shortTermData.start_day)===0 
+				  || !this.shortTermData.end_day|| this.shortTermData.end_day>this.shortTermduration || Number(this.shortTermData.end_day)===0
+				  || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)){
+					return;
+				  }
+			  this.shortTermDataList.push(JSON.parse(JSON.stringify(this.shortTermData)));
+			  this.addShortTermVali = false;
+			  this.shortTermData = new ShortTermDataModel();
+			 }
+		  
+			 modifyShortTerm(shortTerm) {
+			   if(!shortTerm.start_day || Number(shortTerm.start_day)>this.shortTermduration || Number(shortTerm.start_day)===0 
+				  || !shortTerm.end_day || Number(shortTerm.end_day)>this.shortTermduration || Number(shortTerm.end_day)===0
+				  || Number(shortTerm.start_day) >= Number(shortTerm.end_day)){
+				return;
+			  }
+			  shortTerm.isEdit = false;
+			}
+			
+			removeShortTerm(shortTerm) {
+			  console.log("shortTerm",shortTerm)
+			  shortTerm.isDelete = true;
+			}
+			
+			undoShortTermDelete(shortTerm) {
+			  shortTerm.isDelete = false;
+			}
+			
+			undoEditShortTermItem(i:number) {
+			  this.shortTermDataList[i]=JSON.parse(JSON.stringify(this.backUpshortTermDataList[i]));
+			}
+		  
+			shortTermDataListReset(){
+			  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpshortTermDataList));
+			}
+			submitShortTerm:boolean = false;
+			submitShortTermData() {   
+			  let finalSubmitShortList = [];
+			  this.submitShortTerm = true;
+			  let startDay = this.shortTermduration;
+			  let endDay = 0;
+			 
+			  for (let i = 0; i < this.shortTermDataList.length; i++) {
+				const term = this.shortTermDataList[i];
+		  
+				if (!term.isDelete) {
+				  startDay = startDay>term.start_day?term.start_day:startDay ;
+				  endDay = endDay>term.end_day?endDay:term.end_day ;
+		  
+				  if (term.isEdit) {
+					this.notifyService.showWarning("Save if term is being edited.","")
+					return; 
+				  }
+		   
+				  for (let j = i + 1; j < this.shortTermDataList.length; j++) {
+					const otherTerm = this.shortTermDataList[j];
+					
+					if (!(Number(term.end_day) < Number(otherTerm.start_day) || Number(term.start_day) > Number(otherTerm.end_day))) {
+					  this.notifyService.showWarning("The Short term duration period must not Overlapp.","")
+					  return;
+					}
+		  
+					
+				  }
+		  
+				  const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1));
+				  if(term.end_day != this.shortTermduration && ranges.length === 0 ){
+					 this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.',"")
+					 return;
+				   }
+		  
+				  finalSubmitShortList.push(term);
+				}
+			  }
+			
+			  if (finalSubmitShortList.length < 1) {
+				this.notifyService.showWarning("Please add durations","");
+				return;
+			  }
+			 
+			  if( Number(startDay) != 1 || Number(endDay) !=this.shortTermduration){
+				this.notifyService.showInfo('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.', "");
+				return
+			  }
+		  
+			  if (JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpshortTermDataList)) {
+				this.notifyService.showInfo("Short term slabs details are already up to date.", "");
+				return;
+			  }
+			  this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+			  .then(
+				 (confirmed) =>{
+				if(confirmed){
+					this.configMasterService.submitShortTermData(finalSubmitShortList).subscribe(data => {
+					this.getShortTermList(data);
+					// this.dbSettingDataList=Object.assign([],data);
+					// this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
+					this.submitShortTerm = false;
+					this.spinner.hide();
+					}, error => {
+					this.spinner.hide();
+					if(error.status == 0) {
+					  this.notifyService.showError("Internal Server Error/Connection not established", "")
+					}else if(error.status==401){
+					  console.error("Unauthorised");
+					}else if(error.status==403){
+					this.router.navigate(['/forbidden']);
+					}else if (error.error && error.error.message) {
+					this.errorMsg = error.error.message;
+					console.log("Error:" + this.errorMsg);
+					this.notifyService.showError(this.errorMsg, "");
+					} else {
+					if (error.status == 500 && error.statusText == "Internal Server Error") {
+					  this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+					} else {
+					  let str;
+					  if (error.status == 400) {
+					  str = error.error.error;
+					  } else {
+					  str = error.error.message;
+					  str = str.substring(str.indexOf(":") + 1);
+					  }
+					  console.log("Error:" ,str);
+					  this.errorMsg = str;
+					}
+					if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+					}
+				  });  
+				}	
+			  }).catch(
+				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+			  );	   
+			}
+			   
   }  

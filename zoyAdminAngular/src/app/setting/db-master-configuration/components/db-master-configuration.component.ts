@@ -469,6 +469,19 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
                   this.submitDataModel.ameneties = this.dbSettingDataModel.ameneties_name;
               
               break;
+          case 'Floor Name':
+                if ( this.dbSettingDataModel.floor_name == null || this.dbSettingDataModel.floor_name == '') {
+                    return false;
+                }
+                const floorName = this.dbSettingDataList.filter(d=>d.floor_name_id != this.dbSettingDataModel?.floor_name_id &&  d.floor_name?.toLowerCase() === this.dbSettingDataModel.floor_name?.toLowerCase() );
+                if(floorName.length>0){
+                  this.notifyService.showError("Floor Name is already available.", "");
+                  return false;
+                 }
+                    this.submitDataModel.id = this.dbSettingDataModel?.floor_name_id;
+                    this.submitDataModel.floorName = this.dbSettingDataModel.floor_name;
+                
+               break;
           default:
             return false;
         }

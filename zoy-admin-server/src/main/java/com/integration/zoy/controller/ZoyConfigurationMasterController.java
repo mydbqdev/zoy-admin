@@ -28,6 +28,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
+import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.TriggeredCond;
 import com.integration.zoy.entity.TriggeredOn;
 import com.integration.zoy.entity.TriggeredValue;
@@ -46,6 +47,7 @@ import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgShortTermRentingDuration;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
+import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
@@ -54,6 +56,7 @@ import com.integration.zoy.model.ZoyCompanyMasterModal;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
+import com.integration.zoy.repository.RentalAgreementDocRepository;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
 import com.integration.zoy.repository.ZoyPgCancellationDetailsRepository;
 import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
@@ -69,6 +72,7 @@ import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.PdfGenerateService;
 import com.integration.zoy.utils.AuditHistoryUtilities;
+import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.ZoyAdminConfigDTO;
 import com.integration.zoy.utils.ZoyAfterCheckInCancellationDto;
@@ -158,6 +162,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	
 	@Autowired
 	ZoyPgCancellationDetailsRepository ZoyPgCancellationDetailsRepo;
+	
+	@Autowired
+	RentalAgreementDocRepository rentalAgreementDocRepository;
+	
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetailsDTO details) {
 		ResponseBody response = new ResponseBody();
@@ -182,6 +190,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					BigDecimal oldFixed = oldDetails.getFixedToken();
 					BigDecimal oldVariable = oldDetails.getVariableToken();
 
+					oldDetails.setFixedToken(details.getFixedToken());
+					oldDetails.setVariableToken(details.getVariableToken());
 					oldDetails.setEffectiveDate(details.getEffectiveDate());
 					oldDetails.setIsApproved(details.getIsApproved());
 
@@ -440,6 +450,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckInGetDetails(ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation) {
 	    ResponseBody response = new ResponseBody();
+	    List<ZoyBeforeCheckInCancellationModel> beforeCheckinDetailsList = new ArrayList<>();
 	    try {
 	        if (zoyBeforeCheckInCancellation == null || zoyBeforeCheckInCancellation.getPgType() == null || zoyBeforeCheckInCancellation.getPgType().trim().isEmpty()) {
 	            response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -451,11 +462,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	        if (cancellationList == null || cancellationList.isEmpty()) {
 	            response.setStatus(HttpStatus.OK.value());
+	            response.setData(beforeCheckinDetailsList);
 	            response.setError("No cancellation details found.");
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 	        }
-
-	        List<ZoyBeforeCheckInCancellationModel> beforeCheckinDetailsList = new ArrayList<>();
 
 	        for (ZoyPgCancellationDetails details : cancellationList) {
 	            ZoyBeforeCheckInCancellationModel beforeCheckInCancellation = new ZoyBeforeCheckInCancellationModel();
@@ -808,6 +818,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					ZoyDataGrouping existingGroup = dataGroupingOptional.get();
 					int oldFixed = existingGroup.getConsiderDays();
 
+					existingGroup.setConsiderDays(details.getConsiderDays());
 					existingGroup.setEffectiveDate(details.getEffectiveDate());
 					existingGroup.setIsApproved(details.getIsApproved());
 
@@ -1585,7 +1596,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					ZoyPgForceCheckOut oldDetails = forceCheckOutDetails.get();
 
 					int oldFixed = oldDetails.getForceCheckOutDays();
-
+					
+					oldDetails.setForceCheckOutDays(forceCheckOut.getForceCheckOutDays());
 					oldDetails.setEffectiveDate(forceCheckOut.getEffectiveDate());
 					oldDetails.setIsApproved(forceCheckOut.getIsApproved());
 
@@ -1674,6 +1686,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 					int oldFixed = oldDetails.getNoRentalAgreementDays();
 
+					oldDetails.setNoRentalAgreementDays(NoRentalAgreement.getNoRentalAgreementDays());
 					oldDetails.setEffectiveDate(NoRentalAgreement.getEffectiveDate());
 					oldDetails.setIsApproved(NoRentalAgreement.getIsApproved());
 
@@ -2114,10 +2127,18 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 //			List<ZoyPgShortTermMaster> shortTermMaster = ownerDBImpl.findAllShortTerm();
 			List<ZoyPgForceCheckOut> forceCheckOut = ownerDBImpl.findAllForceCheckOutDetailsSorted();
 			List<ZoyPgNoRentalAgreement> noRentalAgreement = ownerDBImpl.findAllNoRentalAgreementDetailsSorted();
+			List<RentalAgreementDoc> RentalAgreementDoc= ownerDBImpl.findAllRentalAgreementDetailsSorted();
 //			List<ZoyPgShortTermRentingDuration> rentingDuration = ownerDBImpl
 //					.findAllShortTermRentingDurationDetailsSorted();
 			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
 
+			if(RentalAgreementDoc!=null) {
+				List<RentalAgreementDocDto> listRentalAgreement=new ArrayList<>();
+				for(RentalAgreementDoc agreeementDetails:RentalAgreementDoc) {
+					listRentalAgreement.add(convertToDTO(agreeementDetails));
+				}
+				configDTO.setRentalAgreement(RentalAgreementDoc);
+			}
 			if (tokenDetails != null) {
 				List<ZoyPgTokenDetailsDTO> listToken = new ArrayList<>();
 				for (ZoyPgTokenDetails tokenDetail : tokenDetails) {
@@ -2303,6 +2324,93 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 		
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(RentalAgreementDocDto rentalAgreementDoc) {
+		ResponseBody response = new ResponseBody();
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		if (rentalAgreementDoc == null) {
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Required Rental Agreement Document details");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+		try {
+			if (rentalAgreementDoc.getRentalAgreementDocId() != null && !rentalAgreementDoc.getRentalAgreementDocId().isEmpty()) {
+
+				Optional<RentalAgreementDoc> RentalAgreementDetails = rentalAgreementDocRepository.findById(rentalAgreementDoc.getRentalAgreementDocId());
+				if (RentalAgreementDetails.isEmpty()) {
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
+					response.setError("Required Rental Agreement Document details not found");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+					
+				} else {
+					RentalAgreementDoc oldDetails = RentalAgreementDetails.get();
+
+					String oldFixed = oldDetails.getRentalAgreementDoc();
+
+					oldDetails.setRentalAgreementDoc(rentalAgreementDoc.getRentalAgreementDoc());
+					oldDetails.setEffectiveDate(rentalAgreementDoc.getEffectiveDate());
+					oldDetails.setIsApproved(rentalAgreementDoc.getIsApproved());
+
+					if (rentalAgreementDoc.getIsApproved()) {
+						oldDetails.setApprovedBy(currentUser);
+					} else {
+						oldDetails.setCreatedBy(currentUser);
+					}
+
+					rentalAgreementDocRepository.save(oldDetails);
+
+					// Audit the update action
+					String historyContent = " has updated the Rental Agreement Document  from "
+							+ oldFixed + " to " + rentalAgreementDoc.getRentalAgreementDoc();
+					auditHistoryUtilities.auditForCommon(currentUser, historyContent,
+							ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+				}
+			} else {
+				RentalAgreementDoc newRentalAgreementDoc = new RentalAgreementDoc();
+				newRentalAgreementDoc.setRentalAgreementDoc(rentalAgreementDoc.getRentalAgreementDoc());
+				newRentalAgreementDoc.setEffectiveDate(rentalAgreementDoc.getEffectiveDate());
+				newRentalAgreementDoc.setCreatedBy(currentUser);
+				newRentalAgreementDoc.setIsApproved(false);
+				rentalAgreementDocRepository.save(newRentalAgreementDoc);
+
+				// Audit the creation action
+				String historyContent = " has updated the Rental Agreement Document "
+						+ rentalAgreementDoc.getRentalAgreementDoc();
+				auditHistoryUtilities.auditForCommon(currentUser, historyContent,
+						ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+			}
+
+			List<RentalAgreementDoc> allDetails = ownerDBImpl.findAllRentalAgreementDetailsSorted();
+			List<RentalAgreementDocDto> dto = allDetails.stream().map(this::convertToDTO)
+					.collect(Collectors.toList());
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(dto);
+			response.setMessage("No Rental Agreement details successfully saved/updated");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error(
+					"Error saving/updating Rental Agreement Document details API:/zoy_admin/config/force-checkout.zoyAdminConfigUpdateForceCheckOut ",
+					e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("An internal error occurred while processing the request");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	private RentalAgreementDocDto convertToDTO(RentalAgreementDoc entity) {
+		RentalAgreementDocDto dto = new RentalAgreementDocDto();
+		dto.setRentalAgreementDocId(entity.getRentalAgreementDocId());
+		dto.setRentalAgreementDoc(entity.getRentalAgreementDoc());
+		dto.setIsApproved(entity.getIsApproved() != null ? entity.getIsApproved() : false);
+		dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
+		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
+		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		return dto;
 	}
 
 }

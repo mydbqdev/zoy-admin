@@ -35,6 +35,17 @@ public interface ZoySuperAdminImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> zoyTenantCardsDetails();
 	
+	@Operation(summary = "Get properties Card Details", description = "Getting properties Card Details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Super Admin Dashboard" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/properties_card_details",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyPropertiesCardsDetails();
+	
 	@Operation(summary = "Get owner Card Details", description = "Getting owner Card Details", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Super Admin Dashboard" })
 	@ApiResponses(value = { 
