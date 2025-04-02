@@ -333,5 +333,5 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/RentalAgreementdocument",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(@RequestBody RentalAgreementDocDto rentalAgreementDoc);
+	ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(@RequestBody RentalAgreementDocDto rentalAgreementDoc,@RequestPart(value = "file",required = true) MultipartFile file);
 }
