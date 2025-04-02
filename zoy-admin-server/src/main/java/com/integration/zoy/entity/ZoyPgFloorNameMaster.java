@@ -15,17 +15,17 @@ public class ZoyPgFloorNameMaster {
 	    @GeneratedValue(generator = "UUID")
 	   	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
 	   	@Column(name = "floor_name_id", updatable = false, nullable = false, unique = true, length = 36)
-	    private String foorNameId;
+	    private String floorNameId;
 
 	    @Column(name = "floor_name", length = 100)
 	    private String floorName;
 
-		public String getFoorNameId() {
-			return foorNameId;
+		public String getFloorNameId() {
+			return floorNameId;
 		}
 
-		public void setFoorNameId(String foorNameId) {
-			this.foorNameId = foorNameId;
+		public void setFloorNameId(String floorNameId) {
+			this.floorNameId = floorNameId;
 		}
 
 		public String getFloorName() {
