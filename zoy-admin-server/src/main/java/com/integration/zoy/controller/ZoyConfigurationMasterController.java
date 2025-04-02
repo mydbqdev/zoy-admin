@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -71,6 +72,7 @@ import com.integration.zoy.repository.ZoyPgTokenDetailsRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.PdfGenerateService;
+import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ResponseBody;
@@ -123,6 +125,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	@Autowired
 	AdminDBImpl adminDBImpl;
+	
+	@Autowired
+	ZoyS3Service zoyS3Service;
 
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
@@ -165,6 +170,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	
 	@Autowired
 	RentalAgreementDocRepository rentalAgreementDocRepository;
+	
+
+	@Value("${app.minio.zoypg.upload.docs.rentalAgreement.bucket.name}")
+	private String zoyPgRentalDocsUploadBucketName;
 	
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetailsDTO details) {
@@ -492,8 +501,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	            beforeCheckinDetailsList.add(beforeCheckInCancellation);
 	        }
-	        return new ResponseEntity<>(gson.toJson(beforeCheckinDetailsList), HttpStatus.OK);
-	    } catch (Exception e) {
+	        response.setStatus(HttpStatus.OK.value());
+            response.setData(beforeCheckinDetailsList);
+            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+      	    } catch (Exception e) {
 	        log.error("Error in API :/zoy_admin/config/fetch-Cancellation-And-Refund-Policy-details.zoyAdminConfigCreateUpdateBeforeCheckInGetDetails", e);
 	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	        response.setError(e.getMessage());
@@ -2327,7 +2338,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	}
 
 	@Override
-	public ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(RentalAgreementDocDto rentalAgreementDoc) {
+	public ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(RentalAgreementDocDto rentalAgreementDoc,MultipartFile file) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -2349,8 +2360,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					RentalAgreementDoc oldDetails = RentalAgreementDetails.get();
 
 					String oldFixed = oldDetails.getRentalAgreementDoc();
-
-					oldDetails.setRentalAgreementDoc(rentalAgreementDoc.getRentalAgreementDoc());
+					
+					String uploadedFileName = "Rental Agreement" + file;
+					String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);
+					
+					oldDetails.setRentalAgreementDoc(fileUrl);
 					oldDetails.setEffectiveDate(rentalAgreementDoc.getEffectiveDate());
 					oldDetails.setIsApproved(rentalAgreementDoc.getIsApproved());
 
@@ -2370,7 +2384,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				}
 			} else {
 				RentalAgreementDoc newRentalAgreementDoc = new RentalAgreementDoc();
-				newRentalAgreementDoc.setRentalAgreementDoc(rentalAgreementDoc.getRentalAgreementDoc());
+				
+				String uploadedFileName = "Rental Agreement" + file;
+				String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);
+				
+				newRentalAgreementDoc.setRentalAgreementDoc(fileUrl);
 				newRentalAgreementDoc.setEffectiveDate(rentalAgreementDoc.getEffectiveDate());
 				newRentalAgreementDoc.setCreatedBy(currentUser);
 				newRentalAgreementDoc.setIsApproved(false);
