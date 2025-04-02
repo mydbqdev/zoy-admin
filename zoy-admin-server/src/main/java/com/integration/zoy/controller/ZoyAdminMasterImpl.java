@@ -22,6 +22,8 @@ import com.integration.zoy.model.DueType;
 import com.integration.zoy.model.DueTypeId;
 import com.integration.zoy.model.EkycType;
 import com.integration.zoy.model.EkycTypeId;
+import com.integration.zoy.model.FloorName;
+import com.integration.zoy.model.FloorNameId;
 import com.integration.zoy.model.NotificationMode;
 import com.integration.zoy.model.NotificationModeId;
 import com.integration.zoy.model.PgType;
@@ -202,7 +204,42 @@ public interface ZoyAdminMasterImpl {
 	produces = { "application/json" },
 	consumes = { "application/json" })
 	ResponseEntity<String> zoyAdminRoomTypePut(@RequestBody RoomTypeId roomTypeId);
-
+	
+   //Floor Name
+	@Operation(summary = "Post Floor Name", description = "Posting Floor Name", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/floorName",
+	produces = { "application/json" },
+	consumes = { "application/json" })
+	ResponseEntity<String> zoyAdminFloorNamePost(@RequestBody FloorName floorName);
+	
+	@Operation(summary = "Get Floor Name", description = "Getting Floor Name", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/floorName",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyAdminFloorName();
+	
+	@Operation(summary = "Put Floor Name", description = "Updating Floor Name", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PutMapping(value = "/zoy_admin/floorName",
+	produces = { "application/json" },
+	consumes = { "application/json" })
+	ResponseEntity<String> zoyAdminFloorNamePut(@RequestBody FloorNameId floorNameId);
 	//Share Type
 	@Operation(summary = "Get Share Type", description = "Getting Share Type", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })

@@ -25,6 +25,7 @@ import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
+import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgForceCheckOut;
 import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
@@ -59,6 +60,7 @@ import com.integration.zoy.repository.ZoyPgDueFactorMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueMasterRepository;
 import com.integration.zoy.repository.ZoyPgDueTypeMasterRepository;
 import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
+import com.integration.zoy.repository.ZoyPgFloorNameMasterRepository;
 import com.integration.zoy.repository.ZoyPgForceCheckOutRepository;
 import com.integration.zoy.repository.ZoyPgGstChargesRepository;
 import com.integration.zoy.repository.ZoyPgNoRentalAgreementRespository;
@@ -99,6 +101,9 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Autowired
 	private ZoyPgRoomTypeMasterRepository roomTypeRepository;
+	
+	@Autowired
+	private ZoyPgFloorNameMasterRepository floorNameRepository;
 
 	@Autowired
 	private ZoyPgDueFactorMasterRepository zoyPgDueFactorMasterRepository;
@@ -901,6 +906,36 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public List<String[]> getPropertyDueDetails(String propertyId, String dueName) {
 		return zoyPgPropertyDuesRepository.getPropertyDueDetails(propertyId, dueName) ;
+	}
+
+	@Override
+	public ZoyPgFloorNameMaster createFloorName(ZoyPgFloorNameMaster floorNameMasters) throws WebServiceException {
+		return floorNameRepository.save(floorNameMasters);
+	}
+
+	@Override
+	public List<ZoyPgFloorNameMaster> getAllFloorNames() throws WebServiceException {
+		return floorNameRepository.findAll();
+
+	}
+
+	@Override
+	public ZoyPgFloorNameMaster findFloorName(String id) throws WebServiceException {
+		return floorNameRepository.findById(id).orElse(null);
+	}
+
+	@Override
+	public ZoyPgFloorNameMaster updateFloorName(ZoyPgFloorNameMaster floorNameMasters) throws WebServiceException {
+		Optional<ZoyPgFloorNameMaster> existingFloorName = floorNameRepository.findById(floorNameMasters.getFloorNameId());
+		if (existingFloorName.isPresent()) {
+			ZoyPgFloorNameMaster updatedRoom = existingFloorName.get();
+			updatedRoom.setFloorName((floorNameMasters.getFloorName()!=null && !floorNameMasters.getFloorName().trim().isBlank())? floorNameMasters.getFloorName() : floorNameMasters.getFloorName());
+
+			return floorNameRepository.save(updatedRoom);
+		} else {
+			throw new RuntimeException("Floor Name not found with id: " + floorNameMasters.getFloorNameId());
+		}
+
 	}
 	
 }
