@@ -17,6 +17,7 @@ import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
+import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgForceCheckOut;
 import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
@@ -176,4 +177,8 @@ public interface OwnerDBImpl {
 	List<ZoyPgGstCharges> findAllGstChargesDetailsSorted() throws WebServiceException;
 	List<ZoyPgOtherCharges> findAllOtherChargesDetailsSorted() throws WebServiceException;
 	List<RentalAgreementDoc> findAllRentalAgreementDetailsSorted() throws WebServiceException;
+	ZoyPgFloorNameMaster createFloorName(ZoyPgFloorNameMaster floorNameMasters)throws WebServiceException;
+	List<ZoyPgFloorNameMaster> getAllFloorNames()throws WebServiceException;
+	ZoyPgFloorNameMaster findFloorName(String id)throws WebServiceException;
+	ZoyPgFloorNameMaster updateFloorName(ZoyPgFloorNameMaster floorNameMasters)throws WebServiceException;
 }
