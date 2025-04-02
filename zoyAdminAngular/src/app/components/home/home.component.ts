@@ -9,7 +9,7 @@ import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AppService } from 'src/app/common/service/application.service';
-import { DashboardCardModel, DashboardFilterModel, OwnersCardModel, TenantsCardModel, TopRevenuePG, TotalBookingDetailsModel } from 'src/app/common/models/dashboard.model';
+import { DashboardFilterModel, OwnersCardModel, PropertiesCardModel, TenantsCardModel, TopRevenuePG, TotalBookingDetailsModel } from 'src/app/common/models/dashboard.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 
@@ -25,7 +25,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	isExpandSideBar:boolean=true;
 	@ViewChild(SidebarComponent) sidemenuComp;
 	public rolesArray: string[] = [];
-	dashboardCardModel:DashboardCardModel=new DashboardCardModel();
+	tenantDetails:TenantsCardModel=new TenantsCardModel();
+	ownerDetails:OwnersCardModel = new OwnersCardModel();
+	propertiesDetails:PropertiesCardModel = new PropertiesCardModel();
 
 	displayedColumns: string[] = ['sl_no','pg_name','revenue'];
 	public ELEMENT_DATA:TopRevenuePG[]=[];
@@ -69,10 +71,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 			this.router.navigate(['/']);
 		}
-		this.getDashboardCard();
 		this.getTenantCardDetails();
 		this.getTotalBookings();
 		this.getOwnersCardDetails();
+		this.getPropertiesCardDetails();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(1);
@@ -86,42 +88,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		this.notifyService.showNotification("Success","");
 	}
 
-	getDashboardCard(){
-		this.authService.checkLoginUserVlidaate();
-		this.appService.getDashboardCard().subscribe((result) => {
-			this.dashboardCardModel=result;
-		  },error =>{
-			if(error.status == 0) {
-				this.notifyService.showError("Internal Server Error/Connection not established", "")
-			 }else if(error.status==403){
-			  this.router.navigate(['/forbidden']);
-			}else if(error.status==401){
-				console.error("Unauthorised");
-		      this.router.navigate(['/signin']);
-			}else if (error.error && error.error.message) {
-			  this.errorMsg =error.error.message;
-			  console.log("Error:"+this.errorMsg);
-			  this.notifyService.showError(this.errorMsg, "");
-			} else {
-			  if(error.status==500 && error.statusText=="Internal Server Error"){
-				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-			  }else{
-				let str;
-				  if(error.status==400){
-				  str=error.error.error;
-				  }else{
-					str=error.error.message;
-					str=str.substring(str.indexOf(":")+1);
-				  }
-				  console.log("Error:",str);
-				  this.errorMsg=str;
-			  }
-			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			}
-		  });
-	}
-	tenantDetails:TenantsCardModel=new TenantsCardModel();
-	ownerDetails:OwnersCardModel = new OwnersCardModel();
 	getTenantCardDetails(){
 		this.authService.checkLoginUserVlidaate();
 		this.appService.getTenantCardDetails().subscribe((result) => {
@@ -160,6 +126,40 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		this.authService.checkLoginUserVlidaate();
 		this.appService.getOwnersCardDetails().subscribe((result) => {
 			this.ownerDetails=result;
+		  },error =>{
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==403){
+			  this.router.navigate(['/forbidden']);
+			 }else if(error.status==401){
+		 	 this.router.navigate(['/signin']);
+			}else if (error.error && error.error.message) {
+			  this.errorMsg =error.error.message;
+			  console.log("Error:"+this.errorMsg);
+			  this.notifyService.showError(this.errorMsg, "");
+			} else {
+			  if(error.status==500 && error.statusText=="Internal Server Error"){
+				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			  }else{
+				let str;
+				  if(error.status==400){
+				  str=error.error.error;
+				  }else{
+					str=error.error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:",str);
+				  this.errorMsg=str;
+			  }
+			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+		  });
+	}
+
+	getPropertiesCardDetails(){
+		this.authService.checkLoginUserVlidaate();
+		this.appService.getPropertiesCardDetails().subscribe((result) => {
+			this.propertiesDetails=result;
 		  },error =>{
 			if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
