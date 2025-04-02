@@ -926,14 +926,14 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public ZoyPgFloorNameMaster updateFloorName(ZoyPgFloorNameMaster floorNameMasters) throws WebServiceException {
-		Optional<ZoyPgFloorNameMaster> existingFloorName = floorNameRepository.findById(floorNameMasters.getFoorNameId());
+		Optional<ZoyPgFloorNameMaster> existingFloorName = floorNameRepository.findById(floorNameMasters.getFloorNameId());
 		if (existingFloorName.isPresent()) {
 			ZoyPgFloorNameMaster updatedRoom = existingFloorName.get();
 			updatedRoom.setFloorName((floorNameMasters.getFloorName()!=null && !floorNameMasters.getFloorName().trim().isBlank())? floorNameMasters.getFloorName() : floorNameMasters.getFloorName());
 
 			return floorNameRepository.save(updatedRoom);
 		} else {
-			throw new RuntimeException("Floor Name not found with id: " + floorNameMasters.getFoorNameId());
+			throw new RuntimeException("Floor Name not found with id: " + floorNameMasters.getFloorNameId());
 		}
 
 	}
