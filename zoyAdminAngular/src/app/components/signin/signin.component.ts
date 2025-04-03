@@ -126,7 +126,7 @@ export class SigninComponent implements OnInit {
 		}			  
 	}
 	confirmation(){
-		this.confirmationDialogService.confirm('Confirmation!!', 'User already logged in in some other tab or system. Do you want to continue here?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'User already logged in some other tab or system. Do you want to continue here?')
 		.then(
 		(confirmed) =>{
 			if(confirmed){
