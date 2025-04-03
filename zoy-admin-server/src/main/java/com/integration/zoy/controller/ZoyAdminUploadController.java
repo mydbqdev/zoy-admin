@@ -281,7 +281,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				uploadData.setPropertyName(data.getPropertyName());
 				uploadData.setStatus(data.getStatus());
 				uploadData.setCreateAt(data.getCreatedAt());
-				uploadData.setFilePath(data.getFilePath());
+				uploadData.setFilePath(zoyAdminService.generatePreSignedUrl(zoypgUploadDocsBucketName, data.getFilePath()));
 				bulkUploadDatas.add(uploadData);
 			}
 			return new ResponseEntity<>(gson.toJson(bulkUploadDatas), HttpStatus.OK);

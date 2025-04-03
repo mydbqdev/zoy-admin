@@ -1,7 +1,9 @@
 package com.integration.zoy.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,6 +80,12 @@ public class ZoyAdminService {
 
 	@Value("${app.zoy.server.url}")
 	String zoyServerUrl;
+	
+	@Value("${app.minio.url}")
+	private String s3Url;
+	
+	@Autowired
+	ZoyS3Service zoyS3Service;
 
 	private final Map<String, String> otpMap = new ConcurrentHashMap<>();
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -199,6 +207,16 @@ public class ZoyAdminService {
 		return userSingleDeviceLockMap;
 	}
 	
+	
+	public String generatePreSignedUrl(String bucketName,String objectName) {
+		String signedUrl="";
+		if(objectName != null) {
+			if(objectName.startsWith(s3Url+"/"+bucketName+"/")) 
+				objectName = objectName.replace(s3Url+"/"+bucketName+"/", "");
+			signedUrl= zoyS3Service.generatePreSignedUrl(bucketName,objectName);
+		}
+		return signedUrl;
+	}
 	
 	
 }
