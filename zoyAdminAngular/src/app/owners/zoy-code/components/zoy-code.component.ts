@@ -23,7 +23,7 @@ import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/
   styleUrl: './zoy-code.component.css'
 })
 export class ZoyCodeComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['zoy_code', 'owner_name', 'email_id', 'mobile_no','created_date', 'zoy_share','status','action'];
+  displayedColumns: string[] = ['zoy_code', 'owner_name', 'email_id', 'mobile_no','created_date', 'zoy_share','action'];
   public ELEMENT_DATA:ZoyData[]=[];
   orginalFetchData:ZoyData[]=[];
   searchText:string='';
@@ -34,7 +34,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
     email_id: null,
     created_date: null,
 	zoy_share: null,
-	status: null
+	// status: null
   };
   generateZCode : ZoyData=new ZoyData();
   public userNameSession: string = "";
