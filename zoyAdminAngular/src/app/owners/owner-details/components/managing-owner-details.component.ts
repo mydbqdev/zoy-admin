@@ -20,6 +20,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { FilterData, FiltersRequestModel } from 'src/app/report/model/report-filters-model';
 import { OwnerReportService } from 'src/app/report/owner-reports/owner-reports.service';
 import { ReportsService } from 'src/app/report/service/reportService';
+import { TenantReportsService } from 'src/app/report/tenant-reports/tenant-reports.service';
 
 @Component({
   selector: 'app-managing-owner-details',
@@ -73,7 +74,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  @ViewChild(MatPaginator) paginator: MatPaginator;
 	  @ViewChild('closeModel') closeModel : ElementRef;
 	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService :ZoyOwnerService,
-		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private ownerReportService : OwnerReportService,private reportsService : ReportsService) {
+		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private ownerReportService : OwnerReportService,private tenantReportService : TenantReportsService,private reportsService : ReportsService) {
 			  this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
 		  //this.defHomeMenu=defMenuEnable;
@@ -116,8 +117,6 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		});
 		this.fromDate=this.getLastMonthDate();
 		this.toDate=this.getCurrentDate();
-		this.reportColumnsList=ownerReportService.reportColumnsList;
-		this.columnHeaders = reportsService.columnHeaders;
 	  }
 
 	  ngOnDestroy() {
@@ -410,21 +409,25 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				
 	  }
 
-
 	  selectTransaction(header:string){
 		this.transactionHeader=header;
 		if(header=='Tenant Payment History'){
 			this.sortActive="transactionDate";
 			this.reportName = "Tenant Transactions Report";
+			this.reportNamesList = this.tenantReportService.reportNamesList;
+			this.reportColumnsList=this.tenantReportService.reportColumnsList;
 		}else if(header=='ZOY to Owner Payment History'){
 			this.sortActive="transactionDate";
 			this.reportName = "Owner Payments Dues Report";
+			this.reportNamesList = this.ownerReportService.reportNamesList;
+			this.reportColumnsList=this.ownerReportService.reportColumnsList;
 		}
+		this.columnHeaders = this.reportsService.columnHeaders;
 		this.getReportSearchBy();
 	}
 	
 	getColumnsForSelectedReport(name:string) {
-		const report = this.ownerReportService.reportColumnsList.find(n => n.reportName === name);
+		const report = this.reportColumnsList.find(n => n.reportName === name);
 		return report?report.columns:[];
 	 }
 
@@ -499,50 +502,99 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			return;
 		}
 	
-		this.ownerReportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
-		  if(data?.data?.length >0){
-				this.totalProduct=data.count;
-				this.reportDataList=Object.assign([],data.data);
-				this.reportDataSource = new MatTableDataSource(this.reportDataList);
-			}else{
-			  this.totalProduct=0;
-			  this.reportDataList=Object.assign([]);
-			  this.reportDataSource =  new MatTableDataSource(this.reportDataList);
-			}
-			this.spinner.hide();
-		},error =>{
-		  this.spinner.hide();
-		  if(error.status == 0) {
-			this.notifyService.showError("Internal Server Error/Connection not established", "")
-		 }else if(error.status==401){
-			console.error("Unauthorised");
-		}else if(error.status==403){
-			this.router.navigate(['/forbidden']);
-		  }else if (error.error && error.error.message) {
-			this.errorMsg =error.error.message;
-			console.log("Error:"+this.errorMsg);
-			this.notifyService.showError(this.errorMsg, "");
-			this.spinner.hide();
-		  } else {
-			this.spinner.hide();
-			if(error.status==500 && error.statusText=="Internal Server Error"){
-			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-			}else{
-			  let str;
-				if(error.status==400){
-				str=error.error.error;
-				}else{
-				  str=error.error.message;
-				  str=str.substring(str.indexOf(":")+1);
+		if(this.reportName=='Tenant Transactions Report'){
+			this.tenantReportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+				if(data?.data?.length >0){
+					  this.totalProduct=data.count;
+					  this.reportDataList=Object.assign([],data.data);
+					  this.reportDataSource = new MatTableDataSource(this.reportDataList);
+				  }else{
+					this.totalProduct=0;
+					this.reportDataList=Object.assign([]);
+					this.reportDataSource =  new MatTableDataSource(this.reportDataList);
+				  }
+				  this.spinner.hide();
+			  },error =>{
+				this.spinner.hide();
+				if(error.status == 0) {
+				  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			   }else if(error.status==401){
+				  console.error("Unauthorised");
+			  }else if(error.status==403){
+				  this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+				  this.errorMsg =error.error.message;
+				  console.log("Error:"+this.errorMsg);
+				  this.notifyService.showError(this.errorMsg, "");
+				  this.spinner.hide();
+				} else {
+				  this.spinner.hide();
+				  if(error.status==500 && error.statusText=="Internal Server Error"){
+					this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+				  }else{
+					let str;
+					  if(error.status==400){
+					  str=error.error.error;
+					  }else{
+						str=error.error.message;
+						str=str.substring(str.indexOf(":")+1);
+					  }
+					  
+					  console.log("Error:",str);
+					  this.errorMsg=str;
+				  }
+			  
+				  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
 				}
-				
-				console.log("Error:",str);
-				this.errorMsg=str;
-			}
-		
-			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-		  }
-		}); 
+			  }); 
+		}else if(this.reportName=='Owner Payments Dues Report'){
+			this.ownerReportService.getReportsDetails(this.filtersRequest).subscribe((data) => {
+				if(data?.data?.length >0){
+					  this.totalProduct=data.count;
+					  this.reportDataList=Object.assign([],data.data);
+					  this.reportDataSource = new MatTableDataSource(this.reportDataList);
+				  }else{
+					this.totalProduct=0;
+					this.reportDataList=Object.assign([]);
+					this.reportDataSource =  new MatTableDataSource(this.reportDataList);
+				  }
+				  this.spinner.hide();
+			  },error =>{
+				this.spinner.hide();
+				if(error.status == 0) {
+				  this.notifyService.showError("Internal Server Error/Connection not established", "")
+			   }else if(error.status==401){
+				  console.error("Unauthorised");
+			  }else if(error.status==403){
+				  this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+				  this.errorMsg =error.error.message;
+				  console.log("Error:"+this.errorMsg);
+				  this.notifyService.showError(this.errorMsg, "");
+				  this.spinner.hide();
+				} else {
+				  this.spinner.hide();
+				  if(error.status==500 && error.statusText=="Internal Server Error"){
+					this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+				  }else{
+					let str;
+					  if(error.status==400){
+					  str=error.error.error;
+					  }else{
+						str=error.error.message;
+						str=str.substring(str.indexOf(":")+1);
+					  }
+					  
+					  console.log("Error:",str);
+					  this.errorMsg=str;
+				  }
+			  
+				  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				}
+			  }); 
+		}else{
+			this.spinner.hide();
+		}
 	}
 		
 	isNotValidNumber(value: any): boolean {

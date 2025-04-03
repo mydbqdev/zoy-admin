@@ -51,6 +51,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  forceCheckoutDisabled: boolean = true;
 	  gstChargesDisabled : boolean = true;
 	  shortTermRentingDurationDisabled: boolean = true;
+	  crpEffectiveDate:string='';
+	  stpEffectiveDate:string='';
 
 	  triggerCondition : {'id':number,'cond_name':string}[] = []; //['==','>=','<=','>','<','!='];
 	  triggerOn : {'id':number,'trigger_on':string}[]=[];//['PaidAmount','Rent','PaidAmount & Rent']; 
@@ -325,10 +327,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 
    getBeforeCheckInCRDetails(pgTypeId:string){
 	const pgtype={'pgType':pgTypeId};
-	console.log("pgTypeId",pgTypeId)
 	this.configMasterService.getBeforeCheckInCRDetails(pgtype).subscribe(res => {
-	this.cancellationBeforeCheckInDetailsOrg = res?.data;
-	console.log("this.cancellationBeforeCheckInDetailsOrg",this.cancellationBeforeCheckInDetailsOrg)
+	console.log("!res.data && !res.data[0]",!res.data ,!res.data[0])
+	if(!res.data[0]){
+		var model: BeforeCheckInCancellationRefundMainObjModel=new BeforeCheckInCancellationRefundMainObjModel();
+		this.cancellationBeforeCheckInDetailsOrg.push(model);
+	}else{
+		this.cancellationBeforeCheckInDetailsOrg = res?.data;
+	}
 	this.getBeforeCheckInCRData();
 		},error =>{
 			console.log("error.error",error)
@@ -1170,20 +1176,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  backUpBeforeCheckInCRList:BeforeCheckInCancellationRefundModel[]=[];
 	  getBeforeCheckInCRData(){
 		this.backUpBeforeCheckInCRList=[];
-		this.cancellationBeforeCheckInDetails=[];
-		console.log("this.cancellationBeforeCheckInDetailsOrg?.zoy_before_check_in_cancellation_info",this.cancellationBeforeCheckInDetailsOrg)
-		this.cancellationBeforeCheckInDetailsOrg.forEach(rule =>{
-			var main :BeforeCheckInCancellationRefundMainObjModel=new BeforeCheckInCancellationRefundMainObjModel();
-			console.log("rule",rule)
-			main.createdBy=rule.createdBy;
-			main.approvedBy=rule.approvedBy;
-			main.effectiveDate=rule.effectiveDate;
-			main.isApproved=rule.isApproved;
-			main.iscreate=rule.iscreate;
-			main.pgType=rule.pgType;
-			console.log("main",main)
-			var subList:BeforeCheckInCancellationRefundModel[]=[];
-			rule.zoy_before_check_in_cancellation_info.forEach(element => {
+		this.cancellationBeforeCheckInDetails= JSON.parse(JSON.stringify(this.cancellationBeforeCheckInDetailsOrg));
+	
+			var main :BeforeCheckInCancellationRefundMainObjModel=this.cancellationBeforeCheckInDetails[0];
+			console.log("this.cancellationBeforeCheckInDetails",this.cancellationBeforeCheckInDetails)
+			main.ZoyBeforeCheckInCancellationInfo?.forEach(element => {
 			let sub : BeforeCheckInCancellationRefundModel = new BeforeCheckInCancellationRefundModel();
 			sub.cancellation_id = element.cancellation_id; 
 			sub.before_checkin_days = element.before_checkin_days; 
@@ -1193,14 +1190,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			sub.trigger_on = element.trigger_on; 
 			sub.trigger_value = element.trigger_value; 
 
-			subList.push(sub);
+			this.backUpBeforeCheckInCRList.push(sub);
 		});
-			main.zoy_before_check_in_cancellation_info = subList;
-			this.cancellationBeforeCheckInDetails.push(main);
-		});
-		 
+
 		console.log("cancellationBeforeCheckInDetails",this.cancellationBeforeCheckInDetails)
-		this.backUpBeforeCheckInCRList = this.cancellationBeforeCheckInDetails[0].zoy_before_check_in_cancellation_info
+		  this.crpEffectiveDate = this.cancellationBeforeCheckInDetails[0].effectiveDate;
 		  this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
 		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
 		  this.table?.renderRows();
@@ -1249,32 +1243,58 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.beforeCheckInCRfModel.trigger_value="TotalPaidAmount";
 	}  
 
- beforeCheckInCRfUpDate(){
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+	multirullsEffectiveDateValidation(newDate:string):boolean{
+	  if(new Date(newDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)){
+		return true;
+	  }
+	  return false;
+	}
+
+ beforeCheckInCRfUpDate(task:string){
+	if(!this.crpEffectiveDate || new Date(this.crpEffectiveDate) < new Date() ){
+		return;
+	}
+	var payload :BeforeCheckInCancellationRefundMainObjModel = JSON.parse(JSON.stringify(this.cancellationBeforeCheckInDetails[0]));
+	payload.effectiveDate = this.crpEffectiveDate;
+	
+	const filteredDetails = this.beforeCheckInCRDetails.filter(item => !item.isDelete);
+	if(filteredDetails.length == 0){
+		this.notifyService.showInfo("","Please add at least one policy.");
+         return;
+	}
+	const duplicateBCCR = filteredDetails.reduce((acc, data, index, self) => {
+		const duplicateIndex = self.findIndex((policy) =>
+ 			policy.trigger_condition == data.trigger_condition &&
+			policy.before_checkin_days == data.before_checkin_days &&
+			policy.trigger_value == data.trigger_value &&
+			policy.deduction_percentage == data.deduction_percentage
+		);
+
+		if (duplicateIndex != index && !acc.includes(index)) {
+			acc.push(index); 
+		}
+		return acc;
+	}, []);
+	if (duplicateBCCR.length > 0) {
+		const indexs = duplicateBCCR.join(', '); 
+		this.notifyService.showError("Order "+indexs+" are duplicate roles, please check.","");
+		return
+	}
+	
+	if(task === 'approve'){
+		payload.isApproved=true;
+	}else{
+		payload.iscreate = !payload.isApproved ;
+	}
+
+	payload.ZoyBeforeCheckInCancellationInfo = this.beforeCheckInCRDetails;
+	console.log("beforeCheckInCRDetails",this.beforeCheckInCRDetails);
+	console.log("payload>>",payload);
+	this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+(task === 'approve' ? 'Approve':(payload.iscreate?'Create':'Update') ) +' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
-				const filteredDetails = this.beforeCheckInCRDetails.filter(item => !item.isDelete);
-			    const duplicateBCCR = filteredDetails.reduce((acc, data, index, self) => {
-				const duplicateIndex = self.findIndex((policy) =>
-					policy.trigger_condition == data.trigger_condition &&
-					policy.before_checkin_days == data.before_checkin_days &&
-					policy.trigger_value == data.trigger_value &&
-					policy.deduction_percentage == data.deduction_percentage
-				);
-	
-				if (duplicateIndex != index && !acc.includes(index)) {
-					acc.push(index); 
-				}
-	
-				return acc;
-			}, []);
-			if (duplicateBCCR.length > 0) {
-				const indexs = duplicateBCCR.join(', '); 
-				this.notifyService.showError("Order "+indexs+" are duplicate roles, please check.","");
-				return
-			}
-			console.log("beforeCheckInCRDetails",this.beforeCheckInCRDetails)
+				
 			return;
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
@@ -1718,8 +1738,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  }	 
 		  
 		   shortTermData:ShortTermDataModel = new ShortTermDataModel();
-			shortTermDataList:ShortTermDataModel[] = [];
-			shortTermduration:number=100;
+	       shortTermDataList:ShortTermDataModel[] = [];
+		   shortTermduration:number=100;
 
 		
 		  
