@@ -49,12 +49,12 @@ export class EarlyCheckOutRuleDetails{
 }
 export class BeforeCheckInCancellationRefundMainObjModel{
     effectiveDate:string;
-    iscreate:boolean;
-    isApproved:boolean;
+    iscreate:boolean=false;
+    isApproved:boolean=false;
     approvedBy:string;
     createdBy:string;
     pgType:string;
-    zoy_before_check_in_cancellation_info:BeforeCheckInCancellationRefundModel[]=[];
+    ZoyBeforeCheckInCancellationInfo:BeforeCheckInCancellationRefundModel[]=[];
 
 }
 export class BeforeCheckInCancellationRefundModel{
@@ -154,6 +154,30 @@ export class ShortTermRentingDuration  {
 export class NoRentalAgreement  {
     noRentalAgreementId :string;
     noRentalAgreementDays: number;
+    effectiveDate:string='';
+    isApproved:boolean=false;
+    createdBy:string='';
+    approvedBy:string='';
+}
+
+export class ShortTermMainModel{
+    effectiveDate:string;
+    iscreate:boolean;
+    isApproved:boolean;
+    approvedBy:string;
+    createdBy:string;
+    ZoyShortTermDtoInfo:ShortTermSubModel[]=[];
+
+}
+
+export class ShortTermSubModel{
+    shortTermId : string ='';
+    startDay : number ;
+    endDay : number ;
+    percentage : number ;
+    isDelete:boolean ;
+    isEdit:boolean ;
+    isConfirm:boolean ;
     effectiveDate:string='';
     isApproved:boolean=false;
     createdBy:string='';
