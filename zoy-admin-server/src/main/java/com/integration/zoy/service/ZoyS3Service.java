@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.integration.zoy.exception.GenericErrorResponse;
 
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
+import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -25,6 +27,7 @@ import io.minio.RemoveBucketArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.StatObjectArgs;
 import io.minio.StatObjectResponse;
+import io.minio.http.Method;
 
 @Service
 public class ZoyS3Service {
@@ -70,7 +73,7 @@ public class ZoyS3Service {
 			.httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 			.build();
 		}
-		return url+"/"+bucketName+"/"+objectName;
+		return objectName;
 	}
 
 	public Map<String,Object>  downloadFile(String bucketName,String id) {
@@ -202,5 +205,20 @@ public class ZoyS3Service {
 	{
 		String s3Path =  userId + "/" + bookingId + "/" + ZoyConstant.CANCELLATION_PDF_NAME;
 		return downloadFile2(userDocsBucket, s3Path);
+	}
+	
+	public String generatePreSignedUrl(String bucketName,String objectName)
+	{
+		 try {
+			return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+				        .bucket(bucketName)
+				        .object(objectName)
+				        .expiry(10, TimeUnit.MINUTES)
+				        .method(Method.GET)
+				        .build());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}		
 	}
 }
