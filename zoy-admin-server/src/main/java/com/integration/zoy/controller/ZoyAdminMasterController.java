@@ -79,6 +79,7 @@ import com.integration.zoy.repository.UserBookingsRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.UserDBImpl;
+import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
@@ -130,6 +131,10 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	@Autowired
 	ZoyS3Service zoyS3Service;
+	
+	@Autowired
+	ZoyAdminService zoyAdminService;
+
 
 	@Value("${app.minio.Amenities.photos.bucket.name}")
 	private String amenitiesPhotoBucketName;
@@ -139,6 +144,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		ResponseBody response=new ResponseBody();
 		try {
 			List<ZoyPgAmenetiesMaster> amenetiesMaster =  ownerDBImpl.getAllAmeneties();
+			for (ZoyPgAmenetiesMaster amenity : amenetiesMaster) {
+			    if (amenity.getAmenetiesImage() != null && !amenity.getAmenetiesImage().trim().isEmpty()) {
+			        amenity.setAmenetiesImage(zoyAdminService.generatePreSignedUrl(amenitiesPhotoBucketName, amenity.getAmenetiesImage()));
+			    }
+			}
 			return new ResponseEntity<>(gson2.toJson(amenetiesMaster), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details API:/zoy_admin/ameneties.zoyAdminAmenities ",e);
@@ -160,7 +170,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST); 
 			}
 
-			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,zoyPgAmenetiesMaster.getAmenetiesId(),amenetie.getAmenetiesImage());
+			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,zoyPgAmenetiesMaster.getAmenetiesId(), amenetie.getAmenetiesImage());
 			zoyPgAmenetiesMaster.setAmenetiesName(amenetie.getAmeneties());
 			zoyPgAmenetiesMaster.setAmenetiesImage(imageUrl);		
 			ZoyPgAmenetiesMaster saved=ownerDBImpl.createAmeneties(zoyPgAmenetiesMaster);
@@ -765,6 +775,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		ResponseBody response=new ResponseBody();
 		try {
 			List<ZoyPgDueMaster> userDueMasters =  ownerDBImpl.findAllDueMaster();
+			for (ZoyPgDueMaster due : userDueMasters) {
+			    if (due.getDueImage() != null && !due.getDueImage().trim().isEmpty()) {
+			    	due.setDueImage(zoyAdminService.generatePreSignedUrl(amenitiesPhotoBucketName, due.getDueImage()));
+			    }
+			}
 			return new ResponseEntity<>(gson2.toJson(userDueMasters), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting due type details API:/zoy_admin/dueType.zoyAdminDueType ",e);
