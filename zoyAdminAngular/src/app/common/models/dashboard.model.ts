@@ -1,9 +1,3 @@
-export class DashboardCardModel{
-    usersWithNonNullPin:number=0;
-    activeOwnersCount: number=0;
-    activePropertiesCount: number=0;
-    zoyShare: number=0;
-}
 
 export class TopRevenuePG{
     sl_no:string;
@@ -35,4 +29,10 @@ export class OwnersCardModel{
     zoyCodeGeneratedOwnersCount : number = 0 ;
     ownerAppUsersCount : number = 0 ;
     ZeroPropertyOwnersCount : number = 0 ;
+}
+
+export class PropertiesCardModel{
+    potentialProperties : number = 0 ;
+    nonPotentialProperties : number = 0 ;
+    upComingpotentialProperties : number = 0 ;
 }

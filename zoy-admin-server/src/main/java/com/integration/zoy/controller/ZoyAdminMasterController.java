@@ -38,6 +38,7 @@ import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgDueTypeMaster;
+import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
@@ -58,6 +59,8 @@ import com.integration.zoy.model.DueType;
 import com.integration.zoy.model.DueTypeId;
 import com.integration.zoy.model.EkycType;
 import com.integration.zoy.model.EkycTypeId;
+import com.integration.zoy.model.FloorName;
+import com.integration.zoy.model.FloorNameId;
 import com.integration.zoy.model.NotificationMode;
 import com.integration.zoy.model.NotificationModeId;
 import com.integration.zoy.model.OwnerPropertyDTO;
@@ -76,6 +79,7 @@ import com.integration.zoy.repository.UserBookingsRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.UserDBImpl;
+import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
@@ -127,6 +131,10 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	@Autowired
 	ZoyS3Service zoyS3Service;
+	
+	@Autowired
+	ZoyAdminService zoyAdminService;
+
 
 	@Value("${app.minio.Amenities.photos.bucket.name}")
 	private String amenitiesPhotoBucketName;
@@ -136,6 +144,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		ResponseBody response=new ResponseBody();
 		try {
 			List<ZoyPgAmenetiesMaster> amenetiesMaster =  ownerDBImpl.getAllAmeneties();
+			for (ZoyPgAmenetiesMaster amenity : amenetiesMaster) {
+			    if (amenity.getAmenetiesImage() != null && !amenity.getAmenetiesImage().trim().isEmpty()) {
+			        amenity.setAmenetiesImage(zoyAdminService.generatePreSignedUrl(amenitiesPhotoBucketName, amenity.getAmenetiesImage()));
+			    }
+			}
 			return new ResponseEntity<>(gson2.toJson(amenetiesMaster), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting ameneties details API:/zoy_admin/ameneties.zoyAdminAmenities ",e);
@@ -157,7 +170,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST); 
 			}
 
-			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,zoyPgAmenetiesMaster.getAmenetiesId(),amenetie.getAmenetiesImage());
+			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,zoyPgAmenetiesMaster.getAmenetiesId(), amenetie.getAmenetiesImage());
 			zoyPgAmenetiesMaster.setAmenetiesName(amenetie.getAmeneties());
 			zoyPgAmenetiesMaster.setAmenetiesImage(imageUrl);		
 			ZoyPgAmenetiesMaster saved=ownerDBImpl.createAmeneties(zoyPgAmenetiesMaster);
@@ -762,6 +775,11 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		ResponseBody response=new ResponseBody();
 		try {
 			List<ZoyPgDueMaster> userDueMasters =  ownerDBImpl.findAllDueMaster();
+			for (ZoyPgDueMaster due : userDueMasters) {
+			    if (due.getDueImage() != null && !due.getDueImage().trim().isEmpty()) {
+			    	due.setDueImage(zoyAdminService.generatePreSignedUrl(amenitiesPhotoBucketName, due.getDueImage()));
+			    }
+			}
 			return new ResponseEntity<>(gson2.toJson(userDueMasters), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting due type details API:/zoy_admin/dueType.zoyAdminDueType ",e);
@@ -1121,6 +1139,71 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	        response.setError(e.getMessage());
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminFloorNamePost(FloorName floorName) {
+		ResponseBody response=new ResponseBody();
+		try {
+			ZoyPgFloorNameMaster floorNameMasters =  new ZoyPgFloorNameMaster();
+			floorNameMasters.setFloorName(floorName.getFloorName());
+			ZoyPgFloorNameMaster saved=ownerDBImpl.createFloorName(floorNameMasters);
+
+			//audit history here
+			String historyContent=" has created the Floor Name for, "+floorName.getFloorName();
+			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
+
+			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error posting floor name details API:/zoy_admin/floorName.zoyAdminFloorNamePost ",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminFloorName() {
+		ResponseBody response=new ResponseBody();
+		try {
+			List<ZoyPgFloorNameMaster> floorNameMasters =  ownerDBImpl.getAllFloorNames();
+			return new ResponseEntity<>(gson2.toJson(floorNameMasters), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting room type details API:/zoy_admin/floorName.zoyAdminFloorName",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
+	@Override
+	public ResponseEntity<String> zoyAdminFloorNamePut(FloorNameId floorNameId) {
+		ResponseBody response=new ResponseBody();
+		try {
+			ZoyPgFloorNameMaster floorNameMasters =  ownerDBImpl.findFloorName(floorNameId.getId());
+			if(floorNameMasters!=null) {
+				final String oldAmenities=floorNameMasters.getFloorName();
+				floorNameMasters.setFloorName(floorNameId.getFloorName());
+				ZoyPgFloorNameMaster updated=ownerDBImpl.updateFloorName(floorNameMasters);
+				//audit history here
+				String historyContent=" has updated the Floor Name for, from "+oldAmenities+" to "+floorNameId.getFloorName();
+				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_UPDATE);
+
+				return new ResponseEntity<>(gson2.toJson(updated), HttpStatus.OK);
+			} else {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("No Floor Name for the given Id " + floorNameId.getId());
+				return new ResponseEntity<>(gson2.toJson(response), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			log.error("Error updating room type details API:/zoy_admin/roomType.zoyAdminRoomTypePut ",e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
 	

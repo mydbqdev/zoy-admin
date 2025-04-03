@@ -110,8 +110,6 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	@Value("${qa.signin.link}")
 	private String qaRegistrationLink;
 
-	@Value("${app.minio.user.photos.bucket.name}")
-	private String userPhotoBucketName;
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
 	
