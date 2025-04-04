@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,6 +14,12 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Table(name = "zoy_pg_registered_owner_details", schema = "pgowners")
 public class RegisteredPartner {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false, updatable = false)
+	private Long id;
+	
 	@Column(name = "firstname", nullable = false, length = 50)
 	private String firstname;
 
@@ -21,8 +29,7 @@ public class RegisteredPartner {
 	@Column(name = "email", nullable = false, length = 100)
 	private String email;
 
-	@Id
-	@Column(name = "register_id", nullable = false, length = 100)
+	@Column(name = "register_id")
 	private String registerId;
 
 	@Column(name = "mobile", nullable = false, length = 15)
@@ -40,7 +47,19 @@ public class RegisteredPartner {
 	@Column(name = "ts", nullable = false)
 	@CreationTimestamp
 	private Timestamp ts;
-
+	
+	@Column(name = "city")
+	private String city;
+	
+	@Column(name = "state")
+    private String state;
+	
+	@Column(name = "status")
+	private String status;
+	
+	@Column(name = "inquired_for")
+	private String inquiredFor;
+	
 	public String getFirstname() {
 		return firstname;
 	}
@@ -112,5 +131,46 @@ public class RegisteredPartner {
 	public void setRegisterId(String registerId) {
 		this.registerId = registerId;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getInquiredFor() {
+		return inquiredFor;
+	}
+
+	public void setInquiredFor(String inquiredFor) {
+		this.inquiredFor = inquiredFor;
+	}
+
 
 }
