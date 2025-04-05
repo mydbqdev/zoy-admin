@@ -79,7 +79,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     }
     this.filteredOptions = this.searchControl.valueChanges.pipe(
 			startWith(''),
-			map(value => this.filter(value))
+			map(value => this.filter(value.toString()))
 		  );
   
   }
@@ -137,6 +137,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
 		return this.menus.filter(menu => menu.name.toLowerCase().includes(filterValue));
 	  }
 
+    startLogout:boolean=false;
     getTimeSinceLastAction() {
       this.timeSinceLastAction = setInterval(() => {
         if(!this.userService.getSessionTime()){
@@ -148,6 +149,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         this.nun=this.nun+1;
         this.countdown = 120;
         this.sessionModelOpen.nativeElement.click(); 
+        this.startLogout=true;
         this.startSessionTimeout();
       }
     }, 1000); 
@@ -159,11 +161,13 @@ export class HeaderComponent implements OnInit,AfterViewInit {
       return;
     }
     this.interval = setInterval(() => {
-      if (this.countdown <= 0) {
-        this.nun=0;
-        this.logout();
-      } else {
-        this.countdown--;
+      if(this.startLogout){
+        if (this.countdown <= 0) {
+          this.nun=0;
+          this.logout();
+        } else {
+          this.countdown--;
+        }
       }
     }, 1000); 
   }
@@ -188,6 +192,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     this.nun=0;
     this.countdown = 120;
     this.authService.checkLoginUserVlidaate();
+    this.startLogout=false;
   }
 
   logout() {
