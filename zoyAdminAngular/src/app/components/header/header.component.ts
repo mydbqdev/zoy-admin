@@ -85,7 +85,8 @@ export class HeaderComponent implements OnInit,AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    
+    this.getTimeSinceLastAction();
+    this.startValidateToken();
   }
  
   ngOnInit(): void {
@@ -98,8 +99,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
         this.userActivityService.lastActionTime$.subscribe(time => {
           this.lastActionTime = time;
         });
-        this.getTimeSinceLastAction();
-        this.startValidateToken();
+       
         this.loadProfilePhoto();
         this.getUserNotifications();
        
@@ -109,6 +109,7 @@ export class HeaderComponent implements OnInit,AfterViewInit {
     if (this.mySubscription) {
       this.mySubscription.unsubscribe();
     }
+    this.clearAllIntervals();
   
   }
 
