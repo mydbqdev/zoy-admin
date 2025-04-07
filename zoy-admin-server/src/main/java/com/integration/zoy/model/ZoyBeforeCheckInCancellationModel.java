@@ -3,6 +3,7 @@ package com.integration.zoy.model;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZoyBeforeCheckInCancellationModel {
 
@@ -27,8 +28,8 @@ public class ZoyBeforeCheckInCancellationModel {
 	@SerializedName("pgType")
 	private String pgType;
 
-	@SerializedName("ZoyBeforeCheckInCancellationInfo")
-	private List<ZoyBeforeCheckInCancellation> ZoyBeforeCheckInCancellationInfo;
+	 @JsonProperty("ZoyBeforeCheckInCancellationInfo")
+	 private List<ZoyBeforeCheckInCancellation> zoyBeforeCheckInCancellationInfo;
 
 	public String getEffectiveDate() {
 		return effectiveDate;
@@ -71,12 +72,11 @@ public class ZoyBeforeCheckInCancellationModel {
 	}
 
 	public List<ZoyBeforeCheckInCancellation> getZoyBeforeCheckInCancellationInfo() {
-		return ZoyBeforeCheckInCancellationInfo;
+	    return zoyBeforeCheckInCancellationInfo;
 	}
 
-	public void setZoyBeforeCheckInCancellationInfo(
-			List<ZoyBeforeCheckInCancellation> zoyBeforeCheckInCancellationInfo) {
-		ZoyBeforeCheckInCancellationInfo = zoyBeforeCheckInCancellationInfo;
+	public void setZoyBeforeCheckInCancellationInfo(List<ZoyBeforeCheckInCancellation> info) {
+	    this.zoyBeforeCheckInCancellationInfo = info;
 	}
 
 	public boolean getDelete() {
