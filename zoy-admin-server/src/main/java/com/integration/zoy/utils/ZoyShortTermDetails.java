@@ -28,8 +28,8 @@ public class ZoyShortTermDetails {
 	@SerializedName("pgType")
 	private String pgType;
 
-	@SerializedName("ZoyShortTermDtoInfo")
-	private List<ZoyShortTermDto> ZoyShortTermDtoInfo;
+	@JsonProperty("ZoyShortTermDtoInfo")
+	private List<ZoyShortTermDto> zoyShortTermDtoInfo;
 
 	public String getEffectiveDate() {
 		return effectiveDate;
@@ -89,11 +89,11 @@ public class ZoyShortTermDetails {
 
 
 	public List<ZoyShortTermDto> getZoyShortTermDtoInfo() {
-		return ZoyShortTermDtoInfo;
+	    return zoyShortTermDtoInfo;
 	}
 
 	public void setZoyShortTermDtoInfo(List<ZoyShortTermDto> zoyShortTermDtoInfo) {
-		ZoyShortTermDtoInfo = zoyShortTermDtoInfo;
+	    this.zoyShortTermDtoInfo = zoyShortTermDtoInfo;
 	}
 
 	
