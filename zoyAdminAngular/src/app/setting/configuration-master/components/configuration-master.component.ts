@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { ConfigMasterService } from '../service/config-master-serive';
-import { BeforeCheckInCancellationRefundMainObjModel, BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstChargesModel, NoRentalAgreement, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermModel, ShortTermRentingDuration, TokenDetailsModel} from '../models/config-master-model';
+import { BeforeCheckInCancellationRefundMainObjModel, BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstChargesModel, NoRentalAgreement, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermMainModel, ShortTermModel, ShortTermRentingDuration, ShortTermSubModel, TokenDetailsModel} from '../models/config-master-model';
 import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { DbSettingDataModel, ShortTermDataModel } from '../../db-master-configuration/models/db-setting-models';
@@ -63,7 +63,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  beforeCheckInCRDetails: BeforeCheckInCancellationRefundModel[] = [];
 	 
 	  canSubmit:boolean = true;
-	  @ViewChild('table', { static: true }) table: MatTable<BeforeCheckInCancellationRefundModel>;
+	  @ViewChild(MatTable) table: MatTable<BeforeCheckInCancellationRefundModel>;
 	more:boolean=true;
 	moreEarlyCheckout:boolean=true;
 	popupMoreRecordHeader:string="";
@@ -329,6 +329,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	const pgtype={'pgType':pgTypeId};
 	this.configMasterService.getBeforeCheckInCRDetails(pgtype).subscribe(res => {
 	console.log("!res.data && !res.data[0]",!res.data ,!res.data[0])
+	this.cancellationBeforeCheckInDetailsOrg = [];
+	this.beforeCheckInCRDatafReset();
 	if(!res.data[0]){
 		var model: BeforeCheckInCancellationRefundMainObjModel=new BeforeCheckInCancellationRefundMainObjModel();
 		this.cancellationBeforeCheckInDetailsOrg.push(model);
@@ -882,6 +884,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.gstChargesDisabled = true;
 	  }
 	securityDepositDeadLineSubmit(task:string) {
+		this.table?.renderRows();
 		if( task === 'approve' && this.configMasterModel.securityDepositDeadLineDetails[0]?.createdBy == this.userInfo.userEmail){
 			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 			return ;
@@ -1153,9 +1156,13 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		if (!this.dataSource || !this.dataSource.data) {
 		  return; 
 		}
+
+		console.log("this.dataSource.data",this.dataSource.data)
 		const previousIndex = event.previousIndex;
 		const currentIndex = event.currentIndex;
 	   const data = this.dataSource.data[previousIndex];
+	   console.log("previousIndex",previousIndex)
+	   console.log("currentIndex",currentIndex)
 		if (event.container === event.previousContainer && (data.isDelete === undefined ? true :!data.isDelete)) {
 		  moveItemInArray(this.beforeCheckInCRDetails, previousIndex, currentIndex);
 		  let i=1;
@@ -1169,8 +1176,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			});
 			this.canSubmit=false;
 		} 
+		console.log("this.table?.renderRows();",this.table)
 			this.table?.renderRows();
+			console.log("this.dataSource.data?>>",this.dataSource.data)
 	  }
+
 	  cancellationBeforeCheckInDetailsOrg:BeforeCheckInCancellationRefundMainObjModel[]=[];
 	  cancellationBeforeCheckInDetails:BeforeCheckInCancellationRefundMainObjModel[]=[];
 	  backUpBeforeCheckInCRList:BeforeCheckInCancellationRefundModel[]=[];
@@ -1180,7 +1190,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	
 			var main :BeforeCheckInCancellationRefundMainObjModel=this.cancellationBeforeCheckInDetails[0];
 			console.log("this.cancellationBeforeCheckInDetails",this.cancellationBeforeCheckInDetails)
-			main.ZoyBeforeCheckInCancellationInfo?.forEach(element => {
+			main.zoy_before_check_in_cancellation_info?.forEach(element => {
 			let sub : BeforeCheckInCancellationRefundModel = new BeforeCheckInCancellationRefundModel();
 			sub.cancellation_id = element.cancellation_id; 
 			sub.before_checkin_days = element.before_checkin_days; 
@@ -1189,6 +1199,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			sub.trigger_condition = element.trigger_condition; 
 			sub.trigger_on = element.trigger_on; 
 			sub.trigger_value = element.trigger_value; 
+			sub.isDelete = false; 
 
 			this.backUpBeforeCheckInCRList.push(sub);
 		});
@@ -1267,7 +1278,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
  			policy.trigger_condition == data.trigger_condition &&
 			policy.before_checkin_days == data.before_checkin_days &&
 			policy.trigger_value == data.trigger_value &&
-			policy.deduction_percentage == data.deduction_percentage
+			policy.deduction_percentage == data.deduction_percentage 
 		);
 
 		if (duplicateIndex != index && !acc.includes(index)) {
@@ -1284,21 +1295,21 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	if(task === 'approve'){
 		payload.isApproved=true;
 	}else{
-		payload.iscreate = !payload.isApproved ;
+		payload.iscreate = payload.isApproved ;
 	}
 
 	payload.ZoyBeforeCheckInCancellationInfo = this.beforeCheckInCRDetails;
 	console.log("beforeCheckInCRDetails",this.beforeCheckInCRDetails);
 	console.log("payload>>",payload);
+	const model= JSON.stringify(payload)
 	this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+(task === 'approve' ? 'Approve':(payload.iscreate?'Create':'Update') ) +' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
-				
-			return;
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
-			this.configMasterService.submitBeforeCheckInCRfDetails(this.beforeCheckInCRDetails).subscribe(res => {
+			this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
+				console.log("res>>>",res)
 			this.changeSettingType();
 			this.canSubmit = true;
 			this.getBeforeCheckInCRData();
@@ -1422,6 +1433,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					this.configMasterModel.earlyCheckOutRuleDetails[0].early_check_out_id="";
 				}
 			}
+			
 			this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
 				this.configMasterService.updateEarlyCheckOutRulesdDetails(this.configMasterModel.earlyCheckOutRuleDetails[0]).subscribe(res => {
@@ -1746,12 +1758,21 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			convertToNumber(value: any): number {
 			  return Number(value);
 			}
+			isUpdateShortTerm:boolean=false;
+			backUpshortTermData :ShortTermMainModel[]=[];
 		    getDbSettingDetails(){
-				this.authService.checkLoginUserVlidaate();
-			   this.spinner.show();
-			   this.dbMasterConfigurationService.getDbSettingDetails('zoy_admin/shortTerm').subscribe(data => {
-			   this.getShortTermList(data);
-			   this.spinner.hide();
+			   this.authService.checkLoginUserVlidaate();
+			   this.backUpshortTermData=[];
+			   this.configMasterService.getShortTermData().subscribe(data => {
+			   if(data && data?.ZoyShortTermDtoInfo>0){
+				this.backUpshortTermData= data;
+			   }else{
+				var model = new ShortTermMainModel();
+				model.ZoyShortTermDtoInfo.push(new ShortTermSubModel());
+				this.backUpshortTermData.push(model);
+			   }
+			   this.getShortTermList();
+			   this.isUpdateShortTerm=false;
 			   }, error => {
 			   this.spinner.hide();
 			   if(error.status == 0) {
@@ -1783,19 +1804,23 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			 });
 			 
 			 }
-			 backUpshortTermDataList :ShortTermDataModel[]=[];
-			   getShortTermList(data:any){
-				this.backUpshortTermDataList = [];
-				data.forEach(element => {
-				  let model : ShortTermDataModel = new ShortTermDataModel();
-				  model.zoy_pg_short_term_master_id = element.zoy_pg_short_term_master_id; 
-				  model.start_day = element.start_day; 
-				  model.end_day = element.end_day;  
+			 shortTermDataMainList :ShortTermMainModel[]=[];
+			 shortTermDataSubList:ShortTermSubModel[]=[];
+			 backUpShortTermDataSubList:ShortTermSubModel[]=[];
+			   getShortTermList(){
+				this.backUpShortTermDataSubList=[];
+				this.shortTermDataMainList = JSON.parse(JSON.stringify(this.backUpshortTermData));
+				var main=this.shortTermDataMainList[0];
+				 main.ZoyShortTermDtoInfo.forEach(element => {
+				  let model : ShortTermSubModel = new ShortTermSubModel();
+				  model.shortTermId= element.shortTermId; 
+				  model.startDay = element.startDay; 
+				  model.endDay = element.endDay;  
 			 
-				  this.backUpshortTermDataList.push(model);
+				  this.backUpShortTermDataSubList.push(model);
 				});
 				 
-				  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpshortTermDataList));
+				  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList));
 			 
 				}
 		  
@@ -1831,11 +1856,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			}
 			
 			undoEditShortTermItem(i:number) {
-			  this.shortTermDataList[i]=JSON.parse(JSON.stringify(this.backUpshortTermDataList[i]));
+			  this.shortTermDataList[i]=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList[i]));
 			}
 		  
 			shortTermDataListReset(){
-			  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpshortTermDataList));
+			  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList));
 			}
 			submitShortTerm:boolean = false;
 			submitShortTermData() {   
@@ -1887,7 +1912,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				return
 			  }
 		  
-			  if (JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpshortTermDataList)) {
+			  if (JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpShortTermDataSubList)) {
 				this.notifyService.showInfo("Short term slabs details are already up to date.", "");
 				return;
 			  }
@@ -1896,7 +1921,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				 (confirmed) =>{
 				if(confirmed){
 					this.configMasterService.submitShortTermData(finalSubmitShortList).subscribe(data => {
-					this.getShortTermList(data);
+					this.getShortTermList();
 					// this.dbSettingDataList=Object.assign([],data);
 					// this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
 					this.submitShortTerm = false;
