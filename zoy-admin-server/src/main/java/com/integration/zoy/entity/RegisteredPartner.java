@@ -60,6 +60,24 @@ public class RegisteredPartner {
 	@Column(name = "inquired_for")
 	private String inquiredFor;
 	
+	@Column(name = "assign_to_email")
+	private String assignedToEmail;
+	
+	@Column(name = "assign_to_name")
+	private String assignedToName;
+	
+	@Column(name = "description")
+	private String description;
+	
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getFirstname() {
 		return firstname;
 	}
@@ -170,6 +188,22 @@ public class RegisteredPartner {
 
 	public void setInquiredFor(String inquiredFor) {
 		this.inquiredFor = inquiredFor;
+	}
+
+	public String getAssignedToEmail() {
+		return assignedToEmail;
+	}
+
+	public void setAssignedToEmail(String assignedToEmail) {
+		this.assignedToEmail = assignedToEmail;
+	}
+
+	public String getAssignedToName() {
+		return assignedToName;
+	}
+
+	public void setAssignedToName(String assignedToName) {
+		this.assignedToName = assignedToName;
 	}
 
 

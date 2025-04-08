@@ -26,5 +26,11 @@ public class NotificationsAndAlertsService {
     	String[] emails =notificationsAndAlertsRepository.findScreenAccess(screenname);
         notificationService.notifyUserAccountunlockRequest(emails, approvalDetails);
     }
+    
+    
+    public void ticketAssign( String[] userId,  String ticketId) throws Exception {
+        notificationService.notifyTicketAssignedToSupportUser(userId, ticketId);
+    }
+    
 
 }
