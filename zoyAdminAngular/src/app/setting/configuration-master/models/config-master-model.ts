@@ -50,7 +50,7 @@ export class EarlyCheckOutRuleDetails{
 export class BeforeCheckInCancellationRefundMainObjModel{
     effectiveDate:string;
     iscreate:boolean=false;
-    isApproved:boolean=false;
+    isApproved:boolean=true;
     approvedBy:string;
     createdBy:string;
     pgType:string;

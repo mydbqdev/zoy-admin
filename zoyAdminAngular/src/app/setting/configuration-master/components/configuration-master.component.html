@@ -1224,12 +1224,12 @@
                                   <div *ngIf="cancellationBeforeCheckInDetails[0]?.isApproved">
                                     <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Cancellation And Refund Policy'" >
                                      <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
-                                     <div *ngIf=" !cancellationBeforeCheckInDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
+                                     <div *ngIf=" canSubmit && !cancellationBeforeCheckInDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
                                       <a class="approve-icon" (click)="beforeCheckInCRfUpDate('approve')">
                                         <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                       </a>
                                     </div> 
-                                  <div style="margin-right: 8px;margin-top:3px;">Effective On</div>
+                                  <div style="margin-right: 8px;margin-top:3px;">Effective On </div>
                                   <div style="width: 120px;margin-right: 10px;">
                                     <div class="input-group input-group-sm">
                                       <input class="form-control form-control-sm"
@@ -1360,10 +1360,10 @@
                                     </div>
                                     </div>
                                   </div>
-                                  <div class="card card-body m-0 p-0 mt-3" *ngIf="cancellationBeforeCheckInDetails[0]?.isApproved && cancellationBeforeCheckInDetails.length > 1">
+                                  <div class="card card-body m-0 p-0 mt-3" *ngIf="!cancellationBeforeCheckInDetails[0]?.isApproved && cancellationBeforeCheckInDetails.length > 1 && cancellationBeforeCheckInDetails[1] != undefined  && cancellationBeforeCheckInDetails[1]?.zoy_before_check_in_cancellation_info != undefined">
                                     <div class="row">
                                       <div class="d-flex m-2">
-                                        <span style="font-size: 16px;color:#6610f2; margin-left: 5px;">Currently applicable slabs. Effective from 2024-01-28 </span>
+                                        <span style="font-size: 16px;color:#6610f2; margin-left: 5px;">Currently applicable slabs. Effective from {{cancellationBeforeCheckInDetails[1]?.effectiveDate}} </span>
                                         <i class="fas fa-thumbs-up ml-2 color-bg-green" ></i>
                                         <div class="ml-2">
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Cancellation And Refund Policy'" >
@@ -1371,7 +1371,7 @@
                                         </div>
                                      </div>
                                        <div>
-                                        <div *ngFor="let element of beforeCheckInCRDetails;" >
+                                        <div *ngFor="let element of cancellationBeforeCheckInDetails[1].zoy_before_check_in_cancellation_info" >
                                           <div class="d-flex mb-1 ml-4">
                                             <span style="min-width:20px" > {{ element.priority }} </span> 
                                             <div class="ml-1" >
@@ -1630,7 +1630,7 @@
                                        <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Security Deposit Deadline'" >
                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div> -->
                                       <div *ngIf=" securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                       <a class="approve-icon" (click)="beforeCheckInCRfUpDate('approve')">
+                                       <a class="approve-icon" (click)="beforeCheckInCRfUpDate('approve')" data-bs-toggle="modal" data-bs-target="#approveRejectModel">
                                          <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                        </a>
                                       </div> 
@@ -2357,6 +2357,32 @@
         </div>
       </div>
       </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="approveRejectModel" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-small ">
+    <div class="modal-content">
+      <div class="modal-header bg-gradiant-popup-header">
+        <h5 class="modal-title" id="modalLabel"><span>Token Policy</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+      </div>
+      <div class="modal-body p-3">
+        <h5>Are you going to approve or reject the token policy ?</h5>
+        <div>Reason : </div>
+        <textarea id="txtArea" class="form-control form-control-sm " rows="5" cols="57" [(ngModel)]="reason" maxlength="1000" title="Please give me the reason"
+               [ngClass]="{'is-invalid': submitted && !reason}"></textarea>
+        <div>
+          If reject, then reason is required.   
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dark me-2" >Reject</button>
+        <button type="submit" class="btn btn-primary-custom me-2" >Approve</button>
       </div>
     </div>
   </div>
