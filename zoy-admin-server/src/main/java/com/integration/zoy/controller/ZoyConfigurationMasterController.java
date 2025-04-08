@@ -407,10 +407,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                entity.setTriggerCondition(cancellation.getTriggerCondition());
 	                entity.setBeforeCheckinDays(cancellation.getBeforeCheckinDays());
 	                entity.setDeductionPercentage(cancellation.getDeductionPercentage());
-	                entity.setCond(cancellation.getCond());
+	                entity.setCond(cancellation.getTriggerOn() + " " + cancellation.getTriggerCondition() + " "
+							+ cancellation.getBeforeCheckinDays());
 	                entity.setTriggerValue(cancellation.getTriggerValue());
 	                entity.setEffectiveDate(zoyBeforeCheckInCancellation.getEffectiveDate());
-//	                entity.setPgType(zoyBeforeCheckInCancellation.getPgType());
+	                entity.setPgType(zoyBeforeCheckInCancellation.getPgType());
 
 	                
 	                if (zoyBeforeCheckInCancellation.getIscreate()) {
