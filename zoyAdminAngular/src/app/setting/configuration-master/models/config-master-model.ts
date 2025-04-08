@@ -55,6 +55,7 @@ export class BeforeCheckInCancellationRefundMainObjModel{
     createdBy:string;
     pgType:string;
     ZoyBeforeCheckInCancellationInfo:BeforeCheckInCancellationRefundModel[]=[];
+    zoy_before_check_in_cancellation_info:BeforeCheckInCancellationRefundModel[]=[];
 
 }
 export class BeforeCheckInCancellationRefundModel{
@@ -65,7 +66,7 @@ export class BeforeCheckInCancellationRefundModel{
     trigger_on : string  ="WebCheckIn";
     trigger_condition : string ;
     priority: number ;
-    isDelete:boolean ;
+    isDelete:boolean =false;
     isEdit:boolean ;
     isConfirm:boolean ;
     effectiveDate:string='';
