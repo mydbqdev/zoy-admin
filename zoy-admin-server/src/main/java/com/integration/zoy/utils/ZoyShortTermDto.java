@@ -2,19 +2,19 @@ package com.integration.zoy.utils;
 
 import java.math.BigDecimal;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZoyShortTermDto {
-	@SerializedName("shortTermId")
+	@JsonProperty("shortTermId")
 	private String shortTermId;
 
-	@SerializedName("percentage")
+	@JsonProperty("percentage")
 	private BigDecimal percentage;
 
-	@SerializedName("startDay")
+	@JsonProperty("startDay")
 	private int startDay;
 
-	@SerializedName("endDay")
+	@JsonProperty("endDay")
 	private int endDay;
 
 	public String getShortTermId() {

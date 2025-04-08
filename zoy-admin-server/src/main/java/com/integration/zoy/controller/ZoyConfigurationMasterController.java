@@ -438,10 +438,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            ZoyPgCancellationDetailsRepo.deleteBeforeCheckInCancellationbyIds(todeleteList);
 	        }
 	        
-	        StringBuffer historyContent = new StringBuffer(" has made changes the Cancellation And Refund Policy for");
-			
-			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(),
-					historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+//	        StringBuffer historyContent = new StringBuffer(" has made changes the Cancellation And Refund Policy for");
+//			
+//			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(),
+//					historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 
 	        response.setStatus(HttpStatus.OK.value());
 	        response.setMessage("Operation completed successfully");
@@ -475,16 +475,25 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            response.setError("No cancellation details found.");
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 	        }
+	        ZoyBeforeCheckInCancellationModel beforeCheckInCancellation = new ZoyBeforeCheckInCancellationModel();
+	        List<ZoyBeforeCheckInCancellation> checkInCancellationDetailsList = new ArrayList<>();
+	        
+	        String effectiveDate="";
 
 	        for (ZoyPgCancellationDetails details : cancellationList) {
-	            ZoyBeforeCheckInCancellationModel beforeCheckInCancellation = new ZoyBeforeCheckInCancellationModel();
-	            beforeCheckInCancellation.setApproved(details.getIsApproved());
-	            beforeCheckInCancellation.setApprovedBy(details.getApprovedBy());
-	            beforeCheckInCancellation.setCreatedBy(details.getCreatedBy());
-	            beforeCheckInCancellation.setEffectiveDate(details.getEffectiveDate());
-	            beforeCheckInCancellation.setPgType(details.getPgType());
+	        	if(!effectiveDate.equals(details.getEffectiveDate())) {
+	        		beforeCheckInCancellation = new ZoyBeforeCheckInCancellationModel();
+	        		beforeCheckInCancellation.setApproved(details.getIsApproved());
+		            beforeCheckInCancellation.setApprovedBy(details.getApprovedBy());
+		            beforeCheckInCancellation.setCreatedBy(details.getCreatedBy());
+		            beforeCheckInCancellation.setEffectiveDate(details.getEffectiveDate());
+		            beforeCheckInCancellation.setPgType(details.getPgType());
 
-	            List<ZoyBeforeCheckInCancellation> checkInCancellationDetailsList = new ArrayList<>();
+		            checkInCancellationDetailsList = new ArrayList<>();
+	        	}
+	        	
+	        	
+	            
 	            ZoyBeforeCheckInCancellation checkInCancellationDetails = new ZoyBeforeCheckInCancellation();
 	            checkInCancellationDetails.setBeforeCheckinDays(details.getBeforeCheckinDays());
 	            checkInCancellationDetails.setCancellationId(details.getCancellationId());
@@ -498,8 +507,13 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	            checkInCancellationDetailsList.add(checkInCancellationDetails);
 	            beforeCheckInCancellation.setZoyBeforeCheckInCancellationInfo(checkInCancellationDetailsList);
+	         
+	            if(!effectiveDate.equals(details.getEffectiveDate())) {
+	            	  beforeCheckinDetailsList.add(beforeCheckInCancellation);
+	            }
+	            effectiveDate=details.getEffectiveDate();
 
-	            beforeCheckinDetailsList.add(beforeCheckInCancellation);
+	          
 	        }
 	        response.setStatus(HttpStatus.OK.value());
             response.setData(beforeCheckinDetailsList);
