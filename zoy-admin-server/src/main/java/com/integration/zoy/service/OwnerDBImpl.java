@@ -42,6 +42,7 @@ import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.model.OwnerPropertyDTO;
 import com.integration.zoy.utils.PaginationRequest;
+import com.integration.zoy.utils.SupportUsres;
 import com.integration.zoy.utils.ZoyCompanyProfileMasterDto;
 
 public interface OwnerDBImpl {
@@ -181,4 +182,6 @@ public interface OwnerDBImpl {
 	List<ZoyPgFloorNameMaster> getAllFloorNames()throws WebServiceException;
 	ZoyPgFloorNameMaster findFloorName(String id)throws WebServiceException;
 	ZoyPgFloorNameMaster updateFloorName(ZoyPgFloorNameMaster floorNameMasters)throws WebServiceException;
+	List<SupportUsres> getAllSupportUserNames()throws WebServiceException;
+	List<String> getLeadFollowUpHistory(String inquiryNumber)throws WebServiceException;
 }

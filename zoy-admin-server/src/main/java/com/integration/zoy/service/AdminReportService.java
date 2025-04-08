@@ -36,6 +36,7 @@ import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
+import com.integration.zoy.utils.RegisterLeadDetails;
 import com.integration.zoy.utils.RegisterTenantsDTO;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
@@ -781,6 +782,11 @@ public class AdminReportService implements AdminReportImpl{
 				dataListWrapper=this.generateSuspendedPropertiesReport(reportData,filterRequest);
 				templatePath ="templates/suspendedPropertiesReport.docx";
 				break;	
+			case "RegisteredLeadDetails":
+				reportData = getRegisterLeadDetails(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateRegisterLeadDetailsReport(reportData,filterRequest);
+				templatePath ="templates/registeredLeadDetails.docx";
+				break;	
 			default:
 				throw new IllegalArgumentException("Invalid template name provided.");
 			}
@@ -798,12 +804,33 @@ public class AdminReportService implements AdminReportImpl{
 				throw new IllegalArgumentException("Invalid file type provided. Supported types: pdf, excel, csv");
 			}
 		}catch (Exception e) {
-			System.out.println("errorrrrr::::"+e);
 			new ZoyAdminApplicationException(e, "");
 		}
 		return null;
 	}
 
+
+	private List<Map<String, Object>> generateRegisterLeadDetailsReport(CommonResponseDTO<?> reportData,
+			UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			RegisterLeadDetails leads = (RegisterLeadDetails) item;
+
+			data.put("inquryNumber",leads.getInquiryNumber() );
+			data.put("name", leads.getName());
+			data.put("inquiredFor", leads.getInquiredFor());
+			data.put("date", tuService.formatTimestamp(leads.getRegisteredDate().toInstant()));
+			data.put("assignedTo", leads.getAsignedTo());
+			data.put("status", leads.getStatus());
+			data.put("printedOn", currentDate);
+			dataList.add(data);
+		}
+		return dataList;
+	}
 
 	public List<Map<String, Object>> generateUserTransactionDataList(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
@@ -3015,4 +3042,131 @@ public class AdminReportService implements AdminReportImpl{
 			throw new WebServiceException("Error retrieving  Non Potential Properties Details: " + e.getMessage());
 		}
 	}
+
+	@Override
+	public CommonResponseDTO<RegisterLeadDetails> getRegisterLeadDetails(UserPaymentFilterRequest filterRequest,
+			FilterData filterData, boolean applyPagination) throws WebServiceException {
+		try {
+
+			StringBuilder queryBuilder = new StringBuilder(
+					"SELECT \r\n" +
+							"    register_id AS \"RegisterNumber\", \r\n" +
+							"    CONCAT(firstname, ' ', lastname) AS \"Name\", \r\n" +
+							"    inquired_for AS \"InquiredFor\", \r\n" +
+							"    ts AS \"Date\", \r\n" +
+							"    status AS \"Status\", \r\n" +
+							"    mobile AS \"mobile\", \r\n" +
+							"    property_name AS \"propertyName\", \r\n" +
+							"    state AS \"state\", \r\n" +
+							"    city AS \"city\", \r\n" +
+							"    email AS \"ownerEmail\", \r\n" +
+							"    assign_to_name AS \"assignedTo\", \r\n" +
+							"    description AS \"description\" \r\n" +
+							"FROM \r\n" +
+							"    pgowners.zoy_pg_registered_owner_details \r\n" +
+							"WHERE 1=1 \r\n"
+					);
+
+			Map<String, Object> parameters = new HashMap<>();
+
+			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+				queryBuilder.append("AND LOWER(city) LIKE LOWER('%' || :cityLocation || '%') \r\n");
+				parameters.put("cityLocation", filterRequest.getCityLocation());
+			}
+
+			if (filterData.getState() != null && !filterData.getState().isEmpty()) {
+				queryBuilder.append("AND LOWER(state) LIKE LOWER('%' || :state || '%') \r\n");
+				parameters.put("state", filterData.getState());
+			}
+
+			if (filterData.getInquiryNumber()!= null && !filterData.getInquiryNumber().isEmpty()) {
+				queryBuilder.append("AND LOWER(register_id) LIKE LOWER('%' || :inquiryNumber || '%') \r\n");
+				parameters.put("inquiryNumber", filterData.getInquiryNumber());
+			}
+
+			if (filterData.getInquiredBy() != null && !filterData.getInquiredBy().isEmpty()) {
+				if (filterData.getInquiredBy().equalsIgnoreCase("Owner")) {
+					queryBuilder.append("AND LOWER(inquired_for) = LOWER('Partner Inquiry') \r\n");
+				} else if (filterData.getInquiredBy().equalsIgnoreCase("Tenant")) {
+					queryBuilder.append("AND LOWER(inquired_for) = LOWER('PG Accommodation') \r\n");
+				}
+			}
+
+			if (filterData.getInquieredFor() != null && !filterData.getInquieredFor().isEmpty()) {
+				if (filterData.getInquieredFor().equalsIgnoreCase("Partner Inquiry")) {
+					queryBuilder.append("AND LOWER(inquired_for) = LOWER('Partner Inquiry') \r\n");
+				} else if (filterData.getInquieredFor().equalsIgnoreCase("PG Accommodation")) {
+					queryBuilder.append("AND LOWER(inquired_for) = LOWER('PG Accommodation') \r\n");
+				}
+			}
+
+			if (filterData.getStatus() != null && !filterData.getStatus().isEmpty()) {
+				queryBuilder.append("AND LOWER(status) = LOWER(:status) \r\n");
+				parameters.put("status", filterData.getStatus());
+			}
+			
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+					&& filterRequest.getSortActive() != null) {
+				String sort = "";
+				switch (filterRequest.getSortActive()) {
+				case "inquiryNumber":
+					sort = "register_id";
+					break;
+				case "name":
+					sort = "CONCAT(firstname, ' ', lastname)";
+					break;
+				case "inquiredFor":
+					sort = "inquired_for";
+					break;
+				case "registeredDate":
+					sort = "ts";
+					break;
+				case "asignedTo":
+					sort = "assign_to_name";
+					break;
+				case "status":
+					sort = "status";
+					break;
+				default:
+					sort = "register_id";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY register_id DESC ");
+			}
+
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
+
+			int filterCount = query.getResultList().size();
+
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
+
+			List<Object[]> results = query.getResultList();
+			List<RegisterLeadDetails> registerLeadDetails = results.stream().map(row -> {
+			    RegisterLeadDetails dto = new RegisterLeadDetails();
+			    dto.setInquiryNumber(row[0] != null ? (String) row[0] : "");
+			    dto.setName(row[1] != null ? (String) row[1] : "");
+			    dto.setInquiredFor(row[2] != null ? (String) row[2] : "");
+			    dto.setRegisteredDate(row[3] != null ? (Timestamp) row[3] : null);
+			    dto.setStatus(row[4] != null ? (String) row[4] : "");
+			    dto.setPhoneNumber(row[5] != null ? (String) row[5] : "");
+			    dto.setPropertyName(row[6] != null ? (String) row[6] : "");
+			    dto.setState(row[7] != null ? (String) row[7] : "");
+			    dto.setCity(row[8] != null ? (String) row[8] : "");
+			    dto.setOwnerEmail(row[9] != null ? (String) row[9] : "");
+			    dto.setAsignedTo(row[10] != null ? (String) row[10] : "");
+			    dto.setDescription(row[11] != null ? (String) row[11] : "");
+			    return dto;
+			}).collect(Collectors.toList());
+			return new CommonResponseDTO<>(registerLeadDetails, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Register Lead Details: " + e.getMessage());
+		}
+	}
+
 }
