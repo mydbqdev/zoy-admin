@@ -251,6 +251,18 @@ import { MessageService } from 'src/app/message.service';
         );
     }
 
+    public getShortTermData(): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/fetch-renting-duration";
+        return  this.httpclient.get<any>(
+            url1,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    }
+
       private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");    
     }
