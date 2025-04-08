@@ -9,6 +9,7 @@ import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
+import com.integration.zoy.utils.RegisterLeadDetails;
 import com.integration.zoy.utils.RegisterTenantsDTO;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
@@ -40,5 +41,6 @@ public interface AdminReportImpl {
 	CommonResponseDTO<PropertyResportsDTO> getpotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<PropertyResportsDTO> getUpcomingPotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<PropertyResportsDTO> getNonPotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, boolean applyPagination)throws WebServiceException;
+	CommonResponseDTO<RegisterLeadDetails> getRegisterLeadDetails(UserPaymentFilterRequest filterRequest,FilterData filterData, boolean applyPagination)throws WebServiceException;
 	
 }
