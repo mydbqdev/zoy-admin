@@ -332,7 +332,8 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 				|| this.reportName =='Upcoming Potential Properties Report'|| this.reportName =='Non-Potential Properties Report'
 				|| this.reportName =='Potential Properties Report'
 			){
-				this.notifyService.showInfo("Under Development","")
+				this.notifyService.showInfo("Under Development","");
+				this.downloadProgress=false;
 			}else if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 				let extension= 'application/pdf';
 				switch (type) {
