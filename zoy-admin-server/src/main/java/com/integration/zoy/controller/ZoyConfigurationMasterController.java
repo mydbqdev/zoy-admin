@@ -589,6 +589,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setOwnerEkycCharges(ownerEkycCharges);
 					oldDetails.setTenantEkycCharges(tenantEkycCharges);
 					oldDetails.setIsApproved(details.getIsApproved());
+					oldDetails.setEffectiveDate(details.getEffectiveDate());
 
 					if (details.getIsApproved()) {
 						oldDetails.setApprovedBy(currentUser);
@@ -714,6 +715,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setMonthlyRent(monthlyRent);
 					oldDetails.setComponentName("RENT");
 					oldDetails.setIsApproved(details.getIsApproved());
+					oldDetails.setEffectiveDate(details.getEffectiveDate());
 
 					if (details.getIsApproved()) {
 						oldDetails.setApprovedBy(currentUser);
