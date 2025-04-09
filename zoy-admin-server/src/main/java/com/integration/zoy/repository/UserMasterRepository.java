@@ -108,65 +108,65 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
 	List<String[]> fetchTenantProfileDetails(@Param("userId") String userId);
 
 	@Query(value = "SELECT " +
-	        "p.property_name AS currentPropertyName, " +
-	        "ob.fixed_rent AS fixedRent, " +
-	        "ob.security_deposit AS securityDeposit, " +
-	        "ob.in_date AS checkInDate, " +
-	        "ob.out_date AS checkOutDate, " +
-	        "r.room_name AS roomName, " +
-	        "b.bed_name AS bedName, " +
-	        "rc.cycle_name AS rentCycle, " +
-	        "tm.notice_period AS noticePeriod, " +
-	        "(SELECT SUM(due_amount) " +
-	        " FROM ( " +
-	        "     SELECT " +
-	        "         CASE " +
-	        "             WHEN SUM(COALESCE(up.user_payment_payable_amount, 0)) >= ub.user_money_due_amount THEN 0 " +
-	        "             ELSE ub.user_money_due_amount - SUM(COALESCE(up.user_payment_payable_amount, 0)) " +
-	        "         END AS due_amount " +
-	        "     FROM pgusers.user_dues ub " +
-	        "     LEFT JOIN pgusers.user_payment_due upd ON upd.user_money_due_id = ub.user_money_due_id " +
-	        "     LEFT JOIN pgusers.user_payments up ON up.user_payment_id = upd.user_payment_id " +
-	        "     JOIN pgowners.zoy_pg_due_type_master zpdtm ON zpdtm.due_id = ub.user_money_due_type " +
-	        "     JOIN pgowners.zoy_pg_due_factor_master zpdfm ON zpdfm.factor_id = ub.user_money_due_billing_type " +
-	        "     JOIN pgowners.zoy_pg_due_master zpdm ON zpdm.due_type_id = zpdtm.due_type " +
-	        "     LEFT JOIN pgusers.user_due_image udi ON udi.user_id = ub.user_id AND udi.user_due_id = ub.user_money_due_id " +
-	        "     WHERE ub.user_id = :userId " +
-	        "     GROUP BY " +
-	        "         ub.user_money_due_bill_end_date, " +
-	        "         ub.user_money_due_bill_start_date, " +
-	        "         ub.user_money_due_billing_type, " +
-	        "         ub.user_money_due_description, " +
-	        "         ub.user_money_due_id, " +
-	        "         ub.user_money_due_timestamp, " +
-	        "         ub.user_money_due_type, " +
-	        "         zpdfm.factor_id, " +
-	        "         zpdm.due_name " +
-	        "     HAVING SUM(COALESCE(up.user_payment_payable_amount, 0)) < ub.user_money_due_amount " +
-	        " ) AS subquery) AS totalDueAmount " +
-	        "FROM " +
-	        "pgusers.user_master um " +
-	        "LEFT JOIN " +
-	        "pgusers.user_bookings ub ON um.user_id = ub.user_id " +
-	        "LEFT JOIN " +
-	        "pgowners.zoy_pg_property_details p ON ub.user_bookings_property_id = p.property_id " +
-	        "LEFT JOIN " +
-	        "pgowners.zoy_pg_owner_booking_details ob ON ub.user_bookings_id = ob.booking_id " +
-	        "LEFT JOIN " +
-	        "pgowners.zoy_pg_room_details r ON ob.room = r.room_id " +
-	        "LEFT JOIN " +
-	        "pgowners.zoy_pg_bed_details b ON ob.selected_bed = b.bed_id AND b.bed_status = true " +
-	        "LEFT JOIN " +
-	        "pgowners.zoy_pg_rent_cycle_master rc ON ob.lock_in_period = rc.cycle_id " +
-	        "LEFT JOIN " +
-	        "pgowners.zoy_pg_property_terms_conditions ptc ON ob.property_id = ptc.property_id " +
-	        "LEFT JOIN " +
-	        "pgowners.zoy_pg_terms_master tm ON ptc.term_id = tm.term_id " +
-	        "WHERE " +
-	        "um.user_id = :userId " +
-	        "AND ub.user_bookings_web_check_in = true " +
-	        "AND ub.user_bookings_web_check_out = false " +
-	        "AND ub.user_bookings_is_cancelled = false", nativeQuery = true)
+			"p.property_name AS currentPropertyName, " +
+			"ob.fixed_rent AS fixedRent, " +
+			"ob.security_deposit AS securityDeposit, " +
+			"ob.in_date AS checkInDate, " +
+			"ob.out_date AS checkOutDate, " +
+			"r.room_name AS roomName, " +
+			"b.bed_name AS bedName, " +
+			"rc.cycle_name AS rentCycle, " +
+			"tm.notice_period AS noticePeriod, " +
+			"(SELECT SUM(due_amount) " +
+			" FROM ( " +
+			"     SELECT " +
+			"         CASE " +
+			"             WHEN SUM(COALESCE(up.user_payment_payable_amount, 0)) >= ub.user_money_due_amount THEN 0 " +
+			"             ELSE ub.user_money_due_amount - SUM(COALESCE(up.user_payment_payable_amount, 0)) " +
+			"         END AS due_amount " +
+			"     FROM pgusers.user_dues ub " +
+			"     LEFT JOIN pgusers.user_payment_due upd ON upd.user_money_due_id = ub.user_money_due_id " +
+			"     LEFT JOIN pgusers.user_payments up ON up.user_payment_id = upd.user_payment_id " +
+			"     JOIN pgowners.zoy_pg_due_type_master zpdtm ON zpdtm.due_id = ub.user_money_due_type " +
+			"     JOIN pgowners.zoy_pg_due_factor_master zpdfm ON zpdfm.factor_id = ub.user_money_due_billing_type " +
+			"     JOIN pgowners.zoy_pg_due_master zpdm ON zpdm.due_type_id = zpdtm.due_type " +
+			"     LEFT JOIN pgusers.user_due_image udi ON udi.user_id = ub.user_id AND udi.user_due_id = ub.user_money_due_id " +
+			"     WHERE ub.user_id = :userId " +
+			"     GROUP BY " +
+			"         ub.user_money_due_bill_end_date, " +
+			"         ub.user_money_due_bill_start_date, " +
+			"         ub.user_money_due_billing_type, " +
+			"         ub.user_money_due_description, " +
+			"         ub.user_money_due_id, " +
+			"         ub.user_money_due_timestamp, " +
+			"         ub.user_money_due_type, " +
+			"         zpdfm.factor_id, " +
+			"         zpdm.due_name " +
+			"     HAVING SUM(COALESCE(up.user_payment_payable_amount, 0)) < ub.user_money_due_amount " +
+			" ) AS subquery) AS totalDueAmount " +
+			"FROM " +
+			"pgusers.user_master um " +
+			"LEFT JOIN " +
+			"pgusers.user_bookings ub ON um.user_id = ub.user_id " +
+			"LEFT JOIN " +
+			"pgowners.zoy_pg_property_details p ON ub.user_bookings_property_id = p.property_id " +
+			"LEFT JOIN " +
+			"pgowners.zoy_pg_owner_booking_details ob ON ub.user_bookings_id = ob.booking_id " +
+			"LEFT JOIN " +
+			"pgowners.zoy_pg_room_details r ON ob.room = r.room_id " +
+			"LEFT JOIN " +
+			"pgowners.zoy_pg_bed_details b ON ob.selected_bed = b.bed_id AND b.bed_status = true " +
+			"LEFT JOIN " +
+			"pgowners.zoy_pg_rent_cycle_master rc ON ob.lock_in_period = rc.cycle_id " +
+			"LEFT JOIN " +
+			"pgowners.zoy_pg_property_terms_conditions ptc ON ob.property_id = ptc.property_id " +
+			"LEFT JOIN " +
+			"pgowners.zoy_pg_terms_master tm ON ptc.term_id = tm.term_id " +
+			"WHERE " +
+			"um.user_id = :userId " +
+			"AND ub.user_bookings_web_check_in = true " +
+			"AND ub.user_bookings_web_check_out = false " +
+			"AND ub.user_bookings_is_cancelled = false", nativeQuery = true)
 	List<String[]> fetchActiveBookingDetails(@Param("userId") String userId);
 
 	@Query(value = "SELECT " +
@@ -232,4 +232,14 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
 
 	@Query(value = "SELECT * FROM pgusers.user_master WHERE user_mobile = :phoneNumber", nativeQuery = true)
 	Optional<UserMaster> findUserMaster(String phoneNumber);
+
+
+	@Query(value = "SELECT DISTINCT um.user_email, CONCAT(um.first_name, ' ', um.last_name) AS full_name " +
+			"FROM pgadmin.user_master um " +
+			"JOIN pgadmin.user_role ur ON um.user_email = ur.user_email " +
+			"JOIN pgadmin.role_screen rs ON ur.role_id = rs.role_id " +
+			"WHERE rs.screen_name = 'TICKETS' " +
+			"ORDER BY full_name ASC", nativeQuery = true)
+	List<Object[]> findUsersWithTicketScreenAccess();
+
 }
