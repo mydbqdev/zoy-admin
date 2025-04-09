@@ -261,6 +261,8 @@ public class UserDBService implements UserDBImpl{
 		sortFieldMapping.put("owner_email", "pg_owner_email");
 		sortFieldMapping.put("owner_contact", "pg_owner_mobile");
 		sortFieldMapping.put("number_of_properties", "numberOfProperties");
+		sortFieldMapping.put("status", "status");
+
 		String sortColumn = sortFieldMapping.getOrDefault(paginationRequest.getSortActive(), "pg_owner_name");
 		Sort sort = Sort.by(Sort.Order.by(sortColumn)
 				.with(Sort.Direction.fromString(paginationRequest.getSortDirection()))
@@ -279,7 +281,7 @@ public class UserDBService implements UserDBImpl{
 				(String) result[2],  
 				(String) result[3],  
 				((BigInteger) result[4]).longValue(), 
-				"active"  
+				(String) result[5]  
 				));
 	}
 
