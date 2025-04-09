@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.FieldNamingPolicy;
@@ -110,19 +112,35 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getSupportUserDetails() {
-		ResponseBody response=new ResponseBody();
-		try {
-			List<SupportUsres> supportUsrs =  ownerDBImpl.getAllSupportUserNames();
-			return new ResponseEntity<>(gson2.toJson(supportUsrs), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error getting room type details API:/zoy_admin/support_user_details.getSupportUserDetails",e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-	}
+	public ResponseEntity<String> getSupportUserDetails(String inquiryNumber) {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        final Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(inquiryNumber);
+	        final String assignedUserEmail;
+	        if (partner.isPresent()) {
+	            RegisteredPartner existingPartner = partner.get();
+	            assignedUserEmail = existingPartner.getAssignedToEmail();
+	        } else {
+	            assignedUserEmail = null;
+	        }
 
+	        List<SupportUsres> supportUsrs = ownerDBImpl.getAllSupportUserNames();
+
+	        if (assignedUserEmail != null && !assignedUserEmail.isEmpty()) {
+	            supportUsrs = supportUsrs.stream()
+	                                     .filter(user -> !user.getEmail().equals(assignedUserEmail))
+	                                     .collect(Collectors.toList());
+	        }
+
+	        return new ResponseEntity<>(gson2.toJson(supportUsrs), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error getting support user details API:/zoy_admin/support_user_details.getSupportUserDetails", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+	
 	@Override
 	public ResponseEntity<String> assignTicketsToSupportTeam(TicketAssign assignTicket) {
 		ResponseBody response=new ResponseBody();

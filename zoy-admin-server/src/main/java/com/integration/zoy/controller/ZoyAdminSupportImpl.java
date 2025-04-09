@@ -39,7 +39,7 @@ public interface ZoyAdminSupportImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@GetMapping(value = "/zoy_admin/support_user_details",
 	produces = { "application/json" })
-	ResponseEntity<String> getSupportUserDetails();
+	ResponseEntity<String> getSupportUserDetails(@RequestParam("inquiryNumber")String inquiryNumber);
 	
 	@Operation(summary = "Set Support User To the Lead", description = "assign ticket to the support team", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
