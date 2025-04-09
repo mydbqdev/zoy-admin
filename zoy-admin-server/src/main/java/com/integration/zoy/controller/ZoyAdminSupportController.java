@@ -26,11 +26,13 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
+import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.RegisteredPartner;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.model.RegisterLeadsFilter;
 import com.integration.zoy.model.TicketAssign;
+import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.service.NotificationsAndAlertsService;
@@ -88,6 +90,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	@Autowired
 	private NotificationsAndAlertsService notificationsAndAlertsService;
 
+	@Autowired
+	AdminUserMasterRepository userMasterRepository;
+
 	@Override
 	public ResponseEntity<String> getRegisteredLeadDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
 		ResponseBody response = new ResponseBody();
@@ -129,12 +134,27 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				Date date = new Date();
 				String currentDate=dateFormat.format(date);
 				RegisteredPartner existingPartner = partner.get();
+				String historyContentForTicketAssign;
+				String userName="";
+				Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
+				if(user.isPresent()) {
+					userName=user.get().getFirstName()+" "+user.get().getLastName();
+				}
+				if (existingPartner.getAssignedToEmail() != null && !existingPartner.getAssignedToEmail().isEmpty()) {
+					historyContentForTicketAssign = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " has been reassigned to " + assignTicket.getName() + " on " + currentDate + "." + " Reassigned by " + userName + ".";
+				} else {
+					historyContentForTicketAssign = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " has been assigned to " + assignTicket.getName() + " on " + currentDate + "." + " Assigned by " + userName + ".";
+				}
 				existingPartner.setAssignedToEmail(assignTicket.getEmail());
 				existingPartner.setAssignedToName(assignTicket.getName());
+				existingPartner.setStatus(ZoyConstant.INPROGRESS);
 				registeredPartnerDetailsRepository.save(existingPartner);
 				response.setMessage("Ticket assigned successfully.");
-				String historyContent = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " has been assigned to " + assignTicket.getName() + " on " + currentDate + ".";
-				auditHistoryUtilities.leadHistory(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent,assignTicket.getEmail(),assignTicket.getInquiryNumber());
+				response.setStatus(HttpStatus.OK.value());
+
+				auditHistoryUtilities.leadHistory(historyContentForTicketAssign,assignTicket.getEmail(),assignTicket.getInquiryNumber());
+				String historyContentForChangeTicketStatus = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " Status has been Changed To " + existingPartner.getStatus() + "."+ " On " + currentDate;
+				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,assignTicket.getEmail(),assignTicket.getInquiryNumber());
 				notificationsAndAlertsService.ticketAssign(new String[]{assignTicket.getEmail()},assignTicket.getInquiryNumber());
 				return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
 			} else {
