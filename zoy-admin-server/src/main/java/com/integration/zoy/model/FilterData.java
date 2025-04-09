@@ -95,6 +95,25 @@ public class FilterData {
 	
 	@SerializedName("propertyContactNum")
 	String propertyContactNum;
+	
+	@SerializedName("status")
+	String status;
+	
+	@SerializedName("inquieredFor")
+	String inquieredFor;
+	
+	@SerializedName("inquiredBy")
+	String inquiredBy;
+	
+	@SerializedName("inquiryNumber")
+	String inquiryNumber;
+	
+	@SerializedName("state")
+	String state;
+	 
+	@SerializedName("city")
+	String city;
+	
 
 	public String getCheckInDate() {
 		return checkInDate;
@@ -342,6 +361,54 @@ public class FilterData {
 
 	public void setTenantEmail(String tenantEmail) {
 		this.tenantEmail = tenantEmail;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getInquieredFor() {
+		return inquieredFor;
+	}
+
+	public void setInquieredFor(String inquieredFor) {
+		this.inquieredFor = inquieredFor;
+	}
+
+	public String getInquiredBy() {
+		return inquiredBy;
+	}
+
+	public void setInquiredBy(String inquiredBy) {
+		this.inquiredBy = inquiredBy;
+	}
+
+	public String getInquiryNumber() {
+		return inquiryNumber;
+	}
+
+	public void setInquiryNumber(String inquiryNumber) {
+		this.inquiryNumber = inquiryNumber;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 }

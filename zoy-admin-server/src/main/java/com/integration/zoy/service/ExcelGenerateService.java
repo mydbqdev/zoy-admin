@@ -21,6 +21,7 @@ import com.integration.zoy.model.TenantResportsDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
+import com.integration.zoy.utils.RegisterLeadDetails;
 import com.integration.zoy.utils.RegisterTenantsDTO;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
@@ -309,7 +310,15 @@ public class ExcelGenerateService {
 			row.createCell(4).setCellValue("Property Address");
 			row.createCell(5).setCellValue("Suspended Date");
 			row.createCell(6).setCellValue("Reason for suspension");
-			break;	
+			break;
+		case "RegisteredLeadDetails":
+				row.createCell(0).setCellValue("Inquiry Number");
+				row.createCell(1).setCellValue("Name");
+				row.createCell(2).setCellValue("Inquired For");
+				row.createCell(3).setCellValue("Date");
+				row.createCell(4).setCellValue("Assigned To");
+				row.createCell(5).setCellValue("Status");
+				break;	
 		default:
 			throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 		}
@@ -592,6 +601,18 @@ public class ExcelGenerateService {
 				row.createCell(6).setCellValue(nullSafe(suspendedPropertyDetails.getReasonForSuspension()));			
 			}
 			break;	
+		case "RegisteredLeadDetails":
+			if (dto instanceof PropertyResportsDTO) {
+				RegisterLeadDetails registerLeadDetails = (RegisterLeadDetails) dto;
+				row.createCell(0).setCellValue(nullSafe(registerLeadDetails.getInquiryNumber()));
+				row.createCell(1).setCellValue(nullSafe(registerLeadDetails.getName()));
+				row.createCell(2).setCellValue(nullSafe(registerLeadDetails.getInquiredFor()));
+				row.createCell(3).setCellValue(nullSafe(tuService.formatTimestamp(registerLeadDetails.getRegisteredDate().toInstant())));
+				row.createCell(4).setCellValue(nullSafe(registerLeadDetails.getAsignedTo()));
+				row.createCell(5).setCellValue(nullSafe(registerLeadDetails.getStatus()));
+				
+			}
+			break;	
 		default:
 			//throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 			new ZoyAdminApplicationException(new Exception() ,"Invalid report type provided: " + reportType);
@@ -602,3 +623,4 @@ public class ExcelGenerateService {
 		return (value == null) ? "N/A" : value.toString();
 	}
 }
+	
