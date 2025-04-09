@@ -323,7 +323,8 @@ export class FinanceReportsComponent implements OnInit, AfterViewInit {
 		this.downloadProgress=true;
 		this.reportsService.downloadReportPdf(this.filtersRequest).subscribe((data) => { 
 			if( this.reportName =='Owner Payments Gst Report' ){
-				this.notifyService.showInfo("Under Development","")
+				this.notifyService.showInfo("Under Development","");
+				this.downloadProgress=false;
 			}else if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 				let extension= 'application/pdf';
 				switch (type) {
