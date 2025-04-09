@@ -304,22 +304,15 @@ public class AuditHistoryUtilities {
 		}
 	}
 	
-	public void leadHistory(String loginEmail, String history,String supportEmail,String inquryNumber) {
+	public void leadHistory(String history,String supportEmail,String inquryNumber) {
 		try {
-			String userName="";
-			Optional<AdminUserMaster> user=userMasterRepository.findById(loginEmail);
-			if(user.isPresent()) {
-				userName=user.get().getFirstName()+" "+user.get().getLastName();
-			}
-			String histotyData=history + " Assigned by " + userName + ".";
-
 			LeadHistory auditHistory=new LeadHistory();
 			auditHistory.setUserEmail(supportEmail);
-			auditHistory.setHistoryData(histotyData);
+			auditHistory.setHistoryData(history);
 			auditHistory.setInquiryNumber(inquryNumber);
 			leadHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
-			log.error("Error in audit entry for Lead History"+loginEmail+":",e);
+			log.error("Error in audit entry for Lead History",e);
 			new ZoyAdminApplicationException(e, "");
 		}
 	}
