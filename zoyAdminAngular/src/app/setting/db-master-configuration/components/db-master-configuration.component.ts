@@ -10,7 +10,7 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { DbMasterConfigurationService } from '../services/db-master-configuration.service';
-import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetailsModel, ShortTermDataModel } from '../models/db-setting-models';
+import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetailsModel } from '../models/db-setting-models';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 
@@ -40,9 +40,9 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   submitDataModel:DbSettingSubmitDataModel=new DbSettingSubmitDataModel();
   submitted:boolean= false ;
   isCreated :boolean=true;
-  shortTermData:ShortTermDataModel = new ShortTermDataModel();
-  shortTermDataList:ShortTermDataModel[] = [];
-  shortTermduration:number=0;
+  // shortTermData:ShortTermDataModel = new ShortTermDataModel();
+  // shortTermDataList:ShortTermDataModel[] = [];
+  // shortTermduration:number=0;
   @ViewChild('closeModel') closeModel: ElementRef;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private confirmationDialogService:ConfirmationDialogService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,
@@ -109,50 +109,50 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     this.settingTypeDetails = this.settingTypeObjClmApiDetailsList.find(t=>t.type == this.settingType);
     this.selectedsettingColumns = this.settingTypeDetails.columns ;
     this.getDbSettingDetails() ;
-    if(this.settingType == 'Short Term' ){
-      this.getShortTermDuration() ;
-    }
+    // if(this.settingType == 'Short Term' ){
+    //   this.getShortTermDuration() ;
+    // }
    
   }
 
-  getShortTermDuration(){
-      this.authService.checkLoginUserVlidaate();
-     this.dbMasterConfigurationService.getShortTermDuration().subscribe(res => {
-      if(res.data){
-        this.shortTermduration = res.data?.rentingDurationDays | 0;
-      }else{
-        this.shortTermduration = 0;
-      }
-     }, error => {
-     this.spinner.hide();
-     if(error.status == 0) {
-       this.notifyService.showError("Internal Server Error/Connection not established", "")
-      }else if(error.status==401){
-       console.error("Unauthorised");
-     }else if(error.status==403){
-     this.router.navigate(['/forbidden']);
-     }else if (error.error && error.error.message) {
-     this.errorMsg = error.error.message;
-     console.log("Error:" + this.errorMsg);
-     this.notifyService.showError(this.errorMsg, "");
-     } else {
-     if (error.status == 500 && error.statusText == "Internal Server Error") {
-       this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-     } else {
-       let str;
-       if (error.status == 400) {
-       str = error.error.error;
-       } else {
-       str = error.error.message;
-       str = str.substring(str.indexOf(":") + 1);
-       }
-       console.log("Error:" ,str);
-       this.errorMsg = str;
-     }
-     if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-     }
-   });
-   }
+  // getShortTermDuration(){
+  //     this.authService.checkLoginUserVlidaate();
+  //    this.dbMasterConfigurationService.getShortTermDuration().subscribe(res => {
+  //     if(res.data){
+  //       this.shortTermduration = res.data?.rentingDurationDays | 0;
+  //     }else{
+  //       this.shortTermduration = 0;
+  //     }
+  //    }, error => {
+  //    this.spinner.hide();
+  //    if(error.status == 0) {
+  //      this.notifyService.showError("Internal Server Error/Connection not established", "")
+  //     }else if(error.status==401){
+  //      console.error("Unauthorised");
+  //    }else if(error.status==403){
+  //    this.router.navigate(['/forbidden']);
+  //    }else if (error.error && error.error.message) {
+  //    this.errorMsg = error.error.message;
+  //    console.log("Error:" + this.errorMsg);
+  //    this.notifyService.showError(this.errorMsg, "");
+  //    } else {
+  //    if (error.status == 500 && error.statusText == "Internal Server Error") {
+  //      this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+  //    } else {
+  //      let str;
+  //      if (error.status == 400) {
+  //      str = error.error.error;
+  //      } else {
+  //      str = error.error.message;
+  //      str = str.substring(str.indexOf(":") + 1);
+  //      }
+  //      console.log("Error:" ,str);
+  //      this.errorMsg = str;
+  //    }
+  //    if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+  //    }
+  //  });
+  //  }
 
    navigateMasterConfig(){
 		if(this.rolesArray.includes('CONFIGURATION_MASTER_WRITE') || this.rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')){
@@ -167,9 +167,6 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.dbMasterConfigurationService.getDbSettingDetails(this.settingTypeDetails.api).subscribe(data => {
         this.dbSettingDataList=Object.assign([],data);
         this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
-        if(this.settingType == 'Short Term'){
-          this.getShortTermList(data);
-        }
       this.spinner.hide();
       }, error => {
       this.spinner.hide();
@@ -245,10 +242,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       }
     }  
     submitData(){
-      if(this.settingType ==='Short Term'){
-          this.submitShortTermData();
-      }else if(this.settingType ==='Rental Agreement Document'){
-
+      if(this.settingType ==='Rental Agreement Document'){
+      this.rentalAgreementDocumentSubmit();
       }else{
         this.submitted = true;
         this.withPhoto=false;
@@ -317,7 +312,6 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     }             
   }
 }
-    
 
   numberOnly(event): boolean {
     const charCode = (event.which) ? event.which : event.keyCode;
@@ -635,125 +629,194 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     return Number(value);
   }
 
-   backUpshortTermDataList :ShortTermDataModel[]=[];
-     getShortTermList(data:any){
-      this.backUpshortTermDataList = [];
-      data.forEach(element => {
-        let model : ShortTermDataModel = new ShortTermDataModel();
-        model.zoy_pg_short_term_master_id = element.zoy_pg_short_term_master_id; 
-        model.start_day = element.start_day; 
-        model.end_day = element.end_day;  
+  //  backUpshortTermDataList :ShortTermDataModel[]=[];
+  //    getShortTermList(data:any){
+  //     this.backUpshortTermDataList = [];
+  //     data.forEach(element => {
+  //       let model : ShortTermDataModel = new ShortTermDataModel();
+  //       model.zoy_pg_short_term_master_id = element.zoy_pg_short_term_master_id; 
+  //       model.start_day = element.start_day; 
+  //       model.end_day = element.end_day;  
    
-        this.backUpshortTermDataList.push(model);
-      });
+  //       this.backUpshortTermDataList.push(model);
+  //     });
        
-        this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpshortTermDataList));
+  //       this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpshortTermDataList));
    
-      }
+  //     }
 
-      addShortTermVali:boolean=false
-   addShortTerm() {
-    this.addShortTermVali = true;
-    if(!this.shortTermData.start_day|| this.shortTermData.start_day>this.shortTermduration || Number(this.shortTermData.start_day)===0 
-        || !this.shortTermData.end_day|| this.shortTermData.end_day>this.shortTermduration || Number(this.shortTermData.end_day)===0
-        || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)){
-          return;
-        }
-    this.shortTermDataList.push(JSON.parse(JSON.stringify(this.shortTermData)));
-    this.addShortTermVali = false;
-    this.shortTermData = new ShortTermDataModel();
-   }
+  //     addShortTermVali:boolean=false
+  //  addShortTerm() {
+  //   this.addShortTermVali = true;
+  //   if(!this.shortTermData.start_day|| this.shortTermData.start_day>this.shortTermduration || Number(this.shortTermData.start_day)===0 
+  //       || !this.shortTermData.end_day|| this.shortTermData.end_day>this.shortTermduration || Number(this.shortTermData.end_day)===0
+  //       || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)){
+  //         return;
+  //       }
+  //   this.shortTermDataList.push(JSON.parse(JSON.stringify(this.shortTermData)));
+  //   this.addShortTermVali = false;
+  //   this.shortTermData = new ShortTermDataModel();
+  //  }
 
-   modifyShortTerm(shortTerm) {
-     if(!shortTerm.start_day || Number(shortTerm.start_day)>this.shortTermduration || Number(shortTerm.start_day)===0 
-        || !shortTerm.end_day || Number(shortTerm.end_day)>this.shortTermduration || Number(shortTerm.end_day)===0
-        || Number(shortTerm.start_day) >= Number(shortTerm.end_day)){
-      return;
-    }
-    shortTerm.isEdit = false;
-  }
+  //  modifyShortTerm(shortTerm) {
+  //    if(!shortTerm.start_day || Number(shortTerm.start_day)>this.shortTermduration || Number(shortTerm.start_day)===0 
+  //       || !shortTerm.end_day || Number(shortTerm.end_day)>this.shortTermduration || Number(shortTerm.end_day)===0
+  //       || Number(shortTerm.start_day) >= Number(shortTerm.end_day)){
+  //     return;
+  //   }
+  //   shortTerm.isEdit = false;
+  // }
   
-  removeShortTerm(shortTerm) {
-    console.log("shortTerm",shortTerm)
-    shortTerm.isDelete = true;
-  }
+  // removeShortTerm(shortTerm) {
+  //   console.log("shortTerm",shortTerm)
+  //   shortTerm.isDelete = true;
+  // }
   
-  undoShortTermDelete(shortTerm) {
-    shortTerm.isDelete = false;
-  }
+  // undoShortTermDelete(shortTerm) {
+  //   shortTerm.isDelete = false;
+  // }
   
-  undoEditShortTermItem(i:number) {
-    this.shortTermDataList[i]=JSON.parse(JSON.stringify(this.backUpshortTermDataList[i]));
-  }
+  // undoEditShortTermItem(i:number) {
+  //   this.shortTermDataList[i]=JSON.parse(JSON.stringify(this.backUpshortTermDataList[i]));
+  // }
 
-  shortTermDataListReset(){
-    this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpshortTermDataList));
-  }
-  submitShortTerm:boolean = false;
-  submitShortTermData() {   
-    let finalSubmitShortList = [];
-    this.submitShortTerm = true;
-    let startDay = this.shortTermduration;
-    let endDay = 0;
+  // shortTermDataListReset(){
+  //   this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpshortTermDataList));
+  // }
+  // submitShortTerm:boolean = false;
+  // submitShortTermData() {   
+  //   let finalSubmitShortList = [];
+  //   this.submitShortTerm = true;
+  //   let startDay = this.shortTermduration;
+  //   let endDay = 0;
    
-    for (let i = 0; i < this.shortTermDataList.length; i++) {
-      const term = this.shortTermDataList[i];
+  //   for (let i = 0; i < this.shortTermDataList.length; i++) {
+  //     const term = this.shortTermDataList[i];
 
-      if (!term.isDelete) {
-        startDay = startDay>term.start_day?term.start_day:startDay ;
-        endDay = endDay>term.end_day?endDay:term.end_day ;
+  //     if (!term.isDelete) {
+  //       startDay = startDay>term.start_day?term.start_day:startDay ;
+  //       endDay = endDay>term.end_day?endDay:term.end_day ;
 
-        if (term.isEdit) {
-          this.notifyService.showWarning("Save if term is being edited.","")
-          return; 
-        }
+  //       if (term.isEdit) {
+  //         this.notifyService.showWarning("Save if term is being edited.","")
+  //         return; 
+  //       }
  
-        for (let j = i + 1; j < this.shortTermDataList.length; j++) {
-          const otherTerm = this.shortTermDataList[j];
+  //       for (let j = i + 1; j < this.shortTermDataList.length; j++) {
+  //         const otherTerm = this.shortTermDataList[j];
           
-          if (!(Number(term.end_day) < Number(otherTerm.start_day) || Number(term.start_day) > Number(otherTerm.end_day))) {
-            this.notifyService.showWarning("The Short term duration period must not Overlapp.","")
-            return;
-          }
+  //         if (!(Number(term.end_day) < Number(otherTerm.start_day) || Number(term.start_day) > Number(otherTerm.end_day))) {
+  //           this.notifyService.showWarning("The Short term duration period must not Overlapp.","")
+  //           return;
+  //         }
 
           
-        }
+  //       }
 
-        const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1));
-        if(term.end_day != this.shortTermduration && ranges.length === 0 ){
-           this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.',"")
-           return;
-         }
+  //       const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1));
+  //       if(term.end_day != this.shortTermduration && ranges.length === 0 ){
+  //          this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.',"")
+  //          return;
+  //        }
 
-        finalSubmitShortList.push(term);
-      }
-    }
+  //       finalSubmitShortList.push(term);
+  //     }
+  //   }
   
-    if (finalSubmitShortList.length < 1) {
-      this.notifyService.showWarning("Please add durations","");
-      return;
-    }
+  //   if (finalSubmitShortList.length < 1) {
+  //     this.notifyService.showWarning("Please add durations","");
+  //     return;
+  //   }
    
-    if( Number(startDay) != 1 || Number(endDay) !=this.shortTermduration){
-      this.notifyService.showInfo('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.', "");
-      return
-    }
+  //   if( Number(startDay) != 1 || Number(endDay) !=this.shortTermduration){
+  //     this.notifyService.showInfo('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.', "");
+  //     return
+  //   }
 
-    if (JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpshortTermDataList)) {
-      this.notifyService.showInfo("Short term slabs details are already up to date.", "");
-      return;
-    }
-    this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
-    .then(
-       (confirmed) =>{
-      if(confirmed){
-          this.dbMasterConfigurationService.submitShortTermData(finalSubmitShortList).subscribe(data => {
+  //   if (JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpshortTermDataList)) {
+  //     this.notifyService.showInfo("Short term slabs details are already up to date.", "");
+  //     return;
+  //   }
+  //   this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+  //   .then(
+  //      (confirmed) =>{
+  //     if(confirmed){
+  //         this.dbMasterConfigurationService.submitShortTermData(finalSubmitShortList).subscribe(data => {
+  //         this.closeModel.nativeElement.click(); 
+  //         this.getShortTermList(data);
+  //         this.dbSettingDataList=Object.assign([],data);
+  //         this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
+  //         this.resetChange();
+  //         this.submitShortTerm = false;
+  //         this.spinner.hide();
+  //         }, error => {
+  //         this.spinner.hide();
+  //         if(error.status == 0) {
+  //           this.notifyService.showError("Internal Server Error/Connection not established", "")
+  //         }else if(error.status==401){
+  //           console.error("Unauthorised");
+  //         }else if(error.status==403){
+  //         this.router.navigate(['/forbidden']);
+  //         }else if (error.error && error.error.message) {
+  //         this.errorMsg = error.error.message;
+  //         console.log("Error:" + this.errorMsg);
+  //         this.notifyService.showError(this.errorMsg, "");
+  //         } else {
+  //         if (error.status == 500 && error.statusText == "Internal Server Error") {
+  //           this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+  //         } else {
+  //           let str;
+  //           if (error.status == 400) {
+  //           str = error.error.error;
+  //           } else {
+  //           str = error.error.message;
+  //           str = str.substring(str.indexOf(":") + 1);
+  //           }
+  //           console.log("Error:" ,str);
+  //           this.errorMsg = str;
+  //         }
+  //         if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+  //         }
+  //       });  
+  //     }	
+  //   }).catch(
+  //     () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+  //   );	   
+  // }
+
+  documentfile:File;
+  documentVali:boolean=false;
+  downloadProgress:boolean=false;
+  onDocumentChanged(event: any) {
+		this.documentVali=false;
+		this.documentfile=event.target.files[0]; 
+		const fileType = this.documentfile.type;
+		 if(fileType !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+			this.documentVali=true;
+		 }else{
+			this.documentVali=false;
+		 }
+	}
+
+    rentalAgreementDocumentSubmit(){
+      this.submitted=true;
+      if(!this.documentfile || !this.dbSettingDataModel.rental_agreement_document || this.documentVali){
+        return;
+      }
+      let isCreatedMsg= this.isCreated ? 'upload' :' update';
+      var form_data = new FormData();
+      form_data.append('document', this.documentfile);
+      form_data.append('id', this.isCreated ?'0':this.dbSettingDataModel.rental_agreement_document_id);
+      this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+isCreatedMsg+'?')
+      .then(
+        (confirmed) =>{
+        if(confirmed){
+          this.spinner.show();
+          this.dbMasterConfigurationService.rentalAgreementDocumentSubmit(form_data).subscribe(data => {
           this.closeModel.nativeElement.click(); 
-          this.getShortTermList(data);
-          this.dbSettingDataList=Object.assign([],data);
-          this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
+          this.getDbSettingDetails();
           this.resetChange();
-          this.submitShortTerm = false;
+          this.notifyService.showSuccess(data.message, "")
           this.spinner.hide();
           }, error => {
           this.spinner.hide();
@@ -783,13 +846,24 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
           }
           if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
           }
-        });  
-      }	
-    }).catch(
-      () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-    );	   
-  }
+          });
+        }	
+        }).catch(
+          () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+        );		
+     }
         
+  downloadRentalAgreementDocument(url: string) {
+      this.downloadProgress=true
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = "Rental_Agreement_Document.docx";
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      this.downloadProgress=false
+    }
 
 }
 
