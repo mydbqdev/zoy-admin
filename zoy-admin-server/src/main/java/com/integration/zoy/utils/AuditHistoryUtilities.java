@@ -24,10 +24,12 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AuditHistory;
+import com.integration.zoy.entity.LeadHistory;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AuditHistoryRepository;
+import com.integration.zoy.repository.LeadHistoryRepository;
 @Service
 public class AuditHistoryUtilities {
 	private static final Logger log = LoggerFactory.getLogger(AuditHistoryUtilities.class);
@@ -35,6 +37,9 @@ public class AuditHistoryUtilities {
 	private AuditHistoryRepository auditHistoryRepository;
 	@Autowired
 	AdminUserMasterRepository userMasterRepository;
+	@Autowired
+	LeadHistoryRepository leadHistoryRepository;
+	
 	private static final Gson gson = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
 			.registerTypeAdapter(Timestamp.class, (JsonSerializer<Timestamp>) (src, typeOfSrc, context) -> {
@@ -295,6 +300,19 @@ public class AuditHistoryUtilities {
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for auditForCommon"+loginEmail+":",e);
+			new ZoyAdminApplicationException(e, "");
+		}
+	}
+	
+	public void leadHistory(String history,String supportEmail,String inquryNumber) {
+		try {
+			LeadHistory auditHistory=new LeadHistory();
+			auditHistory.setUserEmail(supportEmail);
+			auditHistory.setHistoryData(history);
+			auditHistory.setInquiryNumber(inquryNumber);
+			leadHistoryRepository.save(auditHistory);
+		}catch(Exception e) {
+			log.error("Error in audit entry for Lead History",e);
 			new ZoyAdminApplicationException(e, "");
 		}
 	}

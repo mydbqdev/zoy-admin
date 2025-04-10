@@ -116,7 +116,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  this.getTriggerCondition();
 		  this.getTriggerOn();
 		  this.getPGTypesDetails();
-		  this.getDbSettingDetails();
+		//  this.getDbSettingDetails();
 	  }
 	  ngAfterViewInit() {
 		  this.sidemenuComp.expandMenu(4);
@@ -1157,12 +1157,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  return; 
 		}
 
-		console.log("this.dataSource.data",this.dataSource.data)
 		const previousIndex = event.previousIndex;
 		const currentIndex = event.currentIndex;
 	   const data = this.dataSource.data[previousIndex];
-	   console.log("previousIndex",previousIndex)
-	   console.log("currentIndex",currentIndex)
 		if (event.container === event.previousContainer && (data.isDelete === undefined ? true :!data.isDelete)) {
 		  moveItemInArray(this.beforeCheckInCRDetails, previousIndex, currentIndex);
 		  let i=1;
@@ -1176,9 +1173,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			});
 			this.canSubmit=false;
 		} 
-		console.log("this.table?.renderRows();",this.table)
 			this.table?.renderRows();
-			console.log("this.dataSource.data?>>",this.dataSource.data)
 	  }
 
 	  cancellationBeforeCheckInDetailsOrg:BeforeCheckInCancellationRefundMainObjModel[]=[];
@@ -1187,9 +1182,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  getBeforeCheckInCRData(){
 		this.backUpBeforeCheckInCRList=[];
 		this.cancellationBeforeCheckInDetails= JSON.parse(JSON.stringify(this.cancellationBeforeCheckInDetailsOrg));
-	
+		 console.log(">>>>>>>>>>>>",this.cancellationBeforeCheckInDetails);
 			var main :BeforeCheckInCancellationRefundMainObjModel=this.cancellationBeforeCheckInDetails[0];
-			console.log("this.cancellationBeforeCheckInDetails",this.cancellationBeforeCheckInDetails)
 			main.zoy_before_check_in_cancellation_info?.forEach(element => {
 			let sub : BeforeCheckInCancellationRefundModel = new BeforeCheckInCancellationRefundModel();
 			sub.cancellation_id = element.cancellation_id; 
@@ -1260,14 +1254,34 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	  return false;
 	}
-
+	reason:string='';
+	
  beforeCheckInCRfUpDate(task:string){
 	if(!this.crpEffectiveDate || new Date(this.crpEffectiveDate) < new Date() ){
 		return;
 	}
+	
+	
 	var payload :BeforeCheckInCancellationRefundMainObjModel = JSON.parse(JSON.stringify(this.cancellationBeforeCheckInDetails[0]));
 	payload.effectiveDate = this.crpEffectiveDate;
-	
+	if(task === 'approve'){
+		payload.isApproved=true;
+	}else{
+		payload.iscreate = payload.isApproved ;
+	}
+	if( task === 'approve' && payload?.createdBy == this.userInfo.userEmail){
+		this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		return ;
+	}
+
+	if(this.cancellationBeforeCheckInDetailsOrg.length > 0 &&
+		(new Date(payload.effectiveDate).setHours(0, 0, 0, 0) <= new Date(this.cancellationBeforeCheckInDetailsOrg[0].effectiveDate).setHours(0, 0, 0, 0)
+		|| new Date(payload.effectiveDate).setHours(0, 0, 0, 0) <= new Date(this.cancellationBeforeCheckInDetailsOrg[1]?.effectiveDate).setHours(0, 0, 0, 0)))
+	{
+		this.notifyService.showInfo("The effective date must be after the last rule's effective date.","")
+		return ;
+	}
+
 	const filteredDetails = this.beforeCheckInCRDetails.filter(item => !item.isDelete);
 	if(filteredDetails.length == 0){
 		this.notifyService.showInfo("","Please add at least one policy.");
@@ -1292,23 +1306,19 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		return
 	}
 	
-	if(task === 'approve'){
-		payload.isApproved=true;
-	}else{
-		payload.iscreate = payload.isApproved ;
-	}
-
-	payload.ZoyBeforeCheckInCancellationInfo = this.beforeCheckInCRDetails;
+	
+	const list = payload.iscreate ? this.beforeCheckInCRDetails.filter(item => !item.isDelete) : this.beforeCheckInCRDetails ;
+	payload.pgType = this.settingType;
+	payload.ZoyBeforeCheckInCancellationInfo = list;
 	console.log("beforeCheckInCRDetails",this.beforeCheckInCRDetails);
 	console.log("payload>>",payload);
-	const model= JSON.stringify(payload)
 	this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+(task === 'approve' ? 'Approve':(payload.iscreate?'Create':'Update') ) +' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
-			this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
+			this.configMasterService.submitBeforeCheckInCRfDetails(payload).subscribe(res => {
 				console.log("res>>>",res)
 			this.changeSettingType();
 			this.canSubmit = true;

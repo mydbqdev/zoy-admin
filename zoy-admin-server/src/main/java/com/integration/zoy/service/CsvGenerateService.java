@@ -19,6 +19,7 @@ import com.integration.zoy.model.TenantResportsDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
+import com.integration.zoy.utils.RegisterLeadDetails;
 import com.integration.zoy.utils.RegisterTenantsDTO;
 import com.integration.zoy.utils.TenentDues;
 import com.integration.zoy.utils.TenentRefund;
@@ -139,7 +140,10 @@ public class CsvGenerateService {
                 break;
             case "SuspendedPropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address,Suspended Date,Reason for suspension");
-                break;     
+                break;
+            case "RegisteredLeadDetails":
+            	writer.println("Inquiry Number,Name,Inquired For, Date,Assigned To,Status");
+                break;  
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }
@@ -440,6 +444,20 @@ public class CsvGenerateService {
                             formatAmountWithCommas(potentialProperty.getExpectedRentPerMonth()));     		 
                 }
                 break;
+                
+            case "RegisteredLeadDetails":
+            	if (dto instanceof RegisterLeadDetails) {
+            		RegisterLeadDetails registerLeadDetails = (RegisterLeadDetails) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                            safeToString(registerLeadDetails.getInquiryNumber()),
+                            safeToString(registerLeadDetails.getName()),
+                            safeToString(registerLeadDetails.getInquiredFor()),
+                            tuService.formatTimestamp(registerLeadDetails.getRegisteredDate().toInstant()),
+                            safeToString(registerLeadDetails.getAsignedTo()),
+                            safeToString(registerLeadDetails.getStatus()));     		 
+                }
+                break;
+                
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }
@@ -450,3 +468,4 @@ public class CsvGenerateService {
     }
   
 }
+ 

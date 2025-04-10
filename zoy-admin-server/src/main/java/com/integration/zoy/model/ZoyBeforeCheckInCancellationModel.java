@@ -28,8 +28,8 @@ public class ZoyBeforeCheckInCancellationModel {
 	@SerializedName("pgType")
 	private String pgType;
 
-	 @JsonProperty("ZoyBeforeCheckInCancellationInfo")
-	 private List<ZoyBeforeCheckInCancellation> zoyBeforeCheckInCancellationInfo;
+	@JsonProperty("ZoyBeforeCheckInCancellationInfo")
+	private List<ZoyBeforeCheckInCancellation> zoyBeforeCheckInCancellationInfo;
 
 	public String getEffectiveDate() {
 		return effectiveDate;

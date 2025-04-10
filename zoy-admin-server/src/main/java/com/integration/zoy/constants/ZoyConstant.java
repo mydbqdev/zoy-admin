@@ -86,5 +86,6 @@ public class ZoyConstant {
 	public static final String SUSPENDED="Suspended";
 	public static final String REGISTER="Register";
 	
+	public static final String INPROGRESS="In Progress";
 
 }

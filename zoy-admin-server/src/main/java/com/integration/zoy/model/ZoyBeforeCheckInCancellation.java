@@ -3,44 +3,42 @@ package com.integration.zoy.model;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZoyBeforeCheckInCancellation {
 
-	@SerializedName("cancellation_id")
+	@JsonProperty("cancellation_id")
 	private String cancellationId;
 
-	@SerializedName("priority")
+	@JsonProperty("priority")
 	private Integer priority;
 
-	@SerializedName("trigger_on")
+	@JsonProperty("trigger_on")
 	private String triggerOn;
 
-	@SerializedName("trigger_condition")
+	@JsonProperty("trigger_condition")
 	private String triggerCondition;
 
-	@SerializedName("before_checkin_days")
+	@JsonProperty("before_checkin_days")
 	private Integer beforeCheckinDays;
 
-	@SerializedName("deduction_percentage")
+	@JsonProperty("deduction_percentage")
 	private BigDecimal deductionPercentage;
 
-	@SerializedName("cond")
+	@JsonProperty("cond")
 	private String cond;
 
-	@SerializedName("trigger_value")
+	@JsonProperty("trigger_value")
 	private String triggerValue;
 
-	@SerializedName("create_at")
+	@JsonProperty("create_at")
 	private Timestamp createAt;
-	
-	@SerializedName("isDelete")
-	private Boolean isDelete;
-	
-	@SerializedName("isEdit")
-	private Boolean isEdit;
-	
 
+	@JsonProperty("isDelete")
+	private Boolean isDelete;
+
+	@JsonProperty("isEdit")
+	private Boolean isEdit;
 
 	public String getCancellationId() {
 		return cancellationId;
@@ -129,5 +127,5 @@ public class ZoyBeforeCheckInCancellation {
 	public void setIsEdit(Boolean isEdit) {
 		this.isEdit = isEdit;
 	}
-	
+
 }
