@@ -1221,7 +1221,8 @@
                                 <div><span style="color: red; font-size: 14px; margin-top: 15px;" >{{!canSubmit ? 'Data will be saved to the database only after clicking the update button.':''}}</span></div>
                                 
                                 <div class="ml-auto mr-1 d-flex">
-                                  <div *ngIf="cancellationBeforeCheckInDetails[0]?.isApproved">
+                                  <div><i class="fas fa-thumbs-up mr-2 mt-1"  [ngClass]="cancellationBeforeCheckInDetails[0]?.isApproved?'color-bg-green':'color-bg-gray'"></i></div>
+                                  <div *ngIf="cancellationBeforeCheckInDetails[0]?.isApproved && cancellationBeforeCheckInDetails.length>1">
                                     <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Cancellation And Refund Policy'" >
                                      <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                      <div *ngIf=" canSubmit && !cancellationBeforeCheckInDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
@@ -1233,7 +1234,7 @@
                                   <div style="width: 120px;margin-right: 10px;">
                                     <div class="input-group input-group-sm">
                                       <input class="form-control form-control-sm"
-                                        type="date" [(ngModel)]="crpEffectiveDate"
+                                        type="date" [(ngModel)]="crpEffectiveDate" (change)="canSubmit=false"
                                         [ngClass]="{'is-invalid': !canSubmit && (!crpEffectiveDate || multirullsEffectiveDateValidation(crpEffectiveDate) )}"
                                         />
                                     </div>
@@ -1605,7 +1606,7 @@
                                     <div>Percentage</div>
                                     <div class="input-group input-group-sm">
                                       <input type="text" class="form-control form-control-sm" id="end_day"  required autocomplete="off"
-                                      [(ngModel)]="shortTermData.end_day" (keypress)="numberOnly($event)" maxlength="2" style="width: 70px;" 
+                                      [(ngModel)]="shortTermData.percentage"  (keypress)="percentageOnlyWithZero($event)" maxlength="2" style="width: 70px;" 
                                       [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.end_day) > shortTermduration  || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
                                     <span class="input-group-text">%</span>
                                      </div>
@@ -1621,29 +1622,27 @@
                                     <div><span style="color: red; font-size: 14px; margin-top: 15px;" >{{!canSubmit ? 'Data will be saved to the database only after clicking the update button.':''}}</span></div>
                                     <div class="ml-auto mr-1 d-flex">
                                       <div>
-                                        <i class="fas fa-thumbs-up mr-2" [ngClass]="cancellationBeforeCheckInDetails[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i>
+                                        <i class="fas fa-thumbs-up mr-2" [ngClass]="shortTermDataMainList[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i>
                                       </div>
-                                      <div>
-                                        <a class="more-icon">
-                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
-                                     <!-- <div *ngIf="cancellationBeforeCheckInDetails[0]?.isApproved" >
-                                       <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Security Deposit Deadline'" >
-                                         <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div> -->
-                                      <div *ngIf=" securityDepositDeadLineDisabled && !configMasterModel.securityDepositDeadLineDetails[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                       <a class="approve-icon" (click)="beforeCheckInCRfUpDate('approve')" data-bs-toggle="modal" data-bs-target="#approveRejectModel">
+                                      <div><a class="more-icon"> <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
+                                     <div *ngIf="shortTermDataMainList[0]?.isApproved" >
+                                       <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Short Term Duration Details'" >
+                                         <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
+                                      <div *ngIf=" canShortSubmit && !shortTermDataMainList[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
+                                       <a class="approve-icon" (click)="submitShortTermData('approve')" data-bs-toggle="modal" data-bs-target="#approveRejectModel">
                                          <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                        </a>
                                       </div> 
                                       <div style="margin-right: 8px;margin-top:3px;">Effective On</div>
                                       <div style="width: 120px;margin-right: 10px;">
                                         <div class="input-group input-group-sm">
-                                          <input 
+                                          <input (change)="canShortSubmit=false"
                                             type="date" [(ngModel)]="stpEffectiveDate"
                                             class="form-control form-control-sm"/>
                                         </div>
                                      </div>
-                                      <button type="button" class="btn btn-sm btn-primary" [disabled]="canSubmit" (click)="beforeCheckInCRfUpDate('update')">Update</button>
-                                      <button class="btn btn-sm btn-outline-secondary ml-1" (click)="beforeCheckInCRDatafReset()"  ><i class="fas fa-redo" style="color: red;"></i></button>
+                                      <button type="button" class="btn btn-sm btn-primary" [disabled]="canShortSubmit" (click)="submitShortTermData('update')">Update</button>
+                                      <button class="btn btn-sm btn-outline-secondary ml-1" (click)="shortTermDataReset()"  ><i class="fas fa-redo" style="color: red;"></i></button>
                                     </div>
                                     
                                   </div>
@@ -1652,7 +1651,7 @@
                                   <hr class="solid">
                                   <div class="row mb-1 ml-4">
                                     <div class="col-sm-6">
-                                      <div class="card">
+                                      <div class="card" *ngIf="shortTermDataList.length>0" >
                                       <div class="mt-3"></div>
                                       <div *ngFor="let term of shortTermDataList; let i=index" >
                                         <div class="form-group">
@@ -1661,19 +1660,19 @@
                                             <div>
                                               <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'row-strike' :''" id="term_start_day"  required autocomplete="off"
                                               [(ngModel)]="term.start_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2" style="width: 70px;" 
-                                              [ngClass]="{'is-invalid':(submitShortTerm && !term.isDelete && term.isEdit) ||( !term.isDelete && term.isEdit && (term.start_day == undefined || term.start_day == null || convertToNumber(term.start_day) < 1 || convertToNumber(term.start_day) > shortTermduration))}">
+                                              [ngClass]="{'is-invalid':(submitShortTerm && !term.isDelete && term.isEdit) ||( !term.isDelete && term.isEdit && (term.start_day == undefined || term.start_day == null || convertToNumber(term.start_day) < 1 ))}">
                                             </div>
                                               <h2 class="mb-1 ml-3" >-</h2>
                                             <div class="ml-3">
                                               <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'form-control form-control-sm row-strike' :'form-control form-control-sm'" id="term_end_day"  required autocomplete="off"
                                               [(ngModel)]="term.end_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2" style="width: 70px;" 
-                                              [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.end_day == undefined || term.end_day == null || convertToNumber(term.end_day) < 1 || convertToNumber(term.end_day) > shortTermduration))}">
+                                              [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.end_day == undefined || term.end_day == null || convertToNumber(term.end_day) < 1 ))}">
                                             </div>
                                             <div>
                                             <div class="input-group input-group-sm ml-3">
-                                              <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'form-control form-control-sm row-strike' :'form-control form-control-sm'" id="term_end_day"  required autocomplete="off"
-                                              [(ngModel)]="term.end_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2" style="width: 70px;" 
-                                              [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.end_day == undefined || term.end_day == null || convertToNumber(term.end_day) < 1 || convertToNumber(term.end_day) > shortTermduration))}">
+                                              <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'form-control form-control-sm row-strike' :'form-control form-control-sm'" id="term_percentage"  required autocomplete="off"
+                                              [(ngModel)]="term.percentage"  (keypress)="percentageOnlyWithZero($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2" style="width: 70px;" 
+                                              [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.percentage == undefined || term.percentage == null))}">
                                               <span class="input-group-text">%</span>
                                                </div>
                                               </div>
@@ -1709,12 +1708,16 @@
                                     </div>
                                     </div>
                                     <div class="col-sm-6">
-                                      <div class="card">
+                                      <div class="card" *ngIf="!shortTermDataMainList[0]?.isApproved && shortTermDataMainList.length > 1 && shortTermDataMainList[1] != undefined  && shortTermDataMainList[1]?.zoy_short_term_dto_info != undefined">
                                       <div class="m-2">
-                                        <span style="font-size: 16px;color:#6610f2; margin-left: 5px;">Currently applicable slabs. Effective from 2024-01-28 </span>
+                                        <span style="font-size: 16px;color:#6610f2; margin-left: 5px;">Currently applicable slabs. Effective from {{shortTermDataMainList[1].effectiveDate}} </span>
                                         <i class="fas fa-thumbs-up ml-2 color-bg-green" ></i>
+                                        <div class="ml-2">
+                                          <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Short Term Duration Details'" >
+                                           <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a>
+                                        </div>
                                       </div>
-                                      <div *ngFor="let term of shortTermDataList;" >
+                                      <div *ngFor="let term of shortTermDataMainList[1].zoy_short_term_dto_info;" >
                                         <div class="d-flex mb-2 ml-3">
                                           <span class="form-control form-control-sm" style="background-color: #eaecf4;width: 70px !important;">
                                             {{ term.start_day }} 
@@ -1726,7 +1729,7 @@
                                           <div>
                                           <div class="input-group input-group-sm ml-2">
                                             <span class="form-control form-control-sm" style="background-color: #eaecf4;max-width: 70px !important;">
-                                              {{ term.end_day }} 
+                                              {{ term.percentage }} 
                                             </span>
                                               <span class="input-group-text">%</span>
                                           </div>
@@ -2353,6 +2356,29 @@
               <div class="col-sm-1"> {{crf.before_checkin_days}} Days </div>
               <div class="col-sm-2"> {{crf.trigger_value}} </div>
               <div class="col-sm-1"> {{crf.deduction_percentage}} % </div>
+        </div>
+        </div>
+      </div>
+      </div>
+      <div *ngIf="popupMoreRecordHeader === 'Short Term Duration Details'">  
+        <div class="row rule-header ml-2">
+          <div class="col-sm-1">Start Day</div>
+          <div class="col-sm-1">End Day</div>
+          <div class="col-sm-1">Percentage</div>
+        </div>
+        
+        <hr/>
+        <div *ngFor="let mainSTD of shortTermDataMainList">
+          <div class="card mt-2" *ngIf="mainSTD.isApproved">
+          <div>
+            <span style="color:#6610f2" > Effective from {{mainSTD.effectiveDate}} 
+              <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
+            </span> 
+          </div>
+        <div class="row" *ngFor="let std of mainSTD.zoy_short_term_dto_info">
+              <div class="col-sm-1"> {{std.start_day}} </div>
+              <div class="col-sm-1"> {{std.end_day}} </div>
+              <div class="col-sm-1"> {{std.percentage}} % </div>
         </div>
         </div>
       </div>
