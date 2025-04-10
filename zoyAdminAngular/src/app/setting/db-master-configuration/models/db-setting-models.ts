@@ -48,6 +48,8 @@ export class DbSettingDataModel{
     floor_name_id ?:string;
     floor_name ?:string;
 
+    rental_agreement_document_id ?: string;
+    rental_agreement_document ?: string;
 }
 
 export class DbSettingSubmitDataModel{

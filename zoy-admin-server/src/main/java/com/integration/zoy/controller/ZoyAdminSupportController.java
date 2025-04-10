@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.FieldNamingPolicy;
@@ -30,10 +27,9 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.RegisteredPartner;
-import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.model.FilterData;
-import com.integration.zoy.model.RegisterLeadsFilter;
 import com.integration.zoy.model.TicketAssign;
+import com.integration.zoy.model.UpdateStatus;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
 import com.integration.zoy.service.AdminReportImpl;
@@ -44,14 +40,7 @@ import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.RegisterLeadDetails;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.SupportUsres;
-import com.integration.zoy.utils.TenentRefund;
 import com.integration.zoy.utils.UserPaymentFilterRequest;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("")
@@ -101,7 +90,8 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 		try {
 			FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
 			boolean applyPagination = true;
-			CommonResponseDTO<RegisterLeadDetails> registerLeads = adminReportImpl.getRegisterLeadDetails(filterRequest, filterData, applyPagination);
+			boolean isSupportUser = false;
+			CommonResponseDTO<RegisterLeadDetails> registerLeads = adminReportImpl.getRegisterLeadDetails(filterRequest, filterData, applyPagination,isSupportUser);
 			return new ResponseEntity<>(gson.toJson(registerLeads), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error in API /zoy_admin/registered_lead_details.getRegisteredLeadDetailsByDateRange", e);
@@ -203,5 +193,51 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 
+	}
+
+	@Override
+	public ResponseEntity<String> getAssignedLeadTickets(UserPaymentFilterRequest filterRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+			FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+			boolean applyPagination = true;
+			boolean isSupportUser = true;
+			CommonResponseDTO<RegisterLeadDetails> registerLeads = adminReportImpl.getRegisterLeadDetails(filterRequest, filterData, applyPagination,isSupportUser);
+			return new ResponseEntity<>(gson.toJson(registerLeads), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error in API /zoy_admin/registered_lead_details.getRegisteredLeadDetailsByDateRange", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> updateInquiryStatus(UpdateStatus updateStatus) {
+		ResponseBody response=new ResponseBody();
+		try {
+			Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(updateStatus.getInquiryNumber());
+			if (partner.isPresent()) {
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
+				Date date = new Date();
+				String currentDate=dateFormat.format(date);
+				RegisteredPartner existingPartner = partner.get();
+				String previousStatus=existingPartner.getStatus();
+				existingPartner.setStatus(updateStatus.getStatus());
+				registeredPartnerDetailsRepository.save(existingPartner);
+				response.setMessage("Status Updated successfully.");
+				response.setStatus(HttpStatus.OK.value());
+				String historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " On " + currentDate + ".";
+				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,SecurityContextHolder.getContext().getAuthentication().getName(),updateStatus.getInquiryNumber());
+				return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+			} else {
+				response.setMessage("Inquiry number does not exist.");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
+			}
+		} catch (Exception e) {
+			response.setMessage("An error occurred while Changing the Lead Status.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
+		}
 	}
 }

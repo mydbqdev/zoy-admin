@@ -74,19 +74,14 @@ export class DbMasterConfigurationService {
         'api': 'zoy_admin/ameneties'
     },
     {
-      'type': 'Short Term',
-      'columns': ['start_day','end_day'],
-      'api': 'zoy_admin/shortTerm'
-    },
-    {
       'type': 'Floor Name',
       'columns': ['floor_name','actions'],
       'api': 'zoy_admin/floorName'
     },
     {
       'type': 'Rental Agreement Document',
-      'columns': ['rentalAgreementDoc', 'actions'],
-      'api': 'zoy_admin/ameneties'
+      'columns': ['rental_agreement_document', 'actions'],
+      'api': 'zoy_admin/rentalAgreementDocument'
   },
   ]
 
@@ -107,7 +102,7 @@ export class DbMasterConfigurationService {
     'start_day' : 'START DAY',
     'end_day' :'END DAY',
     'floor_name':'FLOOR NAME',
-    'rentalAgreementDoc':'Rental Agreement Document'
+    'rental_agreement_document':'RENTAL AGREEMENT DOCUMENT'
   }
 
   getDbSettingDetails(api:string): Observable<any> {
@@ -165,22 +160,11 @@ export class DbMasterConfigurationService {
       }
   } 
 
-  submitShortTermData(data:any): Observable<any> {
-    const url1=this.basePath +'zoy_admin/manageShortTerm';
+  rentalAgreementDocumentSubmit(data): Observable<any> {
+    const url1=this.basePath +'zoy_admin/config/rentalAgreementDocumentSubmit';
         return  this.httpclient.post<any>(
             url1,
             data,
-            {
-                headers:ServiceHelper.buildHeaders(),
-               observe : 'body',
-               withCredentials:true
-            }
-        );
-  } 
-  getShortTermDuration(): Observable<any> {
-    const url1=this.basePath +'zoy_admin/config/fetch-renting-duration';
-        return  this.httpclient.get<any>(
-            url1,
             {
                 headers:ServiceHelper.buildHeaders(),
                observe : 'body',

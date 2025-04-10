@@ -167,20 +167,15 @@ export class ShortTermMainModel{
     isApproved:boolean;
     approvedBy:string;
     createdBy:string;
-    ZoyShortTermDtoInfo:ShortTermSubModel[]=[];
-
+    zoy_short_term_dto_info:ShortTermSubModel[]=[];
 }
 
 export class ShortTermSubModel{
-    shortTermId : string ='';
-    startDay : number ;
-    endDay : number ;
+    short_term_id : string ='';
+    start_day : number ;
+    end_day : number ;
     percentage : number ;
     isDelete:boolean ;
     isEdit:boolean ;
     isConfirm:boolean ;
-    effectiveDate:string='';
-    isApproved:boolean=false;
-    createdBy:string='';
-    approvedBy:string='';
 }

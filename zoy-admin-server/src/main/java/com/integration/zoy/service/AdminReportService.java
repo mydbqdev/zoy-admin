@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.exception.WebServiceException;
@@ -783,7 +784,8 @@ public class AdminReportService implements AdminReportImpl{
 				templatePath ="templates/suspendedPropertiesReport.docx";
 				break;	
 			case "RegisteredLeadDetails":
-				reportData = getRegisterLeadDetails(filterRequest, filterData,applyPagination);
+				boolean isSupportUser = false;
+				reportData = getRegisterLeadDetails(filterRequest, filterData,applyPagination,isSupportUser);
 				dataListWrapper=this.generateRegisterLeadDetailsReport(reportData,filterRequest);
 				templatePath ="templates/registeredLeadDetails.docx";
 				break;	
@@ -3045,7 +3047,7 @@ public class AdminReportService implements AdminReportImpl{
 
 	@Override
 	public CommonResponseDTO<RegisterLeadDetails> getRegisterLeadDetails(UserPaymentFilterRequest filterRequest,
-			FilterData filterData, boolean applyPagination) throws WebServiceException {
+			FilterData filterData, boolean applyPagination,boolean isSupportUser) throws WebServiceException {
 		try {
 
 			StringBuilder queryBuilder = new StringBuilder(
@@ -3104,6 +3106,12 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append("AND LOWER(status) = LOWER(:status) \r\n");
 				parameters.put("status", filterData.getStatus());
 			}
+			
+			if (isSupportUser) {
+	            String assignedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+	            queryBuilder.append("AND LOWER(assign_to_email) = LOWER(:assignedEmail) \r\n");
+	            parameters.put("assignedEmail", assignedEmail);
+	        }
 			
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {

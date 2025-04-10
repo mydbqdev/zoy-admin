@@ -41,6 +41,6 @@ public interface AdminReportImpl {
 	CommonResponseDTO<PropertyResportsDTO> getpotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<PropertyResportsDTO> getUpcomingPotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<PropertyResportsDTO> getNonPotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, boolean applyPagination)throws WebServiceException;
-	CommonResponseDTO<RegisterLeadDetails> getRegisterLeadDetails(UserPaymentFilterRequest filterRequest,FilterData filterData, boolean applyPagination)throws WebServiceException;
+	CommonResponseDTO<RegisterLeadDetails> getRegisterLeadDetails(UserPaymentFilterRequest filterRequest,FilterData filterData, boolean applyPagination, boolean isSupportUser)throws WebServiceException;
 	
 }

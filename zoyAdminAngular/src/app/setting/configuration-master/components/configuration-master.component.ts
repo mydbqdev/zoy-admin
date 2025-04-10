@@ -15,7 +15,7 @@ import { ConfigMasterService } from '../service/config-master-serive';
 import { BeforeCheckInCancellationRefundMainObjModel, BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstChargesModel, NoRentalAgreement, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermMainModel, ShortTermModel, ShortTermRentingDuration, ShortTermSubModel, TokenDetailsModel} from '../models/config-master-model';
 import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { DbSettingDataModel, ShortTermDataModel } from '../../db-master-configuration/models/db-setting-models';
+import { DbSettingDataModel} from '../../db-master-configuration/models/db-setting-models';
 import { DbMasterConfigurationService } from '../../db-master-configuration/services/db-master-configuration.service';
 
 
@@ -63,6 +63,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  beforeCheckInCRDetails: BeforeCheckInCancellationRefundModel[] = [];
 	 
 	  canSubmit:boolean = true;
+	  canShortSubmit:boolean = true;
 	  @ViewChild(MatTable) table: MatTable<BeforeCheckInCancellationRefundModel>;
 	more:boolean=true;
 	moreEarlyCheckout:boolean=true;
@@ -377,7 +378,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	  const rules = this.configMasterOrg[key];
 	  const oldDate = rules.filter(d=>d.isApproved).sort((a, b) => new Date(b.effectiveDate).getTime() - new Date(a.effectiveDate).getTime()) .map(date=>date.effectiveDate)[0];
-	 if(oldDate && new Date(newDate).setHours(0, 0, 0, 0) < new Date(oldDate).setHours(0, 0, 0, 0)){
+	 if(oldDate && new Date(newDate).setHours(0, 0, 0, 0) <= new Date(oldDate).setHours(0, 0, 0, 0)){
 	   return true;
 	  }
 
@@ -1210,6 +1211,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
 		this.beforeCheckInCRfModel.trigger_value='TotalPaidAmount';
 		this.canSubmit=true;
+		this.crpEffectiveDate = this.cancellationBeforeCheckInDetails[0].effectiveDate;
 		this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
 		this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
 	  }
@@ -1257,10 +1259,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	reason:string='';
 	
  beforeCheckInCRfUpDate(task:string){
-	if(!this.crpEffectiveDate || new Date(this.crpEffectiveDate) < new Date() ){
+	if(!this.crpEffectiveDate || this.multirullsEffectiveDateValidation(this.crpEffectiveDate) ){
 		return;
 	}
-	
 	
 	var payload :BeforeCheckInCancellationRefundMainObjModel = JSON.parse(JSON.stringify(this.cancellationBeforeCheckInDetails[0]));
 	payload.effectiveDate = this.crpEffectiveDate;
@@ -1274,13 +1275,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		return ;
 	}
 
-	if(this.cancellationBeforeCheckInDetailsOrg.length > 0 &&
-		(new Date(payload.effectiveDate).setHours(0, 0, 0, 0) <= new Date(this.cancellationBeforeCheckInDetailsOrg[0].effectiveDate).setHours(0, 0, 0, 0)
-		|| new Date(payload.effectiveDate).setHours(0, 0, 0, 0) <= new Date(this.cancellationBeforeCheckInDetailsOrg[1]?.effectiveDate).setHours(0, 0, 0, 0)))
-	{
-		this.notifyService.showInfo("The effective date must be after the last rule's effective date.","")
-		return ;
-	}
+	const compareIndex = this.cancellationBeforeCheckInDetailsOrg[0].isApproved ? 0 : 1;
+	const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
+	if(this.cancellationBeforeCheckInDetailsOrg[compareIndex].effectiveDate){
+		const existingDate = new Date(this.cancellationBeforeCheckInDetailsOrg[compareIndex].effectiveDate).setHours(0, 0, 0, 0);	
+		 if ( selectedDate < new Date().setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
+			this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
+			return;
+		}
+	 }
 
 	const filteredDetails = this.beforeCheckInCRDetails.filter(item => !item.isDelete);
 	if(filteredDetails.length == 0){
@@ -1759,8 +1762,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.noRentalAgreementDisabled = true;
 		  }	 
 		  
-		   shortTermData:ShortTermDataModel = new ShortTermDataModel();
-	       shortTermDataList:ShortTermDataModel[] = [];
+		   shortTermData:ShortTermSubModel = new ShortTermSubModel();
+	       shortTermDataList:ShortTermSubModel[] = [];
 		   shortTermduration:number=100;
 
 		
@@ -1778,7 +1781,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.backUpshortTermData= data;
 			   }else{
 				var model = new ShortTermMainModel();
-				model.ZoyShortTermDtoInfo.push(new ShortTermSubModel());
+				model.zoy_short_term_dto_info.push(new ShortTermSubModel());
 				this.backUpshortTermData.push(model);
 			   }
 			   this.getShortTermList();
@@ -1821,39 +1824,48 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.backUpShortTermDataSubList=[];
 				this.shortTermDataMainList = JSON.parse(JSON.stringify(this.backUpshortTermData));
 				var main=this.shortTermDataMainList[0];
-				 main.ZoyShortTermDtoInfo.forEach(element => {
+				 main.zoy_short_term_dto_info.forEach(element => {
 				  let model : ShortTermSubModel = new ShortTermSubModel();
-				  model.shortTermId= element.shortTermId; 
-				  model.startDay = element.startDay; 
-				  model.endDay = element.endDay;  
+				  model.short_term_id= element.short_term_id; 
+				  model.start_day = element.start_day; 
+				  model.end_day = element.end_day;  
+				  model.isDelete = false; 
 			 
 				  this.backUpShortTermDataSubList.push(model);
 				});
-				 
 				  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList));
-			 
+				  this.stpEffectiveDate=this.shortTermDataMainList[0].effectiveDate;
 				}
+
+				shortTermDataReset(){
+					this.canShortSubmit=true;
+					this.stpEffectiveDate=this.shortTermDataMainList[0].effectiveDate;
+					this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList));
+				  }
 		  
 				addShortTermVali:boolean=false
 			 addShortTerm() {
 			  this.addShortTermVali = true;
 			  if(!this.shortTermData.start_day|| this.shortTermData.start_day>this.shortTermduration || Number(this.shortTermData.start_day)===0 
 				  || !this.shortTermData.end_day|| this.shortTermData.end_day>this.shortTermduration || Number(this.shortTermData.end_day)===0
-				  || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)){
+				  || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)
+				){
 					return;
 				  }
 			  this.shortTermDataList.push(JSON.parse(JSON.stringify(this.shortTermData)));
 			  this.addShortTermVali = false;
-			  this.shortTermData = new ShortTermDataModel();
+			  this.canShortSubmit = false;
+			  this.shortTermData = new ShortTermSubModel();
 			 }
 		  
 			 modifyShortTerm(shortTerm) {
 			   if(!shortTerm.start_day || Number(shortTerm.start_day)>this.shortTermduration || Number(shortTerm.start_day)===0 
 				  || !shortTerm.end_day || Number(shortTerm.end_day)>this.shortTermduration || Number(shortTerm.end_day)===0
-				  || Number(shortTerm.start_day) >= Number(shortTerm.end_day)){
+				  || Number(shortTerm.start_day) >= Number(shortTerm.end_day)
+				 ){
 				return;
 			  }
-			  shortTerm.isEdit = false;
+			  shortTerm.isEdit = true;
 			}
 			
 			removeShortTerm(shortTerm) {
@@ -1873,7 +1885,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList));
 			}
 			submitShortTerm:boolean = false;
-			submitShortTermData() {   
+			submitShortTermData(task:string) {   
 			  let finalSubmitShortList = [];
 			  this.submitShortTerm = true;
 			  let startDay = this.shortTermduration;
@@ -1926,14 +1938,35 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.notifyService.showInfo("Short term slabs details are already up to date.", "");
 				return;
 			  }
+			var payload :ShortTermMainModel = JSON.parse(JSON.stringify(this.backUpshortTermData[0]));
+			payload.effectiveDate = this.crpEffectiveDate;
+			if(task === 'approve'){
+				payload.isApproved=true;
+			}else{
+				payload.iscreate = payload.isApproved ;
+			}
+			if( task === 'approve' && payload?.createdBy == this.userInfo.userEmail){
+				this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+				return ;
+			}
+
+			const compareIndex = this.backUpshortTermData[0].isApproved ? 0 : 1;
+			const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
+			if(this.backUpshortTermData[compareIndex].effectiveDate){
+				const existingDate = new Date(this.backUpshortTermData[compareIndex].effectiveDate).setHours(0, 0, 0, 0);	
+				if ( selectedDate < new Date().setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
+					this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
+					return;
+				}
+			}
+			payload.zoy_short_term_dto_info=finalSubmitShortList;
 			  this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 			  .then(
 				 (confirmed) =>{
 				if(confirmed){
-					this.configMasterService.submitShortTermData(finalSubmitShortList).subscribe(data => {
+					this.spinner.show();
+					this.configMasterService.submitShortTermData(payload).subscribe(data => {
 					this.getShortTermList();
-					// this.dbSettingDataList=Object.assign([],data);
-					// this.dbSettingDataSource = new MatTableDataSource(this.dbSettingDataList);
 					this.submitShortTerm = false;
 					this.spinner.hide();
 					}, error => {
@@ -1970,5 +2003,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 			  );	   
 			}
+
+			
 			   
   }  
