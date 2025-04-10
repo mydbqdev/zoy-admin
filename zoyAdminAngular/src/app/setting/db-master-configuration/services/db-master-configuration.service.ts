@@ -82,7 +82,12 @@ export class DbMasterConfigurationService {
       'type': 'Floor Name',
       'columns': ['floor_name','actions'],
       'api': 'zoy_admin/floorName'
-    }
+    },
+    {
+      'type': 'Rental Agreement Document',
+      'columns': ['rentalAgreementDoc', 'actions'],
+      'api': 'zoy_admin/ameneties'
+  },
   ]
 
   columnHeaders = {
@@ -101,7 +106,8 @@ export class DbMasterConfigurationService {
     'ameneties_image':"AMENITIES PICTURE",
     'start_day' : 'START DAY',
     'end_day' :'END DAY',
-    'floor_name':'FLOOR NAME'
+    'floor_name':'FLOOR NAME',
+    'rentalAgreementDoc':'Rental Agreement Document'
   }
 
   getDbSettingDetails(api:string): Observable<any> {

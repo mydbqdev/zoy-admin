@@ -242,11 +242,24 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 	  changeReport(){
 		this.filterData =new FilterData();
 	  }
+	  
+	toDateVali():boolean{
+		if(this.reportName == 'Inactive Tenants Report'){
+			if(new Date(this.toDate) > new Date()){
+				return true;
+			  }
+		}else{
+			if(this.fromDate && new Date(this.toDate) < new Date(this.fromDate)){
+				return true;
+			  }
+		}
+		return false
+	}
 	
 
 	getReportDetails(pageIndex:number,pageSize:number,sortActive:string,sortDirection:string){
 			//	this.authService.checkLoginUserVlidaate();
-				if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
+				if(!this.fromDate || !this.toDate || this.toDateVali()){
 					return;
 				}
 				this.lastPageSize=pageSize;
@@ -332,7 +345,7 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 	downloadProgress:boolean=false;
 	downloadPdf(type:string){   
 		this.authService.checkLoginUserVlidaate();
-		if(!this.fromDate || !this.toDate || new Date(this.fromDate)> new Date(this.toDate)){
+		if(!this.fromDate || !this.toDate || this.toDateVali()){
 			this.downloadProgress=false;
 			return;
 		}
@@ -352,7 +365,8 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 				|| this.reportName =='Upcoming Potential Properties Report'|| this.reportName =='Non-Potential Properties Report'
 				|| this.reportName =='Potential Properties Report'
 			){
-				this.notifyService.showInfo("Under Development","")
+				this.notifyService.showInfo("Under Development","");
+				this.downloadProgress=false;
 			}else if(data!=null && data!=undefined && data!='' && data.size!=0){ 
 				let extension= 'application/pdf';
 				switch (type) {

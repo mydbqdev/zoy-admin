@@ -247,6 +247,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     submitData(){
       if(this.settingType ==='Short Term'){
           this.submitShortTermData();
+      }else if(this.settingType ==='Rental Agreement Document'){
+
       }else{
         this.submitted = true;
         this.withPhoto=false;

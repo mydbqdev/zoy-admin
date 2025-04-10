@@ -28,7 +28,7 @@ public class ZoyShortTermDetails {
 	@SerializedName("pgType")
 	private String pgType;
 
-	@JsonProperty("ZoyShortTermDtoInfo")
+	@JsonProperty("zoy_short_term_dto_info")
 	private List<ZoyShortTermDto> zoyShortTermDtoInfo;
 
 	public String getEffectiveDate() {
