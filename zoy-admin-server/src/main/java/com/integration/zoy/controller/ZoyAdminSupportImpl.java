@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.integration.zoy.model.TicketAssign;
+import com.integration.zoy.model.UpdateStatus;
 import com.integration.zoy.utils.SupportUsres;
 import com.integration.zoy.utils.UserPaymentFilterRequest;
 
@@ -62,5 +63,27 @@ public interface ZoyAdminSupportImpl {
 	@GetMapping(value = "/zoy_admin/lead_followup_history",
 	produces = { "application/json" })
 	ResponseEntity<String> getLeadFollowUpHostory(@RequestParam("inquiryNumber")String inquiryNumber);
+	
+	@Operation(summary = "Get Assigned Lead Tickets", description = "Getting Assigned Lead Tickets", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/assigned_tickets",
+	produces = { "application/json" })
+	ResponseEntity<String> getAssignedLeadTickets(@RequestBody UserPaymentFilterRequest filterRequest);
+	
+	@Operation(summary = "Update Assigned Ticket Status", description = "Update Assigned Ticket Status", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/update_inquiry_status",
+	produces = { "application/json" })
+	ResponseEntity<String> updateInquiryStatus(@RequestBody UpdateStatus updateStatus);
 }
 

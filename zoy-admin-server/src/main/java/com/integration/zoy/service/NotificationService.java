@@ -57,10 +57,10 @@ public class NotificationService {
     }
     
     public void notifyTicketAssignedToSupportUser(String[] userIds, String ticketId) throws Exception {
-        String notificationMessage = "Ticket id "+ticketId + " Has Been assigned To you please check and follow up under Tickets Section." ;
+        String notificationMessage = "You have been assigned Ticket ID " + ticketId + ". Please review and follow up in the Tickets section.";
         String screenName = "TICKETS";
-        String category = "user emergency message";
-        String infoType = "alert";
+        String category = "Ticket Assignment";
+        String infoType = "notification";
         notifyUsers(userIds, notificationMessage, screenName, category, infoType);
     }
 }
