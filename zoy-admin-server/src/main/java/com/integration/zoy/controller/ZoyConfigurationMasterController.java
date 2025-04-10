@@ -1581,10 +1581,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	        	zoyPgShortTermMasterRepository.deleteShortTermDetailsbyIds(todeleteList);
 	        }
 	        
-	         //audit history here
-			StringBuffer historyContent = new StringBuffer(" has updated the Short Term details ");
-			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(),historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
-	        
+//	         //audit history here
+//			StringBuffer historyContent = new StringBuffer(" has updated the Short Term details ");
+//			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(),historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+//	        
 	        response.setStatus(HttpStatus.OK.value());
 	        response.setMessage("Operation completed successfully");
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -2276,9 +2276,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
-
 	@Override
-	public ResponseEntity<String> zoyAdminConfigShortTermDetails(ZoyShortTermDetails shortTerm) {
+	public ResponseEntity<String> zoyAdminConfigShortTermDetails() {
 		    ResponseBody response = new ResponseBody();
 		    try {
 		        
@@ -2296,11 +2295,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		        	
 		        	ZoyShortTermDetails TermDetails = new ZoyShortTermDetails();
 		        	
-		        	TermDetails.setApproved(details.getIsApproved());
+		        	TermDetails.setApproved(details.getIsApproved()!= null?details.getIsApproved():false);
 		        	TermDetails.setApprovedBy(details.getApprovedBy());
 		        	TermDetails.setCreatedBy(details.getCreatedBy());
 		        	TermDetails.setEffectiveDate(details.getEffectiveDate());
-//		        	TermDetails.setPgType(details.getPgType());
 
 		            List<ZoyShortTermDto> zoyShortTermDtoDetailsList = new ArrayList<>();
 		            ZoyShortTermDto zoyShortTermDtoDetails = new ZoyShortTermDto();
