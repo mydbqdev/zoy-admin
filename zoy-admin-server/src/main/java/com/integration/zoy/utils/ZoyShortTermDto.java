@@ -5,16 +5,16 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZoyShortTermDto {
-	@JsonProperty("shortTermId")
+	@JsonProperty("short_term_id")
 	private String shortTermId;
 
 	@JsonProperty("percentage")
 	private BigDecimal percentage;
 
-	@JsonProperty("startDay")
+	@JsonProperty("start_day")
 	private int startDay;
 
-	@JsonProperty("endDay")
+	@JsonProperty("end_day")
 	private int endDay;
 
 	public String getShortTermId() {
