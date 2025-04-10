@@ -197,9 +197,9 @@ public class ZoyAdminService {
     @Scheduled(fixedRate = 5*60*1000)
 	public void removeExpiredSessions() {
 		long currentTime = System.currentTimeMillis();
-	    long sessionTimeout = 30 * 60 * 1000;
+	    long sessionTimeout = 15 * 60 * 1000;
 	    userSingleDeviceLockMap.entrySet().removeIf(entry -> 
-	        (currentTime - entry.getValue().getLoginTime()) > sessionTimeout
+	        (currentTime - entry.getValue().getLoginTime()) >= sessionTimeout
 	    );
 	}
 
