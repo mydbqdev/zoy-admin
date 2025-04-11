@@ -1,0 +1,215 @@
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
+  <div class="spinner-container"><img class="spinner-home-logo" src="assets/images/home-logo.png" alt="Home"/>
+    <img class="spinner-location-logo" src="assets/images/location-logo.png" alt="User"/>
+    <div class="spinner-loading">Loading</div>
+  </div>
+</ngx-spinner>
+<div id="page-top">
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+    <!-- Sidebar -->
+    <app-sidebar></app-sidebar>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column"
+      [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+      <!-- Main Content -->
+      <div id="content">
+        <div style="display: block;margin-bottom: 5.375rem;">
+          <!-- Topbar -->
+          <app-header></app-header>
+          <!-- End of Topbar -->
+        </div>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-between mb-3">
+            <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Sales</span><span
+                class="text-header-800-blue">Person</span></h3>
+            <div class="input-group ml-4 w-50">
+              <button type="button" class="form-control"
+                [ngClass]="{ 'btn-primary-custom': selectedModel === 'generate', 'btn-outline-custom': selectedModel !== 'generate' }"
+                (click)="selectButton('generate')">Generate</button>
+
+              <button type="button" class="form-control"
+                [ngClass]="{ 'btn-primary-custom': selectedModel === 'generated', 'btn-outline-custom': selectedModel !== 'generated' }"
+                (click)="selectButton('generated')">Generated</button>
+            </div>
+            <div class="ml-auto">
+              <div class="input-group" *ngIf="selectedModel == 'generated'">
+                <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i>
+                <input type="text" class="form-control form-control-sm  border-1"
+                  style="border-radius: 20px;padding-left: 29px;width: 300px;" [(ngModel)]="searchText" (input)="filterData()" placeholder="Search" aria-label="Search"
+                  aria-describedby="basic-addon2">
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Row -->
+          <div class="card shadow mb-3">
+            <div class="card-body" style="display: block;margin: 0px;padding: 2px;">
+              <div class="scrollable-container-main">
+                <div class="container" *ngIf="selectedModel == 'generate'">
+                  <form [formGroup]="form" (ngSubmit)="generateZoyCode()" autocomplete="off">
+                  <div class="row justify-content-center mt-3">
+                    <div class="col-md-4 mb-3">
+                      <label for="firstName">First Name</label>
+                      <input type="text" [(ngModel)]="generateZCode.firstName"
+                        onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
+                        maxlength="20" id="firstName" formControlName="firstName" class="form-control" placeholder="Enter First Name"
+                        [ngClass]="{'is-invalid':submitted && form.controls.firstName.errors}" required
+                        autocomplete="off" (paste)="nameValidation($event,'firstName')">
+                      <div *ngIf="submitted && form.controls.firstName.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.firstName.errors?.required">
+                          First Name is required.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="middleName">Middle Name</label>
+                      <input type="text" [(ngModel)]="generateZCode.middleName"
+                        onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
+                        maxlength="20" formControlName="middleName" id="middleName" class="form-control" 
+                        (paste)="nameValidation($event,'middleName')">
+                      
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="lastName">Last Name</label>
+                      <input type="text" [(ngModel)]="generateZCode.lastName"
+                        onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
+                        maxlength="20" formControlName="lastName" id="lastName" class="form-control" placeholder="Enter Last Name"
+                        [ngClass]="{'is-invalid':submitted && form.controls.lastName.errors}"
+                        (paste)="nameValidation($event,'lastName')">
+                      <div *ngIf="submitted && form.controls.lastName.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.lastName.errors?.required">
+                          Last Name is required.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Second Row of Input Fields -->
+                  <div class="row justify-content-center">
+                    <div class="col-md-4 mb-3">
+                      <label for="email">Email Address(Company)</label>
+                      <input type="email" formControlName="userEmail" id="userEmail" class="form-control" placeholder="Enter Email" [(ngModel)]="generateZCode.userEmail"
+                        [ngClass]="{'is-invalid':submitted && form.controls.userEmail.errors}" maxlength="100">
+                      <div *ngIf="submitted && form.controls.userEmail.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.userEmail.errors?.required">
+                          Email Id is required.
+                        </div>
+                        <div *ngIf="submitted && form.controls.userEmail.errors.pattern">
+                          Email Id is invalid.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                      <label for="phone">Contact Number</label>
+                      <input type="text" formControlName="contactNumber"  maxlength="10" id="contactNumber" class="form-control"  name="contactNumber"
+                       autocomplete="false" maxlength="10"  (keypress)="numberOnly($event)" [(ngModel)]="generateZCode.contactNumber"
+                        placeholder="Enter Contact Number" [ngClass]="{'is-invalid':submitted && (form.controls.contactNumber.errors || generateZCode.contactNumber?.length !=10 )}">
+                        <div *ngIf="submitted && form.controls.contactNumber.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.contactNumber.errors?.required">
+                          Contact Number is required.
+                        </div>
+                      </div>
+                      <div *ngIf="submitted && !form.controls.contactNumber.errors && generateZCode.contactNumber?.length !=10 " class="text-danger">
+                        Contact Number is invalid.
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="zoyShare">Employee Id</label>
+                      <div class="input-group">
+                      <input type="text" formControlName="zoyShare" id="zoyShare" class="form-control" [(ngModel)]="generateZCode.zoyShare"
+                      (keypress)="numberOnly($event)" maxlength="5">
+                       </div>
+                    </div>
+                  </div>
+                  
+                  <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;">
+                    <input type="submit" class="btn btn-primary-custom me-2" value="Generate" />
+                  </div>
+                </form>
+                </div>              
+                <div *ngIf="selectedModel == 'generated'">
+                  <div class="scrollable-container-main">
+                  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" >
+                    
+                    <!-- Owner Name Column -->
+                    <ng-container matColumnDef="owner_name">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 180px;"> NAME 
+                        <span style="margin-left: 2px;">
+                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'asc' }"></i>
+                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'desc'}"></i>
+                        </span>
+                      </th>
+                      <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.owner_name }} </td>
+                    </ng-container>
+
+                    <!-- Email Column -->
+                    <ng-container matColumnDef="email_id">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> EMAIL ID 
+                        <span style="margin-left: 2px;">
+                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['email_id'] === 'asc' }"></i>
+                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['email_id'] === 'desc'}"></i>
+                        </span>
+                      </th>
+                      <td mat-cell *matCellDef="let element"> {{ element.email_id }} </td>
+                    </ng-container>
+
+                    <!-- Contact Column -->
+                    <ng-container matColumnDef="mobile_no">
+                      <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> CONTACT </th>
+                      <td mat-cell *matCellDef="let element"> {{ element.mobile_no }} </td>
+                    </ng-container>
+
+                    <!-- Date Column -->
+                    <ng-container matColumnDef="created_date">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 150px;"> CREATED ON 
+                        <span style="margin-left: 2px;">
+                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['created_date'] === 'asc' }"></i>
+                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['created_date'] === 'desc'}"></i>
+                        </span>
+                      </th>
+                      <td mat-cell *matCellDef="let element" style="width: 150px;"> {{ element.created_date | date :'dd-MM-YYYY'}} </td>
+                    </ng-container>
+
+                    <!-- Date Column -->
+                   
+                    <ng-container matColumnDef="zoy_share">
+                      <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> EMPLOYEE ID </th>
+                      <td mat-cell *matCellDef="let element"> {{ element.zoy_share }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                      <th mat-header-cell *matHeaderCellDef style="width: 40px;"></th>
+                      <td mat-cell *matCellDef="let element" style="padding: 4px;">
+                        <button class="btn btn-primary-custom btn-sm" title="Resend Zoycode" (click)="resend(element)" *ngIf="rolesArray.includes('ZOYCODES_WRITE')"><i class="fas fa-redo mr-2" ></i></button>
+                      </td>
+                      
+                    </ng-container>
+                    
+                    <!-- Header Row -->
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                    <!-- Data Row -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                  </table>
+                  <div style="text-align: center;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>  
+                  </div>
+                </div>
+              </div>
+            </div> <!-- End Card Body -->
+  
+          </div>
+          <!-- /.container-fluid -->
+        </div>
+        <!-- End of Main Content -->
+      </div>
+      <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+  </div>
+</div>
+
+          
