@@ -30,11 +30,11 @@
             <div class="input-group ml-4 w-50">
               <button type="button" class="form-control"
                 [ngClass]="{ 'btn-primary-custom': selectedModel === 'generate', 'btn-outline-custom': selectedModel !== 'generate' }"
-                (click)="selectButton('generate')">Generate</button>
+                (click)="selectButton('generate')">Create New</button>
 
               <button type="button" class="form-control"
                 [ngClass]="{ 'btn-primary-custom': selectedModel === 'generated', 'btn-outline-custom': selectedModel !== 'generated' }"
-                (click)="selectButton('generated')">Generated</button>
+                (click)="selectButton('generated')">Registered</button>
             </div>
             <div class="ml-auto">
               <div class="input-group" *ngIf="selectedModel == 'generated'">
@@ -128,7 +128,7 @@
                   </div>
                   
                   <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;">
-                    <input type="submit" class="btn btn-primary-custom me-2" value="Generate" />
+                    <input type="submit" class="btn btn-primary-custom me-2" value="Register" />
                   </div>
                 </form>
                 </div>              
@@ -185,9 +185,8 @@
                     <ng-container matColumnDef="action">
                       <th mat-header-cell *matHeaderCellDef style="width: 40px;"></th>
                       <td mat-cell *matCellDef="let element" style="padding: 4px;">
-                        <button class="btn btn-primary-custom btn-sm" title="Resend Zoycode" (click)="resend(element)" *ngIf="rolesArray.includes('ZOYCODES_WRITE')"><i class="fas fa-redo mr-2" ></i></button>
-                      </td>
-                      
+                        <button class="btn btn-primary-custom btn-sm" title="Resend Credential" (click)="resend(element)"><i class="fas fa-redo mr-2" ></i></button>
+                      </td>                
                     </ng-container>
                     
                     <!-- Header Row -->
