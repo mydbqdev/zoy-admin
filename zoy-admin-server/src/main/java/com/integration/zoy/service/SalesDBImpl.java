@@ -1,5 +1,7 @@
 package com.integration.zoy.service;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 
 import com.integration.zoy.entity.ZoyPgSalesMaster;
@@ -16,5 +18,9 @@ public interface SalesDBImpl {
 	ZoyPgSalesUserLoginDetails saveAdminLoginDetails(ZoyPgSalesUserLoginDetails zoyPgSalesUserLoginDetails)throws WebServiceException;
 
 	Page<ZoyPgSalesMasterModel> findAllSalesUsers(PaginationRequest paginationRequest);
+
+	Optional<ZoyPgSalesMaster> findByEmail(String email);
+
+	Optional<ZoyPgSalesUserLoginDetails> findLoginDetailsByEmail(String email);
 
 }
