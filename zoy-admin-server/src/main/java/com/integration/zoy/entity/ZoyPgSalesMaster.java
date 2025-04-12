@@ -26,7 +26,7 @@ public class ZoyPgSalesMaster {
     @Column(name = "last_name", nullable = false, length = 36)
     private String lastName;
 
-    @Column(name = "middle_name", nullable = false, length = 36)
+    @Column(name = "middle_name")
     private String middleName;
 
     @Column(name = "mobile_no", nullable = false, length = 255)
