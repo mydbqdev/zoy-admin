@@ -51,11 +51,11 @@
             <div class="card-body" style="display: block;margin: 0px;padding: 2px;">
               <div class="scrollable-container-main">
                 <div class="container" *ngIf="selectedModel == 'generate'">
-                  <form [formGroup]="form" (ngSubmit)="generateZoyCode()" autocomplete="off">
+                  <form [formGroup]="form" (ngSubmit)="registerSalesPerson()" autocomplete="off">
                   <div class="row justify-content-center mt-3">
                     <div class="col-md-4 mb-3">
                       <label for="firstName">First Name</label>
-                      <input type="text" [(ngModel)]="generateZCode.firstName"
+                      <input type="text" [(ngModel)]="generateSalesPerson.firstName"
                         onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
                         maxlength="20" id="firstName" formControlName="firstName" class="form-control" placeholder="Enter First Name"
                         [ngClass]="{'is-invalid':submitted && form.controls.firstName.errors}" required
@@ -68,7 +68,7 @@
                     </div>
                     <div class="col-md-4 mb-3">
                       <label for="middleName">Middle Name</label>
-                      <input type="text" [(ngModel)]="generateZCode.middleName"
+                      <input type="text" [(ngModel)]="generateSalesPerson.middleName"
                         onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
                         maxlength="20" formControlName="middleName" id="middleName" class="form-control" 
                         (paste)="nameValidation($event,'middleName')">
@@ -76,7 +76,7 @@
                     </div>
                     <div class="col-md-4 mb-3">
                       <label for="lastName">Last Name</label>
-                      <input type="text" [(ngModel)]="generateZCode.lastName"
+                      <input type="text" [(ngModel)]="generateSalesPerson.lastName"
                         onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
                         maxlength="20" formControlName="lastName" id="lastName" class="form-control" placeholder="Enter Last Name"
                         [ngClass]="{'is-invalid':submitted && form.controls.lastName.errors}"
@@ -91,8 +91,8 @@
                   <!-- Second Row of Input Fields -->
                   <div class="row justify-content-center">
                     <div class="col-md-4 mb-3">
-                      <label for="email">Email Address(Company)</label>
-                      <input type="email" formControlName="userEmail" id="userEmail" class="form-control" placeholder="Enter Email" [(ngModel)]="generateZCode.userEmail"
+                      <label for="email">Email ID(Company)</label>
+                      <input type="email" formControlName="userEmail" id="userEmail" class="form-control" placeholder="Enter Email" [(ngModel)]="generateSalesPerson.userEmail"
                         [ngClass]="{'is-invalid':submitted && form.controls.userEmail.errors}" maxlength="100">
                       <div *ngIf="submitted && form.controls.userEmail.errors" class="text-danger">
                         <div *ngIf="submitted && form.controls.userEmail.errors?.required">
@@ -107,21 +107,21 @@
                     <div class="col-md-4 mb-3">
                       <label for="phone">Contact Number</label>
                       <input type="text" formControlName="contactNumber"  maxlength="10" id="contactNumber" class="form-control"  name="contactNumber"
-                       autocomplete="false" maxlength="10"  (keypress)="numberOnly($event)" [(ngModel)]="generateZCode.contactNumber"
-                        placeholder="Enter Contact Number" [ngClass]="{'is-invalid':submitted && (form.controls.contactNumber.errors || generateZCode.contactNumber?.length !=10 )}">
+                       autocomplete="false" maxlength="10"  (keypress)="numberOnly($event)" [(ngModel)]="generateSalesPerson.contactNumber"
+                        placeholder="Enter Contact Number" [ngClass]="{'is-invalid':submitted && (form.controls.contactNumber.errors || generateSalesPerson.contactNumber?.length !=10 )}">
                         <div *ngIf="submitted && form.controls.contactNumber.errors" class="text-danger">
                         <div *ngIf="submitted && form.controls.contactNumber.errors?.required">
                           Contact Number is required.
                         </div>
                       </div>
-                      <div *ngIf="submitted && !form.controls.contactNumber.errors && generateZCode.contactNumber?.length !=10 " class="text-danger">
+                      <div *ngIf="submitted && !form.controls.contactNumber.errors && generateSalesPerson.contactNumber?.length !=10 " class="text-danger">
                         Contact Number is invalid.
                       </div>
                     </div>
                     <div class="col-md-4 mb-3">
                       <label for="zoyShare">Employee Id</label>
                       <div class="input-group">
-                      <input type="text" formControlName="zoyShare" id="zoyShare" class="form-control" [(ngModel)]="generateZCode.zoyShare"
+                      <input type="text" formControlName="empId" id="empId" class="form-control" [(ngModel)]="generateSalesPerson.empId"
                       (keypress)="numberOnly($event)" maxlength="5">
                        </div>
                     </div>
@@ -137,14 +137,14 @@
                   <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" >
                     
                     <!-- Owner Name Column -->
-                    <ng-container matColumnDef="owner_name">
+                    <ng-container matColumnDef="sales_name">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 180px;"> NAME 
                         <span style="margin-left: 2px;">
                           <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'asc' }"></i>
                           <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'desc'}"></i>
                         </span>
                       </th>
-                      <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.owner_name }} </td>
+                      <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.sales_name }} </td>
                     </ng-container>
 
                     <!-- Email Column -->
@@ -177,9 +177,9 @@
 
                     <!-- Date Column -->
                    
-                    <ng-container matColumnDef="zoy_share">
+                    <ng-container matColumnDef="emp_id">
                       <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> EMPLOYEE ID </th>
-                      <td mat-cell *matCellDef="let element"> {{ element.zoy_share }} </td>
+                      <td mat-cell *matCellDef="let element"> {{ element.emp_id }} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="action">

@@ -18,9 +18,9 @@ import { MessageService } from 'src/app/message.service';
 
     }
     
-     public generateOwnerCode(data:any): Observable<any> {
+     public registerSubmitSalesPerson(data:any): Observable<any> {
         const url1=this.basePath +"zoy_admin/savePgOwnerData" ;
-        let param={"firstName":data.firstName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail,"zoyShare":data.zoyShare};
+        let param={"firstName":data.firstName,"middleName":data.middleName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail,"empId":data.empId};
           return  this.httpclient.post<any>(
               url1,
               param,
@@ -32,7 +32,7 @@ import { MessageService } from 'src/app/message.service';
           );
      }
 
-     public resendOwnerCode(data:string): Observable<any> {
+     public resendSalesPersonRegistartion(data:string): Observable<any> {
         const url1=this.basePath +"zoy_admin/resendPgOwnerData?email="+data ;
    
           return  this.httpclient.post<any>(
@@ -45,7 +45,7 @@ import { MessageService } from 'src/app/message.service';
              }
           );
      }
-     public getGeneratedZoyCodeDetails(): Observable<any> {
+     public getSalesPersonDetails(): Observable<any> {
           const url1=this.basePath +"zoy_admin/getAllPgOwnerData";
             return  this.httpclient.get<any>(
                 url1,

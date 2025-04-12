@@ -23,19 +23,19 @@ import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/
   styleUrl: './sales.component.css'
 })
 export class SalesComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['owner_name', 'email_id', 'mobile_no','created_date', 'zoy_share','action'];
+  displayedColumns: string[] = ['sales_name', 'email_id', 'mobile_no','created_date', 'emp_id','action'];
   public ELEMENT_DATA:SalesData[]=[];
   orginalFetchData:SalesData[]=[];
   searchText:string='';
   dataSource:MatTableDataSource<SalesData>=new MatTableDataSource<SalesData>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
-    owner_name: null,
+    sales_name: null,
     email_id: null,
     created_date: null,
-	zoy_share: null,
+	emp_id: null,
 	// status: null
   };
-  generateZCode : SalesData=new SalesData();
+  generateSalesPerson : SalesData=new SalesData();
   public userNameSession: string = "";
 	errorMsg: any = "";
 	mySubscription: any;
@@ -83,7 +83,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
 	selectButton(button: string): void {
 	  this.selectedModel = button;
 	  if(this.selectedModel =='generated'){
-		 this.getZoyCodeDetails();
+		 this.getSalesPerson();
 		 this.submitted=false;
 		 this.form.reset();
 	  }else{
@@ -110,7 +110,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
 			  Validators.required,
 			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
 			]],
-			zoyShare:[''],
+			empId:[''],
 		  });
 	}
 	ngAfterViewInit() {
@@ -127,14 +127,14 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		return true;
 	   }
 
-	   generateZoyCode() {
+	   registerSalesPerson() {
 		this.submitted=true;	
-		if (this.form.invalid || this.generateZCode.contactNumber.length !=10) {
+		if (this.form.invalid || this.generateSalesPerson.contactNumber.length !=10) {
 		return;
 		}
 		this.spinner.show();		     
 		this.submitted=false;
-		this.generateSalesService.generateOwnerCode(this.generateZCode).subscribe((res) => {
+		this.generateSalesService.registerSubmitSalesPerson(this.generateSalesPerson).subscribe((res) => {
 			this.notifyService.showSuccess(res.message, "");			
 			this.spinner.hide();
 			this.form.reset();
@@ -148,7 +148,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
 				.then(
 				  (confirmed) =>{
 				   if(confirmed){
-					this.resendZoyCode()
+					this.resendSalesPerson()
 				   }
 				}).catch(
 					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
@@ -178,14 +178,14 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		  );  
 		}  
 
-		resendZoyCode() {
+		resendSalesPerson() {
 			this.submitted=true;	
 			if (this.form.invalid) {
 			return;
 			}
 			this.spinner.show();		     
 			this.submitted=false;
-			this.generateSalesService.resendOwnerCode(this.generateZCode.userEmail).subscribe((res) => {
+			this.generateSalesService.resendSalesPersonRegistartion(this.generateSalesPerson.userEmail).subscribe((res) => {
 				this.notifyService.showSuccess(res.message, "");	
 				this.form.reset();
 				this.spinner.hide();
@@ -225,7 +225,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
     				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
 				}else{
 					const pagedData = Object.assign([],this.orginalFetchData.filter(data =>
-						data.owner_name.toLowerCase().includes(this.searchText.toLowerCase()) || data.email_id.toLowerCase().includes(this.searchText.toLowerCase()) || data.mobile_no.toLowerCase().includes(this.searchText.toLowerCase()) || data.created_date.toLowerCase().includes(this.searchText.toLowerCase()) || data.zoy_code.toLowerCase().includes(this.searchText.toLowerCase())
+						data.sales_name.toLowerCase().includes(this.searchText.toLowerCase()) || data.email_id.toLowerCase().includes(this.searchText.toLowerCase()) || data.mobile_no.toLowerCase().includes(this.searchText.toLowerCase()) || data.created_date.toLowerCase().includes(this.searchText.toLowerCase()) || data.emp_id.toLowerCase().includes(this.searchText.toLowerCase())
 					));
 					this.ELEMENT_DATA = Object.assign([],pagedData);
     				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
@@ -233,10 +233,10 @@ export class SalesComponent implements OnInit, AfterViewInit {
 				this.dataSource.sort = this.sort;
 				this.dataSource.sortingDataAccessor = (data, sortHeaderId) => data[sortHeaderId].toLocaleLowerCase();
 		}
-	getZoyCodeDetails(){
+	getSalesPerson(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
-		this.generateSalesService.getGeneratedZoyCodeDetails().subscribe(data => {
+		this.generateSalesService.getSalesPersonDetails().subscribe(data => {
 			this.orginalFetchData=  Object.assign([],data);
 			this.ELEMENT_DATA = Object.assign([],data);
 			this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
@@ -292,12 +292,12 @@ nameValidation(event: any, inputId: string) {
   }
 
   resend(element:any){
-	this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to resend the credential for '+element.owner_name+' ?')
+	this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to resend the credential for '+element.sales_name+' ?')
 				.then(
 				  (confirmed) =>{
 				   if(confirmed){
 					this.spinner.show();		     
-			    this.generateSalesService.resendOwnerCode(element.email_id).subscribe((res) => {
+			    this.generateSalesService.resendSalesPersonRegistartion(element.email_id).subscribe((res) => {
 				this.notifyService.showSuccess(res.message, "");
 				this.spinner.hide();
 			  },error =>{
