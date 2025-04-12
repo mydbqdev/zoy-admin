@@ -71,8 +71,13 @@
                       <input type="text" [(ngModel)]="generateSalesPerson.middleName"
                         onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
                         maxlength="20" formControlName="middleName" id="middleName" class="form-control" 
+                        [ngClass]="{'is-invalid':submitted && form.controls.middleName.errors}"
                         (paste)="nameValidation($event,'middleName')">
-                      
+                        <div *ngIf="submitted && form.controls.middleName.errors" class="text-danger">
+                          <div *ngIf="submitted && form.controls.middleName.errors?.required">
+                            Middle Name is required.
+                          </div>
+                        </div>
                     </div>
                     <div class="col-md-4 mb-3">
                       <label for="lastName">Last Name</label>
@@ -144,7 +149,7 @@
                           <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'desc'}"></i>
                         </span>
                       </th>
-                      <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.sales_name }} </td>
+                      <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.fullName }} </td>
                     </ng-container>
 
                     <!-- Email Column -->
@@ -155,13 +160,13 @@
                           <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['email_id'] === 'desc'}"></i>
                         </span>
                       </th>
-                      <td mat-cell *matCellDef="let element"> {{ element.email_id }} </td>
+                      <td mat-cell *matCellDef="let element"> {{ element.emailId }} </td>
                     </ng-container>
 
                     <!-- Contact Column -->
                     <ng-container matColumnDef="mobile_no">
                       <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> CONTACT </th>
-                      <td mat-cell *matCellDef="let element"> {{ element.mobile_no }} </td>
+                      <td mat-cell *matCellDef="let element"> {{ element.mobileNo }} </td>
                     </ng-container>
 
                     <!-- Date Column -->
@@ -172,14 +177,14 @@
                           <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['created_date'] === 'desc'}"></i>
                         </span>
                       </th>
-                      <td mat-cell *matCellDef="let element" style="width: 150px;"> {{ element.created_date | date :'dd-MM-YYYY'}} </td>
+                      <td mat-cell *matCellDef="let element" style="width: 150px;"> {{ element.createdAt | date :'dd-MM-YYYY'}} </td>
                     </ng-container>
 
                     <!-- Date Column -->
                    
                     <ng-container matColumnDef="emp_id">
                       <th mat-header-cell *matHeaderCellDef style="font-weight: 600;"> EMPLOYEE ID </th>
-                      <td mat-cell *matCellDef="let element"> {{ element.emp_id }} </td>
+                      <td mat-cell *matCellDef="let element"> {{ element.employeeId }} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="action">

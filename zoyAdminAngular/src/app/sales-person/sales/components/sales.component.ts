@@ -16,6 +16,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GenerateSalesService } from '../../service/sales.service';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
+import { Filter, OwnerRequestParam } from 'src/app/owners/managing-owner/models/owner-details-request-model';
 
 @Component({
   selector: 'app-sales',
@@ -27,6 +28,12 @@ export class SalesComponent implements OnInit, AfterViewInit {
   public ELEMENT_DATA:SalesData[]=[];
   orginalFetchData:SalesData[]=[];
   searchText:string='';
+  param:OwnerRequestParam=new OwnerRequestParam();
+  paramFilter:Filter=new Filter();
+  pageSize: number = 10; 
+  pageSizeOptions: number[] = [10, 20, 50]; 
+  totalProduct: number = 0;
+  public lastPageSize:number=0;
   dataSource:MatTableDataSource<SalesData>=new MatTableDataSource<SalesData>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
     sales_name: null,
@@ -103,9 +110,9 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		//}
 		this.form = this.formBuilder.group({
 			firstName: ['', [Validators.required]],
-			middleName:[''],
+			middleName:['', [Validators.required]],
 			lastName: ['', [Validators.required]],
-		    contactNumber: ['', [Validators.required],],
+		    contactNumber: ['', [Validators.required]],
 			userEmail: ['', [
 			  Validators.required,
 			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
@@ -221,28 +228,41 @@ export class SalesComponent implements OnInit, AfterViewInit {
 	    }  
 		filterData(){
 				if(this.searchText==''){
-					this.ELEMENT_DATA = Object.assign([],this.orginalFetchData);
-    				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+					this.paramFilter.searchText=null;
 				}else{
-					const pagedData = Object.assign([],this.orginalFetchData.filter(data =>
-						data.sales_name.toLowerCase().includes(this.searchText.toLowerCase()) || data.email_id.toLowerCase().includes(this.searchText.toLowerCase()) || data.mobile_no.toLowerCase().includes(this.searchText.toLowerCase()) || data.created_date.toLowerCase().includes(this.searchText.toLowerCase()) || data.emp_id.toLowerCase().includes(this.searchText.toLowerCase())
-					));
-					this.ELEMENT_DATA = Object.assign([],pagedData);
-    				this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
+					this.paramFilter.searchText=this.searchText;
 				}
-				this.dataSource.sort = this.sort;
-				this.dataSource.sortingDataAccessor = (data, sortHeaderId) => data[sortHeaderId].toLocaleLowerCase();
+
+		this.param.pageIndex=0
+		this.paginator.pageIndex=0;
+		this.param.filter=this.paramFilter;
+		this.getSalesPerson();
 		}
+		getRetrieveData(){
+			this.dataSource.sort = this.sort;
+			this.dataSource.paginator = this.paginator;
+			this.param.pageIndex=this.paginator.pageIndex;
+			this.param.pageSize= this.paginator.pageSize;
+			this.param.sortDirection="desc";
+			this.param.sortActive="created_date";
+			this.paramFilter.searchText=null;
+			this.paramFilter.status=null;
+			this.param.filter=this.paramFilter;
+			setTimeout(()=>{
+			  this.getSalesPerson();
+			 },100);
+			 this.columnSortDirections["created_date"] = "desc";
+		  }
+			
 	getSalesPerson(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
-		this.generateSalesService.getSalesPersonDetails().subscribe(data => {
-			this.orginalFetchData=  Object.assign([],data);
-			this.ELEMENT_DATA = Object.assign([],data);
+		this.lastPageSize=this.param.pageSize;
+		this.generateSalesService.getSalesPersonDetails(this.param).subscribe(data => {
+			this.orginalFetchData=  Object.assign([],data.content);
+			this.ELEMENT_DATA = Object.assign([],data.content);
 			this.dataSource =new MatTableDataSource(this.ELEMENT_DATA);
-			this.dataSource.sort = this.sort;
-			this.columnSortDirections['created_date']='desc';
-			this.dataSource.sortingDataAccessor = (data, sortHeaderId) => data[sortHeaderId].toLocaleLowerCase();
+			this.totalProduct=data.total;
 			this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
@@ -279,17 +299,7 @@ nameValidation(event: any, inputId: string) {
   const clString = pastedText.replace(/[^a-zA-Z\s.]/g, '');
    event.preventDefault();
   }
-  
-  announceSortChange(sortState: Sort): void {
-	this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
-	this.columnSortDirections[sortState.active] = sortState.direction;
 
-	  if (sortState.direction) {
-		this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-	  } else {
-		this._liveAnnouncer.announce('Sorting cleared');
-	  }
-  }
 
   resend(element:any){
 	this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to resend the credential for '+element.sales_name+' ?')
@@ -338,24 +348,19 @@ nameValidation(event: any, inputId: string) {
   isNotValidNumber(value: any): boolean {
 	return  (value === '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
   }
-percentageOnlyWithZero(event): boolean {
-	const charCode = (event.which) ? event.which : event.keyCode;
-	const inputValue = event.target.value + String.fromCharCode(charCode); 
 
-	if (inputValue.startsWith('.')) {
-		return false;
+  announceSortChange(sortState: Sort): void {
+	this.columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
+	this.columnSortDirections[sortState.active] = sortState.direction;
+	  if (sortState.direction) {
+		this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+	  } else {
+		this._liveAnnouncer.announce('Sorting cleared');
 	  }
-	
-	if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-	  if (charCode !== 46 ) { // Allow decimal point (46) and percent symbol (37)
-		return false;
-	  }
-	}
-  
-	if ((inputValue.match(/\./g) || []).length> 1 || parseFloat(inputValue) > 100 ) {
-	  return false;
-	}
-
-	return true;
+	  this.param.sortActive=sortState.active;
+	  this.param.sortDirection=sortState.direction!="" ? sortState.direction:"asc";
+	  this.param.pageIndex=0
+	  this.paginator.pageIndex=0;
+	  this.getSalesPerson();
   }
 }
