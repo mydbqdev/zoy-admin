@@ -19,7 +19,7 @@ import { MessageService } from 'src/app/message.service';
     }
     
      public registerSubmitSalesPerson(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/savePgOwnerData" ;
+        const url1=this.basePath +"zoy_admin/saveSalesPersonData" ;
         let param={"firstName":data.firstName,"middleName":data.middleName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail,"empId":data.empId};
           return  this.httpclient.post<any>(
               url1,
@@ -33,7 +33,7 @@ import { MessageService } from 'src/app/message.service';
      }
 
      public resendSalesPersonRegistartion(data:string): Observable<any> {
-        const url1=this.basePath +"zoy_admin/resendPgOwnerData?email="+data ;
+        const url1=this.basePath +"zoy_admin/resendSalesPersonData?email="+data ;
    
           return  this.httpclient.post<any>(
               url1,
@@ -46,7 +46,7 @@ import { MessageService } from 'src/app/message.service';
           );
      }
      public getSalesPersonDetails(): Observable<any> {
-          const url1=this.basePath +"zoy_admin/getAllPgOwnerData";
+          const url1=this.basePath +"zoy_admin/getAllSalesPersonData";
             return  this.httpclient.get<any>(
                 url1,
                 {
