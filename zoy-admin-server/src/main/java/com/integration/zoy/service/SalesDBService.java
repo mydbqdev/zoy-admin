@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -118,5 +119,14 @@ public class SalesDBService implements SalesDBImpl{
 	    });
 	}
 
+	@Override
+	public Optional<ZoyPgSalesMaster> findByEmail(String userEmail) {
+		return zoyPgSalesMasterRepo.findByEmailId(userEmail);
+	}
+
+	@Override
+	public Optional<ZoyPgSalesUserLoginDetails> findLoginDetailsByEmail(String email) {
+		return zoyPgSalesUserLoginDetailsRepo.findByUserEmail(email);
+	}
 
 }

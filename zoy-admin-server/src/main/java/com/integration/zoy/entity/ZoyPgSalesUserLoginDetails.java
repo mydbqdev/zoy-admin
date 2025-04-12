@@ -29,6 +29,9 @@ public class ZoyPgSalesUserLoginDetails {
 
 	@Column(name = "last_change_on")
 	private Timestamp lastChangeOn;
+	
+	@Column(name = "is_password_change")
+	private Boolean isPasswordChange;
 
 	@OneToOne
 	@JoinColumn(name = "user_email", referencedColumnName = "email_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "user_login_details_fk"))
@@ -82,6 +85,14 @@ public class ZoyPgSalesUserLoginDetails {
 
 	public void setZoyPgSalesMaster(ZoyPgSalesMaster zoyPgSalesMaster) {
 		this.zoyPgSalesMaster = zoyPgSalesMaster;
+	}
+
+	public Boolean getIsPasswordChange() {
+		return isPasswordChange;
+	}
+
+	public void setIsPasswordChange(Boolean isPasswordChange) {
+		this.isPasswordChange = isPasswordChange;
 	}
 
 }

@@ -17,7 +17,7 @@ public class ZoyPgSalesMaster {
     @Column(name = "email_id", nullable = false, length = 36)
     private String emailId;
 
-    @Column(name = "employee_id", nullable = false, length = 36)
+    @Column(name = "employee_id")
     private String employeeId;
 
     @Column(name = "first_name", nullable = false, length = 36)

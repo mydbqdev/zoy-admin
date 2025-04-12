@@ -1,5 +1,7 @@
 package com.integration.zoy.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -44,5 +46,5 @@ public interface ZoyPgSalesMasterRepository extends JpaRepository<ZoyPgSalesMast
 	    nativeQuery = true)
 	Page<Object[]> findAllSalesPeople(Pageable pageable, @Param("searchText") String searchText);
 
-
+	Optional<ZoyPgSalesMaster> findByEmailId(String emailId);
 }
