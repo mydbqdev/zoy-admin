@@ -15,7 +15,6 @@ import com.integration.zoy.model.ZoyBeforeCheckInCancellationModel;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
-import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
 import com.integration.zoy.utils.ZoyForceCheckOutDto;
 import com.integration.zoy.utils.ZoyGstChargesDto;
@@ -330,8 +329,8 @@ public interface ZoyConfigurationMasterImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PostMapping(value = "/zoy_admin/config/RentalAgreementdocument",
+	@PostMapping(value = "/zoy_admin/config/rentalAgreementDocumentSubmit",
 	produces = { "application/json" },
-	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(@RequestBody RentalAgreementDocDto rentalAgreementDoc,@RequestPart(value = "file",required = true) MultipartFile file);
+	consumes = { "multipart/form-data"})
+	ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(@RequestParam("rentalAgreementDocId")String rentalAgreementDocId,@RequestPart(value = "file",required = true) MultipartFile file);
 }

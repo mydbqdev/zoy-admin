@@ -172,7 +172,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	RentalAgreementDocRepository rentalAgreementDocRepository;
 	
 
-	@Value("${app.minio.zoypg.upload.docs.rentalAgreement.bucket.name}")
+	@Value("${app.minio.zoypg.upload.rental.agreement.bucket.name}")
 	private String zoyPgRentalDocsUploadBucketName;
 	
 	@Override
@@ -2353,19 +2353,13 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	}
 
 	@Override
-	public ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(RentalAgreementDocDto rentalAgreementDoc,MultipartFile file) {
+	public ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(String rentalAgreementDocId ,MultipartFile file) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-
-		if (rentalAgreementDoc == null) {
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError("Required Rental Agreement Document details");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
 		try {
-			if (rentalAgreementDoc.getRentalAgreementDocId() != null && !rentalAgreementDoc.getRentalAgreementDocId().isEmpty()) {
+			if (rentalAgreementDocId != null && !rentalAgreementDocId.isEmpty()) {
 
-				Optional<RentalAgreementDoc> RentalAgreementDetails = rentalAgreementDocRepository.findById(rentalAgreementDoc.getRentalAgreementDocId());
+				Optional<RentalAgreementDoc> RentalAgreementDetails = rentalAgreementDocRepository.findById(rentalAgreementDocId);
 				if (RentalAgreementDetails.isEmpty()) {
 					response.setStatus(HttpStatus.BAD_REQUEST.value());
 					response.setError("Required Rental Agreement Document details not found");
@@ -2376,53 +2370,43 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 					String oldFixed = oldDetails.getRentalAgreementDoc();
 					
-					String uploadedFileName = "Rental Agreement" + file;
+					String uploadedFileName = "Rental Agreement";
 					String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);
 					
 					oldDetails.setRentalAgreementDoc(fileUrl);
-					oldDetails.setEffectiveDate(rentalAgreementDoc.getEffectiveDate());
-					oldDetails.setIsApproved(rentalAgreementDoc.getIsApproved());
 
-					if (rentalAgreementDoc.getIsApproved()) {
-						oldDetails.setApprovedBy(currentUser);
-					} else {
-						oldDetails.setCreatedBy(currentUser);
-					}
 
 					rentalAgreementDocRepository.save(oldDetails);
-
-					// Audit the update action
-					String historyContent = " has updated the Rental Agreement Document  from "
-							+ oldFixed + " to " + rentalAgreementDoc.getRentalAgreementDoc();
-					auditHistoryUtilities.auditForCommon(currentUser, historyContent,
-							ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
+//
+//					// Audit the update action
+//					String historyContent = " has updated the Rental Agreement Document  from "
+//							+ oldFixed + " to " + fileUrl;
+//					auditHistoryUtilities.auditForCommon(currentUser, historyContent,
+//							ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 				}
 			} else {
 				RentalAgreementDoc newRentalAgreementDoc = new RentalAgreementDoc();
 				
-				String uploadedFileName = "Rental Agreement" + file;
+				String uploadedFileName = "Rental Agreement";
 				String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);
 				
 				newRentalAgreementDoc.setRentalAgreementDoc(fileUrl);
-				newRentalAgreementDoc.setEffectiveDate(rentalAgreementDoc.getEffectiveDate());
-				newRentalAgreementDoc.setCreatedBy(currentUser);
-				newRentalAgreementDoc.setIsApproved(false);
 				rentalAgreementDocRepository.save(newRentalAgreementDoc);
 
-				// Audit the creation action
-				String historyContent = " has updated the Rental Agreement Document "
-						+ rentalAgreementDoc.getRentalAgreementDoc();
-				auditHistoryUtilities.auditForCommon(currentUser, historyContent,
-						ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
+//				// Audit the creation action
+//				String historyContent = " has updated the Rental Agreement Document "
+//						+ fileUrl;
+//				auditHistoryUtilities.auditForCommon(currentUser, historyContent,
+//						ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
 			}
 
-			List<RentalAgreementDoc> allDetails = ownerDBImpl.findAllRentalAgreementDetailsSorted();
+			List<RentalAgreementDoc> allDetails = rentalAgreementDocRepository.findAll();
 			List<RentalAgreementDocDto> dto = allDetails.stream().map(this::convertToDTO)
 					.collect(Collectors.toList());
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("No Rental Agreement details successfully saved/updated");
+			response.setMessage("Rental Agreement details successfully saved/updated");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -2439,10 +2423,6 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		RentalAgreementDocDto dto = new RentalAgreementDocDto();
 		dto.setRentalAgreementDocId(entity.getRentalAgreementDocId());
 		dto.setRentalAgreementDoc(entity.getRentalAgreementDoc());
-		dto.setIsApproved(entity.getIsApproved() != null ? entity.getIsApproved() : false);
-		dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
-		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
-		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
 		return dto;
 	}
 
