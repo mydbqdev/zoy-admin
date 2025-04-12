@@ -90,12 +90,13 @@ export class SalesComponent implements OnInit, AfterViewInit {
 	selectButton(button: string): void {
 	  this.selectedModel = button;
 	  if(this.selectedModel =='generated'){
+		this.paramFilter.searchText=null;
+		this.param.filter=this.paramFilter; 
 		 this.getSalesPerson();
 		 this.submitted=false;
 		 this.form.reset();
 	  }else{
 		this.searchText='';
-		this.filterData();
 	  }
 
 	}
@@ -110,7 +111,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		//}
 		this.form = this.formBuilder.group({
 			firstName: ['', [Validators.required]],
-			middleName:['', [Validators.required]],
+			middleName:[''],
 			lastName: ['', [Validators.required]],
 		    contactNumber: ['', [Validators.required]],
 			userEmail: ['', [
@@ -226,7 +227,8 @@ export class SalesComponent implements OnInit, AfterViewInit {
 				}
 			  });  
 	    }  
-		filterData(){
+		filterData($event: KeyboardEvent){
+			if ($event.keyCode === 13) {
 				if(this.searchText==''){
 					this.paramFilter.searchText=null;
 				}else{
@@ -237,6 +239,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		this.paginator.pageIndex=0;
 		this.param.filter=this.paramFilter;
 		this.getSalesPerson();
+			}
 		}
 		getRetrieveData(){
 			this.dataSource.sort = this.sort;
@@ -363,4 +366,15 @@ nameValidation(event: any, inputId: string) {
 	  this.paginator.pageIndex=0;
 	  this.getSalesPerson();
   }
+
+  pageChanged(event:any){
+	this.dataSource=new MatTableDataSource<SalesData>();
+	if(this.lastPageSize!=event.pageSize){
+	this.paginator.pageIndex=0;
+	event.pageIndex=0;
+	}
+	this.param.pageIndex=this.paginator.pageIndex;
+	this.param.pageSize= event.pageSize;
+	this.getSalesPerson();
+	}
 }

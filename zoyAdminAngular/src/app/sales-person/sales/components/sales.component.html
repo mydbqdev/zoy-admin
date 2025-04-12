@@ -40,7 +40,7 @@
               <div class="input-group" *ngIf="selectedModel == 'generated'">
                 <i class="fas fa-search fa-sm" style="margin-right: -25px;z-index: 1;margin-top: 10px;"></i>
                 <input type="text" class="form-control form-control-sm  border-1"
-                  style="border-radius: 20px;padding-left: 29px;width: 300px;" [(ngModel)]="searchText" (input)="filterData()" placeholder="Search" aria-label="Search"
+                  style="border-radius: 20px;padding-left: 29px;width: 300px;" [(ngModel)]="searchText" (keyup)="filterData($event)" placeholder="Search" aria-label="Search"
                   aria-describedby="basic-addon2">
               </div>
             </div>
@@ -71,13 +71,8 @@
                       <input type="text" [(ngModel)]="generateSalesPerson.middleName"
                         onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
                         maxlength="20" formControlName="middleName" id="middleName" class="form-control" 
-                        [ngClass]="{'is-invalid':submitted && form.controls.middleName.errors}"
                         (paste)="nameValidation($event,'middleName')">
-                        <div *ngIf="submitted && form.controls.middleName.errors" class="text-danger">
-                          <div *ngIf="submitted && form.controls.middleName.errors?.required">
-                            Middle Name is required.
-                          </div>
-                        </div>
+                        
                     </div>
                     <div class="col-md-4 mb-3">
                       <label for="lastName">Last Name</label>
@@ -138,15 +133,15 @@
                 </form>
                 </div>              
                 <div *ngIf="selectedModel == 'generated'">
-                  <div class="scrollable-container-main">
-                  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" >
+                  <div style="min-height: calc(100vh - 264px);">
+                  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" matSortActive="created_date" matSortDirection="desc">
                     
                     <!-- Owner Name Column -->
                     <ng-container matColumnDef="sales_name">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 180px;"> NAME 
                         <span style="margin-left: 2px;">
-                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'asc' }"></i>
-                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['owner_name'] === 'desc'}"></i>
+                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['sales_name'] === 'asc' }"></i>
+                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['sales_name'] === 'desc'}"></i>
                         </span>
                       </th>
                       <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.fullName }} </td>
@@ -201,6 +196,7 @@
                   </table>
                   <div style="text-align: center;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>  
                   </div>
+                  <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
                 </div>
               </div>
             </div> <!-- End Card Body -->

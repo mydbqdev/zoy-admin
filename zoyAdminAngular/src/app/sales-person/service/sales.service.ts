@@ -20,7 +20,7 @@ import { MessageService } from 'src/app/message.service';
     
      public registerSubmitSalesPerson(data:any): Observable<any> {
         const url1=this.basePath +"zoy_admin/zoyAdminSalesCreateUser" ;
-        let param={"firstName":data.firstName,"middleName":data.middleName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail,"empId":data.empId};
+        let param={"firstName":data.firstName,"middleName":data.middleName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail,"employeeId":data.empId};
           return  this.httpclient.post<any>(
               url1,
               param,
