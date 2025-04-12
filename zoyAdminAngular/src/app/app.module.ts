@@ -72,6 +72,8 @@ import { OwnerReportsComponent } from './report/owner-reports/component/owner-re
 import { SupportReportsComponent } from './report/support-reports/component/support.reports.component';
 import { TenantReportsComponent } from './report/tenant-reports/component/tenant-reports.component';
 import { BulkUploadComponent } from './owners/bulk-upload/component/bulk-upload.component';
+import { AppSalesPersonMenuRoutingModule } from './sales-person/sales-person-menu-routing.model';
+import { SalesComponent } from './sales-person/sales/components/sales.component';
 
 
 const appRoutes: Routes = [
@@ -97,6 +99,7 @@ const appRoutes: Routes = [
     PermissionApprovalComponent,
     LockedUserComponent,
     ZoyCodeComponent,
+    SalesComponent,
     ManageOwnerComponent,
     ProfileComponent,
     ActivityLogComponent,
@@ -142,6 +145,7 @@ const appRoutes: Routes = [
     NgMultiSelectDropDownModule.forRoot(),
     DragDropModule,
     AppSettingMenuRoutingModule,
+    AppSalesPersonMenuRoutingModule,
     TenantMenuRoutingModule,
     NgxChartsModule,
     AppDocumentUploadRoutingModule,
