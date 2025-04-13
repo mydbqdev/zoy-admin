@@ -26,11 +26,14 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
+import com.integration.zoy.entity.FollowUps;
 import com.integration.zoy.entity.RegisteredPartner;
 import com.integration.zoy.model.FilterData;
+import com.integration.zoy.model.FollowUp;
 import com.integration.zoy.model.TicketAssign;
 import com.integration.zoy.model.UpdateStatus;
 import com.integration.zoy.repository.AdminUserMasterRepository;
+import com.integration.zoy.repository.FollowUpRepository;
 import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.service.NotificationsAndAlertsService;
@@ -84,6 +87,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	@Autowired
 	AdminUserMasterRepository userMasterRepository;
 
+	@Autowired
+	FollowUpRepository followUpRepository;
+
 	@Override
 	public ResponseEntity<String> getRegisteredLeadDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
 		ResponseBody response = new ResponseBody();
@@ -103,34 +109,34 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 
 	@Override
 	public ResponseEntity<String> getSupportUserDetails(String inquiryNumber) {
-	    ResponseBody response = new ResponseBody();
-	    try {
-	        final Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(inquiryNumber);
-	        final String assignedUserEmail;
-	        if (partner.isPresent()) {
-	            RegisteredPartner existingPartner = partner.get();
-	            assignedUserEmail = existingPartner.getAssignedToEmail();
-	        } else {
-	            assignedUserEmail = null;
-	        }
+		ResponseBody response = new ResponseBody();
+		try {
+			final Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(inquiryNumber);
+			final String assignedUserEmail;
+			if (partner.isPresent()) {
+				RegisteredPartner existingPartner = partner.get();
+				assignedUserEmail = existingPartner.getAssignedToEmail();
+			} else {
+				assignedUserEmail = null;
+			}
 
-	        List<SupportUsres> supportUsrs = ownerDBImpl.getAllSupportUserNames();
+			List<SupportUsres> supportUsrs = ownerDBImpl.getAllSupportUserNames();
 
-	        if (assignedUserEmail != null && !assignedUserEmail.isEmpty()) {
-	            supportUsrs = supportUsrs.stream()
-	                                     .filter(user -> !user.getEmail().equals(assignedUserEmail))
-	                                     .collect(Collectors.toList());
-	        }
+			if (assignedUserEmail != null && !assignedUserEmail.isEmpty()) {
+				supportUsrs = supportUsrs.stream()
+						.filter(user -> !user.getEmail().equals(assignedUserEmail))
+						.collect(Collectors.toList());
+			}
 
-	        return new ResponseEntity<>(gson2.toJson(supportUsrs), HttpStatus.OK);
-	    } catch (Exception e) {
-	        log.error("Error getting support user details API:/zoy_admin/support_user_details.getSupportUserDetails", e);
-	        response.setStatus(HttpStatus.BAD_REQUEST.value());
-	        response.setError(e.getMessage());
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	    }
+			return new ResponseEntity<>(gson2.toJson(supportUsrs), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting support user details API:/zoy_admin/support_user_details.getSupportUserDetails", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
 	}
-	
+
 	@Override
 	public ResponseEntity<String> assignTicketsToSupportTeam(TicketAssign assignTicket) {
 		ResponseBody response=new ResponseBody();
@@ -240,4 +246,65 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
 		}
 	}
+
+	@Override
+	public ResponseEntity<String> createFollowUp(FollowUp followUp) {
+		ResponseBody response=new ResponseBody();
+		try {
+			FollowUps followUpsEntity = new FollowUps();
+			followUpsEntity.setInquiryId(followUp.getInquiryId());
+			followUpsEntity.setFollowUpDate(followUp.getFollowUpDate());
+			followUpsEntity.setRemarks(followUp.getRemarks());
+			followUpsEntity.setReminderSet(followUp.getReminderSet());
+			followUpsEntity.setReminderDate(followUp.getReminderDate());
+			followUpsEntity.setStatus(followUp.getStatus());
+			followUpsEntity.setUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+			followUpRepository.save(followUpsEntity);
+			response.setStatus(HttpStatus.OK.value());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		}catch (Exception e) {
+			log.error("Error  while fetching follow-up details API:/zoy_admin/follow_up_details.FetchAllFollowUpDetails " + e.getMessage(),e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
+	@Override
+	public ResponseEntity<String> FetchAllFollowUpDetails() {
+		ResponseBody response=new ResponseBody();
+		try {
+
+
+			String email = SecurityContextHolder.getContext().getAuthentication().getName();
+			List<FollowUps> followUpsList = followUpRepository.findByUserEmail(email);
+			if (followUpsList.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No follow-up details found for the given email address");
+			}
+			List<FollowUp> followUpModelList = followUpsList.stream()
+					.map(this::convertToModel)
+					.collect(Collectors.toList());
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Follow-up details saved successfully");
+			return new ResponseEntity<>(gson.toJson(followUpModelList), HttpStatus.OK);
+		}catch (Exception e) {
+			log.error("Error getting while saving follow-up details API:/zoy_admin/follow_up_details.createFollowUp " + e.getMessage(),e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	private FollowUp convertToModel(FollowUps followUpsEntity) {
+	    FollowUp followUpModel = new FollowUp();
+	    followUpModel.setInquiryId(followUpsEntity.getInquiryId());
+	    followUpModel.setFollowUpDate(followUpsEntity.getFollowUpDate());
+	    followUpModel.setRemarks(followUpsEntity.getRemarks());
+	    followUpModel.setReminderSet(followUpsEntity.getReminderSet());
+	    followUpModel.setReminderDate(followUpsEntity.getReminderDate());
+	    followUpModel.setStatus(followUpsEntity.getStatus());
+	    return followUpModel;
+	}
+
 }

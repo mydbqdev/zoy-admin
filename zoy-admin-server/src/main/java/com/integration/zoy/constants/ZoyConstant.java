@@ -37,10 +37,12 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_LOGIN="USER_LOGIN";
 	public static final String ZOY_ADMIN_LOGOUT="USER_LOGOUT";
 	public static final String ZOY_ADMIN_USER_CREATE="USER_ADD";
+	public static final String ZOY_ADMIN_SALES_USER_CREATE="SALES_USER_ADD";
 	public static final String ZOY_ADMIN_USER_UPDATE="USER_UPDATE";
 	public static final String ZOY_ADMIN_USER_ACTIVE="USER_ACTIVE";
 	public static final String ZOY_ADMIN_USER_INACTIVE="USER_INACTIVE";
 	public static final String ZOY_ADMIN_USER_DELETE="USER_DELETE";
+	public static final String ZOY_ADMIN_SALES_USER_DELETE="SALES_USER_DELETE";
 	public static final String ZOY_ADMIN_USER_AUTHORZITION_APPROVE="USER_ROLE_APPROVED";
 	public static final String ZOY_ADMIN_USER_AUTHORZITION_REJECTED="USER_ROLE_REJECTED";
 	public static final String ZOY_ADMIN_ZOY_CODE_GENERATE="ZOY_CODE_GENERATE";

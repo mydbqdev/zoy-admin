@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.integration.zoy.model.FollowUp;
 import com.integration.zoy.model.TicketAssign;
 import com.integration.zoy.model.UpdateStatus;
 import com.integration.zoy.utils.SupportUsres;
@@ -85,5 +86,29 @@ public interface ZoyAdminSupportImpl {
 	@PostMapping(value = "/zoy_admin/update_inquiry_status",
 	produces = { "application/json" })
 	ResponseEntity<String> updateInquiryStatus(@RequestBody UpdateStatus updateStatus);
+	
+	@Operation(summary = "Save follow up details ", description = "Saving remarks & follow up details ", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/follow_up_details",
+	produces = { "application/json" })
+	ResponseEntity<String> createFollowUp(@RequestBody FollowUp followUp);
+	
+	@Operation(summary = "get all follow up details ", description = "fetching all follow up details ", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/follow_up_details",
+	produces = { "application/json" })
+	ResponseEntity<String> FetchAllFollowUpDetails();
+	
+	
 }
 

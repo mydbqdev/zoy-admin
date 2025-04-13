@@ -178,7 +178,7 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			+ "FROM pgowners.zoy_pg_owner_booking_details zpqbd  \r\n"
 			+ "join pgusers.user_bookings ub  on zpqbd.booking_id = ub.user_bookings_id \r\n"
 			+ "WHERE zpqbd.in_date > CURRENT_DATE and ub.user_bookings_is_cancelled = false AND ub.user_bookings_web_check_in = false) AS upcomingTenantsCount, \r\n"
-			+ "(SELECT COUNT(*) \r\n"
+			+ "(SELECT COUNT(DISTINCT zpobd.tenant_id) \r\n"
 			+ "FROM pgowners.zoy_pg_owner_booking_details zpobd\r\n"
 			+ "JOIN pgusers.user_master um ON zpobd.tenant_id = um.user_id\r\n"
 			+ "JOIN pgusers.user_bookings ub ON ub.user_bookings_id = zpobd.booking_id\r\n"

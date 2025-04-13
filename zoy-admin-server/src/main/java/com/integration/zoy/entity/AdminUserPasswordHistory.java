@@ -14,7 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 
 @Entity
-@Table(name = "user_password_history", schema = "pgadmin")
+@Table(name = "support_user_password_history", schema = "pgsales")
 public class AdminUserPasswordHistory {
 
 	@Id
