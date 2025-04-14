@@ -122,8 +122,8 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		  });
 	}
 	ngAfterViewInit() {
-		this.sidemenuComp.expandMenu(5);
-		this.sidemenuComp.activeMenu(5, 'sales-person');
+		this.sidemenuComp.expandMenu(9);
+		this.sidemenuComp.activeMenu(9, 'sales-person');
 		this.dataService.setHeaderName("Sales Person");
 	}
 
@@ -305,12 +305,12 @@ nameValidation(event: any, inputId: string) {
 
 
   resend(element:any){
-	this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to resend the credential for '+element.sales_name+' ?')
+	this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to resend the credential for '+element.fullName+' ?')
 				.then(
 				  (confirmed) =>{
 				   if(confirmed){
 					this.spinner.show();		     
-			    this.generateSalesService.resendSalesPersonRegistartion(element.email_id).subscribe((res) => {
+			    this.generateSalesService.resendSalesPersonRegistartion(element.emailId).subscribe((res) => {
 				this.notifyService.showSuccess(res.message, "");
 				this.spinner.hide();
 			  },error =>{

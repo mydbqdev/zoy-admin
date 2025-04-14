@@ -1,6 +1,7 @@
 import { FinancesSubMenu } from "./finances-sub-menu";
 import { OwnersSubMenu } from "./owners-sub-menu";
 import { ReportsSubMenu } from "./reports-sub-menu";
+import { SalesSubMenu } from './sales-sub-menu';
 import { SettingsSubMenu } from "./settings-sub-menu";
 import { SupportsSubMenu } from "./supports-sub-menu";
 import { TenantsSubMenu } from "./tenants-sub-menu";
@@ -13,6 +14,8 @@ export class DefMenu{
     public usersSubmenu : UsersSubMenu;
     public tenants : boolean;
     public tenantsSubMenu : TenantsSubMenu;
+    public sales : boolean;
+    public salesSubMenu : SalesSubMenu;
     public finances : boolean;
     public financesSubMenu : FinancesSubMenu;
     public supports : boolean;
