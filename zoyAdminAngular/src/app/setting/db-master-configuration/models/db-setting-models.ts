@@ -44,12 +44,13 @@ export class DbSettingDataModel{
     ameneties_name ?: string;
     ameneties_upload ?: string;
     ameneties_image ?: string;
+    special_amenity ?:boolean;
 
     floor_name_id ?:string;
     floor_name ?:string;
 
-    rental_agreement_document_id ?: string;
-    rental_agreement_document ?: string;
+    rentalAgreementDocId ?: string;
+    rentalAgreementDoc ?: string;
 }
 
 export class DbSettingSubmitDataModel{
@@ -78,6 +79,8 @@ export class DbSettingSubmitDataModel{
     ameneties ?: string;
 
     floorName ?:string;
+
+    specialAmenity ?:boolean;
 
 }
 
