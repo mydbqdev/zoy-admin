@@ -86,20 +86,6 @@ export class SalesComponent implements OnInit, AfterViewInit {
 	}
 	selectedModel: string = 'generate';
 
-	// Method to update the selected button
-	selectButton(button: string): void {
-	  this.selectedModel = button;
-	  if(this.selectedModel =='generated'){
-		this.paramFilter.searchText=null;
-		this.param.filter=this.paramFilter; 
-		 this.getSalesPerson();
-		 this.submitted=false;
-		 this.form.reset();
-	  }else{
-		this.searchText='';
-	  }
-
-	}
 	ngOnDestroy() {
 		if (this.mySubscription) {
 			this.mySubscription.unsubscribe();
@@ -120,13 +106,33 @@ export class SalesComponent implements OnInit, AfterViewInit {
 			]],
 			empId:[''],
 		  });
+
 	}
 	ngAfterViewInit() {
-		this.sidemenuComp.expandMenu(5);
-		this.sidemenuComp.activeMenu(5, 'sales-person');
+		this.sidemenuComp.expandMenu(9);
+		this.sidemenuComp.activeMenu(9, 'sales-person');
 		this.dataService.setHeaderName("Sales Person");
 	}
 
+	// Method to update the selected button
+	selectButton(button: string): void {
+		this.selectedModel = button;
+		if(this.selectedModel =='generated'){
+		this.param.pageIndex=0;//this.paginator.pageIndex;
+		this.param.pageSize=this.pageSize;
+		this.param.sortDirection="desc";
+		this.param.sortActive="created_date";
+		  this.paramFilter.searchText=null;
+		  this.param.filter=this.paramFilter; 
+		   this.getSalesPerson();
+		   this.columnSortDirections["created_date"] = "desc";
+		   this.submitted=false;
+		   this.form.reset();
+		}else{
+		  this.searchText='';
+		}
+  
+	  }
 	numberOnly(event): boolean {
 		const charCode = (event.which) ? event.which : event.keyCode;
 		if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -237,26 +243,12 @@ export class SalesComponent implements OnInit, AfterViewInit {
 
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
+		this.param.pageSize= this.paginator.pageSize;
 		this.param.filter=this.paramFilter;
 		this.getSalesPerson();
 			}
 		}
-		getRetrieveData(){
-			this.dataSource.sort = this.sort;
-			this.dataSource.paginator = this.paginator;
-			this.param.pageIndex=this.paginator.pageIndex;
-			this.param.pageSize= this.paginator.pageSize;
-			this.param.sortDirection="desc";
-			this.param.sortActive="created_date";
-			this.paramFilter.searchText=null;
-			this.paramFilter.status=null;
-			this.param.filter=this.paramFilter;
-			setTimeout(()=>{
-			  this.getSalesPerson();
-			 },100);
-			 this.columnSortDirections["created_date"] = "desc";
-		  }
-			
+
 	getSalesPerson(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
@@ -305,12 +297,12 @@ nameValidation(event: any, inputId: string) {
 
 
   resend(element:any){
-	this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to resend the credential for '+element.sales_name+' ?')
+	this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to resend the credential for '+element.fullName+' ?')
 				.then(
 				  (confirmed) =>{
 				   if(confirmed){
 					this.spinner.show();		     
-			    this.generateSalesService.resendSalesPersonRegistartion(element.email_id).subscribe((res) => {
+			    this.generateSalesService.resendSalesPersonRegistartion(element.emailId).subscribe((res) => {
 				this.notifyService.showSuccess(res.message, "");
 				this.spinner.hide();
 			  },error =>{
