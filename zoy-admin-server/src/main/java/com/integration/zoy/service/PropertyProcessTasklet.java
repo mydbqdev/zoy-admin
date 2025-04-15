@@ -27,10 +27,10 @@ public class PropertyProcessTasklet implements Tasklet{
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         try {
-            ResponseEntity<String> responses = uploadService.zoyPartnerUserIdPropertyIdUploadXlsxPost(ownerId, propertyId, fileBytes);
+            //ResponseEntity<String> responses = uploadService.zoyPartnerUserIdPropertyIdUploadXlsxPost(ownerId, propertyId, fileBytes);
             
-            chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put("responseBody", responses.getBody());
-            chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put("statusCode", responses.getStatusCodeValue());
+            //chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put("responseBody", responses.getBody());
+            //chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put("statusCode", responses.getStatusCodeValue());
             return RepeatStatus.FINISHED;
         } catch (Exception e) {
             chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put("responseBody", e.getMessage());
