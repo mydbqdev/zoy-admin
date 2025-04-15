@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
+import com.integration.zoy.service.BulkUploadProcessTasklet;
 import com.integration.zoy.service.JobCompletionNotificationListener;
 import com.integration.zoy.service.PropertyProcessTasklet;
 import com.integration.zoy.service.TenantProcessTasklet;
@@ -32,6 +33,9 @@ public class TenantBatchJobConfig {
 	
 	@Autowired
 	private PropertyProcessTasklet propertyProcessTasklet;
+	
+	@Autowired
+	private BulkUploadProcessTasklet bulkUploadProcessTasklet;
 
 	@Autowired
 	private JobCompletionNotificationListener jobCompletionNotificationListener; 
@@ -63,6 +67,21 @@ public class TenantBatchJobConfig {
 		return jobPropertyBuilderFactory.get("propertyProcessJob")
 				.listener(jobCompletionNotificationListener) 
 				.start(propertyProcessStep()) 
+				.build();
+	}
+	
+	@Bean
+	public Step bulkUploadProcessStep() {
+		return stepBuilderFactory.get("bulkUploadProcessStep")
+				.tasklet(bulkUploadProcessTasklet)
+				.build();
+	}
+
+	@Bean
+	public Job bulkUploadProcessJob() {
+		return jobBuilderFactory.get("bulkUploadProcessJob")
+				.listener(jobCompletionNotificationListener) 
+				.start(bulkUploadProcessStep()) 
 				.build();
 	}
 	

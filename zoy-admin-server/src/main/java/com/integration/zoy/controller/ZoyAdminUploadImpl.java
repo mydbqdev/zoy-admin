@@ -27,29 +27,29 @@ public interface  ZoyAdminUploadImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> ownerPropertyDetails();
 
-	@Operation(summary = "Upload Tenat File", description = "Uploading Tenant File", 
-			security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin Upload" })
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
-			@ApiResponse(responseCode = "400", description = "Bad Request"),
-			@ApiResponse(responseCode = "404", description = "Not Found"),
-			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PostMapping(value = "zoy_admin/upload_tenant_file", 
-	produces = { "application/json" }, 
-	consumes = { "multipart/form-data"}) 
-	ResponseEntity<String> uploadTenantFile(@RequestPart(value = "tenant", required = true) String tenant, @RequestPart(value = "file",required = true) MultipartFile file);
-
-	@Operation(summary = "Upload Property File", description = "Uploading Property File", 
-			security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin Upload" })
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
-			@ApiResponse(responseCode = "400", description = "Bad Request"),
-			@ApiResponse(responseCode = "404", description = "Not Found"),
-			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PostMapping(value = "zoy_admin/upload_property_file", 
-	produces = { "application/json" }, 
-	consumes = { "multipart/form-data"}) 
-	ResponseEntity<String> uploadPropertyFile(@RequestPart(value = "property", required = true) String tenant, @RequestPart(value = "file",required = true) MultipartFile file);
+//	@Operation(summary = "Upload Tenat File", description = "Uploading Tenant File", 
+//			security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin Upload" })
+//	@ApiResponses(value = {
+//			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+//			@ApiResponse(responseCode = "400", description = "Bad Request"),
+//			@ApiResponse(responseCode = "404", description = "Not Found"),
+//			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+//	@PostMapping(value = "zoy_admin/upload_tenant_file", 
+//	produces = { "application/json" }, 
+//	consumes = { "multipart/form-data"}) 
+//	ResponseEntity<String> uploadTenantFile(@RequestPart(value = "tenant", required = true) String tenant, @RequestPart(value = "file",required = true) MultipartFile file);
+//
+//	@Operation(summary = "Upload Property File", description = "Uploading Property File", 
+//			security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin Upload" })
+//	@ApiResponses(value = {
+//			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+//			@ApiResponse(responseCode = "400", description = "Bad Request"),
+//			@ApiResponse(responseCode = "404", description = "Not Found"),
+//			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+//	@PostMapping(value = "zoy_admin/upload_property_file", 
+//	produces = { "application/json" }, 
+//	consumes = { "multipart/form-data"}) 
+//	ResponseEntity<String> uploadPropertyFile(@RequestPart(value = "property", required = true) String tenant, @RequestPart(value = "file",required = true) MultipartFile file);
 
 
 	@Operation(summary = "Get Bulk Upload Data", description = "Getting Bulk Upload Data", 
@@ -64,29 +64,51 @@ public interface  ZoyAdminUploadImpl {
 	ResponseEntity<String> getBulkUpload();
 
 
-	@Operation(summary = "downloadTemplateTenantsGet", description = "downloadTemplateTenants", 
+//	@Operation(summary = "downloadTemplateTenantsGet", description = "downloadTemplateTenants", 
+//			security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin Upload" })
+//	@ApiResponses(value = {
+//			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+//			@ApiResponse(responseCode = "400", description = "Bad Request"),
+//			@ApiResponse(responseCode = "404", description = "Not Found"),
+//			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+//	@GetMapping(value = "/zoy_partner/download_template_tenants",
+//	produces = { "application/json" })
+//	ResponseEntity<Object> downloadTemplateTenantsGet();
+//
+//
+//	@Operation(summary = "downloadTemplateGet", description = "downloadTemplateGet", 
+//			security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin Upload" })
+//	@ApiResponses(value = {
+//			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+//			@ApiResponse(responseCode = "400", description = "Bad Request"),
+//			@ApiResponse(responseCode = "404", description = "Not Found"),
+//			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+//	@GetMapping(value = "/zoy_partner/download_template",
+//	produces = { "application/json" })
+//	ResponseEntity<Object> downloadTemplateGet();
+	
+	@Operation(summary = "downloadBulUploadTemplateGet", description = "downloadTemplateGet", 
 			security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin Upload" })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_partner/download_template_tenants",
+	@GetMapping(value = "/zoy_admin/download_bulk_upload_template",
 	produces = { "application/json" })
-	ResponseEntity<Object> downloadTemplateTenantsGet();
+	ResponseEntity<Object> downloadBulUploadTemplateGet();
 
-
-	@Operation(summary = "downloadTemplateGet", description = "downloadTemplateGet", 
+	@Operation(summary = "Bulk Upload File", description = "Bulk Uploading File", 
 			security = {@SecurityRequirement(name = "basicAuth")}, tags = { "Admin Upload" })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@GetMapping(value = "/zoy_partner/download_template",
-	produces = { "application/json" })
-	ResponseEntity<Object> downloadTemplateGet();
-
+	@PostMapping(value = "zoy_admin/bulk_upload_file", 
+	produces = { "application/json" }, 
+	consumes = { "multipart/form-data"}) 
+	ResponseEntity<String> uploadBulkPropertyTenantFile(@RequestPart(value = "data", required = true) String data, @RequestPart(value = "file",required = true) MultipartFile file);
 
 
 }

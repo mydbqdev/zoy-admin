@@ -1,5 +1,7 @@
 package com.integration.zoy.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -15,6 +17,10 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.common.base.Function;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,6 +46,11 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.BulkUploadDetails;
+import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
+import com.integration.zoy.entity.ZoyPgFloorNameMaster;
+import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
+import com.integration.zoy.entity.ZoyPgShareMaster;
+import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.CSVValidationService;
 import com.integration.zoy.service.ExcelValidationService;
@@ -66,7 +78,12 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 
 	@Value("${app.minio.zoypg.upload.docs.bucket.name}")
 	private String zoypgUploadDocsBucketName;
-
+	
+	
+	@Value("${app.bulk.upload.master.password}")
+	private String masterPassword;
+	
+	
 	private final HttpServletRequest request;
 
 	public ZoyAdminUploadController(HttpServletRequest request) {
@@ -139,130 +156,130 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 		}
 	}
 
-	@Override
-	public ResponseEntity<String> uploadTenantFile(String data, MultipartFile file) {
-		ResponseBody response=new ResponseBody();
-		try {
-			UploadTenant tenant=gson2.fromJson(data,UploadTenant.class);
-			BulkUploadDetails bulkUploadDetails=new BulkUploadDetails();
-			String fileName=file.getOriginalFilename();
-			InputStream inputStream = file.getInputStream();
-			byte[] fileBytes = inputStream.readAllBytes();
-			List<ErrorDetail> error = csvValidationService.validateCSV(fileBytes,tenant.getPropertyId());
-			if(error.size()>0) {
-				bulkUploadDetails.setCategory("Tenant");
-				bulkUploadDetails.setOwnerId(tenant.getOwnerId());
-				bulkUploadDetails.setOwnerName(tenant.getOwnerName());
-				bulkUploadDetails.setPropertyId(tenant.getPropertyId());
-				bulkUploadDetails.setPropertyName(tenant.getPropertyName());
-				bulkUploadDetails.setStatus("Failed");
-				bulkUploadDetails.setFileName(file.getOriginalFilename());
-				String uploadedFileName = tenant.getOwnerId() + "/" + tenant.getPropertyId() + "/" + fileName;
-				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
-				bulkUploadDetails.setFilePath(fileUrl);
-				adminDBImpl.saveBulkUpload(bulkUploadDetails);
-				response.setStatus(HttpStatus.CONFLICT.value());
-				response.setData(error);
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
-			} else {
-				String jobExecutionId = UUID.randomUUID().toString();
-				bulkUploadDetails.setJobExeId(jobExecutionId);
-				bulkUploadDetails.setCategory("Tenant");
-				bulkUploadDetails.setOwnerId(tenant.getOwnerId());
-				bulkUploadDetails.setOwnerName(tenant.getOwnerName());
-				bulkUploadDetails.setPropertyId(tenant.getPropertyId());
-				bulkUploadDetails.setPropertyName(tenant.getPropertyName());
-				bulkUploadDetails.setStatus("Processing");
-				bulkUploadDetails.setFileName(file.getOriginalFilename());
-				String uploadedFileName = tenant.getOwnerId() + "/" + tenant.getPropertyId() + "/" + fileName;
-				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
-				bulkUploadDetails.setFilePath(fileUrl);
-				adminDBImpl.saveBulkUpload(bulkUploadDetails);
-				zoyAdminService.processTenant(tenant.getOwnerId(),tenant.getPropertyId(),fileBytes,fileName,jobExecutionId);
-
-				String historyContent=" has uploaded tenent file for "+tenant.getOwnerId()+"/"+tenant.getPropertyId();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_TENANT_FILE_UPLOAD);
-
-				response.setStatus(HttpStatus.OK.value());
-				response.setData("Processed");
-			} 
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-		} catch (JsonSyntaxException e) {
-			log.error("JSON parsing error API:/zoy_admin/upload_tenant_file.uploadTenantFile ", e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError("Invalid JSON format.");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-
-		}catch (IOException e) {
-			log.error("File processing error API:/zoy_admin/upload_tenant_file.uploadTenantFile " + e.getMessage(), e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError("Error reading the uploaded file.");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-
-		} catch (Exception e) {
-			log.error("Error uploading tenant file API:/zoy_admin/upload_tenant_file.uploadTenantFile " + e.getMessage(), e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-
-	}
-
-	@Override
-	public ResponseEntity<String> uploadPropertyFile(String data, MultipartFile file) {
-		ResponseBody response=new ResponseBody();
-		try {
-			UploadTenant property=gson2.fromJson(data,UploadTenant.class);
-			BulkUploadDetails bulkUploadDetails=new BulkUploadDetails();
-			String fileName=file.getOriginalFilename();
-			InputStream inputStream = file.getInputStream();
-			byte[] fileBytes = inputStream.readAllBytes();
-			List<ErrorDetail> error = excelValidationService.validateExcel(fileBytes);
-			if(error.size()>0) {
-				bulkUploadDetails.setCategory("PG Property");
-				bulkUploadDetails.setOwnerId(property.getOwnerId());
-				bulkUploadDetails.setOwnerName(property.getOwnerName());
-				bulkUploadDetails.setPropertyId(property.getPropertyId());
-				bulkUploadDetails.setPropertyName(property.getPropertyName());
-				bulkUploadDetails.setStatus("Failed");
-				bulkUploadDetails.setFileName(file.getOriginalFilename());
-				String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
-				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
-				bulkUploadDetails.setFilePath(fileUrl);
-				adminDBImpl.saveBulkUpload(bulkUploadDetails);
-				response.setStatus(HttpStatus.CONFLICT.value());
-				response.setData(error);
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
-			} else {
-				String jobExecutionId = UUID.randomUUID().toString();
-				bulkUploadDetails.setJobExeId(jobExecutionId);
-				bulkUploadDetails.setCategory("PG Property");
-				bulkUploadDetails.setOwnerId(property.getOwnerId());
-				bulkUploadDetails.setOwnerName(property.getOwnerName());
-				bulkUploadDetails.setPropertyId(property.getPropertyId());
-				bulkUploadDetails.setPropertyName(property.getPropertyName());
-				bulkUploadDetails.setStatus("Processing");
-				bulkUploadDetails.setFileName(file.getOriginalFilename());
-				String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
-				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
-				bulkUploadDetails.setFilePath(fileUrl);
-				adminDBImpl.saveBulkUpload(bulkUploadDetails);
-				zoyAdminService.processProperty(property.getOwnerId(),property.getPropertyId(),fileBytes,fileName,jobExecutionId);
-				String historyContent=" has uploaded tenent file for "+property.getOwnerId()+"/"+property.getPropertyId();
-				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_PROPERTY_FILE_UPLOAD);
-
-				response.setStatus(HttpStatus.OK.value());
-				response.setData("Sucess");
-
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-			}
-		} catch (Exception e) {
-			log.error("Error uploading property API:/zoy_admin/upload_property_file.uploadPropertyFile ",e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-	}
+//	@Override
+//	public ResponseEntity<String> uploadTenantFile(String data, MultipartFile file) {
+//		ResponseBody response=new ResponseBody();
+//		try {
+//			UploadTenant tenant=gson2.fromJson(data,UploadTenant.class);
+//			BulkUploadDetails bulkUploadDetails=new BulkUploadDetails();
+//			String fileName=file.getOriginalFilename();
+//			InputStream inputStream = file.getInputStream();
+//			byte[] fileBytes = inputStream.readAllBytes();
+//			List<ErrorDetail> error = csvValidationService.validateCSV(fileBytes,tenant.getPropertyId());
+//			if(error.size()>0) {
+//				bulkUploadDetails.setCategory("Tenant");
+//				bulkUploadDetails.setOwnerId(tenant.getOwnerId());
+//				bulkUploadDetails.setOwnerName(tenant.getOwnerName());
+//				bulkUploadDetails.setPropertyId(tenant.getPropertyId());
+//				bulkUploadDetails.setPropertyName(tenant.getPropertyName());
+//				bulkUploadDetails.setStatus("Failed");
+//				bulkUploadDetails.setFileName(file.getOriginalFilename());
+//				String uploadedFileName = tenant.getOwnerId() + "/" + tenant.getPropertyId() + "/" + fileName;
+//				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+//				bulkUploadDetails.setFilePath(fileUrl);
+//				adminDBImpl.saveBulkUpload(bulkUploadDetails);
+//				response.setStatus(HttpStatus.CONFLICT.value());
+//				response.setData(error);
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+//			} else {
+//				String jobExecutionId = UUID.randomUUID().toString();
+//				bulkUploadDetails.setJobExeId(jobExecutionId);
+//				bulkUploadDetails.setCategory("Tenant");
+//				bulkUploadDetails.setOwnerId(tenant.getOwnerId());
+//				bulkUploadDetails.setOwnerName(tenant.getOwnerName());
+//				bulkUploadDetails.setPropertyId(tenant.getPropertyId());
+//				bulkUploadDetails.setPropertyName(tenant.getPropertyName());
+//				bulkUploadDetails.setStatus("Processing");
+//				bulkUploadDetails.setFileName(file.getOriginalFilename());
+//				String uploadedFileName = tenant.getOwnerId() + "/" + tenant.getPropertyId() + "/" + fileName;
+//				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+//				bulkUploadDetails.setFilePath(fileUrl);
+//				adminDBImpl.saveBulkUpload(bulkUploadDetails);
+//				zoyAdminService.processTenant(tenant.getOwnerId(),tenant.getPropertyId(),fileBytes,fileName,jobExecutionId);
+//
+//				String historyContent=" has uploaded tenent file for "+tenant.getOwnerId()+"/"+tenant.getPropertyId();
+//				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_TENANT_FILE_UPLOAD);
+//
+//				response.setStatus(HttpStatus.OK.value());
+//				response.setData("Processed");
+//			} 
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+//		} catch (JsonSyntaxException e) {
+//			log.error("JSON parsing error API:/zoy_admin/upload_tenant_file.uploadTenantFile ", e);
+//			response.setStatus(HttpStatus.BAD_REQUEST.value());
+//			response.setError("Invalid JSON format.");
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//
+//		}catch (IOException e) {
+//			log.error("File processing error API:/zoy_admin/upload_tenant_file.uploadTenantFile " + e.getMessage(), e);
+//			response.setStatus(HttpStatus.BAD_REQUEST.value());
+//			response.setError("Error reading the uploaded file.");
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//
+//		} catch (Exception e) {
+//			log.error("Error uploading tenant file API:/zoy_admin/upload_tenant_file.uploadTenantFile " + e.getMessage(), e);
+//			response.setStatus(HttpStatus.BAD_REQUEST.value());
+//			response.setError(e.getMessage());
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//		}
+//
+//	}
+//
+//	@Override
+//	public ResponseEntity<String> uploadPropertyFile(String data, MultipartFile file) {
+//		ResponseBody response=new ResponseBody();
+//		try {
+//			UploadTenant property=gson2.fromJson(data,UploadTenant.class);
+//			BulkUploadDetails bulkUploadDetails=new BulkUploadDetails();
+//			String fileName=file.getOriginalFilename();
+//			InputStream inputStream = file.getInputStream();
+//			byte[] fileBytes = inputStream.readAllBytes();
+//			List<ErrorDetail> error = excelValidationService.validateExcel(fileBytes);
+//			if(error.size()>0) {
+//				bulkUploadDetails.setCategory("PG Property");
+//				bulkUploadDetails.setOwnerId(property.getOwnerId());
+//				bulkUploadDetails.setOwnerName(property.getOwnerName());
+//				bulkUploadDetails.setPropertyId(property.getPropertyId());
+//				bulkUploadDetails.setPropertyName(property.getPropertyName());
+//				bulkUploadDetails.setStatus("Failed");
+//				bulkUploadDetails.setFileName(file.getOriginalFilename());
+//				String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
+//				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+//				bulkUploadDetails.setFilePath(fileUrl);
+//				adminDBImpl.saveBulkUpload(bulkUploadDetails);
+//				response.setStatus(HttpStatus.CONFLICT.value());
+//				response.setData(error);
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+//			} else {
+//				String jobExecutionId = UUID.randomUUID().toString();
+//				bulkUploadDetails.setJobExeId(jobExecutionId);
+//				bulkUploadDetails.setCategory("PG Property");
+//				bulkUploadDetails.setOwnerId(property.getOwnerId());
+//				bulkUploadDetails.setOwnerName(property.getOwnerName());
+//				bulkUploadDetails.setPropertyId(property.getPropertyId());
+//				bulkUploadDetails.setPropertyName(property.getPropertyName());
+//				bulkUploadDetails.setStatus("Processing");
+//				bulkUploadDetails.setFileName(file.getOriginalFilename());
+//				String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
+//				String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+//				bulkUploadDetails.setFilePath(fileUrl);
+//				adminDBImpl.saveBulkUpload(bulkUploadDetails);
+//				zoyAdminService.processProperty(property.getOwnerId(),property.getPropertyId(),fileBytes,fileName,jobExecutionId);
+//				String historyContent=" has uploaded tenent file for "+property.getOwnerId()+"/"+property.getPropertyId();
+//				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_PROPERTY_FILE_UPLOAD);
+//
+//				response.setStatus(HttpStatus.OK.value());
+//				response.setData("Sucess");
+//
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+//			}
+//		} catch (Exception e) {
+//			log.error("Error uploading property API:/zoy_admin/upload_property_file.uploadPropertyFile ",e);
+//			response.setStatus(HttpStatus.BAD_REQUEST.value());
+//			response.setError(e.getMessage());
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//		}
+//	}
 
 	@Override
 	public ResponseEntity<String> getBulkUpload() {
@@ -293,46 +310,156 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 		}
 	}
 
+//	@Override
+//	public ResponseEntity<Object> downloadTemplateTenantsGet() {
+//		request.getHeader("Accept");
+//		ResponseBody response = new ResponseBody();
+//		try {
+//			ClassPathResource fileResource = new ClassPathResource("templates/tenantUploadTemplate.csv");
+//			byte[] fileBytes = Files.readAllBytes(Path.of(fileResource.getURI()));
+//			return ResponseEntity.ok()
+//					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"tenantUploadTemplate.csv\"")
+//					.contentType(MediaType.TEXT_PLAIN).body(fileBytes);
+//
+//		} catch (Exception e) {
+//			log.error("An error occurred while downloading the tenants bulk upload file template API:/zoy_partner/download_template_tenants.downloadTemplateTenantsGet ", e);
+//			response.setStatus(HttpStatus.BAD_REQUEST.value());
+//			response.setMessage(e.getMessage());
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//		}
+//	}
+//
+//	@Override
+//	public ResponseEntity<Object> downloadTemplateGet() {
+//		request.getHeader("Accept");
+//		ResponseBody response = new ResponseBody();
+//		try {
+//			ClassPathResource fileResource = new ClassPathResource("templates/RoomsUploadTemplate.xlsx");
+//			if (!fileResource.exists()) {
+//				return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//						.body("Template file not found.");
+//			}
+//			byte[] fileBytes = Files.readAllBytes(Path.of(fileResource.getURI()));
+//			return ResponseEntity.ok()
+//					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"RoomsUploadTemplate.xlsx\"")
+//					.contentType(MediaType.APPLICATION_OCTET_STREAM)
+//					.body(fileBytes);
+//		} catch (Exception e) {
+//			log.error("An error occurred while downloading the template file API:/zoy_partner/download_template.downloadTemplateGet ", e);
+//			response.setStatus(HttpStatus.BAD_REQUEST.value());
+//			response.setMessage(e.getMessage());
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//		}
+//	}
+
 	@Override
-	public ResponseEntity<Object> downloadTemplateTenantsGet() {
-		request.getHeader("Accept");
+	public ResponseEntity<Object> downloadBulUploadTemplateGet() {
 		ResponseBody response = new ResponseBody();
 		try {
-			ClassPathResource fileResource = new ClassPathResource("templates/tenantUploadTemplate.csv");
-			byte[] fileBytes = Files.readAllBytes(Path.of(fileResource.getURI()));
+			ClassPathResource fileResource = new ClassPathResource("templates/BulkUpload.xlsm");
+			if (!fileResource.exists()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Template file not found.");
+			}
+			FileInputStream fis = new FileInputStream(fileResource.getFile());
+			XSSFWorkbook workbook = new XSSFWorkbook(fis);
+			fis.close();
+
+			Sheet masterSheet = getOrResetSheet(workbook, "Master");
+			populateColumn(masterSheet, 0, ownerDBImpl.getAllAmeneties(), ZoyPgAmenetiesMaster::getAmenetiesName);
+			populateColumn(masterSheet, 1, ownerDBImpl.getAllFloorNames(), ZoyPgFloorNameMaster::getFloorName);
+			List<ZoyPgShareMaster> filteredShares = ownerDBImpl.getAllShares().stream()
+		            .filter(share -> share.getShareOccupancyCount() > 0)
+		            .collect(Collectors.toList());
+			populateColumn(masterSheet, 2, filteredShares, ZoyPgShareMaster::getShareType);
+			populateColumn(masterSheet, 3, filteredShares, ZoyPgShareMaster::getShareOccupancyCount);
+			populateColumn(masterSheet, 4, ownerDBImpl.getAllRoomTypes(), ZoyPgRoomTypeMaster::getRoomTypeName);
+			populateColumn(masterSheet, 5, ownerDBImpl.getAllPgTypes(), ZoyPgTypeMaster::getPgTypeName);
+			setStaticValues(masterSheet, 6, List.of("Yes", "No"));
+			masterSheet.protectSheet(masterPassword);
+			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+			workbook.write(outStream);
+			workbook.close();
+			byte[] fileBytes = outStream.toByteArray();
 			return ResponseEntity.ok()
-					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"tenantUploadTemplate.csv\"")
-					.contentType(MediaType.TEXT_PLAIN).body(fileBytes);
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"BulkUpload.xlsm\"")
+					.contentType(MediaType.APPLICATION_OCTET_STREAM)
+					.body(fileBytes);
 
 		} catch (Exception e) {
-			log.error("An error occurred while downloading the tenants bulk upload file template API:/zoy_partner/download_template_tenants.downloadTemplateTenantsGet ", e);
+			log.error("Error during template download:", e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setMessage(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			response.setMessage("Download failed: " + e.getMessage());
+			return new ResponseEntity<>(new Gson().toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+	private Sheet getOrResetSheet(XSSFWorkbook workbook, String sheetName) {
+		Sheet sheet = workbook.getSheet(sheetName);
+		if (sheet == null) return workbook.createSheet(sheetName);
+
+		for (int i = sheet.getLastRowNum(); i >= 0; i--) {
+			Row row = sheet.getRow(i);
+			if (row != null) sheet.removeRow(row);
+		}
+		return sheet;
+	}
+
+	private <T> void populateColumn(Sheet sheet, int columnIndex, List<T> data, Function<T, Object> valueExtractor) {
+		for (int i = 0; i < data.size(); i++) {
+			Row row = sheet.getRow(i);
+			if (row == null) row = sheet.createRow(i);
+			Object value = valueExtractor.apply(data.get(i));
+			if (value != null) {
+				row.createCell(columnIndex).setCellValue(value.toString());
+			}
+		}
+	}
+
+	private void setStaticValues(Sheet sheet, int columnIndex, List<String> values) {
+		for (int i = 0; i < values.size(); i++) {
+			Row row = sheet.getRow(i);
+			if (row == null) row = sheet.createRow(i);
+			row.createCell(columnIndex).setCellValue(values.get(i));
 		}
 	}
 
 	@Override
-	public ResponseEntity<Object> downloadTemplateGet() {
-		request.getHeader("Accept");
-		ResponseBody response = new ResponseBody();
+	public ResponseEntity<String> uploadBulkPropertyTenantFile(String data, MultipartFile file) {
+
+		ResponseBody response=new ResponseBody();
 		try {
-			ClassPathResource fileResource = new ClassPathResource("templates/RoomsUploadTemplate.xlsx");
-			if (!fileResource.exists()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND)
-						.body("Template file not found.");
-			}
-			byte[] fileBytes = Files.readAllBytes(Path.of(fileResource.getURI()));
-			return ResponseEntity.ok()
-					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"RoomsUploadTemplate.xlsx\"")
-					.contentType(MediaType.APPLICATION_OCTET_STREAM)
-					.body(fileBytes);
+			UploadTenant property=gson2.fromJson(data,UploadTenant.class);
+			BulkUploadDetails bulkUploadDetails=new BulkUploadDetails();
+			String fileName=file.getOriginalFilename();
+			InputStream inputStream = file.getInputStream();
+			byte[] fileBytes = inputStream.readAllBytes();
+			String jobExecutionId = UUID.randomUUID().toString();
+			bulkUploadDetails.setJobExeId(jobExecutionId);
+			bulkUploadDetails.setCategory("Property & Tenant");
+			bulkUploadDetails.setOwnerId(property.getOwnerId());
+			bulkUploadDetails.setOwnerName(property.getOwnerName());
+			bulkUploadDetails.setPropertyId(property.getPropertyId());
+			bulkUploadDetails.setPropertyName(property.getPropertyName());
+			bulkUploadDetails.setStatus("Processing");
+			bulkUploadDetails.setFileName(file.getOriginalFilename());
+			String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
+			String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+			bulkUploadDetails.setFilePath(fileUrl);
+			adminDBImpl.saveBulkUpload(bulkUploadDetails);
+			zoyAdminService.processBulkUpload(property.getOwnerId(),property.getPropertyId(),fileBytes,fileName,jobExecutionId);
+			String historyContent=" has uploaded tenent file for "+property.getOwnerId()+"/"+property.getPropertyId();
+			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_PROPERTY_FILE_UPLOAD);
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setData("Sucess");
+
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
-			log.error("An error occurred while downloading the template file API:/zoy_partner/download_template.downloadTemplateGet ", e);
+			log.error("Error uploading property API:/zoy_admin/upload_property_file.uploadPropertyFile ",e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setMessage(e.getMessage());
+			response.setError(e.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
+
 	}
 }
 
