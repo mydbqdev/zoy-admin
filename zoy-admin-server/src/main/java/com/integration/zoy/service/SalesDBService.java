@@ -76,9 +76,14 @@ public class SalesDBService implements SalesDBImpl{
 	    }
 
 	    String sortColumn = sortFieldMapping.getOrDefault(sortKey, "first_name");
-	    Sort sort = Sort.by(Sort.Order.by(sortColumn)
-	            .with(Sort.Direction.fromString(sortDir))
-	            .ignoreCase());
+	    Sort.Order order = Sort.Order.by(sortColumn).with(Sort.Direction.fromString(sortDir));
+
+	    // Apply ignoreCase only if the sort column is not createdAt
+	    if (!"createdAt".equals(sortKey)) {
+	        order = order.ignoreCase();
+	    }
+
+	    Sort sort = Sort.by(order);
 
 	    // Step 3: Build pageable
 	    Pageable pageable = PageRequest.of(paginationRequest.getPageIndex(), paginationRequest.getPageSize(), sort);
