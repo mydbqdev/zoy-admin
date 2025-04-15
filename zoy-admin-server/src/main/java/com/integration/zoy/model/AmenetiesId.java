@@ -15,6 +15,9 @@ public class AmenetiesId {
 	@JsonProperty("amenetiesImage")
 	private MultipartFile amenetiesImage;
 
+	@JsonProperty("specialAmenity")
+	private boolean amenetiesStatus;
+	
 	public String getId() {
 		return id;
 	}
@@ -42,6 +45,14 @@ public class AmenetiesId {
 	@Override
 	public String toString() {
 		return "Ameneties [id=" + id + ", ameneties=" + ameneties + "]";
+	}
+
+	public boolean getAmenetiesStatus() {
+		return amenetiesStatus;
+	}
+
+	public void setAmenetiesStatus(boolean amenetiesStatus) {
+		this.amenetiesStatus = amenetiesStatus;
 	}
 
 }
