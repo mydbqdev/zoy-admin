@@ -321,16 +321,4 @@ public interface ZoyConfigurationMasterImpl {
 	@GetMapping(value = "/zoy_admin/config/fetch-renting-duration",
 	produces = { "application/json" })
 	ResponseEntity<String>FetchShortTermRentingDuration();
-
-	@Operation(summary = "Admin Configration for  Rental Agreement document ", description = "Uploading/Updating Admin Configration for Rental Agreement document", security = {
-			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
-	@ApiResponses(value = { 
-			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
-			@ApiResponse(responseCode = "400", description = "Bad Request"),
-			@ApiResponse(responseCode = "404", description = "Not Found"),
-			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PostMapping(value = "/zoy_admin/config/rentalAgreementDocumentSubmit",
-	produces = { "application/json" },
-	consumes = { "multipart/form-data"})
-	ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(@RequestParam("rentalAgreementDocId")String rentalAgreementDocId,@RequestPart(value = "file",required = true) MultipartFile file);
 }
