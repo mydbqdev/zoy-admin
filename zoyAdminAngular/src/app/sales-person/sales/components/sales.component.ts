@@ -24,7 +24,7 @@ import { Filter, OwnerRequestParam } from 'src/app/owners/managing-owner/models/
   styleUrl: './sales.component.css'
 })
 export class SalesComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['sales_name', 'email_id', 'mobile_no','created_date', 'emp_id','action'];
+  displayedColumns: string[] = ['fullName', 'emailId', 'mobile_no','createdAt', 'emp_id','action'];
   public ELEMENT_DATA:SalesData[]=[];
   orginalFetchData:SalesData[]=[];
   searchText:string='';
@@ -36,9 +36,9 @@ export class SalesComponent implements OnInit, AfterViewInit {
   public lastPageSize:number=0;
   dataSource:MatTableDataSource<SalesData>=new MatTableDataSource<SalesData>();
   columnSortDirectionsOg: { [key: string]: string | null } = {
-    sales_name: null,
-    email_id: null,
-    created_date: null,
+    fullName: null,
+    emailId: null,
+    createdAt: null,
 	emp_id: null,
 	// status: null
   };
@@ -121,11 +121,11 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		this.param.pageIndex=0;//this.paginator.pageIndex;
 		this.param.pageSize=this.pageSize;
 		this.param.sortDirection="desc";
-		this.param.sortActive="created_date";
+		this.param.sortActive="createdAt";
 		  this.paramFilter.searchText=null;
 		  this.param.filter=this.paramFilter; 
 		   this.getSalesPerson();
-		   this.columnSortDirections["created_date"] = "desc";
+		   this.columnSortDirections["createdAt"] = "desc";
 		   this.submitted=false;
 		   this.form.reset();
 		}else{

@@ -134,25 +134,25 @@
                 </div>              
                 <div *ngIf="selectedModel == 'generated'">
                   <div style="min-height: calc(100vh - 264px);">
-                  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" matSortActive="created_date" matSortDirection="desc">
+                  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" matSortActive="createdAt" matSortDirection="desc">
                     
                     <!-- Owner Name Column -->
-                    <ng-container matColumnDef="sales_name">
+                    <ng-container matColumnDef="fullName">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 180px;"> NAME 
                         <span style="margin-left: 2px;">
-                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['sales_name'] === 'asc' }"></i>
-                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['sales_name'] === 'desc'}"></i>
+                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['fullName'] === 'asc' }"></i>
+                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['fullName'] === 'desc'}"></i>
                         </span>
                       </th>
                       <td mat-cell *matCellDef="let element" style="width: 180px;"> {{ element.fullName }} </td>
                     </ng-container>
 
                     <!-- Email Column -->
-                    <ng-container matColumnDef="email_id">
+                    <ng-container matColumnDef="emailId">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> EMAIL ID 
                         <span style="margin-left: 2px;">
-                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['email_id'] === 'asc' }"></i>
-                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['email_id'] === 'desc'}"></i>
+                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['emailId'] === 'asc' }"></i>
+                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['emailId'] === 'desc'}"></i>
                         </span>
                       </th>
                       <td mat-cell *matCellDef="let element"> {{ element.emailId }} </td>
@@ -165,11 +165,11 @@
                     </ng-container>
 
                     <!-- Date Column -->
-                    <ng-container matColumnDef="created_date">
+                    <ng-container matColumnDef="createdAt">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;width: 150px;"> CREATED ON 
                         <span style="margin-left: 2px;">
-                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['created_date'] === 'asc' }"></i>
-                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['created_date'] === 'desc'}"></i>
+                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['createdAt'] === 'asc' }"></i>
+                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['createdAt'] === 'desc'}"></i>
                         </span>
                       </th>
                       <td mat-cell *matCellDef="let element" style="width: 150px;"> {{ element.createdAt | date :'dd-MM-YYYY'}} </td>
