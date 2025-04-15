@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -31,6 +33,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.NotificationModeMaster;
+import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.UserBillingMaster;
 import com.integration.zoy.entity.UserCurrencyMaster;
 import com.integration.zoy.entity.UserEkycTypeMaster;
@@ -75,6 +78,7 @@ import com.integration.zoy.model.ShareTypeId;
 import com.integration.zoy.model.ShortTerm;
 import com.integration.zoy.model.TotalBookingsDetails;
 import com.integration.zoy.model.UserNameDTO;
+import com.integration.zoy.repository.RentalAgreementDocRepository;
 import com.integration.zoy.repository.UserBookingsRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
@@ -85,6 +89,7 @@ import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.DueMaster;
 import com.integration.zoy.utils.PaginationRequest;
+import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.UserPaymentFilterRequest;
 
@@ -138,6 +143,13 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	@Value("${app.minio.Amenities.photos.bucket.name}")
 	private String amenitiesPhotoBucketName;
+	
+	@Autowired
+	RentalAgreementDocRepository rentalAgreementDocRepository;
+	
+
+	@Value("${app.minio.zoypg.upload.docs.bucket.name}")
+	private String zoyPgRentalDocsUploadBucketName;
 
 	@Override
 	public ResponseEntity<String> zoyAdminAmenities() {
@@ -172,7 +184,8 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 			String imageUrl = zoyS3Service.uploadFile(amenitiesPhotoBucketName,zoyPgAmenetiesMaster.getAmenetiesId(), amenetie.getAmenetiesImage());
 			zoyPgAmenetiesMaster.setAmenetiesName(amenetie.getAmeneties());
-			zoyPgAmenetiesMaster.setAmenetiesImage(imageUrl);		
+			zoyPgAmenetiesMaster.setAmenetiesImage(imageUrl);
+			zoyPgAmenetiesMaster.setSpecialAmenity(amenetie.getAmenetiesStatus());
 			ZoyPgAmenetiesMaster saved=ownerDBImpl.createAmeneties(zoyPgAmenetiesMaster);
 
 			//audit history here
@@ -196,6 +209,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			if(zoyPgAmenetiesMaster!=null) {
 				final String oldAmenities=zoyPgAmenetiesMaster.getAmenetiesName();
 				zoyPgAmenetiesMaster.setAmenetiesName(amenetie.getAmeneties());
+				zoyPgAmenetiesMaster.setSpecialAmenity(amenetie.getAmenetiesStatus());
 				ZoyPgAmenetiesMaster updated=ownerDBImpl.createAmeneties(zoyPgAmenetiesMaster);
 				//audit history here
 				String historyContent=" has updated the Amenities for, from "+oldAmenities+" to "+amenetie.getAmeneties();
@@ -1206,5 +1220,85 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	}
 
+	@Override
+	public ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(String rentalAgreementDocId ,MultipartFile file) {
+		ResponseBody response = new ResponseBody();
+		String uid = java.util.UUID.randomUUID().toString();
+
+		try {
+			if (rentalAgreementDocId != null && !rentalAgreementDocId.isEmpty()) {
+
+				Optional<RentalAgreementDoc> RentalAgreementDetails = rentalAgreementDocRepository.findById(rentalAgreementDocId);
+				if (RentalAgreementDetails.isEmpty()) {
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
+					response.setError("Required Rental Agreement Document details not found");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+					
+				} else {
+					RentalAgreementDoc oldDetails = RentalAgreementDetails.get();
+
+					String oldFileName = oldDetails.getRentalAgreementDoc();
+					
+					String uploadedFileName = "Rental Agreement//"+uid;
+					String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);					
+					oldDetails.setRentalAgreementDoc(fileUrl);
+					rentalAgreementDocRepository.save(oldDetails);
+				}
+			} else {
+				RentalAgreementDoc newRentalAgreementDoc = new RentalAgreementDoc();
+				
+				String uploadedFileName = "Rental Agreement//"+uid;
+				String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);
+				
+				newRentalAgreementDoc.setRentalAgreementDoc(fileUrl);
+				rentalAgreementDocRepository.save(newRentalAgreementDoc);
+			}
+
+			List<RentalAgreementDoc> allDetails = rentalAgreementDocRepository.findAll();
+			List<RentalAgreementDocDto> dto = allDetails.stream().map(this::convertToDTO)
+					.collect(Collectors.toList());
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(dto);
+			response.setMessage("Rental Agreement details successfully saved/updated");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error(
+					"Error saving/updating Rental Agreement Document details API:/zoy_admin/config/rentalAgreementDocumentSubmit.zoyAdminConfigUpdateRentalAgreementdocument ",
+					e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("An internal error occurred while processing the request");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	private RentalAgreementDocDto convertToDTO(RentalAgreementDoc entity) {
+		RentalAgreementDocDto dto = new RentalAgreementDocDto();
+		dto.setRentalAgreementDocId(entity.getRentalAgreementDocId());
+		dto.setRentalAgreementDoc(zoyAdminService.generatePreSignedUrl(zoyPgRentalDocsUploadBucketName,entity.getRentalAgreementDoc()));
+		return dto;
+	}
+	
+	public ResponseEntity<String> zoyAdminConfigGetRentalAgreementDocuments() {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<RentalAgreementDoc> allDetails = rentalAgreementDocRepository.findAll();
+			List<RentalAgreementDocDto> dto = allDetails.stream()
+					.map(this::convertToDTO)
+					.collect(Collectors.toList());
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(dto);
+			response.setMessage("Rental Agreement document list fetched successfully");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error in GET /zoy_admin/rental-agreements: ", e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("An internal error occurred while fetching the documents");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 }

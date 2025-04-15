@@ -168,12 +168,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	@Autowired
 	ZoyPgCancellationDetailsRepository ZoyPgCancellationDetailsRepo;
 	
-	@Autowired
-	RentalAgreementDocRepository rentalAgreementDocRepository;
 	
-
-	@Value("${app.minio.zoypg.upload.rental.agreement.bucket.name}")
-	private String zoyPgRentalDocsUploadBucketName;
 	
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetailsDTO details) {
@@ -2155,18 +2150,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 //			List<ZoyPgShortTermMaster> shortTermMaster = ownerDBImpl.findAllShortTerm();
 			List<ZoyPgForceCheckOut> forceCheckOut = ownerDBImpl.findAllForceCheckOutDetailsSorted();
 			List<ZoyPgNoRentalAgreement> noRentalAgreement = ownerDBImpl.findAllNoRentalAgreementDetailsSorted();
-			List<RentalAgreementDoc> RentalAgreementDoc= ownerDBImpl.findAllRentalAgreementDetailsSorted();
 //			List<ZoyPgShortTermRentingDuration> rentingDuration = ownerDBImpl
 //					.findAllShortTermRentingDurationDetailsSorted();
 			ZoyAdminConfigDTO configDTO = new ZoyAdminConfigDTO();
-
-			if(RentalAgreementDoc!=null) {
-				List<RentalAgreementDocDto> listRentalAgreement=new ArrayList<>();
-				for(RentalAgreementDoc agreeementDetails:RentalAgreementDoc) {
-					listRentalAgreement.add(convertToDTO(agreeementDetails));
-				}
-				configDTO.setRentalAgreement(RentalAgreementDoc);
-			}
 			if (tokenDetails != null) {
 				List<ZoyPgTokenDetailsDTO> listToken = new ArrayList<>();
 				for (ZoyPgTokenDetails tokenDetail : tokenDetails) {
@@ -2278,49 +2264,65 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	}
 	@Override
 	public ResponseEntity<String> zoyAdminConfigShortTermDetails() {
-		    ResponseBody response = new ResponseBody();
-		    try {
-		        
-		        List<ZoyPgShortTermMaster> ShortTermList = zoyPgShortTermMasterRepository.findAllShortTermDetails();
+	    ResponseBody response = new ResponseBody();
+	    List<ZoyShortTermDetails> ZoyShortTermDetailsList = new ArrayList<>();
 
-		        if (ShortTermList == null || ShortTermList.isEmpty()) {
-		            response.setStatus(HttpStatus.OK.value());
-		            response.setError("No cancellation details found.");
-		            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-		        }
+	    try {
+	        List<ZoyPgShortTermMaster> ShortTermList = zoyPgShortTermMasterRepository.findAllShortTermDetails();
 
-		        List<ZoyShortTermDetails> ZoyShortTermDetailsList = new ArrayList<>();
+	        if (ShortTermList == null || ShortTermList.isEmpty()) {
+	            response.setStatus(HttpStatus.OK.value());
+	            response.setData(ZoyShortTermDetailsList);
+	            response.setError("No Short Term details found.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	        }
 
-		        for (ZoyPgShortTermMaster details : ShortTermList) {
-		        	
-		        	ZoyShortTermDetails TermDetails = new ZoyShortTermDetails();
-		        	
-		        	TermDetails.setApproved(details.getIsApproved()!= null?details.getIsApproved():false);
-		        	TermDetails.setApprovedBy(details.getApprovedBy());
-		        	TermDetails.setCreatedBy(details.getCreatedBy());
-		        	TermDetails.setEffectiveDate(details.getEffectiveDate());
+	        String effectiveDate = null;
+	        ZoyShortTermDetails termDetails = null;
+	        List<ZoyShortTermDto> zoyShortTermDtoDetailsList = new ArrayList<>();
 
-		            List<ZoyShortTermDto> zoyShortTermDtoDetailsList = new ArrayList<>();
-		            ZoyShortTermDto zoyShortTermDtoDetails = new ZoyShortTermDto();
-		            zoyShortTermDtoDetails.setEndDay(details.getStartDay());
-		            zoyShortTermDtoDetails.setPercentage(details.getPercentage());
-		            zoyShortTermDtoDetails.setShortTermId(details.getZoyPgShortTermMasterId());
-		            zoyShortTermDtoDetails.setStartDay(details.getStartDay());
+	        for (ZoyPgShortTermMaster details : ShortTermList) {
+	            if (effectiveDate == null || !effectiveDate.equals(details.getEffectiveDate())) {
+	                if (termDetails != null) {
+	                    termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
+	                    ZoyShortTermDetailsList.add(termDetails);
+	                }
+	                termDetails = new ZoyShortTermDetails();
+	                termDetails.setApproved(details.getIsApproved() != null ? details.getIsApproved() : false);
+	                termDetails.setApprovedBy(details.getApprovedBy());
+	                termDetails.setCreatedBy(details.getCreatedBy());
+	                termDetails.setEffectiveDate(details.getEffectiveDate());
 
-		            zoyShortTermDtoDetailsList.add(zoyShortTermDtoDetails);
-		            TermDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
+	                zoyShortTermDtoDetailsList = new ArrayList<>();
+	                effectiveDate = details.getEffectiveDate();
+	            }
 
-		            ZoyShortTermDetailsList.add(TermDetails);
-		        }
-		        return new ResponseEntity<>(gson.toJson(ZoyShortTermDetailsList), HttpStatus.OK);
-		    } catch (Exception e) {
-		        log.error("Error in API :/zoy_admin/config/fetch-Cancellation-And-Refund-Policy-details.zoyAdminConfigCreateUpdateBeforeCheckInGetDetails", e);
-		        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		        response.setError(e.getMessage());
-		        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		    }
-		}
-	
+	            ZoyShortTermDto zoyShortTermDtoDetails = new ZoyShortTermDto();
+	            zoyShortTermDtoDetails.setEndDay(details.getEndDay());
+	            zoyShortTermDtoDetails.setPercentage(details.getPercentage());
+	            zoyShortTermDtoDetails.setShortTermId(details.getZoyPgShortTermMasterId());
+	            zoyShortTermDtoDetails.setStartDay(details.getStartDay());
+
+	            zoyShortTermDtoDetailsList.add(zoyShortTermDtoDetails);
+	        }
+
+	        if (termDetails != null) {
+	            termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
+	            ZoyShortTermDetailsList.add(termDetails);
+	        }
+
+	        response.setStatus(HttpStatus.OK.value());
+	        response.setData(ZoyShortTermDetailsList);
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error in API :/zoy_admin/config/fetchzoyAdminConfigShortTermDetails.zoyAdminConfigShortTermDetails", e);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+
 	
 	@Override
 	public ResponseEntity<String> FetchShortTermRentingDuration() {
@@ -2350,80 +2352,6 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 		
-	}
-
-	@Override
-	public ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(String rentalAgreementDocId ,MultipartFile file) {
-		ResponseBody response = new ResponseBody();
-		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-		try {
-			if (rentalAgreementDocId != null && !rentalAgreementDocId.isEmpty()) {
-
-				Optional<RentalAgreementDoc> RentalAgreementDetails = rentalAgreementDocRepository.findById(rentalAgreementDocId);
-				if (RentalAgreementDetails.isEmpty()) {
-					response.setStatus(HttpStatus.BAD_REQUEST.value());
-					response.setError("Required Rental Agreement Document details not found");
-					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-					
-				} else {
-					RentalAgreementDoc oldDetails = RentalAgreementDetails.get();
-
-					String oldFixed = oldDetails.getRentalAgreementDoc();
-					
-					String uploadedFileName = "Rental Agreement";
-					String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);
-					
-					oldDetails.setRentalAgreementDoc(fileUrl);
-
-
-					rentalAgreementDocRepository.save(oldDetails);
-//
-//					// Audit the update action
-//					String historyContent = " has updated the Rental Agreement Document  from "
-//							+ oldFixed + " to " + fileUrl;
-//					auditHistoryUtilities.auditForCommon(currentUser, historyContent,
-//							ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
-				}
-			} else {
-				RentalAgreementDoc newRentalAgreementDoc = new RentalAgreementDoc();
-				
-				String uploadedFileName = "Rental Agreement";
-				String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);
-				
-				newRentalAgreementDoc.setRentalAgreementDoc(fileUrl);
-				rentalAgreementDocRepository.save(newRentalAgreementDoc);
-
-//				// Audit the creation action
-//				String historyContent = " has updated the Rental Agreement Document "
-//						+ fileUrl;
-//				auditHistoryUtilities.auditForCommon(currentUser, historyContent,
-//						ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
-			}
-
-			List<RentalAgreementDoc> allDetails = rentalAgreementDocRepository.findAll();
-			List<RentalAgreementDocDto> dto = allDetails.stream().map(this::convertToDTO)
-					.collect(Collectors.toList());
-
-			response.setStatus(HttpStatus.OK.value());
-			response.setData(dto);
-			response.setMessage("Rental Agreement details successfully saved/updated");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-
-		} catch (Exception e) {
-			log.error(
-					"Error saving/updating Rental Agreement Document details API:/zoy_admin/config/force-checkout.zoyAdminConfigUpdateForceCheckOut ",
-					e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("An internal error occurred while processing the request");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	private RentalAgreementDocDto convertToDTO(RentalAgreementDoc entity) {
-		RentalAgreementDocDto dto = new RentalAgreementDocDto();
-		dto.setRentalAgreementDocId(entity.getRentalAgreementDocId());
-		dto.setRentalAgreementDoc(entity.getRentalAgreementDoc());
-		return dto;
 	}
 
 }

@@ -70,7 +70,7 @@ export class DbMasterConfigurationService {
     // },
     {
         'type': 'Amenities',
-        'columns': ['ameneties_name','ameneties_image', 'actions'],
+        'columns': ['ameneties_name','ameneties_image','special_amenity','actions'],
         'api': 'zoy_admin/ameneties'
     },
     {
@@ -80,8 +80,8 @@ export class DbMasterConfigurationService {
     },
     {
       'type': 'Rental Agreement Document',
-      'columns': ['rental_agreement_document', 'actions'],
-      'api': 'zoy_admin/rentalAgreementDocument'
+      'columns': ['rentalAgreementDoc', 'actions'],
+      'api': 'zoy_admin/rental-agreements'
   },
   ]
 
@@ -102,7 +102,8 @@ export class DbMasterConfigurationService {
     'start_day' : 'START DAY',
     'end_day' :'END DAY',
     'floor_name':'FLOOR NAME',
-    'rental_agreement_document':'RENTAL AGREEMENT DOCUMENT'
+    'rentalAgreementDoc':'RENTAL AGREEMENT DOCUMENT',
+    'special_amenity':'SPECIAL AENITY'
   }
 
   getDbSettingDetails(api:string): Observable<any> {

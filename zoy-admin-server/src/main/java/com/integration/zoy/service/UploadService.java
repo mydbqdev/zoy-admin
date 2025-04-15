@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -67,6 +68,7 @@ import com.integration.zoy.entity.UserPaymentDue;
 import com.integration.zoy.entity.UserPaymentDueId;
 import com.integration.zoy.entity.UserPgDetails;
 import com.integration.zoy.entity.ZoyPgBedDetails;
+import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgFloorRooms;
 import com.integration.zoy.entity.ZoyPgFloorRoomsId;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
@@ -90,7 +92,9 @@ import com.integration.zoy.model.RegisterUser;
 import com.integration.zoy.repository.ZoyPgRoomAmenetiesId;
 import com.integration.zoy.utils.CsvTenantDetails;
 import com.integration.zoy.utils.GeneratePDFRental;
+import com.integration.zoy.utils.PropertyList;
 import com.integration.zoy.utils.ResponseBody;
+import com.integration.zoy.utils.TenantList;
 import com.integration.zoy.utils.Whatsapp;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -165,26 +169,27 @@ public class UploadService {
 			.create();
 
 
-	public ResponseEntity<String> tenatantWriteDataPost(String ownerId,String propertyId,byte[] file) throws CsvValidationException {
+	public ResponseEntity<String> tenatantWriteDataPost(String ownerId,String propertyId,List<TenantList> tenantDetailsList) {
 		ResponseBody response=new ResponseBody();
-		if (file.length==0) {
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setMessage("File is empty");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
+		//		if (file.length==0) {
+		//			response.setStatus(HttpStatus.BAD_REQUEST.value());
+		//			response.setMessage("File is empty");
+		//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		//		}
 		ZoyPgOwnerDetails userMasterOpt = uploadDBImpl.findPgOwnerById(ownerId);
 		if (userMasterOpt==null) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 			response.setMessage("Owner not found");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 		}
-		try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(file);
-				InputStreamReader inputStreamReader = new InputStreamReader(byteArrayInputStream);
-				CSVReader csvReader = new CSVReaderBuilder(inputStreamReader).withSkipLines(2).build()) {
-			CsvToBean<CsvTenantDetails> csvToBean = new CsvToBeanBuilder<CsvTenantDetails>(csvReader)
-					.withType(CsvTenantDetails.class)
-					.withIgnoreLeadingWhiteSpace(true)
-					.build();
+		//		try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(file);
+		//				InputStreamReader inputStreamReader = new InputStreamReader(byteArrayInputStream);
+		//				CSVReader csvReader = new CSVReaderBuilder(inputStreamReader).withSkipLines(2).build()) {
+		try {
+			//			CsvToBean<CsvTenantDetails> csvToBean = new CsvToBeanBuilder<CsvTenantDetails>(csvReader)
+			//					.withType(CsvTenantDetails.class)
+			//					.withIgnoreLeadingWhiteSpace(true)
+			//					.build();
 			List<UserDetails> userDetails=new ArrayList<>();
 			List<UserMaster> userMasters=new ArrayList<>();
 			List<ZoyPgOwnerBookingDetails> zoyPgOwnerBookingDetails = new ArrayList<>();
@@ -192,9 +197,9 @@ public class UploadService {
 			List<PgOwnerUserStatus> userStatus=new ArrayList<>();
 			List<UserPgDetails> userPgDetails=new ArrayList<>();
 			List<ZoyPgBedDetails> bedDetails=new ArrayList<>();
-			List<CsvTenantDetails> tenantDetailsList = csvToBean.parse();
-			Map<String,CsvTenantDetails> userCsvDetails= new HashMap<>();
-			for(CsvTenantDetails tenantDetails:tenantDetailsList) {
+			//			List<CsvTenantDetails> tenantDetailsList = csvToBean.parse();
+			Map<String,TenantList> userCsvDetails= new HashMap<>();
+			for(TenantList tenantDetails:tenantDetailsList) {
 				UserMaster userMaster=uploadDBImpl.findUserMaster(tenantDetails.getPhoneNumber());
 				if(userMaster==null) {
 					String userId=createUser(tenantDetails);
@@ -238,7 +243,7 @@ public class UploadService {
 
 				ZoyPgShareMaster pgPropertyShareTypes=ownerDBImpl.getShareById(saveMyBookings.getShare());
 				ZoyPgBedDetails bedName=ownerDBImpl.getBedsId(saveMyBookings.getSelectedBed());
-                ZoyPgRoomDetails roomDetails=ownerDBImpl.findRoomName(saveMyBookings.getRoom());
+				ZoyPgRoomDetails roomDetails=ownerDBImpl.findRoomName(saveMyBookings.getRoom());
 				zoyEmailService.sendBookingEmail(master.getUserEmail(), saveMyBookings, propertyDetail, zoyPgOwnerDetails,bedName,pgPropertyShareTypes.getShareType(),roomDetails.getRoomName());
 
 				generateSendRentalAgreement(master,zoyPgOwnerDetails,propertyDetail,saveMyBookings);
@@ -247,7 +252,7 @@ public class UploadService {
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("File processed successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setMessage("Error processing file" + e.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -257,7 +262,7 @@ public class UploadService {
 
 	private void createWebcheckIn(String ownerId,ZoyPgOwnerBookingDetails booking, List<UserBookings> userBookingDetails, 
 			List<PgOwnerUserStatus> userStatus, List<UserPgDetails> userPgDetails,List<ZoyPgBedDetails> bedDetails,
-			Map<String,CsvTenantDetails> userCsvDetails,List<String[]> duesType,List<UserMaster> userMasters) {
+			Map<String,TenantList> userCsvDetails,List<String[]> duesType,List<UserMaster> userMasters) {
 		try {
 			ZoyPgRentCycleMaster rentCycle=uploadDBImpl.findRentCycle(booking.getLockInPeriod());
 			if(rentCycle!=null) {
@@ -359,7 +364,7 @@ public class UploadService {
 					uploadDBImpl.saveUserBookingPayment(userBookingPayment);
 				}
 				
-				CsvTenantDetails tenantDetails=userCsvDetails.get(booking.getTenantId());
+				TenantList tenantDetails=userCsvDetails.get(booking.getTenantId());
 				if(tenantDetails.getRentPaid().equals("Yes")) {
 					UserDues dues=new UserDues();
 					dues.setUserId(booking.getTenantId());
@@ -464,7 +469,7 @@ public class UploadService {
 		return Timestamp.valueOf(previousMonthDateTime);
 	}
 
-	private String createUser(CsvTenantDetails tenantDetails) {
+	private String createUser(TenantList tenantDetails) {
 		UserMaster master=new UserMaster();
 		master.setUserMobile(tenantDetails.getPhoneNumber());
 		master.setUserEmail(tenantDetails.getEmail());
@@ -502,11 +507,11 @@ public class UploadService {
 		return master.getUserId();
 	}
 
-	private void createUserDetails(CsvTenantDetails tenantDetails, String userId,String propertyId,
+	private void createUserDetails(TenantList tenantDetails, String userId,String propertyId,
 			List<UserDetails> userDetails) {
 		UserDetails details=uploadDBImpl.findUserDetails(userId);
 		if(details!=null) {
-			details.setPersonalDob(tenantDetails.getDob());
+			details.setPersonalDob(tenantDetails.getDateOfBirth());
 			details.setPersonalEmail(tenantDetails.getEmail());
 			details.setPersonalGender(tenantDetails.getGender());
 			details.setPersonalName(tenantDetails.getFirstName()+" "+ tenantDetails.getLastName());
@@ -515,7 +520,7 @@ public class UploadService {
 			userDetails.add(details);
 		} else {
 			details=new UserDetails();
-			details.setPersonalDob(tenantDetails.getDob());
+			details.setPersonalDob(tenantDetails.getDateOfBirth());
 			details.setPersonalEmail(tenantDetails.getEmail());
 			details.setPersonalGender(tenantDetails.getGender());
 			details.setPersonalName(tenantDetails.getFirstName()+" "+ tenantDetails.getLastName());
@@ -526,7 +531,7 @@ public class UploadService {
 		}
 	}
 
-	private void createUserBooking(CsvTenantDetails tenantDetails, String userId, String propertyId,
+	private void createUserBooking(TenantList tenantDetails, String userId, String propertyId,
 			List<ZoyPgOwnerBookingDetails> zoyPgOwnerBookingDetails) {
 		List<String[]> ids=uploadDBImpl.findFloorRoomBedIdsByPropertyName(propertyId,tenantDetails.getRoom(),tenantDetails.getBedNumber());
 		String floorId = "" , floorName="",roomId ="", roomName="",bedId="",bedName="",shareId="",shareName="",rentCycleName="",rentCycleId="";
@@ -612,14 +617,14 @@ public class UploadService {
 
 
 	public ResponseEntity<String> zoyPartnerUserIdPropertyIdUploadXlsxPost( String ownerId,
-			String propertyId,byte[] fileBytes) throws CsvValidationException {
+			String propertyId,List<PropertyList> propertyLists) {
 		ResponseBody response = new ResponseBody();
-		if (fileBytes.length==0) {
-			return new ResponseEntity<>(gson.toJson("File is empty"), HttpStatus.BAD_REQUEST);
-		}
+//		if (fileBytes.length==0) {
+//			return new ResponseEntity<>(gson.toJson("File is empty"), HttpStatus.BAD_REQUEST);
+//		}
 
-		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(fileBytes); Workbook workbook = new XSSFWorkbook(inputStream)) {
-			// Fetch existing data
+//		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(fileBytes); Workbook workbook = new XSSFWorkbook(inputStream)) {
+			try {
 			List<ZoyPgOwnerBookingDetails> bookingDetails=uploadDBImpl.findAllBookingByPropertyId(propertyId);
 			if(bookingDetails.size()==0) {
 				List<String> existingFloorIds = uploadDBImpl.getFloorIdsByPropertyId(propertyId);
@@ -637,56 +642,62 @@ public class UploadService {
 			}
 			List<String> newFloorIds = new ArrayList<>();
 			Map<String, String> allFloors = new LinkedHashMap<>();
-
-			Sheet sheet = workbook.getSheetAt(0); 
-			for (Row row : sheet) {
-				if (row.getRowNum() == 0 || row.getRowNum() == 1) 
-					continue; 
-
-				String floorName = getCellValue(row.getCell(0));
-				String roomName = getCellValue(row.getCell(1));
-				String roomType = getCellValue(row.getCell(2));
-				String shareType = getCellValue(row.getCell(3));
-				String area = getCellValue(row.getCell(4));
-				String availableBed = getCellValue(row.getCell(5));
-				//String dailyRent = getCellValue(row.getCell(6));
-				String monthlyRent = getCellValue(row.getCell(6));
-				String amenities = getCellValue(row.getCell(7));
-				//String occupiedBed = getCellValue(row.getCell(9));
-				String remarks = getCellValue(row.getCell(8));
+			List<ZoyPgFloorNameMaster> zoyPgFloorNameMaster =ownerDBImpl.getAllFloorNames();
+//			Sheet sheet = workbook.getSheetAt(0); 
+			for (PropertyList data : propertyLists) {
+//				if (row.getRowNum() == 0 || row.getRowNum() == 1) 
+//					continue; 
+//
+//				String floorName = getCellValue(row.getCell(0));
+//				String roomName = getCellValue(row.getCell(1));
+//				String roomType = getCellValue(row.getCell(2));
+//				String shareType = getCellValue(row.getCell(3));
+//				String area = getCellValue(row.getCell(4));
+//				String availableBed = getCellValue(row.getCell(5));
+//				//String dailyRent = getCellValue(row.getCell(6));
+//				String monthlyRent = getCellValue(row.getCell(6));
+//				String amenities = getCellValue(row.getCell(7));
+//				//String occupiedBed = getCellValue(row.getCell(9));
+//				String remarks = getCellValue(row.getCell(8));
 
 				List<String> newRoomIds = new ArrayList<>();
 				List<String> newBedIds = new ArrayList<>();
 
-				if (!allFloors.containsValue(floorName)) {
-					ZoyPgPropertyFloorDetails newFloorDetails = new ZoyPgPropertyFloorDetails();
-					newFloorDetails.setFloorName(uploadDBImpl.checkDuplicateFloorName(floorName,propertyId));
-					newFloorDetails.setFloorStatus(true);
-					ZoyPgPropertyFloorDetails createdFloor = uploadDBImpl.createFloorDetail(newFloorDetails);
-					allFloors.put(createdFloor.getFloorId(), floorName);
+				if (!allFloors.containsValue(data.getFloorName())) {
+					Optional<ZoyPgFloorNameMaster> matchedFloor = zoyPgFloorNameMaster.stream()
+							.filter(floor -> data.getFloorName().equalsIgnoreCase(floor.getFloorName()))
+							.findFirst();
+					if(matchedFloor.isPresent()) {
+						ZoyPgPropertyFloorDetails newFloorDetails = new ZoyPgPropertyFloorDetails();
+						newFloorDetails.setFloorName(data.getFloorName());
+						newFloorDetails.setMasterFloorId(matchedFloor.get().getFloorNameId());
+						newFloorDetails.setFloorStatus(true);
+						ZoyPgPropertyFloorDetails createdFloor = uploadDBImpl.createFloorDetail(newFloorDetails);
+						allFloors.put(createdFloor.getFloorId(), data.getFloorName());
+					}
 				}
 
-				processNewBeds(availableBed!=""?Arrays.asList(availableBed.split(",")):new ArrayList<>(), "available", newBedIds);
+				processNewBeds(data.getAvailableBeds(), "available", newBedIds);
 				//processNewBeds(occupiedBed!=""?Arrays.asList(occupiedBed.split(",")):new ArrayList<>(), "occupied", newBedIds);
 
-				String roomTypeId = uploadDBImpl.getRoomTypeIdByRoomType(roomType);
-				String shareTypeId = uploadDBImpl.getShareIdByShareType(shareType);
+				String roomTypeId = uploadDBImpl.getRoomTypeIdByRoomType(data.getRoomType());
+				String shareTypeId = uploadDBImpl.getShareIdByShareType(data.getShareType());
 
 				ZoyPgRoomDetails newRoomDetails = new ZoyPgRoomDetails();
-				String floorId=getFloorIdByName(allFloors,floorName);
-				newRoomDetails.setRoomName(uploadDBImpl.checkDuplicateRoomName(roomName,floorId,propertyId));
-				newRoomDetails.setRoomType(roomType);
+				String floorId=getFloorIdByName(allFloors,data.getFloorName());
+				newRoomDetails.setRoomName(uploadDBImpl.checkDuplicateRoomName(data.getRoomName(),floorId,propertyId));
+				newRoomDetails.setRoomType(data.getRoomType());
 				newRoomDetails.setShareId(shareTypeId);
-				newRoomDetails.setRoomArea(Double.valueOf(area));
+				newRoomDetails.setRoomArea(Double.valueOf(data.getArea()));
 				newRoomDetails.setRoomDailyRent(0.0);//Double.valueOf(dailyRent));
-				newRoomDetails.setRoomMonthlyRent(Double.valueOf(monthlyRent));
+				newRoomDetails.setRoomMonthlyRent(Double.valueOf(data.getMonthlyRent()));
 				newRoomDetails.setRoomTypeId(roomTypeId);
-				newRoomDetails.setRoomRemarks(remarks);
+				newRoomDetails.setRoomRemarks(data.getRemarks());
 				newRoomDetails.setRoomStatus(true);
 				ZoyPgRoomDetails createdRoom = uploadDBImpl.createRoom(newRoomDetails);
 				mapRoomToBeds(createdRoom.getRoomId(), newBedIds);
 
-				List<String> amenitiesIds = uploadDBImpl.getIdsOfByAmenitiesList(Arrays.asList(amenities.split(",")));
+				List<String> amenitiesIds = uploadDBImpl.getIdsOfByAmenitiesList(data.getAmenities());
 				mapRoomToAmenities(createdRoom.getRoomId(), amenitiesIds);
 
 				//mapPropertyRentCycle(propertyId);			
@@ -917,5 +928,15 @@ public class UploadService {
 		String authStringEnc = new String(credEncoded);
 		headers.add("Authorization", "Basic " + authStringEnc);
 		headers.setContentType(MediaType.APPLICATION_JSON);
+	}
+
+
+	public ResponseEntity<String> zoyPartnerBulkUpload(String ownerId, String propertyId,List<PropertyList> propertyList, List<TenantList> tenantList) {
+		ResponseBody response = new ResponseBody();
+		this.zoyPartnerUserIdPropertyIdUploadXlsxPost(ownerId,propertyId,propertyList);
+		this.tenatantWriteDataPost(ownerId,propertyId,tenantList);
+		response.setStatus(HttpStatus.OK.value());
+		response.setMessage("Property & Tenant successfully uploaded from Excel");
+		return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 	}
 }

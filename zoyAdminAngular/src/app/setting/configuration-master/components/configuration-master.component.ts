@@ -117,7 +117,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  this.getTriggerCondition();
 		  this.getTriggerOn();
 		  this.getPGTypesDetails();
-		//  this.getDbSettingDetails();
+		  this.getDbSettingDetails();
 	  }
 	  ngAfterViewInit() {
 		  this.sidemenuComp.expandMenu(4);
@@ -1183,7 +1183,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  getBeforeCheckInCRData(){
 		this.backUpBeforeCheckInCRList=[];
 		this.cancellationBeforeCheckInDetails= JSON.parse(JSON.stringify(this.cancellationBeforeCheckInDetailsOrg));
-		 console.log(">>>>>>>>>>>>",this.cancellationBeforeCheckInDetails);
 			var main :BeforeCheckInCancellationRefundMainObjModel=this.cancellationBeforeCheckInDetails[0];
 			main.zoy_before_check_in_cancellation_info?.forEach(element => {
 			let sub : BeforeCheckInCancellationRefundModel = new BeforeCheckInCancellationRefundModel();
@@ -1199,8 +1198,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.backUpBeforeCheckInCRList.push(sub);
 		});
 
-		console.log("cancellationBeforeCheckInDetails",this.cancellationBeforeCheckInDetails)
-		  this.crpEffectiveDate = this.cancellationBeforeCheckInDetails[0].effectiveDate;
+		  this.crpEffectiveDate = this.cancellationBeforeCheckInDetails[0]?.effectiveDate;
 		  this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
 		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
 		  this.table?.renderRows();
@@ -1211,7 +1209,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
 		this.beforeCheckInCRfModel.trigger_value='TotalPaidAmount';
 		this.canSubmit=true;
-		this.crpEffectiveDate = this.cancellationBeforeCheckInDetails[0].effectiveDate;
+		this.crpEffectiveDate = this.cancellationBeforeCheckInDetails[0]?.effectiveDate;
 		this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
 		this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
 	  }
@@ -1763,10 +1761,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  }	 
 		  
 		   shortTermData:ShortTermSubModel = new ShortTermSubModel();
-	       shortTermDataList:ShortTermSubModel[] = [];
-		   shortTermduration:number=100;
-
-		
+	       shortTermDataList:ShortTermSubModel[] = [];		
 		  
 			convertToNumber(value: any): number {
 			  return Number(value);
@@ -1776,9 +1771,10 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		    getDbSettingDetails(){
 			   this.authService.checkLoginUserVlidaate();
 			   this.backUpshortTermData=[];
-			   this.configMasterService.getShortTermData().subscribe(data => {
-			   if(data && data?.ZoyShortTermDtoInfo>0){
-				this.backUpshortTermData= data;
+			   this.configMasterService.getShortTermData().subscribe(res => {
+				console.log("data",res)
+			   if(res.data && res.data?.length>0 && res.data[0]?.zoy_short_term_dto_info?.length>0){
+				this.backUpshortTermData=  res.data;
 			   }else{
 				var model = new ShortTermMainModel();
 				model.zoy_short_term_dto_info.push(new ShortTermSubModel());
@@ -1846,9 +1842,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				addShortTermVali:boolean=false
 			 addShortTerm() {
 			  this.addShortTermVali = true;
-			  if(!this.shortTermData.start_day|| this.shortTermData.start_day>this.shortTermduration || Number(this.shortTermData.start_day)===0 
-				  || !this.shortTermData.end_day|| this.shortTermData.end_day>this.shortTermduration || Number(this.shortTermData.end_day)===0
+			  console.log("this.shortTermData>>",this.shortTermData)
+			  if(!this.shortTermData.start_day|| Number(this.shortTermData.start_day)===0 
+				  || !this.shortTermData.end_day|| Number(this.shortTermData.end_day)===0
 				  || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)
+				  || !this.shortTermData.percentage
 				){
 					return;
 				  }
@@ -1858,18 +1856,26 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  this.shortTermData = new ShortTermSubModel();
 			 }
 		  
-			 modifyShortTerm(shortTerm) {
-			   if(!shortTerm.start_day || Number(shortTerm.start_day)>this.shortTermduration || Number(shortTerm.start_day)===0 
-				  || !shortTerm.end_day || Number(shortTerm.end_day)>this.shortTermduration || Number(shortTerm.end_day)===0
+			 modifyShortTerm(shortTerm:any,i:number) {
+				console.log("shortTerm>>",shortTerm)
+			   if(!shortTerm.start_day || Number(shortTerm.start_day)===0 
+				  || !shortTerm.end_day || Number(shortTerm.end_day)===0
 				  || Number(shortTerm.start_day) >= Number(shortTerm.end_day)
+				  || !shortTerm.percentage
 				 ){
+					console.log(!shortTerm.start_day , Number(shortTerm.start_day)===0 
+					, !shortTerm.end_day , Number(shortTerm.end_day)===0
+					, Number(shortTerm.start_day) >= Number(shortTerm.end_day)
+					, !shortTerm.percentage)
 				return;
 			  }
 			  shortTerm.isEdit = true;
+			  shortTerm.isConfirm = false ;
+			  this.shortTermDataList[i]=shortTerm;
+			  console.log(" this.shortTermDataList", this.shortTermDataList)
 			}
 			
 			removeShortTerm(shortTerm) {
-			  console.log("shortTerm",shortTerm)
 			  shortTerm.isDelete = true;
 			}
 			
@@ -1885,10 +1891,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList));
 			}
 			submitShortTerm:boolean = false;
-			submitShortTermData(task:string) {   
+			submitShortTermData(task:string) {  
+			 this.submitShortTerm = true; 
+			 if(!this.stpEffectiveDate || this.multirullsEffectiveDateValidation(this.stpEffectiveDate) ){
+				return;
+			  }
 			  let finalSubmitShortList = [];
 			  this.submitShortTerm = true;
-			  let startDay = this.shortTermduration;
+			  let startDay = 99999;
 			  let endDay = 0;
 			 
 			  for (let i = 0; i < this.shortTermDataList.length; i++) {
@@ -1898,7 +1908,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				  startDay = startDay>term.start_day?term.start_day:startDay ;
 				  endDay = endDay>term.end_day?endDay:term.end_day ;
 		  
-				  if (term.isEdit) {
+				  if (term.isConfirm) {
 					this.notifyService.showWarning("Save if term is being edited.","")
 					return; 
 				  }
@@ -1910,15 +1920,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					  this.notifyService.showWarning("The Short term duration period must not Overlapp.","")
 					  return;
 					}
-		  
 					
 				  }
 		  
-				  const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1));
-				  if(term.end_day != this.shortTermduration && ranges.length === 0 ){
-					 this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.',"")
-					 return;
-				   }
+				//   const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1));
+				//   console.log("ranges",ranges);
+				//   if( ranges.length === 0 ){
+				// 	 this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+endDay+' days.',"")
+				// 	 return;
+				//    }
 		  
 				  finalSubmitShortList.push(term);
 				}
@@ -1929,11 +1939,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				return;
 			  }
 			 
-			  if( Number(startDay) != 1 || Number(endDay) !=this.shortTermduration){
-				this.notifyService.showInfo('The Short term duration period must be within the defined ranges of 1-'+this.shortTermduration+' days.', "");
-				return
-			  }
-		  
 			  if (JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpShortTermDataSubList)) {
 				this.notifyService.showInfo("Short term slabs details are already up to date.", "");
 				return;

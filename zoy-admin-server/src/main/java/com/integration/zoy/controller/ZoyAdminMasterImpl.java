@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
@@ -581,6 +584,27 @@ public interface ZoyAdminMasterImpl {
 	@PostMapping(value = "/zoy_admin/getBookingDetails", produces = { "application/json" })
 	ResponseEntity<String> getBookingDetails(@RequestBody UserPaymentFilterRequest filterdata);
 
+	@Operation(summary = "Admin Configration for  Rental Agreement document ", description = "Uploading/Updating Admin Configration for Rental Agreement document", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/config/rentalAgreementDocumentSubmit",
+	produces = { "application/json" },
+	consumes = { "multipart/form-data"})
+	ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(@RequestParam("rentalAgreementDocId")String rentalAgreementDocId,@RequestPart(value = "file",required = true) MultipartFile file);
+	
+	@Operation(summary = "Get Rental Agreement details",description = "Fetches all Rental Agreement documents",security = { @SecurityRequirement(name = "basicAuth") },tags = { "Admin Master" })
+		@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error")
+		})
+		@GetMapping(value = "/zoy_admin/rental-agreements", produces = { "application/json" })
+		public ResponseEntity<String> zoyAdminConfigGetRentalAgreementDocuments();
 }
 
 

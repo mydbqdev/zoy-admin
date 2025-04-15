@@ -3,6 +3,7 @@ package com.integration.zoy.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,6 +18,9 @@ public class ZoyPgPropertyFloorDetails {
 	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "floor_id", updatable = false, nullable = false, unique = true, length = 36)
     private String floorId;
+    
+    @Column(name = "master_floor_id", length = 36)
+    private String masterFloorId;
 
     @Column(name = "floor_name", length = 50)
     private String floorName;
@@ -46,6 +50,14 @@ public class ZoyPgPropertyFloorDetails {
 
 	public void setFloorStatus(Boolean floorStatus) {
 		this.floorStatus = floorStatus;
+	}
+
+	public String getMasterFloorId() {
+		return masterFloorId;
+	}
+
+	public void setMasterFloorId(String masterFloorId) {
+		this.masterFloorId = masterFloorId;
 	}
     
     
