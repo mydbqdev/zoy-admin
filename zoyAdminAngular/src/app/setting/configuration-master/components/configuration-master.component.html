@@ -650,7 +650,7 @@
                                     </p>
                                   </div>
                                 </div>
-                                <div class="row" *ngIf="configMasterModel.otherCharges.length>1 && configMasterModel.otherCharges[1] !=undefined ">
+                                <div class="row" *ngIf="configMasterModel.otherCharges.length>1 && !configMasterModel.otherCharges[0].isApproved && configMasterModel.otherCharges[1] !=undefined ">
                                   <div class="col-sm-2">
                                     <div class="input-group input-group-sm">
                                       <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
@@ -1405,180 +1405,6 @@
                            </div>
                         </div>
                         <hr class="solid" >
-                          <div hidden>
-                            <div class="p-3">
-                              <div>
-                                <span style="font-size: 16px;color:#78177e;">Short term duration </span>
-                                <p class="small text-muted" style="font-size: 12px;">
-                                  <em>Specify the number of days that are to be considered as "Short term duration".</em>
-                                </p>
-                              </div>
-                              <div>
-                                <div class="row" *ngIf="configMasterModel.shortTermRentingDuration.length>0 && configMasterModel.shortTermRentingDuration[0]!=undefined">
-                                  
-                                  <div class="col-sm-3">
-                                    <div>Short term </div>
-                                    <div class="input-group input-group-sm">
-                                      <input type="text"  class="form-control form-control-sm"  style="max-width: 70px !important;" 
-                                        [(ngModel)]="configMasterModel.shortTermRentingDuration[0].rentingDurationDays" 
-                                        (keypress)="numberOnly($event)"  maxlength="3"
-                                        [ngClass]="{'is-invalid': !shortTermRentingDurationDisabled && isNotValidNumber(configMasterModel.shortTermRentingDuration[0].rentingDurationDays)}"
-                                        [disabled]="shortTermRentingDurationDisabled" />
-                                      <span class="input-group-text">Days </span>
-                                    </div>
-                                  </div>
-                                  <div class="col-sm-2">
-                                    <div>Effective On</div>
-                                    <div class="input-group input-group-sm">
-                                      <input 
-                                        type="date" 
-                                        class="form-control form-control-sm"  [(ngModel)]="configMasterModel.shortTermRentingDuration[0].effectiveDate"  [disabled]="shortTermRentingDurationDisabled"
-                                        [ngClass]="{'is-invalid': !shortTermRentingDurationDisabled && (!configMasterModel.shortTermRentingDuration[0]?.effectiveDate || invaliedEffectiveDate('shortTermRentingDuration',configMasterModel.shortTermRentingDuration[0]?.effectiveDate ) )}" 
-                                        />
-                                    </div>
-                                 </div>
-                                  <div class="col-sm-2 mt-4" >
-                                    <div class="d-flex" >
-                                      <div><i class="fas fa-thumbs-up mr-2 mt-1"  [ngClass]="configMasterModel.shortTermRentingDuration[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i></div>
-                                      <div *ngIf="configMasterModel.shortTermRentingDuration[0]?.isApproved ">
-                                        <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Short term duration'" >
-                                         <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
-                                         <div *ngIf=" shortTermRentingDurationDisabled && !configMasterModel.shortTermRentingDuration[0]?.isApproved && rolesArray.includes('CONFIGURATION_MASTER_APPROVAL_WRITE')" title="Approve the Rule" >
-                                          <a class="approve-icon" (click)="shortTermRentingDurationSubmit('approve')">
-                                            <i class="far fa-hand-point-up mt-1 mr-2"></i>
-                                          </a>
-                                        </div> 
-                                    <div *ngIf="shortTermRentingDurationDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationDisabled = false;">
-                                        <i class="fas fa-edit"></i>
-                                      </button>
-                                    </div>
-                                    <div class="btn-group" *ngIf="!shortTermRentingDurationDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationSubmit('update')">
-                                        <i class="fas fa-check"></i>
-                                      </button>
-                                      <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingDurationReset()">
-                                        <i class="fas fa-redo" style="color: red;"></i>
-                                      </button>
-                                    </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="row mt-1" *ngIf="configMasterModel.shortTermRentingDuration.length>1 && configMasterModel.shortTermRentingDuration[1]!=undefined && !configMasterModel.shortTermRentingDuration[0]?.isApproved">                 
-                                  <div class="col-sm-3">
-                                    <div class="input-group input-group-sm">
-                                      <span class="form-control form-control-sm" style="background-color: #eaecf4;max-width: 70px !important;">
-                                        {{ configMasterModel.shortTermRentingDuration[1]?.rentingDurationDays }}
-                                      </span>
-                                      <span class="input-group-text">Days </span>
-                                    </div>
-                                  </div>
-                                  <div class="col-sm-2">
-                                    <div class="input-group input-group-sm">
-                                      <span class="form-control form-control-sm" style="background-color: #eaecf4;">
-                                        {{ configMasterModel.shortTermRentingDuration[1]?.effectiveDate }}
-                                      </span>
-                                    </div>
-                                 </div>
-                                  <div class="col-sm-2 mt-1" >
-                                    <div class="d-flex" >
-                                      <div><i class="fas fa-thumbs-up mr-2 mt-1 color-bg-green"></i></div>
-                                      <div>
-                                        <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Short term duration'" >
-                                         <i class="fas fa-chevron-circle-down mr-2"></i></a></div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            
-                          </div>
-                            <hr class="solid" >
-                            <div hidden>
-                              <div class="p-3">
-                                <div>
-                                  <span style="font-size: 16px;color:#78177e;">Short term Packages Configuration</span>
-                                  
-                                  <p class="small text-muted" style="font-size: 12px;">
-                                    <em>Specify the percentage of monthly rent to charge for each stay during the specified slabs. The admin can configure rent percentages for each slab  configured in the initial configuration master.</em>
-                                  </p>
-                                </div>
-                                <div>
-                                  <div class="row">
-                                  <div class="col-sm-12">
-                                   <div class="row">
-                                    <div class="col-sm-4">Short term Packages</div>
-                                    <div class="col-sm-2">Effective On</div>
-                                    <div class="col-sm-2"></div>
-                                   </div>
-                                   <div class="row p-1" *ngFor="let shortTerm of configMasterModel.shortTerm ;let i=index" >
-                                    <div class="col-sm-4">
-                                      <div class="input-group input-group-sm">
-                                        <span class="input-group-text">{{shortTerm.days}} Days</span>
-                                        <input type="text" class="form-control form-control-sm" style="max-width: 70px !important;" 
-                                          [(ngModel)]="shortTerm.percentage" [disabled]="!shortTerm.termDisabled"
-                                          (keypress)="percentageOnlyWithZero($event)" maxlength="3" 
-                                          [ngClass]="{'is-invalid': shortTerm.termDisabled && isNotValidNumber(shortTerm.percentage)}"  />
-                                          <span class="input-group-text">%</span>
-                                      </div>
-                                    </div>
-                                    <div class="col-sm-2">
-                                      <div class="input-group input-group-sm">
-                                        <input 
-                                          type="date" 
-                                          class="form-control form-control-sm"/>
-                                      </div>
-                                   </div>
-                                    <div class="col-sm-2">
-                                      <div class="d-flex" >
-                                        <div><i class="fas fa-thumbs-up mr-2 mt-1 color-bg-green"></i></div>
-                                      <div *ngIf="!shortTerm.termDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="shortTerm.termDisabled = true;">
-                                          <i class="fas fa-edit"></i>
-                                        </button>
-                                      </div>
-                                      <div class="btn-group" *ngIf="shortTerm.termDisabled && rolesArray.includes('CONFIGURATION_MASTER_WRITE')">
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingSubmit(shortTerm)">
-                                          <i class="fas fa-check"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-secondary" (click)="shortTermRentingReset(i)">
-                                          <i class="fas fa-redo" style="color: red;"></i>
-                                        </button>
-                                      </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  </div>
-                                  </div>
-                                  <div class="row">
-                                    <div class="col-sm-12">
-                                     <div class="row p-1" *ngFor="let shortTerm of configMasterModel.shortTerm ;let i=index" >
-                                      <div class="col-sm-4">
-                                        <div class="input-group input-group-sm">
-                                          <span class="input-group-text">{{shortTerm.days}} Days</span>
-                                          <input type="text" class="form-control form-control-sm" style="max-width: 70px !important;" 
-                                            [(ngModel)]="shortTerm.percentage" disabled />
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                      </div>
-                                      <div class="col-sm-2">
-                                        <div class="input-group input-group-sm">
-                                          <input 
-                                            type="text" 
-                                            class="form-control form-control-sm" disabled/>
-                                        </div>
-                                     </div>
-                                      <div class="col-sm-2">
-                                        <div class="d-flex" >
-                                          <div><i class="fas fa-thumbs-up mr-2 mt-1" style="color:rgb(153, 243, 94) !important"></i></div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    </div>
-                                    </div>
-                                </div>
-                              </div>
-                            </div> 
                             <div >
                               <div class="p-3">
                                 <div class="form-group">
@@ -1593,21 +1419,21 @@
                                       <div>Start Day</div>
                                       <input type="text" class="form-control form-control-sm" id="start_day"  required autocomplete="off"
                                       [(ngModel)]="shortTermData.start_day" (keypress)="numberOnly($event)" maxlength="2" style="width: 70px;" 
-                                      [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.start_day == undefined || shortTermData.start_day == null || convertToNumber(shortTermData.start_day) < 1 || convertToNumber(shortTermData.start_day) > shortTermduration || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
+                                      [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.start_day == undefined || shortTermData.start_day == null || convertToNumber(shortTermData.start_day) < 1  || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
                                     </div>
                                       <h2 class="mt-3 ml-3">-</h2>
                                     <div class="ml-3">
                                       <div>End Day</div>
                                       <input type="text" class="form-control form-control-sm" id="end_day"  required autocomplete="off"
                                       [(ngModel)]="shortTermData.end_day" (keypress)="numberOnly($event)" maxlength="2" style="width: 70px;" 
-                                      [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.end_day) > shortTermduration  || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
+                                      [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || convertToNumber(shortTermData.end_day) < 1  || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
                                     </div>
                                     <div class="ml-3">
                                     <div>Percentage</div>
                                     <div class="input-group input-group-sm">
                                       <input type="text" class="form-control form-control-sm" id="end_day"  required autocomplete="off"
                                       [(ngModel)]="shortTermData.percentage"  (keypress)="percentageOnlyWithZero($event)" maxlength="2" style="width: 70px;" 
-                                      [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.end_day) > shortTermduration  || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
+                                      [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
                                     <span class="input-group-text">%</span>
                                      </div>
                                     </div>
@@ -1615,16 +1441,15 @@
                                       <button type="submit" class="btn btn-sm btn-primary" (click)="addShortTerm()" >Add</button>
                                     </div>
                                 </div>
-                                 <div *ngIf="submitted && shortTermData.end_day != null && shortTermData.start_day != null && (convertToNumber(shortTermData.start_day) < 1 || convertToNumber(shortTermData.start_day) > shortTermduration ||  convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.end_day) > shortTermduration)" class="text-danger">
+                                 <div *ngIf="submitted && shortTermData.end_day != null && shortTermData.start_day != null && (convertToNumber(shortTermData.start_day) < 1 ||  convertToNumber(shortTermData.end_day) < 1 )" class="text-danger">
                                     Short term duration is invalid.
                                   </div>
                                   <div class="d-flex mb-1" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
-                                    <div><span style="color: red; font-size: 14px; margin-top: 15px;" >{{!canSubmit ? 'Data will be saved to the database only after clicking the update button.':''}}</span></div>
+                                    <div><span style="color: red; font-size: 14px; margin-top: 15px;" >{{!canShortSubmit ? 'Data will be saved to the database only after clicking the update button.':''}}</span></div>
                                     <div class="ml-auto mr-1 d-flex">
                                       <div>
                                         <i class="fas fa-thumbs-up mr-2" [ngClass]="shortTermDataMainList[0]?.isApproved ? 'color-bg-green':'color-bg-gray'"></i>
                                       </div>
-                                      <div><a class="more-icon"> <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
                                      <div *ngIf="shortTermDataMainList[0]?.isApproved" >
                                        <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Short Term Duration Details'" >
                                          <i class="fas fa-chevron-circle-down mr-2 mt-1"></i></a></div>
@@ -1638,6 +1463,7 @@
                                         <div class="input-group input-group-sm">
                                           <input (change)="canShortSubmit=false"
                                             type="date" [(ngModel)]="stpEffectiveDate"
+                                            [ngClass]="{'is-invalid': !canShortSubmit && (!stpEffectiveDate || multirullsEffectiveDateValidation(stpEffectiveDate) )}"
                                             class="form-control form-control-sm"/>
                                         </div>
                                      </div>
@@ -1659,39 +1485,39 @@
                                             
                                             <div>
                                               <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'row-strike' :''" id="term_start_day"  required autocomplete="off"
-                                              [(ngModel)]="term.start_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2" style="width: 70px;" 
-                                              [ngClass]="{'is-invalid':(submitShortTerm && !term.isDelete && term.isEdit) ||( !term.isDelete && term.isEdit && (term.start_day == undefined || term.start_day == null || convertToNumber(term.start_day) < 1 ))}">
+                                              [(ngModel)]="term.start_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isConfirm" maxlength="2" style="width: 70px;" 
+                                              [ngClass]="{'is-invalid':(submitShortTerm && !term.isDelete && term.isConfirm) ||( !term.isDelete && term.isConfirm && (term.start_day == undefined || term.start_day == null || convertToNumber(term.start_day) < 1 ))}">
                                             </div>
                                               <h2 class="mb-1 ml-3" >-</h2>
                                             <div class="ml-3">
                                               <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'form-control form-control-sm row-strike' :'form-control form-control-sm'" id="term_end_day"  required autocomplete="off"
-                                              [(ngModel)]="term.end_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2" style="width: 70px;" 
-                                              [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.end_day == undefined || term.end_day == null || convertToNumber(term.end_day) < 1 ))}">
+                                              [(ngModel)]="term.end_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isConfirm" maxlength="2" style="width: 70px;" 
+                                              [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isConfirm) ||(!term.isDelete && term.isConfirm && (term.end_day == undefined || term.end_day == null || convertToNumber(term.end_day) < 1 ))}">
                                             </div>
                                             <div>
                                             <div class="input-group input-group-sm ml-3">
                                               <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'form-control form-control-sm row-strike' :'form-control form-control-sm'" id="term_percentage"  required autocomplete="off"
-                                              [(ngModel)]="term.percentage"  (keypress)="percentageOnlyWithZero($event)" [disabled]="term.isDelete || !term.isEdit" maxlength="2" style="width: 70px;" 
-                                              [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isEdit) ||(!term.isDelete && term.isEdit && (term.percentage == undefined || term.percentage == null))}">
+                                              [(ngModel)]="term.percentage"  (keypress)="percentageOnlyWithZero($event)" [disabled]="term.isDelete || !term.isConfirm" maxlength="2" style="width: 70px;" 
+                                              [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isConfirm) ||(!term.isDelete && term.isConfirm && (term.percentage == undefined || term.percentage == null))}">
                                               <span class="input-group-text">%</span>
                                                </div>
                                               </div>
                                             <div class="ml-4 mr-2">
                                               <div class="input-group">
                                                 <div class="btn-group">
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && !term.isEdit"
-                                                          (click)="term.isEdit = true;" title="Edit The Item">
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && !term.isConfirm"
+                                                          (click)="term.isConfirm = true;" title="Edit The Item">
                                                     <i class="fas fa-edit"></i>
                                                   </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && !term.isEdit"
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && !term.isConfirm"
                                                           (click)="removeShortTerm(term)" title="Delete The Item">
                                                     <i class="fas fa-trash" style="color: red;"></i>
                                                   </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && term.isEdit"
-                                                          (click)="modifyShortTerm(term)" title="Save Changes">
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && term.isConfirm"
+                                                          (click)="modifyShortTerm(term,i)" title="Save Changes">
                                                     <i class="fas fa-check"></i>
                                                   </button>
-                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && term.isEdit"
+                                                  <button class="btn btn-sm btn-outline-secondary" *ngIf="!term.isDelete && term.isConfirm"
                                                           (click)="undoEditShortTermItem(i)" title="Undo Edit">
                                                     <i class="fas fa-redo" style="color: red;"></i>
                                                   </button>
@@ -2075,34 +1901,24 @@
         <div class="mr-1">
         <div *ngIf="popupMoreRecordHeader === 'Token Advance'">
           <div class="row rule-header">
-            <div class="col-sm-3">Fixed amount</div>
-            <div class="col-sm-3">% of Security Deposit</div>
-            <div class="col-sm-3">Effective On</div>
-            <div class="col-sm-2" ></div>
+            <div class="col-sm-2">Fixed amount</div>
+            <div class="col-sm-2">% of Security Deposit</div>
+            <div class="col-sm-2">Effective On</div>
+            <div class="col-sm-2">Created By</div>
+            <div class="col-sm-2">Approved By</div>
+            <div class="col-sm-2"></div>
           </div>
           <hr/>
           <div *ngFor="let tokenDetails of configMasterModel.tokenDetails" >
             <div class="row rule-data" *ngIf="tokenDetails.isApproved" >
-          <div class="col-sm-3">
+          <div class="col-sm-2">
               <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
               <span> {{ tokenDetails.fixedToken }} </span>
           </div>
-          <div class="col-sm-3"> {{ tokenDetails.variableToken }} % </div>
-          <div class="col-sm-3"> {{ tokenDetails.effectiveDate }} </div>
-         <!-- <div class="col-sm-2" >
-              <div class="input-group input-group-sm">
-                <span class="form-control form-control-sm" style="background-color: #eaecf4;">
-                  {{ tokenDetails.createdBy }}
-                </span>
-              </div>
-          </div>
-          <div class="col-sm-2" >
-          <div class="input-group input-group-sm">
-            <span class="form-control form-control-sm" style="background-color: #eaecf4;">
-              {{ tokenDetails.approvedBy }}
-            </span>
-          </div>
-      </div> -->
+          <div class="col-sm-2"> {{ tokenDetails.variableToken }} % </div>
+          <div class="col-sm-2"> {{ tokenDetails.effectiveDate }} </div>
+          <div class="col-sm-2"> {{ tokenDetails.createdBy }} </div>
+          <div class="col-sm-2"> {{ tokenDetails.approvedBy }} </div>
           <div class="col-sm-2" ><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
           </div>
         </div>
@@ -2111,53 +1927,42 @@
 
       <div *ngIf="popupMoreRecordHeader === 'Security Deposit Limits'">
         <div class="row rule-header" >
-          <div class="col-sm-3">Minimum Security Deposit</div>
-          <div class="col-sm-3">Maximum Security Deposit</div>
+          <div class="col-sm-2">Minimum Deposit</div>
+          <div class="col-sm-2">Maximum Deposit</div>
           <div class="col-sm-2">Effective On</div>
-          <div class="col-sm-2" ></div>
-            <!-- <div class="col-sm-2">
-              <div style="text-align: left;">Create By</div></div>
-              <div class="col-sm-2">
-              <div style="text-align: left;">Approved By</div></div> -->
+          <div class="col-sm-3">Created By</div>
+          <div class="col-sm-3">Approved By</div>
         </div>
         <hr/>
         <div *ngFor="let depositDetails of configMasterModel.depositDetails" >
           <div class="row rule-data" *ngIf="depositDetails.isApproved" >
-          <div class="col-sm-3">
+          <div class="col-sm-2">
               <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
               <span> {{ depositDetails.minimumDeposit }}</span>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-2">
               <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
               <span> {{ depositDetails.maximumDeposit }} </span>
           </div>
           <div class="col-sm-2"> {{ depositDetails.effectiveDate }} </div>
-          <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+          <div class="col-sm-3"> {{ depositDetails.createdBy }} </div>
+          <div class="col-sm-3"> 
+            <span>  {{ depositDetails.approvedBy }} </span>
+            <span><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></span>
           </div>
-          <!-- <div class="col-sm-2" >
-            <div class="input-group input-group-sm">
-              <span class="form-control form-control-sm" style="background-color: #eaecf4;">
-                {{ depositDetails.createdBy }}
-              </span>
-            </div>
-        </div>
-        <div class="col-sm-2" >
-        <div class="input-group input-group-sm">
-          <span class="form-control form-control-sm" style="background-color: #eaecf4;">
-            {{ depositDetails.approvedBy }}
-          </span>
-        </div>
-        </div> -->
-        </div>
+         </div>
+      </div>
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'GST Charges'">
         <div class="row rule-header">
           <div class="col-sm-2"> Monthly Rent </div>
-          <div class="col-sm-2"> CGST </div>
-          <div class="col-sm-2"> SGST </div>
-          <div class="col-sm-2"> IGST </div>
+          <div class="col-sm-1"> CGST </div>
+          <div class="col-sm-1"> SGST </div>
+          <div class="col-sm-1"> IGST </div>
           <div class="col-sm-2"> Effective On </div>
+          <div class="col-sm-2">Created By</div>
+          <div class="col-sm-2">Approved By</div>
         </div>
         <hr/>
         <div *ngFor="let gstDetail of configMasterModel.gstCharges">
@@ -2166,35 +1971,39 @@
                 <span><i class="fas fa-rupee-sign" style="font-size: small;" ></i></span>
                 <span> {{gstDetail.monthlyRent}} </span>
             </div>
-            <div class="col-sm-2"> {{gstDetail.cgstPercentage}}  % </div>
-            <div class="col-sm-2"> {{gstDetail.sgstPercentage}}  % </div>
-            <div class="col-sm-2"> {{gstDetail.igstPercentage}}  % </div>
+            <div class="col-sm-1"> {{gstDetail.cgstPercentage}}  % </div>
+            <div class="col-sm-1"> {{gstDetail.sgstPercentage}}  % </div>
+            <div class="col-sm-1"> {{gstDetail.igstPercentage}}  % </div>
             <div class="col-sm-2"> {{gstDetail.effectiveDate}}  </div>
-            <div class="col-sm-2"> <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+            <div class="col-sm-2"> {{ gstDetail.createdBy }} </div>
+            <div class="col-sm-2"> {{ gstDetail.approvedBy }} </div>
+            <div class="col-sm-1"> <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
           </div>
         </div>
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'Service Charges'">
         <div class="row mr-2">
-          <div class="col-sm-4 mr-3" style="text-align: center;border-bottom:2px solid gray ;color: #000;">eKYC Charges</div>
-          <div class="col-sm-4" style="text-align: center;border-bottom:2px solid gray;color: #000 ;">Documentation Charges </div>
+          <div class="col-sm-2 mr-3" style="text-align: center;border-bottom:2px solid gray ;color: #000;">eKYC Charges</div>
+          <div class="col-sm-3" style="text-align: center;border-bottom:2px solid gray;color: #000 ;">Documentation Charges </div>
         </div>
         <div class="row rule-header">
-          <div class="col-sm-2"> For Owners</div>
-          <div class="col-sm-2"> For Tenants</div>
-          <div class="col-sm-2"> For Owners</div>
-          <div class="col-sm-2"> For Tenants</div>
+          <div class="col-sm-1">  Owners</div>
+          <div class="col-sm-1">  Tenants</div>
+          <div class="col-sm-2">  Owners</div>
+          <div class="col-sm-1">  Tenants</div>
           <div class="col-sm-2"> Effective Date</div>
+          <div class="col-sm-2"> Created By </div>
+          <div class="col-sm-2"> Approved By </div>
         </div>
       <hr/>
         <div *ngFor="let otherCharges of configMasterModel.otherCharges">
           <div class="row rule-data" *ngIf="otherCharges.isApproved" >
-            <div class="col-sm-2">
+            <div class="col-sm-1">
                 <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
                 <span> {{otherCharges.ownerEkycCharges}}</span>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-1">
               <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
                 <span> {{otherCharges.tenantEkycCharges}}</span>
             </div>
@@ -2202,11 +2011,13 @@
                 <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
                 <span> {{otherCharges.ownerDocumentCharges}} </span>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-1">
                 <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
                 <span> {{otherCharges.tenantDocumentCharges}} </span>
             </div>
             <div class="col-sm-2">{{otherCharges.effectiveDate}} </div>
+            <div class="col-sm-2"> {{ otherCharges.createdBy }} </div>
+            <div class="col-sm-2"> {{ otherCharges.approvedBy }} </div>
             <div class="col-sm-1"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
             </div>
           </div>
@@ -2216,12 +2027,16 @@
         <div class="row rule-header">
           <div class="col-sm-3">Days</div>
           <div class="col-sm-3">Effective Date</div>
+          <div class="col-sm-2"> Created By </div>
+          <div class="col-sm-2"> Approved By </div>
         </div>
         <hr/>
         <div *ngFor="let dataGrouping of configMasterModel.dataGrouping">
         <div class="row rule-data" *ngIf="dataGrouping.isApproved">
           <div class="col-sm-3"> {{dataGrouping.considerDays}} Days </div>
           <div class="col-sm-3"> {{dataGrouping.effectiveDate}} </div>
+          <div class="col-sm-2"> {{ dataGrouping.createdBy }} </div>
+          <div class="col-sm-2"> {{ dataGrouping.approvedBy }} </div>
           <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
         </div>
       </div>
@@ -2229,15 +2044,19 @@
 
       <div *ngIf="popupMoreRecordHeader === 'Force Checkout'">  
         <div class="row rule-header">
-          <div class="col-sm-3">Days</div>
-          <div class="col-sm-3">Effective Date</div>
+          <div class="col-sm-2">Days</div>
+          <div class="col-sm-2">Effective Date</div>
+          <div class="col-sm-3">Created By</div>
+          <div class="col-sm-3">Approved By</div>
         </div>
         <hr/>
         <div *ngFor="let forceCheckOut of configMasterModel.forceCheckOut">
         <div class="row rule-data" *ngIf="forceCheckOut.isApproved">
-          <div class="col-sm-3"> {{forceCheckOut.forceCheckOutDays}} Days </div>
-          <div class="col-sm-3"> {{forceCheckOut.effectiveDate}}</div>
-          <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+          <div class="col-sm-2"> {{forceCheckOut.forceCheckOutDays}} Days </div>
+          <div class="col-sm-2"> {{forceCheckOut.effectiveDate}}</div>
+          <div class="col-sm-3"> {{ forceCheckOut.createdBy }} </div>
+          <div class="col-sm-3"> {{ forceCheckOut.approvedBy }} </div> 
+          <div class="col-sm-1"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
          </div>
      </div>
       </div>
@@ -2245,91 +2064,100 @@
       <div *ngIf="popupMoreRecordHeader === 'No Rental agreement'">  
         <div class="row rule-header">
           <div class="col-sm-3">No Rental agreement upto </div>
-          <div class="col-sm-3">Effective Date</div>
+          <div class="col-sm-2">Effective Date</div>
+          <div class="col-sm-3">Created By</div>
+          <div class="col-sm-3">Approved By</div>
         </div>
         <hr/>
         <div *ngFor="let noRentalAgreement of configMasterModel.noRentalAgreement">
         <div class="row rule-data" *ngIf="noRentalAgreement.isApproved">
         <div class="col-sm-3"> {{noRentalAgreement.noRentalAgreementDays}} Days </div>
-        <div class="col-sm-3"> {{noRentalAgreement.effectiveDate}} </div>
-        <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+        <div class="col-sm-2"> {{noRentalAgreement.effectiveDate}} </div>
+        <div class="col-sm-3"> {{ noRentalAgreement.createdBy }} </div>
+        <div class="col-sm-3"> {{ noRentalAgreement.approvedBy }} </div>
+        <div class="col-sm-1"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
         </div>
      </div>
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'Security Deposit Deadline'">  
         <div class="row rule-header">
-          <div class="col-sm-2">Condition</div>
+          <div class="col-sm-1">Condition</div>
           <div class="col-sm-2">Before check-in</div>
-          <div class="col-sm-3">Deduction Type</div>
-          <div class="col-sm-2">Deduction</div>
+          <div class="col-sm-2">Deduction Type</div>
+          <div class="col-sm-1">Deduction</div>
           <div class="col-sm-2">Effective On</div>
+          <div class="col-sm-2">Created By</div>
+          <div class="col-sm-2">Approved By</div>
         </div>
         <div *ngFor="let securityDepositDeadLineDetails of configMasterModel.securityDepositDeadLineDetails">
           <div class="row rule-data" *ngIf="securityDepositDeadLineDetails.isApproved">
-            <div class="col-sm-2"> {{ securityDepositDeadLineDetails.trigger_condition }} </div>
+            <div class="col-sm-1"> {{ securityDepositDeadLineDetails.trigger_condition }} </div>
             <div class="col-sm-2"> {{ securityDepositDeadLineDetails.auto_cancellation_day }} Days </div>
-            <div class="col-sm-3"> {{securityDepositDeadLineDetails.trigger_value}} </div>
-            <div class="col-sm-2"> {{securityDepositDeadLineDetails.deduction_percentage}}  % </div>
+            <div class="col-sm-2"> {{securityDepositDeadLineDetails.trigger_value}} </div>
+            <div class="col-sm-1"> {{securityDepositDeadLineDetails.deduction_percentage}}  % </div>
             <div class="col-sm-2"> {{securityDepositDeadLineDetails.effectiveDate}} </div>
-            <div class="col-sm-1">
-               <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+            <div class="col-sm-2"> {{ securityDepositDeadLineDetails.createdBy }} </div>
+            <div class="col-sm-2"> 
+              <span> {{ securityDepositDeadLineDetails.approvedBy }} </span> &nbsp;
+              <span>
+                <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      <div *ngIf="popupMoreRecordHeader === 'Short term duration'">  
-        <div class="row rule-header" >
-          <div class="col-sm-3">Short term  </div>
-          <div class="col-sm-3">Effective Date</div>
-        </div>
-        <hr/>
-        <div *ngFor="let shortTermRentingDuration of configMasterModel.shortTermRentingDuration">
-        <div class="row rule-data" *ngIf="shortTermRentingDuration.isApproved">
-          <div class="col-sm-3"> {{shortTermRentingDuration.rentingDurationDays}} Days </div>
-          <div class="col-sm-3"> {{shortTermRentingDuration.effectiveDate}} </div>
-          <div class="col-sm-2">
-            <div><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-          </div>
-        </div>
-       </div>
-      </div>
-
       <div *ngIf="popupMoreRecordHeader === 'Early Check-out Rules'">  
         <div class="row rule-header">
-          <div class="col-sm-2">Condition</div>
-          <div class="col-sm-2">Eligibility</div>
-          <div class="col-sm-3">Deduction Type</div>
+          <div class="col-sm-1">Condition</div>
+          <div class="col-sm-1">Eligibility</div>
+          <div class="col-sm-2">Deduction Type</div>
           <div class="col-sm-2">Effective On</div>
+          <div class="col-sm-3">Created By</div>
+          <div class="col-sm-3">Approved By</div>
         </div>
         <hr/>
         <div *ngFor="let earlyCheckOutRuleDetails of configMasterModel.earlyCheckOutRuleDetails">
           <div class="row rule-data" *ngIf="earlyCheckOutRuleDetails.isApproved">
-              <div class="col-sm-2"> {{earlyCheckOutRuleDetails.trigger_condition}} </div>
-              <div class="col-sm-2"> {{earlyCheckOutRuleDetails.check_out_day}} Days </div>
-              <div class="col-sm-3"> {{earlyCheckOutRuleDetails.trigger_value}} </div>
+              <div class="col-sm-1"> {{earlyCheckOutRuleDetails.trigger_condition}} </div>
+              <div class="col-sm-1"> {{earlyCheckOutRuleDetails.check_out_day}} Days </div>
+              <div class="col-sm-2"> {{earlyCheckOutRuleDetails.trigger_value}} </div>
               <div class="col-sm-2"> {{earlyCheckOutRuleDetails.effectiveDate}} </div>
-              <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+              <div class="col-sm-3"> {{ earlyCheckOutRuleDetails.createdBy }} </div>
+              <div class="col-sm-3"> 
+                <span> {{ earlyCheckOutRuleDetails.approvedBy }} </span> &nbsp;
+                <span>
+                  <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
+                </span>
+              </div>
           </div>
         </div>
       </div>
 
       <div *ngIf="popupMoreRecordHeader === 'After check-in Date'">  
         <div class="row rule-header">
-          <div class="col-sm-2">Condition</div>
+          <div class="col-sm-1">Condition</div>
           <div class="col-sm-2">After check-in</div>
-          <div class="col-sm-3">Deduction Type</div>
+          <div class="col-sm-2">Deduction Type</div>
           <div class="col-sm-2">Effective On</div>
+          <div class="col-sm-2">Created By</div>
+          <div class="col-sm-3">Approved By</div>
         </div>
         <hr/>
         <div *ngFor="let cancellationAfterCheckInDetails of configMasterModel.cancellationAfterCheckInDetails">
           <div class="row rule-data" *ngIf="cancellationAfterCheckInDetails.isApproved">
-              <div class="col-sm-2"> {{cancellationAfterCheckInDetails.trigger_condition}} </div>
+              <div class="col-sm-1"> {{cancellationAfterCheckInDetails.trigger_condition}} </div>
               <div class="col-sm-2"> {{cancellationAfterCheckInDetails.auto_cancellation_day}} Days </div>
-              <div class="col-sm-3"> {{cancellationAfterCheckInDetails.trigger_value}} </div>
+              <div class="col-sm-2"> {{cancellationAfterCheckInDetails.trigger_value}} </div>
               <div class="col-sm-2"> {{cancellationAfterCheckInDetails.effectiveDate}} </div>
-              <div class="col-sm-1"> <i class="fas fa-thumbs-up" style="color:rgb(153, 243, 94) !important"></i></div>
+              <div class="col-sm-2"> {{ cancellationAfterCheckInDetails.createdBy }} </div>
+              <div class="col-sm-3"> 
+                <span> {{ cancellationAfterCheckInDetails.approvedBy }} </span> &nbsp;
+                <span>
+                  <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
+                </span>
+              </div>
           </div>
         </div>
       </div>
@@ -2346,7 +2174,7 @@
         <div *ngFor="let mainCRP of cancellationBeforeCheckInDetailsOrg">
           <div class="card mt-2" *ngIf="mainCRP.isApproved">
           <div>
-            <span style="color:#6610f2" > Effective from {{mainCRP.effectiveDate}} 
+            <span style="color:#6610f2" >Created By : {{mainCRP.createdBy}} , Approved By: {{mainCRP.approvedBy}} , Effective from {{mainCRP.effectiveDate}} 
               <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
             </span> 
           </div>
@@ -2362,21 +2190,22 @@
       </div>
       <div *ngIf="popupMoreRecordHeader === 'Short Term Duration Details'">  
         <div class="row rule-header ml-2">
-          <div class="col-sm-1">Start Day</div>
+          <div class="col-sm-2">Start Day</div>
           <div class="col-sm-1">End Day</div>
           <div class="col-sm-1">Percentage</div>
         </div>
         
         <hr/>
         <div *ngFor="let mainSTD of shortTermDataMainList">
-          <div class="card mt-2" *ngIf="mainSTD.isApproved">
+          <div class="card mt-2" >
           <div>
-            <span style="color:#6610f2" > Effective from {{mainSTD.effectiveDate}} 
+            <span style="color:#6610f2" > Created By : {{mainSTD.createdBy}} , Approved By: {{mainSTD.approvedBy}} , Effective from {{mainSTD.effectiveDate}} 
               <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
+
             </span> 
           </div>
         <div class="row" *ngFor="let std of mainSTD.zoy_short_term_dto_info">
-              <div class="col-sm-1"> {{std.start_day}} </div>
+              <div class="col-sm-2"> {{std.start_day}} </div>
               <div class="col-sm-1"> {{std.end_day}} </div>
               <div class="col-sm-1"> {{std.percentage}} % </div>
         </div>
