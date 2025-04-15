@@ -25,6 +25,10 @@ export const environment = {
       "tenantzoy": true,
       "bulkUpload": true
     },
+    "sales":true,
+    "salesSubMenu":{
+      "salesPerson":true,
+    },
     "finances":true,
     "financesSubMenu":{
       "reports":true,

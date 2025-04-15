@@ -535,8 +535,8 @@ onChangeCheck(id,type,sec,page){
     }
 }
 
-menuListCrete:string[]=['ownersc','usersc','tenantsc','financesc','supportsc','reportsc','settingsc'];
-menuListEdit:string[]=['ownerse','userse','tenantse','financese','supportse','reportse','settingse'];
+menuListCrete:string[]=['ownersc','usersc','tenantsc','salesc','financesc','supportsc','reportsc','settingsc'];
+menuListEdit:string[]=['ownerse','userse','tenantse','salese','financese','supportse','reportse','settingse'];
 menuSubMenus: string[] = [
  " ZOYCODES",
   "MANAGING_OWNERS",
@@ -546,6 +546,7 @@ menuSubMenus: string[] = [
   "TENANTSZOY",
   "BULK_UPLOAD",
   "REPORTS",
+  "SALES_PERSON",
  " PAYMENT_APPROVAL",
   "TICKETS",
   "ROLE_AND_PERMISSION",
