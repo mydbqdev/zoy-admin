@@ -203,6 +203,22 @@
          </div>
          <div  class="row">									         
           <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+          <span  class="collapsed" data-toggle="collapse" data-target="#collapseSALESE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+          <span class="title"> Sales</span>
+          </div>
+          <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="salesereadAll"  (click)="onChangeCheckAll($event,'read','salese')"/></div>
+          <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="salesewriteAll" (click)="onChangeCheckAll($event,'write','salese')" /></div>								                
+         </div>
+        <div  id="collapseSALESE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #salesctab>
+         <div class="row" >
+          <div class="col-sm-8 pl-4">Sales Person</div>
+          <div class="col-sm-2"><input type="checkbox" name="saleseread"    value="SALES_PERSON_READ" id="saleseReadSP"  (click)="onChangeCheck($event,'read','salese','SP')"/></div>
+          <div class="col-sm-2"><input type="checkbox" name="salesewrite"   value="SALES_PERSON_WRITE"  id="saleseWriteSP" (click)="onChangeCheck($event,'write','salese','SP')"/></div>
+       </div> 
+       </div>
+
+         <div  class="row">									         
+          <div class="col-sm-8" style="font-weight:500;font-size:14px;">
           <span  class="collapsed" data-toggle="collapse" data-target="#collapseFINANCESE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
           <span class="title"> Finance</span>
           </div>
@@ -424,6 +440,22 @@
                         <div class="col-sm-2"><input type="checkbox" name="tenantscwrite"   value="TENANTSZOY_WRITE"  id="tenantscWriteTZ" (click)="onChangeCheck($event,'write','tenantsc','TZ')"/></div>
                      </div>
                   </div>
+                  <div  class="row">									         
+                    <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                    <span  class="collapsed" data-toggle="collapse" data-target="#collapseSALESC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                    <span class="title"> Sales</span>
+                    </div>
+                    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="salescreadAll"  (click)="onChangeCheckAll($event,'read','salesc')"/></div>
+                    <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="salescwriteAll" (click)="onChangeCheckAll($event,'write','salesc')" /></div>								                
+                   </div>
+                  <div  id="collapseSALESC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #salesctab>
+                   <div class="row" >
+                    <div class="col-sm-8 pl-4">Sales Person</div>
+                    <div class="col-sm-2"><input type="checkbox" name="salescread"    value="SALES_PERSON_READ" id="salescReadSP"  (click)="onChangeCheck($event,'read','salesc','SP')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="salescwrite"   value="SALES_PERSON_WRITE"  id="salescWriteSP" (click)="onChangeCheck($event,'write','salesc','SP')"/></div>
+                 </div> 
+                 </div>
+
                   <div  class="row">									         
                     <div class="col-sm-8" style="font-weight:500;font-size:14px;">
                     <span  class="collapsed" data-toggle="collapse" data-target="#collapseFINANCESC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
