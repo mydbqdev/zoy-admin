@@ -56,7 +56,6 @@ public class SalesDBService implements SalesDBImpl{
 	
 	@Override
 	public Page<ZoyPgSalesMasterModel> findAllSalesUsers(PaginationRequest paginationRequest) {
-	    // Step 1: Mapping sort keys
 	    Map<String, String> sortFieldMapping = new HashMap<>();
 	    sortFieldMapping.put("emailId", "email_id");
 	    sortFieldMapping.put("employeeId", "employee_id");
@@ -64,40 +63,38 @@ public class SalesDBService implements SalesDBImpl{
 	    sortFieldMapping.put("mobileNo", "mobile_no");
 	    sortFieldMapping.put("createdAt", "created_at");
 
-	    // Step 2: Handle nulls for sorting
 	    String sortKey = paginationRequest.getSortActive();
 	    String sortDir = paginationRequest.getSortDirection();
 
 	    if (sortKey == null || sortKey.isBlank()) {
-	        sortKey = "fullName"; // default field
+	        sortKey = "fullName";
 	    }
 	    if (sortDir == null || sortDir.isBlank()) {
-	        sortDir = "asc"; // default direction
+	        sortDir = "asc"; 
 	    }
 
 	    String sortColumn = sortFieldMapping.getOrDefault(sortKey, "first_name");
 	    Sort.Order order = Sort.Order.by(sortColumn).with(Sort.Direction.fromString(sortDir));
 
-	    // Apply ignoreCase only if the sort column is not createdAt
+	    
 	    if (!"createdAt".equals(sortKey)) {
 	        order = order.ignoreCase();
 	    }
 
 	    Sort sort = Sort.by(order);
 
-	    // Step 3: Build pageable
+	
 	    Pageable pageable = PageRequest.of(paginationRequest.getPageIndex(), paginationRequest.getPageSize(), sort);
 
-	    // Step 4: Handle null filter
+	  
 	    String searchText = "";
 	    if (paginationRequest.getFilter() != null && paginationRequest.getFilter().getSearchText() != null) {
 	        searchText = paginationRequest.getFilter().getSearchText();
 	    }
 
-	    // Step 5: Query database
+	  
 	    Page<Object[]> results = zoyPgSalesMasterRepo.findAllSalesPeople(pageable, searchText);
 
-	    // Step 6: Map each result to model
 	    return results.map(result -> {
 	        String emailId = (String) result[0];
 	        String employeeId = (String) result[1];

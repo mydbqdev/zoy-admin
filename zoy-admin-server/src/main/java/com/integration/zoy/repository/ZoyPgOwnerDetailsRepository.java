@@ -24,23 +24,24 @@ public interface ZoyPgOwnerDetailsRepository extends JpaRepository<ZoyPgOwnerDet
 	        "COUNT(p.property_id) AS numberOfProperties, " +
 	        "CASE " +
 	        "    WHEN COUNT(p.property_id) > 0 THEN 'Active' " +
+	        "    WHEN up.pwd IS NULL THEN 'Not Registered'"+
 	        "    ELSE 'Registered' " +
 	        "END AS status " +
 	        "FROM pgowners.zoy_pg_owner_details o " +
 	        "JOIN pgcommon.user_profile up ON o.pg_owner_email = up.email_id " +
 	        "LEFT JOIN pgowners.zoy_pg_property_details p ON o.pg_owner_id = p.pg_owner_id " +
-	        "WHERE up.pwd IS NOT NULL AND (:searchText IS NULL OR " +
+	        "WHERE(:searchText IS NULL OR " +
 	        "LOWER(o.pg_owner_name) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 	        "LOWER(o.pg_owner_id) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 	        "LOWER(o.pg_owner_email) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 	        "LOWER(o.pg_owner_mobile) LIKE LOWER(CONCAT('%', :searchText, '%'))) " +
-	        "GROUP BY o.pg_owner_id, o.pg_owner_name, o.pg_owner_email, o.pg_owner_mobile",
+	        "GROUP BY o.pg_owner_id, o.pg_owner_name, o.pg_owner_email, o.pg_owner_mobile ,up.pwd",
 
 	    countQuery = "SELECT COUNT(DISTINCT o.pg_owner_id) " +
 	        "FROM pgowners.zoy_pg_owner_details o " +
 	        "JOIN pgcommon.user_profile up ON o.pg_owner_email = up.email_id " +
 	        "LEFT JOIN pgowners.zoy_pg_property_details p ON o.pg_owner_id = p.pg_owner_id " +
-	        "WHERE up.pwd IS NOT NULL AND (:searchText IS NULL OR " +
+	        "WHERE  (:searchText IS NULL OR " +
 	        "LOWER(o.pg_owner_name) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 	        "LOWER(o.pg_owner_id) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
 	        "LOWER(o.pg_owner_email) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
