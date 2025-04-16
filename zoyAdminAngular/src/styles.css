@@ -324,6 +324,10 @@ a.approve-icon:hover{
   background-color: #6f42c133;
   color: #6f42c1;
 }
+.status-failed{
+  background-color: #c1424233;
+  color: #c14242;
+}
 .common-status {
   width: 110px;
   display: inline-block;

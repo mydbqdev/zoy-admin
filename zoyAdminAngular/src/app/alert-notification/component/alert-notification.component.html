@@ -48,15 +48,15 @@
                                                             <i class="{{ getIcon(notification.screen_name) }} text-white"></i>
                                                           </div>
                                                         </div>
-                                                        <div class="w-100">
+                                                        <div class="w-100" style="cursor: pointer;" (click)="selectNotification(notification)"  data-bs-toggle="modal" data-bs-target="#NotificationAll">
                                                           <div class="d-flex">
-                                                            <div class="font-weight-bold" style="color: #000000;" > {{ notification.category }}</div>
-                                                            <div class="small ml-auto mr-2" style="font-style: italic;">{{ notification.created_at | date:'hh:mm a, MMMM dd, yyyy'  }}</div>
+                                                            <div class="font-weight-bold" [ngStyle]="{ color: notification.is_seen ? '#505050' : '#000000' }"  > {{ notification.category }}</div>
+                                                            <div class="small ml-auto mr-2" style="font-style: italic;" [ngStyle]="{ color: notification.is_seen ? '#505050' : '#000000' }" >{{ notification.created_at | date:'hh:mm a, MMMM dd, yyyy'  }}</div>
                                                           </div>
-                                                          <div *ngIf="notification.message.length > 100" class="small" style="color: #505050;" >
-                                                            {{ notification.message | slice: 0:100 }} ...<a href="javascript:void(0)" (click)="selectNotification(notification)"  data-bs-toggle="modal" data-bs-target="#NotificationAll">more</a>
+                                                          <div *ngIf="notification.message.length > 100" class="small" style ="color:#505050;" >
+                                                            {{ notification.message | slice: 0:100 }} ...<a href="javascript:void(0)">more</a>
                                                           </div>
-                                                          <div *ngIf="notification.message.length <= 100" class="small">
+                                                          <div *ngIf="notification.message.length <= 100" class="small" style ="color:#505050;">
                                                             {{ notification.message }}
                                                           </div>
                                                         </div>
