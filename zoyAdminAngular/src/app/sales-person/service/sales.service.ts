@@ -33,7 +33,7 @@ import { MessageService } from 'src/app/message.service';
      }
 
      public resendSalesPersonRegistartion(data:string): Observable<any> {
-        const url1=this.basePath +"zoy_admin/resendSalesPersonData?email="+data ;
+        const url1=this.basePath +"zoy_admin/resendSignInDetails?email="+data ;
    
           return  this.httpclient.post<any>(
               url1,

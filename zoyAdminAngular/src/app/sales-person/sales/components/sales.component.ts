@@ -121,11 +121,11 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		this.param.pageIndex=0;//this.paginator.pageIndex;
 		this.param.pageSize=this.pageSize;
 		this.param.sortDirection="desc";
-		this.param.sortActive="fullName";
+		this.param.sortActive="createdAt";
 		  this.paramFilter.searchText=null;
 		  this.param.filter=this.paramFilter; 
 		   this.getSalesPerson();
-		   this.columnSortDirections["fullName"] = "desc";
+		   this.columnSortDirections["createdAt"] = "desc";
 		   this.submitted=false;
 		   this.form.reset();
 		}else{
