@@ -150,9 +150,11 @@
       }
       .rule-header{
         text-align: justify; 
+        margin-left: 15px;
         color: #000000;
       }
       .rule-data{
         text-align: justify;
+        margin-left: 15px;
          color: #505050;
       }

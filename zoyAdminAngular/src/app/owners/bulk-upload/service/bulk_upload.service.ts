@@ -43,21 +43,41 @@ export class BulkUploadService {
          withCredentials:true
       });
   }
-
-  public upload_tenant_file(data:any): Observable<any> {
-     const url = this.basePath + 'zoy_admin/upload_tenant_file';
-    return  this.httpclient.post<any>(
-      url,
-      data,
-      {
-          headers:ServiceHelper.filesHeaders(),
-         observe : 'body',
-         withCredentials:true
-      });
+    
+  getBulkUploadTemplate(): Observable<any> {
+    const url1 = this.basePath + 'zoy_admin/download_bulk_upload_template';
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+    return this.httpclient.get(url1, {
+      headers,
+      responseType: 'blob' 
+    }).pipe(
+      tap((data: Blob) => {
+        this.downloadFile(data);
+      }),
+      catchError((error) => {
+        
+        return throwError(error);
+      })
+    );
   }
 
-  public upload_property_file(data:any): Observable<any> {
-    const url = this.basePath + 'zoy_admin/upload_property_file';
+  private downloadFile(data: Blob) {
+    const downloadLink = document.createElement('a');
+    const url = window.URL.createObjectURL(data);
+  
+    downloadLink.href = url;
+    downloadLink.download = "BulkUpload";
+    downloadLink.click();
+  
+    window.URL.revokeObjectURL(url);
+    downloadLink.remove();
+  } 
+
+  public bulkUploadFile(data:any): Observable<any> {
+    const url = this.basePath + 'zoy_admin/bulk_upload_file';
     return  this.httpclient.post<any>(
       url,
       data,

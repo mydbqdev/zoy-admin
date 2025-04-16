@@ -78,24 +78,7 @@
                                 </div>
                             </div>
                           </div>
-                          <div class="col-sm-2" style="margin-left:-15px">
-                                <div class="form-group">
-                                  <label for="category" class="col-form-label" style="font-size: 13px;">Category</label>
-                                  <select class="form-select form-select-sm" [(ngModel)]="bulkUpload.category" id="category" formControlName="category"  style="font-size: 12px;"
-                                  [ngClass]="{'is-invalid':submitted && form.controls.category.errors}">                                             
-                                    <option value="Tenant">Tenant</option>
-                                    <option value="PG Property">PG Property</option>
-                                  </select> 
-                                </div>
-                               <div style="height: 30px;margin-top:-15px;"> 
-                                <div *ngIf="submitted && form.controls.category.errors" class="text-danger">
-                                <div style="font-size: 12px;" *ngIf="submitted && form.controls.category.errors.required">
-                                  Category is required
-                                </div>
-                                </div>
-                              </div>
-                          </div>                            
-                            <div class="col-sm-4" style="margin-left:-15px">
+                           <div class="col-sm-4" style="margin-left:-15px">
                               <div class="form-group">                                             
                                 <div class="input-group"  style="padding-top:32px;">                                    
                                   <input class="form-control form-control-sm" id="formFile" type="file" (change)="onFileChange($event)" style="font-size: 12px;"
@@ -105,14 +88,14 @@
                                 </div>
                               </div>
                               <div style="height: 30px;margin-top:-15px;">  
-                                <p style="color: rgb(194, 5, 178);font-size: 12px;" *ngIf="!filevali">(Allows only csv file for tenant/excel file for property )</p> 
+                                <p style="color: rgb(194, 5, 178);font-size: 12px;" *ngIf="!filevali">(Allows only excel file)</p> 
                                 <div  style="font-size: 13px;" *ngIf="submitted && filevali " class="text-danger"  style="font-size: 12px;">
-                                  File format is inavalid <span *ngIf="bulkUpload.category=='Tenant'">, Allows only csv file</span> <span *ngIf="bulkUpload.category=='PG Property'">, Allows only excel file</span>
+                                  File format is inavalid <span>, Allows only excel file</span>
                                 </div>
                               </div>
                              </div>                                      
                               <div class="col-sm-1" style="padding-top: 32px;" >                                            
-                                <button type="submit" class="btn btn-primary-custom btn-sm" (click)="submitUploadFile()"  *ngIf="rolesArray.includes('BULK_UPLOAD_WRITE')"  style="font-size: 12px;">Submit</button>
+                                <button type="submit" class="btn btn-primary-custom btn-sm" (click)="bulkUploadFile()"  *ngIf="rolesArray.includes('BULK_UPLOAD_WRITE')"  style="font-size: 12px;">Submit</button>
                               </div>
                           </div>
                       </form>
@@ -120,13 +103,12 @@
                      <div class="ml-auto" style="width:100px;padding-left: 10px;">
                         <div style="margin-top: 12px;">
                            <a  href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#sampleFileDownload"  class="btn btn-primary-custom btn-sm mr-2 mb-1"  style="font-size: 12px;width: 100px;">Instructions</a>
-                             <div class="dropdown no-arrow">
-                               <a class="dropdown-toggle btn sample-files btn-sm mt-1" href="javascript:void(0)" role="button" id="dropdownMenuSample" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="font-size: 12px;"><span>Sample Files</span>
-                                <i class="fas fa-angle-down ml-2 mt-1"></i> </a>                           
-                               <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuSample">
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('Tenent_sample_File.csv')" >Tenant</a>
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="downloadSamples('PG_properties_sample_file.xlsx')">PG Properties</a>
-                              </div>
+                             <div>
+                               <button class="btn sample-files btn-sm mt-1"  style="font-size: 12px;" (click)="getBulkUploadTemplate()" [disabled]="downloadProgress" >
+                                <i class="fas fa-download mr-2" *ngIf="!downloadProgress"></i>
+                                <img src="assets/images/loading.gif" class="mr-1" *ngIf="downloadProgress">
+                                <span style="font-size: 12px;"> {{downloadProgress ? '':'Sample File'}} </span>
+                               </button> 
                             </div>
                         </div>
                      </div>
@@ -155,16 +137,16 @@
                                       </ng-container>
                                     
                                       <!-- Category Column -->
-                                      <ng-container matColumnDef="category">
+                                      <!-- <ng-container matColumnDef="category">
                                         <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">CATEGORY</th>
                                         <td mat-cell *matCellDef="let element">{{ element.category }}</td>
-                                      </ng-container>
+                                      </ng-container> -->
                               
                                       <!-- Status Column -->
                                       <ng-container matColumnDef="status">
                                         <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;">STATUS</th>
                                         <td mat-cell *matCellDef="let element">
-                                          <span class="common-status" [ngClass]="element.status === 'Failed' ? 'status-Failed' : (element.status === 'Completed' ? 'status-active':'status-verified' )" >
+                                          <span class="common-status" [ngClass]="element.status === 'Failed' ? 'status-failed' : (element.status === 'Completed' ? 'status-active':'status-verified' )" >
                                             {{element.status}}
                                           </span>
                                         </td>
@@ -196,7 +178,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" #openModel hidden>
+                    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" #openModel hidden>
                       Open modal
                     </button>
                     
@@ -230,7 +212,7 @@
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> -->
                  </div>
                 <!-- /.container-fluid -->
             </div>
@@ -245,7 +227,7 @@
   <div class="modal fade" id="sampleFileDownload" tabindex="-2" data-bs-backdrop="static" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-whatever="@mdo">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
       <div class="modal-content bg" >
-        <div class="modal-header">
+        <div class="modal-header bg-gradiant-popup-header">
           <h5 class="modal-title" id="formtitle">Files Description / Instructions</h5>
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -253,21 +235,37 @@
         </div>
         <div class="modal-body">
           <div class="row">
-            <h5 style="color: rgb(247, 83, 83); justify-content: start;">*The names and order of the columns must be kept the same.</h5>
-            <br>
-            <div>
-              <div style="display: flex; flex-direction: row; align-items: center;  ">
-                <h5 style="flex:1;">Tenant</h5>
-                <button mat-mini-fab  color="accent" class="mr-1" title="Click to download the file" [disabled]="'Tenent_sample_File.csv' === downloading" (click)="downloadSamples('Tenent_sample_File.csv')"><i class="fa fa-download"></i></button>
+            <div class="d-flex">
+              <div>
+                <p style="color: #000000;" > The Sample file consists of two sheets to upload the details of the property and tenants at a time. Kindly fill both the sheets and send us to upload.  </p>
               </div>
-            <div style="justify-content: start; text-justify: auto;"><p>Tenant Details upload sheet consists of the First Name,Last Name,Phone Number,eMail,Date Of Birth,Gender,Permanent Address,In Date(exact date for Current month checked-in Tenants and any date in the current month for other tenants to generate Rental agreement and rent calculation.),Out Date,Floor,Room,Bed Number ,Deposit Paid,Rent Paid in .csv format.All fields are mandatory except 'Out Date' field. Follow the instructions on fields strength and data validation given in the row-2. For successfull upload avoid changing the file format, column headers(First Two Rows) or their order to prevent upload errors.</p></div>
+             <div class="ms-auto">
+              <button mat-mini-fab  color="accent" class="mr-1" title="Click to download the file" [disabled]="downloadProgress" (click)="getBulkUploadTemplate()">
+                <i class="fas fa-download" *ngIf="!downloadProgress"></i>
+                <img src="assets/images/loading.gif" class="mr-1" *ngIf="downloadProgress">
+              </button>
+             </div>
+            </div>
+            <div>
+              <div style="display: flex; flex-direction: row; align-items: center;">
+                <div class="d-flex mb-1">
+                  <h3 class="mb-0"><span class="text-header-800">Sheet 1:</span><span class="text-header-800-blue">Property Details</span></h3> 
+                </div>
+              </div>
+              <div style="justify-content: start; text-justify: auto;color: #404040;"><p>PG Proprty Details upload sheet consists of the Floor Name, Room Name,	Room Type,	Share Type, Room Area in Sqft, Available Bed Numbers,Monthly Rent[Old tariff], Room Amenities, Remarks About Room. Make sure the available and occupied bed numbers are given correctly without any duplication to avoid creating data missmatch. Follow the instructions on fields strength and data validation given in the row-2. For successfull upload avoid changing the file format, column headers(First Two Rows) or their order to prevent upload errors.</p></div>
+            </div>
+            <div>
+             <div class="d-flex mb-1">
+              <h3 class="mb-0"><span class="text-header-800">Sheet 2:</span><span class="text-header-800-blue">Tenant Details</span></h3> 
+            </div>
+            <div style="justify-content: start; text-justify: auto;color: #404040;"><p>Tenant Details upload sheet consists of the First Name,Last Name,Phone Number,eMail,Date Of Birth,Gender,Permanent Address,In Date(exact date for Current month checked-in Tenants and any date in the current month for other tenants to generate Rental agreement and rent calculation.),Out Date,Floor,Room,Bed Number ,Deposit Paid,Rent Paid .All fields are mandatory except 'Out Date' field. Follow the instructions on fields strength and data validation given in the row-2. For successfull upload avoid changing the file format, column headers(First Two Rows) or their order to prevent upload errors.</p></div>
            </div>
           <div>
-            <div style="display: flex; flex-direction: row; align-items: center;">
-              <h5 style="flex:1;">PG Property</h5>
-              <button mat-mini-fab  color="accent" class="mr-1" title="Click to download the file" [disabled]="'PG_properties_sample_file.xlsx' === downloading" (click)="downloadSamples('PG_properties_sample_file.xlsx')"><i class="fa fa-download"></i> </button>
+            <div style="color: rgb(247, 83, 83); justify-content: start;">
+              <h5>* System will allow to upload the details only once for a property and cannot be bulk uploaded again.</h5>
+              <h5>* The names and order of the columns must be kept the same.</h5>
             </div>
-            <div style="justify-content: start; text-justify: auto;"><p>PG Proprty Details upload sheet consists of the Floor Name, Room Name,	Room Type,	Share Type, Room Area in Sqft, Available Bed Numbers,Monthly Rent[Old tariff], Room Amenities, Remarks About Room in .xlsx format. Make sure the available and occupied bed numbers are given correctly without any duplication to avoid creating data missmatch. Follow the instructions on fields strength and data validation given in the row-2. For successfull upload avoid changing the file format, column headers(First Two Rows) or their order to prevent upload errors.</p></div>
+            <br>
           </div>
           </div>
         </div>

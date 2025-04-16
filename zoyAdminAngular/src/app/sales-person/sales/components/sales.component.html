@@ -184,8 +184,8 @@
 
                     <ng-container matColumnDef="action">
                       <th mat-header-cell *matHeaderCellDef style="width: 40px;"></th>
-                      <td mat-cell *matCellDef="let element" style="padding: 4px;">
-                        <button class="btn btn-primary-custom btn-sm" title="Resend Credential" (click)="resend(element)"><i class="fas fa-redo mr-2" ></i></button>
+                      <td mat-cell *matCellDef="let element" style="padding: 4px;" [title]="element.isPassWordChange ? 'Person is already logged in':'Resend Credential'">
+                        <button class="btn btn-primary-custom btn-sm"  [disabled]="element.isPassWordChange" (click)="resend(element)"><i class="fas fa-redo mr-2" ></i></button>
                       </td>                
                     </ng-container>
                     
