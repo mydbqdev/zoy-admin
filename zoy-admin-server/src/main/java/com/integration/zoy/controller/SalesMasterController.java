@@ -30,6 +30,7 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.entity.AdminUserPasswordHistory;
 import com.integration.zoy.entity.ZoyPgSalesMaster;
 import com.integration.zoy.entity.ZoyPgSalesUserLoginDetails;
+import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.ZoyPgSalesMasterModel;
 import com.integration.zoy.repository.AdminUserPasswordHistoryRepository;
 import com.integration.zoy.service.EmailService;
@@ -152,7 +153,14 @@ public class SalesMasterController implements SalesMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 
 		}catch (Exception e) {
-			log.error("Unexpected error occurredAPI:/zoy_admin/manage-owners.zoyPgOwnerDetails", e);
+			log.error("Error getting while fetching  sales user register details details API:/zoy_admin/getzoyPgSalesUsersDetails.getzoyPgSalesUsersDetails", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			response.setError(e.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
