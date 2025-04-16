@@ -25,7 +25,7 @@ public class ZoyPgAmenetiesMaster {
 	private String amenetiesImage;
 	
 	@Column(name = "ameneties_status")
-	private boolean specialAmenity  ;
+	private Boolean specialAmenity;
 
 	// Constructors
 	public ZoyPgAmenetiesMaster() {
@@ -60,12 +60,12 @@ public class ZoyPgAmenetiesMaster {
 		this.amenetiesImage = amenetiesImage;
 	}
 
-	public boolean isSpecialAmenity() {
-		return specialAmenity;
+	public Boolean getSpecialAmenity() {
+	    return specialAmenity;
 	}
 
-	public void setSpecialAmenity(boolean specialAmenity) {
-		this.specialAmenity = specialAmenity;
+	public void setSpecialAmenity(Boolean specialAmenity) {
+	    this.specialAmenity = specialAmenity;
 	}
 
 }
