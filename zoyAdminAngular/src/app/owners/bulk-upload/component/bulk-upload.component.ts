@@ -28,7 +28,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class BulkUploadComponent {
 	public ELEMENT_DATA:BulkUploadModel[];
 	dataSource:MatTableDataSource<BulkUploadModel>=new MatTableDataSource<BulkUploadModel>();
-	displayedColumns: string[] = [ 'ownerName','propertyName','fileName','category', 'status',  'createdAt']; 
+	displayedColumns: string[] = [ 'ownerName','propertyName','fileName', 'status',  'createdAt']; 
 	pageSizeOptions: number[] = [5, 10, 25, 50];
 	pageSize = 10;
 	bulkUpload :BulkUploadModel=new BulkUploadModel();
@@ -54,7 +54,6 @@ export class BulkUploadComponent {
 	filteredProperties: Observable<PropertyDetail[]>;
 	selectedOwner: OwnerPropertyDetails ;
 	selectedProperty: PropertyDetail  ;
-	downloading : string ="";
    constructor(public dialog: MatDialog,private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,private  bulkUploadService:BulkUploadService,private confirmationDialogService :ConfirmationDialogService,
 		private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
@@ -103,11 +102,11 @@ export class BulkUploadComponent {
 		this.form = this.formBuilder.group({
 			ownerName: [''],
 			propertyname: [''],
-			category: ['', [Validators.required]],
 			reqDocument: ['', [Validators.required]]
 		  });
 		  this.getUploadFileDetails();
 		  this.getOwnerPropertyDetailsList();
+		  
   }
 
   ngAfterViewInit(){
@@ -120,20 +119,11 @@ export class BulkUploadComponent {
 		this.filevali=false;
 		this.upfile=event.target.files[0]; 
 		const fileType = this.upfile.type;
-		if (this.bulkUpload.category=='Tenant'){
-		 if(fileType !== 'text/csv') {
+		if(fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && fileType !== 'application/vnd.ms-excel') {
 			this.filevali=true;
-		 }else{
-			this.filevali=false;
-		 }
-		}
-		if (this.bulkUpload.category=='PG Property' ){
-			if(fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && fileType !== 'application/vnd.ms-excel') {
-		  	this.filevali=true;
-			}else{
-				this.filevali=false;
-			}
-	    }    
+		  }else{
+			  this.filevali=false;
+		  }
 	}
   
 	getUploadFileDetails() {
@@ -177,40 +167,7 @@ export class BulkUploadComponent {
 				   }
 				});
 		   }
-		submitUploadFile(){
-			this.authService.checkLoginUserVlidaate();
-			this.submitted = true;
-			if (this.form.invalid || this.filevali) {
-			  return;
-			}
-
-			const duplicate =  this.ELEMENT_DATA.filter(d=>d.ownerId == this.selectedOwner.ownerId && d.propertyId == this.selectedProperty.propertyId && d.status != 'Failed' && this.bulkUpload.category == d.category );
-			console.log("duplicate", this.selectedOwner.ownerId , this.selectedProperty.propertyId , this.bulkUpload.category  )
-			console.log("duplicate",duplicate)
-			if(duplicate.length>0){
-				this.notifyService.showWarning(this.bulkUpload.category+" details have already been uploaded for "+this.selectedProperty.propertyname+"( owned by "+this.selectedOwner.ownerName+" ).","");
-				return;
-			}
-			let bulkUploadModel=new BulkUploadModel();
-			bulkUploadModel.ownerId=this.selectedOwner.ownerId
-			bulkUploadModel.ownerName=this.selectedOwner.ownerName
-			bulkUploadModel.propertyId=this.selectedProperty.propertyId
-			bulkUploadModel.propertyName=this.selectedProperty.propertyname
-
-  			const model =JSON.stringify(bulkUploadModel);
-			var form_data = new FormData();
-
-			if(this.bulkUpload.category == 'Tenant'){
-				form_data.append('tenant', model);
-				form_data.append("file",this.upfile);
-				this.submitUploadTenentFile(form_data);
-
-			}else{
-				form_data.append('property', model);
-				form_data.append("file",this.upfile);
-				this.submitUploadPGFile(form_data);
-		    	}
-		}
+	
 
 		resetModel(){
 			this.submitted = false;
@@ -224,121 +181,6 @@ export class BulkUploadComponent {
 				map(value => this.filterOwners(value))
 			  );
 			this.getUploadFileDetails();
-		}
-
-		submitUploadTenentFile(form_data:any){ 
-			this.confirmationDialogService.confirm('Confirmation!!', "Initial upload can be done once for a property. Make sure all the data is entered properly in the sheet and correct.")
-			.then(
-			  (confirmed) =>{ 
-				if(confirmed){
-			 this.spinner.show();
-		   this.bulkUploadService.upload_tenant_file(form_data).subscribe((res) => {
-			this.notifyService.showSuccess("File has been uploaded sucessfully", "");
-			this.resetModel();
-		   this.spinner.hide();		 
-		   }, error => {
-			this.spinner.hide();		
-			if(error.status == 0) {
-				this.notifyService.showError("Internal Server Error/Connection not established", "")
-			 }else if(error.status==401){
-				console.error("Unauthorised");
-			}else if(error?.status==409){
-				if(error?.error?.data){
-					this.resetModel();
-					this.uploadErrorModalList=error.error.data;
-					this.openModel.nativeElement.click();   
-				}
-			 }else if(error.status==403){
-			   this.router.navigate(['/forbidden']);
-			 }else if (error.error && error.error.message) {
-			   this.errorMsg = error.error.message;
-			   console.log("Error:" + this.errorMsg);
-			   this.notifyService.showError(this.errorMsg, "");
-			   this.spinner.hide();
-			 } else {
-			   this.spinner.hide();
-			   if (error.status == 500 && error.statusText == "Internal Server Error") {
-				 this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-			   } else {
-				 let str;
-				 if (error.status == 400) {
-				   str = error.error.error;
-				 } else {
-				   str = error.error.message;
-				   str = str.substring(str.indexOf(":") + 1);
-				 }
-				 this.errorMsg = str;
-				 this.notifyService.showError(this.errorMsg, "");
-			   }
-			   if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			 }
-		   });
-		  }
-		  }).catch(
-			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-		  );	
-		}
-	submitUploadPGFile(form_data:any){ 
-		this.confirmationDialogService.confirm('Confirmation!!', "Initial upload can be done once for a property. Make sure all the data is entered properly in the sheet and correct.")
-			.then(
-			  (confirmed) =>{ 
-				if(confirmed){
-			 		this.spinner.show();
-		   			this.bulkUploadService.upload_property_file(form_data).subscribe((res) => {
-						this.resetModel();
-						this.notifyService.showSuccess("File has been uploaded sucessfully", "");
-		   				this.spinner.hide();
-		   			}, error => {
-					this.spinner.hide();
-					if(error.status == 0) {
-						this.notifyService.showError("Internal Server Error/Connection not established", "")
-					 }else if(error.status==401){
-						console.error("Unauthorised");
-					}else if(error?.status==409){
-            				if(error?.error?.data){
-								this.resetModel();
-								this.uploadErrorModalList=error.error.data;
-								this.openModel.nativeElement.click();    
-							}
-						}else if(error.status==403){
-			   				this.router.navigate(['/forbidden']);
-						}else if (error.error && error.error.message) {
-						this.errorMsg = error.error.message;
-						console.log("Error:" + this.errorMsg);
-						this.notifyService.showError(this.errorMsg, "");
-						this.spinner.hide();
-						} else {
-			   					this.spinner.hide();
-							if (error.status == 500 && error.statusText == "Internal Server Error") {
-								this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-							} else {
-				 				let str;
-								if (error.status == 400) {
-								str = error.error.error;
-								} else {
-								str = error.error.message;
-								str = str.substring(str.indexOf(":") + 1);
-								}
-				 				console.log("Error:" ,str);
-								 this.errorMsg = str;
-			   				}
-			   				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			 		}
-		   			});
-		  		}
-		  		}).catch(
-					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-		  		);	
-		}
-
-		downloadSamples(fileName:string){
-			this.downloading = fileName;
-			const filePath = `assets/sample_files/${fileName}`;
-			const link = document.createElement('a');
-			link.href = filePath;
-			link.download = fileName;
-			link.click();
-			this.downloading = "";
 		}
 
 	getOwnerPropertyDetailsList(){
@@ -404,6 +246,130 @@ export class BulkUploadComponent {
 		  const selectedPropertyId = (event.target as HTMLSelectElement).value;
 		  const list = this.selectedOwner.property_details.find(property => property.propertyId === selectedPropertyId);
 		  this.selectedProperty = list;
+		}
+
+
+		downloadProgress:boolean;
+	getBulkUploadTemplate(){
+		this.downloadProgress=true;
+		this.bulkUploadService.getBulkUploadTemplate().subscribe((data) => { 
+		
+			var blob = new Blob([data], {type : 'application/vnd.ms-excel'});
+			var fileURL=URL.createObjectURL(blob);
+			const link = document.createElement("a");
+			link.href = fileURL;
+			link.target = '_blank';
+			link.download = 'BulkUpload.xlsx';
+			document.body.appendChild(link);
+			link.click();
+			this.downloadProgress=false;
+		  }, async error => {
+			this.downloadProgress=false;
+		  if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			}else if(error.status==401){
+				console.error("Unauthorised");
+			}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			  }else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			  } else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				  this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				  let str;
+				  if (error.status == 400) {
+					str = error.error.error;
+				  } else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				  }
+				  console.log("Error:" + await str.text());
+				  this.errorMsg =  await new Response(str).text()// or use await str.text();
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			  }
+			});	
+		}
+
+	bulkUploadFile(){
+		this.authService.checkLoginUserVlidaate();
+		this.submitted = true;
+		if (this.form.invalid || this.filevali) {
+		  return;
+		}
+
+		const duplicate =  this.ELEMENT_DATA.filter(d=>d.ownerId == this.selectedOwner.ownerId && d.propertyId == this.selectedProperty.propertyId && d.status != 'Failed' );
+		console.log("duplicate", this.selectedOwner.ownerId , this.selectedProperty.propertyId ,  )
+		console.log("duplicate",duplicate)
+		if(duplicate.length>0){
+			this.notifyService.showWarning(" Details have already been uploaded for "+this.selectedProperty.propertyname+"( owned by "+this.selectedOwner.ownerName+" ).","");
+			return;
+		}
+		let bulkUploadModel=new BulkUploadModel();
+		bulkUploadModel.ownerId=this.selectedOwner.ownerId
+		bulkUploadModel.ownerName=this.selectedOwner.ownerName
+		bulkUploadModel.propertyId=this.selectedProperty.propertyId
+		bulkUploadModel.propertyName=this.selectedProperty.propertyname
+
+		const model =JSON.stringify(bulkUploadModel);
+		var form_data = new FormData();
+
+		form_data.append('data', model);
+		form_data.append("file",this.upfile);
+
+		this.confirmationDialogService.confirm('Confirmation!!', "Initial upload can be done once for a property. Make sure all the data is entered properly in the sheet and correct.")
+	    .then(
+			(confirmed) =>{ 
+			  if(confirmed){
+				   this.spinner.show();
+				   this.bulkUploadService.bulkUploadFile(form_data).subscribe((res) => {
+				   this.resetModel();
+				   this.notifyService.showSuccess("File has been uploaded sucessfully", "");
+				   this.spinner.hide();
+				 }, error => {
+				  this.spinner.hide();
+				  if(error.status == 0) {
+					  this.notifyService.showError("Internal Server Error/Connection not established", "")
+				   }else if(error.status==401){
+					  console.error("Unauthorised");
+				  }else if(error?.status==409){
+						  if(error?.error?.data){
+							  this.resetModel();
+							  this.uploadErrorModalList=error.error.data;
+							  this.openModel.nativeElement.click();    
+						  }
+				  }else if(error.status==403){
+					 this.router.navigate(['/forbidden']);
+				  }else if (error.error && error.error.message) {
+					  this.errorMsg = error.error.message;
+					  console.log("Error:" + this.errorMsg);
+					  this.notifyService.showError(this.errorMsg, "");
+					  this.spinner.hide();
+					  } else {
+								 this.spinner.hide();
+						  if (error.status == 500 && error.statusText == "Internal Server Error") {
+							  this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+						  } else {
+							   let str;
+							  if (error.status == 400) {
+							  str = error.error.error;
+							  } else {
+							  str = error.error.message;
+							  str = str.substring(str.indexOf(":") + 1);
+							  }
+							   console.log("Error:" ,str);
+							   this.errorMsg = str;
+							 }
+							 if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				   }
+				 });
+				}
+				}).catch(
+				  () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				);			
 		}
 }
 

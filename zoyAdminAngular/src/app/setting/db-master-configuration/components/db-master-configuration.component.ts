@@ -605,8 +605,8 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       }
       let isCreatedMsg= this.isCreated ? 'upload' :' update';
       var form_data = new FormData();
-      form_data.append('document', this.documentfile);
-      form_data.append('id', this.isCreated ?'0':this.dbSettingDataModel.rentalAgreementDocId);
+      form_data.append('rentalAgreementDocId', this.isCreated ?'':this.dbSettingDataModel.rentalAgreementDocId);
+      form_data.append('file', this.documentfile);
       this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+isCreatedMsg+'?')
       .then(
         (confirmed) =>{

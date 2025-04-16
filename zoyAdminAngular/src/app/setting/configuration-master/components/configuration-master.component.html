@@ -1898,321 +1898,370 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="mr-1">
+      <div class="m-2">
         <div *ngIf="popupMoreRecordHeader === 'Token Advance'">
-          <div class="row rule-header">
-            <div class="col-sm-2">Fixed amount</div>
-            <div class="col-sm-2">% of Security Deposit</div>
-            <div class="col-sm-2">Effective On</div>
-            <div class="col-sm-2">Created By</div>
-            <div class="col-sm-2">Approved By</div>
-            <div class="col-sm-2"></div>
-          </div>
-          <hr/>
-          <div *ngFor="let tokenDetails of configMasterModel.tokenDetails" >
-            <div class="row rule-data" *ngIf="tokenDetails.isApproved" >
-          <div class="col-sm-2">
-              <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
-              <span> {{ tokenDetails.fixedToken }} </span>
-          </div>
-          <div class="col-sm-2"> {{ tokenDetails.variableToken }} % </div>
-          <div class="col-sm-2"> {{ tokenDetails.effectiveDate }} </div>
-          <div class="col-sm-2"> {{ tokenDetails.createdBy }} </div>
-          <div class="col-sm-2"> {{ tokenDetails.approvedBy }} </div>
-          <div class="col-sm-2" ><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-          </div>
-        </div>
-        </div>
-      </div>
 
-      <div *ngIf="popupMoreRecordHeader === 'Security Deposit Limits'">
-        <div class="row rule-header" >
-          <div class="col-sm-2">Minimum Deposit</div>
-          <div class="col-sm-2">Maximum Deposit</div>
-          <div class="col-sm-2">Effective On</div>
-          <div class="col-sm-3">Created By</div>
-          <div class="col-sm-3">Approved By</div>
-        </div>
-        <hr/>
-        <div *ngFor="let depositDetails of configMasterModel.depositDetails" >
-          <div class="row rule-data" *ngIf="depositDetails.isApproved" >
-          <div class="col-sm-2">
-              <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
-              <span> {{ depositDetails.minimumDeposit }}</span>
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 100px;">Fixed amount</div>
+            <div class="ms-3" style="min-width: 160px;">% of Security Deposit</div>
+            <div class="ms-3" style="min-width: 100px;">Effective On</div>
+            <div class="ms-3" style="min-width: 250px;">Created By</div>
+            <div class="ms-3" style="min-width: 250px;">Approved By</div>
           </div>
-          <div class="col-sm-2">
-              <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
-              <span> {{ depositDetails.maximumDeposit }} </span>
-          </div>
-          <div class="col-sm-2"> {{ depositDetails.effectiveDate }} </div>
-          <div class="col-sm-3"> {{ depositDetails.createdBy }} </div>
-          <div class="col-sm-3"> 
-            <span>  {{ depositDetails.approvedBy }} </span>
-            <span><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></span>
-          </div>
-         </div>
-      </div>
-      </div>
-
-      <div *ngIf="popupMoreRecordHeader === 'GST Charges'">
-        <div class="row rule-header">
-          <div class="col-sm-2"> Monthly Rent </div>
-          <div class="col-sm-1"> CGST </div>
-          <div class="col-sm-1"> SGST </div>
-          <div class="col-sm-1"> IGST </div>
-          <div class="col-sm-2"> Effective On </div>
-          <div class="col-sm-2">Created By</div>
-          <div class="col-sm-2">Approved By</div>
-        </div>
-        <hr/>
-        <div *ngFor="let gstDetail of configMasterModel.gstCharges">
-          <div class="row rule-data"  *ngIf="gstDetail.isApproved"  >
-            <div class="col-sm-2">
-                <span><i class="fas fa-rupee-sign" style="font-size: small;" ></i></span>
-                <span> {{gstDetail.monthlyRent}} </span>
-            </div>
-            <div class="col-sm-1"> {{gstDetail.cgstPercentage}}  % </div>
-            <div class="col-sm-1"> {{gstDetail.sgstPercentage}}  % </div>
-            <div class="col-sm-1"> {{gstDetail.igstPercentage}}  % </div>
-            <div class="col-sm-2"> {{gstDetail.effectiveDate}}  </div>
-            <div class="col-sm-2"> {{ gstDetail.createdBy }} </div>
-            <div class="col-sm-2"> {{ gstDetail.approvedBy }} </div>
-            <div class="col-sm-1"> <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="popupMoreRecordHeader === 'Service Charges'">
-        <div class="row mr-2">
-          <div class="col-sm-2 mr-3" style="text-align: center;border-bottom:2px solid gray ;color: #000;">eKYC Charges</div>
-          <div class="col-sm-3" style="text-align: center;border-bottom:2px solid gray;color: #000 ;">Documentation Charges </div>
-        </div>
-        <div class="row rule-header">
-          <div class="col-sm-1">  Owners</div>
-          <div class="col-sm-1">  Tenants</div>
-          <div class="col-sm-2">  Owners</div>
-          <div class="col-sm-1">  Tenants</div>
-          <div class="col-sm-2"> Effective Date</div>
-          <div class="col-sm-2"> Created By </div>
-          <div class="col-sm-2"> Approved By </div>
-        </div>
-      <hr/>
-        <div *ngFor="let otherCharges of configMasterModel.otherCharges">
-          <div class="row rule-data" *ngIf="otherCharges.isApproved" >
-            <div class="col-sm-1">
-                <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
-                <span> {{otherCharges.ownerEkycCharges}}</span>
-            </div>
-            <div class="col-sm-1">
-              <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
-                <span> {{otherCharges.tenantEkycCharges}}</span>
-            </div>
-            <div class="col-sm-2">
-                <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
-                <span> {{otherCharges.ownerDocumentCharges}} </span>
-            </div>
-            <div class="col-sm-1">
-                <span><i class="fas fa-rupee-sign" style="font-size: small;"></i></span>
-                <span> {{otherCharges.tenantDocumentCharges}} </span>
-            </div>
-            <div class="col-sm-2">{{otherCharges.effectiveDate}} </div>
-            <div class="col-sm-2"> {{ otherCharges.createdBy }} </div>
-            <div class="col-sm-2"> {{ otherCharges.approvedBy }} </div>
-            <div class="col-sm-1"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
+        
+          <hr />
+        
+          <div *ngFor="let tokenDetails of configMasterModel.tokenDetails">
+            <div class="d-flex rule-data" *ngIf="tokenDetails.isApproved">
+              <div style="min-width: 100px;">
+                <i class="fas fa-rupee-sign" style="font-size: small;"></i>
+                <span> {{ tokenDetails.fixedToken }} </span>
+              </div>
+              <div class="ms-3" style="min-width: 160px;">{{ tokenDetails.variableToken }} %</div>
+              <div class="ms-3" style="min-width: 100px;">{{ tokenDetails.effectiveDate }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ tokenDetails.createdBy }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ tokenDetails.approvedBy }}</div>
+              <div class="ms-3" style="min-width: 30px;">
+                <i class="fas fa-thumbs-up" style="color: rgb(153, 243, 94);"></i>
+              </div>
             </div>
           </div>
         </div>
-
-      <div *ngIf="popupMoreRecordHeader === 'Data Grouping'">  
-        <div class="row rule-header">
-          <div class="col-sm-3">Days</div>
-          <div class="col-sm-3">Effective Date</div>
-          <div class="col-sm-2"> Created By </div>
-          <div class="col-sm-2"> Approved By </div>
-        </div>
-        <hr/>
-        <div *ngFor="let dataGrouping of configMasterModel.dataGrouping">
-        <div class="row rule-data" *ngIf="dataGrouping.isApproved">
-          <div class="col-sm-3"> {{dataGrouping.considerDays}} Days </div>
-          <div class="col-sm-3"> {{dataGrouping.effectiveDate}} </div>
-          <div class="col-sm-2"> {{ dataGrouping.createdBy }} </div>
-          <div class="col-sm-2"> {{ dataGrouping.approvedBy }} </div>
-          <div class="col-sm-2"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-        </div>
-      </div>
-     </div>
-
-      <div *ngIf="popupMoreRecordHeader === 'Force Checkout'">  
-        <div class="row rule-header">
-          <div class="col-sm-2">Days</div>
-          <div class="col-sm-2">Effective Date</div>
-          <div class="col-sm-3">Created By</div>
-          <div class="col-sm-3">Approved By</div>
-        </div>
-        <hr/>
-        <div *ngFor="let forceCheckOut of configMasterModel.forceCheckOut">
-        <div class="row rule-data" *ngIf="forceCheckOut.isApproved">
-          <div class="col-sm-2"> {{forceCheckOut.forceCheckOutDays}} Days </div>
-          <div class="col-sm-2"> {{forceCheckOut.effectiveDate}}</div>
-          <div class="col-sm-3"> {{ forceCheckOut.createdBy }} </div>
-          <div class="col-sm-3"> {{ forceCheckOut.approvedBy }} </div> 
-          <div class="col-sm-1"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-         </div>
-     </div>
-      </div>
+        <div *ngIf="popupMoreRecordHeader === 'Security Deposit Limits'">
+  
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 160px;">Minimum Deposit</div>
+            <div class="ms-3" style="min-width: 160px;">Maximum Deposit</div>
+            <div class="ms-3" style="min-width: 100px;">Effective On</div>
+            <div class="ms-3 text-break" style="min-width: 250px;">Created By</div>
+            <div class="ms-3 text-break" style="min-width: 250px;">Approved By</div>
+          </div>
+        
+          <hr />
       
-      <div *ngIf="popupMoreRecordHeader === 'No Rental agreement'">  
-        <div class="row rule-header">
-          <div class="col-sm-3">No Rental agreement upto </div>
-          <div class="col-sm-2">Effective Date</div>
-          <div class="col-sm-3">Created By</div>
-          <div class="col-sm-3">Approved By</div>
-        </div>
-        <hr/>
-        <div *ngFor="let noRentalAgreement of configMasterModel.noRentalAgreement">
-        <div class="row rule-data" *ngIf="noRentalAgreement.isApproved">
-        <div class="col-sm-3"> {{noRentalAgreement.noRentalAgreementDays}} Days </div>
-        <div class="col-sm-2"> {{noRentalAgreement.effectiveDate}} </div>
-        <div class="col-sm-3"> {{ noRentalAgreement.createdBy }} </div>
-        <div class="col-sm-3"> {{ noRentalAgreement.approvedBy }} </div>
-        <div class="col-sm-1"><i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i></div>
-        </div>
-     </div>
-      </div>
-
-      <div *ngIf="popupMoreRecordHeader === 'Security Deposit Deadline'">  
-        <div class="row rule-header">
-          <div class="col-sm-1">Condition</div>
-          <div class="col-sm-2">Before check-in</div>
-          <div class="col-sm-2">Deduction Type</div>
-          <div class="col-sm-1">Deduction</div>
-          <div class="col-sm-2">Effective On</div>
-          <div class="col-sm-2">Created By</div>
-          <div class="col-sm-2">Approved By</div>
-        </div>
-        <div *ngFor="let securityDepositDeadLineDetails of configMasterModel.securityDepositDeadLineDetails">
-          <div class="row rule-data" *ngIf="securityDepositDeadLineDetails.isApproved">
-            <div class="col-sm-1"> {{ securityDepositDeadLineDetails.trigger_condition }} </div>
-            <div class="col-sm-2"> {{ securityDepositDeadLineDetails.auto_cancellation_day }} Days </div>
-            <div class="col-sm-2"> {{securityDepositDeadLineDetails.trigger_value}} </div>
-            <div class="col-sm-1"> {{securityDepositDeadLineDetails.deduction_percentage}}  % </div>
-            <div class="col-sm-2"> {{securityDepositDeadLineDetails.effectiveDate}} </div>
-            <div class="col-sm-2"> {{ securityDepositDeadLineDetails.createdBy }} </div>
-            <div class="col-sm-2"> 
-              <span> {{ securityDepositDeadLineDetails.approvedBy }} </span> &nbsp;
-              <span>
-                <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
-              </span>
+          <div *ngFor="let depositDetails of configMasterModel.depositDetails">
+            <div class="d-flex rule-data" *ngIf="depositDetails.isApproved">
+              <div style="min-width: 160px;">
+                <i class="fas fa-rupee-sign" style="font-size: small;"></i>
+                <span> {{ depositDetails.minimumDeposit }}</span>
+              </div>
+              <div class="ms-3" style="min-width: 160px;">
+                <i class="fas fa-rupee-sign" style="font-size: small;"></i>
+                <span> {{ depositDetails.maximumDeposit }}</span>
+              </div>
+              <div class="ms-3" style="min-width: 100px;">{{ depositDetails.effectiveDate }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ depositDetails.createdBy }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ depositDetails.approvedBy }}</div>
+              <div class="ms-3" style="min-width: 30px;">
+                <i class="fas fa-thumbs-up" style="color: rgb(153, 243, 94);"></i>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div *ngIf="popupMoreRecordHeader === 'Early Check-out Rules'">  
-        <div class="row rule-header">
-          <div class="col-sm-1">Condition</div>
-          <div class="col-sm-1">Eligibility</div>
-          <div class="col-sm-2">Deduction Type</div>
-          <div class="col-sm-2">Effective On</div>
-          <div class="col-sm-3">Created By</div>
-          <div class="col-sm-3">Approved By</div>
-        </div>
-        <hr/>
-        <div *ngFor="let earlyCheckOutRuleDetails of configMasterModel.earlyCheckOutRuleDetails">
-          <div class="row rule-data" *ngIf="earlyCheckOutRuleDetails.isApproved">
-              <div class="col-sm-1"> {{earlyCheckOutRuleDetails.trigger_condition}} </div>
-              <div class="col-sm-1"> {{earlyCheckOutRuleDetails.check_out_day}} Days </div>
-              <div class="col-sm-2"> {{earlyCheckOutRuleDetails.trigger_value}} </div>
-              <div class="col-sm-2"> {{earlyCheckOutRuleDetails.effectiveDate}} </div>
-              <div class="col-sm-3"> {{ earlyCheckOutRuleDetails.createdBy }} </div>
-              <div class="col-sm-3"> 
-                <span> {{ earlyCheckOutRuleDetails.approvedBy }} </span> &nbsp;
-                <span>
-                  <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
-                </span>
-              </div>
+        <div *ngIf="popupMoreRecordHeader === 'GST Charges'">
+  
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 140px;">Monthly Rent</div>
+            <div class="ms-3" style="min-width: 80px;">CGST</div>
+            <div class="ms-3" style="min-width: 80px;">SGST</div>
+            <div class="ms-3" style="min-width: 80px;">IGST</div>
+            <div class="ms-3" style="min-width: 100px;">Effective On</div>
+            <div class="ms-3" style="min-width: 250px;">Created By</div>
+            <div class="ms-3" style="min-width: 250px;">Approved By</div>
           </div>
-        </div>
-      </div>
-
-      <div *ngIf="popupMoreRecordHeader === 'After check-in Date'">  
-        <div class="row rule-header">
-          <div class="col-sm-1">Condition</div>
-          <div class="col-sm-2">After check-in</div>
-          <div class="col-sm-2">Deduction Type</div>
-          <div class="col-sm-2">Effective On</div>
-          <div class="col-sm-2">Created By</div>
-          <div class="col-sm-3">Approved By</div>
-        </div>
-        <hr/>
-        <div *ngFor="let cancellationAfterCheckInDetails of configMasterModel.cancellationAfterCheckInDetails">
-          <div class="row rule-data" *ngIf="cancellationAfterCheckInDetails.isApproved">
-              <div class="col-sm-1"> {{cancellationAfterCheckInDetails.trigger_condition}} </div>
-              <div class="col-sm-2"> {{cancellationAfterCheckInDetails.auto_cancellation_day}} Days </div>
-              <div class="col-sm-2"> {{cancellationAfterCheckInDetails.trigger_value}} </div>
-              <div class="col-sm-2"> {{cancellationAfterCheckInDetails.effectiveDate}} </div>
-              <div class="col-sm-2"> {{ cancellationAfterCheckInDetails.createdBy }} </div>
-              <div class="col-sm-3"> 
-                <span> {{ cancellationAfterCheckInDetails.approvedBy }} </span> &nbsp;
-                <span>
-                  <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
-                </span>
+        
+          <hr />
+        
+          <div *ngFor="let gstDetail of configMasterModel.gstCharges">
+            <div class="d-flex rule-data" *ngIf="gstDetail.isApproved">
+              <div style="min-width: 140px;">
+                <i class="fas fa-rupee-sign" style="font-size: small;"></i>
+                <span> {{ gstDetail.monthlyRent }} </span>
               </div>
+              <div class="ms-3" style="min-width: 80px;">{{ gstDetail.cgstPercentage }}%</div>
+              <div class="ms-3" style="min-width: 80px;">{{ gstDetail.sgstPercentage }}%</div>
+              <div class="ms-3" style="min-width: 80px;">{{ gstDetail.igstPercentage }}%</div>
+              <div class="ms-3" style="min-width: 100px;">{{ gstDetail.effectiveDate }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ gstDetail.createdBy }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;"> {{ gstDetail.approvedBy }}</div>
+              <div class="ms-3" style="min-width: 30px;">
+                <i class="fas fa-thumbs-up" style="color: rgb(153, 243, 94);"></i>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div *ngIf="popupMoreRecordHeader === 'Cancellation And Refund Policy'">  
-        <div class="row rule-header ml-2">
-          <div class="col-sm-1">Priority</div>
-          <div class="col-sm-1">Condition</div>
-          <div class="col-sm-1">Eligibility</div>
-          <div class="col-sm-2">Deduction Type</div>
-          <div class="col-sm-1">Deduction</div>
         </div>
         
-        <hr/>
-        <div *ngFor="let mainCRP of cancellationBeforeCheckInDetailsOrg">
-          <div class="card mt-2" *ngIf="mainCRP.isApproved">
-          <div>
-            <span style="color:#6610f2" >Created By : {{mainCRP.createdBy}} , Approved By: {{mainCRP.approvedBy}} , Effective from {{mainCRP.effectiveDate}} 
-              <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
-            </span> 
+
+        <div *ngIf="popupMoreRecordHeader === 'Service Charges'">
+
+          <div class="d-flex mb-2">
+            <div style="min-width: 200px; text-align: center; border-bottom: 2px solid gray; color: #000;">
+              eKYC Charges
+            </div>
+            <div class="ms-3" style="min-width: 300px; text-align: center; border-bottom: 2px solid gray; color: #000;">
+              Documentation Charges
+            </div>
           </div>
-        <div class="row" *ngFor="let crf of mainCRP.zoy_before_check_in_cancellation_info">
-              <div class="col-sm-1"> {{crf.priority}} </div>
-              <div class="col-sm-1"> {{crf.trigger_condition}} </div>
-              <div class="col-sm-1"> {{crf.before_checkin_days}} Days </div>
-              <div class="col-sm-2"> {{crf.trigger_value}} </div>
-              <div class="col-sm-1"> {{crf.deduction_percentage}} % </div>
-        </div>
-        </div>
-      </div>
-      </div>
-      <div *ngIf="popupMoreRecordHeader === 'Short Term Duration Details'">  
-        <div class="row rule-header ml-2">
-          <div class="col-sm-2">Start Day</div>
-          <div class="col-sm-1">End Day</div>
-          <div class="col-sm-1">Percentage</div>
+        
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 100px;">Owners</div>
+            <div class="ms-3" style="min-width: 100px;">Tenants</div>
+            <div class="ms-3" style="min-width: 160px;">Owners</div>
+            <div class="ms-3" style="min-width: 100px;">Tenants</div>
+            <div class="ms-3" style="min-width: 120px;">Effective Date</div>
+            <div class="ms-3" style="min-width: 250px;">Created By</div>
+            <div class="ms-3" style="min-width: 250px;">Approved By</div>
+            <div class="ms-3" style="min-width: 30px;"></div>
+          </div>
+        
+          <hr />
+        
+          <div *ngFor="let otherCharges of configMasterModel.otherCharges">
+            <div class="d-flex rule-data" *ngIf="otherCharges.isApproved">
+              <div style="min-width: 100px;">
+                <i class="fas fa-rupee-sign" style="font-size: small;"></i>
+                <span>{{ otherCharges.ownerEkycCharges }}</span>
+              </div>
+              <div class="ms-3" style="min-width: 100px;">
+                <i class="fas fa-rupee-sign" style="font-size: small;"></i>
+                <span>{{ otherCharges.tenantEkycCharges }}</span>
+              </div>
+              <div class="ms-3" style="min-width: 160px;">
+                <i class="fas fa-rupee-sign" style="font-size: small;"></i>
+                <span>{{ otherCharges.ownerDocumentCharges }}</span>
+              </div>
+              <div class="ms-3" style="min-width: 100px;">
+                <i class="fas fa-rupee-sign" style="font-size: small;"></i>
+                <span>{{ otherCharges.tenantDocumentCharges }}</span>
+              </div>
+              <div class="ms-3" style="min-width: 120px;">{{ otherCharges.effectiveDate }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ otherCharges.createdBy }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">
+                {{ otherCharges.approvedBy }}
+              </div>
+              <div class="ms-3" style="min-width: 30px;">
+                <i class="fas fa-thumbs-up" style="color: rgb(153, 243, 94);"></i>
+              </div>
+            </div>
+          </div>
+        
         </div>
         
-        <hr/>
-        <div *ngFor="let mainSTD of shortTermDataMainList">
-          <div class="card mt-2" >
-          <div>
-            <span style="color:#6610f2" > Created By : {{mainSTD.createdBy}} , Approved By: {{mainSTD.approvedBy}} , Effective from {{mainSTD.effectiveDate}} 
-              <i class="fas fa-thumbs-up mr-2" style="color:rgb(153, 243, 94) !important"></i>
+        <div *ngIf="popupMoreRecordHeader === 'Data Grouping'">
 
-            </span> 
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 100px;">Days</div>
+            <div class="ms-3" style="min-width: 100px;">Effective Date</div>
+            <div class="ms-3" style="min-width: 250px;">Created By</div>
+            <div class="ms-3" style="min-width: 250px;">Approved By</div>
           </div>
-        <div class="row" *ngFor="let std of mainSTD.zoy_short_term_dto_info">
-              <div class="col-sm-2"> {{std.start_day}} </div>
-              <div class="col-sm-1"> {{std.end_day}} </div>
-              <div class="col-sm-1"> {{std.percentage}} % </div>
+        
+          <hr />
+        
+          <div *ngFor="let dataGrouping of configMasterModel.dataGrouping">
+            <div class="d-flex rule-data" *ngIf="dataGrouping.isApproved">
+              <div style="min-width: 100px;">{{ dataGrouping.considerDays }} Days</div>
+              <div class="ms-3" style="min-width: 100px;">{{ dataGrouping.effectiveDate }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ dataGrouping.createdBy }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ dataGrouping.approvedBy }}</div>
+              <div class="ms-3" style="min-width: 30px;">
+                <i class="fas fa-thumbs-up" style="color: rgb(153, 243, 94);"></i>
+              </div>
+            </div>
+          </div>
+          
         </div>
+        
+        <div *ngIf="popupMoreRecordHeader === 'Force Checkout'">
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 150px;">Days</div>
+            <div class="ms-3" style="min-width: 150px;">Effective Date</div>
+            <div class="ms-3" style="min-width: 250px;">Created By</div>
+            <div class="ms-3" style="min-width: 250px;">Approved By</div>
+          </div>
+        
+          <hr />
+        
+          <div *ngFor="let forceCheckOut of configMasterModel.forceCheckOut">
+            <div class="d-flex rule-data" *ngIf="forceCheckOut.isApproved">
+              <div style="min-width: 150px;">{{ forceCheckOut.forceCheckOutDays }} Days</div>
+              <div class="ms-3" style="min-width: 150px;">{{ forceCheckOut.effectiveDate }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ forceCheckOut.createdBy }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ forceCheckOut.approvedBy }}</div>
+              <div class="ms-3" style="min-width: 30px;">
+                <i class="fas fa-thumbs-up" style="color: rgb(153, 243, 94);"></i>
+              </div>
+            </div>
+          </div>
         </div>
+        
+        <div *ngIf="popupMoreRecordHeader === 'No Rental agreement'">
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 200px;">No Rental agreement upto</div>
+            <div class="ms-3" style="min-width: 150px;">Effective Date</div>
+            <div class="ms-3" style="min-width: 250px;">Created By</div>
+            <div class="ms-3" style="min-width: 250px;">Approved By</div>
+          </div>
+        
+          <hr />
+        
+          <div *ngFor="let noRentalAgreement of configMasterModel.noRentalAgreement">
+            <div class="d-flex rule-data" *ngIf="noRentalAgreement.isApproved">
+              <div style="min-width: 200px;">{{ noRentalAgreement.noRentalAgreementDays }} Days</div>
+              <div class="ms-3" style="min-width: 150px;">{{ noRentalAgreement.effectiveDate }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ noRentalAgreement.createdBy }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ noRentalAgreement.approvedBy }}</div>
+              <div class="ms-3" style="min-width: 30px;">
+                <i class="fas fa-thumbs-up" style="color: rgb(153, 243, 94);"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="popupMoreRecordHeader === 'Security Deposit Deadline'">
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 100px;">Condition</div>
+            <div class="ms-3" style="min-width: 160px;">Before check-in</div>
+            <div class="ms-3" style="min-width: 160px;">Deduction Type</div>
+            <div class="ms-3" style="min-width: 100px;">Deduction</div>
+            <div class="ms-3" style="min-width: 120px;">Effective On</div>
+            <div class="ms-3" style="min-width: 250px;">Created By</div>
+            <div class="ms-3" style="min-width: 250px;">Approved By</div>
+          </div>
+        
+          <hr />
+        
+          <div *ngFor="let securityDepositDeadLineDetails of configMasterModel.securityDepositDeadLineDetails">
+            <div class="d-flex rule-data" *ngIf="securityDepositDeadLineDetails.isApproved">
+              <div style="min-width: 100px;">{{ securityDepositDeadLineDetails.trigger_condition }}</div>
+              <div class="ms-3" style="min-width: 160px;">{{ securityDepositDeadLineDetails.auto_cancellation_day }} Days</div>
+              <div class="ms-3" style="min-width: 160px;">{{ securityDepositDeadLineDetails.trigger_value }}</div>
+              <div class="ms-3" style="min-width: 100px;">{{ securityDepositDeadLineDetails.deduction_percentage }}%</div>
+              <div class="ms-3" style="min-width: 120px;">{{ securityDepositDeadLineDetails.effectiveDate }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ securityDepositDeadLineDetails.createdBy }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ securityDepositDeadLineDetails.approvedBy }}</div>
+              <div class="ms-3" style="min-width: 30px;">
+                <i class="fas fa-thumbs-up" style="color: rgb(153, 243, 94);"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="popupMoreRecordHeader === 'Early Check-out Rules'">
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 100px;">Condition</div>
+            <div class="ms-3" style="min-width: 120px;">Eligibility</div>
+            <div class="ms-3" style="min-width: 180px;">Deduction Type</div>
+            <div class="ms-3" style="min-width: 120px;">Effective On</div>
+            <div class="ms-3" style="min-width: 250px;">Created By</div>
+            <div class="ms-3" style="min-width: 250px;">Approved By</div>
+          </div>
+        
+          <hr />
+        
+          <div *ngFor="let earlyCheckOutRuleDetails of configMasterModel.earlyCheckOutRuleDetails">
+            <div class="d-flex rule-data" *ngIf="earlyCheckOutRuleDetails.isApproved">
+              <div style="min-width: 100px;">{{ earlyCheckOutRuleDetails.trigger_condition }}</div>
+              <div class="ms-3" style="min-width: 120px;">{{ earlyCheckOutRuleDetails.check_out_day }} Days</div>
+              <div class="ms-3" style="min-width: 180px;">{{ earlyCheckOutRuleDetails.trigger_value }}</div>
+              <div class="ms-3" style="min-width: 120px;">{{ earlyCheckOutRuleDetails.effectiveDate }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ earlyCheckOutRuleDetails.createdBy }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ earlyCheckOutRuleDetails.approvedBy }}</div>
+              <div class="ms-3" style="min-width: 30px;">
+                <i class="fas fa-thumbs-up" style="color: rgb(153, 243, 94);"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="popupMoreRecordHeader === 'After check-in Date'">
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 100px;">Condition</div>
+            <div class="ms-3" style="min-width: 160px;">After check-in</div>
+            <div class="ms-3" style="min-width: 180px;">Deduction Type</div>
+            <div class="ms-3" style="min-width: 120px;">Effective On</div>
+            <div class="ms-3" style="min-width: 250px;">Created By</div>
+            <div class="ms-3" style="min-width: 250px;">Approved By</div>
+          </div>
+        
+          <hr />
+        
+          <div *ngFor="let cancellationAfterCheckInDetails of configMasterModel.cancellationAfterCheckInDetails">
+            <div class="d-flex rule-data" *ngIf="cancellationAfterCheckInDetails.isApproved">
+              <div style="min-width: 100px;">{{ cancellationAfterCheckInDetails.trigger_condition }}</div>
+              <div class="ms-3" style="min-width: 160px;">{{ cancellationAfterCheckInDetails.auto_cancellation_day }} Days</div>
+              <div class="ms-3" style="min-width: 180px;">{{ cancellationAfterCheckInDetails.trigger_value }}</div>
+              <div class="ms-3" style="min-width: 120px;">{{ cancellationAfterCheckInDetails.effectiveDate }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ cancellationAfterCheckInDetails.createdBy }}</div>
+              <div class="ms-3 text-break" style="min-width: 250px;">{{ cancellationAfterCheckInDetails.approvedBy }} </div>
+              <div class="ms-3" style="min-width: 30px;">
+                <i class="fas fa-thumbs-up" style="color: rgb(153, 243, 94);"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="popupMoreRecordHeader === 'Cancellation And Refund Policy'">  
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 100px;">Priority</div>
+            <div class="ms-3" style="min-width: 120px;">Condition</div>
+            <div class="ms-3" style="min-width: 140px;">Eligibility</div>
+            <div class="ms-3" style="min-width: 200px;">Deduction Type</div>
+            <div class="ms-3" style="min-width: 120px;">Deduction</div>
+          </div>
+        
+          <hr />
+        
+          <div *ngFor="let mainCRP of cancellationBeforeCheckInDetailsOrg">
+            <div class="card p-3 mt-2" *ngIf="mainCRP.isApproved">
+              <div class="mb-2 text-break" style="color:#6610f2;">
+                Created By: {{ mainCRP.createdBy }},
+                Approved By: {{ mainCRP.approvedBy }},
+                Effective from: {{ mainCRP.effectiveDate }}
+                <i class="fas fa-thumbs-up ms-2" style="color:rgb(153, 243, 94);"></i>
+              </div>
+        
+              <div *ngFor="let crf of mainCRP.zoy_before_check_in_cancellation_info" class="d-flex rule-data">
+                <div style="min-width: 100px;">{{ crf.priority }}</div>
+                <div class="ms-3" style="min-width: 120px;">{{ crf.trigger_condition }}</div>
+                <div class="ms-3" style="min-width: 140px;">{{ crf.before_checkin_days }} Days</div>
+                <div class="ms-3" style="min-width: 200px;">{{ crf.trigger_value }}</div>
+                <div class="ms-3" style="min-width: 120px;">{{ crf.deduction_percentage }}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="popupMoreRecordHeader === 'Short Term Duration Details'">  
+          <div class="d-flex rule-header mb-2">
+            <div style="min-width: 160px;">Start Day</div>
+            <div class="ms-3" style="min-width: 100px;">End Day</div>
+            <div class="ms-3" style="min-width: 120px;">Percentage</div>
+          </div>
+        
+          <hr />
+        
+          <div *ngFor="let mainSTD of shortTermDataMainList">
+            <div class="card p-3 mt-2">
+              <div class="mb-2 text-break" style="color:#6610f2;">
+                Created By: {{ mainSTD.createdBy }},
+                Approved By: {{ mainSTD.approvedBy }},
+                Effective from: {{ mainSTD.effectiveDate }}
+                <i class="fas fa-thumbs-up ms-2" style="color:rgb(153, 243, 94);"></i>
+              </div>
+        
+              <div *ngFor="let std of mainSTD.zoy_short_term_dto_info" class="d-flex rule-data">
+                <div style="min-width: 160px;">{{ std.start_day }}</div>
+                <div class="ms-3" style="min-width: 100px;">{{ std.end_day }}</div>
+                <div class="ms-3" style="min-width: 120px;">{{ std.percentage }}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
       </div>
-      </div>
-      </div>
+    </div>
     </div>
   </div>
 </div>

@@ -52,4 +52,8 @@
   background-color:#fff;
   border-color: #955cf1;
 }
- 
+.mat-mdc-mini-fab.mat-accent{
+  color: #fff !important;
+  background-color: #8b67de !important;
+  border-color: #955cf1 !important;
+}

@@ -11,4 +11,5 @@ export class SalesData {
     contactNumber: string;
     userEmail: string;
     empId :string;
+    isPassWordChange:boolean;
   }
