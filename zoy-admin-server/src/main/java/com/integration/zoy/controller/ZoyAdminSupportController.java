@@ -108,26 +108,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	}
 
 	@Override
-	public ResponseEntity<String> getSupportUserDetails(String inquiryNumber) {
+	public ResponseEntity<String> getSupportUserDetails() {
 		ResponseBody response = new ResponseBody();
 		try {
-			final Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(inquiryNumber);
-			final String assignedUserEmail;
-			if (partner.isPresent()) {
-				RegisteredPartner existingPartner = partner.get();
-				assignedUserEmail = existingPartner.getAssignedToEmail();
-			} else {
-				assignedUserEmail = null;
-			}
-
 			List<SupportUsres> supportUsrs = ownerDBImpl.getAllSupportUserNames();
-
-			if (assignedUserEmail != null && !assignedUserEmail.isEmpty()) {
-				supportUsrs = supportUsrs.stream()
-						.filter(user -> !user.getEmail().equals(assignedUserEmail))
-						.collect(Collectors.toList());
-			}
-
 			return new ResponseEntity<>(gson2.toJson(supportUsrs), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting support user details API:/zoy_admin/support_user_details.getSupportUserDetails", e);
