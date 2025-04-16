@@ -1287,12 +1287,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 			List<RentalAgreementDocDto> dto = allDetails.stream()
 					.map(this::convertToDTO)
 					.collect(Collectors.toList());
-
-			response.setStatus(HttpStatus.OK.value());
-			response.setData(dto);
-			response.setMessage("Rental Agreement document list fetched successfully");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-
+			return new ResponseEntity<>(gson2.toJson(dto), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error in GET /zoy_admin/rental-agreements: ", e);
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
