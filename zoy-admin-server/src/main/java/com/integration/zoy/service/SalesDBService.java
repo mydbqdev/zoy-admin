@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.entity.AdminSalesUserLoginDetails;
 import com.integration.zoy.entity.ZoyPgSalesMaster;
 import com.integration.zoy.entity.ZoyPgSalesUserLoginDetails;
 import com.integration.zoy.exception.WebServiceException;
@@ -109,13 +110,14 @@ public class SalesDBService implements SalesDBImpl{
 	                .collect(Collectors.joining(" ")).trim();
 
 	        String createdAtStr = createdAt != null ? createdAt.toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
-
+	        Optional<ZoyPgSalesUserLoginDetails> loginDetails = zoyPgSalesUserLoginDetailsRepo.findByUserEmail(emailId);
 	        ZoyPgSalesMasterModel model = new ZoyPgSalesMasterModel();
 	        model.setEmailId(emailId);
 	        model.setEmployeeId(employeeId);
 	        model.setMobileNo(mobileNo);
 	        model.setCreatedAt(createdAtStr);
 	        model.setFullName(fullName);
+	        model.setIsPassWordChange(loginDetails.get().getIsPasswordChange());
 
 	        return model;
 	    });
