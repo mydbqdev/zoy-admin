@@ -300,7 +300,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
     		+ "COALESCE(ekyc.user_ekyc_state, ''), ' ',COALESCE(ekyc.user_ekyc_country, '')) AS address, "
     		+ "CASE WHEN up.enabled IS TRUE AND EXISTS (  "
     		+ "SELECT 1 FROM pgcommon.pg_owner_property_status pops WHERE pops.pg_owner_id = zpod.pg_owner_id  "
-    		+ "AND pops.status = TRUE) THEN 'Active' WHEN up.enabled IS TRUE THEN 'Inactive' ELSE 'Pending'  "
+    		+ "AND pops.status = TRUE) THEN 'Active' WHEN up.pwd IS NULL then 'Not Registered' ELSE 'Registered'  "
     		+ "END AS owner_status,zpod.pg_owner_profile_image, "
     		+ "string_agg(distinct bd.user_account_number||'|'||bd.user_bank_name||'|'||bd.user_bank_branch ||'|'||bd.user_ifsc_code  "
     		+ "||'|'||(case WHEN bd.user_is_primary = TRUE THEN 'Primary Account' ELSE 'Secondary Account' end),',')as bank_details,  "
@@ -344,7 +344,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
     		+ "LEFT join pgowners.zoy_pg_rent_cycle_master rcm ON prc.cycle_id = rcm.cycle_id  "
     		+ "where zpod.pg_owner_id =:ownerId  "
     		+ "group by pom.zoy_code,zpod.pg_owner_id,ekyc.enocded_aadhaar,zppd.property_id,up.enabled, pops.status,zpm.pg_type_name, "
-    		+ "tm.term_id,zppfd.floor_id,zprd.room_id,zpod.zoy_share  ",nativeQuery = true)
+    		+ "tm.term_id,zppfd.floor_id,zprd.room_id,zpod.zoy_share,up.pwd  ",nativeQuery = true)
 	List<String[]> getOwnerPropertyDetails(String ownerId);
 	
 
