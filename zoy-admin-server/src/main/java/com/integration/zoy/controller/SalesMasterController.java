@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,6 +104,7 @@ public class SalesMasterController implements SalesMasterImpl {
 			master.setEmployeeId(pgSalesMasterModel.getEmployeeId());
 			master.setMobileNo(pgSalesMasterModel.getMobileNo());
 			master.setEmailId(pgSalesMasterModel.getEmailId());
+			master.setUserId(UUID.randomUUID().toString());
 			master.setStatus(true);
 			salesDBImpl.saveAdminSalesUser(master);
 
