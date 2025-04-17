@@ -38,6 +38,9 @@ public class ZoyAfterCheckInCancellation {
 
 	@JsonProperty("createdBy")
 	private String createdBy;
+	
+	@JsonProperty("comments")
+	private String comments;
 
 	public String getAutoCancellationId() {
 		return autoCancellationId;
@@ -125,6 +128,14 @@ public class ZoyAfterCheckInCancellation {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 }
