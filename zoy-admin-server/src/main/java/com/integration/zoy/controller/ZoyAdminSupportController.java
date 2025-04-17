@@ -38,6 +38,7 @@ import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.OwnerDBImpl;
+import com.integration.zoy.service.TimestampFormatterUtilService;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.RegisterLeadDetails;
@@ -89,6 +90,12 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 
 	@Autowired
 	FollowUpRepository followUpRepository;
+	
+	@Autowired
+	AdminUserMasterRepository adminUserMasterRepo;
+	
+	@Autowired
+	TimestampFormatterUtilService tuService;
 
 	@Override
 	public ResponseEntity<String> getRegisteredLeadDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
@@ -127,10 +134,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 		try {
 			Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(assignTicket.getInquiryNumber());
 			if (partner.isPresent()) {
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
-				Date date = new Date();
-				String currentDate=dateFormat.format(date);
+				String currentDate=tuService.currentDate();
 				RegisteredPartner existingPartner = partner.get();
 				String historyContentForTicketAssign;
 				String userName="";
@@ -153,7 +157,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				auditHistoryUtilities.leadHistory(historyContentForTicketAssign,assignTicket.getEmail(),assignTicket.getInquiryNumber());
 				String historyContentForChangeTicketStatus = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " Status has been Changed To " + existingPartner.getStatus() + "."+ " On " + currentDate;
 				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,assignTicket.getEmail(),assignTicket.getInquiryNumber());
-				notificationsAndAlertsService.ticketAssign(new String[]{assignTicket.getEmail()},assignTicket.getInquiryNumber());
+				AdminUserMaster adminuserDetails=adminUserMasterRepo.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+				String notificationMessage = "Ticket ID: " + assignTicket.getInquiryNumber() + " assigned to you by "+adminuserDetails.getFirstName()+" "+adminuserDetails.getLastName()+ " received on "+currentDate+" Check the details in the Tickets section.";
+				notificationsAndAlertsService.ticketAssign(new String[]{assignTicket.getEmail()},notificationMessage);
 				return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
 			} else {
 				response.setMessage("Inquiry number does not exist.");
@@ -208,10 +214,8 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 		try {
 			Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(updateStatus.getInquiryNumber());
 			if (partner.isPresent()) {
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
-				Date date = new Date();
-				String currentDate=dateFormat.format(date);
+				
+				String currentDate=tuService.currentDate();
 				RegisteredPartner existingPartner = partner.get();
 				String previousStatus=existingPartner.getStatus();
 				existingPartner.setStatus(updateStatus.getStatus());
