@@ -30,6 +30,9 @@ public class ZoyPgForceCheckOut {
 	@Column(name="approved_by")
 	private String approvedBy;
 	
+	@Column(name="comments")
+	private String comments;
+	
     // Getters and Setters
     public String getForceCheckOutId() {
         return forceCheckOutId;
@@ -79,10 +82,18 @@ public class ZoyPgForceCheckOut {
 		this.approvedBy = approvedBy;
 	}
 	
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
 	@Override
 	public String toString() {
 		return "ZoyPgForceCheckOut [forceCheckOutId=" + forceCheckOutId + ", forceCheckOutDays=" + forceCheckOutDays
 				+ ", isApproved=" + isApproved + ", effectiveDate=" + effectiveDate + ", createdBy=" + createdBy
-				+ ", approvedBy=" + approvedBy + "]";
+				+ ", approvedBy=" + approvedBy + ", comments=" + comments + "]";
 	}
 }

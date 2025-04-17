@@ -20,6 +20,9 @@ public class ZoyDataGroupingDto {
 
 	@SerializedName("createdBy")
 	private String createdBy;
+	
+	@SerializedName("comments")
+	private String comments;
 
 	public String getDataGroupingId() {
 		return dataGroupingId;
@@ -73,5 +76,12 @@ public class ZoyDataGroupingDto {
 		this.isApproved = isApproved;
 	}
 
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
 
 }
