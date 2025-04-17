@@ -44,7 +44,6 @@ import { ZoyCodeComponent } from './owners/zoy-code/components/zoy-code.componen
 import { ProfileComponent } from './profile/profile/profile.component';
 import { ActivityLogComponent } from './profile/activity-log/activity-log.component';
 import { SettingsComponent } from './profile/settings/settings.component';
-import { TicketsComponent } from './supports/tickets/component/tickets.component';
 import { TenantMenuRoutingModule } from './tenants/tenents-menu-routing.module';
 import { PaymentApprovalComponent } from './finance/payment-appoval/component/payment-approval.component';
 import { OwnerDetailsComponent } from './owners/owner-details/components/managing-owner-details.component';
@@ -74,6 +73,10 @@ import { TenantReportsComponent } from './report/tenant-reports/component/tenant
 import { BulkUploadComponent } from './owners/bulk-upload/component/bulk-upload.component';
 import { AppSalesPersonMenuRoutingModule } from './sales-person/sales-person-menu-routing.model';
 import { SalesComponent } from './sales-person/sales/components/sales.component';
+import { AllClosedTicketsComponent } from './supports/all-closed-tickets/component/all-closed-tickets.component';
+import { AllTicketsComponent } from './supports/all-tickets/component/all-tickets.component';
+import { MyClosedTicketsComponent } from './supports/my-closed-tickets/component/my-closed-tickets.component';
+import { TicketsComponent } from './supports/my-tickets/component/tickets.component';
 
 
 const appRoutes: Routes = [
@@ -105,6 +108,9 @@ const appRoutes: Routes = [
     ActivityLogComponent,
     SettingsComponent,
     TicketsComponent,
+    AllTicketsComponent,
+    MyClosedTicketsComponent,
+    AllClosedTicketsComponent,
     TenantsComponent,
     TenantProfileComponent,
     BulkUploadComponent,
