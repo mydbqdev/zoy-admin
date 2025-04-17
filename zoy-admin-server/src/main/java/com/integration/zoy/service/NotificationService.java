@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.entity.NotificationsAndAlerts;
@@ -56,11 +57,15 @@ public class NotificationService {
         notifyUsers(userIds, notificationMessage, screenName, category, infoType);
     }
     
-    public void notifyTicketAssignedToSupportUser(String[] userIds, String ticketId) throws Exception {
-        String notificationMessage = "You have been assigned Ticket ID " + ticketId + ". Please review and follow up in the Tickets section.";
+    public void notifyTicketAssignedToSupportUser(String[] userIds,String notificationMessage) throws Exception {
         String screenName = "TICKETS";
         String category = "Ticket Assignment";
         String infoType = "notification";
         notifyUsers(userIds, notificationMessage, screenName, category, infoType);
+    }
+    
+    @Scheduled(cron = "0 0 8 * * ?") //we need to chnage this after jira update 
+    public void sendRemainderNotificationForLeadsFollowUp() {
+    	
     }
 }

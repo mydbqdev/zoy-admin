@@ -32,6 +32,17 @@ public class ZoyPgShortTermRentingDuration {
 	
 	@Column(name="approved_by")
 	private String approvedBy;
+	
+	@Column(name="comments")
+	private String comments;
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
 
 	public String getRentingDurationId() {
 		return rentingDurationId;

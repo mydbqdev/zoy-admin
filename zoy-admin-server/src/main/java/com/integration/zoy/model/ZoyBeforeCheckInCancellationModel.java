@@ -28,6 +28,9 @@ public class ZoyBeforeCheckInCancellationModel {
 	@SerializedName("pgType")
 	private String pgType;
 
+	@SerializedName("comments")
+	private String comments;
+	
 	@JsonProperty("ZoyBeforeCheckInCancellationInfo")
 	private List<ZoyBeforeCheckInCancellation> zoyBeforeCheckInCancellationInfo;
 
@@ -93,6 +96,14 @@ public class ZoyBeforeCheckInCancellationModel {
 
 	public void setPgType(String pgType) {
 		this.pgType = pgType;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 }

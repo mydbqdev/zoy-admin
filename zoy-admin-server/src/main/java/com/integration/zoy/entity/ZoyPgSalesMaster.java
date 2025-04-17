@@ -1,13 +1,13 @@
 package com.integration.zoy.entity;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
-
-import java.sql.Timestamp;
 
 @Entity
 @Table(name = "pg_sales_master", schema = "pgsales")
@@ -16,6 +16,9 @@ public class ZoyPgSalesMaster {
     @Id
     @Column(name = "email_id", nullable = false, length = 36)
     private String emailId;
+    
+    @Column(name = "user_id")
+    private String userId;
 
     @Column(name = "employee_id")
     private String employeeId;
@@ -103,6 +106,14 @@ public class ZoyPgSalesMaster {
 
 	public void setStatus(Boolean status) {
 		this.status = status;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
     
     

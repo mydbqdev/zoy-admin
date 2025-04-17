@@ -22,6 +22,9 @@ public class ZoyForceCheckOutDto {
 	@SerializedName("createdBy")
 	private String createdBy;
 	
+	@SerializedName("comments")
+	private String comments;
+	
 	public String getForceCheckOutId() {
 		return forceCheckOutId;
 	}
@@ -72,6 +75,14 @@ public class ZoyForceCheckOutDto {
 
 	public void setApproved(boolean isApproved) {
 		this.isApproved = isApproved;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 }

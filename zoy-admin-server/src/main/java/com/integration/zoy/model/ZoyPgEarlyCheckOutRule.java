@@ -44,6 +44,9 @@ public class ZoyPgEarlyCheckOutRule {
     @JsonProperty("createdBy")
 	private String createdBy;
 
+    @JsonProperty("comments")
+	private String comments;
+    
 	public String getEarlyCheckOutId() {
 		return earlyCheckOutId;
 	}
@@ -131,6 +134,17 @@ public class ZoyPgEarlyCheckOutRule {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-    
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	public void setApproved(boolean isApproved) {
+		this.isApproved = isApproved;
+	}
     
 }

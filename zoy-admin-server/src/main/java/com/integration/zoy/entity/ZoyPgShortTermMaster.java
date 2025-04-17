@@ -37,6 +37,9 @@ public class ZoyPgShortTermMaster {
 	@Column(name="approved_by")
 	private String approvedBy;
 	
+	@Column(name="comments")
+	private String comments;
+	
 	// Getters and Setters
 	public String getZoyPgShortTermMasterId() {
 		return zoyPgShortTermMasterId;
@@ -100,6 +103,14 @@ public class ZoyPgShortTermMaster {
 
 	public void setApprovedBy(String approvedBy) {
 		this.approvedBy = approvedBy;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	
 	

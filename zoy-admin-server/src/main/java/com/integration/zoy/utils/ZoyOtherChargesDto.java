@@ -33,6 +33,8 @@ public class ZoyOtherChargesDto {
 	@SerializedName("createdBy")
 	private String createdBy;
 
+	@SerializedName("comments")
+	private String comments;
 		
 	public String getOtherChargesId() {
 		return otherChargesId;
@@ -110,7 +112,13 @@ public class ZoyOtherChargesDto {
 		this.isApproved = isApproved;
 	}
 
-	
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
 
 
 }

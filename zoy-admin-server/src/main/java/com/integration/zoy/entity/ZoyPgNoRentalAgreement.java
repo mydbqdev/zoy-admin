@@ -32,6 +32,9 @@ public class ZoyPgNoRentalAgreement {
 
 	@Column(name = "approved_by")
 	private String approvedBy;
+	
+	@Column(name="comments")
+	private String comments;
 
 	public String getNoRentalAgreementId() {
 		return noRentalAgreementId;
@@ -81,11 +84,19 @@ public class ZoyPgNoRentalAgreement {
 		this.approvedBy = approvedBy;
 	}
 
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
 	@Override
 	public String toString() {
 		return "ZoyPgNoRentalAgreement [noRentalAgreementId=" + noRentalAgreementId + ", noRentalAgreementDays="
 				+ noRentalAgreementDays + ", isApproved=" + isApproved + ", effectiveDate=" + effectiveDate
-				+ ", createdBy=" + createdBy + ", approvedBy=" + approvedBy + "]";
+				+ ", createdBy=" + createdBy + ", approvedBy=" + approvedBy + ", comments=" + comments + "]";
 	}
 
 }
