@@ -27,6 +27,9 @@ public class ZoyPgTokenDetailsDTO {
 
 	@SerializedName("createdBy")
 	private String createdBy;
+	
+	@SerializedName("comments")
+	private String comments;
 
 	public String getTokenId() {
 		return tokenId;
@@ -88,4 +91,13 @@ public class ZoyPgTokenDetailsDTO {
 		this.isApproved = isApproved;
 	}
 
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	
 }

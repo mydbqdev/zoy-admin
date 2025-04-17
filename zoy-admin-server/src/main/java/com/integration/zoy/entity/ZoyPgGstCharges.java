@@ -47,6 +47,9 @@ public class ZoyPgGstCharges {
 	
 	@Column(name="approved_by")
 	private String approvedBy;
+	
+	@Column(name="comments")
+	private String comments;
 
     @PrePersist
     public void prePersist() {
@@ -140,6 +143,14 @@ public class ZoyPgGstCharges {
 
 	public void setApprovedBy(String approvedBy) {
 		this.approvedBy = approvedBy;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
     
 }

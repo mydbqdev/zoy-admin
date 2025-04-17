@@ -32,6 +32,9 @@ public class ZoyGstChargesDto {
 	@SerializedName("createdBy")
 	private String createdBy;
 
+	@SerializedName("comments")
+	private String comments;
+	
 	public String getRentId() {
 		return rentId;
 	}
@@ -108,6 +111,14 @@ public class ZoyGstChargesDto {
 
 	public void setApproved(boolean isApproved) {
 		this.isApproved = isApproved;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	
 }

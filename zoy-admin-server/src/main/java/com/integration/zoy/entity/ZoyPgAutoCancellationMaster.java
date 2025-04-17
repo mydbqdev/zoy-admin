@@ -47,6 +47,9 @@ public class ZoyPgAutoCancellationMaster {
 	@Column(name="approved_by")
 	private String approvedBy;
 
+	@Column(name="comments")
+	private String comments;
+	
 	// Getters and Setters
 
 	public String getAutoCancellationId() {
@@ -137,13 +140,21 @@ public class ZoyPgAutoCancellationMaster {
 		this.approvedBy = approvedBy;
 	}
 
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
 	@Override
 	public String toString() {
 		return "ZoyPgAutoCancellationMaster [autoCancellationId=" + autoCancellationId + ", triggerOn=" + triggerOn
 				+ ", triggerCondition=" + triggerCondition + ", autoCancellationDay=" + autoCancellationDay
 				+ ", deductionPercentage=" + deductionPercentage + ", cond=" + cond + ", triggerValue=" + triggerValue
 				+ ", isApproved=" + isApproved + ", effectiveDate=" + effectiveDate + ", createdBy=" + createdBy
-				+ ", approvedBy=" + approvedBy + "]";
+				+ ", approvedBy=" + approvedBy + ", comments=" + comments + "]";
 	}
 	
 }

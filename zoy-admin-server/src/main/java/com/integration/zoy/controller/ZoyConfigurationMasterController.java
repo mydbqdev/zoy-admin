@@ -199,9 +199,12 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setEffectiveDate(details.getEffectiveDate());
 					oldDetails.setIsApproved(details.getIsApproved());
 
-					if (details.getIsApproved()) {
+					 if (details.getIsApproved()) {
+						oldDetails.setApprovedBy(currentUser);	
+					} else if ( null != details.getComments()&& details.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
-					} else {
+						oldDetails.setComments(details.getComments());
+					}else{
 						oldDetails.setCreatedBy(currentUser);
 					}
 
@@ -417,6 +420,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                    entity.setCreatedBy(zoyBeforeCheckInCancellation.getCreatedBy());
 	                    entity.setIsApproved(true);
 	                    entity.setApprovedBy(currentUser);
+	                } else if (null != zoyBeforeCheckInCancellation.getComments()&& zoyBeforeCheckInCancellation.getComments()!="") { 
+	                    entity.setCancellationId(cancellation.getCancellationId());
+	                    entity.setApprovedBy(currentUser);
+	                    entity.setIsApproved(false);
+	                    entity.setComments(zoyBeforeCheckInCancellation.getComments());          
 	                } else {
 	                    entity.setCancellationId(cancellation.getCancellationId());
 	                    entity.setCreatedBy(zoyBeforeCheckInCancellation.getCreatedBy());
@@ -587,10 +595,13 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setEffectiveDate(details.getEffectiveDate());
 
 					if (details.getIsApproved()) {
+						oldDetails.setApprovedBy(currentUser);	
+					} else if ( null != details.getComments()&& details.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
-					} else {
+						oldDetails.setComments(details.getComments());
+					}else{
 						oldDetails.setCreatedBy(currentUser);
-					}
+					}				 
 
 					ownerDBImpl.saveOtherCharges(oldDetails);
 
@@ -713,8 +724,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setEffectiveDate(details.getEffectiveDate());
 
 					if (details.getIsApproved()) {
+						oldDetails.setApprovedBy(currentUser);	
+					} else if ( null != details.getComments()&& details.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
-					} else {
+						oldDetails.setComments(details.getComments());
+					}else{
 						oldDetails.setCreatedBy(currentUser);
 					}
 
@@ -846,8 +860,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					existingGroup.setIsApproved(details.getIsApproved());
 
 					if (details.getIsApproved()) {
+						existingGroup.setApprovedBy(currentUser);	
+					} else if ( null != details.getComments()&& details.getComments()!="") {
 						existingGroup.setApprovedBy(currentUser);
-					} else {
+						existingGroup.setComments(details.getComments());
+					}else{
 						existingGroup.setCreatedBy(currentUser);
 					}
 
@@ -909,6 +926,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	public ResponseEntity<String> zoyAdminCreateUpadateConfigSecurityDepositLimits(
 			ZoyPgSecurityDepositDetailsDTO details) {
 		ResponseBody response = new ResponseBody();
+		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		try {
 			if (details == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -934,11 +952,14 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setIsApproved(details.getIsApproved());
 					oldDetails.setSecurityDepositMax(details.getMaximumDeposit());
 					oldDetails.setSecurityDepositMin(details.getMinimumDeposit());
-
+				
 					if (details.getIsApproved()) {
-						oldDetails.setApprovedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-					} else {
-						oldDetails.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+						oldDetails.setApprovedBy(currentUser);	
+					} else if ( null != details.getComments()&& details.getComments()!="") {
+						oldDetails.setApprovedBy(currentUser);
+						oldDetails.setComments(details.getComments());
+					}else{
+						oldDetails.setCreatedBy(currentUser);
 					}
 
 					zoyPgSecurityDepositDetailsRepository.save(oldDetails);
@@ -1044,10 +1065,13 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 					existingRule.setEffectiveDate(zoyPgEarlyCheckOut.getEffectiveDate());
 					existingRule.setIsApproved(zoyPgEarlyCheckOut.getIsApproved());
-
+					
 					if (zoyPgEarlyCheckOut.getIsApproved()) {
+						existingRule.setApprovedBy(currentUser);	
+					} else if ( null != zoyPgEarlyCheckOut.getComments()&& zoyPgEarlyCheckOut.getComments()!="") {
 						existingRule.setApprovedBy(currentUser);
-					} else {
+						existingRule.setComments(zoyPgEarlyCheckOut.getComments());
+					}else{
 						existingRule.setCreatedBy(currentUser);
 					}
 
@@ -1232,8 +1256,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					existingRule.setIsApproved(zoyAfterCheckInCancellation.getIsApproved());
 
 					if (zoyAfterCheckInCancellation.getIsApproved()) {
+						existingRule.setApprovedBy(currentUser);	
+					} else if ( null != zoyAfterCheckInCancellation.getComments()&& zoyAfterCheckInCancellation.getComments()!="") {
 						existingRule.setApprovedBy(currentUser);
-					} else {
+						existingRule.setComments(zoyAfterCheckInCancellation.getComments());
+					}else{
 						existingRule.setCreatedBy(currentUser);
 					}
 
@@ -1346,13 +1373,16 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					existingRule.setTriggerValue(zoySecurityDeadLine.getTriggerValue());
 					existingRule.setEffectiveDate(zoySecurityDeadLine.getEffectiveDate());
 					existingRule.setIsApproved(zoySecurityDeadLine.getIsApproved());
-
+				
 					if (zoySecurityDeadLine.getIsApproved()) {
+						existingRule.setApprovedBy(currentUser);	
+					} else if ( null != zoySecurityDeadLine.getComments()&& zoySecurityDeadLine.getComments()!="") {
 						existingRule.setApprovedBy(currentUser);
-					} else {
+						existingRule.setComments(zoySecurityDeadLine.getComments());
+					}else{
 						existingRule.setCreatedBy(currentUser);
 					}
-
+					
 					ownerDBImpl.saveSecurityDepositDeadLine(existingRule);
 
 					// Audit history for the update
@@ -1625,11 +1655,14 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setIsApproved(forceCheckOut.getIsApproved());
 
 					if (forceCheckOut.getIsApproved()) {
+						oldDetails.setApprovedBy(currentUser);	
+					} else if ( null != forceCheckOut.getComments()&& forceCheckOut.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
-					} else {
+						oldDetails.setComments(forceCheckOut.getComments());
+					}else{
 						oldDetails.setCreatedBy(currentUser);
 					}
-
+					
 					zoyPgForceCheckOutRepository.save(oldDetails);
 
 					// Audit the update action
@@ -1712,10 +1745,13 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setNoRentalAgreementDays(NoRentalAgreement.getNoRentalAgreementDays());
 					oldDetails.setEffectiveDate(NoRentalAgreement.getEffectiveDate());
 					oldDetails.setIsApproved(NoRentalAgreement.getIsApproved());
-
+					
 					if (NoRentalAgreement.getIsApproved()) {
+						oldDetails.setApprovedBy(currentUser);	
+					} else if ( null != NoRentalAgreement.getComments()&& NoRentalAgreement.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
-					} else {
+						oldDetails.setComments(NoRentalAgreement.getComments());
+					}else{
 						oldDetails.setCreatedBy(currentUser);
 					}
 

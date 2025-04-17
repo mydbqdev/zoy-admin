@@ -43,6 +43,9 @@ public class ZoyPgOtherCharges {
 	
 	@Column(name="approved_by")
 	private String approvedBy;
+	
+	@Column(name="comments")
+	private String comments;
 
 	// Getters and Setters
 
@@ -116,6 +119,14 @@ public class ZoyPgOtherCharges {
 
 	public void setApprovedBy(String approvedBy) {
 		this.approvedBy = approvedBy;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 }

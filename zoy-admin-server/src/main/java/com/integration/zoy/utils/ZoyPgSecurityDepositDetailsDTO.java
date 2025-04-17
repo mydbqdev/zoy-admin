@@ -26,6 +26,9 @@ public class ZoyPgSecurityDepositDetailsDTO {
 
 	@SerializedName("createdBy")
 	private String createdBy;
+	
+	@SerializedName("comments")
+	private String comments;
 
 	public String getDepositId() {
 		return depositId;
@@ -85,6 +88,14 @@ public class ZoyPgSecurityDepositDetailsDTO {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 }

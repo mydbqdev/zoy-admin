@@ -49,6 +49,9 @@ public class ZoyPgTokenDetails {
 	
 	@Column(name="approved_by")
 	private String approvedBy;
+	
+	@Column(name="comments")
+	private String comments;
 
 	// Getters and Setters
 	public Boolean getIsApproved() {
@@ -122,5 +125,14 @@ public class ZoyPgTokenDetails {
 	public void setUpdatedAt(Timestamp updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+	
 }
 
