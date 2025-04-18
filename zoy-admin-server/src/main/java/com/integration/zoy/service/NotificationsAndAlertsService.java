@@ -28,8 +28,8 @@ public class NotificationsAndAlertsService {
     }
     
     
-    public void ticketAssign( String[] userId,  String ticketId) throws Exception {
-        notificationService.notifyTicketAssignedToSupportUser(userId, ticketId);
+    public void ticketAssign( String[] userId, String notificationMessage) throws Exception {
+        notificationService.notifyTicketAssignedToSupportUser(userId,notificationMessage);
     }
     
 
