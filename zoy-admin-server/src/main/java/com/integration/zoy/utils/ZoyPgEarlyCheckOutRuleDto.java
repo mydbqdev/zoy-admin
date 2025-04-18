@@ -2,6 +2,7 @@ package com.integration.zoy.utils;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 public class ZoyPgEarlyCheckOutRuleDto {
@@ -39,6 +40,9 @@ public class ZoyPgEarlyCheckOutRuleDto {
 	@SerializedName("createdBy")
 	private String createdBy;
 
+	@SerializedName("comments")
+    private String comments;
+	 
 	public String getEarlyCheckOutId() {
 		return earlyCheckOutId;
 	}
@@ -125,6 +129,14 @@ public class ZoyPgEarlyCheckOutRuleDto {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 }

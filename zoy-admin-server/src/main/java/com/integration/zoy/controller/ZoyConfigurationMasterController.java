@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,7 +28,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
-import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.TriggeredCond;
 import com.integration.zoy.entity.TriggeredOn;
 import com.integration.zoy.entity.TriggeredValue;
@@ -48,7 +46,6 @@ import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgShortTermRentingDuration;
 import com.integration.zoy.entity.ZoyPgTokenDetails;
-import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.ZoyAfterCheckInCancellation;
 import com.integration.zoy.model.ZoyBeforeCheckInCancellation;
@@ -57,7 +54,6 @@ import com.integration.zoy.model.ZoyCompanyMasterModal;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
-import com.integration.zoy.repository.RentalAgreementDocRepository;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
 import com.integration.zoy.repository.ZoyPgCancellationDetailsRepository;
 import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
@@ -72,9 +68,9 @@ import com.integration.zoy.repository.ZoyPgTokenDetailsRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.PdfGenerateService;
+import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.AuditHistoryUtilities;
-import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.ZoyAdminConfigDTO;
 import com.integration.zoy.utils.ZoyAfterCheckInCancellationDto;
@@ -168,13 +164,15 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	@Autowired
 	ZoyPgCancellationDetailsRepository ZoyPgCancellationDetailsRepo;
 	
+	@Autowired
+	ZoyEmailService zoyEmailService;
 	
 	
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetailsDTO details) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-
+		String flag="";
 		try {
 			if (details == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -200,17 +198,21 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setIsApproved(details.getIsApproved());
 
 					 if (details.getIsApproved()) {
-						oldDetails.setApprovedBy(currentUser);	
+						oldDetails.setApprovedBy(currentUser);
+						flag="Approved";
 					} else if ( null != details.getComments()&& details.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
 						oldDetails.setComments(details.getComments());
+						flag="rejected";
 					}else{
-						oldDetails.setCreatedBy(currentUser);
+						oldDetails.setCreatedBy(currentUser);	
+						flag="created";
+
 					}
 
 					zoyPgTokenDetailsRepository.save(oldDetails);
 
-					StringBuffer historyContent = new StringBuffer(" has updated the Token for");
+					StringBuffer historyContent = new StringBuffer(" has "+flag+" the Token for");
 					if (!oldFixed.equals(details.getFixedToken())) {
 						historyContent.append(", Fixed from ").append(oldFixed).append(" to ")
 								.append(details.getFixedToken());
@@ -233,8 +235,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newTokenDetails.setCreatedBy(currentUser);
 				newTokenDetails.setIsApproved(false);
 				zoyPgTokenDetailsRepository.save(newTokenDetails);
+				flag="created";
 
-				String historyContent = " has created the Token for, Fixed = " + newTokenDetails.getFixedToken()
+				String historyContent = " has " +flag+" the Token for, Fixed = " + newTokenDetails.getFixedToken()
 						+ " , Variable = " + newTokenDetails.getVariableToken();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(),
 						historyContent, ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_CREATE);
@@ -245,7 +248,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("Saved/Updated Token Advance details");
+			response.setMessage(flag+"Token Advance details");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -270,6 +273,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setComments(entity.getComments()!=null ? entity.getComments():"");
 		return dto;
 	}
 
@@ -492,6 +496,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		            beforeCheckInCancellation.setCreatedBy(details.getCreatedBy());
 		            beforeCheckInCancellation.setEffectiveDate(details.getEffectiveDate());
 		            beforeCheckInCancellation.setPgType(details.getPgType());
+		            beforeCheckInCancellation.setComments(details.getComments());
 
 		            checkInCancellationDetailsList = new ArrayList<>();
 	        	}
@@ -813,6 +818,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setComments(entity.getComments()!=null ? entity.getComments():"");
 		return dto;
 	}
 
@@ -827,6 +833,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setComments(entity.getComments()!=null ? entity.getComments():"");
 		return dto;
 	}
 
@@ -919,6 +926,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setComments(entity.getComments()!=null ? entity.getComments():"");
 		return dto;
 	}
 
@@ -1028,6 +1036,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setIsApproved(entity.getIsApproved()!= null ? entity.getIsApproved():false);
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setComments(entity.getComments()!=null ? entity.getComments():"");
 		return dto;
 	}
 
@@ -1144,6 +1153,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setIsApproved(entity.getIsApproved() != null ? entity.getIsApproved() : false);
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setComments(entity.getComments()!=null ? entity.getComments():"");
 		return dto;
 	}
 
@@ -1212,6 +1222,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setIsApproved(entity.getIsApproved() != null ? entity.getIsApproved() : false);
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setComments(entity.getComments()!=null ? entity.getComments():"");
 		return dto;
 	}
 
@@ -1454,6 +1465,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setIsApproved(entity.getIsApproved() != null ? entity.getIsApproved() : false);
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setComments(entity.getComments()!=null ? entity.getComments():"");
 		return dto;
 	}
 
@@ -1713,6 +1725,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setComments(entity.getComments()!=null ? entity.getComments():"");
 		return dto;
 	}
 
@@ -1805,6 +1818,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
 		dto.setCreatedBy(entity.getCreatedBy() != null ? entity.getCreatedBy() : "");
+		dto.setComments(entity.getComments()!=null ? entity.getComments():"");
 		return dto;
 	}
 

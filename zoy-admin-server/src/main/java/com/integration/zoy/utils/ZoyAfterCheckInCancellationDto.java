@@ -43,6 +43,9 @@ public class ZoyAfterCheckInCancellationDto {
 	@SerializedName("createdBy")
 	private String createdBy;
 
+	@SerializedName("comments")
+	private String comments;
+	    
 	public String getAutoCancellationId() {
 		return autoCancellationId;
 	}
@@ -128,6 +131,14 @@ public class ZoyAfterCheckInCancellationDto {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	
 	
