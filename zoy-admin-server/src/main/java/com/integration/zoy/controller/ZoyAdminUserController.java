@@ -1339,9 +1339,9 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			for (Object[] details : userNotifications) {
 				NotificationsAndAlertsDTO notifications = new NotificationsAndAlertsDTO();
 				
-				if (FilterRequest.getIsAlert()) {
-					notificationsAndAlertsRepository.toggleNotificationStatus(Long.parseLong(details[0].toString()));
-				}
+//				if (FilterRequest.getIsAlert()) {
+//					notificationsAndAlertsRepository.toggleNotificationStatus(Long.parseLong(details[0].toString()));
+//				}
 				notifications.setNotificationId(details[0] != null ? Long.valueOf(String.valueOf(details[0])) : null);
 				notifications.setCategory(details[1] != null ? (String) details[1] : null);
 				notifications.setCreatedAt(details[2] != null ? (Timestamp) details[2] : null);
