@@ -95,7 +95,7 @@ public class AdminReportService implements AdminReportImpl{
 				            + " END AS user_payment_payment_status, \r\n"
 				            + " up.user_payment_payable_amount, \r\n"
 				            + " up.user_payment_gst, \r\n"
-				            + " ud.user_personal_name, \r\n"
+				            + " um.user_first_name || ' ' || um.user_last_name AS user_personal_name, \r\n" 
 				            + " pgt.property_name AS user_pg_propertyname, \r\n"
 				            + " bd.bed_name, \r\n"
 				            + " STRING_AGG(zpdm.due_name, ', ') AS user_money_due_descriptions, \r\n"
@@ -146,7 +146,7 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("pgName", filterData.getPgName());
 			}
 			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
-				queryBuilder.append(" AND LOWER(ud.user_personal_name) LIKE LOWER(:tenantName)");
+				queryBuilder.append(" AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName)");
 				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
 			}
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
@@ -184,7 +184,7 @@ public class AdminReportService implements AdminReportImpl{
 				} else if ("totalAmount".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "(up.user_payment_payable_amount + up.user_payment_gst)";
 				} else if ("customerName".equalsIgnoreCase(filterRequest.getSortActive())) {
-					sort = "ud.user_personal_name";
+					sort = "um.user_first_name || ' ' || um.user_last_name";
 				} else if ("PgPropertyName".equalsIgnoreCase(filterRequest.getSortActive())) {
 					sort = "pgt.property_name";
 				} else if ("bedNumber".equalsIgnoreCase(filterRequest.getSortActive())) {
@@ -214,7 +214,7 @@ public class AdminReportService implements AdminReportImpl{
 					    + " END, \r\n"
 					    + " up.user_payment_payable_amount, \r\n"
 					    + " up.user_payment_gst, \r\n"
-					    + " ud.user_personal_name, \r\n"
+					    + " um.user_first_name || ' ' || um.user_last_name, \r\n"
 					    + " pgt.property_name, \r\n"
 					    + " bd.bed_name, \r\n"
 					    + " CASE \r\n"
