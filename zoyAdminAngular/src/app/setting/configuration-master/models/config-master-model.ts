@@ -1,18 +1,31 @@
 export class ConfigMasterModel{
-    tokenDetails :TokenDetailsModel[]=[];// = new TokenDetailsModel() ;
-    depositDetails : SecurityDepositLimitsModel[]=[];// = new SecurityDepositLimitsModel ();
-    dataGrouping : DataGroupingModel[]=[];// = new DataGroupingModel() ;
-   // cancellationBeforeCheckInDetails : BeforeCheckInCancellationRefundModel[]=[];
-    earlyCheckOutRuleDetails:EarlyCheckOutRuleDetails[]=[];//=new EarlyCheckOutRuleDetails();
-    cancellationAfterCheckInDetails:SecurityDepositDeadLineAndAutoCancellationModel[]=[];//=new SecurityDepositDeadLineAndAutoCancellationModel();
-    securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel[]=[];//=new SecurityDepositDeadLineAndAutoCancellationModel();
-    otherCharges : OtherChargesModel[]=[];//=new OtherChargesModel();
-    forceCheckOut :ForceCheckoutModel[]=[];// = new ForceCheckoutModel();
-    gstCharges : GstChargesModel[]=[];// = new GstChargesModel();
-    shortTerm :ShortTermModel[] = [];
-    shortTermRentingDuration:ShortTermRentingDuration[]=[];// = new ShortTermRentingDuration();
-    noRentalAgreement:NoRentalAgreement[]=[];// =new NoRentalAgreement();
+    tokenDetails :TokenDetailsModel[]=[];
+    depositDetails : SecurityDepositLimitsModel[]=[];
+    dataGrouping : DataGroupingModel[]=[];
+    earlyCheckOutRuleDetails:EarlyCheckOutRuleDetails[]=[];
+    cancellationAfterCheckInDetails:SecurityDepositDeadLineAndAutoCancellationModel[]=[];
+    securityDepositDeadLineDetails :SecurityDepositDeadLineAndAutoCancellationModel[]=[];
+    otherCharges : OtherChargesModel[]=[];
+    forceCheckOut :ForceCheckoutModel[]=[];
+    gstCharges : GstChargesModel[]=[];
+    noRentalAgreement:NoRentalAgreement[]=[];
 }
+export class ConfigMasterObjModel {
+    tokenDetails: TokenDetailsModel = new TokenDetailsModel();
+    depositDetails: SecurityDepositLimitsModel = new SecurityDepositLimitsModel();
+    dataGrouping: DataGroupingModel = new DataGroupingModel();
+    earlyCheckOutRuleDetails: EarlyCheckOutRuleDetails = new EarlyCheckOutRuleDetails();
+    cancellationAfterCheckInDetails: SecurityDepositDeadLineAndAutoCancellationModel = new SecurityDepositDeadLineAndAutoCancellationModel();
+    securityDepositDeadLineDetails: SecurityDepositDeadLineAndAutoCancellationModel = new SecurityDepositDeadLineAndAutoCancellationModel();
+    otherCharges: OtherChargesModel = new OtherChargesModel();
+    forceCheckOut: ForceCheckoutModel = new ForceCheckoutModel();
+    gstCharges: GstChargesModel = new GstChargesModel();
+    noRentalAgreement: NoRentalAgreement = new NoRentalAgreement();
+
+    beforeCheckInCancellationRefundMainObjModel :BeforeCheckInCancellationRefundMainObjModel =new BeforeCheckInCancellationRefundMainObjModel();
+    shortTermMainModel: ShortTermMainModel=new ShortTermMainModel();
+  }
+  
 
 export class TokenDetailsModel{
     tokenId : string = '';
@@ -22,6 +35,7 @@ export class TokenDetailsModel{
     isApproved:boolean=false;
     createdBy:string='';
     approvedBy:string='';
+    comments:string='';
 }
 
 export class SecurityDepositLimitsModel{
@@ -32,6 +46,7 @@ export class SecurityDepositLimitsModel{
     isApproved:boolean=false;
     createdBy:string='';
     approvedBy:string='';
+    comments:string='';
 }
 
 export class EarlyCheckOutRuleDetails{
@@ -41,11 +56,12 @@ export class EarlyCheckOutRuleDetails{
     check_out_day : number ;
     deduction_percentage: number ;
     deduction_day: number ;
-    trigger_value : string ;
+    trigger_value : string ='Rent' ;
     effectiveDate:string='';
     isApproved:boolean=false;
     createdBy:string='';
     approvedBy:string='';
+    comments:string='';
 }
 export class BeforeCheckInCancellationRefundMainObjModel{
     effectiveDate:string;
@@ -53,6 +69,7 @@ export class BeforeCheckInCancellationRefundMainObjModel{
     isApproved:boolean=true;
     approvedBy:string;
     createdBy:string;
+    comments:string='';
     pgType:string;
     ZoyBeforeCheckInCancellationInfo:BeforeCheckInCancellationRefundModel[]=[];
     zoy_before_check_in_cancellation_info:BeforeCheckInCancellationRefundModel[]=[];
@@ -73,6 +90,7 @@ export class BeforeCheckInCancellationRefundModel{
     isApproved:boolean=false;
     createdBy:string='';
     approvedBy:string='';
+    comments:string='';
 }
 
 export class DataGroupingModel{
@@ -82,6 +100,7 @@ export class DataGroupingModel{
     isApproved:boolean=false;
     createdBy:string='';
     approvedBy:string='';
+    comments:string='';
 }
 
 export class SecurityDepositDeadLineAndAutoCancellationModel{
@@ -92,11 +111,12 @@ export class SecurityDepositDeadLineAndAutoCancellationModel{
     deduction_percentage : number ;
     deduction_day : number ;
     cond : string ;
-    trigger_value : string ;
+    trigger_value : string ='Rent';
     effectiveDate:string='';
     isApproved:boolean=false;
     createdBy:string='';
     approvedBy:string='';
+    comments:string='';
 }
 
 export class OtherChargesModel{
@@ -109,6 +129,7 @@ export class OtherChargesModel{
     isApproved:boolean=false; 
     createdBy:string='';
     approvedBy:string='';
+    comments:string='';
 }
 
 
@@ -119,6 +140,7 @@ export class ForceCheckoutModel{
     isApproved:boolean=false;
     createdBy:string='';
     approvedBy:string='';
+    comments:string='';
 }
 
 export class GstChargesModel{
@@ -131,27 +153,9 @@ export class GstChargesModel{
     isApproved:boolean=false;
     createdBy:string='';
     approvedBy:string='';
+    comments:string='';
 }
 
-export class ShortTermModel{
-    shortTermId: string ;
-    days: string ;
-    percentage: number ;
-    termDisabled :boolean =true;
-    effectiveDate:string='';
-    isApproved:boolean=false;
-    createdBy:string='';
-    approvedBy:string='';
-}
-
-export class ShortTermRentingDuration  {
-    rentingDurationId :string;
-    rentingDurationDays: number;
-    effectiveDate:string='';
-    isApproved:boolean=false;
-    createdBy:string='';
-    approvedBy:string='';
-}
 export class NoRentalAgreement  {
     noRentalAgreementId :string;
     noRentalAgreementDays: number;
@@ -159,6 +163,7 @@ export class NoRentalAgreement  {
     isApproved:boolean=false;
     createdBy:string='';
     approvedBy:string='';
+    comments:string='';
 }
 
 export class ShortTermMainModel{
@@ -167,6 +172,7 @@ export class ShortTermMainModel{
     isApproved:boolean;
     approvedBy:string;
     createdBy:string;
+    comments:string='';
     zoy_short_term_dto_info:ShortTermSubModel[]=[];
 }
 
