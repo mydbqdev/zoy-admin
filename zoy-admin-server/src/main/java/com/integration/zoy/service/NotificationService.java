@@ -64,8 +64,8 @@ public class NotificationService {
         notifyUsers(userIds, notificationMessage, screenName, category, infoType);
     }
     
-    @Scheduled(cron = "0 0 8 * * ?") //we need to chnage this after jira update 
-    public void sendRemainderNotificationForLeadsFollowUp() {
-    	
-    }
+//    @Scheduled(cron = "0 0 8 * * ?") //we need to chnage this after jira update 
+//    public void sendRemainderNotificationForLeadsFollowUp() {
+//    	
+//    }
 }
