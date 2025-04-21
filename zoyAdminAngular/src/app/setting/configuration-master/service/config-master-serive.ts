@@ -4,6 +4,7 @@ import { Observable,of } from 'rxjs';
 import { ServiceHelper } from 'src/app/common/shared/service-helper';
 import { BASE_PATH } from 'src/app/common/shared/variables';
 import { MessageService } from 'src/app/message.service';
+import { DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstChargesModel, NoRentalAgreement, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, TokenDetailsModel } from "../models/config-master-model";
 
 @Injectable({
     providedIn: 'root'
@@ -213,18 +214,7 @@ import { MessageService } from 'src/app/message.service';
             }
         );
     } 
-    public updateShortTermRentingDuration(data:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/config/renting-duration";
-        return  this.httpclient.post<any>(
-            url1,
-            data,
-            {
-                headers:ServiceHelper.buildHeaders(),
-                observe : 'body',
-                withCredentials:true
-            }
-        );
-    }
+
 
     public updateNoRentalAgreement(data:any): Observable<any> {
         const url1=this.basePath +"zoy_admin/config/noRentalAgreement";
@@ -255,6 +245,34 @@ import { MessageService } from 'src/app/message.service';
         const url1=this.basePath +"zoy_admin/config/fetchzoyAdminConfigShortTermDetails";
         return  this.httpclient.get<any>(
             url1,
+            {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+            }
+        );
+    }
+    rules: { key: string; name: string; model: any; api: string }[] = [
+        { key: 'tokenDetails', name: 'Token Advance', model: TokenDetailsModel, api: 'token_advance' },
+        { key: 'depositDetails', name: 'Security Deposit', model: SecurityDepositLimitsModel, api: 'security-deposit-limits' },
+        { key: 'gstCharges', name: 'GST Charges', model: GstChargesModel, api: 'gst-charges' },
+        { key: 'noRentalAgreement', name: 'No Rental Agreement', model: NoRentalAgreement, api: 'noRentalAgreement' },
+        { key: 'securityDepositDeadLineDetails', name: 'Security Deposit Deadline', model: SecurityDepositDeadLineAndAutoCancellationModel, api: 'security-deposit-deadline' },
+        { key: 'cancellationAfterCheckInDetails', name: 'Cancellation After Check-In', model: SecurityDepositDeadLineAndAutoCancellationModel, api: 'after-check-in' },
+        { key: 'otherCharges', name: 'Other Charges', model: OtherChargesModel, api: 'other-charges' },
+        { key: 'forceCheckOut', name: 'Force Checkout', model: ForceCheckoutModel, api: 'force-checkout' },
+        { key: 'earlyCheckOutRuleDetails', name: 'Early Check-Out Rules', model: EarlyCheckOutRuleDetails, api: 'early-checkout-rules' },
+        { key: 'dataGrouping', name: 'Data Grouping', model: DataGroupingModel, api: 'data-grouping' }
+    ];
+    
+      
+      
+
+    public ruleReject(data,api): Observable<any> {
+        const url1=this.basePath +"zoy_admin/config/"+api;
+        return  this.httpclient.post<any>(
+            url1,
+            data,
             {
                 headers:ServiceHelper.buildHeaders(),
                 observe : 'body',

@@ -110,8 +110,11 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 		return this.allMenuList.find(menu=>menu.permission.replace('_READ','') === screen_name)?.icon || 'fas fa-exclamation-triangle'
 	  }
 		  
-	   selectNotification(notification: AlertNotificationDetailsModel): void {
+	   selectNotification(notification: AlertNotificationDetailsModel,i:number): void {
 		this.selectedNotification = notification;
+		this.updateUserNotificationsSeen();
+		this.notifications[i].is_seen = 'true';
+		this.dataSource.data =this.notifications
 	  }
 	  filtersRequest :FiltersRequestModel = new FiltersRequestModel();
 	  notifications: AlertNotificationDetailsModel[]=[] ;
@@ -163,8 +166,9 @@ export class AlertNotificationComponent implements OnInit, AfterViewInit {
 		}
 	  
 		updateUserNotificationsSeen(){
+
 		  this.alertNotificationService.updateUserNotificationsSeen(this.selectedNotification).subscribe((data) => {
-		   
+			
 	  
 		  }, error => {
 				if(error.status == 0) {
