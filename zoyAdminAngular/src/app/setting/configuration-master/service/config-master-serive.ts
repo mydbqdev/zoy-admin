@@ -262,7 +262,10 @@ import { DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstCha
         { key: 'otherCharges', name: 'Other Charges', model: OtherChargesModel, api: 'other-charges' },
         { key: 'forceCheckOut', name: 'Force Checkout', model: ForceCheckoutModel, api: 'force-checkout' },
         { key: 'earlyCheckOutRuleDetails', name: 'Early Check-Out Rules', model: EarlyCheckOutRuleDetails, api: 'early-checkout-rules' },
-        { key: 'dataGrouping', name: 'Data Grouping', model: DataGroupingModel, api: 'data-grouping' }
+        { key: 'dataGrouping', name: 'Data Grouping', model: DataGroupingModel, api: 'data-grouping' },
+        { key: 'beforeCheckInCancellationRefundMainObjModel', name: 'Cancellation And Refund Policy (Before check in)', model: DataGroupingModel, api: '' },
+        { key: 'shortTermMainModel', name: 'Short term duration period', model: DataGroupingModel, api: '' },
+ 
     ];
     
       

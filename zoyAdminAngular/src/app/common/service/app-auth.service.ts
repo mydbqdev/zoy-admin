@@ -183,9 +183,9 @@ export class AppAuthService extends AuthService{
     }
 
      public checkLoginUserVlidaate() : void{
-        if(!this.userService.isLoggedOut()){
+    //    if(!this.userService.isLoggedOut()){
         this.getUserDetails();
-        }
+      //  }
         //var msg:string;
        // this.sessionSnapshot =null;
         /*this.message ='';

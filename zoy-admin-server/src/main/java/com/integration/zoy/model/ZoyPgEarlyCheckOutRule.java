@@ -2,13 +2,7 @@ package com.integration.zoy.model;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
-
-import lombok.Getter;
-import lombok.Setter;
 
 public class ZoyPgEarlyCheckOutRule {
 	@JsonProperty("early_check_out_id")

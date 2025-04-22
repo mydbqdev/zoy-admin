@@ -3,6 +3,7 @@ package com.integration.zoy.model;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZoyBeforeCheckInCancellation {
@@ -31,7 +32,8 @@ public class ZoyBeforeCheckInCancellation {
 	@JsonProperty("trigger_value")
 	private String triggerValue;
 
-	@JsonProperty("create_at")
+    @JsonProperty("create_at")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Timestamp createAt;
 
 	@JsonProperty("isDelete")

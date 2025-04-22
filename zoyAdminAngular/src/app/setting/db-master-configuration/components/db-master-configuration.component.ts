@@ -228,7 +228,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
             this.closeModel.nativeElement.click(); 
             this.getDbSettingDetails();
             this.resetChange();
-            this.notifyService.showSuccess("Data has been "+isCreatedMsg+"d successfully", "")
+            this.notifyService.showSuccess(this.settingType +" details has been "+isCreatedMsg+"d successfully", "")
             this.spinner.hide();
             }, error => {
             this.spinner.hide();
@@ -278,14 +278,14 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
   withPhoto:boolean=false;
       validation():boolean{
         switch (this.settingType) {
-          case 'Share Type':
+          case 'Occupancy type':
                   if(this.dbSettingDataModel.share_type == null || this.dbSettingDataModel.share_type == '' || this.dbSettingDataModel.share_occupancy_count == null || this.dbSettingDataModel.share_occupancy_count == '' ){
                     return false;
                   }
 
                   const shareType = this.dbSettingDataList.filter(d=>d.share_id != this.dbSettingDataModel?.share_id && ( d?.share_type?.toLowerCase() === this.dbSettingDataModel?.share_type?.toLowerCase() || d.share_occupancy_count == this.dbSettingDataModel.share_occupancy_count) );
                   if(shareType.length>0){
-                    this.notifyService.showError("Share type or share occupancy count is already available.", "");
+                    this.notifyService.showError("Occupancy type or share occupancy count is already available.", "");
                     return false;
                    }
                     this.submitDataModel.id=this.dbSettingDataModel?.share_id ;

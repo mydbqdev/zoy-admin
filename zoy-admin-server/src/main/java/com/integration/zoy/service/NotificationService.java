@@ -64,6 +64,38 @@ public class NotificationService {
         notifyUsers(userIds, notificationMessage, screenName, category, infoType);
     }
     
+    public void notifyForRuleChange(String[] userIds, String requestRaisedBy) throws Exception {
+        String notificationMessage = "Approval Request Raised for rule change in Configuration Master by " + requestRaisedBy;
+        String screenName = "CONFIGURATION_MASTER,CONFIGURATION_MASTER_APPROVAL";
+        String category = "Rule Approval Request";
+        String infoType = "alert";
+        notifyUsers(userIds, notificationMessage, screenName, category, infoType);
+    }
+    
+    public void notifyForRuleApprove(String[] userIds, String approvalDoneBy,String ruleName) throws Exception {
+        String notificationMessage = "Approval Request for "+ruleName+" has been Approved by "+approvalDoneBy;
+        String screenName = "CONFIGURATION_MASTER,CONFIGURATION_MASTER_APPROVAL";
+        String category = "Rule Approved";
+        String infoType = "alert";
+        notifyUsers(userIds, notificationMessage, screenName, category, infoType);
+    }
+    
+    public void notifyForRuleReject(String[] userIds, String rejectionDoneBy,String ruleName) throws Exception {
+        String notificationMessage = "Approval Request for "+ruleName+"has been Rejected by "+rejectionDoneBy;
+        String screenName = "CONFIGURATION_MASTER,CONFIGURATION_MASTER_APPROVAL";
+        String category = "Rule Approval Rejected";
+        String infoType = "alert";
+        notifyUsers(userIds, notificationMessage, screenName, category, infoType);
+    }
+    
+    public void notifyForRuleAutoReject(String[] userIds,String ruleName) throws Exception {
+        String notificationMessage = "Approval Request for "+ruleName+"has been Auto Rejected";
+        String screenName = "CONFIGURATION_MASTER,CONFIGURATION_MASTER_APPROVAL";
+        String category = "Rule Approval Auto Rejected";
+        String infoType = "alert";
+        notifyUsers(userIds, notificationMessage, screenName, category, infoType);
+    }
+    
 //    @Scheduled(cron = "0 0 8 * * ?") //we need to chnage this after jira update 
 //    public void sendRemainderNotificationForLeadsFollowUp() {
 //    	

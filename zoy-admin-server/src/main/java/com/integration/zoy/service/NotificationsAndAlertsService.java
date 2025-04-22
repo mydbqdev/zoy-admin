@@ -1,5 +1,7 @@
 package com.integration.zoy.service;
 
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,5 +34,27 @@ public class NotificationsAndAlertsService {
         notificationService.notifyTicketAssignedToSupportUser(userId,notificationMessage);
     }
     
+    public void masterConfigurationRulechange(String ruleCreatedBy, String approvalDetails) throws Exception {
+        List<String> screens = Arrays.asList("CONFIGURATION_MASTER", "CONFIGURATION_MASTER_APPROVAL");
+        String[] emails = notificationsAndAlertsRepository.findUsersWithScreenAccess(screens);
+        notificationService.notifyForRuleChange(emails, approvalDetails);
+    }
 
+    public void masterConfigurationRuleApproval( String approvalDoneBy,String ruleName) throws Exception {
+        List<String> screens = Arrays.asList("CONFIGURATION_MASTER", "CONFIGURATION_MASTER_APPROVAL");
+        String[] emails = notificationsAndAlertsRepository.findUsersWithScreenAccess(screens);
+        notificationService.notifyForRuleApprove(emails, approvalDoneBy,ruleName);
+    } 
+    
+    public void masterConfigurationRuleRejection(String rejectionDoneBy,String ruleName) throws Exception {
+        List<String> screens = Arrays.asList("CONFIGURATION_MASTER", "CONFIGURATION_MASTER_APPROVAL");
+        String[] emails = notificationsAndAlertsRepository.findUsersWithScreenAccess(screens);
+        notificationService.notifyForRuleApprove(emails, rejectionDoneBy,ruleName);
+    }
+    
+    public void masterConfigurationRuleRejection(String ruleName) throws Exception {
+        List<String> screens = Arrays.asList("CONFIGURATION_MASTER", "CONFIGURATION_MASTER_APPROVAL");
+        String[] emails = notificationsAndAlertsRepository.findUsersWithScreenAccess(screens);
+        notificationService.notifyForRuleAutoReject(emails,ruleName);
+    }
 }

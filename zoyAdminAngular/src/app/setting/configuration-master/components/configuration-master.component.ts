@@ -186,11 +186,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		keys.forEach(key => {
 			this.setRuleData(key,res.data[key]);
 		});
-		//this.printAllVariables();
-		console.log("this.configMasterOrg",this.configMasterOrg);
-		console.log("this.configMasterModel",this.configMasterModel)
-		console.log("editConfigMaster",this.editConfigMaster);
-		console.log("showConfigMaster",this.showConfigMaster);
 		this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
@@ -1255,7 +1250,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		payload.comments=this.comments;
 		payload.ZoyBeforeCheckInCancellationInfo=payload.zoy_before_check_in_cancellation_info;
 	}
-	this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+(task === 'approve' ? 'Approve':(payload.iscreate?'Create':'Update') ) +' ?')
+	this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+(task === 'approve' ? 'Approve':(task === 'reject'? (payload.iscreate?'Create':'Update'):'Rejected' )) +' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -1634,23 +1629,35 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			   getShortTermList(){
 				this.backUpShortTermDataSubList=[];
 				this.shortTermDataMainList = JSON.parse(JSON.stringify(this.backUpshortTermData));
-				var main=this.shortTermDataMainList[0];
+				
+				const editModel = this.backUpshortTermData.filter(c => !c.comments && !c.isApproved);
+				const showModel = this.backUpshortTermData
+				.filter(c => c.isApproved)
+				.sort((a, b) => new Date(b.effectiveDate).getTime() - new Date(a.effectiveDate).getTime());
+
+				let model = new ShortTermMainModel();
+				this.editConfigMaster.shortTermMainModel = JSON.parse(JSON.stringify(editModel.length > 0 ? editModel[0] : (showModel.length > 0 ? showModel[0] : model )));
+				this.showConfigMaster.shortTermMainModel= JSON.parse(JSON.stringify(editModel.length > 0 ? (showModel.length > 0 ? showModel[0] : null):null));
+			console.log("this.editConfigMaster.shortTermMainModel",this.editConfigMaster.shortTermMainModel);
+			console.log("this.showConfigMaster.shortTermMainModel",this.showConfigMaster.shortTermMainModel);
+				var main=this.editConfigMaster.shortTermMainModel;
 				 main.zoy_short_term_dto_info.forEach(element => {
 				  let model : ShortTermSubModel = new ShortTermSubModel();
 				  model.short_term_id= element.short_term_id; 
 				  model.start_day = element.start_day; 
 				  model.end_day = element.end_day;  
+				  model.percentage = element.percentage;
 				  model.isDelete = false; 
 			 
 				  this.backUpShortTermDataSubList.push(model);
 				});
 				  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList));
-				  this.stpEffectiveDate=this.shortTermDataMainList[0].effectiveDate;
+				  this.stpEffectiveDate=this.editConfigMaster.shortTermMainModel.effectiveDate;
 				}
 
 				shortTermDataReset(){
 					this.canShortSubmit=true;
-					this.stpEffectiveDate=this.shortTermDataMainList[0].effectiveDate;
+					this.stpEffectiveDate=this.editConfigMaster.shortTermMainModel.effectiveDate;
 					this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList));
 				  }
 		  
@@ -1672,7 +1679,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			 }
 		  
 			 modifyShortTerm(shortTerm:any,i:number) {
-				console.log("shortTerm>>",shortTerm)
+				this.canShortSubmit=false;
 			   if(!shortTerm.start_day || Number(shortTerm.start_day)===0 
 				  || !shortTerm.end_day || Number(shortTerm.end_day)===0
 				  || Number(shortTerm.start_day) >= Number(shortTerm.end_day)
@@ -1691,6 +1698,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			
 			removeShortTerm(shortTerm) {
 			  shortTerm.isDelete = true;
+			  this.canShortSubmit=false;
 			}
 			
 			undoShortTermDelete(shortTerm) {
@@ -1701,13 +1709,10 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  this.shortTermDataList[i]=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList[i]));
 			}
 		  
-			shortTermDataListReset(){
-			  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList));
-			}
 			submitShortTerm:boolean = false;
-		submitShortTermData(task:string) {  
+	submitShortTermData(task:string) {  
+		const payload :ShortTermMainModel = JSON.parse(JSON.stringify(this.editConfigMaster.shortTermMainModel));
 		if(task != 'reject'){
-
 			 this.submitShortTerm = true; 
 			 if(!this.stpEffectiveDate || this.multirullsEffectiveDateValidation(this.stpEffectiveDate) ){
 				return;
@@ -1731,15 +1736,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		   
 				  for (let j = i + 1; j < this.shortTermDataList.length; j++) {
 					const otherTerm = this.shortTermDataList[j];
-					
-					if (!(Number(term.end_day) < Number(otherTerm.start_day) || Number(term.start_day) > Number(otherTerm.end_day))) {
-					  this.notifyService.showWarning("The Short term duration period must not Overlapp.","")
-					  return;
+					if (!otherTerm.isDelete){
+						if (!(Number(term.end_day) < Number(otherTerm.start_day) || Number(term.start_day) > Number(otherTerm.end_day))) {
+							this.notifyService.showWarning("The Short term duration period must not Overlapp.","")
+							return;
+						}
 					}
-					
 				  }
-				  finalSubmitShortList.push(term);
 				}
+				finalSubmitShortList.push(term);
 			  }
 			
 			  if (finalSubmitShortList.length < 1) {
@@ -1748,56 +1753,57 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  }
 				let n=0;
 			  this.shortTermDataList.forEach(m=>{
-				let term=m;
-				const ranges =this.shortTermDataList.filter(d=> endDay != Number(term.end_day) && Number(d.start_day) == (Number(term.end_day)+1));
-			  if( ranges.length === 0 && endDay != Number(term.end_day) ){
-			     n=++n;
-				 return;
-			   }
+				if(!m.isDelete){
+					let term=m;
+					const ranges =this.shortTermDataList.filter(d=> endDay != Number(term.end_day) && Number(d.start_day) == (Number(term.end_day)+1) && !d.isDelete );
+				if( ranges.length === 0 && endDay != Number(term.end_day) ){
+					n=++n;
+					return;
+				}
+				}
 			  }) ;
+
 			   if(n>0 || startDay !=1){
 				this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+endDay+' days.',"")
 				return;
 			   }
-			 
-			  if (JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpShortTermDataSubList)) {
-				this.notifyService.showInfo("Short term slabs details are already up to date.", "");
-				return;
-			  }
-			var payload :ShortTermMainModel = JSON.parse(JSON.stringify(this.backUpshortTermData[0]));
-			payload.effectiveDate = this.crpEffectiveDate;
+			   payload.effectiveDate = this.stpEffectiveDate;
+			 			
 			if(task === 'approve'){
+				if( payload?.createdBy == this.userInfo.userEmail){
+					this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+					return ;
+				}
 				payload.isApproved=true;
 			}else{
-				payload.iscreate = payload.isApproved ;
-			}
-			if( task === 'approve' && payload?.createdBy == this.userInfo.userEmail){
-				this.notifyService.showInfo("Rule creator cannot approve the Rule","")
-				return ;
-			}
-
-			const compareIndex = this.backUpshortTermData[0].isApproved ? 0 : 1;
-			const selectedDate = new Date(payload?.effectiveDate)?.setHours(0, 0, 0, 0);
-			if(this.backUpshortTermData[compareIndex]?.effectiveDate){
-				const existingDate = new Date(this.backUpshortTermData[compareIndex]?.effectiveDate)?.setHours(0, 0, 0, 0);	
-				if ( selectedDate < new Date().setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
+				if ( payload.effectiveDate == this.stpEffectiveDate && JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpShortTermDataSubList)) {
+					this.notifyService.showInfo("Short term slabs details are already up to date.", "");
+					return;
+				  }
+				const model = this.showConfigMaster.shortTermMainModel ? this.showConfigMaster.shortTermMainModel : this.editConfigMaster.shortTermMainModel ;
+				const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
+				const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
+				if ( selectedDate < new Date().setHours(0, 0, 0, 0) || (selectedDate < existingDate && !this.editConfigMaster.shortTermMainModel.isApproved ) ||(selectedDate == existingDate && this.showConfigMaster.shortTermMainModel )) {
 					this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
 					return;
 				}
+				payload.iscreate = payload.isApproved ;
 			}
+
 			payload.zoy_short_term_dto_info=finalSubmitShortList;
 		}{
-
+			payload.comments=this.comments;
 		}
-			  this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+(task === 'approve' ? 'Approve':(task === 'reject'? (payload.iscreate?'Create':'Update'):'Rejected' )) +' ?')
 			  .then(
 				 (confirmed) =>{
 				if(confirmed){
 					this.spinner.show();
 					this.configMasterService.submitShortTermData(payload).subscribe(data => {
 					this.getDbSettingDetails();
-					
+					this.closeApproveRejectModel.nativeElement.click(); 
 					this.submitShortTerm = false;
+					this.canShortSubmit = true;
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -1841,19 +1847,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.comments="";
 		this.task='';
 		this.submitted=false;
-		this.key=key
-		console.log("this.key",key)
+		this.key=key;
 		this.approveOrRejectRule= this.configMasterService.rules.find(r=>r.key == key).name;
-		console.log("this.approveOrRejectRule",this.approveOrRejectRule)
 		this.data=data
 	}
 	key:string='';
 	isApproveOrReject(task:string){
 		this.task=task;
 		this.submitted=true;
-		console.log("task",task);
-		console.log("approveOrRejectRule",this.approveOrRejectRule);
-		console.log("comments",this.comments);
 		if(this.task == 'reject' && !this.comments){
 			return;
 		}else{
@@ -1916,10 +1917,9 @@ doApproveOrReject() {
 			  console.warn(`Unhandled rule key: ${this.key}`);
 			  break;
 		  }
-			  
+		  this.closeApproveRejectModel.nativeElement.click(); 	  
 		
 	}else{
-		console.log("this.data",this.data)
 		this.data.comments = this.comments; 
 		let rule = this.configMasterService.rules.find(r=>r.name == this.approveOrRejectRule);
 		this.authService.checkLoginUserVlidaate();
