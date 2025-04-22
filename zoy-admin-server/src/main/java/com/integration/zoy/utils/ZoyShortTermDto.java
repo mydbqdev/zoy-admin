@@ -16,6 +16,9 @@ public class ZoyShortTermDto {
 
 	@JsonProperty("end_day")
 	private int endDay;
+	
+	@JsonProperty("isDelete")
+	private Boolean isDelete;
 
 	public String getShortTermId() {
 		return shortTermId;
@@ -47,6 +50,14 @@ public class ZoyShortTermDto {
 
 	public void setEndDay(int endDay) {
 		this.endDay = endDay;
+	}
+
+	public Boolean getDelete() {
+		return isDelete;
+	}
+
+	public void setDelete(Boolean isDelete) {
+		this.isDelete = isDelete;
 	}
 
 }

@@ -27,6 +27,9 @@ public class ZoyShortTermDetails {
 
 	@SerializedName("pgType")
 	private String pgType;
+	
+	@SerializedName("comments")
+	private String comments;
 
 	@JsonProperty("zoy_short_term_dto_info")
 	private List<ZoyShortTermDto> zoyShortTermDtoInfo;
@@ -94,6 +97,14 @@ public class ZoyShortTermDetails {
 
 	public void setZoyShortTermDtoInfo(List<ZoyShortTermDto> zoyShortTermDtoInfo) {
 	    this.zoyShortTermDtoInfo = zoyShortTermDtoInfo;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 	

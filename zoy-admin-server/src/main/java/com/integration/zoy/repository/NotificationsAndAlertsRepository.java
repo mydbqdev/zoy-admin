@@ -1,5 +1,7 @@
 package com.integration.zoy.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -41,6 +43,14 @@ public interface NotificationsAndAlertsRepository extends JpaRepository<Notifica
 	@Modifying
     @Query(value = "UPDATE notifications_and_alerts_table SET is_seen = TRUE, updated_at = CURRENT_TIMESTAMP WHERE notification_id = :notificationId", nativeQuery = true)
 		void toggleNotificationStatus(@Param("notificationId") Long notificationId);
-	
+		
+	@Query(value = "SELECT DISTINCT ur.user_email\r\n"
+			+ "		    FROM pgadmin.user_role ur\r\n"
+			+ "		    JOIN pgadmin.role_screen rs ON ur.role_id = rs.role_id\r\n"
+			+ "		    WHERE rs.screen_name IN (:screenNames)\r\n"
+			+ "		      AND rs.read_prv = true\r\n"
+			+ "		      AND rs.write_prv = true", nativeQuery = true)
+		String[] findUsersWithScreenAccess(@Param("screenNames") List<String> screenNames);
+
 
 }

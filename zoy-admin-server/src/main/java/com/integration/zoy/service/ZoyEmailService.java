@@ -34,6 +34,7 @@ import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.entity.ZoyPgPropertyDetails;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.model.RegisterUser;
+import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.BulkUploadDetailsRepository;
 import com.integration.zoy.utils.AdminUserList;
 import com.integration.zoy.utils.Email;
@@ -46,6 +47,9 @@ public class ZoyEmailService {
 	
 	@Autowired
 	PdfGenerateService pdfGenerateService;
+	
+	@Autowired
+	AdminUserMasterRepository adminUserMasterRepo;
 	
 	@Autowired
 	BulkUploadDetailsRepository bulkUploadDetailsRepository;
@@ -438,4 +442,204 @@ public class ZoyEmailService {
 			log.error("Failed to send error email for executionId {}: {}", executionId, e.getMessage(), e);
 		}
 	}
+	
+	public void sendApprovalNotificationEmail(String approverName, String ruleTitle) throws WebServiceException {
+	    String[] allMails = adminUserMasterRepo.masterConfigurationAccess();
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for sending approval notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+
+	    List<String> to = new ArrayList<>();
+	    Collections.addAll(to, allMails);
+	    email.setTo(to);
+	    email.setSubject("Approval Request Approved by " + approverName);
+
+	    String message = "<p>Dear Team,</p>"
+	            + "<p>I hope this message finds you well.</p>"
+	            + "<p>We are pleased to inform you that the recent approval request titled "
+	            + "<strong>\"" + ruleTitle + "\"</strong> has been reviewed and approved by <strong>" + approverName + "</strong>.</p>"
+	            + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Error occurred while sending the approval notification email to recipients " + to + ": " + e.getMessage(), e);
+	    }
+	}
+
+
+	
+	public void sendApprovalRequestRaisedEmail( String requestorName,String ruleName, String dateRaised, String effectiveDateMin) throws WebServiceException {
+		
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(effectiveDateMin, formatter);
+        LocalDate dateMinus15 = date.minusDays(15);
+        String result = dateMinus15.format(formatter);
+        
+	    String[] allMails = adminUserMasterRepo.masterConfigurationAccess();
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for sending approval notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+
+	    List<String> to = new ArrayList<>();
+	    Collections.addAll(to, allMails);
+	    email.setTo(to);
+		email.setSubject("Approval Request Raised – Configuration Master Update");
+
+		String message = "<p>Dear Team,</p>"
+				+ "<p>This is to inform you that an approval request has been raised for a proposed change in the Configuration Master. "
+				+ "Please review the request at your earliest convenience and take the necessary action to approve on or before <strong>"
+				+ result + "</strong>.</p>" + "<p><strong>Summary of Request:</strong></p>" + "<ul>"
+				+ "<li>Change Type: " + ruleName + "</li>" + "<li>Requested By: " + requestorName + "</li>"
+				+ "<li>Date Raised: " + dateRaised + "</li>" + "</ul>"
+				+ "<p>You can view the full details and approve the request through the ZOY admin portal:--> Settings --> Master Configuration </p>"
+				+ "<p>Best regards,<br>ZOY Administrator</p>";
+
+		email.setBody(message);
+		email.setContent("text/html");
+
+		try {
+			emailService.sendEmail(email, null);
+		} catch (Exception e) {
+			log.error("Error occurred while sending the approval request email to  recipients " +  to  +": " + e.getMessage(), e);
+		}
+	}
+	
+	
+	public void sendApprovalRejectionEmail(String ruleTitle,String approverName, String effectiveDateMin,String rejectionReason) throws WebServiceException {
+		
+		 String[] allMails = adminUserMasterRepo.masterConfigurationAccess();
+
+		    if (allMails == null || allMails.length == 0) {
+		        log.warn("No recipient email addresses found for sending approval notification.");
+		        return;
+		    }
+		    Email email = new Email();
+		    email.setFrom(zoyAdminMail);
+
+		    List<String> to = new ArrayList<>();
+		    Collections.addAll(to, allMails);
+		    email.setTo(to);
+		email.setSubject("Approval Request Rejected by " + approverName);
+
+		String message = "<p>Dear team,</p>" + "<p>I hope this message finds you well.</p>"
+				+ "<p>This is to inform you that your recent approval request titled <strong>\"" + ruleTitle
+				+ "\"</strong>, " + "With an effective date <strong>" + effectiveDateMin
+				+ "</strong>, has been reviewed and <strong>rejected</strong> by " + "<strong>" + approverName
+				+ "</strong>.</p>" + "<p><strong>Reason:</strong><br>" + rejectionReason + "</p>"
+				+ "<p>You can revise and resubmit the request again for the approval.</p>"
+				+ "<p>Best regards,<br>ZOY Administrator</p>";
+
+		email.setBody(message);
+		email.setContent("text/html");
+
+		try {
+			emailService.sendEmail(email, null);
+		} catch (Exception e) {
+			log.error("Error occurred while sending the rejection email to  recipients " +  to  +": " + e.getMessage(), e);
+		}
+	}
+
+
+	public void sendAutoRejectionEmail(String ruleTitle, String effectiveDateMin) throws WebServiceException {
+	    
+	    String[] allMails = adminUserMasterRepo.masterConfigurationAccess();
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for sending auto-rejection notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+
+	    List<String> to = new ArrayList<>();
+	    Collections.addAll(to, allMails);
+	    email.setTo(to);
+	    email.setSubject("Approval Request Automatically Rejected by System");
+
+	    String message = "<p>Dear Team,</p>"
+	            + "<p>I hope this message finds you well.</p>"
+	            + "<p>We would like to inform you that your recent approval request titled <strong>\"" + ruleTitle
+	            + "\"</strong>, effective from <strong>" + effectiveDateMin + "</strong>, has been "
+	            + "<strong>automatically rejected by the system</strong>.</p>"
+	            + "<p><strong>Reason:</strong> The approval time window has expired.</p>"
+	            + "<p>You may revise and resubmit the request for approval at your convenience.</p>"
+	            + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Error occurred while sending the automatic rejection email to recipients " + to + ": " + e.getMessage(), e);
+	    }
+	}
+
+	public void sendPolicyChangeNotificationEmail(String ruleName, String effectiveDate,String existingRule, String upcomingRule) throws WebServiceException {
+
+	    String[] allMails = adminUserMasterRepo.masterConfigurationAccess();
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for sending policy update notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+
+	    List<String> to = new ArrayList<>();
+	    Collections.addAll(to, allMails);
+	    email.setTo(to);
+
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear users </p>"
+	            + "<p>We hope this message finds you well.</p>"
+	            + "<p>We are writing to inform you about an important update regarding our <strong>Cancellation & Payment rules</strong> and <strong>Policy Terms</strong>, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	            + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+
+	            + "<p><strong>What’s Changing:</strong></p>"
+	            + "<p><strong>" + ruleName + "</strong></p>"
+
+	            + "<table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;'>"
+	            + "<tr style='background-color: #f2f2f2;'>"
+	            + "<th style='border: 1px solid #999; padding: 10px; text-align: left;'>Existing Rule</th>"
+	            + "<th style='border: 1px solid #999; padding: 10px; text-align: left;'>Upcoming Rule</th>"
+	            + "</tr>"
+	            + "<tr>"
+	            + "<td style='border: 1px solid #999; padding: 10px;'>" + existingRule + "</td>"
+	            + "<td style='border: 1px solid #999; padding: 10px;'>" + upcomingRule + "</td>"
+	            + "</tr>"
+	            + "</table>"
+
+	            + "<p>We kindly request you to review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
+	            + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <strong>support@zoy.com</strong>.</p>"
+	            + "<p>Thank you for your continued support and cooperation.</p>"
+	            + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Error occurred while sending the policy update email to recipients " + to + ": " + e.getMessage(), e);
+	    }
+	}
+
 }
