@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';
@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 import { ConfigMasterService } from '../service/config-master-serive';
-import { BeforeCheckInCancellationRefundMainObjModel, BeforeCheckInCancellationRefundModel, ConfigMasterModel, DataGroupingModel, EarlyCheckOutRuleDetails, ForceCheckoutModel, GstChargesModel, NoRentalAgreement, OtherChargesModel, SecurityDepositDeadLineAndAutoCancellationModel, SecurityDepositLimitsModel, ShortTermMainModel, ShortTermModel, ShortTermRentingDuration, ShortTermSubModel, TokenDetailsModel} from '../models/config-master-model';
+import { BeforeCheckInCancellationRefundMainObjModel, BeforeCheckInCancellationRefundModel, ConfigMasterModel, ConfigMasterObjModel,ShortTermMainModel, ShortTermSubModel} from '../models/config-master-model';
 import { CdkDragDrop, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { DbSettingDataModel} from '../../db-master-configuration/models/db-setting-models';
@@ -65,9 +65,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  canSubmit:boolean = true;
 	  canShortSubmit:boolean = true;
 	  @ViewChild(MatTable) table: MatTable<BeforeCheckInCancellationRefundModel>;
-	more:boolean=true;
-	moreEarlyCheckout:boolean=true;
-	popupMoreRecordHeader:string="";
+	  more:boolean=true;
+	  moreEarlyCheckout:boolean=true;
+	  popupMoreRecordHeader:string="";
+	  comments:string='';
+	  @ViewChild('closeApproveRejectModel') closeApproveRejectModel: ElementRef;
 	  constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService, private configMasterService :ConfigMasterService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,
 		  private dbMasterConfigurationService:DbMasterConfigurationService
@@ -174,6 +176,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}
 		});
 	}	
+
 	  getConfigMasterDetails(){
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
@@ -181,54 +184,13 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.configMasterOrg = new ConfigMasterModel();
 		const keys = Object.keys(this.configMasterOrg);
 		keys.forEach(key => {
-			if(!res.data[key] || res.data[key]?.length ==undefined || res.data[key]?.length==0){
-				switch (key) {
-					case "depositDetails":
-						this.configMasterOrg[key].push(new SecurityDepositLimitsModel());
-					  break;
-					case "tokenDetails":
-						this.configMasterOrg[key].push(new TokenDetailsModel());
-					  break;
-					case "gstCharges":
-						this.configMasterOrg[key].push(new GstChargesModel());
-					  break;
-					case "noRentalAgreement":
-						this.configMasterOrg[key].push(new NoRentalAgreement());
-					  break;
-					case "securityDepositDeadLineDetails":
-						this.configMasterOrg[key].push(new SecurityDepositDeadLineAndAutoCancellationModel());
-					  break;
-					case "cancellationAfterCheckInDetails":
-						this.configMasterOrg[key].push(new SecurityDepositDeadLineAndAutoCancellationModel());
-					  break;
-					case "otherCharges":
-						this.configMasterOrg[key].push(new OtherChargesModel());
-					  break;
-					case "forceCheckOut":
-						this.configMasterOrg[key].push(new ForceCheckoutModel());
-					  break;
-					case "earlyCheckOutRuleDetails":
-						this.configMasterOrg[key].push(new EarlyCheckOutRuleDetails());
-					  break;
-					case "dataGrouping":
-						this.configMasterOrg[key].push(new DataGroupingModel());
-					  break; 
-					case "shortTermRentingDuration":
-						this.configMasterOrg[key].push(new ShortTermRentingDuration());
-					  break; 
-  
-				  }
-		    }else if (res.data[key]) {
-				this.configMasterOrg[key] = res.data[key];
-			}			
+			this.setRuleData(key,res.data[key]);
 		});
-
-		this.configMasterModel = JSON.parse(JSON.stringify(this.configMasterOrg));
-		this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value="TotalPaidAmount";
-		this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value="Rent";
-		this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_value="Rent";
-		
-		
+		//this.printAllVariables();
+		console.log("this.configMasterOrg",this.configMasterOrg);
+		console.log("this.configMasterModel",this.configMasterModel)
+		console.log("editConfigMaster",this.editConfigMaster);
+		console.log("showConfigMaster",this.showConfigMaster);
 		this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
@@ -259,6 +221,39 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}
 		});
 	}	
+
+    editConfigMaster:ConfigMasterObjModel=new ConfigMasterObjModel();
+	showConfigMaster:ConfigMasterObjModel=new ConfigMasterObjModel();
+
+	setRuleData(key: string, data: any[]) {
+    const Model = this.configMasterService.rules.find(r=>r.key == key).model;
+
+	if (!Model) return;
+
+    if (!this.configMasterOrg[key]) {
+      this.configMasterOrg[key] = [];
+    }
+
+    if (!data || data.length === 0) {
+      this.configMasterOrg[key].push(new Model());
+      this.editConfigMaster[key]= new Model();
+      this.showConfigMaster[key] = null;
+    } else {
+      this.configMasterOrg[key] = data;
+
+      const editModel = data.filter(c => !c.comments && !c.isApproved);
+      const showModel = data
+        .filter(c => c.isApproved)
+        .sort((a, b) => new Date(b.effectiveDate).getTime() - new Date(a.effectiveDate).getTime());
+
+	  this.editConfigMaster[key] = JSON.parse(JSON.stringify(editModel.length > 0 ? editModel[0] : (showModel.length > 0 ? showModel[0] : new Model())));
+	  this.showConfigMaster[key]= JSON.parse(JSON.stringify(editModel.length > 0 ? (showModel.length > 0 ? showModel[0] : null):null));
+    }
+
+    this.configMasterModel[key] = JSON.parse(JSON.stringify(this.configMasterOrg[key]));
+  }
+
+
 	getTriggerCondition(){		     
 		this.configMasterService.getTriggeredCond().subscribe(res => {
 		this.triggerCondition = Object.assign([],res );
@@ -497,194 +492,135 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		 }
 		}
 
-		// approveTheRule(ruleTitle:string,rule:any){
-		// 	console.log("ruleTitle::",ruleTitle);
-		// 	console.log("rule::",rule);
-
-		// 	if(rule?.creater == this.userInfo.userEmail){
-		// 		this.notifyService.showInfo("Rule creator cannot approve the Rule","")
-		// 		return ;
-		// 	}
-		// 	if(this.validationAllData(ruleTitle)){
-		// 		this.notifyService.showInfo("The rule is invalid, kindly review it.","");
-		// 		return;
-		// 	}else{
-		// 	this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Approve ?')
-		// 	.then(
-		// 	   (confirmed) =>{
-		// 		if(confirmed){
-		// 	this.spinner.show();
-		// 	this.authService.checkLoginUserVlidaate();
-		// 	this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetails[0]).subscribe(res => {
-		// 		this.configMasterOrg.tokenDetails = Object.assign(new TokenDetailsModel(), res.data );
-		// 		this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
-		// 		this.tokenAdvancDisabled = true;
-		// 		this.notifyService.showSuccess("Token Advance has been updated successfully", "");
-		// 		this.spinner.hide();
-		// 		}, error => {
-		// 		this.spinner.hide();
-		// 		if(error.status == 0) {
-		// 		  this.notifyService.showError("Internal Server Error/Connection not established", "");
-		// 	   }else if(error.status==403){
-		// 			this.router.navigate(['/forbidden']);
-		// 		}else if (error.error && error.error.message) {
-		// 			this.errorMsg = error.error.message;
-		// 			console.log("Error:" + this.errorMsg);
-		// 			this.notifyService.showError(this.errorMsg, "");
-		// 		} else {
-		// 			if (error.status == 500 && error.statusText == "Internal Server Error") {
-		// 			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-		// 			} else {
-		// 			let str;
-		// 			if (error.status == 400) {
-		// 				str = error.error.error;
-		// 			} else {
-		// 				str = error.error.message;
-		// 				str = str.substring(str.indexOf(":") + 1);
-		// 			}
-		// 			console.log("Error:" ,str);
-		// 			this.errorMsg = str;
-		// 			}
-		// 			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-		// 			//this.notifyService.showError(this.errorMsg, "");
-		// 		}
-		// 		});	
-		// 	}	
-		// 	}).catch(
-		// 		() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-		// 	);	
-		// 	}
-
-		// 	}
-
 		validationAllData(key:string) :boolean{
 			switch (key) {
 				case "tokenDetails":
-					if(this.isNotValidNumber(this.configMasterModel.tokenDetails[0].fixedToken) || this.isNotValidNumber(this.configMasterModel.tokenDetails[0].variableToken ) || !this.configMasterModel.tokenDetails[0].effectiveDate){
+					if(this.isNotValidNumber(this.editConfigMaster.tokenDetails.fixedToken) || this.isNotValidNumber(this.editConfigMaster.tokenDetails.variableToken ) || !this.editConfigMaster.tokenDetails.effectiveDate){
 						return true;
 					}
-					if(this.invaliedEffectiveDate('tokenDetails',this.configMasterModel.tokenDetails[0]?.effectiveDate)){
+					if(this.invaliedEffectiveDate('tokenDetails',this.editConfigMaster.tokenDetails?.effectiveDate)){
 						return true;
 					}
-					if(Number(this.configMasterModel.tokenDetails[0].fixedToken) > Number(this.configMasterModel.depositDetails[0].maximumDeposit)){
+					if(Number(this.editConfigMaster.tokenDetails.fixedToken) > Number(this.editConfigMaster.depositDetails.maximumDeposit)){
 						this.notifyService.showInfo("The token fixed amount should not be greater than the maximum security deposit.","")
 						return true;
 					}
 				  break;
 				case "depositDetails":
-					if(this.isNotValidNumber(this.configMasterModel.depositDetails[0].maximumDeposit) || this.isNotValidNumber(this.configMasterModel.depositDetails[0].minimumDeposit) || !this.configMasterModel.depositDetails[0]?.effectiveDate ){
+					if(this.isNotValidNumber(this.editConfigMaster.depositDetails.maximumDeposit) || this.isNotValidNumber(this.editConfigMaster.depositDetails.minimumDeposit) || !this.editConfigMaster.depositDetails?.effectiveDate ){
 						return true;
 					}
-					if(this.invaliedEffectiveDate('depositDetails',this.configMasterModel.depositDetails[0]?.effectiveDate)){
+					if(this.invaliedEffectiveDate('depositDetails',this.editConfigMaster.depositDetails?.effectiveDate)){
 						return true;
 					}
-					if(Number(this.configMasterModel.depositDetails[0].maximumDeposit) < Number(this.configMasterModel.depositDetails[0].minimumDeposit) ){
+					if(Number(this.editConfigMaster.depositDetails.maximumDeposit) < Number(this.editConfigMaster.depositDetails.minimumDeposit) ){
 						this.notifyService.showInfo("The maximum security deposit should not be less than to the minimum security deposit.","")
 						return true;
 					}
-					if(Number(this.configMasterModel.depositDetails[0].maximumDeposit) < Number(this.configMasterModel.tokenDetails[0].fixedToken) ){
+					if(Number(this.editConfigMaster.depositDetails.maximumDeposit) < Number(this.editConfigMaster.tokenDetails.fixedToken) ){
 						this.notifyService.showInfo("The maximum security deposit should not be less than to the token fixed amount.","")
 						return true;
 					}
 				  break;
 				case "gstCharges":
-					if( this.isNotValidNumber(this.configMasterModel.gstCharges[0].monthlyRent) || this.isNotValidNumber(this.configMasterModel.gstCharges[0].cgstPercentage) 
-						|| this.isNotValidNumber(this.configMasterModel.gstCharges[0].sgstPercentage) || this.isNotValidNumber(this.configMasterModel.gstCharges[0].igstPercentage)
-						|| !this.configMasterModel.gstCharges[0]?.effectiveDate ){
+					if( this.isNotValidNumber(this.editConfigMaster.gstCharges.monthlyRent) || this.isNotValidNumber(this.editConfigMaster.gstCharges.cgstPercentage) 
+						|| this.isNotValidNumber(this.editConfigMaster.gstCharges.sgstPercentage) || this.isNotValidNumber(this.editConfigMaster.gstCharges.igstPercentage)
+						|| !this.editConfigMaster.gstCharges?.effectiveDate ){
 						return true;
 					}
-					if(this.invaliedEffectiveDate('gstCharges',this.configMasterModel.gstCharges[0]?.effectiveDate)){
+					if(this.invaliedEffectiveDate('gstCharges',this.editConfigMaster.gstCharges?.effectiveDate)){
 						return true;
 					}
 				  break;
 				case "noRentalAgreement":
-					if(this.isNotValidNumber(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) || !this.configMasterModel.noRentalAgreement[0]?.effectiveDate){
+					if(this.isNotValidNumber(this.editConfigMaster.noRentalAgreement.noRentalAgreementDays) || !this.editConfigMaster.noRentalAgreement?.effectiveDate){
 						return true;
 					 }
-					 if(this.invaliedEffectiveDate('noRentalAgreement',this.configMasterModel.noRentalAgreement[0]?.effectiveDate)){
+					 if(this.invaliedEffectiveDate('noRentalAgreement',this.editConfigMaster.noRentalAgreement?.effectiveDate)){
 						 return true;
 					 }
-					 if(Number(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) < Number(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
-						 this.notifyService.showInfo("No Rental agreement upto should be greater than Short term duration.","");
-						 return true;
-					  }
+					//  if(Number(this.editConfigMaster.noRentalAgreement.noRentalAgreementDays) < Number(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
+					// 	 this.notifyService.showInfo("No Rental agreement upto should be greater than Short term duration.","");
+					// 	 return true;
+					//   }
 				  break;
 				case "securityDepositDeadLineDetails":
-					if(this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails[0].auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.securityDepositDeadLineDetails[0].deduction_percentage) 
-						|| !this.configMasterModel.securityDepositDeadLineDetails[0].trigger_condition|| !this.configMasterModel.securityDepositDeadLineDetails[0].trigger_value || !this.configMasterModel.securityDepositDeadLineDetails[0]?.effectiveDate){
+					if(this.isNotValidNumber(this.editConfigMaster.securityDepositDeadLineDetails.auto_cancellation_day) || this.isNotValidNumber(this.editConfigMaster.securityDepositDeadLineDetails.deduction_percentage) 
+						|| !this.editConfigMaster.securityDepositDeadLineDetails.trigger_condition|| !this.editConfigMaster.securityDepositDeadLineDetails.trigger_value || !this.editConfigMaster.securityDepositDeadLineDetails?.effectiveDate){
 						return true;
 					}
-					if(this.invaliedEffectiveDate('securityDepositDeadLineDetails',this.configMasterModel.securityDepositDeadLineDetails[0]?.effectiveDate)){
+					if(this.invaliedEffectiveDate('securityDepositDeadLineDetails',this.editConfigMaster.securityDepositDeadLineDetails?.effectiveDate)){
 						return true;
 					}
 				  break;
 				case "cancellationAfterCheckInDetails":
-					if(this.isNotValidNumbernAndZero(this.configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day) || this.isNotValidNumber(this.configMasterModel.cancellationAfterCheckInDetails[0].deduction_percentage) 
-						|| !this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition|| !this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_value || !this.configMasterModel.cancellationAfterCheckInDetails[0]?.effectiveDate){
+					if(this.isNotValidNumbernAndZero(this.editConfigMaster.cancellationAfterCheckInDetails.auto_cancellation_day) || this.isNotValidNumber(this.editConfigMaster.cancellationAfterCheckInDetails.deduction_percentage) 
+						|| !this.editConfigMaster.cancellationAfterCheckInDetails.trigger_condition|| !this.editConfigMaster.cancellationAfterCheckInDetails.trigger_value || !this.editConfigMaster.cancellationAfterCheckInDetails?.effectiveDate){
 						return true;
 					}
-					if(this.invaliedEffectiveDate('cancellationAfterCheckInDetails',this.configMasterModel.cancellationAfterCheckInDetails[0]?.effectiveDate)){
+					if(this.invaliedEffectiveDate('cancellationAfterCheckInDetails',this.editConfigMaster.cancellationAfterCheckInDetails?.effectiveDate)){
 						return true;
 					}
-					if(this.configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_day == 1 && this.configMasterModel.cancellationAfterCheckInDetails[0].trigger_condition === '<'){
+					if(this.editConfigMaster.cancellationAfterCheckInDetails.auto_cancellation_day == 1 && this.editConfigMaster.cancellationAfterCheckInDetails.trigger_condition === '<'){
 						return true;
 					}
 				  break;
 				case "otherCharges":
-					if(this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerDocumentCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantDocumentCharges) 
-						|| this.isNotValidNumber(this.configMasterModel.otherCharges[0].ownerEkycCharges) || this.isNotValidNumber(this.configMasterModel.otherCharges[0].tenantEkycCharges) || !this.configMasterModel.otherCharges[0]?.effectiveDate ){
+					if(this.isNotValidNumber(this.editConfigMaster.otherCharges.ownerDocumentCharges) || this.isNotValidNumber(this.editConfigMaster.otherCharges.tenantDocumentCharges) 
+						|| this.isNotValidNumber(this.editConfigMaster.otherCharges.ownerEkycCharges) || this.isNotValidNumber(this.editConfigMaster.otherCharges.tenantEkycCharges) || !this.editConfigMaster.otherCharges?.effectiveDate ){
 						return true;
 					}
-					if(this.invaliedEffectiveDate('otherCharges',this.configMasterModel.otherCharges[0]?.effectiveDate)){
+					if(this.invaliedEffectiveDate('otherCharges',this.editConfigMaster.otherCharges?.effectiveDate)){
 						return true;
 					}
 				  break;
 				case "forceCheckOut":
-					if(this.isNotValidNumber(this.configMasterModel.forceCheckOut[0].forceCheckOutDays) || !this.configMasterModel.forceCheckOut[0]?.effectiveDate){
+					if(this.isNotValidNumber(this.editConfigMaster.forceCheckOut.forceCheckOutDays) || !this.editConfigMaster.forceCheckOut?.effectiveDate){
 						return true;
 					}
-					if(this.invaliedEffectiveDate('forceCheckOut',this.configMasterModel.forceCheckOut[0]?.effectiveDate)){
+					if(this.invaliedEffectiveDate('forceCheckOut',this.editConfigMaster.forceCheckOut?.effectiveDate)){
 						return true;
 					}
 				  break;
 				case "earlyCheckOutRuleDetails":
-					if(this.isNotValidNumbernAndZero(this.configMasterModel.earlyCheckOutRuleDetails[0].check_out_day) || this.isNotValidNumber(this.configMasterModel.earlyCheckOutRuleDetails[0].deduction_percentage) || !this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition || !this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_value ){
+					if(this.isNotValidNumbernAndZero(this.editConfigMaster.earlyCheckOutRuleDetails.check_out_day) || this.isNotValidNumber(this.editConfigMaster.earlyCheckOutRuleDetails.deduction_percentage) || !this.editConfigMaster.earlyCheckOutRuleDetails.trigger_condition || !this.editConfigMaster.earlyCheckOutRuleDetails.trigger_value ){
 						return true;
 					}
-					if(this.invaliedEffectiveDate('earlyCheckOutRuleDetails',this.configMasterModel.earlyCheckOutRuleDetails[0]?.effectiveDate)){
+					if(this.invaliedEffectiveDate('earlyCheckOutRuleDetails',this.editConfigMaster.earlyCheckOutRuleDetails?.effectiveDate)){
 						return true;
 					}
-					if(this.configMasterModel.earlyCheckOutRuleDetails[0].check_out_day == 1 && this.configMasterModel.earlyCheckOutRuleDetails[0].trigger_condition === '<'){
+					if(this.editConfigMaster.earlyCheckOutRuleDetails.check_out_day == 1 && this.editConfigMaster.earlyCheckOutRuleDetails.trigger_condition === '<'){
 						return true;
 					}
 				  break;
 				case "dataGrouping":
-					if(this.isNotValidNumber(this.configMasterModel.dataGrouping[0].considerDays) || !this.configMasterModel.dataGrouping[0]?.effectiveDate){
+					if(this.isNotValidNumber(this.editConfigMaster.dataGrouping.considerDays) || !this.editConfigMaster.dataGrouping?.effectiveDate){
 						return true;
 					}
-					if(this.invaliedEffectiveDate('dataGrouping',this.configMasterModel.dataGrouping[0]?.effectiveDate)){
+					if(this.invaliedEffectiveDate('dataGrouping',this.editConfigMaster.dataGrouping?.effectiveDate)){
 						return true;
 					}
 				  break; 
-				case "shortTermRentingDuration":
-					if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) || !this.configMasterModel.shortTermRentingDuration[0]?.effectiveDate){
-						return true;
-					 }
-					 if(this.invaliedEffectiveDate('shortTermRentingDuration',this.configMasterModel.shortTermRentingDuration[0]?.effectiveDate)){
-						 return true;
-					 }
-					 if(Number(this.configMasterModel.noRentalAgreement[0].noRentalAgreementDays) < Number(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
-						 this.notifyService.showInfo("Short term duration should not be greater than 'No Rental agreement upto'.","");
-						 return true;
-					  }
-				  break; 
+				// case "shortTermRentingDuration":
+				// 	if(this.isNotValidNumber(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) || !this.configMasterModel.shortTermRentingDuration[0]?.effectiveDate){
+				// 		return true;
+				// 	 }
+				// 	 if(this.invaliedEffectiveDate('shortTermRentingDuration',this.configMasterModel.shortTermRentingDuration[0]?.effectiveDate)){
+				// 		 return true;
+				// 	 }
+				// 	 if(Number(this.editConfigMaster.noRentalAgreement.noRentalAgreementDays) < Number(this.configMasterModel.shortTermRentingDuration[0].rentingDurationDays) ){
+				// 		 this.notifyService.showInfo("Short term duration should not be greater than 'No Rental agreement upto'.","");
+				// 		 return true;
+				// 	  }
+				//   break; 
 
 			  }
 			  return false;
 		}
 
 	 tokenAdvancSubmit(task:string) {
-		if( task === 'approve' && this.configMasterModel.tokenDetails[0]?.createdBy == this.userInfo.userEmail){
+
+		if( task === 'approve' && this.editConfigMaster.tokenDetails?.createdBy == this.userInfo.userEmail){
 			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 			return ;
 		}
@@ -697,19 +633,20 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		   (confirmed) =>{
 			if(confirmed){
 		if(task === 'approve'){
-			this.configMasterModel.tokenDetails[0].isApproved=true;
+			this.editConfigMaster.tokenDetails.isApproved=true;
 		}else{
-			if(this.configMasterModel.tokenDetails[0].isApproved){
-				this.configMasterModel.tokenDetails[0].tokenId="";
+			if(this.editConfigMaster.tokenDetails.isApproved){
+				this.editConfigMaster.tokenDetails.tokenId="";
 			}
 		}
+	
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
-		this.configMasterService.updateTokenAdvanceDetails(this.configMasterModel.tokenDetails[0]).subscribe(res => {
-			this.configMasterOrg.tokenDetails = JSON.parse(JSON.stringify(res.data ));  
-			this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
+		this.configMasterService.updateTokenAdvanceDetails(this.editConfigMaster.tokenDetails).subscribe(res => {
+			this.setRuleData('tokenDetails',res.data);
 			this.tokenAdvancDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
+			this.closeApproveRejectModel.nativeElement.click(); 
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -746,12 +683,12 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	
 	  tokenAdvanceReset() {
-		this.configMasterModel.tokenDetails = JSON.parse(JSON.stringify(this.configMasterOrg.tokenDetails));
+		this.setRuleData('tokenDetails',this.configMasterOrg.tokenDetails);
 		this.tokenAdvancDisabled = true;
 	  }
 	  
 	  securityDepositLimitsSubmit(task:string) {
-		if( task === 'approve' && this.configMasterModel.depositDetails[0]?.createdBy == this.userInfo.userEmail){
+		if( task === 'approve' && this.editConfigMaster.depositDetails?.createdBy == this.userInfo.userEmail){
 			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 			return ;
 		}
@@ -766,15 +703,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
 				if(task === 'approve'){
-					this.configMasterModel.depositDetails[0].isApproved=true;
+					this.editConfigMaster.depositDetails.isApproved=true;
 				}else{
-					if(this.configMasterModel.depositDetails[0].isApproved){
-						this.configMasterModel.depositDetails[0].depositId="";
+					if(this.editConfigMaster.depositDetails.isApproved){
+						this.editConfigMaster.depositDetails.depositId="";
 					}
 				}
-				this.configMasterService.updatesecurityDepositLimitsDetails(this.configMasterModel.depositDetails[0]).subscribe(res => {
-					this.configMasterOrg.depositDetails =  JSON.parse(JSON.stringify( res.data));
-					this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
+				this.configMasterService.updatesecurityDepositLimitsDetails(this.editConfigMaster.depositDetails).subscribe(res => {
+					this.setRuleData('depositDetails',res.data);
 					this.securityDepositLimitsDisabled = true;
 					this.notifyService.showSuccess(res.message, "");
 					this.spinner.hide();
@@ -814,12 +750,12 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  	}
 		
 	securityDepositLimitsReset() {
-		this.configMasterModel.depositDetails = JSON.parse(JSON.stringify(this.configMasterOrg.depositDetails));
+		this.setRuleData('depositDetails',this.configMasterOrg.depositDetails);
 		this.securityDepositLimitsDisabled = true;
 	}
 
 	gstChargesSubmit(task:string) {
-		if( task === 'approve' && this.configMasterModel.gstCharges[0]?.createdBy == this.userInfo.userEmail){
+		if( task === 'approve' && this.editConfigMaster.gstCharges?.createdBy == this.userInfo.userEmail){
 			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 			return ;
 		}
@@ -833,16 +769,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			if(confirmed){
 		this.spinner.show();
 		if(task === 'approve'){
-			this.configMasterModel.gstCharges[0].isApproved=true;
+			this.editConfigMaster.gstCharges.isApproved=true;
 		}else{
-			if(this.configMasterModel.gstCharges[0].isApproved){
-				this.configMasterModel.gstCharges[0].rentId="";
+			if(this.editConfigMaster.gstCharges.isApproved){
+				this.editConfigMaster.gstCharges.rentId="";
 			}
 		}
 		this.authService.checkLoginUserVlidaate();
-		this.configMasterService.updategstChargesDetails(this.configMasterModel.gstCharges[0]).subscribe(res => {
-			this.configMasterOrg.gstCharges = JSON.parse(JSON.stringify(res.data )); 
-			this.configMasterModel.gstCharges = JSON.parse(JSON.stringify(this.configMasterOrg.gstCharges));
+		this.configMasterService.updategstChargesDetails(this.editConfigMaster.gstCharges).subscribe(res => {
+			this.setRuleData('gstCharges',res.data);
 			this.gstChargesDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
 			this.spinner.hide();
@@ -881,12 +816,12 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	
 	  gstChargesReset() {
-		this.configMasterModel.gstCharges = JSON.parse(JSON.stringify(this.configMasterOrg.gstCharges));
+		this.setRuleData('gstCharges',this.configMasterOrg.gstCharges);
 		this.gstChargesDisabled = true;
 	  }
 	securityDepositDeadLineSubmit(task:string) {
 		this.table?.renderRows();
-		if( task === 'approve' && this.configMasterModel.securityDepositDeadLineDetails[0]?.createdBy == this.userInfo.userEmail){
+		if( task === 'approve' && this.editConfigMaster.securityDepositDeadLineDetails?.createdBy == this.userInfo.userEmail){
 			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 			return ;
 		}
@@ -900,17 +835,16 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			if(confirmed){
 		this.spinner.show();
 		if(task === 'approve'){
-			this.configMasterModel.securityDepositDeadLineDetails[0].isApproved=true;
+			this.editConfigMaster.securityDepositDeadLineDetails.isApproved=true;
 		}else{
-			if(this.configMasterModel.securityDepositDeadLineDetails[0].isApproved){
-				this.configMasterModel.securityDepositDeadLineDetails[0].auto_cancellation_id="";
+			if(this.editConfigMaster.securityDepositDeadLineDetails.isApproved){
+				this.editConfigMaster.securityDepositDeadLineDetails.auto_cancellation_id="";
 			}
 		}
 		this.authService.checkLoginUserVlidaate();	
 		this.spinner.show();
-		this.configMasterService.updateSecurityDepositDeadLineDetails(this.configMasterModel.securityDepositDeadLineDetails[0]).subscribe(res => {
-			this.configMasterOrg.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(res.data )); 
-			this.configMasterModel.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositDeadLineDetails));
+		this.configMasterService.updateSecurityDepositDeadLineDetails(this.editConfigMaster.securityDepositDeadLineDetails).subscribe(res => {
+			this.setRuleData('securityDepositDeadLineDetails',res.data);
 			this.securityDepositDeadLineDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
 			this.spinner.hide();
@@ -948,11 +882,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}						
 	  }
 	securityDepositDeadLineReset() {
-		this.configMasterModel.securityDepositDeadLineDetails = JSON.parse(JSON.stringify(this.configMasterOrg.securityDepositDeadLineDetails));
+		this.setRuleData('securityDepositDeadLineDetails',this.configMasterOrg.securityDepositDeadLineDetails);
 		this.securityDepositDeadLineDisabled = true;
 	}
 	autoCancellationSubmit(task:string) {
-		if( task === 'approve' && this.configMasterModel.cancellationAfterCheckInDetails[0]?.createdBy == this.userInfo.userEmail){
+		if( task === 'approve' && this.editConfigMaster.cancellationAfterCheckInDetails?.createdBy == this.userInfo.userEmail){
 			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 			return ;
 		}
@@ -965,17 +899,16 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		   (confirmed) =>{
 			if(confirmed){
 		if(task === 'approve'){
-			this.configMasterModel.cancellationAfterCheckInDetails[0].isApproved=true;
+			this.editConfigMaster.cancellationAfterCheckInDetails.isApproved=true;
 		}else{
-			if(this.configMasterModel.cancellationAfterCheckInDetails[0].isApproved){
-				this.configMasterModel.cancellationAfterCheckInDetails[0].auto_cancellation_id="";
+			if(this.editConfigMaster.cancellationAfterCheckInDetails.isApproved){
+				this.editConfigMaster.cancellationAfterCheckInDetails.auto_cancellation_id="";
 			}
 		}
 		this.authService.checkLoginUserVlidaate();
 		this.spinner.show();
-		this.configMasterService.updateAutoCancellationDetails(this.configMasterModel.cancellationAfterCheckInDetails[0]).subscribe(res => {
-			this.configMasterOrg.cancellationAfterCheckInDetails = JSON.parse(JSON.stringify(res.data )); 
-			this.configMasterModel.cancellationAfterCheckInDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationAfterCheckInDetails));
+		this.configMasterService.updateAutoCancellationDetails(this.editConfigMaster.cancellationAfterCheckInDetails).subscribe(res => {
+			this.setRuleData('cancellationAfterCheckInDetails',res.data);
 			this.autoCancellationDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
 			this.spinner.hide();
@@ -1014,11 +947,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}								
 	  }
 	autoCancellationReset() {
-		this.configMasterModel.cancellationAfterCheckInDetails = JSON.parse(JSON.stringify(this.configMasterOrg.cancellationAfterCheckInDetails));
+		this.setRuleData('cancellationAfterCheckInDetails',this.configMasterOrg.cancellationAfterCheckInDetails);
 		this.autoCancellationDisabled = true;
 	}	
 	otherChargesSubmit(task:string) {
-		if( task === 'approve' && this.configMasterModel.otherCharges[0]?.createdBy == this.userInfo.userEmail){
+		if( task === 'approve' && this.editConfigMaster.otherCharges?.createdBy == this.userInfo.userEmail){
 			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 			return ;
 		}
@@ -1031,17 +964,16 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		   (confirmed) =>{
 			if(confirmed){
 			if(task === 'approve'){
-				this.configMasterModel.otherCharges[0].isApproved=true;
+				this.editConfigMaster.otherCharges.isApproved=true;
 			}else{
-				if(this.configMasterModel.otherCharges[0].isApproved){
-					this.configMasterModel.otherCharges[0].otherChargesId="";
+				if(this.editConfigMaster.otherCharges.isApproved){
+					this.editConfigMaster.otherCharges.otherChargesId="";
 				}
 			}
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
-			this.configMasterService.updateOtherChargesDetails(this.configMasterModel.otherCharges[0]).subscribe(res => {
-				this.configMasterOrg.otherCharges = JSON.parse(JSON.stringify( res.data ));
-				this.configMasterModel.otherCharges = JSON.parse(JSON.stringify(this.configMasterOrg.otherCharges));
+			this.configMasterService.updateOtherChargesDetails(this.editConfigMaster.otherCharges).subscribe(res => {
+				this.setRuleData('otherCharges',res.data);
 				this.otherChargesDisabled = true;
 				this.notifyService.showSuccess(res.message, "");
 				this.spinner.hide();
@@ -1080,12 +1012,12 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}							
 	  }
 	  otherChargesReset() {
-		this.configMasterModel.otherCharges = JSON.parse(JSON.stringify(this.configMasterOrg.otherCharges));
+		this.setRuleData('otherCharges',this.configMasterOrg.otherCharges);
 		this.otherChargesDisabled = true;
 	}		  
 
 	trendingPGSubmit(task:string) {
-		if( task === 'approve' && this.configMasterModel.dataGrouping[0]?.createdBy == this.userInfo.userEmail){
+		if( task === 'approve' && this.editConfigMaster.dataGrouping?.createdBy == this.userInfo.userEmail){
 			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 			return ;
 		}
@@ -1098,17 +1030,16 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		   (confirmed) =>{
 			if(confirmed){
 			if(task === 'approve'){
-				this.configMasterModel.dataGrouping[0].isApproved=true;
+				this.editConfigMaster.dataGrouping.isApproved=true;
 			}else{
-				if(this.configMasterModel.dataGrouping[0].isApproved){
-					this.configMasterModel.dataGrouping[0].dataGroupingId="";
+				if(this.editConfigMaster.dataGrouping.isApproved){
+					this.editConfigMaster.dataGrouping.dataGroupingId="";
 				}
 			}
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
-			this.configMasterService.updateDataGroupingDetails(this.configMasterModel.dataGrouping[0]).subscribe(res => {
-				this.configMasterOrg.dataGrouping = JSON.parse(JSON.stringify(res.data ));
-				this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
+			this.configMasterService.updateDataGroupingDetails(this.editConfigMaster.dataGrouping).subscribe(res => {
+				this.setRuleData('dataGrouping',res.data);
 				this.dataGroupingDisabled = true;
 				this.notifyService.showSuccess(res.message, "");
 				this.spinner.hide();
@@ -1149,7 +1080,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			
 
 	  trendingPGReset() {
-		this.configMasterModel.dataGrouping = JSON.parse(JSON.stringify(this.configMasterOrg.dataGrouping));
+		this.setRuleData('dataGrouping',this.configMasterOrg.dataGrouping);
 		this.dataGroupingDisabled = true;
 	}		  
 
@@ -1183,7 +1114,17 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  getBeforeCheckInCRData(){
 		this.backUpBeforeCheckInCRList=[];
 		this.cancellationBeforeCheckInDetails= JSON.parse(JSON.stringify(this.cancellationBeforeCheckInDetailsOrg));
-			var main :BeforeCheckInCancellationRefundMainObjModel=this.cancellationBeforeCheckInDetails[0];
+
+		const editModel = this.cancellationBeforeCheckInDetailsOrg.filter(c => !c.comments && !c.isApproved);
+		const showModel = this.cancellationBeforeCheckInDetailsOrg
+		  .filter(c => c.isApproved)
+		  .sort((a, b) => new Date(b.effectiveDate).getTime() - new Date(a.effectiveDate).getTime());
+
+  		let model = new BeforeCheckInCancellationRefundMainObjModel();
+		this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel = JSON.parse(JSON.stringify(editModel.length > 0 ? editModel[0] : (showModel.length > 0 ? showModel[0] : model )));
+		this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel= JSON.parse(JSON.stringify(editModel.length > 0 ? (showModel.length > 0 ? showModel[0] : null):null));
+	  
+			var main :BeforeCheckInCancellationRefundMainObjModel=this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel;
 			main.zoy_before_check_in_cancellation_info?.forEach(element => {
 			let sub : BeforeCheckInCancellationRefundModel = new BeforeCheckInCancellationRefundModel();
 			sub.cancellation_id = element.cancellation_id; 
@@ -1198,7 +1139,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.backUpBeforeCheckInCRList.push(sub);
 		});
 
-		  this.crpEffectiveDate = this.cancellationBeforeCheckInDetails[0]?.effectiveDate;
+		  this.crpEffectiveDate = this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel?.effectiveDate;
 		  this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
 		  this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
 		  this.table?.renderRows();
@@ -1209,9 +1150,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.beforeCheckInCRfModel = new BeforeCheckInCancellationRefundModel();
 		this.beforeCheckInCRfModel.trigger_value='TotalPaidAmount';
 		this.canSubmit=true;
-		this.crpEffectiveDate = this.cancellationBeforeCheckInDetails[0]?.effectiveDate;
-		this.beforeCheckInCRDetails=JSON.parse(JSON.stringify(this.backUpBeforeCheckInCRList));
-		this.dataSource = new MatTableDataSource<BeforeCheckInCancellationRefundModel>(this.beforeCheckInCRDetails);
+		this.getBeforeCheckInCRData();
 	  }
 	  		
 	  checkDuplicateBCCR(row):boolean{
@@ -1254,14 +1193,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	  return false;
 	}
-	reason:string='';
 	
  beforeCheckInCRfUpDate(task:string){
+	var payload :BeforeCheckInCancellationRefundMainObjModel = JSON.parse(JSON.stringify(this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel));
+	if(task != 'reject'){
 	if(!this.crpEffectiveDate || this.multirullsEffectiveDateValidation(this.crpEffectiveDate) ){
 		return;
 	}
 	
-	var payload :BeforeCheckInCancellationRefundMainObjModel = JSON.parse(JSON.stringify(this.cancellationBeforeCheckInDetails[0]));
 	payload.effectiveDate = this.crpEffectiveDate;
 	if(task === 'approve'){
 		payload.isApproved=true;
@@ -1273,15 +1212,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		return ;
 	}
 
-	const compareIndex = this.cancellationBeforeCheckInDetailsOrg[0].isApproved ? 0 : 1;
+	const model = this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel ? this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel : this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel
 	const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
-	if(this.cancellationBeforeCheckInDetailsOrg[compareIndex].effectiveDate){
-		const existingDate = new Date(this.cancellationBeforeCheckInDetailsOrg[compareIndex].effectiveDate).setHours(0, 0, 0, 0);	
-		 if ( selectedDate < new Date().setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
-			this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
-			return;
-		}
-	 }
+	const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
+	if ( selectedDate < new Date().setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
+		this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
+		return;
+	}
+	
 
 	const filteredDetails = this.beforeCheckInCRDetails.filter(item => !item.isDelete);
 	if(filteredDetails.length == 0){
@@ -1313,6 +1251,10 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	payload.ZoyBeforeCheckInCancellationInfo = list;
 	console.log("beforeCheckInCRDetails",this.beforeCheckInCRDetails);
 	console.log("payload>>",payload);
+	}else{
+		payload.comments=this.comments;
+		payload.ZoyBeforeCheckInCancellationInfo=payload.zoy_before_check_in_cancellation_info;
+	}
 	this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+(task === 'approve' ? 'Approve':(payload.iscreate?'Create':'Update') ) +' ?')
 		.then(
 		   (confirmed) =>{
@@ -1425,7 +1367,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	
 	  earlyCheckOutRulesSubmit(task:string) {
-		if( task === 'approve' && this.configMasterModel.earlyCheckOutRuleDetails[0]?.createdBy == this.userInfo.userEmail){
+		if( task === 'approve' && this.editConfigMaster.earlyCheckOutRuleDetails?.createdBy == this.userInfo.userEmail){
 			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 			return ;
 		}
@@ -1438,18 +1380,17 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		   (confirmed) =>{
 			if(confirmed){
 			if(task === 'approve'){
-				this.configMasterModel.earlyCheckOutRuleDetails[0].isApproved=true;
+				this.editConfigMaster.earlyCheckOutRuleDetails.isApproved=true;
 			}else{
-				if(this.configMasterModel.earlyCheckOutRuleDetails[0].isApproved){
-					this.configMasterModel.earlyCheckOutRuleDetails[0].early_check_out_id="";
+				if(this.editConfigMaster.earlyCheckOutRuleDetails.isApproved){
+					this.editConfigMaster.earlyCheckOutRuleDetails.early_check_out_id="";
 				}
 			}
 			
 			this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-				this.configMasterService.updateEarlyCheckOutRulesdDetails(this.configMasterModel.earlyCheckOutRuleDetails[0]).subscribe(res => {
-					this.configMasterOrg.earlyCheckOutRuleDetails = JSON.parse(JSON.stringify(res.data ));
-					this.configMasterModel.earlyCheckOutRuleDetails = JSON.parse(JSON.stringify(this.configMasterOrg.earlyCheckOutRuleDetails));
+				this.configMasterService.updateEarlyCheckOutRulesdDetails(this.editConfigMaster.earlyCheckOutRuleDetails).subscribe(res => {
+					this.setRuleData('earlyCheckOutRuleDetails',res.data);
 					this.earlyCheckOutRulesDisabled = true;
 					this.notifyService.showSuccess(res.message, "");
 					this.spinner.hide();
@@ -1489,11 +1430,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 
 	earlyCheckOutRuleReset() {
-		this.configMasterModel.earlyCheckOutRuleDetails = JSON.parse(JSON.stringify(this.configMasterOrg.earlyCheckOutRuleDetails));
+		this.setRuleData('earlyCheckOutRuleDetails',this.configMasterOrg.earlyCheckOutRuleDetails);
 		this.earlyCheckOutRulesDisabled = true;
 	  }
 	  forceCheckoutSubmit(task:string): void {
-		if( task === 'approve' && this.configMasterModel.forceCheckOut[0]?.createdBy == this.userInfo.userEmail){
+		if( task === 'approve' && this.editConfigMaster.forceCheckOut?.createdBy == this.userInfo.userEmail){
 			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 			return ;
 		}
@@ -1506,17 +1447,16 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		   (confirmed) =>{
 			if(confirmed){
 			if(task === 'approve'){
-				this.configMasterModel.forceCheckOut[0].isApproved=true;
+				this.editConfigMaster.forceCheckOut.isApproved=true;
 			}else{
-				if(this.configMasterModel.forceCheckOut[0].isApproved){
-					this.configMasterModel.forceCheckOut[0].forceCheckOutId="";
+				if(this.editConfigMaster.forceCheckOut.isApproved){
+					this.editConfigMaster.forceCheckOut.forceCheckOutId="";
 				}
 			}
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
-			this.configMasterService.updateForceCheckOutDetails(this.configMasterModel.forceCheckOut[0]).subscribe(res => {
-				this.configMasterOrg.forceCheckOut = JSON.parse(JSON.stringify(res.data));
-				this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
+			this.configMasterService.updateForceCheckOutDetails(this.editConfigMaster.forceCheckOut).subscribe(res => {
+				this.setRuleData('forceCheckOut',res.data);
 				this.forceCheckoutDisabled = true;
 				this.notifyService.showSuccess(res.message, "");
 				this.spinner.hide();
@@ -1556,7 +1496,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	
 	  forceCheckoutReset(): void {
-		this.configMasterModel.forceCheckOut = JSON.parse(JSON.stringify(this.configMasterOrg.forceCheckOut));
+		this.setRuleData('forceCheckOut',this.configMasterOrg.forceCheckOut);
 		this.forceCheckoutDisabled = true;
 	  }
 
@@ -1568,132 +1508,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  }
 		  }
 
-		  shortTermRentingReset(i:number): void {
-			this.configMasterModel.shortTerm[i] = JSON.parse(JSON.stringify(this.configMasterOrg.shortTerm[i]));
-		}
-
-		  shortTermRentingSubmit(shortTerm:ShortTermModel): void {
-			if(this.isNotValidNumber(shortTerm.percentage)){
-				return ;
-			}
-			
-			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
-			.then(
-			   (confirmed) =>{
-				if(confirmed){
-					this.authService.checkLoginUserVlidaate();
-					this.spinner.show();
-					this.configMasterService.updateShortTermRentingDuratioDetails(shortTerm).subscribe(res => {
-						this.configMasterOrg.shortTerm = Object.assign([], res.data );
-						this.configMasterModel.shortTerm = JSON.parse(JSON.stringify(this.configMasterOrg.shortTerm));
-						this.notifyService.showSuccess("Short term Packages Configuration has been updated successfully", "");
-						this.spinner.hide();
-						}, error => {
-						this.spinner.hide();
-						if(error.status == 0) {
-						this.notifyService.showError("Internal Server Error/Connection not established", "");
-					}else if(error.status==403){
-							this.router.navigate(['/forbidden']);
-						}else if (error.error && error.error.message) {
-							this.errorMsg = error.error.message;
-							console.log("Error:" + this.errorMsg);
-							this.notifyService.showError(this.errorMsg, "");
-						} else {
-							if (error.status == 500 && error.statusText == "Internal Server Error") {
-							this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-							} else {
-							let str;
-							if (error.status == 400) {
-								str = error.error.error;
-							} else {
-								str = error.error.message;
-								str = str.substring(str.indexOf(":") + 1);
-							}
-							console.log("Error:" ,str);
-							this.errorMsg = str;
-							}
-							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-							//this.notifyService.showError(this.errorMsg, "");
-						}
-						});
-					}
-				}).catch(
-					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-				);
-
-			}
-
-		shortTermRentingDurationSubmit(task:string): void {
-			if( task === 'approve' && this.configMasterModel.shortTermRentingDuration[0]?.createdBy == this.userInfo.userEmail){
-				this.notifyService.showInfo("Rule creator cannot approve the Rule","")
-				return ;
-			}
-			if(this.validationAllData('shortTermRentingDuration')){
-				this.notifyService.showInfo("The rule is invalid, kindly review it.","");
-				return;
-			}else{
-			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
-			.then(
-			   (confirmed) =>{
-				if(confirmed){
-				if(task === 'approve'){
-					this.configMasterModel.shortTermRentingDuration[0].isApproved=true;
-				}else{
-					if(this.configMasterModel.shortTermRentingDuration[0].isApproved){
-						this.configMasterModel.shortTermRentingDuration[0].rentingDurationId="";
-					}
-				}
-				this.authService.checkLoginUserVlidaate();
-				this.spinner.show();
-				this.configMasterService.updateShortTermRentingDuration(this.configMasterModel.shortTermRentingDuration[0]).subscribe(res => {
-					this.configMasterOrg.shortTermRentingDuration = JSON.parse(JSON.stringify(res.data));
-					this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
-					this.shortTermRentingDurationDisabled = true;
-					this.notifyService.showSuccess(res.message, "");
-					this.spinner.hide();
-					}, error => {
-					this.spinner.hide();
-					if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "");
-				}else if(error.status==403){
-						this.router.navigate(['/forbidden']);
-					}else if (error.error && error.error.message) {
-						this.errorMsg = error.error.message;
-						console.log("Error:" + this.errorMsg);
-						this.notifyService.showError(this.errorMsg, "");
-					} else {
-						if (error.status == 500 && error.statusText == "Internal Server Error") {
-						this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-						} else {
-						let str;
-						if (error.status == 400) {
-							str = error.error.error;
-						} else {
-							str = error.error.message;
-							str = str.substring(str.indexOf(":") + 1);
-						}
-						console.log("Error:" ,str);
-						this.errorMsg = str;
-						}
-						if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-						//this.notifyService.showError(this.errorMsg, "");
-					}
-					});	
-				}
-				}).catch(
-					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
-				);
-			}
-		  }
-		
-	 shortTermRentingDurationReset(): void {
-			this.configMasterModel.shortTermRentingDuration = JSON.parse(JSON.stringify(this.configMasterOrg.shortTermRentingDuration));
-			this.shortTermRentingDurationDisabled = true;
-		  }
-
 		  noRentalAgreementDisabled:boolean=true;
 		  noRentalAgreementSubmit(task:string): void {
-			if( task === 'approve' && this.configMasterModel.noRentalAgreement[0]?.createdBy == this.userInfo.userEmail){
+			if( task === 'approve' && this.editConfigMaster.noRentalAgreement?.createdBy == this.userInfo.userEmail){
 				this.notifyService.showInfo("Rule creator cannot approve the Rule","")
 				return ;
 			}
@@ -1706,17 +1523,16 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			   (confirmed) =>{
 				if(confirmed){
 				if(task === 'approve'){
-					this.configMasterModel.noRentalAgreement[0].isApproved=true;
+					this.editConfigMaster.noRentalAgreement.isApproved=true;
 				}else{
-					if(this.configMasterModel.noRentalAgreement[0].isApproved){
-						this.configMasterModel.noRentalAgreement[0].noRentalAgreementId="";
+					if(this.editConfigMaster.noRentalAgreement.isApproved){
+						this.editConfigMaster.noRentalAgreement.noRentalAgreementId="";
 					}
 				}
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-				this.configMasterService.updateNoRentalAgreement(this.configMasterModel.noRentalAgreement[0]).subscribe(res => {
-					this.configMasterOrg.noRentalAgreement = JSON.parse(JSON.stringify(res.data));
-					this.configMasterModel.noRentalAgreement = JSON.parse(JSON.stringify(this.configMasterOrg.noRentalAgreement));
+				this.configMasterService.updateNoRentalAgreement(this.editConfigMaster.noRentalAgreement).subscribe(res => {
+					this.setRuleData('noRentalAgreement',res.data);
 					this.noRentalAgreementDisabled = true;
 					this.notifyService.showSuccess(res.message, "");
 					this.spinner.hide();
@@ -1756,7 +1572,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		  }
 		
 		  noRentalAgreementReset(): void {
-			this.configMasterModel.noRentalAgreement = JSON.parse(JSON.stringify(this.configMasterOrg.noRentalAgreement));
+			this.setRuleData('noRentalAgreement',this.configMasterOrg.noRentalAgreement);
 			this.noRentalAgreementDisabled = true;
 		  }	 
 		  
@@ -1777,7 +1593,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.backUpshortTermData=  res.data;
 			   }else{
 				var model = new ShortTermMainModel();
-				model.zoy_short_term_dto_info.push(new ShortTermSubModel());
 				this.backUpshortTermData.push(model);
 			   }
 			   this.getShortTermList();
@@ -1872,7 +1687,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  shortTerm.isEdit = true;
 			  shortTerm.isConfirm = false ;
 			  this.shortTermDataList[i]=shortTerm;
-			  console.log(" this.shortTermDataList", this.shortTermDataList)
 			}
 			
 			removeShortTerm(shortTerm) {
@@ -1891,7 +1705,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  this.shortTermDataList=JSON.parse(JSON.stringify(this.backUpShortTermDataSubList));
 			}
 			submitShortTerm:boolean = false;
-			submitShortTermData(task:string) {  
+		submitShortTermData(task:string) {  
+		if(task != 'reject'){
+
 			 this.submitShortTerm = true; 
 			 if(!this.stpEffectiveDate || this.multirullsEffectiveDateValidation(this.stpEffectiveDate) ){
 				return;
@@ -1905,9 +1721,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				const term = this.shortTermDataList[i];
 		  
 				if (!term.isDelete) {
-				  startDay = startDay>term.start_day?term.start_day:startDay ;
-				  endDay = endDay>term.end_day?endDay:term.end_day ;
-		  
+				  startDay = Number(startDay)>Number(term.start_day)?Number(term.start_day):Number(startDay) ;
+				  endDay = Number(endDay)>Number(term.end_day)?Number(endDay):Number(term.end_day) ;
+				
 				  if (term.isConfirm) {
 					this.notifyService.showWarning("Save if term is being edited.","")
 					return; 
@@ -1922,14 +1738,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					}
 					
 				  }
-		  
-				//   const ranges = this.shortTermDataList.filter(d=> Number(d.start_day) == (Number(term.end_day)+1));
-				//   console.log("ranges",ranges);
-				//   if( ranges.length === 0 ){
-				// 	 this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+endDay+' days.',"")
-				// 	 return;
-				//    }
-		  
 				  finalSubmitShortList.push(term);
 				}
 			  }
@@ -1938,6 +1746,19 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.notifyService.showWarning("Please add durations","");
 				return;
 			  }
+				let n=0;
+			  this.shortTermDataList.forEach(m=>{
+				let term=m;
+				const ranges =this.shortTermDataList.filter(d=> endDay != Number(term.end_day) && Number(d.start_day) == (Number(term.end_day)+1));
+			  if( ranges.length === 0 && endDay != Number(term.end_day) ){
+			     n=++n;
+				 return;
+			   }
+			  }) ;
+			   if(n>0 || startDay !=1){
+				this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+endDay+' days.',"")
+				return;
+			   }
 			 
 			  if (JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpShortTermDataSubList)) {
 				this.notifyService.showInfo("Short term slabs details are already up to date.", "");
@@ -1956,22 +1777,26 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			}
 
 			const compareIndex = this.backUpshortTermData[0].isApproved ? 0 : 1;
-			const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
-			if(this.backUpshortTermData[compareIndex].effectiveDate){
-				const existingDate = new Date(this.backUpshortTermData[compareIndex].effectiveDate).setHours(0, 0, 0, 0);	
+			const selectedDate = new Date(payload?.effectiveDate)?.setHours(0, 0, 0, 0);
+			if(this.backUpshortTermData[compareIndex]?.effectiveDate){
+				const existingDate = new Date(this.backUpshortTermData[compareIndex]?.effectiveDate)?.setHours(0, 0, 0, 0);	
 				if ( selectedDate < new Date().setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
 					this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
 					return;
 				}
 			}
 			payload.zoy_short_term_dto_info=finalSubmitShortList;
+		}{
+
+		}
 			  this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want Update ?')
 			  .then(
 				 (confirmed) =>{
 				if(confirmed){
 					this.spinner.show();
 					this.configMasterService.submitShortTermData(payload).subscribe(data => {
-					this.getShortTermList();
+					this.getDbSettingDetails();
+					
 					this.submitShortTerm = false;
 					this.spinner.hide();
 					}, error => {
@@ -2009,6 +1834,136 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  );	   
 			}
 
+			approveOrRejectRule:string;
+			task:string='';
+			data:any;
+	openApproveOrRejectModel(key:string,data:any){
+		this.comments="";
+		this.task='';
+		this.submitted=false;
+		this.key=key
+		console.log("this.key",key)
+		this.approveOrRejectRule= this.configMasterService.rules.find(r=>r.key == key).name;
+		console.log("this.approveOrRejectRule",this.approveOrRejectRule)
+		this.data=data
+	}
+	key:string='';
+	isApproveOrReject(task:string){
+		this.task=task;
+		this.submitted=true;
+		console.log("task",task);
+		console.log("approveOrRejectRule",this.approveOrRejectRule);
+		console.log("comments",this.comments);
+		if(this.task == 'reject' && !this.comments){
+			return;
+		}else{
+			if(this.key=='beforeCheckInCancellationRefundMainObjModel'){
+				this.beforeCheckInCRfUpDate(task);
+			}else if(this.key=='shortTermMainModel'){
+				this.submitShortTermData(task);
+			}else{
+				this.doApproveOrReject();
+			}
+		}
+		
+	}
+
+doApproveOrReject() {	
+	if(this.task === 'approve'){
+		switch (this.key) {
+			case 'tokenDetails':
+			  this.tokenAdvancSubmit(this.task);
+			  break;
+		  
+			case 'depositDetails':
+			  this.securityDepositLimitsSubmit(this.task);
+			  break;
+		  
+			case 'gstCharges':
+			  this.gstChargesSubmit(this.task);
+			  break;
+		  
+			case 'noRentalAgreement':
+			  this.noRentalAgreementSubmit(this.task);
+			  break;
+		  
+		  
+			case 'cancellationAfterCheckInDetails':
+			  this.autoCancellationSubmit(this.task);
+			  break;
+		  
+			case 'otherCharges':
+			  this.otherChargesSubmit(this.task);
+			  break;
+		  
+			case 'forceCheckOut':
+			  this.forceCheckoutSubmit(this.task);
+			  break;
+		  
+			case 'earlyCheckOutRuleDetails':
+			  this.earlyCheckOutRulesSubmit(this.task);
+			  break;
+		  
+			case 'dataGrouping':
+			  this.trendingPGSubmit(this.task);
+			  break;
+
+			case 'securityDepositDeadLineDetails':
+			  this.securityDepositDeadLineSubmit(this.task);
+			  break;
+		  
+			default:
+			  console.warn(`Unhandled rule key: ${this.key}`);
+			  break;
+		  }
+			  
+		
+	}else{
+		console.log("this.data",this.data)
+		this.data.comments = this.comments; 
+		let rule = this.configMasterService.rules.find(r=>r.name == this.approveOrRejectRule);
+		this.authService.checkLoginUserVlidaate();
+		this.spinner.show();
+		this.configMasterService.ruleReject(this.data,rule.api).subscribe(res => {
+			this.setRuleData(rule.key,res.data);
+			this.notifyService.showSuccess(res.message, "");
+			this.closeApproveRejectModel.nativeElement.click(); 
+			this.spinner.hide();
+		}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "");
+		   }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});	
+		}
+
+	}
+	
+	
+	
+		
 			
 			   
   }  
