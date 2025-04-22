@@ -119,23 +119,23 @@
   <div class="offcanvas-body">
    <div style="font-size: 13px;">  
 
-  <div *ngIf="settingType == 'Share Type' ">
+  <div *ngIf="settingType == 'Occupancy type' ">
     <div class="mb-3 row">
       <div class="form-group">
-        <label for="share_type" >Share type :</label>
+        <label for="share_type" >Occupancy type :</label>
         <input type="text" class="form-control" id="share_type" [(ngModel)]="dbSettingDataModel.share_type" 
         [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.share_type == null || this.dbSettingDataModel.share_type == '' )}" >
         <div *ngIf="submitted && (this.dbSettingDataModel.share_type == null || this.dbSettingDataModel.share_type == '' )" class="text-danger">
-          Share type is required
+          Occupancy type is required
         </div>
       </div>
 
       <div class="form-group">
-        <label for="share_type" >Share occupancy count :</label>
+        <label for="share_type" >Occupancy count :</label>
         <input type="text" class="form-control" id="share_occupancy_count" [(ngModel)]="dbSettingDataModel.share_occupancy_count" (keypress)="numberOnly($event)"  autocomplete="false" required
         [ngClass]="{'is-invalid':submitted && (this.dbSettingDataModel.share_occupancy_count == null || this.dbSettingDataModel.share_occupancy_count == '' )}" >
         <div *ngIf="submitted && (this.dbSettingDataModel.share_occupancy_count == null || this.dbSettingDataModel.share_occupancy_count == '' )" class="text-danger">
-          Share occupancy count is required.
+          Occupancy count is required.
         </div>
       </div>
 
