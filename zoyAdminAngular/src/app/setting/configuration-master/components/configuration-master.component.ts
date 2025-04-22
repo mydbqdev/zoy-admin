@@ -186,11 +186,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		keys.forEach(key => {
 			this.setRuleData(key,res.data[key]);
 		});
-		//this.printAllVariables();
-		console.log("this.configMasterOrg",this.configMasterOrg);
-		console.log("this.configMasterModel",this.configMasterModel)
-		console.log("editConfigMaster",this.editConfigMaster);
-		console.log("showConfigMaster",this.showConfigMaster);
 		this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
@@ -1640,6 +1635,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				  model.short_term_id= element.short_term_id; 
 				  model.start_day = element.start_day; 
 				  model.end_day = element.end_day;  
+				  model.percentage = element.percentage;
 				  model.isDelete = false; 
 			 
 				  this.backUpShortTermDataSubList.push(model);
@@ -1672,7 +1668,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			 }
 		  
 			 modifyShortTerm(shortTerm:any,i:number) {
-				console.log("shortTerm>>",shortTerm)
+				this.canShortSubmit=false;
 			   if(!shortTerm.start_day || Number(shortTerm.start_day)===0 
 				  || !shortTerm.end_day || Number(shortTerm.end_day)===0
 				  || Number(shortTerm.start_day) >= Number(shortTerm.end_day)
@@ -1691,6 +1687,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			
 			removeShortTerm(shortTerm) {
 			  shortTerm.isDelete = true;
+			  this.canShortSubmit=false;
 			}
 			
 			undoShortTermDelete(shortTerm) {
@@ -1796,7 +1793,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					this.spinner.show();
 					this.configMasterService.submitShortTermData(payload).subscribe(data => {
 					this.getDbSettingDetails();
-					
+					this.closeApproveRejectModel.nativeElement.click(); 
 					this.submitShortTerm = false;
 					this.spinner.hide();
 					}, error => {
@@ -1841,19 +1838,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.comments="";
 		this.task='';
 		this.submitted=false;
-		this.key=key
-		console.log("this.key",key)
+		this.key=key;
 		this.approveOrRejectRule= this.configMasterService.rules.find(r=>r.key == key).name;
-		console.log("this.approveOrRejectRule",this.approveOrRejectRule)
 		this.data=data
 	}
 	key:string='';
 	isApproveOrReject(task:string){
 		this.task=task;
 		this.submitted=true;
-		console.log("task",task);
-		console.log("approveOrRejectRule",this.approveOrRejectRule);
-		console.log("comments",this.comments);
 		if(this.task == 'reject' && !this.comments){
 			return;
 		}else{
@@ -1916,10 +1908,9 @@ doApproveOrReject() {
 			  console.warn(`Unhandled rule key: ${this.key}`);
 			  break;
 		  }
-			  
+		  this.closeApproveRejectModel.nativeElement.click(); 	  
 		
 	}else{
-		console.log("this.data",this.data)
 		this.data.comments = this.comments; 
 		let rule = this.configMasterService.rules.find(r=>r.name == this.approveOrRejectRule);
 		this.authService.checkLoginUserVlidaate();

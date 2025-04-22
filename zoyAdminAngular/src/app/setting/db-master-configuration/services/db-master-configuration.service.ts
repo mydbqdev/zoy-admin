@@ -24,7 +24,7 @@ export class DbMasterConfigurationService {
 
   settingTypeObjClmApiDetails: settingTypeObjClmApiDetailsModel[]=[
 		{
-		  'type': 'Share Type',
+		  'type': 'Occupancy type',
 		  'columns': ['share_type', 'share_occupancy_count', 'actions'],
       'api':'zoy_admin/shareType'
     },
@@ -86,8 +86,8 @@ export class DbMasterConfigurationService {
   ]
 
   columnHeaders = {
-    'share_type': 'SHARE TYPE',                 
-    'share_occupancy_count': 'SHARE OCCUPANCY COUNT',
+    'share_type': 'OCCUPANCY TYPE',                 
+    'share_occupancy_count': 'OCCUPANCY COUNT',
     'room_type_name': 'ROOM TYPE NAME',
     'cycle_name': 'Rent CYCLE',
     'pg_type_name': 'PG TYPE NAME',

@@ -2520,7 +2520,7 @@
         </div>
 
         <div *ngIf="key === 'beforeCheckInCancellationRefundMainObjModel'">  
-          <div class="d-flex rule-header mb-2">
+          <div class="d-flex rule-header">
             <div style="min-width: 100px;">Priority</div>
             <div class="ms-3" style="min-width: 120px;">Condition</div>
             <div class="ms-3" style="min-width: 140px;">Eligibility</div>
@@ -2530,7 +2530,7 @@
         
           <hr />
         
-            <div class="card p-3 mt-2" >
+            <div>
               <div class="mb-2 text-break" style="color:#6610f2;">
                 Created By: {{ editConfigMaster.beforeCheckInCancellationRefundMainObjModel.createdBy }},
                 Effective from: {{ editConfigMaster.beforeCheckInCancellationRefundMainObjModel.effectiveDate }}
@@ -2546,7 +2546,7 @@
           </div>
         </div>
         
-        <div *ngIf="popupMoreRecordHeader === 'Short Term Duration Details'">  
+        <div *ngIf="key === 'shortTermMainModel'">  
           <div class="d-flex rule-header mb-2">
             <div style="min-width: 160px;">Start Day</div>
             <div class="ms-3" style="min-width: 100px;">End Day</div>
