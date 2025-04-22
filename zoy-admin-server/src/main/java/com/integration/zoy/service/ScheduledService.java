@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class ScheduledService {
 	@Value("${spring.jackson.time-zone}")
 	private String timeZon;
 	
+	@Autowired
+    private AutoCancellationOfMasterConfiguration autoCancellationOfMasterConfi;
 	
 	/**
 	 * passwordChangeWarMails execute based on schedule date & time. it will send password change warning email every 39-45 days
@@ -42,6 +46,20 @@ public class ScheduledService {
 		}
     }
 	
+    @Transactional
+	@Scheduled(cron = "${auto.cancellation.token.advance.cron}", zone = "${spring.jackson.time-zone}")
+	public void autoCancellationForMasterConfiguration() {
+	    try {
+	        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	        format.setTimeZone(TimeZone.getTimeZone(timeZon));
+	        Date date = new Date();
+	        String dateTime = format.format(date);
+	        autoCancellationOfMasterConfi.autoCancellationOfMaterConfiguration();
+	        log.info("Auto cancellation for master configuraton executed at: " + dateTime);
+	    } catch (Exception e) {
+	        log.error("Error in autoCanceForTokenAdvance(): ", e);
+	    }
+	}
 
 	
 }

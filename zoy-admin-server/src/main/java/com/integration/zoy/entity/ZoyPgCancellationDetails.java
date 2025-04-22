@@ -43,6 +43,7 @@ public class ZoyPgCancellationDetails {
 	@Column(name = "trigger_value", length = 100)
 	private String triggerValue;
 
+	@CreationTimestamp
 	@Column(name = "create_at")
 	private Timestamp createAt;
 	

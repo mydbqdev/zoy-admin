@@ -214,4 +214,12 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 	byte[] findProfilePhoto(String emailId);
 
 
+	@Query(value="SELECT DISTINCT ur.user_email\r\n"
+			+ "FROM pgadmin.user_role ur\r\n"
+			+ "JOIN pgadmin.role_screen rs ON ur.role_id = rs.role_id\r\n"
+			+ "WHERE rs.screen_name IN ('CONFIGURATION_MASTER', 'CONFIGURATION_MASTER_APPROVAL')\r\n"
+			+ "AND rs.read_prv = true\r\n"
+			+ "AND rs.write_prv = true",nativeQuery=true)
+	String[] masterConfigurationAccess();
+	
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,6 +68,7 @@ import com.integration.zoy.repository.ZoyPgSecurityDepositDetailsRepository;
 import com.integration.zoy.repository.ZoyPgShortTermMasterRepository;
 import com.integration.zoy.repository.ZoyPgTokenDetailsRepository;
 import com.integration.zoy.service.AdminDBImpl;
+import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.PdfGenerateService;
 import com.integration.zoy.service.ZoyEmailService;
@@ -115,7 +118,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
 	private static final Gson gson2 = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-
+    
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
 
@@ -167,12 +170,18 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	@Autowired
 	ZoyEmailService zoyEmailService;
 	
+	@Autowired
+	NotificationsAndAlertsService notificationsAndAlertsService;
+	
+	@Value("${spring.jackson.time-zone}")
+	private String currentTimeZone;
 	
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateToken(ZoyPgTokenDetailsDTO details) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-		String flag="";
+		String flag ="";
+		String ruleName ="Token Advance";
 		try {
 			if (details == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -200,14 +209,20 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					 if (details.getIsApproved()) {
 						oldDetails.setApprovedBy(currentUser);
 						flag="Approved";
+						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
+//						zoyEmailService.sendPolicyChangeNotificationEmail(ruleName,details.getEffectiveDate(),);
 					} else if ( null != details.getComments()&& details.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
 						oldDetails.setComments(details.getComments());
 						flag="rejected";
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());
+						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 					}else{
 						oldDetails.setCreatedBy(currentUser);	
-						flag="created";
-
+						flag="Edited";
+						zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), details.getEffectiveDate());
+						notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 					}
 
 					zoyPgTokenDetailsRepository.save(oldDetails);
@@ -236,7 +251,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newTokenDetails.setIsApproved(false);
 				zoyPgTokenDetailsRepository.save(newTokenDetails);
 				flag="created";
-
+				zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), details.getEffectiveDate());
+				notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
+				
 				String historyContent = " has " +flag+" the Token for, Fixed = " + newTokenDetails.getFixedToken()
 						+ " , Variable = " + newTokenDetails.getVariableToken();
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(),
@@ -248,7 +265,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage(flag+"Token Advance details");
+			response.setMessage(flag+" Token Advance details successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -387,7 +404,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	    ResponseBody response = new ResponseBody();
 	    String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-	    
+	    String flag ="";
+		String ruleName ="Cancellation And Refund Policy (Before check in)";
 	    try {
 	        if (zoyBeforeCheckInCancellation == null || 
 	            zoyBeforeCheckInCancellation.getZoyBeforeCheckInCancellationInfo() == null) {
@@ -400,8 +418,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	        List<ZoyPgCancellationDetails> cancellationDetailsList = new ArrayList<>();
 
 	        for (ZoyBeforeCheckInCancellation cancellation : zoyBeforeCheckInCancellation.getZoyBeforeCheckInCancellationInfo()) {
-	            if (cancellation.getIsDelete()) {
-	            	deleteList.add(cancellation.getCancellationId());
+	            if (Boolean.TRUE.equals(cancellation.getIsDelete())) {
+	                deleteList.add(cancellation.getCancellationId());
 	            } else {
 	                ZoyPgCancellationDetails entity = new ZoyPgCancellationDetails();
 	                entity.setPriority(cancellation.getPriority());
@@ -410,60 +428,71 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                entity.setBeforeCheckinDays(cancellation.getBeforeCheckinDays());
 	                entity.setDeductionPercentage(cancellation.getDeductionPercentage());
 	                entity.setCond(cancellation.getTriggerOn() + " " + cancellation.getTriggerCondition() + " "
-							+ cancellation.getBeforeCheckinDays());
+	                        + cancellation.getBeforeCheckinDays());
 	                entity.setTriggerValue(cancellation.getTriggerValue());
 	                entity.setEffectiveDate(zoyBeforeCheckInCancellation.getEffectiveDate());
 	                entity.setPgType(zoyBeforeCheckInCancellation.getPgType());
 
-	                
 	                if (zoyBeforeCheckInCancellation.getIscreate()) {
 	                    entity.setCreatedBy(currentUser);
 	                    entity.setIsApproved(false);
+	                    flag="created";
+	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
+	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
+	                    
 	                } else if (zoyBeforeCheckInCancellation.getIsApproved()) {
 	                    entity.setCancellationId(cancellation.getCancellationId());
 	                    entity.setCreatedBy(zoyBeforeCheckInCancellation.getCreatedBy());
 	                    entity.setIsApproved(true);
 	                    entity.setApprovedBy(currentUser);
-	                } else if (null != zoyBeforeCheckInCancellation.getComments()&& zoyBeforeCheckInCancellation.getComments()!="") { 
+	                    flag="Approved";
+	                    zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+	                    notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
+	                    
+	                } else if (zoyBeforeCheckInCancellation.getComments() != null && !zoyBeforeCheckInCancellation.getComments().isEmpty()) {
 	                    entity.setCancellationId(cancellation.getCancellationId());
 	                    entity.setApprovedBy(currentUser);
 	                    entity.setIsApproved(false);
-	                    entity.setComments(zoyBeforeCheckInCancellation.getComments());          
+	                    entity.setComments(zoyBeforeCheckInCancellation.getComments());
+	                    flag="rejected";
+	                    zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, zoyBeforeCheckInCancellation.getEffectiveDate(), zoyBeforeCheckInCancellation.getComments());
+	                    notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 	                } else {
 	                    entity.setCancellationId(cancellation.getCancellationId());
 	                    entity.setCreatedBy(zoyBeforeCheckInCancellation.getCreatedBy());
 	                    entity.setIsApproved(false);
+	                    flag="Edited";
+	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
+	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 	                }
+
 	                cancellationDetailsList.add(entity);
 	            }
 	        }
+
 	        if (!cancellationDetailsList.isEmpty()) {
 	            ZoyPgCancellationDetailsRepo.saveAll(cancellationDetailsList);
 	        }
 
-	        if (zoyBeforeCheckInCancellation.getDelete() && !deleteList.isEmpty()) {
-	        	String[] todeleteList = deleteList.toArray(new String[0]);
+	        if (Boolean.TRUE.equals(zoyBeforeCheckInCancellation.getDelete()) && !deleteList.isEmpty()) {
+	            String[] todeleteList = deleteList.toArray(new String[0]);
 	            ZoyPgCancellationDetailsRepo.deleteBeforeCheckInCancellationbyIds(todeleteList);
 	        }
-	        
-//	        StringBuffer historyContent = new StringBuffer(" has made changes the Cancellation And Refund Policy for");
-//			
-//			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(),
-//					historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
 
 	        response.setStatus(HttpStatus.OK.value());
-	        response.setMessage("Operation completed successfully");
+			response.setMessage(flag+" Cancellation And Refund Policy details successfully");
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-	    
+
 	    } catch (Exception e) {
 	        log.error(
-	                "Error creating/updating before check-in API:/zoy_admin/config/before-check-in.zoyAdminConfigCreateUpdateBeforeCheckIn",
-	                e);
+	            "Error creating/updating before check-in API:/zoy_admin/config/before-check-in.zoyAdminConfigCreateUpdateBeforeCheckIn",
+	            e);
 	        response.setStatus(HttpStatus.BAD_REQUEST.value());
 	        response.setError("Internal server error");
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
 	}
+
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckInGetDetails(ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation) {
 	    ResponseBody response = new ResponseBody();
@@ -555,6 +584,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateOtherCharges(ZoyOtherChargesDto details) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		String flag ="";
+		String ruleName ="Other Charges";
+
 		try {
 			if (details == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -600,12 +632,23 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setEffectiveDate(details.getEffectiveDate());
 
 					if (details.getIsApproved()) {
-						oldDetails.setApprovedBy(currentUser);	
+						oldDetails.setApprovedBy(currentUser);
+						flag="Approved";
+						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
+						
 					} else if ( null != details.getComments()&& details.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
 						oldDetails.setComments(details.getComments());
+						flag="rejected";
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());
+						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
+
 					}else{
 						oldDetails.setCreatedBy(currentUser);
+						flag="Edited";
+						zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), details.getEffectiveDate());
+						notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 					}				 
 
 					ownerDBImpl.saveOtherCharges(oldDetails);
@@ -652,6 +695,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newOtherCharges.setCreatedBy(currentUser);
 				newOtherCharges.setIsApproved(false);
 				ownerDBImpl.saveOtherCharges(newOtherCharges);
+				flag="created";
+				zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), details.getEffectiveDate());
+				notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 
 				// Audit history here
 				String historyContent = " has created the Other Charges for, Owner Document Charges = "
@@ -668,7 +714,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("Saved Other Charges details");
+			response.setMessage(flag+" Cancellation And Refund Policy details successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(
@@ -684,6 +730,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateGstCharges(ZoyGstChargesDto details) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		String flag ="";
+		String ruleName ="GST Charges";
 		try {
 			if (details == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -730,11 +778,20 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 					if (details.getIsApproved()) {
 						oldDetails.setApprovedBy(currentUser);	
+						flag="Approved";
+						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
 					} else if ( null != details.getComments()&& details.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
 						oldDetails.setComments(details.getComments());
+						flag="rejected";
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());
+						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 					}else{
 						oldDetails.setCreatedBy(currentUser);
+						flag="Edited";
+						zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), details.getEffectiveDate());
+						notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 					}
 
 					ownerDBImpl.saveGstCharges(oldDetails);
@@ -780,6 +837,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newGstCharges.setCreatedBy(currentUser);
 				newGstCharges.setIsApproved(false);
 				ownerDBImpl.saveGstCharges(newGstCharges);
+				flag="created";
+				zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), details.getEffectiveDate());
+				notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 
 				// Audit history here
 				String historyContent = " has created the GST Charges for, CGST Charges = "
@@ -795,7 +855,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("Saved GST Charges details");
+			response.setMessage(flag+" GST Charges details successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(
@@ -841,7 +901,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateDataGrouping(ZoyDataGroupingDto details) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-
+		String flag ="";
+		String ruleName ="Data Grouping";
 		try {
 			currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 			if (details == null) {
@@ -868,11 +929,20 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 					if (details.getIsApproved()) {
 						existingGroup.setApprovedBy(currentUser);	
+						flag="Approved";
+						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
 					} else if ( null != details.getComments()&& details.getComments()!="") {
 						existingGroup.setApprovedBy(currentUser);
 						existingGroup.setComments(details.getComments());
+						flag="rejected";
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());
+						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 					}else{
 						existingGroup.setCreatedBy(currentUser);
+						flag="Edited";
+						zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), details.getEffectiveDate());
+						notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 					}
 
 					zoyDataGroupingRepository.save(existingGroup);
@@ -893,6 +963,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newGroup.setIsApproved(false);
 
 				zoyDataGroupingRepository.save(newGroup);
+				flag="created";
+				zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), details.getEffectiveDate());
+				notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 
 				String historyContent = String.format("has created a new Data Grouping. Considering days = %d",
 						details.getConsiderDays());
@@ -905,7 +978,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("Saved/Updated Data Grouping details successfully");
+			response.setMessage(flag+" Data Grouping details successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -935,6 +1008,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoyPgSecurityDepositDetailsDTO details) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		String flag ="";
+		String ruleName ="Security Deposit Limits";
 		try {
 			if (details == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -962,12 +1037,21 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setSecurityDepositMin(details.getMinimumDeposit());
 				
 					if (details.getIsApproved()) {
-						oldDetails.setApprovedBy(currentUser);	
+						oldDetails.setApprovedBy(currentUser);
+						flag="Approved";
+						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
 					} else if ( null != details.getComments()&& details.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
 						oldDetails.setComments(details.getComments());
+						flag="rejected";
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());
+						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 					}else{
 						oldDetails.setCreatedBy(currentUser);
+						flag="Edited";
+						zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), details.getEffectiveDate());
+						notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 					}
 
 					zoyPgSecurityDepositDetailsRepository.save(oldDetails);
@@ -998,6 +1082,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newDetails.setIsApproved(false);
 
 				zoyPgSecurityDepositDetailsRepository.save(newDetails);
+				flag="created";
+				zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), details.getEffectiveDate());
+				notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 
 				// Audit history for creation
 				String historyContent = " has created the Security Deposit Limit for Max = "
@@ -1012,7 +1099,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("Saved/Updated Security Deposit Limit details");
+			response.setMessage(flag+" Security Deposit Limit details successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -1044,10 +1131,12 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	public ResponseEntity<String> zoyAdminCreateUpadateEarlyCheckOutRules(ZoyPgEarlyCheckOutRule zoyPgEarlyCheckOut) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		String flag ="";
+		String ruleName ="Cancellation And Refund Policy (Before check in)";
 		try {
 			if (zoyPgEarlyCheckOut == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Required Early Check out Rule details");
+				response.setError("Required Early Check out Rules details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
 
@@ -1059,7 +1148,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 				if (existingRule.getEarlyCheckOutId() == null) {
 					response.setStatus(HttpStatus.BAD_REQUEST.value());
-					response.setError("Required SecurityDeposit Limit details not found");
+					response.setError("Required Early Check-out Rules details not found");
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 				} else {
 					final Long oldFixed = existingRule.getCheckOutDay();
@@ -1076,12 +1165,21 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					existingRule.setIsApproved(zoyPgEarlyCheckOut.getIsApproved());
 					
 					if (zoyPgEarlyCheckOut.getIsApproved()) {
-						existingRule.setApprovedBy(currentUser);	
+						existingRule.setApprovedBy(currentUser);
+						flag="Approved";
+						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
 					} else if ( null != zoyPgEarlyCheckOut.getComments()&& zoyPgEarlyCheckOut.getComments()!="") {
 						existingRule.setApprovedBy(currentUser);
 						existingRule.setComments(zoyPgEarlyCheckOut.getComments());
+						flag="rejected";
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, zoyPgEarlyCheckOut.getEffectiveDate(), zoyPgEarlyCheckOut.getComments());
+						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 					}else{
 						existingRule.setCreatedBy(currentUser);
+						flag="Edited";
+						zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyPgEarlyCheckOut.getEffectiveDate());
+						notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 					}
 
 					ownerDBImpl.saveEarlyCheckOut(existingRule);
@@ -1112,6 +1210,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newRule.setEffectiveDate(zoyPgEarlyCheckOut.getEffectiveDate());
 				newRule.setCreatedBy(currentUser);
 				ownerDBImpl.saveEarlyCheckOut(newRule);
+				flag="created";
+				zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyPgEarlyCheckOut.getEffectiveDate());
+				notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 
 				// audit history here
 				String historyContent = " has created the Early check out for, Check out Days = "
@@ -1127,7 +1228,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("Saved/Updated Security Deposit Limit details");
+			response.setMessage(flag+" Early Check-out Rules details successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -1232,7 +1333,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-
+		String flag ="";
+		String ruleName ="After check-in Date";
 		try {
 			if (zoyAfterCheckInCancellation == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -1248,7 +1350,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 				if (existingRule.getAutoCancellationId() == null) {
 					response.setStatus(HttpStatus.BAD_REQUEST.value());
-					response.setError("Required SecurityDeposit Limit details not found");
+					response.setError("Required After check-in Date details not found");
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 				} else {
 					final Long oldFixed = existingRule.getAutoCancellationDay();
@@ -1267,12 +1369,21 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					existingRule.setIsApproved(zoyAfterCheckInCancellation.getIsApproved());
 
 					if (zoyAfterCheckInCancellation.getIsApproved()) {
-						existingRule.setApprovedBy(currentUser);	
+						existingRule.setApprovedBy(currentUser);
+						flag="Approved";
+						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
 					} else if ( null != zoyAfterCheckInCancellation.getComments()&& zoyAfterCheckInCancellation.getComments()!="") {
 						existingRule.setApprovedBy(currentUser);
 						existingRule.setComments(zoyAfterCheckInCancellation.getComments());
+						flag="rejected";
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, zoyAfterCheckInCancellation.getEffectiveDate(), zoyAfterCheckInCancellation.getComments());
+						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 					}else{
 						existingRule.setCreatedBy(currentUser);
+						flag="Edited";
+						zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyAfterCheckInCancellation.getEffectiveDate());
+						notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 					}
 
 					ownerDBImpl.saveAutoCancellationAfterCheckIn(existingRule);
@@ -1306,7 +1417,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newRule.setCreatedBy(currentUser);
 
 				ownerDBImpl.saveAutoCancellationAfterCheckIn(newRule);
-
+				flag="created";
+				zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyAfterCheckInCancellation.getEffectiveDate());
+				notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 				// Audit history
 				String historyContent = " has created the Cancellation After Check in for, Cancellation Days = "
 						+ newRule.getAutoCancellationDay() + " , Deduction Percentage ="
@@ -1322,7 +1435,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("Saved/Updated Security Deposit Limit details");
+			response.setMessage(flag+" After check-in Date details successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -1353,11 +1466,13 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			ZoySecurityDeadLine zoySecurityDeadLine) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		String flag ="";
+		String ruleName ="Security Deposit Deadline";
 
 		try {
 			if (zoySecurityDeadLine == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Required Security Deposit Refund Rule details");
+				response.setError("Required Security Deposit Deadline details");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
 
@@ -1368,7 +1483,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 				if (existingRule == null) {
 					response.setStatus(HttpStatus.BAD_REQUEST.value());
-					response.setError("Required Security Deposit Limit details not found");
+					response.setError("Required Security Deposit Deadline details not found");
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 				} else {
 					final Long oldFixed = existingRule.getAutoCancellationDay();
@@ -1386,12 +1501,21 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					existingRule.setIsApproved(zoySecurityDeadLine.getIsApproved());
 				
 					if (zoySecurityDeadLine.getIsApproved()) {
-						existingRule.setApprovedBy(currentUser);	
+						existingRule.setApprovedBy(currentUser);
+						flag="Approved";
+						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
 					} else if ( null != zoySecurityDeadLine.getComments()&& zoySecurityDeadLine.getComments()!="") {
 						existingRule.setApprovedBy(currentUser);
 						existingRule.setComments(zoySecurityDeadLine.getComments());
+						flag="rejected";
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, zoySecurityDeadLine.getEffectiveDate(), zoySecurityDeadLine.getComments());
+						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 					}else{
 						existingRule.setCreatedBy(currentUser);
+						flag="Edited";
+						zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoySecurityDeadLine.getEffectiveDate());
+						notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 					}
 					
 					ownerDBImpl.saveSecurityDepositDeadLine(existingRule);
@@ -1424,6 +1548,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newRule.setCreatedBy(currentUser);
 
 				ownerDBImpl.saveSecurityDepositDeadLine(newRule);
+				flag="created";
+				zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoySecurityDeadLine.getEffectiveDate());
+				notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 
 				// Audit history for the creation
 				String historyContent = " has created the Security Deposit DeadLine for, Cancellation Days For Refund = "
@@ -1438,8 +1565,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					.collect(Collectors.toList());
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("Saved/Updated Security Deposit Limit details");
-
+			response.setMessage(flag+" Security Deposit Deadline details successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -1571,11 +1697,13 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	public ResponseEntity<String> zoyAdminConfigUpdateShortTerm(ZoyShortTermDetails shortTerm) {
 	    ResponseBody response = new ResponseBody();
 	    String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+	    String flag = "";
+	    String ruleName = "Short term duration period";
 
 	    try {
 	        if (shortTerm == null || shortTerm.getZoyShortTermDtoInfo() == null) {
 	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setError("Required short-term data is missing");
+	            response.setError("Required Short term duration period is missing");
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	        }
 
@@ -1583,64 +1711,80 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	        List<ZoyPgShortTermMaster> shortTermDetailsList = new ArrayList<>();
 
 	        for (ZoyShortTermDto termDetails : shortTerm.getZoyShortTermDtoInfo()) {
-	            if (Boolean.TRUE.equals(shortTerm.getDelete())) {  
+	            if (Boolean.TRUE.equals(termDetails.getDelete())) {
 	                deleteList.add(termDetails.getShortTermId());
 	            } else {
 	                ZoyPgShortTermMaster entity = new ZoyPgShortTermMaster();
-
 	                entity.setPercentage(termDetails.getPercentage());
-	                entity.setStartDay(termDetails.getStartDay()); 
-	                entity.setEndDay(termDetails.getEndDay());   
+	                entity.setStartDay(termDetails.getStartDay());
+	                entity.setEndDay(termDetails.getEndDay());
 	                entity.setEffectiveDate(shortTerm.getEffectiveDate());
 
 	                if (Boolean.TRUE.equals(shortTerm.getIscreate())) {
 	                    entity.setCreatedBy(currentUser);
 	                    entity.setIsApproved(false);
+	                    flag = "created";
+	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), shortTerm.getEffectiveDate());
+	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser, ruleName);
+
 	                } else if (Boolean.TRUE.equals(shortTerm.getIsApproved())) {
-	                    entity.setZoyPgShortTermMasterId(termDetails.getShortTermId()); 
+	                    entity.setZoyPgShortTermMasterId(termDetails.getShortTermId());
 	                    entity.setCreatedBy(shortTerm.getCreatedBy());
 	                    entity.setIsApproved(true);
 	                    entity.setApprovedBy(currentUser);
+	                    flag = "Approved";
+	                    zoyEmailService.sendApprovalNotificationEmail(currentUser, ruleName);
+	                    notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
+
+	                } else if (shortTerm.getComments() != null && !shortTerm.getComments().isEmpty()) {
+	                    entity.setZoyPgShortTermMasterId(termDetails.getShortTermId());
+	                    entity.setApprovedBy(currentUser);
+	                    entity.setIsApproved(false);
+	                    entity.setComments(shortTerm.getComments());
+	                    flag = "rejected";
+	                    zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, shortTerm.getEffectiveDate(), shortTerm.getComments());
+	                    notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser, ruleName);
+
 	                } else {
 	                    entity.setZoyPgShortTermMasterId(termDetails.getShortTermId());
 	                    entity.setCreatedBy(shortTerm.getCreatedBy());
 	                    entity.setIsApproved(false);
+	                    flag = "Edited";
+	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), shortTerm.getEffectiveDate());
+	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser, ruleName);
 	                }
+
 	                shortTermDetailsList.add(entity);
 	            }
 	        }
+
 	        if (!shortTermDetailsList.isEmpty()) {
 	            zoyPgShortTermMasterRepository.saveAll(shortTermDetailsList);
 	        }
 
-	        if (shortTerm.getDelete() && !deleteList.isEmpty()) {
-	        	String[] todeleteList = deleteList.toArray(new String[0]);
-	        	zoyPgShortTermMasterRepository.deleteShortTermDetailsbyIds(todeleteList);
+	        if (Boolean.TRUE.equals(shortTerm.getDelete()) && !deleteList.isEmpty()) {
+	            String[] todeleteList = deleteList.toArray(new String[0]);
+	            zoyPgShortTermMasterRepository.deleteShortTermDetailsbyIds(todeleteList);
 	        }
-	        
-//	         //audit history here
-//			StringBuffer historyContent = new StringBuffer(" has updated the Short Term details ");
-//			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(),historyContent.toString(), ZoyConstant.ZOY_ADMIN_MASTER_CONFIG_UPDATE);
-//	        
+
 	        response.setStatus(HttpStatus.OK.value());
-	        response.setMessage("Operation completed successfully");
+	        response.setMessage(flag + " Short term duration period details successfully");
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 	    } catch (Exception e) {
-	        log.error("Error in zoyAdminConfigUpdateShortTerm1: ", e);
-	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setError("Internal server error");
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	        log.error("Error creating/updating short term config: /zoy_admin/config/short-term.zoyAdminConfigUpdateShortTerm", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	    }
 	}
-
-	
 
 
 	@Override
 	public ResponseEntity<String> zoyAdminConfigUpdateForceCheckOut(ZoyForceCheckOutDto forceCheckOut) {
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		String flag ="";
+		String ruleName ="Force Checkout";
 		try {
 
 			if (forceCheckOut == null) {
@@ -1667,12 +1811,21 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setIsApproved(forceCheckOut.getIsApproved());
 
 					if (forceCheckOut.getIsApproved()) {
-						oldDetails.setApprovedBy(currentUser);	
+						oldDetails.setApprovedBy(currentUser);
+						flag="Approved";
+						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
 					} else if ( null != forceCheckOut.getComments()&& forceCheckOut.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
 						oldDetails.setComments(forceCheckOut.getComments());
+						flag="rejected";
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, forceCheckOut.getEffectiveDate(), forceCheckOut.getComments());
+						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 					}else{
 						oldDetails.setCreatedBy(currentUser);
+						flag="Edited";
+						zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), forceCheckOut.getEffectiveDate());
+						notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 					}
 					
 					zoyPgForceCheckOutRepository.save(oldDetails);
@@ -1691,6 +1844,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newForceCheckOut.setIsApproved(false);
 
 				zoyPgForceCheckOutRepository.save(newForceCheckOut);
+				flag="created";
+				zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), forceCheckOut.getEffectiveDate());
+				notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 
 				// Audit the creation action
 				String historyContent = " has created the Force Check Out for, Considering days = "
@@ -1704,7 +1860,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("Force CheckOut details successfully saved/updated");
+			response.setMessage(flag+" Force CheckOut details successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -1734,9 +1890,11 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 
+		String flag ="";
+		String ruleName ="No Rental Agreement";	
 		if (NoRentalAgreement == null) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError("Required Force Checkout details");
+			response.setError("Required No Rental Agreement details");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 		try {
@@ -1760,12 +1918,21 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					oldDetails.setIsApproved(NoRentalAgreement.getIsApproved());
 					
 					if (NoRentalAgreement.getIsApproved()) {
-						oldDetails.setApprovedBy(currentUser);	
+						oldDetails.setApprovedBy(currentUser);
+						flag="Approved";
+						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
 					} else if ( null != NoRentalAgreement.getComments()&& NoRentalAgreement.getComments()!="") {
 						oldDetails.setApprovedBy(currentUser);
 						oldDetails.setComments(NoRentalAgreement.getComments());
+						flag="rejected";
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, NoRentalAgreement.getEffectiveDate(), NoRentalAgreement.getComments());
+						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 					}else{
 						oldDetails.setCreatedBy(currentUser);
+						flag="Edited";
+						zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), NoRentalAgreement.getEffectiveDate());
+						notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 					}
 
 					zoyPgNoRentalAgreementRespository.save(oldDetails);
@@ -1783,6 +1950,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				newForceCheckOut.setCreatedBy(currentUser);
 				newForceCheckOut.setIsApproved(false);
 				zoyPgNoRentalAgreementRespository.save(newForceCheckOut);
+				flag="created";
+				zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), NoRentalAgreement.getEffectiveDate());
+				notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 
 				// Audit the creation action
 				String historyContent = " has created the No Rental Agreement for, Considering days = "
@@ -1797,7 +1967,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setData(dto);
-			response.setMessage("No Rental Agreement details successfully saved/updated");
+			response.setMessage(flag+" No Rental Agreement details successfully");
+
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -2402,6 +2573,17 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 		
+	}
+
+	public String getCurrentTimestampString() {
+		TimeZone timeZone = TimeZone.getTimeZone(currentTimeZone);
+		Calendar calendar = Calendar.getInstance(timeZone);
+		Timestamp currentTimestamp = new Timestamp(calendar.getTimeInMillis());
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		sdf.setTimeZone(timeZone);
+
+		return sdf.format(currentTimestamp);
 	}
 
 }
