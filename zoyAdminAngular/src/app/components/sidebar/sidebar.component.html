@@ -78,7 +78,7 @@
     </div>
 </li>
 
- <!-- Nav Item - Sales Person Collapse Menu -->
+ <!-- Nav Item - Sales User Creation Collapse Menu -->
  <li class="nav-item" [ngClass]="{'active':menu91}" id="menu9" *ngIf="defMenu.sales && rolesArray.includes('SALES_PERSON_READ')">
     <a [ngClass]="menu9 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(9)" *ngIf="defMenu.sales && rolesArray.includes('SALES_PERSON_READ')" data-target="#collapseSales"
    [attr.aria-expanded]="!menu9" aria-controls="collapseSales">
@@ -89,7 +89,7 @@
     <div id="collapseSales" [ngClass]="menu9 ? 'collapse show':'collapse'" aria-labelledby="headingSales"
         data-parent="#accordionSidebar">
         <div class="py-2 collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
-            <a class="collapse-item" routerLink="/sales-person" [ngClass]="{'active':activeSubNenuName=='sales-person'}" *ngIf="rolesArray.includes('SALES_PERSON_READ')" >Sales Person</a>
+            <a class="collapse-item" routerLink="/sales-person" [ngClass]="{'active':activeSubNenuName=='sales-person'}" *ngIf="rolesArray.includes('SALES_PERSON_READ')" >Sales User Creation</a>
         </div>
     </div>
    </li>
