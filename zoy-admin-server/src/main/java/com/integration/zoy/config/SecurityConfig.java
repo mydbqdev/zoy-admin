@@ -73,6 +73,7 @@ public class SecurityConfig {
 	            .antMatchers("/zoy_admin/login").permitAll()
 	            .antMatchers("/zoy_admin/userSoftlogout").permitAll()
 	            .antMatchers("/notificationPageHandler").permitAll()
+	            .antMatchers("/admin_reset_password").permitAll()
 	            .anyRequest().authenticated()
 	            .and()
 	            .exceptionHandling(handling -> handling

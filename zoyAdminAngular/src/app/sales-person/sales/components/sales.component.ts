@@ -111,7 +111,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(9);
 		this.sidemenuComp.activeMenu(9, 'sales-person');
-		this.dataService.setHeaderName("Sales Person");
+		this.dataService.setHeaderName("Sales User Creation");
 	}
 
 	// Method to update the selected button

@@ -676,6 +676,13 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 			);
 	  }
-	
+	  captcha
+	  generateCaptcha(): void {
+		const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		this.captcha = '';
+		for (let i = 0; i < 5; i++) {
+		  this.captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+		}
+	  }
 		
   }  
