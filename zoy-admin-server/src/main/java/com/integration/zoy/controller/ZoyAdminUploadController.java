@@ -360,30 +360,34 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			if (!fileResource.exists()) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Template file not found.");
 			}
-			FileInputStream fis = new FileInputStream(fileResource.getFile());
-			XSSFWorkbook workbook = new XSSFWorkbook(fis);
-			fis.close();
 
-			Sheet masterSheet = getOrResetSheet(workbook, "Master");
-			populateColumn(masterSheet, 0, ownerDBImpl.getAllAmeneties(), ZoyPgAmenetiesMaster::getAmenetiesName);
-			populateColumn(masterSheet, 1, ownerDBImpl.getAllFloorNames(), ZoyPgFloorNameMaster::getFloorName);
-			List<ZoyPgShareMaster> filteredShares = ownerDBImpl.getAllShares().stream()
-		            .filter(share -> share.getShareOccupancyCount() > 0)
-		            .collect(Collectors.toList());
-			populateColumn(masterSheet, 2, filteredShares, ZoyPgShareMaster::getShareType);
-			populateColumn(masterSheet, 3, filteredShares, ZoyPgShareMaster::getShareOccupancyCount);
-			populateColumn(masterSheet, 4, ownerDBImpl.getAllRoomTypes(), ZoyPgRoomTypeMaster::getRoomTypeName);
-			populateColumn(masterSheet, 5, ownerDBImpl.getAllPgTypes(), ZoyPgTypeMaster::getPgTypeName);
-			setStaticValues(masterSheet, 6, List.of("Yes", "No"));
-			masterSheet.protectSheet(masterPassword);
-			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-			workbook.write(outStream);
-			workbook.close();
-			byte[] fileBytes = outStream.toByteArray();
-			return ResponseEntity.ok()
-					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"BulkUpload.xlsm\"")
-					.contentType(MediaType.APPLICATION_OCTET_STREAM)
-					.body(fileBytes);
+			try (InputStream fis = fileResource.getInputStream(); 
+					XSSFWorkbook workbook = new XSSFWorkbook(fis);
+					ByteArrayOutputStream outStream = new ByteArrayOutputStream()) {
+
+				Sheet masterSheet = getOrResetSheet(workbook, "Master");
+				populateColumn(masterSheet, 0, ownerDBImpl.getAllAmeneties(), ZoyPgAmenetiesMaster::getAmenetiesName);
+				populateColumn(masterSheet, 1, ownerDBImpl.getAllFloorNames(), ZoyPgFloorNameMaster::getFloorName);
+
+				List<ZoyPgShareMaster> filteredShares = ownerDBImpl.getAllShares().stream()
+						.filter(share -> share.getShareOccupancyCount() > 0)
+						.collect(Collectors.toList());
+				populateColumn(masterSheet, 2, filteredShares, ZoyPgShareMaster::getShareType);
+				populateColumn(masterSheet, 3, filteredShares, ZoyPgShareMaster::getShareOccupancyCount);
+				populateColumn(masterSheet, 4, ownerDBImpl.getAllRoomTypes(), ZoyPgRoomTypeMaster::getRoomTypeName);
+				populateColumn(masterSheet, 5, ownerDBImpl.getAllPgTypes(), ZoyPgTypeMaster::getPgTypeName);
+				setStaticValues(masterSheet, 6, List.of("Yes", "No"));
+
+				masterSheet.protectSheet(masterPassword);
+				workbook.write(outStream);
+
+				byte[] fileBytes = outStream.toByteArray();
+
+				return ResponseEntity.ok()
+						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"BulkUpload.xlsm\"")
+						.contentType(MediaType.APPLICATION_OCTET_STREAM)
+						.body(fileBytes);
+			}
 
 		} catch (Exception e) {
 			log.error("Error during template download:", e);
@@ -391,7 +395,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			response.setMessage("Download failed: " + e.getMessage());
 			return new ResponseEntity<>(new Gson().toJson(response), HttpStatus.BAD_REQUEST);
 		}
-	}
+}
 	private Sheet getOrResetSheet(XSSFWorkbook workbook, String sheetName) {
 		Sheet sheet = workbook.getSheet(sheetName);
 		if (sheet == null) return workbook.createSheet(sheetName);
