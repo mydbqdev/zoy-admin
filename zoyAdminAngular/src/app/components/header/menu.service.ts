@@ -30,7 +30,7 @@ export class MenuService {
     { name: "Home", link: "/home", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list"},
     { name: "Managing Users", link: "/user-master", permission: "MANAGING_USERS_READ", icon:"fas fa-fw fa-users-cog" },
     { name: "Manage Owners", link: "/manage-owner", permission: "MANAGING_OWNERS_READ", icon:"fas fa-fw fa-users" },
-    { name: "Sales Person", link: "/sales-person", permission: "SALES_PERSON_READ", icon:"fas fa-fw fa-money-check" },
+    { name: "Sales User Creation", link: "/sales-person", permission: "SALES_PERSON_READ", icon:"fas fa-fw fa-money-check" },
     { name: "Payment Approval", link: "/payment-approval", permission: "PAYMENT_APPROVAL_READ", icon:"fas fa-fw fa-money-check" },
     { name: "Locked User", link: "/locked-user", permission: "LOCKED_USER_READ", icon:"fas fa-fw fa-users-cog" },
     { name: "Permission Approval", link: "/permission-approval", permission: "PERMISSION_APPROVAL_READ", icon:"fas fa-fw fa-users-cog" },
@@ -88,7 +88,7 @@ getAllMenus(): Menu[] {
     { key: "OWNER REPORTS", screen: "Owner Reports" ,order:7.2 },
     { key: "FINANCE REPORTS", screen: "Finance Reports" ,order:7.3 },
     { key: "SUPPORT REPORTS", screen: "Support Reports" ,order:7.4 },
-    { key: "SALES PERSON", screen: "Sales Person" ,order:9.1 },
+    { key: "SALES PERSON", screen: "Sales User Creation" ,order:9.1 },
   ];
 
   getAllAuthorization():any {

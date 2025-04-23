@@ -363,7 +363,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 
    invaliedEffectiveDate(key:string,newDate:string):boolean{
 	if(newDate){
-	 if(new Date(newDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)){
+	 if(new Date(newDate).setHours(0, 0, 0, 0) < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)){
 		return true;
 	  }
 	  const rules = this.configMasterOrg[key];
@@ -615,15 +615,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 
 	 tokenAdvancSubmit(task:string) {
 
-		if( task === 'approve' && this.editConfigMaster.tokenDetails?.createdBy == this.userInfo.userEmail){
-			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		if( task === 'approve' && this.isRuleCreator(this.editConfigMaster.tokenDetails?.createdBy)){
 			return ;
 		}
 		if(this.validationAllData('tokenDetails')){
 			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
 			return;
 		}else{
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -683,15 +682,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	  
 	  securityDepositLimitsSubmit(task:string) {
-		if( task === 'approve' && this.editConfigMaster.depositDetails?.createdBy == this.userInfo.userEmail){
-			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		if( task === 'approve' && this.isRuleCreator(this.editConfigMaster.depositDetails?.createdBy)){
 			return ;
 		}
 		if(this.validationAllData('depositDetails')){
 			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
 			return;
 		}else{				
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -750,15 +748,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}
 
 	gstChargesSubmit(task:string) {
-		if( task === 'approve' && this.editConfigMaster.gstCharges?.createdBy == this.userInfo.userEmail){
-			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		if( task === 'approve' && this.isRuleCreator(this.editConfigMaster.gstCharges?.createdBy )){
 			return ;
 		}
 		if(this.validationAllData('gstCharges')){
 			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
 			return;
 		}else{
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -816,15 +813,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	securityDepositDeadLineSubmit(task:string) {
 		this.table?.renderRows();
-		if( task === 'approve' && this.editConfigMaster.securityDepositDeadLineDetails?.createdBy == this.userInfo.userEmail){
-			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		if( task === 'approve' && this.isRuleCreator(this.editConfigMaster.securityDepositDeadLineDetails?.createdBy)){
 			return ;
 		}
 		if(this.validationAllData('securityDepositDeadLineDetails')){
 			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
 			return;
 		}else{
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -881,15 +877,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.securityDepositDeadLineDisabled = true;
 	}
 	autoCancellationSubmit(task:string) {
-		if( task === 'approve' && this.editConfigMaster.cancellationAfterCheckInDetails?.createdBy == this.userInfo.userEmail){
-			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		if( task === 'approve' && this.isRuleCreator(this.editConfigMaster.cancellationAfterCheckInDetails?.createdBy )){
 			return ;
 		}
 		if(this.validationAllData('cancellationAfterCheckInDetails')){
 			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
 			return;
 		}else{
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -946,15 +941,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.autoCancellationDisabled = true;
 	}	
 	otherChargesSubmit(task:string) {
-		if( task === 'approve' && this.editConfigMaster.otherCharges?.createdBy == this.userInfo.userEmail){
-			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		if( task === 'approve' && this.isRuleCreator(this.editConfigMaster.otherCharges?.createdBy )){
 			return ;
 		}
 		if(this.validationAllData('otherCharges')){
 			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
 			return;
 		}else{
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -1012,15 +1006,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}		  
 
 	trendingPGSubmit(task:string) {
-		if( task === 'approve' && this.editConfigMaster.dataGrouping?.createdBy == this.userInfo.userEmail){
-			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		if( task === 'approve' && this.isRuleCreator(this.editConfigMaster.dataGrouping?.createdBy)){
 			return ;
 		}
 		if(this.validationAllData('dataGrouping')){
 			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
 			return;
 		}else{
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -1183,7 +1176,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}  
 
 	multirullsEffectiveDateValidation(newDate:string):boolean{
-	  if(new Date(newDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)){
+	  if(new Date(newDate).setHours(0, 0, 0, 0) < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)){
 		return true;
 	  }
 	  return false;
@@ -1202,15 +1195,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}else{
 		payload.iscreate = payload.isApproved ;
 	}
-	if( task === 'approve' && payload?.createdBy == this.userInfo.userEmail){
-		this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+	if( task === 'approve' && this.isRuleCreator(payload?.createdBy)){
 		return ;
 	}
 
 	const model = this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel ? this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel : this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel
 	const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
 	const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
-	if ( selectedDate < new Date().setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
+	if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
 		this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
 		return;
 	}
@@ -1250,7 +1242,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		payload.comments=this.comments;
 		payload.ZoyBeforeCheckInCancellationInfo=payload.zoy_before_check_in_cancellation_info;
 	}
-	this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+(task === 'approve' ? 'Approve':(task === 'reject'? (payload.iscreate?'Create':'Update'):'Rejected' )) +' ?')
+	this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected' : (payload.iscreate?'Create':'Update') )) +' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -1362,15 +1354,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	  }
 	
 	  earlyCheckOutRulesSubmit(task:string) {
-		if( task === 'approve' && this.editConfigMaster.earlyCheckOutRuleDetails?.createdBy == this.userInfo.userEmail){
-			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		if( task === 'approve' && this.isRuleCreator(this.editConfigMaster.earlyCheckOutRuleDetails?.createdBy )){
 			return ;
 		}
 		if(this.validationAllData('earlyCheckOutRuleDetails')){
 			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
 			return;
 		}else{
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -1429,15 +1420,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		this.earlyCheckOutRulesDisabled = true;
 	  }
 	  forceCheckoutSubmit(task:string): void {
-		if( task === 'approve' && this.editConfigMaster.forceCheckOut?.createdBy == this.userInfo.userEmail){
-			this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+		if( task === 'approve' && this.isRuleCreator( this.editConfigMaster.forceCheckOut?.createdBy )){
 			return ;
 		}
+		
 		if(this.validationAllData('forceCheckOut')){
 			this.notifyService.showInfo("The rule is invalid, kindly review it.","");
 			return;
 		}else{
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+task+' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
@@ -1505,15 +1496,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 
 		  noRentalAgreementDisabled:boolean=true;
 		  noRentalAgreementSubmit(task:string): void {
-			if( task === 'approve' && this.editConfigMaster.noRentalAgreement?.createdBy == this.userInfo.userEmail){
-				this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+			if( task === 'approve' && this.isRuleCreator(this.editConfigMaster.noRentalAgreement?.createdBy)){
 				return ;
 			}
 			if(this.validationAllData('noRentalAgreement')){
 				this.notifyService.showInfo("The rule is invalid, kindly review it.","");
 				return;
 			}else{
-			this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+task+' ?')
+			this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+task+' ?')
 			.then(
 			   (confirmed) =>{
 				if(confirmed){
@@ -1753,10 +1743,12 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  }
 				let n=0;
 			  this.shortTermDataList.forEach(m=>{
+				console.log("M",m);
 				if(!m.isDelete){
 					let term=m;
 					const ranges =this.shortTermDataList.filter(d=> endDay != Number(term.end_day) && Number(d.start_day) == (Number(term.end_day)+1) && !d.isDelete );
-				if( ranges.length === 0 && endDay != Number(term.end_day) ){
+					console.log("ranges",ranges);
+					if( ranges.length === 0 && endDay != Number(term.end_day) ){
 					n=++n;
 					return;
 				}
@@ -1770,8 +1762,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			   payload.effectiveDate = this.stpEffectiveDate;
 			 			
 			if(task === 'approve'){
-				if( payload?.createdBy == this.userInfo.userEmail){
-					this.notifyService.showInfo("Rule creator cannot approve the Rule","")
+				
+				if( this.isRuleCreator(payload?.createdBy)){
 					return ;
 				}
 				payload.isApproved=true;
@@ -1783,7 +1775,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				const model = this.showConfigMaster.shortTermMainModel ? this.showConfigMaster.shortTermMainModel : this.editConfigMaster.shortTermMainModel ;
 				const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
 				const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
-				if ( selectedDate < new Date().setHours(0, 0, 0, 0) || (selectedDate < existingDate && !this.editConfigMaster.shortTermMainModel.isApproved ) ||(selectedDate == existingDate && this.showConfigMaster.shortTermMainModel )) {
+				if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate < existingDate && !this.editConfigMaster.shortTermMainModel.isApproved ) ||(selectedDate == existingDate && this.showConfigMaster.shortTermMainModel )) {
 					this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
 					return;
 				}
@@ -1794,7 +1786,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}{
 			payload.comments=this.comments;
 		}
-		this.confirmationDialogService.confirm('Confirmation!!', 'are you sure you want '+(task === 'approve' ? 'Approve':(task === 'reject'? (payload.iscreate?'Create':'Update'):'Rejected' )) +' ?')
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected':(payload.iscreate?'Create':'Update') )) +' ?')
 			  .then(
 				 (confirmed) =>{
 				if(confirmed){
@@ -1843,6 +1835,12 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			approveOrRejectRule:string;
 			task:string='';
 			data:any;
+	isRuleCreator(createdBy):boolean{
+		if(createdBy == this.userInfo.userEmail)
+			this.notifyService.showInfo("Rule creator could not be a Approver","");
+
+		return createdBy == this.userInfo.userEmail
+	}
 	openApproveOrRejectModel(key:string,data:any){
 		this.comments="";
 		this.task='';
@@ -1920,50 +1918,53 @@ doApproveOrReject() {
 		  this.closeApproveRejectModel.nativeElement.click(); 	  
 		
 	}else{
-		this.data.comments = this.comments; 
-		let rule = this.configMasterService.rules.find(r=>r.name == this.approveOrRejectRule);
-		this.authService.checkLoginUserVlidaate();
-		this.spinner.show();
-		this.configMasterService.ruleReject(this.data,rule.api).subscribe(res => {
-			this.setRuleData(rule.key,res.data);
-			this.notifyService.showSuccess(res.message, "");
-			this.closeApproveRejectModel.nativeElement.click(); 
-			this.spinner.hide();
-		}, error => {
-			this.spinner.hide();
-			if(error.status == 0) {
-			  this.notifyService.showError("Internal Server Error/Connection not established", "");
-		   }else if(error.status==403){
-				this.router.navigate(['/forbidden']);
-			}else if (error.error && error.error.message) {
-				this.errorMsg = error.error.message;
-				console.log("Error:" + this.errorMsg);
-				this.notifyService.showError(this.errorMsg, "");
-			} else {
-				if (error.status == 500 && error.statusText == "Internal Server Error") {
-				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
-				} else {
-				let str;
-				if (error.status == 400) {
-					str = error.error.error;
-				} else {
-					str = error.error.message;
-					str = str.substring(str.indexOf(":") + 1);
-				}
-				console.log("Error:" ,str);
-				this.errorMsg = str;
-				}
-				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-				//this.notifyService.showError(this.errorMsg, "");
-			}
-			});	
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want reject ?')
+		.then(
+		   (confirmed) =>{
+			if(confirmed){
+				this.data.comments = this.comments; 
+				let rule = this.configMasterService.rules.find(r=>r.name == this.approveOrRejectRule);
+				this.authService.checkLoginUserVlidaate();
+				this.spinner.show();
+				this.configMasterService.ruleReject(this.data,rule.api).subscribe(res => {
+					this.setRuleData(rule.key,res.data);
+					this.notifyService.showSuccess(res.message, "");
+					this.closeApproveRejectModel.nativeElement.click(); 
+					this.spinner.hide();
+				}, error => {
+					this.spinner.hide();
+					if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "");
+				}else if(error.status==403){
+						this.router.navigate(['/forbidden']);
+					}else if (error.error && error.error.message) {
+						this.errorMsg = error.error.message;
+						console.log("Error:" + this.errorMsg);
+						this.notifyService.showError(this.errorMsg, "");
+					} else {
+						if (error.status == 500 && error.statusText == "Internal Server Error") {
+						this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+						} else {
+						let str;
+						if (error.status == 400) {
+							str = error.error.error;
+						} else {
+							str = error.error.message;
+							str = str.substring(str.indexOf(":") + 1);
+						}
+						console.log("Error:" ,str);
+						this.errorMsg = str;
+						}
+						if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+						//this.notifyService.showError(this.errorMsg, "");
+					}
+					});	
+				}	
+			}).catch(
+			() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+			);
 		}
-
 	}
 	
-	
-	
-		
-			
-			   
+		   
   }  
