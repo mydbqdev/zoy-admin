@@ -177,7 +177,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 		ResponseBody response = new ResponseBody();
 		try {
 			AdminUserLoginDetails loginDetails = adminDBImpl.findByEmail(details.getEmail());
-
+			Boolean login=false;
 			if (loginDetails == null) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 				response.setMessage("User email not found");
@@ -188,7 +188,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				response.setMessage("Your account has been deactivated. Contact support for assistance.");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 			}
-						
+
 			AdminUsersLock userLock = userRepository.findByUsername(details.getEmail());
 			if (userLock != null) {
 				if (userLock.getLockCount() == 1 && userLock.getAttemptSequence() == 0) {
@@ -205,14 +205,14 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					}
 				}
 			}
-			
+
 			zoyAdminService.removeExpiredSessions();
-			
+
 			if (zoyAdminService.getUserSingleDeviceLockMap().containsKey(details.getEmail())) {
 				response.setStatus(HttpStatus.UNAUTHORIZED.value());
 				response.setMessage("Already logged in another device");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
-		    }
+			}
 
 			String decryptedStoredPassword = passwordDecoder.decryptedText(loginDetails.getPassword());
 			String decryptedLoginPassword = passwordDecoder.decryptedText(details.getPassword());
@@ -224,22 +224,20 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				Authentication authentication = authenticationManager.authenticate(
 						new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
 				String token = jwtUtil.generateToken(authentication);
-				 zoyAdminService.getUserSingleDeviceLockMap().put(details.getEmail(), new SessionInfo(token, System.currentTimeMillis()));
 				userRepository.deleteByUsername(details.getEmail());
 				response.setStatus(HttpStatus.OK.value());
 				response.setEmail(details.getEmail());
 				response.setToken(token);
-				
+
 				if(loginDetails.getIsLock()) {
 					response.setStatus(HttpStatus.UNAUTHORIZED.value());
 					response.setMessage("Your password has been expired.");
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.UNAUTHORIZED);
-				}else {
+				} else {
 					auditHistoryUtilities.auditForUserLoginLogout(loginDetails.getUserEmail(), true);
+					zoyAdminService.getUserSingleDeviceLockMap().put(details.getEmail(), new SessionInfo(token, System.currentTimeMillis()));
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 				}
-
-				
 			} else {
 
 				if (userLock == null) {
