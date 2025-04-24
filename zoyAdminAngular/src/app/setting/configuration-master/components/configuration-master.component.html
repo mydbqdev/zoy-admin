@@ -1367,7 +1367,7 @@
                                   <div class="card card-body m-0 p-0 mt-3" *ngIf="showConfigMaster.beforeCheckInCancellationRefundMainObjModel">
                                     <div class="row">
                                       <div class="d-flex m-2">
-                                        <span style="font-size: 16px;color:#6610f2; margin-left: 5px;">Currently applicable slabs. Effective from {{showConfigMaster.beforeCheckInCancellationRefundMainObjModel?.effectiveDate}} </span>
+                                        <span style="font-size: 16px;color:#6610f2; margin-left: 5px;">Effective from {{showConfigMaster.beforeCheckInCancellationRefundMainObjModel?.effectiveDate}} </span>
                                         <i class="fas fa-thumbs-up ml-2 color-bg-green" ></i>
                                         <div class="ml-2">
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Cancellation And Refund Policy'" >
@@ -1435,7 +1435,7 @@
                                     <div>Percentage</div>
                                     <div class="input-group input-group-sm">
                                       <input type="text" class="form-control form-control-sm" id="end_day"  required autocomplete="off"
-                                      [(ngModel)]="shortTermData.percentage"  (keypress)="percentageOnlyWithZero($event)" maxlength="2" style="width: 70px;" 
+                                      [(ngModel)]="shortTermData.percentage"  (keypress)="percentageOnlyWithZero($event)" maxlength="5" style="width: 70px;" 
                                       [ngClass]="{'is-invalid': addShortTermVali && (shortTermData.end_day == undefined || shortTermData.end_day == null || convertToNumber(shortTermData.end_day) < 1 || convertToNumber(shortTermData.start_day) >= convertToNumber(shortTermData.end_day))}">
                                     <span class="input-group-text">%</span>
                                      </div>
@@ -1493,14 +1493,14 @@
                                             </div>
                                               <h2 class="mb-1 ml-3" >-</h2>
                                             <div class="ml-3">
-                                              <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'form-control form-control-sm row-strike' :'form-control form-control-sm'" id="term_end_day"  required autocomplete="off"
+                                              <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'row-strike' :''"  id="term_end_day"  required autocomplete="off"
                                               [(ngModel)]="term.end_day" (keypress)="numberOnly($event)" [disabled]="term.isDelete || !term.isConfirm" maxlength="2" style="width: 70px;" 
                                               [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isConfirm && (term.end_day == undefined || term.end_day == null || convertToNumber(term.end_day) < 1 || convertToNumber(term.start_day) >= convertToNumber(term.end_day)))}">
                                             </div>
                                             <div>
                                             <div class="input-group input-group-sm ml-3">
-                                              <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'form-control form-control-sm row-strike' :'form-control form-control-sm'" id="term_percentage"  required autocomplete="off"
-                                              [(ngModel)]="term.percentage"  (keypress)="percentageOnlyWithZero($event)" [disabled]="term.isDelete || !term.isConfirm" maxlength="2" style="width: 70px;" 
+                                              <input type="text" class="form-control form-control-sm" [ngClass]="term.isDelete? 'row-strike' :''"  id="term_percentage"  required autocomplete="off"
+                                              [(ngModel)]="term.percentage"  (keypress)="percentageOnlyWithZero($event)" [disabled]="term.isDelete || !term.isConfirm" maxlength="5" style="width: 70px;" 
                                               [ngClass]="{'is-invalid': (submitShortTerm && !term.isDelete && term.isConfirm && (term.percentage == undefined || term.percentage == null))}">
                                               <span class="input-group-text">%</span>
                                                </div>
@@ -1539,7 +1539,7 @@
                                     <div class="col-sm-6">
                                       <div class="card" *ngIf="showConfigMaster.shortTermMainModel && showConfigMaster.shortTermMainModel?.zoy_short_term_dto_info">
                                       <div class="m-2">
-                                        <span style="font-size: 16px;color:#6610f2; margin-left: 5px;">Currently applicable slabs. Effective from {{showConfigMaster.shortTermMainModel?.effectiveDate}} </span>
+                                        <span style="font-size: 16px;color:#6610f2; margin-left: 5px;">Effective from {{showConfigMaster.shortTermMainModel?.effectiveDate}} </span>
                                         <i class="fas fa-thumbs-up ml-2 color-bg-green" ></i>
                                         <div class="ml-2">
                                           <a class="more-icon" data-bs-toggle="modal" data-bs-target="#popupMoreRecord" (click)="popupMoreRecordHeader='Short Term Duration Details'" >
@@ -1878,7 +1878,8 @@
         <div *ngIf="popupMoreRecordHeader === 'Token Advance'">
 
           <div class="d-flex rule-header mb-2">
-            <div style="min-width: 100px;">Fixed amount</div>
+            <div class="ms-3" style="min-width: 10px;" ></div>
+            <div class="ms-3" style="min-width: 100px;">Fixed amount</div>
             <div class="ms-3" style="min-width: 160px;">% of Security Deposit</div>
             <div class="ms-3" style="min-width: 100px;">Effective On</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
@@ -1889,7 +1890,10 @@
         
           <div *ngFor="let tokenDetails of configMasterModel.tokenDetails">
             <div class="d-flex rule-data" *ngIf="!(!tokenDetails.isApproved && !tokenDetails.comments)">
-              <div style="min-width: 100px;">
+              <div class="ms-3"  [ngStyle]="tokenDetails.comments ? {'min-width': '15px'} : {'min-width': '10px'}" [title]="tokenDetails.comments ? 'Rejected':'Approved'" >
+                <i [ngClass]="tokenDetails.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
+              </div>
+              <div class="ms-3" style="min-width: 100px;">
                 <i class="fas fa-rupee-sign" style="font-size: small;"></i>
                 <span> {{ tokenDetails.fixedToken }} </span>
               </div>
@@ -1897,9 +1901,6 @@
               <div class="ms-3" style="min-width: 100px;">{{ tokenDetails.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ tokenDetails.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ tokenDetails.approvedBy }}</div>
-              <div class="ms-3" style="min-width: 10px;" [title]="tokenDetails.comments ? 'Rejected':'Approved'" >
-                <i [ngClass]="tokenDetails.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
-              </div>
               <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
                 <p>{{tokenDetails.comments}}</p>
               </div>
@@ -1910,7 +1911,8 @@
         <div *ngIf="popupMoreRecordHeader === 'Security Deposit Limits'">
   
           <div class="d-flex rule-header mb-2">
-            <div style="min-width: 160px;">Minimum Deposit</div>
+            <div class="ms-3" style="min-width: 10px;"></div>
+            <div class="ms-3" style="min-width: 160px;">Minimum Deposit</div>
             <div class="ms-3" style="min-width: 160px;">Maximum Deposit</div>
             <div class="ms-3" style="min-width: 100px;">Effective On</div>
             <div class="ms-3 text-break" style="min-width: 250px;">Created By</div>
@@ -1920,8 +1922,11 @@
           <hr />
       
           <div *ngFor="let depositDetails of configMasterModel.depositDetails">
-            <div class="d-flex rule-data" *ngIf="!(!depositDetails.isApproved && !depositDetails.comments)">
-              <div style="min-width: 160px;">
+            <div class="d-flex rule-data" *ngIf="!(!depositDetails.isApproved && !depositDetails.comments)"  [title]="depositDetails.comments ? 'Rejected':'Approved'" >
+              <div class="ms-3" [ngStyle]="depositDetails.comments ? {'min-width': '15px'} : {'min-width': '10px'}">
+                <i [ngClass]="depositDetails.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
+              </div>
+              <div class="ms-3" style="min-width: 160px;">
                 <i class="fas fa-rupee-sign" style="font-size: small;"></i>
                 <span> {{ depositDetails.minimumDeposit }}</span>
               </div>
@@ -1932,9 +1937,6 @@
               <div class="ms-3" style="min-width: 100px;">{{ depositDetails.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ depositDetails.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ depositDetails.approvedBy }}</div>
-              <div class="ms-3" style="min-width: 10px;">
-                <i [ngClass]="depositDetails.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
-              </div>
               <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
                 <p>{{depositDetails.comments}}</p>
               </div>
@@ -1945,7 +1947,8 @@
         <div *ngIf="popupMoreRecordHeader === 'GST Charges'">
   
           <div class="d-flex rule-header mb-2">
-            <div style="min-width: 140px;">Monthly Rent</div>
+            <div class="ms-3" style="min-width: 10px;"></div>
+            <div class="ms-3" style="min-width: 140px;">Monthly Rent</div>
             <div class="ms-3" style="min-width: 80px;">CGST</div>
             <div class="ms-3" style="min-width: 80px;">SGST</div>
             <div class="ms-3" style="min-width: 80px;">IGST</div>
@@ -1958,7 +1961,10 @@
         
           <div *ngFor="let gstDetail of configMasterModel.gstCharges">
             <div class="d-flex rule-data" *ngIf="!(!gstDetail.isApproved && !gstDetail.comments)">
-              <div style="min-width: 140px;">
+              <div class="ms-3" [ngStyle]="gstDetail.comments ? {'min-width': '15px'} : {'min-width': '10px'}" [title]="gstDetail.comments ? 'Rejected':'Approved'" >
+                <i [ngClass]="gstDetail.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
+              </div>
+              <div class="ms-3" style="min-width: 140px;">
                 <i class="fas fa-rupee-sign" style="font-size: small;"></i>
                 <span> {{ gstDetail.monthlyRent }} </span>
               </div>
@@ -1968,9 +1974,6 @@
               <div class="ms-3" style="min-width: 100px;">{{ gstDetail.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ gstDetail.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;"> {{ gstDetail.approvedBy }}</div>
-              <div class="ms-3" style="min-width: 10px;" [title]="gstDetail.comments ? 'Rejected':'Approved'" >
-                <i [ngClass]="gstDetail.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
-              </div>
               <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
                 <p>{{gstDetail.comments}}</p>
               </div>
@@ -1982,6 +1985,7 @@
         <div *ngIf="popupMoreRecordHeader === 'Service Charges'">
 
           <div class="d-flex mb-2">
+            <div class="ms-3" style="min-width: 10px;"></div>
             <div style="min-width: 200px; text-align: center; border-bottom: 2px solid gray; color: #000;">
               eKYC Charges
             </div>
@@ -1991,21 +1995,24 @@
           </div>
         
           <div class="d-flex rule-header mb-2">
-            <div style="min-width: 100px;">Owners</div>
+            <div class="ms-3" style="min-width: 10px;" ></div>
+            <div class="ms-3" style="min-width: 100px;">Owners</div>
             <div class="ms-3" style="min-width: 100px;">Tenants</div>
             <div class="ms-3" style="min-width: 160px;">Owners</div>
             <div class="ms-3" style="min-width: 100px;">Tenants</div>
             <div class="ms-3" style="min-width: 120px;">Effective Date</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
             <div class="ms-3" style="min-width: 250px;">Approved By</div>
-            <div class="ms-3" style="min-width: 30px;"></div>
           </div>
         
           <hr />
         
           <div *ngFor="let otherCharges of configMasterModel.otherCharges">
             <div class="d-flex rule-data" *ngIf="!(!otherCharges.isApproved && !otherCharges.comments)">
-              <div style="min-width: 100px;">
+              <div class="ms-3" [ngStyle]="otherCharges.comments ? {'min-width': '15px'} : {'min-width': '10px'}" [title]="otherCharges.comments ? 'Rejected':'Approved'" >
+                <i [ngClass]="otherCharges.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
+              </div>
+              <div class="ms-3" style="min-width: 100px;">
                 <i class="fas fa-rupee-sign" style="font-size: small;"></i>
                 <span>{{ otherCharges.ownerEkycCharges }}</span>
               </div>
@@ -2026,9 +2033,6 @@
               <div class="ms-3 text-break" style="min-width: 250px;">
                 {{ otherCharges.approvedBy }}
               </div>
-                <div class="ms-3" style="min-width: 10px;" [title]="otherCharges.comments ? 'Rejected':'Approved'" >
-                <i [ngClass]="otherCharges.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
-              </div>
               <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
                 <p>{{otherCharges.comments}}</p>
               </div>
@@ -2040,7 +2044,8 @@
         <div *ngIf="popupMoreRecordHeader === 'Data Grouping'">
 
           <div class="d-flex rule-header mb-2">
-            <div style="min-width: 100px;">Days</div>
+            <div class="ms-3" style="min-width: 10px;"></div>
+            <div class="ms-3" style="min-width: 100px;">Days</div>
             <div class="ms-3" style="min-width: 100px;">Effective Date</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
             <div class="ms-3" style="min-width: 250px;">Approved By</div>
@@ -2050,13 +2055,13 @@
         
           <div *ngFor="let dataGrouping of configMasterModel.dataGrouping">
             <div class="d-flex rule-data" *ngIf="!(!dataGrouping.isApproved && !dataGrouping.comments)">
-              <div style="min-width: 100px;">{{ dataGrouping.considerDays }} Days</div>
+              <div class="ms-3" [ngStyle]="dataGrouping.comments ? {'min-width': '15px'} : {'min-width': '10px'}"  [title]="dataGrouping.comments ? 'Rejected':'Approved'" >
+                <i [ngClass]="dataGrouping.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
+              </div>
+              <div class="ms-3" style="min-width: 100px;">{{ dataGrouping.considerDays }} Days</div>
               <div class="ms-3" style="min-width: 100px;">{{ dataGrouping.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ dataGrouping.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ dataGrouping.approvedBy }}</div>
-              <div class="ms-3" style="min-width: 10px;" [title]="dataGrouping.comments ? 'Rejected':'Approved'" >
-                <i [ngClass]="dataGrouping.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
-              </div>
               <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
                 <p>{{dataGrouping.comments}}</p>
               </div>
@@ -2067,7 +2072,8 @@
         
         <div *ngIf="popupMoreRecordHeader === 'Force Checkout'">
           <div class="d-flex rule-header mb-2">
-            <div style="min-width: 150px;">Days</div>
+            <div class="ms-3" style="min-width: 10px;"></div>
+            <div class="ms-3" style="min-width: 150px;">Days</div>
             <div class="ms-3" style="min-width: 150px;">Effective Date</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
             <div class="ms-3" style="min-width: 250px;">Approved By</div>
@@ -2077,13 +2083,13 @@
         
           <div *ngFor="let forceCheckOut of configMasterModel.forceCheckOut">
             <div class="d-flex rule-data" *ngIf="!(!forceCheckOut.isApproved && !forceCheckOut.comments)">
-              <div style="min-width: 150px;">{{ forceCheckOut.forceCheckOutDays }} Days</div>
+              <div class="ms-3" [ngStyle]="forceCheckOut.comments ? {'min-width': '15px'} : {'min-width': '10px'}"  [title]="forceCheckOut.comments ? 'Rejected':'Approved'" >
+                <i [ngClass]="forceCheckOut.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
+              </div>
+              <div class="ms-3" style="min-width: 150px;">{{ forceCheckOut.forceCheckOutDays }} Days</div>
               <div class="ms-3" style="min-width: 150px;">{{ forceCheckOut.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ forceCheckOut.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ forceCheckOut.approvedBy }}</div>
-              <div class="ms-3" style="min-width: 10px;" [title]="forceCheckOut.comments ? 'Rejected':'Approved'" >
-                <i [ngClass]="forceCheckOut.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
-              </div>
               <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
                 <p>{{forceCheckOut.comments}}</p>
               </div>
@@ -2093,7 +2099,8 @@
         
         <div *ngIf="popupMoreRecordHeader === 'No Rental agreement'">
           <div class="d-flex rule-header mb-2">
-            <div style="min-width: 200px;">No Rental agreement upto</div>
+            <div class="ms-3" style="min-width: 10px;" ></div>
+            <div class="ms-3" style="min-width: 200px;">No Rental agreement upto</div>
             <div class="ms-3" style="min-width: 150px;">Effective Date</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
             <div class="ms-3" style="min-width: 250px;">Approved By</div>
@@ -2103,13 +2110,13 @@
         
           <div *ngFor="let noRentalAgreement of configMasterModel.noRentalAgreement">
             <div class="d-flex rule-data" *ngIf="!(!noRentalAgreement.isApproved && !noRentalAgreement.comments)">
-              <div style="min-width: 200px;">{{ noRentalAgreement.noRentalAgreementDays }} Days</div>
+              <div class="ms-3" [ngStyle]="noRentalAgreement.comments ? {'min-width': '15px'} : {'min-width': '10px'}" [title]="noRentalAgreement.comments ? 'Rejected':'Approved'" >
+                <i [ngClass]="noRentalAgreement.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
+              </div>
+              <div class="ms-3" style="min-width: 200px;">{{ noRentalAgreement.noRentalAgreementDays }} Days</div>
               <div class="ms-3" style="min-width: 150px;">{{ noRentalAgreement.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ noRentalAgreement.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ noRentalAgreement.approvedBy }}</div>
-              <div class="ms-3" style="min-width: 10px;" [title]="noRentalAgreement.comments ? 'Rejected':'Approved'" >
-                <i [ngClass]="noRentalAgreement.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
-              </div>
               <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
                 <p>{{noRentalAgreement.comments}}</p>
               </div>
@@ -2119,7 +2126,8 @@
         
         <div *ngIf="popupMoreRecordHeader === 'Security Deposit Deadline'">
           <div class="d-flex rule-header mb-2">
-            <div style="min-width: 100px;">Condition</div>
+            <div class="ms-3" style="min-width: 10px;"></div>
+            <div class="ms-3" style="min-width: 100px;">Condition</div>
             <div class="ms-3" style="min-width: 160px;">Before check-in</div>
             <div class="ms-3" style="min-width: 160px;">Deduction Type</div>
             <div class="ms-3" style="min-width: 100px;">Deduction</div>
@@ -2132,16 +2140,16 @@
         
           <div *ngFor="let securityDepositDeadLineDetails of configMasterModel.securityDepositDeadLineDetails">
             <div class="d-flex rule-data" *ngIf="!(!securityDepositDeadLineDetails.isApproved && !securityDepositDeadLineDetails.comments)">
-              <div style="min-width: 100px;">{{ securityDepositDeadLineDetails.trigger_condition }}</div>
+              <div class="ms-3" [ngStyle]="securityDepositDeadLineDetails.comments ? {'min-width': '15px'} : {'min-width': '10px'}" [title]="securityDepositDeadLineDetails.comments ? 'Rejected':'Approved'" >
+                <i [ngClass]="securityDepositDeadLineDetails.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
+              </div>
+              <div class="ms-3" style="min-width: 100px;">{{ securityDepositDeadLineDetails.trigger_condition }}</div>
               <div class="ms-3" style="min-width: 160px;">{{ securityDepositDeadLineDetails.auto_cancellation_day }} Days</div>
               <div class="ms-3" style="min-width: 160px;">{{ securityDepositDeadLineDetails.trigger_value }}</div>
               <div class="ms-3" style="min-width: 100px;">{{ securityDepositDeadLineDetails.deduction_percentage }}%</div>
               <div class="ms-3" style="min-width: 120px;">{{ securityDepositDeadLineDetails.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ securityDepositDeadLineDetails.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ securityDepositDeadLineDetails.approvedBy }}</div>
-              <div class="ms-3" style="min-width: 10px;" [title]="securityDepositDeadLineDetails.comments ? 'Rejected':'Approved'" >
-                <i [ngClass]="securityDepositDeadLineDetails.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
-              </div>
               <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
                 <p>{{securityDepositDeadLineDetails.comments}}</p>
               </div>
@@ -2151,7 +2159,8 @@
         
         <div *ngIf="popupMoreRecordHeader === 'Early Check-out Rules'">
           <div class="d-flex rule-header mb-2">
-            <div style="min-width: 100px;">Condition</div>
+            <div class="ms-3" style="min-width: 10px;"></div>
+            <div class="ms-3" style="min-width: 100px;">Condition</div>
             <div class="ms-3" style="min-width: 120px;">Eligibility</div>
             <div class="ms-3" style="min-width: 180px;">Deduction Type</div>
             <div class="ms-3" style="min-width: 120px;">Effective On</div>
@@ -2163,15 +2172,15 @@
         
           <div *ngFor="let earlyCheckOutRuleDetails of configMasterModel.earlyCheckOutRuleDetails">
             <div class="d-flex rule-data" *ngIf="!(!earlyCheckOutRuleDetails.isApproved && !earlyCheckOutRuleDetails.comments)">
-              <div style="min-width: 100px;">{{ earlyCheckOutRuleDetails.trigger_condition }}</div>
+              <div class="ms-3" [ngStyle]="earlyCheckOutRuleDetails.comments ? {'min-width': '15px'} : {'min-width': '10px'}" [title]="earlyCheckOutRuleDetails.comments ? 'Rejected':'Approved'" >
+                <i [ngClass]="earlyCheckOutRuleDetails.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
+              </div>
+              <div class="ms-3" style="min-width: 100px;">{{ earlyCheckOutRuleDetails.trigger_condition }}</div>
               <div class="ms-3" style="min-width: 120px;">{{ earlyCheckOutRuleDetails.check_out_day }} Days</div>
               <div class="ms-3" style="min-width: 180px;">{{ earlyCheckOutRuleDetails.trigger_value }}</div>
               <div class="ms-3" style="min-width: 120px;">{{ earlyCheckOutRuleDetails.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ earlyCheckOutRuleDetails.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ earlyCheckOutRuleDetails.approvedBy }}</div>
-              <div class="ms-3" style="min-width: 10px;" [title]="earlyCheckOutRuleDetails.comments ? 'Rejected':'Approved'" >
-                <i [ngClass]="earlyCheckOutRuleDetails.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
-              </div>
               <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
                 <p>{{earlyCheckOutRuleDetails.comments}}</p>
               </div>
@@ -2181,7 +2190,8 @@
         
         <div *ngIf="popupMoreRecordHeader === 'After check-in Date'">
           <div class="d-flex rule-header mb-2">
-            <div style="min-width: 100px;">Condition</div>
+            <div class="ms-3" style="min-width: 10px;" ></div>
+            <div class="ms-3" style="min-width: 100px;">Condition</div>
             <div class="ms-3" style="min-width: 160px;">After check-in</div>
             <div class="ms-3" style="min-width: 180px;">Deduction Type</div>
             <div class="ms-3" style="min-width: 120px;">Effective On</div>
@@ -2193,15 +2203,15 @@
         
           <div *ngFor="let cancellationAfterCheckInDetails of configMasterModel.cancellationAfterCheckInDetails">
             <div class="d-flex rule-data" *ngIf="!(!cancellationAfterCheckInDetails.isApproved && !cancellationAfterCheckInDetails.comments)">
-              <div style="min-width: 100px;">{{ cancellationAfterCheckInDetails.trigger_condition }}</div>
+              <div class="ms-3" [ngStyle]="cancellationAfterCheckInDetails.comments ? {'min-width': '15px'} : {'min-width': '10px'}" [title]="cancellationAfterCheckInDetails.comments ? 'Rejected':'Approved'" >
+                <i [ngClass]="cancellationAfterCheckInDetails.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
+              </div>
+              <div class="ms-3" style="min-width: 100px;">{{ cancellationAfterCheckInDetails.trigger_condition }}</div>
               <div class="ms-3" style="min-width: 160px;">{{ cancellationAfterCheckInDetails.auto_cancellation_day }} Days</div>
               <div class="ms-3" style="min-width: 180px;">{{ cancellationAfterCheckInDetails.trigger_value }}</div>
               <div class="ms-3" style="min-width: 120px;">{{ cancellationAfterCheckInDetails.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ cancellationAfterCheckInDetails.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ cancellationAfterCheckInDetails.approvedBy }} </div>
-              <div class="ms-3" style="min-width: 10px;" [title]="cancellationAfterCheckInDetails.comments ? 'Rejected':'Approved'" >
-                <i [ngClass]="cancellationAfterCheckInDetails.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
-              </div>
               <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
                 <p>{{cancellationAfterCheckInDetails.comments}}</p>
               </div>

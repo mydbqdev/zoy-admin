@@ -97,12 +97,9 @@
                                           <div class="col-sm-1 align-items-center">:</div>
                                           <div class="col-sm-7" style="font-size: 14px;color:#000000;">
                                             <span *ngIf="pgOwnerData.pg_ownerbasic_information?.aadhar"> {{pgOwnerData.pg_ownerbasic_information?.aadhar}} </span>
-                                          
                                               <a class="link-opacity-100-hover" *ngIf="!pgOwnerData.pg_ownerbasic_information?.aadhar" data-bs-toggle="modal" data-bs-target="#aadhar" (click)="generateCaptcha()" style="font-size: 13px;cursor: pointer;">
                                               Click Here for verification
                                               </a>
-                                             </div>
-
                                           </div>
                                         </div>
                                         <div class="row">
