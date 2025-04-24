@@ -1236,8 +1236,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	const list = payload.iscreate ? this.beforeCheckInCRDetails.filter(item => !item.isDelete) : this.beforeCheckInCRDetails ;
 	payload.pgType = this.settingType;
 	payload.ZoyBeforeCheckInCancellationInfo = list;
-	console.log("beforeCheckInCRDetails",this.beforeCheckInCRDetails);
-	console.log("payload>>",payload);
 	}else{
 		payload.comments=this.comments;
 		payload.ZoyBeforeCheckInCancellationInfo=payload.zoy_before_check_in_cancellation_info;
@@ -1249,11 +1247,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
 			this.configMasterService.submitBeforeCheckInCRfDetails(payload).subscribe(res => {
-				console.log("res>>>",res)
 			this.changeSettingType();
 			this.canSubmit = true;
 			this.getBeforeCheckInCRData();
-			this.notifyService.showSuccess("Before check in has been updated successfully", "");
+			this.notifyService.showSuccess(res.message, "");
+			this.closeApproveRejectModel.nativeElement.click(); 
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -1638,6 +1636,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				  model.end_day = element.end_day;  
 				  model.percentage = element.percentage;
 				  model.isDelete = false; 
+				  model.isConfirm = false
 			 
 				  this.backUpShortTermDataSubList.push(model);
 				});
