@@ -23,6 +23,10 @@ public class NotificationsAndAlertsService {
         notificationService.notifyUserApprovalRequest(emails, approvalDetails);
     }
 
+    public void roleAssigned( String userId,String notificationDetails) throws Exception {
+        notificationService.notifyUserRoleIsApproved(userId,notificationDetails);
+    }
+    
     public void accountlock( String userId,  String approvalDetails) throws Exception {
     	String screenname="LOCKED_USER";
     	String[] emails =notificationsAndAlertsRepository.findScreenAccess(screenname);

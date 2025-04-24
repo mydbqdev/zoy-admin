@@ -66,7 +66,7 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/before-check-in",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation);
+	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation,ZoyBeforeCheckInCancellationModel zoyPreviousData);
 
 //	@Operation(summary = "Delete Admin Configuration Before Check In", description = "Deletes Admin Configuration Before Check In by cancellationId", security = {
 //			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })

@@ -259,7 +259,7 @@ export class BulkUploadComponent {
 			const link = document.createElement("a");
 			link.href = fileURL;
 			link.target = '_blank';
-			link.download = 'BulkUpload.xlsx';
+			link.download = 'BulkUpload.xlsm';
 			document.body.appendChild(link);
 			link.click();
 			this.downloadProgress=false;
