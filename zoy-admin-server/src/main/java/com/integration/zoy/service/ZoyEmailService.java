@@ -3,6 +3,7 @@ package com.integration.zoy.service;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -589,46 +591,85 @@ public class ZoyEmailService {
 	        log.error("Error occurred while sending the automatic rejection email to recipients " + to + ": " + e.getMessage(), e);
 	    }
 	}
-
-	public void sendPolicyChangeNotificationEmail(String ruleName, String effectiveDate,String existingRule, String upcomingRule) throws WebServiceException {
-
-	    String[] allMails = adminUserMasterRepo.masterConfigurationAccess();
+//
+//	public void sendPolicyChangeNotificationEmail(String ruleName, String effectiveDate,String existingRule, String upcomingRule) throws WebServiceException {
+//
+//	    String[] allMails = adminUserMasterRepo.masterConfigurationAccess();
+//
+//	    if (allMails == null || allMails.length == 0) {
+//	        log.warn("No recipient email addresses found for sending policy update notification.");
+//	        return;
+//	    }
+//
+//	    Email email = new Email();
+//	    email.setFrom(zoyAdminMail);
+//
+//	    List<String> to = new ArrayList<>();
+//	    Collections.addAll(to, allMails);
+//	    email.setTo(to);
+//
+//	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+//
+//	    String message = "<p>Dear users </p>"
+//	            + "<p>We hope this message finds you well.</p>"
+//	            + "<p>We are writing to inform you about an important update regarding our <strong>Cancellation & Payment rules</strong> and <strong>Policy Terms</strong>, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+//	            + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+//
+//	            + "<p><strong>What’s Changing:</strong></p>"
+//	            + "<p><strong>" + ruleName + "</strong></p>"
+//
+//	            + "<table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;'>"
+//	            + "<tr style='background-color: #f2f2f2;'>"
+//	            + "<th style='border: 1px solid #999; padding: 10px; text-align: left;'>Existing Rule</th>"
+//	            + "<th style='border: 1px solid #999; padding: 10px; text-align: left;'>Upcoming Rule</th>"
+//	            + "</tr>"
+//	            + "<tr>"
+//	            + "<td style='border: 1px solid #999; padding: 10px;'>" + existingRule + "</td>"
+//	            + "<td style='border: 1px solid #999; padding: 10px;'>" + upcomingRule + "</td>"
+//	            + "</tr>"
+//	            + "</table>"
+//
+//	            + "<p>We kindly request you to review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
+//	            + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <strong>support@zoy.com</strong>.</p>"
+//	            + "<p>Thank you for your continued support and cooperation.</p>"
+//	            + "<p>Best regards,<br>ZOY Administrator</p>";
+//
+//	    email.setBody(message);
+//	    email.setContent("text/html");
+//
+//	    try {
+//	        emailService.sendEmail(email, null);
+//	    } catch (Exception e) {
+//	        log.error("Error occurred while sending the policy update email to recipients " + to + ": " + e.getMessage(), e);
+//	    }
+//	}
+//	
+//	
+	public void sendTokenAdvanceRuleChangeEmail(String effectiveDate, BigDecimal oldFixed, BigDecimal oldVariable, BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"}; // You can add more email addresses as needed
 
 	    if (allMails == null || allMails.length == 0) {
-	        log.warn("No recipient email addresses found for sending policy update notification.");
+	        log.warn("No recipient email addresses found for Token Advance rule change notification.");
 	        return;
 	    }
 
 	    Email email = new Email();
-	    email.setFrom(zoyAdminMail);
+	    email.setFrom(zoyAdminMail); // Make sure zoyAdminMail is properly initialized with the sender's email
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in Token Advance Policy, Effective from " + effectiveDate);
 
-	    List<String> to = new ArrayList<>();
-	    Collections.addAll(to, allMails);
-	    email.setTo(to);
-
-	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
-
-	    String message = "<p>Dear users </p>"
+	    String message = "<p>Dear Owner/Tenant,</p>"
 	            + "<p>We hope this message finds you well.</p>"
-	            + "<p>We are writing to inform you about an important update regarding our <strong>Cancellation & Payment rules</strong> and <strong>Policy Terms</strong>, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
-	            + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
-
+	            + "<p>This is to inform you of an important change in our Token Advance policy, effective from <strong>" + effectiveDate + "</strong>.</p>"
+	            + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency, we have revised certain clauses in our Token Advance policy. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
 	            + "<p><strong>What’s Changing:</strong></p>"
-	            + "<p><strong>" + ruleName + "</strong></p>"
-
-	            + "<table style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;'>"
-	            + "<tr style='background-color: #f2f2f2;'>"
-	            + "<th style='border: 1px solid #999; padding: 10px; text-align: left;'>Existing Rule</th>"
-	            + "<th style='border: 1px solid #999; padding: 10px; text-align: left;'>Upcoming Rule</th>"
-	            + "</tr>"
-	            + "<tr>"
-	            + "<td style='border: 1px solid #999; padding: 10px;'>" + existingRule + "</td>"
-	            + "<td style='border: 1px solid #999; padding: 10px;'>" + upcomingRule + "</td>"
-	            + "</tr>"
+	            + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	            + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	            + "<tr><td>A fixed amount of " + oldFixed + " rupees or " + oldVariable + "% of the monthly rent, whichever is higher.</td>"
+	            + "<td>A fixed amount of " + newFixed + " rupees or " + newVariable + "% of the monthly rent, whichever is higher.</td></tr>"
 	            + "</table>"
-
-	            + "<p>We kindly request you to review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
-	            + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <strong>support@zoy.com</strong>.</p>"
+	            + "<p>We kindly request that you review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
+	            + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a> or call us at [Support Phone Number].</p>"
 	            + "<p>Thank you for your continued support and cooperation.</p>"
 	            + "<p>Best regards,<br>ZOY Administrator</p>";
 
@@ -638,8 +679,439 @@ public class ZoyEmailService {
 	    try {
 	        emailService.sendEmail(email, null);
 	    } catch (Exception e) {
-	        log.error("Error occurred while sending the policy update email to recipients " + to + ": " + e.getMessage(), e);
+	        log.error("Failed to send Token Advance update email: " + e.getMessage(), e);
 	    }
 	}
+
+
+	public void sendSecurityDepositLimitsChangeEmail(String effectiveDate,BigDecimal oldFixed, BigDecimal oldVariable, BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Security Deposit rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Owner/Tenant,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>Security Deposit Limits:</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>Between Rs. "+oldFixed+" – Rs. "+oldVariable+"</td><td>Between Rs. "+newFixed+" – Rs. "+newVariable+"</td></tr>"
+	        + "</table>"
+	        + "<p>We kindly request you to review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
+	        + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	        + "<p>Thank you for your continued support and cooperation.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Security Deposit Limits update email: " + e.getMessage(), e);
+	    }
+	}
+
+	
+	public void sendGstChargesChangeEmail(String effectiveDate,BigDecimal oldFixed, BigDecimal oldVariable, BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for GST Charges rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Owner/Tenant,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>GST Charges:</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>GST @"+4+"% for a daily rent greater than or equal to Rs. "+1000+"</td><td>GST @"+6+"% for a daily rent greater than or equal to Rs. "+1000+"</td></tr>"
+	        + "</table>"
+	        + "<p>We kindly request you to review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
+	        + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	        + "<p>Thank you for your continued support and cooperation.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send GST Charges update email: " + e.getMessage(), e);
+	    }
+	}
+
+	
+	public void sendOtherChargesChangeEmailForOwners(String effectiveDate,BigDecimal oldFixed, BigDecimal oldVariable, BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Other Charges rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Owner,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>Other Charges (eKYC and Documentation):</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>Rs. "+oldFixed+" for eKYC<br>Rs. "+oldVariable+" for Documentation</td><td>Rs. "+newFixed+" for eKYC<br>Rs. "+newVariable+" for Documentation</td></tr>"
+	        + "</table>"
+	        + "<p>We kindly request you to review the updated rules and ensure that you understand the changes.</p>"
+	        + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	        + "<p>Thank you for your continued support and cooperation.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Other Charges update email: " + e.getMessage(), e);
+	    }
+	}
+	
+	public void sendOtherChargesChangeEmailForUsers(String effectiveDate,BigDecimal oldFixed, BigDecimal oldVariable, BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Other Charges rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Tenant,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>Other Charges (eKYC and Documentation):</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>Rs. "+oldFixed+" for eKYC<br>Rs. "+oldVariable+" for Documentation</td><td>Rs. "+newFixed+" for eKYC<br>Rs. "+newVariable+" for Documentation</td></tr>"
+	        + "</table>"
+	        + "<p>We kindly request you to review the updated rules and ensure that you understand the changes.</p>"
+	        + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	        + "<p>Thank you for your continued support and cooperation.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Other Charges update email: " + e.getMessage(), e);
+	    }
+	}
+
+	
+	public void sendForceCheckoutChangeEmail(String effectiveDate,int oldFixed,int newFixed) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Force Checkout rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Owner/Tenant,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>Force Checkout:</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>"+oldFixed+" Days</td><td>"+newFixed+" Days</td></tr>"
+	        + "</table>"
+	        + "<p>We kindly request you to review the updated rules and ensure that you understand the changes.</p>"
+	        + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	        + "<p>Thank you for your continued support and cooperation.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Force Checkout update email: " + e.getMessage(), e);
+	    }
+	}
+
+	
+	public void sendNoRentalAgreementChangeEmail(String effectiveDate,int oldFixed,int newFixed) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Rental Agreement rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Owner/Tenant,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>No Rental Agreement (Trigger Days):</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>"+oldFixed+" Days</td><td>"+newFixed+" Days</td></tr>"
+	        + "</table>"
+	        + "<p>We kindly request you to review the updated rules and ensure that you understand the changes.</p>"
+	        + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	        + "<p>Thank you for your continued support and cooperation.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Rental Agreement rule update email: " + e.getMessage(), e);
+	    }
+	}
+
+	
+	public void sendSecurityDepositDeadlineChangeEmail(String effectiveDate,Long oldFixed, BigDecimal oldVariable, Long newFixed, BigDecimal newVariable) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Security Deposit Deadline change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Owner/Tenant,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>Security Deposit Deadline:</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>Total deposit to be paid before "+oldFixed+" days of check-in. "+oldVariable+"% penalty on failure and booking will be cancelled.</td>"
+	        + "<td>Total deposit to be paid before "+newFixed+" days of check-in. "+newVariable+"% penalty on failure and booking will be cancelled.</td></tr>"
+	        + "</table>"
+	        + "<p>We kindly request you to review the updated rules and ensure that you understand the changes.</p>"
+	        + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	        + "<p>Thank you for your continued support and cooperation.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Security Deposit Deadline update email: " + e.getMessage(), e);
+	    }
+	}
+
+	
+	
+	public void sendCancellationRefundPolicyChangeEmail(String effectiveDate) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Cancellation & Refund Policy rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Owner/Tenant,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>Cancellation and Refund Policy (Before Check-in):</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>Greater than 5 days: Zero cancellation charges<br>3-5 days: 20% of total paid<br>Less than 3 days: 50%</td>"
+	        + "<td>Greater than 5 days: Zero cancellation charges<br>3-5 days: 20% of total paid<br>Less than 3 days: 50%</td></tr>"
+	        + "</table>"
+	        + "<p>Note: The structure remains same but reinforced for better clarity and enforcement.</p>"
+	        + "<p>For questions, contact our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Cancellation & Refund Policy update email: " + e.getMessage(), e);
+	    }
+	}
+
+	
+	public void sendShortTermDurationChangeEmail(String effectiveDate) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Short Term Duration rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Owner/Tenant,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>Short Term Duration Period:</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>1-10 days: 6%<br>11-20 days: 5%<br>21-29 days: 3%</td>"
+	        + "<td>1-10 days: 6%<br>11-20 days: 5%<br>21-29 days: 3%</td></tr>"
+	        + "</table>"
+	        + "<p>No changes in structure, but updated for visibility in pricing policy.</p>"
+	        + "<p>For questions, contact <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Short Term Duration rule update email: " + e.getMessage(), e);
+	    }
+	}
+
+	
+	public void sendEarlyCheckoutChangeEmail(String effectiveDate,Long oldFixed,Long newFixed) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Early Check-out rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Owner/Tenant,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>Early Check-out Rules:</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>Check-out on or before "+oldFixed+" days from check-in = rent deducted prorate via short-term slabs</td>"
+	        + "<td>Check-out on or before "+newFixed+" days from check-in = rent deducted prorate via short-term slabs</td></tr>"
+	        + "</table>"
+	        + "<p>Please review the change to ensure correct handling of refunds during early checkouts.</p>"
+	        + "<p>For support, contact <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Early Check-out rule update email: " + e.getMessage(), e);
+	    }
+	}
+
+	
+	public void sendAutoCancellationAfterCheckinChangeEmail(String effectiveDate,Long oldFixed,Long newFixed) throws WebServiceException {
+	    String[] allMails = {"dbalajireddy17@gmail.com"};
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Auto Cancellation rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from " + effectiveDate);
+
+	    String message = "<p>Dear Owner/Tenant,</p>"
+	        + "<p>We hope this message finds you well.</p>"
+	        + "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>" + effectiveDate + "</strong>.</p>"
+	        + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+	        + "<p><strong>What’s Changing:</strong><br/>"
+	        + "• <strong>Auto Cancellation After Check-in:</strong></p>"
+	        + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	        + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	        + "<tr><td>If not checked-in within "+oldFixed+" days, rent is deducted and booking cancelled automatically</td>"
+	        + "<td>If not checked-in within "+newFixed+" days, rent is deducted and booking cancelled automatically</td></tr>"
+	        + "</table>"
+	        + "<p>Please take note of this auto-trigger update to avoid booking disruptions.</p>"
+	        + "<p>Contact support at <a href='mailto:support@zoy.com'>support@zoy.com</a> if needed.</p>"
+	        + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Auto Cancellation After Check-in rule update email: " + e.getMessage(), e);
+	    }
+	}
+
 
 }
