@@ -516,9 +516,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	        List<ZoyBeforeCheckInCancellation> checkInCancellationDetailsList = new ArrayList<>();
 	        
 	        String effectiveDate="";
+	        String comments = null;
 
 	        for (ZoyPgCancellationDetails details : cancellationList) {
-	        	if(!effectiveDate.equals(details.getEffectiveDate())) {
+	            if (effectiveDate == null || (!effectiveDate.equals(details.getEffectiveDate()) && !comments.equals(details.getComments()))) {
 	        		beforeCheckInCancellation = new ZoyBeforeCheckInCancellationModel();
 	        		beforeCheckInCancellation.setApproved(details.getIsApproved());
 		            beforeCheckInCancellation.setApprovedBy(details.getApprovedBy());
@@ -550,7 +551,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            	  beforeCheckinDetailsList.add(beforeCheckInCancellation);
 	            }
 	            effectiveDate=details.getEffectiveDate();
-
+	            comments=details.getComments();
 	          
 	        }
 	        response.setStatus(HttpStatus.OK.value());
@@ -2510,11 +2511,12 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	        }
 
 	        String effectiveDate = null;
+	        String comments = null;
 	        ZoyShortTermDetails termDetails = null;
 	        List<ZoyShortTermDto> zoyShortTermDtoDetailsList = new ArrayList<>();
 
 	        for (ZoyPgShortTermMaster details : ShortTermList) {
-	            if (effectiveDate == null || !effectiveDate.equals(details.getEffectiveDate())) {
+	            if (effectiveDate == null || (!effectiveDate.equals(details.getEffectiveDate()) && !comments.equals(details.getComments()))) {
 	                if (termDetails != null) {
 	                    termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
 	                    ZoyShortTermDetailsList.add(termDetails);
@@ -2527,6 +2529,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                termDetails.setComments(details.getComments());
 	                zoyShortTermDtoDetailsList = new ArrayList<>();
 	                effectiveDate = details.getEffectiveDate();
+	                comments = details.getComments();
 	            }
 
 	            ZoyShortTermDto zoyShortTermDtoDetails = new ZoyShortTermDto();
