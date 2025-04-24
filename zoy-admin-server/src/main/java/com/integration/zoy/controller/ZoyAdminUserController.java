@@ -164,7 +164,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	private NotificationsAndAlertsRepository notificationsAndAlertsRepository;
 	
 	@Autowired
-	private NotificationsAndAlertsService NotificationsAndAlertsService;
+	private NotificationsAndAlertsService notificationsAndAlertsService;
 
 	@Value("${qa.signin.link}")
 	private String qaSigninLink;
@@ -224,6 +224,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				Authentication authentication = authenticationManager.authenticate(
 						new UsernamePasswordAuthenticationToken(details.getEmail(), loginDetails.getPassword()));
 				String token = jwtUtil.generateToken(authentication);
+				 zoyAdminService.getUserSingleDeviceLockMap().put(details.getEmail(), new SessionInfo(token, System.currentTimeMillis()));
 				userRepository.deleteByUsername(details.getEmail());
 				response.setStatus(HttpStatus.OK.value());
 				response.setEmail(details.getEmail());
@@ -271,7 +272,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
 					userLock.setAttemptSequence(0);
 					adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
-					NotificationsAndAlertsService.accountlock(SecurityContextHolder.getContext().getAuthentication().getName(), details.getEmail());
+					notificationsAndAlertsService.accountlock(SecurityContextHolder.getContext().getAuthentication().getName(), details.getEmail());
 					response.setStatus(HttpStatus.LOCKED.value());
 					response.setMessage(
 							"Your account is locked due to multiple invalid login attempts. Please try again after 15 minutes.");
@@ -291,7 +292,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 					userLock.setLockCount(2); // Permanently lock account
 					userLock.setLockTime(Timestamp.valueOf(LocalDateTime.now()));
 					adminUserLoginDetailsRepository.lockUserByEmail(details.getEmail());
-					NotificationsAndAlertsService.accountlock(SecurityContextHolder.getContext().getAuthentication().getName(), details.getEmail());
+					notificationsAndAlertsService.accountlock(SecurityContextHolder.getContext().getAuthentication().getName(), details.getEmail());
 					response.setStatus(HttpStatus.BAD_REQUEST.value());
 					response.setMessage("Your account has been permanently locked. Please contact Admin Support.");
 				}
@@ -713,7 +714,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 			System.out.println(userRole.getUserEmail()+"<<<userRole.getUserEmail()>>>>"+SecurityContextHolder.getContext().getAuthentication().getName());
 			//audit here
 			auditHistoryUtilities.auditForRoleAssign(SecurityContextHolder.getContext().getAuthentication().getName(),gson.toJson(history).toString(),userRole.getUserEmail());
-			NotificationsAndAlertsService.approveUser(SecurityContextHolder.getContext().getAuthentication().getName(),userRole.getUserEmail());
+			notificationsAndAlertsService.approveUser(SecurityContextHolder.getContext().getAuthentication().getName(),userRole.getUserEmail());
 
 			
 			response.setStatus(HttpStatus.OK.value());
@@ -895,9 +896,12 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 				final List<String> existingRole=adminUserMasterRepository.getRoleAssigned(userEmail);
 				final List<String> newTempRole=adminUserMasterRepository.getRoleTempBeforeApproved(userEmail);
 				
+				String result = newTempRole.stream().collect(Collectors.joining(", "));
+				
 				if(status.equals("approved")) {
 					adminDBImpl.approveUser(userEmail);
 					adminDBImpl.insertUserDetails(userEmail);
+					notificationsAndAlertsService.roleAssigned(userEmail,result);
 				}        
 
 				// remove record from temporary table after approve /reject

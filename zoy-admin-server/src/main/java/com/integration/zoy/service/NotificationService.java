@@ -48,6 +48,15 @@ public class NotificationService {
         String infoType = "notification";
         notifyUsers(userIds, notificationMessage, screenName, category, infoType);
     }
+    
+    public void notifyUserRoleIsApproved(String userId,String approvalDetails) throws Exception {
+        String notificationMessage = "New role : "+approvalDetails+"+ assigned to you";
+        String screenName = "ROLE_AND_PERMISSION";
+        String category = "System Alert";
+        String infoType = "alert";
+        String[] emailArray = userId.split(",");
+        notifyUsers(emailArray, notificationMessage, screenName, category, infoType);
+    }
 
     public void notifyUserAccountunlockRequest(String[] userIds, String approvalDetails) throws Exception {
         String notificationMessage = "Unlock required for user: " + approvalDetails;
