@@ -119,10 +119,11 @@ export class BulkUploadComponent {
 		this.filevali=false;
 		this.upfile=event.target.files[0]; 
 		const fileType = this.upfile.type;
-		if(fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && fileType !== 'application/vnd.ms-excel') {
-			this.filevali=true;
+		const fileName = this.upfile.name.toLowerCase();
+		if (fileType == 'application/vnd.ms-excel.sheet.macroEnabled.12' || fileName.endsWith('.xlsm') ){
+			this.filevali=false;
 		  }else{
-			  this.filevali=false;
+			this.filevali=true;
 		  }
 	}
   
@@ -248,13 +249,13 @@ export class BulkUploadComponent {
 		  this.selectedProperty = list;
 		}
 
-
 		downloadProgress:boolean;
 	getBulkUploadTemplate(){
 		this.downloadProgress=true;
-		this.bulkUploadService.getBulkUploadTemplate().subscribe((data) => { 
-		
-			var blob = new Blob([data], {type : 'application/vnd.ms-excel'});
+		this.bulkUploadService.getBulkUploadTemplate().subscribe((data) => { 		
+		const blob = new Blob([data], {
+			type: 'application/vnd.ms-excel.sheet.macroEnabled.12'
+		});
 			var fileURL=URL.createObjectURL(blob);
 			const link = document.createElement("a");
 			link.href = fileURL;
