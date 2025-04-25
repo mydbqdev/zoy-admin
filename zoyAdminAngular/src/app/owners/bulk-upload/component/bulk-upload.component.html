@@ -81,16 +81,14 @@
                            <div class="col-sm-4" style="margin-left:-15px">
                               <div class="form-group">                                             
                                 <div class="input-group"  style="padding-top:32px;">                                    
-                                  <input class="form-control form-control-sm" id="formFile" type="file" (change)="onFileChange($event)" style="font-size: 12px;"
-                                  formControlName="reqDocument" 
+                                  <input class="form-control form-control-sm" id="formFile" type="file" (change)="onFileChange($event)" style="font-size: 12px;" formControlName="reqDocument"  accept=".xlsm"
                                       [ngClass]="{'is-invalid':submitted && (form.controls.reqDocument.errors || filevali)}">
-                                  <!-- <label for="formFile"class="btn btn-secondary">Browse</label> -->
                                 </div>
                               </div>
                               <div style="height: 30px;margin-top:-15px;">  
-                                <p style="color: rgb(194, 5, 178);font-size: 12px;" *ngIf="!filevali">(Allows only excel file)</p> 
+                                <p style="color: rgb(194, 5, 178);font-size: 12px;" *ngIf="!filevali">(Allows only Excel Macro-Enabled Workbook file)</p> 
                                 <div  style="font-size: 13px;" *ngIf="submitted && filevali " class="text-danger"  style="font-size: 12px;">
-                                  File format is inavalid <span>, Allows only excel file</span>
+                                  File format is inavalid <span>, Only Excel Macro-Enabled Workbook files are allowed</span>
                                 </div>
                               </div>
                              </div>                                      
@@ -174,45 +172,9 @@
                                 <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
                               </div>
                               
-                                
                             </div>
                         </div>
                     </div>
-                    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" #openModel hidden>
-                      Open modal
-                    </button>
-                    
-                    <div class="modal fade" id="exampleModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"  data-bs-backdrop="static">
-                      <div class="modal-dialog modal-lg modal-dialog-scrollable" >
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel" >Upload File Error</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="getUploadFileDetails()"></button>
-                          </div>
-                          <div class="modal-body">
-                            <table class="table">
-                              <thead>
-                                <tr>
-                                  <th scope="col">Row Number</th>
-                                  <th scope="col">Field</th>
-                                  <th scope="col">Description</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr *ngFor="let error of uploadErrorModalList">
-                                  <td>{{ error.row }}</td>
-                                  <td>{{ error.field }}</td>
-                                  <td>{{ error.error_description }}</td>
-                                </tr>
-                              </tbody>
-                             </table>
-                           </div>
-                           <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="getUploadFileDetails()">Close</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div> -->
                  </div>
                 <!-- /.container-fluid -->
             </div>

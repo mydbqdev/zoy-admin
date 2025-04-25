@@ -640,7 +640,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.setRuleData('tokenDetails',res.data);
 			this.tokenAdvancDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
-			this.closeApproveRejectModel.nativeElement.click(); 
+			this.closeApproveRejectModel.nativeElement.click(); 	
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -706,6 +706,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					this.setRuleData('depositDetails',res.data);
 					this.securityDepositLimitsDisabled = true;
 					this.notifyService.showSuccess(res.message, "");
+					this.closeApproveRejectModel.nativeElement.click(); 	
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -772,6 +773,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.setRuleData('gstCharges',res.data);
 			this.gstChargesDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
+			this.closeApproveRejectModel.nativeElement.click(); 	
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -838,6 +840,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.setRuleData('securityDepositDeadLineDetails',res.data);
 			this.securityDepositDeadLineDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
+			this.closeApproveRejectModel.nativeElement.click(); 	
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -901,6 +904,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.setRuleData('cancellationAfterCheckInDetails',res.data);
 			this.autoCancellationDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
+			this.closeApproveRejectModel.nativeElement.click(); 	
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -965,6 +969,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.setRuleData('otherCharges',res.data);
 				this.otherChargesDisabled = true;
 				this.notifyService.showSuccess(res.message, "");
+				this.closeApproveRejectModel.nativeElement.click(); 	
 				this.spinner.hide();
 				}, error => {
 				this.spinner.hide();
@@ -1030,6 +1035,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.setRuleData('dataGrouping',res.data);
 				this.dataGroupingDisabled = true;
 				this.notifyService.showSuccess(res.message, "");
+				this.closeApproveRejectModel.nativeElement.click(); 	
 				this.spinner.hide();
 				}, error => {
 				this.spinner.hide();
@@ -1245,8 +1251,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		   (confirmed) =>{
 			if(confirmed){
 			this.authService.checkLoginUserVlidaate();
+			const model = {"newBCCRule":payload,"oldBCCRule":this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel};
 			this.spinner.show();
-			this.configMasterService.submitBeforeCheckInCRfDetails(payload).subscribe(res => {
+			this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
 			this.changeSettingType();
 			this.canSubmit = true;
 			this.getBeforeCheckInCRData();
@@ -1377,6 +1384,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					this.setRuleData('earlyCheckOutRuleDetails',res.data);
 					this.earlyCheckOutRulesDisabled = true;
 					this.notifyService.showSuccess(res.message, "");
+					this.closeApproveRejectModel.nativeElement.click(); 	
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -1443,6 +1451,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.setRuleData('forceCheckOut',res.data);
 				this.forceCheckoutDisabled = true;
 				this.notifyService.showSuccess(res.message, "");
+				this.closeApproveRejectModel.nativeElement.click(); 	
 				this.spinner.hide();
 				}, error => {
 				this.spinner.hide();
@@ -1518,6 +1527,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					this.setRuleData('noRentalAgreement',res.data);
 					this.noRentalAgreementDisabled = true;
 					this.notifyService.showSuccess(res.message, "");
+					this.closeApproveRejectModel.nativeElement.click(); 	
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -1789,9 +1799,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  .then(
 				 (confirmed) =>{
 				if(confirmed){
+					const model = {"oldSTDRule":this.showConfigMaster.shortTermMainModel,"newSTDRule":payload};
 					this.spinner.show();
-					this.configMasterService.submitShortTermData(payload).subscribe(data => {
+					this.configMasterService.submitShortTermData(model).subscribe(data => {
 					this.getDbSettingDetails();
+					this.notifyService.showSuccess(data.message,"")
 					this.closeApproveRejectModel.nativeElement.click(); 
 					this.submitShortTerm = false;
 					this.canShortSubmit = true;
@@ -1914,7 +1926,7 @@ doApproveOrReject() {
 			  console.warn(`Unhandled rule key: ${this.key}`);
 			  break;
 		  }
-		  this.closeApproveRejectModel.nativeElement.click(); 	  
+		  
 		
 	}else{
 		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want reject ?')
