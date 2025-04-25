@@ -92,7 +92,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.tokenDetails.effectiveDate" [disabled]="tokenAdvancDisabled"
+                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.tokenDetails.effectiveDate" [disabled]="tokenAdvancDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                       [ngClass]="{'is-invalid': !tokenAdvancDisabled && (!editConfigMaster.tokenDetails?.effectiveDate || invaliedEffectiveDate('tokenDetails',this.editConfigMaster.tokenDetails?.effectiveDate ) )}" 
                                       />
                                   </div>
@@ -226,7 +226,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.depositDetails.effectiveDate"  [disabled]="securityDepositLimitsDisabled"
+                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.depositDetails.effectiveDate"  [disabled]="securityDepositLimitsDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (!editConfigMaster.depositDetails?.effectiveDate || invaliedEffectiveDate('depositDetails',editConfigMaster.depositDetails?.effectiveDate ) )}" />
                                   </div>
                                </div>
@@ -394,7 +394,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.gstCharges.effectiveDate" [disabled]="gstChargesDisabled"
+                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.gstCharges.effectiveDate" [disabled]="gstChargesDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                       [ngClass]="{'is-invalid': !gstChargesDisabled && (!editConfigMaster.gstCharges?.effectiveDate || invaliedEffectiveDate('gstCharges',editConfigMaster.gstCharges?.effectiveDate ) )}" 
                                       />
                                   </div>
@@ -607,7 +607,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.otherCharges.effectiveDate" [disabled]="otherChargesDisabled"
+                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.otherCharges.effectiveDate" [disabled]="otherChargesDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                         [ngClass]="{'is-invalid': !otherChargesDisabled && (!editConfigMaster.otherCharges?.effectiveDate || invaliedEffectiveDate('otherCharges',editConfigMaster.otherCharges?.effectiveDate ) )}" 
                                         />
                                     </div>
@@ -737,7 +737,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.dataGrouping.effectiveDate" [disabled]="dataGroupingDisabled"
+                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.dataGrouping.effectiveDate" [disabled]="dataGroupingDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                         [ngClass]="{'is-invalid': !dataGroupingDisabled && (!editConfigMaster.dataGrouping?.effectiveDate || invaliedEffectiveDate('dataGrouping',editConfigMaster.dataGrouping?.effectiveDate ) )}" 
                                         />
                                     </div>
@@ -825,7 +825,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.forceCheckOut.effectiveDate" [disabled]="forceCheckoutDisabled"
+                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.forceCheckOut.effectiveDate" [disabled]="forceCheckoutDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                         [ngClass]="{'is-invalid': !forceCheckoutDisabled && (!editConfigMaster.forceCheckOut?.effectiveDate || invaliedEffectiveDate('forceCheckOut',editConfigMaster.forceCheckOut?.effectiveDate ) )}" 
                                         />
                                     </div>
@@ -919,7 +919,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.noRentalAgreement.effectiveDate" [disabled]="noRentalAgreementDisabled"
+                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.noRentalAgreement.effectiveDate" [disabled]="noRentalAgreementDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                         [ngClass]="{'is-invalid': !noRentalAgreementDisabled && (!editConfigMaster.noRentalAgreement?.effectiveDate || invaliedEffectiveDate('noRentalAgreement',editConfigMaster.noRentalAgreement?.effectiveDate ) )}" 
                                         />
                                     </div>
@@ -1047,7 +1047,7 @@
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="date" 
-                                          class="form-control form-control-sm" [(ngModel)]="editConfigMaster.securityDepositDeadLineDetails.effectiveDate"  [disabled]="securityDepositDeadLineDisabled"
+                                          class="form-control form-control-sm" [(ngModel)]="editConfigMaster.securityDepositDeadLineDetails.effectiveDate"  [disabled]="securityDepositDeadLineDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                           [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled && (!editConfigMaster.securityDepositDeadLineDetails?.effectiveDate || invaliedEffectiveDate('securityDepositDeadLineDetails',editConfigMaster.securityDepositDeadLineDetails?.effectiveDate ) )}"
                                           />
                                       </div>
@@ -1238,7 +1238,7 @@
                                   <div style="width: 120px;margin-right: 10px;">
                                     <div class="input-group input-group-sm">
                                       <input class="form-control form-control-sm"
-                                        type="date" [(ngModel)]="crpEffectiveDate" (change)="canSubmit=false"
+                                        type="date" [(ngModel)]="crpEffectiveDate" (change)="canSubmit=false" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                         [ngClass]="{'is-invalid': !canSubmit && (!crpEffectiveDate || multirullsEffectiveDateValidation(crpEffectiveDate) )}"
                                         />
                                     </div>
@@ -1454,7 +1454,7 @@
                                       <div style="width: 120px;margin-right: 10px;">
                                         <div class="input-group input-group-sm">
                                           <input (change)="canShortSubmit=false"
-                                            type="date" [(ngModel)]="stpEffectiveDate"
+                                            type="date" [(ngModel)]="stpEffectiveDate" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                             [ngClass]="{'is-invalid': !canShortSubmit && (!stpEffectiveDate || multirullsEffectiveDateValidation(stpEffectiveDate) )}"
                                             class="form-control form-control-sm"/>
                                         </div>
@@ -1616,7 +1616,7 @@
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="date" 
-                                          class="form-control form-control-sm"  [(ngModel)]="editConfigMaster.earlyCheckOutRuleDetails.effectiveDate" [disabled]="earlyCheckOutRulesDisabled" 
+                                          class="form-control form-control-sm"  [(ngModel)]="editConfigMaster.earlyCheckOutRuleDetails.effectiveDate" [disabled]="earlyCheckOutRulesDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                           [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && (!editConfigMaster.earlyCheckOutRuleDetails?.effectiveDate || invaliedEffectiveDate('earlyCheckOutRuleDetails',editConfigMaster.earlyCheckOutRuleDetails?.effectiveDate ))}" 
                                           />
                                       </div>
@@ -1753,7 +1753,7 @@
                                           <div class="input-group input-group-sm">
                                             <input 
                                               type="date" 
-                                              class="form-control form-control-sm"  [(ngModel)]="editConfigMaster.cancellationAfterCheckInDetails.effectiveDate" [disabled]="autoCancellationDisabled"
+                                              class="form-control form-control-sm"  [(ngModel)]="editConfigMaster.cancellationAfterCheckInDetails.effectiveDate" [disabled]="autoCancellationDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                               [ngClass]="{'is-invalid': !autoCancellationDisabled && (!editConfigMaster.cancellationAfterCheckInDetails?.effectiveDate || invaliedEffectiveDate('cancellationAfterCheckInDetails',editConfigMaster.cancellationAfterCheckInDetails?.effectiveDate ) )}" 
                                               />
                                           </div>
