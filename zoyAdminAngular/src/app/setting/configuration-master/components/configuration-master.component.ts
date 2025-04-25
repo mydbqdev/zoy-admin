@@ -1205,14 +1205,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		return ;
 	}
 
-	const model = this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel ? this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel : this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel
-	const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
-	const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
-	if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
-		this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
-		return;
+	if(this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel || this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.isApproved ){
+		const model = this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel ? this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel : this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel
+		const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
+		const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
+		if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
+			this.notifyService.showInfo("Tt must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
+			return;
+		}
 	}
-	
 
 	const filteredDetails = this.beforeCheckInCRDetails.filter(item => !item.isDelete);
 	if(filteredDetails.length == 0){
@@ -1636,8 +1637,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				let model = new ShortTermMainModel();
 				this.editConfigMaster.shortTermMainModel = JSON.parse(JSON.stringify(editModel.length > 0 ? editModel[0] : (showModel.length > 0 ? showModel[0] : model )));
 				this.showConfigMaster.shortTermMainModel= JSON.parse(JSON.stringify(editModel.length > 0 ? (showModel.length > 0 ? showModel[0] : null):null));
-			console.log("this.editConfigMaster.shortTermMainModel",this.editConfigMaster.shortTermMainModel);
-			console.log("this.showConfigMaster.shortTermMainModel",this.showConfigMaster.shortTermMainModel);
 				var main=this.editConfigMaster.shortTermMainModel;
 				 main.zoy_short_term_dto_info.forEach(element => {
 				  let model : ShortTermSubModel = new ShortTermSubModel();
@@ -1663,7 +1662,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				addShortTermVali:boolean=false
 			 addShortTerm() {
 			  this.addShortTermVali = true;
-			  console.log("this.shortTermData>>",this.shortTermData)
 			  if(!this.shortTermData.start_day|| Number(this.shortTermData.start_day)===0 
 				  || !this.shortTermData.end_day|| Number(this.shortTermData.end_day)===0
 				  || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)
@@ -1781,13 +1779,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					this.notifyService.showInfo("Short term slabs details are already up to date.", "");
 					return;
 				  }
-				const model = this.showConfigMaster.shortTermMainModel ? this.showConfigMaster.shortTermMainModel : this.editConfigMaster.shortTermMainModel ;
-				const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
-				const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
-				if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate < existingDate && !this.editConfigMaster.shortTermMainModel.isApproved ) ||(selectedDate == existingDate && this.showConfigMaster.shortTermMainModel )) {
-					this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
-					return;
-				}
+				  if(this.showConfigMaster.shortTermMainModel || this.editConfigMaster.shortTermMainModel.isApproved ){
+					const model = this.showConfigMaster.shortTermMainModel ? this.showConfigMaster.shortTermMainModel : this.editConfigMaster.shortTermMainModel ;
+					const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
+					const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
+					if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate < existingDate && !this.editConfigMaster.shortTermMainModel.isApproved ) ||(selectedDate == existingDate && this.showConfigMaster.shortTermMainModel )) {
+						this.notifyService.showInfo("Tt must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
+						return;
+					}
+				 }
 				payload.iscreate = payload.isApproved ;
 			}
 
