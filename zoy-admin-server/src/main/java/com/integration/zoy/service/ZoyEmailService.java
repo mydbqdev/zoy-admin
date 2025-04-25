@@ -1076,113 +1076,6 @@ public class ZoyEmailService {
 		}
 	}
 
-	public void sendCancellationRefundPolicyChangeEmail(ZoyBeforeCheckInCancellationModel zoyPreviousData,
-			ZoyBeforeCheckInCancellationModel zoyUpdatedData) throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
-
-		if (allMails == null || allMails.length == 0) {
-			log.warn("No recipient email addresses found for Cancellation & Refund Policy rule change notification.");
-			return;
-		}
-
-		Email email = new Email();
-		email.setFrom(zoyAdminMail);
-		email.setTo(Arrays.asList(allMails));
-		email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from "
-				+ zoyUpdatedData.getEffectiveDate());
-
-		Map<String, String> comparisonMap = new HashMap<>();
-		comparisonMap.put(">=", "on or after");
-		comparisonMap.put(">", "after");
-		comparisonMap.put("<=", "on or before");
-		comparisonMap.put("<", "before");
-		comparisonMap.put("==", "exactly");
-
-		StringBuilder oldRules = new StringBuilder();
-		StringBuilder newRules = new StringBuilder();
-
-		if (zoyPreviousData != null && zoyPreviousData.getZoyBeforeCheckInCancellationInfo() != null) {
-			for (ZoyBeforeCheckInCancellation prev : zoyPreviousData.getZoyBeforeCheckInCancellationInfo()) {
-				oldRules.append("<tr>").append("<td style='padding: 10px; border: 1px solid #ddd;'>")
-						.append(getConditionDescription(prev, comparisonMap)).append("</td>")
-						.append("<td style='padding: 10px; border: 1px solid #ddd;'>")
-						.append(prev.getDeductionPercentage()).append("% of total paid</td>").append("</tr>");
-			}
-		}
-
-		if (zoyUpdatedData != null && zoyUpdatedData.getZoyBeforeCheckInCancellationInfo() != null) {
-			for (ZoyBeforeCheckInCancellation updated : zoyUpdatedData.getZoyBeforeCheckInCancellationInfo()) {
-				newRules.append("<tr>").append("<td style='padding: 10px; border: 1px solid #ddd;'>")
-						.append(getConditionDescription(updated, comparisonMap)).append("</td>")
-						.append("<td style='padding: 10px; border: 1px solid #ddd;'>")
-						.append(updated.getDeductionPercentage()).append("% of total paid</td>").append("</tr>");
-			}
-		}
-
-		String content = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
-				+ "<p>We are writing to inform you about an important update regarding our <strong>Cancellation & Payment rules and Policy Terms</strong>, which will come into effect from <strong>"
-				+ zoyUpdatedData.getEffectiveDate() + "</strong>.</p>"
-				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
-
-				+ "<p><strong>What’s Changing:</strong><br/>• <strong>Cancellation and Refund Policy (Before Check-in):</strong></p>"
-				+ "<table style='width:100%; border-collapse: collapse; margin-bottom: 20px;'>"
-				+ "<thead><tr style='background-color: #f2f2f2;'>"
-				+ "<th style='padding: 10px; border: 1px solid #ddd;'>Condition</th>"
-				+ "<th style='padding: 10px; border: 1px solid #ddd;'>Existing Rule</th>"
-				+ "<th style='padding: 10px; border: 1px solid #ddd;'>Upcoming Rule</th>" + "</tr></thead><tbody>";
-
-		List<ZoyBeforeCheckInCancellation> oldList = zoyPreviousData.getZoyBeforeCheckInCancellationInfo();
-		List<ZoyBeforeCheckInCancellation> newList = zoyUpdatedData.getZoyBeforeCheckInCancellationInfo();
-		int max = Math.max(oldList != null ? oldList.size() : 0, newList != null ? newList.size() : 0);
-
-		for (int i = 0; i < max; i++) {
-			String oldCondition = "-", oldDeduct = "-", newCondition = "-", newDeduct = "-";
-			if (oldList != null && i < oldList.size()) {
-				ZoyBeforeCheckInCancellation old = oldList.get(i);
-				oldCondition = getConditionDescription(old, comparisonMap);
-				oldDeduct = old.getDeductionPercentage() + "% of total paid";
-			}
-			if (newList != null && i < newList.size()) {
-				ZoyBeforeCheckInCancellation upd = newList.get(i);
-				newCondition = getConditionDescription(upd, comparisonMap);
-				newDeduct = upd.getDeductionPercentage() + "% of total paid";
-			}
-
-			content += "<tr>" + "<td style='padding: 10px; border: 1px solid #ddd;'>" + newCondition + "</td>"
-					+ "<td style='padding: 10px; border: 1px solid #ddd;'>" + oldDeduct + "</td>"
-					+ "<td style='padding: 10px; border: 1px solid #ddd;'>" + newDeduct + "</td>" + "</tr>";
-		}
-
-		content += "</tbody></table>"
-
-				+ "<p>We kindly request you to review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
-				+ "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
-				+ "<p>Thank you for your continued support and cooperation.</p>"
-				+ "<p>Best regards,<br/>ZOY Administrator.</p>";
-
-		String htmlTemplate = "<html><body style='font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px;'>"
-				+ "<div style='max-width: 700px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>"
-				+ "<div style='text-align: center; margin-bottom: 30px;'>"
-				+ "<img src='https://zoy.com/assets/logo.png' alt='ZOY Logo' style='height: 50px;'/>" + "</div>"
-				+ "<div style='font-size: 14px; color: #333333; line-height: 1.6;'>" + content + "</div>"
-				+ "<hr style='margin: 30px 0;'/>"
-				+ "<p style='font-size: 12px; color: #888888; text-align: center;'>© 2025 ZOY. All rights reserved.</p>"
-				+ "</div></body></html>";
-
-		email.setBody(htmlTemplate);
-		email.setContent("text/html");
-
-		try {
-			emailService.sendEmail(email, null);
-		} catch (Exception e) {
-			log.error("Failed to send Cancellation & Refund Policy update email: " + e.getMessage(), e);
-		}
-	}
-
-	private String getConditionDescription(ZoyBeforeCheckInCancellation item, Map<String, String> comparisonMap) {
-		String triggerCondition = comparisonMap.getOrDefault(item.getTriggerCondition(), item.getTriggerCondition());
-		return triggerCondition + " " + item.getBeforeCheckinDays() + " days from check-in date";
-	}
 
 	public void sendShortTermDurationChangeEmail(ZoyShortTermDetails newShortTerm,
 			ZoyShortTermDetails previousShortTerm) throws WebServiceException {
@@ -1288,6 +1181,76 @@ public class ZoyEmailService {
 		} catch (Exception e) {
 			log.error("Failed to send Short Term Duration rule update email: " + e.getMessage(), e);
 		}
+	}
+
+	public void sendCancellationRefundPolicyChangeEmail(ZoyBeforeCheckInCancellationModel zoyPreviousData,
+			ZoyBeforeCheckInCancellationModel zoyUpdatedData) throws WebServiceException {
+		String[] allMails = { "dbalajireddy17@gmail.com" };
+
+		if (allMails == null || allMails.length == 0) {
+			log.warn("No recipient email addresses found for Cancellation & Refund Policy rule change notification.");
+			return;
+		}
+
+		Email email = new Email();
+		email.setFrom(zoyAdminMail);
+		email.setTo(Arrays.asList(allMails));
+		email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from "
+				+ zoyUpdatedData.getEffectiveDate());
+
+		Map<String, String> comparisonMap = new HashMap<>();
+		comparisonMap.put(">=", "on or after");
+		comparisonMap.put(">", "after");
+		comparisonMap.put("<=", "on or before");
+		comparisonMap.put("<", "before");
+		comparisonMap.put("==", "equal to");
+
+		StringBuilder oldRulesTable = new StringBuilder();
+		StringBuilder newRulesTable = new StringBuilder();
+
+		// Build old rules
+		if (zoyPreviousData != null && zoyPreviousData.getZoyBeforeCheckInCancellationInfo() != null) {
+			for (ZoyBeforeCheckInCancellation prev : zoyPreviousData.getZoyBeforeCheckInCancellationInfo()) {
+				oldRulesTable.append("<tr><td>").append(getConditionDescription(prev, comparisonMap))
+						.append("</td><td>").append(prev.getDeductionPercentage()).append("% of total paid")
+						.append("</td></tr>");
+			}
+		}
+
+		// Build new rules
+		if (zoyUpdatedData != null && zoyUpdatedData.getZoyBeforeCheckInCancellationInfo() != null) {
+			for (ZoyBeforeCheckInCancellation updated : zoyUpdatedData.getZoyBeforeCheckInCancellationInfo()) {
+				newRulesTable.append("<tr><td>").append(getConditionDescription(updated, comparisonMap))
+						.append("</td><td>").append(updated.getDeductionPercentage()).append("% of total paid")
+						.append("</td></tr>");
+			}
+		}
+
+		String message = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
+				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
+				+ zoyUpdatedData.getEffectiveDate() + "</strong>.</p>" + "<p><strong>What’s Changing:</strong><br/>"
+				+ "• <strong>Cancellation and Refund Policy (Before Check-in):</strong></p>"
+				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr>" + "<td><table border='0'>"
+				+ oldRulesTable.toString() + "</table></td>" + "<td><table border='0'>" + newRulesTable.toString()
+				+ "</table></td>" + "</tr>" + "</table>"
+				+ "<p>Note: The structure has been updated to enhance clarity and transparency.</p>"
+				+ "<p>For questions, contact our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+				+ "<p>Best regards,<br>ZOY Administrator</p>";
+
+		email.setBody(message);
+		email.setContent("text/html");
+
+		try {
+			emailService.sendEmail(email, null);
+		} catch (Exception e) {
+			log.error("Failed to send Cancellation & Refund Policy update email: " + e.getMessage(), e);
+		}
+	}
+
+	private String getConditionDescription(ZoyBeforeCheckInCancellation item, Map<String, String> comparisonMap) {
+		String triggerCondition = comparisonMap.getOrDefault(item.getTriggerCondition(), item.getTriggerCondition());
+		return triggerCondition + " " + item.getBeforeCheckinDays() + " days from check-in date";
 	}
 
 }
