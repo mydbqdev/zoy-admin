@@ -445,7 +445,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                if (zoyBeforeCheckInCancellation.getIscreate()) {
 	                    entity.setCreatedBy(currentUser);
 	                    entity.setIsApproved(false);
-	                    flag="created";
+	                    flag="Created";
 	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
 	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 	                    
