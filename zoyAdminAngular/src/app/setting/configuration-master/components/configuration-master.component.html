@@ -92,7 +92,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.tokenDetails.effectiveDate" [disabled]="tokenAdvancDisabled"
+                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.tokenDetails.effectiveDate" [disabled]="tokenAdvancDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                       [ngClass]="{'is-invalid': !tokenAdvancDisabled && (!editConfigMaster.tokenDetails?.effectiveDate || invaliedEffectiveDate('tokenDetails',this.editConfigMaster.tokenDetails?.effectiveDate ) )}" 
                                       />
                                   </div>
@@ -226,7 +226,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.depositDetails.effectiveDate"  [disabled]="securityDepositLimitsDisabled"
+                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.depositDetails.effectiveDate"  [disabled]="securityDepositLimitsDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                       [ngClass]="{'is-invalid': !securityDepositLimitsDisabled && (!editConfigMaster.depositDetails?.effectiveDate || invaliedEffectiveDate('depositDetails',editConfigMaster.depositDetails?.effectiveDate ) )}" />
                                   </div>
                                </div>
@@ -394,7 +394,7 @@
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
-                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.gstCharges.effectiveDate" [disabled]="gstChargesDisabled"
+                                      class="form-control form-control-sm" [(ngModel)]="editConfigMaster.gstCharges.effectiveDate" [disabled]="gstChargesDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                       [ngClass]="{'is-invalid': !gstChargesDisabled && (!editConfigMaster.gstCharges?.effectiveDate || invaliedEffectiveDate('gstCharges',editConfigMaster.gstCharges?.effectiveDate ) )}" 
                                       />
                                   </div>
@@ -607,7 +607,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.otherCharges.effectiveDate" [disabled]="otherChargesDisabled"
+                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.otherCharges.effectiveDate" [disabled]="otherChargesDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                         [ngClass]="{'is-invalid': !otherChargesDisabled && (!editConfigMaster.otherCharges?.effectiveDate || invaliedEffectiveDate('otherCharges',editConfigMaster.otherCharges?.effectiveDate ) )}" 
                                         />
                                     </div>
@@ -737,7 +737,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.dataGrouping.effectiveDate" [disabled]="dataGroupingDisabled"
+                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.dataGrouping.effectiveDate" [disabled]="dataGroupingDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                         [ngClass]="{'is-invalid': !dataGroupingDisabled && (!editConfigMaster.dataGrouping?.effectiveDate || invaliedEffectiveDate('dataGrouping',editConfigMaster.dataGrouping?.effectiveDate ) )}" 
                                         />
                                     </div>
@@ -825,7 +825,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.forceCheckOut.effectiveDate" [disabled]="forceCheckoutDisabled"
+                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.forceCheckOut.effectiveDate" [disabled]="forceCheckoutDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                         [ngClass]="{'is-invalid': !forceCheckoutDisabled && (!editConfigMaster.forceCheckOut?.effectiveDate || invaliedEffectiveDate('forceCheckOut',editConfigMaster.forceCheckOut?.effectiveDate ) )}" 
                                         />
                                     </div>
@@ -919,7 +919,7 @@
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
-                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.noRentalAgreement.effectiveDate" [disabled]="noRentalAgreementDisabled"
+                                        class="form-control form-control-sm" [(ngModel)]="editConfigMaster.noRentalAgreement.effectiveDate" [disabled]="noRentalAgreementDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                         [ngClass]="{'is-invalid': !noRentalAgreementDisabled && (!editConfigMaster.noRentalAgreement?.effectiveDate || invaliedEffectiveDate('noRentalAgreement',editConfigMaster.noRentalAgreement?.effectiveDate ) )}" 
                                         />
                                     </div>
@@ -1005,7 +1005,7 @@
                                       </div>
                                      </div>
                                     <div class="col-sm-2">
-                                      <div>Before check-in</div>
+                                      <div>Eligibility</div>
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="text" 
@@ -1047,7 +1047,7 @@
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="date" 
-                                          class="form-control form-control-sm" [(ngModel)]="editConfigMaster.securityDepositDeadLineDetails.effectiveDate"  [disabled]="securityDepositDeadLineDisabled"
+                                          class="form-control form-control-sm" [(ngModel)]="editConfigMaster.securityDepositDeadLineDetails.effectiveDate"  [disabled]="securityDepositDeadLineDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                           [ngClass]="{'is-invalid': !securityDepositDeadLineDisabled && (!editConfigMaster.securityDepositDeadLineDetails?.effectiveDate || invaliedEffectiveDate('securityDepositDeadLineDetails',editConfigMaster.securityDepositDeadLineDetails?.effectiveDate ) )}"
                                           />
                                       </div>
@@ -1178,7 +1178,8 @@
                                     </div>
                                   </div>
                                       <div class="mr-3" style="width: 155px;">
-                                        <div class="input-group input-group-sm mt-4">
+                                        <div>Eligibility</div>
+                                        <div class="input-group input-group-sm">
                                           <input 
                                           type="text" 
                                           class="form-control form-control-sm"
@@ -1237,7 +1238,7 @@
                                   <div style="width: 120px;margin-right: 10px;">
                                     <div class="input-group input-group-sm">
                                       <input class="form-control form-control-sm"
-                                        type="date" [(ngModel)]="crpEffectiveDate" (change)="canSubmit=false"
+                                        type="date" [(ngModel)]="crpEffectiveDate" (change)="canSubmit=false" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                         [ngClass]="{'is-invalid': !canSubmit && (!crpEffectiveDate || multirullsEffectiveDateValidation(crpEffectiveDate) )}"
                                         />
                                     </div>
@@ -1296,20 +1297,10 @@
                                                   {{ element.trigger_value }}
                                                 </span>
                                               </div>
-                                              <!--div *ngIf="!element.isEdit || element.isDelete">
-                                                <input type="text" class="form-control form-control-sm" [(ngModel)]="element.trigger_value" [disabled]="!element.isEdit || element.isDelete" style="width: 190px !important;"/> 
-                                              </div-->
-                                              <!--div *ngIf="!element.isDelete && element.isEdit" >
-                                                <select class="form-select form-select-sm" [(ngModel)]="element.trigger_value" style="width: 190px !important;" 
-                                                [ngClass]="{'is-invalid': !element.isDelete && element.isEdit && !element.trigger_value }" >
-                                                <option *ngFor="let trigger of triggerOn" [value]="trigger.trigger_on">{{trigger.trigger_on}}</option>
-                                                </select>
-                                              </div-->
                                             </mat-cell>
                                           </ng-container>
 
                                           <ng-container matColumnDef="deduction_percentage" class="example-box">
-                                            <!-- <mat-header-cell  *matHeaderCellDef ></mat-header-cell> -->
                                             <mat-cell data-label="requirePayslip" *matCellDef="let element"  style="width: 150px !important;flex:none;padding-right: 0px;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'"> 
                                               <div class="d-flex input-group input-group-sm">
                                                 <input  type="text" 
@@ -1324,7 +1315,6 @@
                                           </ng-container>
                                         
                                           <ng-container matColumnDef="action" class="example-box">
-                                            <!-- <mat-header-cell *matHeaderCellDef></mat-header-cell> -->
                                             <mat-cell data-label="action" *matCellDef="let element ;let i=index"  style="padding-left:0px;flex:none;" [ngClass]="element.isDelete? 'example-box row-strike' :'example-box'">
                                               <div class="input-group" *ngIf="rolesArray.includes('CONFIGURATION_MASTER_WRITE')" >
                                                 <div class="btn-group">
@@ -1354,7 +1344,6 @@
                                             </mat-cell>
                                             
                                           </ng-container>          
-                                          <!-- <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row> -->
                                           <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
                                         </mat-table>
                                       <!-- </div> -->
@@ -1465,7 +1454,7 @@
                                       <div style="width: 120px;margin-right: 10px;">
                                         <div class="input-group input-group-sm">
                                           <input (change)="canShortSubmit=false"
-                                            type="date" [(ngModel)]="stpEffectiveDate"
+                                            type="date" [(ngModel)]="stpEffectiveDate" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                             [ngClass]="{'is-invalid': !canShortSubmit && (!stpEffectiveDate || multirullsEffectiveDateValidation(stpEffectiveDate) )}"
                                             class="form-control form-control-sm"/>
                                         </div>
@@ -1627,7 +1616,7 @@
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="date" 
-                                          class="form-control form-control-sm"  [(ngModel)]="editConfigMaster.earlyCheckOutRuleDetails.effectiveDate" [disabled]="earlyCheckOutRulesDisabled" 
+                                          class="form-control form-control-sm"  [(ngModel)]="editConfigMaster.earlyCheckOutRuleDetails.effectiveDate" [disabled]="earlyCheckOutRulesDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                           [ngClass]="{'is-invalid': !earlyCheckOutRulesDisabled && (!editConfigMaster.earlyCheckOutRuleDetails?.effectiveDate || invaliedEffectiveDate('earlyCheckOutRuleDetails',editConfigMaster.earlyCheckOutRuleDetails?.effectiveDate ))}" 
                                           />
                                       </div>
@@ -1735,7 +1724,7 @@
                                           </div>
                                          </div>
                                         <div class="col-sm-2">
-                                          <div>After check-in</div>
+                                          <div>Eligibility</div>
                                           <div class="input-group input-group-sm">
                                             <input 
                                               type="text" 
@@ -1764,7 +1753,7 @@
                                           <div class="input-group input-group-sm">
                                             <input 
                                               type="date" 
-                                              class="form-control form-control-sm"  [(ngModel)]="editConfigMaster.cancellationAfterCheckInDetails.effectiveDate" [disabled]="autoCancellationDisabled"
+                                              class="form-control form-control-sm"  [(ngModel)]="editConfigMaster.cancellationAfterCheckInDetails.effectiveDate" [disabled]="autoCancellationDisabled" title="Effective date must be greater than the previous rule’s date and at least 15 days in the future"
                                               [ngClass]="{'is-invalid': !autoCancellationDisabled && (!editConfigMaster.cancellationAfterCheckInDetails?.effectiveDate || invaliedEffectiveDate('cancellationAfterCheckInDetails',editConfigMaster.cancellationAfterCheckInDetails?.effectiveDate ) )}" 
                                               />
                                           </div>
@@ -1901,7 +1890,7 @@
               <div class="ms-3" style="min-width: 100px;">{{ tokenDetails.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ tokenDetails.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ tokenDetails.approvedBy }}</div>
-              <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
+              <div class="ms-3 pr-3 text-break" style="min-width: 350px;">
                 <p>{{tokenDetails.comments}}</p>
               </div>
 
@@ -1937,7 +1926,7 @@
               <div class="ms-3" style="min-width: 100px;">{{ depositDetails.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ depositDetails.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ depositDetails.approvedBy }}</div>
-              <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
+              <div class="ms-3 pr-3 text-break" style="min-width: 350px;">
                 <p>{{depositDetails.comments}}</p>
               </div>
             </div>
@@ -1974,7 +1963,7 @@
               <div class="ms-3" style="min-width: 100px;">{{ gstDetail.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ gstDetail.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;"> {{ gstDetail.approvedBy }}</div>
-              <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
+              <div class="ms-3 pr-3 text-break" style="min-width: 350px;">
                 <p>{{gstDetail.comments}}</p>
               </div>
             </div>
@@ -2033,7 +2022,7 @@
               <div class="ms-3 text-break" style="min-width: 250px;">
                 {{ otherCharges.approvedBy }}
               </div>
-              <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
+              <div class="ms-3 pr-3 text-break" style="min-width: 350px;">
                 <p>{{otherCharges.comments}}</p>
               </div>
             </div>
@@ -2062,7 +2051,7 @@
               <div class="ms-3" style="min-width: 100px;">{{ dataGrouping.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ dataGrouping.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ dataGrouping.approvedBy }}</div>
-              <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
+              <div class="ms-3 pr-3 text-break" style="min-width: 350px;">
                 <p>{{dataGrouping.comments}}</p>
               </div>
             </div>
@@ -2090,7 +2079,7 @@
               <div class="ms-3" style="min-width: 150px;">{{ forceCheckOut.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ forceCheckOut.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ forceCheckOut.approvedBy }}</div>
-              <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
+              <div class="ms-3 pr-3 text-break" style="min-width: 350px;">
                 <p>{{forceCheckOut.comments}}</p>
               </div>
             </div>
@@ -2117,7 +2106,7 @@
               <div class="ms-3" style="min-width: 150px;">{{ noRentalAgreement.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ noRentalAgreement.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ noRentalAgreement.approvedBy }}</div>
-              <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
+              <div class="ms-3 pr-3 text-break" style="min-width: 350px;">
                 <p>{{noRentalAgreement.comments}}</p>
               </div>
             </div>
@@ -2128,7 +2117,7 @@
           <div class="d-flex rule-header mb-2">
             <div class="ms-3" style="min-width: 10px;"></div>
             <div class="ms-3" style="min-width: 100px;">Condition</div>
-            <div class="ms-3" style="min-width: 160px;">Before check-in</div>
+            <div class="ms-3" style="min-width: 160px;">Eligibility</div>
             <div class="ms-3" style="min-width: 160px;">Deduction Type</div>
             <div class="ms-3" style="min-width: 100px;">Deduction</div>
             <div class="ms-3" style="min-width: 120px;">Effective On</div>
@@ -2150,7 +2139,7 @@
               <div class="ms-3" style="min-width: 120px;">{{ securityDepositDeadLineDetails.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ securityDepositDeadLineDetails.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ securityDepositDeadLineDetails.approvedBy }}</div>
-              <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
+              <div class="ms-3 pr-3 text-break" style="min-width: 350px;">
                 <p>{{securityDepositDeadLineDetails.comments}}</p>
               </div>
             </div>
@@ -2181,7 +2170,7 @@
               <div class="ms-3" style="min-width: 120px;">{{ earlyCheckOutRuleDetails.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ earlyCheckOutRuleDetails.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ earlyCheckOutRuleDetails.approvedBy }}</div>
-              <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
+              <div class="ms-3 pr-3 text-break" style="min-width: 350px;">
                 <p>{{earlyCheckOutRuleDetails.comments}}</p>
               </div>
             </div>
@@ -2192,7 +2181,7 @@
           <div class="d-flex rule-header mb-2">
             <div class="ms-3" style="min-width: 10px;" ></div>
             <div class="ms-3" style="min-width: 100px;">Condition</div>
-            <div class="ms-3" style="min-width: 160px;">After check-in</div>
+            <div class="ms-3" style="min-width: 160px;">Eligibility</div>
             <div class="ms-3" style="min-width: 180px;">Deduction Type</div>
             <div class="ms-3" style="min-width: 120px;">Effective On</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
@@ -2212,7 +2201,7 @@
               <div class="ms-3" style="min-width: 120px;">{{ cancellationAfterCheckInDetails.effectiveDate }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ cancellationAfterCheckInDetails.createdBy }}</div>
               <div class="ms-3 text-break" style="min-width: 250px;">{{ cancellationAfterCheckInDetails.approvedBy }} </div>
-              <div class="ms-3 pr-3 text-break" style="min-width: fit-content;">
+              <div class="ms-3 pr-3 text-break" style="min-width: 350px;">
                 <p>{{cancellationAfterCheckInDetails.comments}}</p>
               </div>
             </div>
@@ -2239,7 +2228,7 @@
                 <div class="ms-3" style="min-width: 10px;" [title]="mainCRP.comments ? 'Rejected':'Approved'" >
                   <i [ngClass]="mainCRP.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
                 </div>
-                <div class="ms-3 pr-3 text-break" style="min-width: fit-content;color: red !important;">
+                <div class="ms-3 pr-3 text-break" style="min-width: 350px;color: red !important;">
                   <p>{{mainCRP.comments}}</p>
                 </div>
               </div>
@@ -2273,7 +2262,7 @@
                 <div class="ms-3" style="min-width: 10px;" [title]="mainSTD.comments ? 'Rejected':'Approved'" >
                   <i [ngClass]="mainSTD.comments ? 'fas fa-thumbs-down color-bg-red':'fas fa-thumbs-up color-bg-green'"></i>
                 </div>
-                <div class="ms-3 pr-3 text-break" style="min-width: fit-content;color: red !important;">
+                <div class="ms-3 pr-3 text-break" style="min-width: 350px;color: red !important;">
                   <p>{{mainSTD.comments}}</p>
                 </div>
               </div>
@@ -2475,7 +2464,7 @@
         <div *ngIf="key === 'securityDepositDeadLineDetails'">
           <div class="d-flex rule-header mb-2">
             <div style="min-width: 100px;">Condition</div>
-            <div class="ms-3" style="min-width: 160px;">Before check-in</div>
+            <div class="ms-3" style="min-width: 160px;">Eligibility</div>
             <div class="ms-3" style="min-width: 160px;">Deduction Type</div>
             <div class="ms-3" style="min-width: 100px;">Deduction</div>
             <div class="ms-3" style="min-width: 120px;">Effective On</div>
@@ -2517,7 +2506,7 @@
         <div *ngIf="key === 'cancellationAfterCheckInDetails'">
           <div class="d-flex rule-header mb-2">
             <div style="min-width: 100px;">Condition</div>
-            <div class="ms-3" style="min-width: 160px;">After check-in</div>
+            <div class="ms-3" style="min-width: 160px;">Eligibility</div>
             <div class="ms-3" style="min-width: 180px;">Deduction Type</div>
             <div class="ms-3" style="min-width: 120px;">Effective On</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>

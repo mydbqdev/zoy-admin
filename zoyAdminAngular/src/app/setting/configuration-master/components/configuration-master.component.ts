@@ -640,7 +640,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.setRuleData('tokenDetails',res.data);
 			this.tokenAdvancDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
-			this.closeApproveRejectModel.nativeElement.click(); 
+			this.closeApproveRejectModel.nativeElement.click(); 	
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -706,6 +706,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					this.setRuleData('depositDetails',res.data);
 					this.securityDepositLimitsDisabled = true;
 					this.notifyService.showSuccess(res.message, "");
+					this.closeApproveRejectModel.nativeElement.click(); 	
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -772,6 +773,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.setRuleData('gstCharges',res.data);
 			this.gstChargesDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
+			this.closeApproveRejectModel.nativeElement.click(); 	
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -838,6 +840,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.setRuleData('securityDepositDeadLineDetails',res.data);
 			this.securityDepositDeadLineDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
+			this.closeApproveRejectModel.nativeElement.click(); 	
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -901,6 +904,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.setRuleData('cancellationAfterCheckInDetails',res.data);
 			this.autoCancellationDisabled = true;
 			this.notifyService.showSuccess(res.message, "");
+			this.closeApproveRejectModel.nativeElement.click(); 	
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -965,6 +969,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.setRuleData('otherCharges',res.data);
 				this.otherChargesDisabled = true;
 				this.notifyService.showSuccess(res.message, "");
+				this.closeApproveRejectModel.nativeElement.click(); 	
 				this.spinner.hide();
 				}, error => {
 				this.spinner.hide();
@@ -1030,6 +1035,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.setRuleData('dataGrouping',res.data);
 				this.dataGroupingDisabled = true;
 				this.notifyService.showSuccess(res.message, "");
+				this.closeApproveRejectModel.nativeElement.click(); 	
 				this.spinner.hide();
 				}, error => {
 				this.spinner.hide();
@@ -1199,14 +1205,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		return ;
 	}
 
-	const model = this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel ? this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel : this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel
-	const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
-	const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
-	if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
-		this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
-		return;
+	if(this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel || this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.isApproved ){
+		const model = this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel ? this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel : this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel
+		const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
+		const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
+		if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
+			this.notifyService.showInfo("Tt must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
+			return;
+		}
 	}
-	
 
 	const filteredDetails = this.beforeCheckInCRDetails.filter(item => !item.isDelete);
 	if(filteredDetails.length == 0){
@@ -1245,8 +1252,9 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		   (confirmed) =>{
 			if(confirmed){
 			this.authService.checkLoginUserVlidaate();
+			const model = {"newBCCRule":payload,"oldBCCRule":this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel};
 			this.spinner.show();
-			this.configMasterService.submitBeforeCheckInCRfDetails(payload).subscribe(res => {
+			this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
 			this.changeSettingType();
 			this.canSubmit = true;
 			this.getBeforeCheckInCRData();
@@ -1377,6 +1385,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					this.setRuleData('earlyCheckOutRuleDetails',res.data);
 					this.earlyCheckOutRulesDisabled = true;
 					this.notifyService.showSuccess(res.message, "");
+					this.closeApproveRejectModel.nativeElement.click(); 	
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -1443,6 +1452,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.setRuleData('forceCheckOut',res.data);
 				this.forceCheckoutDisabled = true;
 				this.notifyService.showSuccess(res.message, "");
+				this.closeApproveRejectModel.nativeElement.click(); 	
 				this.spinner.hide();
 				}, error => {
 				this.spinner.hide();
@@ -1518,6 +1528,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					this.setRuleData('noRentalAgreement',res.data);
 					this.noRentalAgreementDisabled = true;
 					this.notifyService.showSuccess(res.message, "");
+					this.closeApproveRejectModel.nativeElement.click(); 	
 					this.spinner.hide();
 					}, error => {
 					this.spinner.hide();
@@ -1626,8 +1637,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				let model = new ShortTermMainModel();
 				this.editConfigMaster.shortTermMainModel = JSON.parse(JSON.stringify(editModel.length > 0 ? editModel[0] : (showModel.length > 0 ? showModel[0] : model )));
 				this.showConfigMaster.shortTermMainModel= JSON.parse(JSON.stringify(editModel.length > 0 ? (showModel.length > 0 ? showModel[0] : null):null));
-			console.log("this.editConfigMaster.shortTermMainModel",this.editConfigMaster.shortTermMainModel);
-			console.log("this.showConfigMaster.shortTermMainModel",this.showConfigMaster.shortTermMainModel);
 				var main=this.editConfigMaster.shortTermMainModel;
 				 main.zoy_short_term_dto_info.forEach(element => {
 				  let model : ShortTermSubModel = new ShortTermSubModel();
@@ -1653,7 +1662,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				addShortTermVali:boolean=false
 			 addShortTerm() {
 			  this.addShortTermVali = true;
-			  console.log("this.shortTermData>>",this.shortTermData)
 			  if(!this.shortTermData.start_day|| Number(this.shortTermData.start_day)===0 
 				  || !this.shortTermData.end_day|| Number(this.shortTermData.end_day)===0
 				  || Number(this.shortTermData.start_day) >= Number(this.shortTermData.end_day)
@@ -1771,13 +1779,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					this.notifyService.showInfo("Short term slabs details are already up to date.", "");
 					return;
 				  }
-				const model = this.showConfigMaster.shortTermMainModel ? this.showConfigMaster.shortTermMainModel : this.editConfigMaster.shortTermMainModel ;
-				const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
-				const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
-				if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate < existingDate && !this.editConfigMaster.shortTermMainModel.isApproved ) ||(selectedDate == existingDate && this.showConfigMaster.shortTermMainModel )) {
-					this.notifyService.showInfo("The effective date must be after the last rule's effective date.", "");
-					return;
-				}
+				  if(this.showConfigMaster.shortTermMainModel || this.editConfigMaster.shortTermMainModel.isApproved ){
+					const model = this.showConfigMaster.shortTermMainModel ? this.showConfigMaster.shortTermMainModel : this.editConfigMaster.shortTermMainModel ;
+					const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
+					const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
+					if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate < existingDate && !this.editConfigMaster.shortTermMainModel.isApproved ) ||(selectedDate == existingDate && this.showConfigMaster.shortTermMainModel )) {
+						this.notifyService.showInfo("Tt must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
+						return;
+					}
+				 }
 				payload.iscreate = payload.isApproved ;
 			}
 
@@ -1789,9 +1799,11 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			  .then(
 				 (confirmed) =>{
 				if(confirmed){
+					const model = {"oldSTDRule":this.showConfigMaster.shortTermMainModel,"newSTDRule":payload};
 					this.spinner.show();
-					this.configMasterService.submitShortTermData(payload).subscribe(data => {
+					this.configMasterService.submitShortTermData(model).subscribe(data => {
 					this.getDbSettingDetails();
+					this.notifyService.showSuccess(data.message,"")
 					this.closeApproveRejectModel.nativeElement.click(); 
 					this.submitShortTerm = false;
 					this.canShortSubmit = true;
@@ -1914,7 +1926,7 @@ doApproveOrReject() {
 			  console.warn(`Unhandled rule key: ${this.key}`);
 			  break;
 		  }
-		  this.closeApproveRejectModel.nativeElement.click(); 	  
+		  
 		
 	}else{
 		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want reject ?')

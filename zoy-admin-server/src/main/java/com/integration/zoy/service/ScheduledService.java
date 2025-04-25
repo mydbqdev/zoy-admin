@@ -28,6 +28,9 @@ public class ScheduledService {
 	@Autowired
     private AutoCancellationOfMasterConfiguration autoCancellationOfMasterConfi;
 	
+	@Autowired
+	private ZoyEmailService zoyEmailService;
+	
 	/**
 	 * passwordChangeWarMails execute based on schedule date & time. it will send password change warning email every 39-45 days
 	 */
@@ -61,5 +64,20 @@ public class ScheduledService {
 	    }
 	}
 
+    @Transactional
+   	@Scheduled(cron = "${rule.intimation.effective.date.cron}", zone = "${spring.jackson.time-zone}")    
+	public void sendRuleEffectiveDateNotifications() {
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			format.setTimeZone(TimeZone.getTimeZone(timeZon));
+			Date date = new Date();
+			String dateTime = format.format(date);
+			autoCancellationOfMasterConfi.sendRuleEffective();
+			log.info("Auto cancellation for master configuraton executed at: " + dateTime);
+		} catch (Exception e) {
+			log.error("Error in autoCanceForTokenAdvance(): ", e);
+		}
+	}
+    
 	
 }

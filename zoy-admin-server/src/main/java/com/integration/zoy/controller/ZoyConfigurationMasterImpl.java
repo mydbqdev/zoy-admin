@@ -15,6 +15,7 @@ import com.integration.zoy.model.ZoyBeforeCheckInCancellationModel;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
+import com.integration.zoy.model.oldNewConfigRequest;
 import com.integration.zoy.utils.ZoyDataGroupingDto;
 import com.integration.zoy.utils.ZoyForceCheckOutDto;
 import com.integration.zoy.utils.ZoyGstChargesDto;
@@ -22,7 +23,6 @@ import com.integration.zoy.utils.ZoyOtherChargesDto;
 import com.integration.zoy.utils.ZoyPgNoRentalAgreementDto;
 import com.integration.zoy.utils.ZoyPgSecurityDepositDetailsDTO;
 import com.integration.zoy.utils.ZoyPgTokenDetailsDTO;
-import com.integration.zoy.utils.ZoyShortTermDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -66,7 +66,7 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/before-check-in",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(@RequestBody ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation,ZoyBeforeCheckInCancellationModel zoyPreviousData);
+	ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(@RequestBody oldNewConfigRequest oldNewConfigReq);
 
 //	@Operation(summary = "Delete Admin Configuration Before Check In", description = "Deletes Admin Configuration Before Check In by cancellationId", security = {
 //			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
@@ -203,7 +203,7 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/short-term",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigUpdateShortTerm(@RequestBody ZoyShortTermDetails shortTerm);
+	ResponseEntity<String> zoyAdminConfigUpdateShortTerm(@RequestBody oldNewConfigRequest oldNewConfigReq);
 	
 	@Operation(summary = "Admin Configration Force Check Out", description = "Creating/Updating Admin Configration Force Check Out", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })

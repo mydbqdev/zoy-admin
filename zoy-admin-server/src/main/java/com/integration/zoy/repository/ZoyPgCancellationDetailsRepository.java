@@ -4,7 +4,10 @@ import com.integration.zoy.entity.ZoyPgCancellationDetails;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +20,8 @@ public interface ZoyPgCancellationDetailsRepository extends JpaRepository<ZoyPgC
 	@Query(value = "select * from pgowners.zoy_pg_cancellation_details zpcd order by priority asc", nativeQuery = true)
 	List<ZoyPgCancellationDetails> findAllByOrderByCreatedAtDesc();
 	
+	@Transactional
+	@Modifying
 	@Query(value="DELETE FROM pgowners.zoy_pg_cancellation_details zpcd  WHERE zpcd.cancellation_id IN :deleteDetails",nativeQuery = true)
 	void deleteBeforeCheckInCancellationbyIds(String [] deleteDetails);
 }
