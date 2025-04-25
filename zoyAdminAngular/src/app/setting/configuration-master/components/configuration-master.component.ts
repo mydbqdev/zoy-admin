@@ -1196,15 +1196,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}
 	
 	payload.effectiveDate = this.crpEffectiveDate;
-	if(task === 'approve'){
-		payload.isApproved=true;
-	}else{
-		payload.iscreate = payload.isApproved ;
-	}
-	if( task === 'approve' && this.isRuleCreator(payload?.createdBy)){
-		return ;
-	}
-
+	
 	if(this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel || this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.isApproved ){
 		const model = this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel ? this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel : this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel
 		const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
@@ -1213,6 +1205,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			this.notifyService.showInfo("Tt must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
 			return;
 		}
+	}
+	if(task === 'approve'){
+		payload.isApproved=true;
+	}else{
+		payload.iscreate = payload.isApproved ;
+	}
+	if( task === 'approve' && this.isRuleCreator(payload?.createdBy)){
+		return ;
 	}
 
 	const filteredDetails = this.beforeCheckInCRDetails.filter(item => !item.isDelete);
@@ -1743,7 +1743,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				}
 				finalSubmitShortList.push(term);
 			  }
-			
+			console.log("finalSubmitShortList",finalSubmitShortList)
 			  if (finalSubmitShortList.length < 1) {
 				this.notifyService.showWarning("Please add durations","");
 				return;
