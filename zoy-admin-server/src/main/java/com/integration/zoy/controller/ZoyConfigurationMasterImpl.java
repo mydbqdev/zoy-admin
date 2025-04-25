@@ -203,7 +203,7 @@ public interface ZoyConfigurationMasterImpl {
 	@PostMapping(value = "/zoy_admin/config/short-term",
 	produces = { "application/json" },
 	consumes = { "application/json"})
-	ResponseEntity<String> zoyAdminConfigUpdateShortTerm(@RequestBody ZoyShortTermDetails shortTerm);
+	ResponseEntity<String> zoyAdminConfigUpdateShortTerm(@RequestBody ZoyShortTermDetails shortTerm,@RequestBody ZoyShortTermDetails previousShortTerm);
 	
 	@Operation(summary = "Admin Configration Force Check Out", description = "Creating/Updating Admin Configration Force Check Out", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })

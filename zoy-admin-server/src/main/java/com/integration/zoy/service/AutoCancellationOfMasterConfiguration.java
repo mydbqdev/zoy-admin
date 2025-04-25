@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -14,6 +15,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.integration.zoy.repository.PgOwnerMaterRepository;
 
 @Service
 public class AutoCancellationOfMasterConfiguration {
@@ -26,6 +29,9 @@ public class AutoCancellationOfMasterConfiguration {
     
     @Autowired
     private ZoyEmailService zoyEmailService;
+    
+    @Autowired
+    private PgOwnerMaterRepository pgOwnerMaterRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -106,6 +112,30 @@ public class AutoCancellationOfMasterConfiguration {
     
     
     
+    
+    public void sendRuleEffective() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone(currentTimeZone));
+        String dateString = sdf.format(Calendar.getInstance().getTime());
+
+        List<String[]> data = pgOwnerMaterRepository.findCheckOutDaysByDate(dateString);
+
+        if (data != null && data.size() >= 2) {
+            try {
+                String futureDate = data.get(0)[0];
+                int newValue = Integer.parseInt(data.get(0)[1]);
+                String pastDate = data.get(1)[0];
+                int oldValue = Integer.parseInt(data.get(1)[1]);
+
+                zoyEmailService.sendForceCheckoutChangeEmail(futureDate, oldValue, newValue);
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                System.err.println("Error parsing data: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Not enough data returned for processing.");
+        }
+    }
+
     
 
 }
