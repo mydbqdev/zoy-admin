@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -437,8 +439,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                    entity.setCreatedBy(currentUser);
 	                    entity.setIsApproved(false);
 	                    flag="created";
-	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
-	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
+//	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
+//	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 	                    
 	                } else if (zoyBeforeCheckInCancellation.getIsApproved()) {
 	                    entity.setCancellationId(cancellation.getCancellationId());
@@ -446,9 +448,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                    entity.setIsApproved(true);
 	                    entity.setApprovedBy(currentUser);
 	                    flag="Approved";
-	                    zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
-	                    notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-	                    
+//	                    zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+//	                    notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
+	                    zoyEmailService.sendCancellationRefundPolicyChangeEmail(zoyBeforeCheckInCancellation,zoyPreviousData);
 	                } else if (zoyBeforeCheckInCancellation.getComments() != null && !zoyBeforeCheckInCancellation.getComments().isEmpty()) {
 	                    entity.setCancellationId(cancellation.getCancellationId());
 	                    entity.setApprovedBy(currentUser);
@@ -462,8 +464,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                    entity.setCreatedBy(zoyBeforeCheckInCancellation.getCreatedBy());
 	                    entity.setIsApproved(false);
 	                    flag="Edited";
-	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
-	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
+//	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
+//	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 	                }
 
 	                cancellationDetailsList.add(entity);
@@ -516,10 +518,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	        List<ZoyBeforeCheckInCancellation> checkInCancellationDetailsList = new ArrayList<>();
 	        
 	        String effectiveDate="";
-	        String comments = null;
+	        String comments = "";
 
 	        for (ZoyPgCancellationDetails details : cancellationList) {
-	            if (effectiveDate == null || (!effectiveDate.equals(details.getEffectiveDate()) && !comments.equals(details.getComments()))) {
+	        	if (effectiveDate == null || (!effectiveDate.equals(details.getEffectiveDate()) && !Objects.equals(comments, details.getComments()))) {
 	        		beforeCheckInCancellation = new ZoyBeforeCheckInCancellationModel();
 	        		beforeCheckInCancellation.setApproved(details.getIsApproved());
 		            beforeCheckInCancellation.setApprovedBy(details.getApprovedBy());
@@ -1160,6 +1162,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				} else {
 					final Long oldFixed = existingRule.getCheckOutDay();
 					final BigDecimal oldVariable = existingRule.getDeductionPercentage();
+					final String oldcondition=existingRule.getTriggerCondition();
+					
 					existingRule.setTriggerOn(zoyPgEarlyCheckOut.getTriggerOn());
 					existingRule.setTriggerCondition(zoyPgEarlyCheckOut.getTriggerCondition());
 					existingRule.setCheckOutDay(zoyPgEarlyCheckOut.getCheckOutDay());
@@ -1176,7 +1180,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendEarlyCheckoutChangeEmail(zoyPgEarlyCheckOut.getEffectiveDate(),oldFixed,zoyPgEarlyCheckOut.getCheckOutDay());
+						zoyEmailService.sendEarlyCheckoutChangeEmail(zoyPgEarlyCheckOut.getEffectiveDate(),oldFixed,zoyPgEarlyCheckOut.getCheckOutDay(),oldcondition,zoyPgEarlyCheckOut.getTriggerCondition());
 					} else if ( null != zoyPgEarlyCheckOut.getComments()&& zoyPgEarlyCheckOut.getComments()!="") {
 						existingRule.setApprovedBy(currentUser);
 						existingRule.setComments(zoyPgEarlyCheckOut.getComments());
@@ -1363,6 +1367,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				} else {
 					final Long oldFixed = existingRule.getAutoCancellationDay();
 					final BigDecimal oldVariable = existingRule.getDeductionPercentage();
+					final String oldcondition=existingRule.getTriggerCondition();
 
 					// Update values
 					existingRule.setTriggerOn(zoyAfterCheckInCancellation.getTriggerOn());
@@ -1381,7 +1386,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendAutoCancellationAfterCheckinChangeEmail(zoyAfterCheckInCancellation.getEffectiveDate(), oldFixed, zoyAfterCheckInCancellation.getAutoCancellationDay());
+						zoyEmailService.sendAutoCancellationAfterCheckinChangeEmail(zoyAfterCheckInCancellation.getEffectiveDate(), oldFixed, zoyAfterCheckInCancellation.getAutoCancellationDay(),oldcondition,zoyAfterCheckInCancellation.getTriggerCondition());
 					} else if ( null != zoyAfterCheckInCancellation.getComments()&& zoyAfterCheckInCancellation.getComments()!="") {
 						existingRule.setApprovedBy(currentUser);
 						existingRule.setComments(zoyAfterCheckInCancellation.getComments());
@@ -1497,7 +1502,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				} else {
 					final Long oldFixed = existingRule.getAutoCancellationDay();
 					final BigDecimal oldVariable = existingRule.getDeductionPercentage();
-
+					final String oldcondition =existingRule.getTriggerCondition();
+					
 					existingRule.setTriggerOn(zoySecurityDeadLine.getTriggerOn());
 					existingRule.setTriggerCondition(zoySecurityDeadLine.getTriggerCondition());
 					existingRule.setAutoCancellationDay(zoySecurityDeadLine.getAutoCancellationDay());
@@ -1514,7 +1520,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendSecurityDepositDeadlineChangeEmail(zoySecurityDeadLine.getEffectiveDate(),oldFixed,oldVariable,zoySecurityDeadLine.getAutoCancellationDay(),zoySecurityDeadLine.getDeductionPercentage());
+						zoyEmailService.sendSecurityDepositDeadlineChangeEmail(zoySecurityDeadLine.getEffectiveDate(),oldFixed,oldVariable,zoySecurityDeadLine.getAutoCancellationDay(),zoySecurityDeadLine.getDeductionPercentage(),oldcondition,zoySecurityDeadLine.getTriggerCondition());
 					} else if ( null != zoySecurityDeadLine.getComments()&& zoySecurityDeadLine.getComments()!="") {
 						existingRule.setApprovedBy(currentUser);
 						existingRule.setComments(zoySecurityDeadLine.getComments());
@@ -1704,7 +1710,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	
 	@Transactional
 	@Override
-	public ResponseEntity<String> zoyAdminConfigUpdateShortTerm(ZoyShortTermDetails shortTerm) {
+	public ResponseEntity<String> zoyAdminConfigUpdateShortTerm(ZoyShortTermDetails shortTerm,ZoyShortTermDetails previousShortTerm) {
 	    ResponseBody response = new ResponseBody();
 	    String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 	    String flag = "";
@@ -1736,7 +1742,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                    flag = "created";
 	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), shortTerm.getEffectiveDate());
 	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser, ruleName);
-
+	                    zoyEmailService.sendShortTermDurationChangeEmail(shortTerm,previousShortTerm);
 	                } else if (Boolean.TRUE.equals(shortTerm.getIsApproved())) {
 	                    entity.setZoyPgShortTermMasterId(termDetails.getShortTermId());
 	                    entity.setCreatedBy(shortTerm.getCreatedBy());
