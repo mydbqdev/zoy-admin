@@ -1743,7 +1743,6 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				}
 				finalSubmitShortList.push(term);
 			  }
-			console.log("finalSubmitShortList",finalSubmitShortList)
 			  if (finalSubmitShortList.length < 1) {
 				this.notifyService.showWarning("Please add durations","");
 				return;
