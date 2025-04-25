@@ -527,10 +527,12 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	        List<ZoyBeforeCheckInCancellation> checkInCancellationDetailsList = new ArrayList<>();
 	        
 	        String effectiveDate="";
-	        String comments = "";
+	        String comments ="";
 
 	        for (ZoyPgCancellationDetails details : cancellationList) {
-	        	if (effectiveDate == null || (!effectiveDate.equals(details.getEffectiveDate()) && !Objects.equals(comments, details.getComments()))) {
+	            if (!(Objects.toString(effectiveDate, "") + Objects.toString(comments, ""))
+	                    .equals(Objects.toString(details.getEffectiveDate(), "") + Objects.toString(details.getComments(), ""))) {
+	            	
 	        		beforeCheckInCancellation = new ZoyBeforeCheckInCancellationModel();
 	        		beforeCheckInCancellation.setApproved(details.getIsApproved());
 		            beforeCheckInCancellation.setApprovedBy(details.getApprovedBy());
@@ -558,7 +560,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            checkInCancellationDetailsList.add(checkInCancellationDetails);
 	            beforeCheckInCancellation.setZoyBeforeCheckInCancellationInfo(checkInCancellationDetailsList);
 	         
-	            if(!effectiveDate.equals(details.getEffectiveDate())) {
+	            if (!(Objects.toString(effectiveDate, "") + Objects.toString(comments, ""))
+	                    .equals(Objects.toString(details.getEffectiveDate(), "") + Objects.toString(details.getComments(), ""))) {
 	            	  beforeCheckinDetailsList.add(beforeCheckInCancellation);
 	            }
 	            effectiveDate=details.getEffectiveDate();
@@ -1754,7 +1757,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                    flag = "created";
 	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), shortTerm.getEffectiveDate());
 	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser, ruleName);
-	                    zoyEmailService.sendShortTermDurationChangeEmail(shortTerm,previousShortTerm);
+//	                    zoyEmailService.sendShortTermDurationChangeEmail(shortTerm,previousShortTerm);
 	                } else if (Boolean.TRUE.equals(shortTerm.getIsApproved())) {
 	                    entity.setZoyPgShortTermMasterId(termDetails.getShortTermId());
 	                    entity.setCreatedBy(shortTerm.getCreatedBy());
@@ -1790,7 +1793,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            zoyPgShortTermMasterRepository.saveAll(shortTermDetailsList);
 	        }
 
-	        if (Boolean.TRUE.equals(shortTerm.getDelete()) && !deleteList.isEmpty()) {
+	        if (!deleteList.isEmpty() && deleteList.size()>0) {
 	            String[] todeleteList = deleteList.toArray(new String[0]);
 	            zoyPgShortTermMasterRepository.deleteShortTermDetailsbyIds(todeleteList);
 	        }
@@ -2534,7 +2537,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	        List<ZoyShortTermDto> zoyShortTermDtoDetailsList = new ArrayList<>();
 
 	        for (ZoyPgShortTermMaster details : ShortTermList) {
-	        	if (effectiveDate == null || (!effectiveDate.equals(details.getEffectiveDate()) && !Objects.equals(comments, details.getComments()))) {
+	            if (!(Objects.toString(effectiveDate, "") + Objects.toString(comments, ""))
+	                    .equals(Objects.toString(details.getEffectiveDate(), "") + Objects.toString(details.getComments(), ""))) {
 	                if (termDetails != null) {
 	                    termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
 	                    ZoyShortTermDetailsList.add(termDetails);
@@ -2557,12 +2561,16 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            zoyShortTermDtoDetails.setStartDay(details.getStartDay());
 
 	            zoyShortTermDtoDetailsList.add(zoyShortTermDtoDetails);
+	            
+	            if (!(Objects.toString(effectiveDate, "") + Objects.toString(comments, ""))
+		                .equals(Objects.toString(details.getEffectiveDate(), "") + Objects.toString(details.getComments(), ""))) {
+		        if (termDetails != null) {
+		            termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
+		            ZoyShortTermDetailsList.add(termDetails);
+		        }
+		        }
 	        }
-
-	        if (termDetails != null) {
-	            termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
-	            ZoyShortTermDetailsList.add(termDetails);
-	        }
+	       
 
 	        response.setStatus(HttpStatus.OK.value());
 	        response.setData(ZoyShortTermDetailsList);

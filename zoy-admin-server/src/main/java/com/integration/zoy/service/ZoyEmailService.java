@@ -1096,7 +1096,7 @@ public class ZoyEmailService {
 		StringBuilder existingRows = new StringBuilder();
 		StringBuilder upcomingRows = new StringBuilder();
 
-		if (previousShortTerm != null && previousShortTerm.getZoyShortTermDtoInfo() != null) {
+		if (previousShortTerm != null ) {
 			for (ZoyShortTermDto oldDto : previousShortTerm.getZoyShortTermDtoInfo()) {
 				existingRows.append("<tr>").append("<td style='padding: 10px; border: 1px solid #ddd;'>")
 						.append(oldDto.getStartDay()).append("-").append(oldDto.getEndDay()).append(" days</td>")
@@ -1209,7 +1209,7 @@ public class ZoyEmailService {
 		StringBuilder newRulesTable = new StringBuilder();
 
 		// Build old rules
-		if (zoyPreviousData != null && zoyPreviousData.getZoyBeforeCheckInCancellationInfo() != null) {
+		if (zoyPreviousData != null ) {
 			for (ZoyBeforeCheckInCancellation prev : zoyPreviousData.getZoyBeforeCheckInCancellationInfo()) {
 				oldRulesTable.append("<tr><td>").append(getConditionDescription(prev, comparisonMap))
 						.append("</td><td>").append(prev.getDeductionPercentage()).append("% of total paid")
