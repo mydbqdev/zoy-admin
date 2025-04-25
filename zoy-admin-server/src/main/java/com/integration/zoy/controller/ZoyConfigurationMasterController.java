@@ -58,6 +58,7 @@ import com.integration.zoy.model.ZoyCompanyMasterModal;
 import com.integration.zoy.model.ZoyCompanyProfileMasterModal;
 import com.integration.zoy.model.ZoyPgEarlyCheckOutRule;
 import com.integration.zoy.model.ZoySecurityDeadLine;
+import com.integration.zoy.model.oldNewConfigRequest;
 import com.integration.zoy.repository.ZoyDataGroupingRepository;
 import com.integration.zoy.repository.ZoyPgCancellationDetailsRepository;
 import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
@@ -398,16 +399,20 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 //			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 //		}
 //	}
-//	  
+//	  oldNewConfigRequest oldNewConfigReq
 	    
 	@Transactional
 	@Override
-	public ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation,ZoyBeforeCheckInCancellationModel zoyPreviousData) {
+	public ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckIn(oldNewConfigRequest oldNewConfigReq) {
 
 	    ResponseBody response = new ResponseBody();
 	    String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 	    String flag ="";
 		String ruleName ="Cancellation And Refund Policy (Before check in)";
+		
+	    ZoyBeforeCheckInCancellationModel  zoyBeforeCheckInCancellation = oldNewConfigReq.getNewBCCRule();
+	    ZoyBeforeCheckInCancellationModel  previouszoyBeforeCheckInCancellation=oldNewConfigReq.getNewBCCRule();
+	    
 	    try {
 	        if (zoyBeforeCheckInCancellation == null || 
 	            zoyBeforeCheckInCancellation.getZoyBeforeCheckInCancellationInfo() == null) {
@@ -420,7 +425,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	        List<ZoyPgCancellationDetails> cancellationDetailsList = new ArrayList<>();
 
 	        for (ZoyBeforeCheckInCancellation cancellation : zoyBeforeCheckInCancellation.getZoyBeforeCheckInCancellationInfo()) {
-	            if (Boolean.TRUE.equals(cancellation.getIsDelete())) {
+	        
+	        	System.out.println("Boolean.TRUE.equals(cancellation.getIsDelete()"+Boolean.TRUE.equals(cancellation.getIsDelete()));
+	        	if (Boolean.TRUE.equals(cancellation.getIsDelete())) {
 	                deleteList.add(cancellation.getCancellationId());
 	            } else {
 	                ZoyPgCancellationDetails entity = new ZoyPgCancellationDetails();
@@ -439,8 +446,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                    entity.setCreatedBy(currentUser);
 	                    entity.setIsApproved(false);
 	                    flag="created";
-//	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
-//	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
+	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
+	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 	                    
 	                } else if (zoyBeforeCheckInCancellation.getIsApproved()) {
 	                    entity.setCancellationId(cancellation.getCancellationId());
@@ -448,9 +455,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                    entity.setIsApproved(true);
 	                    entity.setApprovedBy(currentUser);
 	                    flag="Approved";
-//	                    zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
-//	                    notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-	                    zoyEmailService.sendCancellationRefundPolicyChangeEmail(zoyBeforeCheckInCancellation,zoyPreviousData);
+	                    zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
+	                    notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
+	                    zoyEmailService.sendCancellationRefundPolicyChangeEmail(previouszoyBeforeCheckInCancellation,zoyBeforeCheckInCancellation);
 	                } else if (zoyBeforeCheckInCancellation.getComments() != null && !zoyBeforeCheckInCancellation.getComments().isEmpty()) {
 	                    entity.setCancellationId(cancellation.getCancellationId());
 	                    entity.setApprovedBy(currentUser);
@@ -464,8 +471,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                    entity.setCreatedBy(zoyBeforeCheckInCancellation.getCreatedBy());
 	                    entity.setIsApproved(false);
 	                    flag="Edited";
-//	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
-//	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
+	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), zoyBeforeCheckInCancellation.getEffectiveDate());
+	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser,ruleName);
 	                }
 
 	                cancellationDetailsList.add(entity);
@@ -476,7 +483,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            ZoyPgCancellationDetailsRepo.saveAll(cancellationDetailsList);
 	        }
 
-	        if (Boolean.TRUE.equals(zoyBeforeCheckInCancellation.getDelete()) && !deleteList.isEmpty()) {
+	        if (!deleteList.isEmpty() && deleteList.size()>0) {
+	        	
 	            String[] todeleteList = deleteList.toArray(new String[0]);
 	            ZoyPgCancellationDetailsRepo.deleteBeforeCheckInCancellationbyIds(todeleteList);
 	        }
@@ -498,6 +506,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	@Override
 	public ResponseEntity<String> zoyAdminConfigCreateUpdateBeforeCheckInGetDetails(ZoyBeforeCheckInCancellationModel zoyBeforeCheckInCancellation) {
 	    ResponseBody response = new ResponseBody();
+	    
 	    List<ZoyBeforeCheckInCancellationModel> beforeCheckinDetailsList = new ArrayList<>();
 	    try {
 	        if (zoyBeforeCheckInCancellation == null || zoyBeforeCheckInCancellation.getPgType() == null || zoyBeforeCheckInCancellation.getPgType().trim().isEmpty()) {
@@ -1710,11 +1719,14 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	
 	@Transactional
 	@Override
-	public ResponseEntity<String> zoyAdminConfigUpdateShortTerm(ZoyShortTermDetails shortTerm,ZoyShortTermDetails previousShortTerm) {
+	public ResponseEntity<String> zoyAdminConfigUpdateShortTerm(oldNewConfigRequest oldNewConfigReq) {
 	    ResponseBody response = new ResponseBody();
 	    String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 	    String flag = "";
 	    String ruleName = "Short term duration period";
+	    
+	    ZoyShortTermDetails  shortTerm = oldNewConfigReq.getNewSTDRule();
+	    ZoyShortTermDetails  previousShortTerm=oldNewConfigReq.getOldSTDRule();
 
 	    try {
 	        if (shortTerm == null || shortTerm.getZoyShortTermDtoInfo() == null) {
@@ -2517,12 +2529,12 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	        }
 
 	        String effectiveDate = null;
-	        String comments = null;
+	        String comments ="";
 	        ZoyShortTermDetails termDetails = null;
 	        List<ZoyShortTermDto> zoyShortTermDtoDetailsList = new ArrayList<>();
 
 	        for (ZoyPgShortTermMaster details : ShortTermList) {
-	            if (effectiveDate == null || (!effectiveDate.equals(details.getEffectiveDate()) && !comments.equals(details.getComments()))) {
+	        	if (effectiveDate == null || (!effectiveDate.equals(details.getEffectiveDate()) && !Objects.equals(comments, details.getComments()))) {
 	                if (termDetails != null) {
 	                    termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
 	                    ZoyShortTermDetailsList.add(termDetails);
