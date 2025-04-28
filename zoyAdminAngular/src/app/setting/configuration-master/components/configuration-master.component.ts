@@ -1247,12 +1247,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		payload.comments=this.comments;
 		payload.ZoyBeforeCheckInCancellationInfo=payload.zoy_before_check_in_cancellation_info;
 	}
-	this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected' : (payload.iscreate?'Create':'Update') )) +' ?')
+	let work =(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected':(payload.iscreate?'Create':'Update') ));
+		
+	const model = {"oldSTDRule":work == 'Create' ?this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel:this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel,"newSTDRule":payload};
+	this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+work +' ?')
 		.then(
 		   (confirmed) =>{
 			if(confirmed){
 			this.authService.checkLoginUserVlidaate();
-			const model = {"newBCCRule":payload,"oldBCCRule":this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel};
 			this.spinner.show();
 			this.configMasterService.submitBeforeCheckInCRfDetails(model).subscribe(res => {
 			this.changeSettingType();
@@ -1765,8 +1767,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				this.notifyService.showWarning('The Short term duration period must be within the defined ranges of 1-'+endDay+' days.',"")
 				return;
 			   }
-			   payload.effectiveDate = this.stpEffectiveDate;
-			 			
+			 
+			   payload.effectiveDate = this.stpEffectiveDate;	
 			if(task === 'approve'){
 				
 				if( this.isRuleCreator(payload?.createdBy)){
@@ -1774,7 +1776,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				}
 				payload.isApproved=true;
 			}else{
-				if ( payload.effectiveDate == this.stpEffectiveDate && JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpShortTermDataSubList)) {
+				if ( this.editConfigMaster.shortTermMainModel.effectiveDate == this.stpEffectiveDate && JSON.stringify(finalSubmitShortList) === JSON.stringify(this.backUpShortTermDataSubList)) {
 					this.notifyService.showInfo("Short term slabs details are already up to date.", "");
 					return;
 				  }
@@ -1782,7 +1784,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					const model = this.showConfigMaster.shortTermMainModel ? this.showConfigMaster.shortTermMainModel : this.editConfigMaster.shortTermMainModel ;
 					const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
 					const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
-					if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate < existingDate && !this.editConfigMaster.shortTermMainModel.isApproved ) ||(selectedDate == existingDate && this.showConfigMaster.shortTermMainModel )) {
+					 
+					if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate <= existingDate && this.editConfigMaster.shortTermMainModel.isApproved ) ||(selectedDate <= existingDate && !this.editConfigMaster.shortTermMainModel.isApproved && this.showConfigMaster.shortTermMainModel )) {
 						this.notifyService.showInfo("Tt must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
 						return;
 					}
@@ -1794,11 +1797,15 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}{
 			payload.comments=this.comments;
 		}
-		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected':(payload.iscreate?'Create':'Update') )) +' ?')
+		
+		let work =(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected':(payload.iscreate?'Create':'Update') ));
+		const model = {"oldSTDRule":work == 'Create' ?this.editConfigMaster.shortTermMainModel:this.showConfigMaster.shortTermMainModel,"newSTDRule":payload};
+		
+		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+work +' ?')
 			  .then(
 				 (confirmed) =>{
 				if(confirmed){
-					const model = {"oldSTDRule":this.showConfigMaster.shortTermMainModel,"newSTDRule":payload};
+					
 					this.spinner.show();
 					this.configMasterService.submitShortTermData(model).subscribe(data => {
 					this.getDbSettingDetails();
