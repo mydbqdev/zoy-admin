@@ -747,11 +747,10 @@ public class ZoyEmailService {
 				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr><td>GST @" + 4
 				+ "% for a daily rent greater than or equal to Rs. " + 1000 + "</td><td>GST @" + 6
 				+ "% for a daily rent greater than or equal to Rs. " + 1000 + "</td></tr>" + "</table>"
-				+ "<p>We kindly request you to review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
-				+ "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+				+ "<p>We kindly request that you review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
+				+ "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a> or call us at [Support Phone Number].</p>"
 				+ "<p>Thank you for your continued support and cooperation.</p>"
 				+ "<p>Best regards,<br>ZOY Administrator</p>";
-
 		email.setBody(message);
 		email.setContent("text/html");
 
@@ -957,10 +956,10 @@ public class ZoyEmailService {
 				+ " days from check-in = rent deducted prorate via short-term slabs</td>" + "<td>Check-out "
 				+ newConditionDescription + " " + newFixed
 				+ " days from check-in = rent deducted prorate via short-term slabs</td></tr>" + "</table>"
-				+ "<p>Please review the change to ensure correct handling of refunds during early checkouts.</p>"
-				+ "<p>For support, contact <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+				+ "<p>We kindly request that you review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
+				+ "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a> or call us at [Support Phone Number].</p>"
+				+ "<p>Thank you for your continued support and cooperation.</p>"
 				+ "<p>Best regards,<br>ZOY Administrator</p>";
-
 		email.setBody(message);
 		email.setContent("text/html");
 

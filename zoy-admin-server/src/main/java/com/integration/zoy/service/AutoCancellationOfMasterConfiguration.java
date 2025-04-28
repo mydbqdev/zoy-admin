@@ -114,11 +114,15 @@ public class AutoCancellationOfMasterConfiguration {
     
     
     public void sendRuleEffective() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        sdf.setTimeZone(TimeZone.getTimeZone(currentTimeZone));
-        String dateString = sdf.format(Calendar.getInstance().getTime());
+    	   TimeZone timeZone = TimeZone.getTimeZone(currentTimeZone);
+           Calendar calendar = Calendar.getInstance(timeZone);
+           Timestamp currentTimestamp = new Timestamp(calendar.getTimeInMillis());
 
-        List<String[]> data = pgOwnerMaterRepository.findCheckOutDaysByDate(dateString);
+           SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+           sdf.setTimeZone(timeZone);
+           String timestampString = sdf.format(currentTimestamp);
+
+        List<String[]> data = pgOwnerMaterRepository.findCheckOutDaysByDate(timestampString);
 
         if (data != null && data.size() >= 2) {
             try {
