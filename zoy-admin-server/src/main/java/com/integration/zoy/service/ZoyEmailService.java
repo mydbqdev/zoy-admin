@@ -647,7 +647,7 @@ public class ZoyEmailService {
 //	
 	public void sendTokenAdvanceRuleChangeEmail(String effectiveDate, BigDecimal oldFixed, BigDecimal oldVariable,
 			BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" }; // You can add more email addresses as needed
+		String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Token Advance rule change notification.");
@@ -686,7 +686,7 @@ public class ZoyEmailService {
 
 	public void sendSecurityDepositLimitsChangeEmail(String effectiveDate, BigDecimal oldFixed, BigDecimal oldVariable,
 			BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
+		String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Security Deposit rule change notification.");
@@ -725,7 +725,7 @@ public class ZoyEmailService {
 
 	public void sendGstChargesChangeEmail(String effectiveDate, BigDecimal oldFixed, BigDecimal oldVariable,
 			BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
+		String[] allMails =adminUserMasterRepo.allTenantAndOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for GST Charges rule change notification.");
@@ -764,7 +764,7 @@ public class ZoyEmailService {
 
 	public void sendOtherChargesChangeEmailForOwners(String effectiveDate, BigDecimal oldFixed, BigDecimal oldVariable,
 			BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
+		String[] allMails = adminUserMasterRepo.allOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Other Charges rule change notification.");
@@ -804,7 +804,7 @@ public class ZoyEmailService {
 
 	public void sendOtherChargesChangeEmailForUsers(String effectiveDate, BigDecimal oldFixed, BigDecimal oldVariable,
 			BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
+		String[] allMails = adminUserMasterRepo.allTenantEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Other Charges rule change notification.");
@@ -844,7 +844,7 @@ public class ZoyEmailService {
 
 	public void sendForceCheckoutChangeEmail(String effectiveDate, int oldFixed, int newFixed)
 			throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
+		String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Force Checkout rule change notification.");
@@ -882,7 +882,7 @@ public class ZoyEmailService {
 
 	public void sendNoRentalAgreementChangeEmail(String effectiveDate, int oldFixed, int newFixed)
 			throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
+		String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Rental Agreement rule change notification.");
@@ -921,7 +921,7 @@ public class ZoyEmailService {
 
 	public void sendEarlyCheckoutChangeEmail(String effectiveDate, Long oldFixed, Long newFixed, String oldCondition,
 			String newCondition) throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
+		String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Early Check-out rule change notification.");
@@ -974,7 +974,7 @@ public class ZoyEmailService {
 	public void sendSecurityDepositDeadlineChangeEmail(String effectiveDate, Long oldFixed, BigDecimal oldVariable,
 			Long newFixed, BigDecimal newVariable, String oldCondition, String newCondition)
 			throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
+		String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Security Deposit Deadline change notification.");
@@ -1026,7 +1026,7 @@ public class ZoyEmailService {
 
 	public void sendAutoCancellationAfterCheckinChangeEmail(String effectiveDate, Long oldFixed, Long newFixed,
 			String oldCondition, String newCondition) throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
+		String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Auto Cancellation rule change notification.");
@@ -1062,8 +1062,10 @@ public class ZoyEmailService {
 				+ " days of check-in date, rent will be deducted based on the short term renting slabs on prorate basis and the booking will be cancelled automatically</td>"
 				+ "<td>If tenant fails to check-in " + newConditionDescription + " " + newFixed
 				+ " days of check-in date, rent will be deducted based on the short term renting slabs on prorate basis and the booking will be cancelled automatically</td></tr>"
-				+ "</table>" + "<p>Please take note of this auto-trigger update to avoid booking disruptions.</p>"
-				+ "<p>Contact support at <a href='mailto:support@zoy.com'>support@zoy.com</a> if needed.</p>"
+				+ "</table>" 
+				+ "<p>We kindly request you to review the updated rules and ensure that you understand the changes.</p>"
+				+ "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+				+ "<p>Thank you for your continued support and cooperation.</p>"
 				+ "<p>Best regards,<br>ZOY Administrator</p>";
 
 		email.setBody(message);
@@ -1077,115 +1079,9 @@ public class ZoyEmailService {
 	}
 
 
-	public void sendShortTermDurationChangeEmail(ZoyShortTermDetails newShortTerm,
-			ZoyShortTermDetails previousShortTerm) throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
-
-		if (allMails == null || allMails.length == 0) {
-			log.warn("No recipient email addresses found for Short Term Duration rule change notification.");
-			return;
-		}
-
-		Email email = new Email();
-		email.setFrom(zoyAdminMail);
-		email.setTo(Arrays.asList(allMails));
-		email.setSubject("Important Update: Changes in cancellation and payment rules, policy terms effective from "
-				+ newShortTerm.getEffectiveDate());
-
-		// Build existing and upcoming rule rows
-		StringBuilder existingRows = new StringBuilder();
-		StringBuilder upcomingRows = new StringBuilder();
-
-		if (previousShortTerm != null ) {
-			for (ZoyShortTermDto oldDto : previousShortTerm.getZoyShortTermDtoInfo()) {
-				existingRows.append("<tr>").append("<td style='padding: 10px; border: 1px solid #ddd;'>")
-						.append(oldDto.getStartDay()).append("-").append(oldDto.getEndDay()).append(" days</td>")
-						.append("<td style='padding: 10px; border: 1px solid #ddd;'>Daily rent as ")
-						.append(oldDto.getPercentage()).append("% of monthly rent</td>").append("</tr>");
-			}
-		}
-
-		if (newShortTerm != null && newShortTerm.getZoyShortTermDtoInfo() != null) {
-			for (ZoyShortTermDto newDto : newShortTerm.getZoyShortTermDtoInfo()) {
-				upcomingRows.append("<tr>").append("<td style='padding: 10px; border: 1px solid #ddd;'>")
-						.append(newDto.getStartDay()).append("-").append(newDto.getEndDay()).append(" days</td>")
-						.append("<td style='padding: 10px; border: 1px solid #ddd;'>Daily rent as ")
-						.append(newDto.getPercentage()).append("% of monthly rent</td>").append("</tr>");
-			}
-		}
-
-		// Dynamic message content
-		String content = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
-				+ "<p>We are writing to inform you about an important update regarding our <strong>Cancellation & Payment rules and Policy Terms</strong>, which will come into effect from <strong>"
-				+ newShortTerm.getEffectiveDate() + "</strong>.</p>"
-				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
-
-				+ "<p><strong>What’s Changing:</strong><br/>• <strong>Short term duration period:</strong></p>"
-				+ "<p>Daily rent calculation slabs for a short term stay less than 30 days.</p>"
-
-				+ "<table style='width:100%; border-collapse: collapse; margin-bottom: 20px;'>" + "<thead>"
-				+ "<tr style='background-color: #f2f2f2;'>"
-				+ "<th style='padding: 10px; border: 1px solid #ddd;'>Slab</th>"
-				+ "<th style='padding: 10px; border: 1px solid #ddd;'>Existing Rule</th>"
-				+ "<th style='padding: 10px; border: 1px solid #ddd;'>Upcoming Rule</th>" + "</tr>" + "</thead>"
-				+ "<tbody>";
-
-		// Combine rows — assuming slabs match for alignment (if not, a more complex
-		// merge would be needed)
-		List<ZoyShortTermDto> oldList = previousShortTerm.getZoyShortTermDtoInfo();
-		List<ZoyShortTermDto> newList = newShortTerm.getZoyShortTermDtoInfo();
-
-		int maxRows = Math.max(oldList != null ? oldList.size() : 0, newList != null ? newList.size() : 0);
-
-		for (int i = 0; i < maxRows; i++) {
-			String oldSlab = "", newSlab = "", label = "";
-			if (oldList != null && i < oldList.size()) {
-				ZoyShortTermDto oldDto = oldList.get(i);
-				label = oldDto.getStartDay() + "-" + oldDto.getEndDay() + " days";
-				oldSlab = "Daily rent as " + oldDto.getPercentage() + "% of monthly rent";
-			}
-			if (newList != null && i < newList.size()) {
-				ZoyShortTermDto newDto = newList.get(i);
-				label = newDto.getStartDay() + "-" + newDto.getEndDay() + " days";
-				newSlab = "Daily rent as " + newDto.getPercentage() + "% of monthly rent";
-			}
-
-			content += "<tr>" + "<td style='padding: 10px; border: 1px solid #ddd;'>" + label + "</td>"
-					+ "<td style='padding: 10px; border: 1px solid #ddd;'>" + (oldSlab.isEmpty() ? "-" : oldSlab)
-					+ "</td>" + "<td style='padding: 10px; border: 1px solid #ddd;'>"
-					+ (newSlab.isEmpty() ? "-" : newSlab) + "</td>" + "</tr>";
-		}
-
-		content += "</tbody></table>"
-
-				+ "<p>We kindly request you to review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
-				+ "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
-				+ "<p>Thank you for your continued support and cooperation.</p>"
-				+ "<p>Best regards,<br/>ZOY Administrator.</p>";
-
-		// Final email template
-		String htmlTemplate = "<html><body style='font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px;'>"
-				+ "<div style='max-width: 700px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>"
-				+ "<div style='text-align: center; margin-bottom: 30px;'>"
-				+ "<img src='https://zoy.com/assets/logo.png' alt='ZOY Logo' style='height: 50px;'/>" + "</div>"
-				+ "<div style='font-size: 14px; color: #333333; line-height: 1.6;'>" + content + "</div>"
-				+ "<hr style='margin: 30px 0;'/>"
-				+ "<p style='font-size: 12px; color: #888888; text-align: center;'>© 2025 ZOY. All rights reserved.</p>"
-				+ "</div></body></html>";
-
-		email.setBody(htmlTemplate);
-		email.setContent("text/html");
-
-		try {
-			emailService.sendEmail(email, null);
-		} catch (Exception e) {
-			log.error("Failed to send Short Term Duration rule update email: " + e.getMessage(), e);
-		}
-	}
-
 	public void sendCancellationRefundPolicyChangeEmail(ZoyBeforeCheckInCancellationModel zoyPreviousData,
 			ZoyBeforeCheckInCancellationModel zoyUpdatedData) throws WebServiceException {
-		String[] allMails = { "dbalajireddy17@gmail.com" };
+		String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Cancellation & Refund Policy rule change notification.");
@@ -1211,7 +1107,7 @@ public class ZoyEmailService {
 		// Build old rules
 		if (zoyPreviousData != null ) {
 			for (ZoyBeforeCheckInCancellation prev : zoyPreviousData.getZoyBeforeCheckInCancellationInfo()) {
-				oldRulesTable.append("<tr><td>").append(getConditionDescription(prev, comparisonMap))
+				oldRulesTable.append("<tr><td>").append(getConditionDescriptionforcancel(prev, comparisonMap))
 						.append("</td><td>").append(prev.getDeductionPercentage()).append("% of total paid")
 						.append("</td></tr>");
 			}
@@ -1220,7 +1116,7 @@ public class ZoyEmailService {
 		// Build new rules
 		if (zoyUpdatedData != null && zoyUpdatedData.getZoyBeforeCheckInCancellationInfo() != null) {
 			for (ZoyBeforeCheckInCancellation updated : zoyUpdatedData.getZoyBeforeCheckInCancellationInfo()) {
-				newRulesTable.append("<tr><td>").append(getConditionDescription(updated, comparisonMap))
+				newRulesTable.append("<tr><td>").append(getConditionDescriptionforcancel(updated, comparisonMap))
 						.append("</td><td>").append(updated.getDeductionPercentage()).append("% of total paid")
 						.append("</td></tr>");
 			}
@@ -1228,14 +1124,17 @@ public class ZoyEmailService {
 
 		String message = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
-				+ zoyUpdatedData.getEffectiveDate() + "</strong>.</p>" + "<p><strong>What’s Changing:</strong><br/>"
+				+ zoyUpdatedData.getEffectiveDate() + "</strong>.</p>" 
+			    + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
+				+ "<p><strong>What’s Changing:</strong><br/>"
 				+ "• <strong>Cancellation and Refund Policy (Before Check-in):</strong></p>"
 				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
 				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr>" + "<td><table border='0'>"
 				+ oldRulesTable.toString() + "</table></td>" + "<td><table border='0'>" + newRulesTable.toString()
 				+ "</table></td>" + "</tr>" + "</table>"
-				+ "<p>Note: The structure has been updated to enhance clarity and transparency.</p>"
-				+ "<p>For questions, contact our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+				+ "<p>We kindly request you to review the updated rules and ensure that you understand the changes.</p>"
+				+ "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+				+ "<p>Thank you for your continued support and cooperation.</p>"
 				+ "<p>Best regards,<br>ZOY Administrator</p>";
 
 		email.setBody(message);
@@ -1248,9 +1147,77 @@ public class ZoyEmailService {
 		}
 	}
 
-	private String getConditionDescription(ZoyBeforeCheckInCancellation item, Map<String, String> comparisonMap) {
+	private String getConditionDescriptionforcancel(ZoyBeforeCheckInCancellation item, Map<String, String> comparisonMap) {
 		String triggerCondition = comparisonMap.getOrDefault(item.getTriggerCondition(), item.getTriggerCondition());
 		return triggerCondition + " " + item.getBeforeCheckinDays() + " days from check-in date";
 	}
 
+	
+	public void sendEmailNotificationsForShortTerm(ZoyShortTermDetails previousShortTerm, ZoyShortTermDetails newShortTerm) {
+	    String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
+
+	    if (allMails == null || allMails.length == 0) {
+	        log.warn("No recipient email addresses found for Short Term Rule change notification.");
+	        return;
+	    }
+
+	    Email email = new Email();
+	    email.setFrom(zoyAdminMail);
+	    email.setTo(Arrays.asList(allMails));
+	    email.setSubject("Important Update: Changes in short-term stay rent slabs effective from "
+	            + newShortTerm.getEffectiveDate());
+
+	    StringBuilder oldRulesTable = new StringBuilder();
+	    StringBuilder newRulesTable = new StringBuilder();
+
+	    if (previousShortTerm != null && previousShortTerm.getZoyShortTermDtoInfo() != null) {
+	        for (ZoyShortTermDto oldDto : previousShortTerm.getZoyShortTermDtoInfo()) {
+	            if (Boolean.TRUE.equals(oldDto.getDelete())) continue;
+	            oldRulesTable.append("<tr><td>")
+	                    .append(oldDto.getStartDay()).append("-").append(oldDto.getEndDay()).append(" days")
+	                    .append("</td><td>")
+	                    .append("Daily rent as ").append(oldDto.getPercentage()).append("% of monthly rent")
+	                    .append("</td></tr>");
+	        }
+	    }
+
+	    if (newShortTerm != null && newShortTerm.getZoyShortTermDtoInfo() != null) {
+	        for (ZoyShortTermDto newDto : newShortTerm.getZoyShortTermDtoInfo()) {
+	            if (Boolean.TRUE.equals(newDto.getDelete())) continue;
+	            newRulesTable.append("<tr><td>")
+	                    .append(newDto.getStartDay()).append("-").append(newDto.getEndDay()).append(" days")
+	                    .append("</td><td>")
+	                    .append("Daily rent as ").append(newDto.getPercentage()).append("% of monthly rent")
+	                    .append("</td></tr>");
+	        }
+	    }
+
+	    String message = "<p>Dear Owner/Tenant,</p>"
+	            + "<p>We hope this message finds you well.</p>"
+	            + "<p>We are writing to inform you about an important update regarding our Short-Term Stay Rent Calculation Policy, which will come into effect from <strong>"
+	            + newShortTerm.getEffectiveDate() + "</strong>.</p>"
+	            + "<p>This update refines the daily rent calculation slabs for stays shorter than 30 days, ensuring transparency and consistency for both property owners and tenants.</p>"
+	            + "<p><strong>Short-term Duration Slabs:</strong></p>"
+	            + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
+	            + "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>"
+	            + "<tr><td><table border='0'>" + oldRulesTable.toString() + "</table></td>"
+	            + "<td><table border='0'>" + newRulesTable.toString() + "</table></td></tr>"
+	            + "</table>"
+	            + "<p>We kindly request you to review the updated rules and ensure that you understand the changes.</p>"
+	            + "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
+	            + "<p>Thank you for your continued support and cooperation.</p>"
+	            + "<p>Best regards,<br>ZOY Administrator</p>";
+
+	    email.setBody(message);
+	    email.setContent("text/html");
+
+	    try {
+	        emailService.sendEmail(email, null);
+	    } catch (Exception e) {
+	        log.error("Failed to send Short-Term Stay Policy update email: " + e.getMessage(), e);
+	    }
+	}
+
+	
+	
 }
