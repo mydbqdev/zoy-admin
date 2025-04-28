@@ -1194,9 +1194,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	if(!this.crpEffectiveDate || this.multirullsEffectiveDateValidation(this.crpEffectiveDate) ){
 		return;
 	}
-	
-	payload.effectiveDate = this.crpEffectiveDate;
-	
+
 	if(this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel || this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.isApproved ){
 		const model = this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel ? this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel : this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel
 		const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
@@ -1206,6 +1204,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 			return;
 		}
 	}
+	payload.effectiveDate = this.crpEffectiveDate;
 	if(task === 'approve'){
 		payload.isApproved=true;
 	}else{
