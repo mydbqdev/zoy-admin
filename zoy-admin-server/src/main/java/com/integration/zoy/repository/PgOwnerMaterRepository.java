@@ -351,26 +351,29 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	
 	
 	
-	 @Query(value = " SELECT \r\n"
-	 		+ "  effective_date as futureeffectivedate , \r\n"
-	 		+ "  force_check_out_days as newdays\r\n"
-	 		+ "FROM \r\n"
-	 		+ "  pgowners.zoy_pg_force_check_out\r\n"
-	 		+ "WHERE \r\n"
-	 		+ "  is_approved = true \r\n"
-	 		+ "  AND (\r\n"
-	 		+ "    effective_date::date = (DATE '2025-04-24' + INTERVAL '6 days')::date\r\n"
-	 		+ "    OR effective_date::date = (DATE '2025-04-24' + INTERVAL '1 days')::date\r\n"
-	 		+ "    OR effective_date::date = (DATE '2025-04-24')::date\r\n"
-	 		+ "  )\r\n"
-	 		+ "union \r\n"
-	 		+ " SELECT  pasteffectivedate,olddays from (\r\n"
-	 		+ "select  effective_date as pasteffectivedate, \r\n"
-	 		+ "  force_check_out_days as olddays\r\n"
-	 		+ "FROM pgowners.zoy_pg_force_check_out\r\n"
-	 		+ "WHERE \r\n"
-	 		+ "  is_approved = TRUE \r\n"
-	 		+ "  AND effective_date::DATE < DATE '2025-04-24' limit 1)adas", nativeQuery = true)
-		    List<String[]> findCheckOutDaysByDate(String currentDate);
+	@Query(value = " SELECT \r\n"
+			+ "  effective_date as futureeffectivedate, \r\n"
+			+ "  force_check_out_days as newdays\r\n"
+			+ "FROM \r\n"
+			+ "  pgowners.zoy_pg_force_check_out\r\n"
+			+ "WHERE \r\n"
+			+ "  is_approved = true \r\n"
+			+ "  AND (\r\n"
+			+ "    effective_date::date = (:currentDate::date + INTERVAL '7 days')::date\r\n"
+			+ "    OR effective_date::date = (:currentDate::date + INTERVAL '1 day')::date\r\n"
+			+ "    OR effective_date::date = :currentDate::date)\r\n"
+			+ "UNION \r\n"
+			+ "SELECT  pasteffectivedate, olddays \r\n"
+			+ "FROM (\r\n"
+			+ "  SELECT  \r\n"
+			+ "    effective_date as pasteffectivedate, \r\n"
+			+ "    force_check_out_days as olddays\r\n"
+			+ "  FROM pgowners.zoy_pg_force_check_out\r\n"
+			+ "  WHERE \r\n"
+			+ "    is_approved = TRUE \r\n"
+			+ "    AND effective_date::DATE < :currentDate::date \r\n"
+			+ "  LIMIT 1\r\n"
+			+ ") adas", nativeQuery = true)
+	List<String[]> findCheckOutDaysByDate(@Param("currentDate") String currentDate);
 
 }
