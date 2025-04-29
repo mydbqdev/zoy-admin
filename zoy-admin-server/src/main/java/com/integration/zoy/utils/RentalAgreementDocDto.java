@@ -9,6 +9,9 @@ public class RentalAgreementDocDto {
 
 	@SerializedName("rentalAgreementDoc")
 	private String rentalAgreementDoc;
+	
+	@SerializedName("uploadedAt")
+	private String uploadedAt;
 
 	public String getRentalAgreementDocId() {
 		return rentalAgreementDocId;
@@ -26,4 +29,12 @@ public class RentalAgreementDocDto {
 		this.rentalAgreementDoc = rentalAgreementDoc;
 	}
 
+	public String getUploadedAt() {
+		return uploadedAt;
+	}
+
+	public void setUploadedAt(String uploadedAt) {
+		this.uploadedAt = uploadedAt;
+	}
+	
 }
