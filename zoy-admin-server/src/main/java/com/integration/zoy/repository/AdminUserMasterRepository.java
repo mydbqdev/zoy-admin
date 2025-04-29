@@ -222,4 +222,21 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			+ "AND rs.write_prv = true",nativeQuery=true)
 	String[] masterConfigurationAccess();
 	
+	
+	
+	@Query(value="select user_email from pgusers.user_master um ",nativeQuery=true)
+	String[] allTenantEmails();
+	
+	@Query(value="select user_email from pgusers.user_master um union\r\n"
+			+ "select email from pgowners.zoy_pg_registered_owner_details zprod ",nativeQuery=true)
+	String[] allOwnerEmails();
+	
+	@Query(value="select user_email from pgusers.user_master um \r\n"
+			+ "union\r\n"
+			+ "select email from pgowners.zoy_pg_registered_owner_details zprod \r\n"
+			+ "union\r\n"
+			+ "select email_id from pgadmin.pg_owner_master pom",nativeQuery=true)
+	String[] allTenantAndOwnerEmails();
+	
+	
 }

@@ -1757,7 +1757,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	                    flag = "created";
 	                    zoyEmailService.sendApprovalRequestRaisedEmail(currentUser, ruleName, getCurrentTimestampString(), shortTerm.getEffectiveDate());
 	                    notificationsAndAlertsService.masterConfigurationRulechange(currentUser, ruleName);
-//	                    zoyEmailService.sendShortTermDurationChangeEmail(shortTerm,previousShortTerm);
+	                    zoyEmailService.sendEmailNotificationsForShortTerm(previousShortTerm,shortTerm);
 	                } else if (Boolean.TRUE.equals(shortTerm.getIsApproved())) {
 	                    entity.setZoyPgShortTermMasterId(termDetails.getShortTermId());
 	                    entity.setCreatedBy(shortTerm.getCreatedBy());
