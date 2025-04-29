@@ -28,7 +28,7 @@ public class RentalAgreementDoc {
 
 	@Column(name = "created_at", nullable = false)
 	@CreationTimestamp
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 	private Timestamp uploadedAt;
 	
 	// Getters and Setters
