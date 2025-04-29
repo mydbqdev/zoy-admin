@@ -1441,25 +1441,26 @@ public class AdminReportService implements AdminReportImpl{
 	public CommonResponseDTO<TenentRefund> getTenantRefunds(UserPaymentFilterRequest filterRequest,
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
-			StringBuilder queryBuilder = new StringBuilder("SELECT "
-					+ "um.user_first_name || ' ' || um.user_last_name AS username, "
-					+ "um.user_mobile AS usermobile_number, "
-					+ "zppd.property_name AS PG_name, "
-					+ "zppd.property_house_area AS Pg_address, "
-					+ "urd.booking_id AS booking_ID, "
-					+ "ub.user_cancellation_reason AS refund_title, "
-					+ "urd.refund_amount AS refund_amount, "
-					+ "CASE \r\n"
-					+ " WHEN urd.refund_process_status = TRUE THEN 'Completed' \r\n"
-					+ " ELSE 'Processing' \r\n"
-					+ " END AS Status, "
-					+ "urd.refund_created_timestamp, "
-					+ "zppd.property_city \r\n"
-					+ "FROM pgcommon.user_refund_details urd "
-					+ "JOIN pgusers.user_master um ON urd.user_id = um.user_id "
-					+ "JOIN pgowners.zoy_pg_property_details zppd ON urd.property_id = zppd.property_id "
-					+ "LEFT JOIN pgusers.user_bookings ub ON urd.booking_id = ub.user_bookings_id "
-					+ "WHERE 1 = 1 ");
+			StringBuilder queryBuilder = new StringBuilder("SELECT \r\n"
+					+ "    um.user_first_name || ' ' || um.user_last_name AS username,\r\n"
+					+ "    um.user_mobile AS usermobile_number,\r\n"
+					+ "    zppd.property_name AS PG_name,\r\n"
+					+ "    zppd.property_house_area AS Pg_address,\r\n"
+					+ "    urd.booking_id AS booking_ID,\r\n"
+					+ "    ub.user_cancellation_reason AS refund_title,\r\n"
+					+ "    urd.refund_amount AS refund_amount,\r\n"
+					+ "    CASE\r\n"
+					+ "        WHEN urd.refund_process_status = 'P' THEN 'Processing'\r\n"
+					+ "        WHEN urd.refund_process_status = 'S' THEN 'Success'\r\n"
+					+ "        WHEN urd.refund_process_status = 'F' THEN 'Failed'\r\n"
+					+ "    END AS Status,\r\n"
+					+ "    urd.refund_created_timestamp,\r\n"
+					+ "    zppd.property_city\r\n"
+					+ "FROM pgcommon.user_refund_details urd \r\n"
+					+ "JOIN pgusers.user_master um ON urd.user_id = um.user_id \r\n"
+					+ "JOIN pgowners.zoy_pg_property_details zppd ON urd.property_id = zppd.property_id \r\n"
+					+ "LEFT JOIN pgusers.user_bookings ub ON urd.booking_id = ub.user_bookings_id \r\n"
+					+ "WHERE 1 = 1");
 
 			Map<String, Object> parameters = new HashMap<>();
 			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
