@@ -41,14 +41,12 @@ import com.integration.zoy.entity.UserEkycTypeMaster;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
-import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
-import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
@@ -83,12 +81,12 @@ import com.integration.zoy.repository.RentalAgreementDocRepository;
 import com.integration.zoy.repository.UserBookingsRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
+import com.integration.zoy.service.TimestampFormatterUtilService;
 import com.integration.zoy.service.UserDBImpl;
 import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
-import com.integration.zoy.utils.DueMaster;
 import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ResponseBody;
@@ -141,6 +139,8 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	@Autowired
 	ZoyAdminService zoyAdminService;
 
+	@Autowired
+	TimestampFormatterUtilService timestampFormatterUtilService;
 
 	@Value("${app.minio.Amenities.photos.bucket.name}")
 	private String amenitiesPhotoBucketName;
@@ -152,8 +152,6 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	@Value("${app.minio.zoypg.upload.docs.bucket.name}")
 	private String zoyPgRentalDocsUploadBucketName;
 	
-	@Value("${spring.jackson.time-zone}")
-	private String timeZon;
 
 	@Override
 	public ResponseEntity<String> zoyAdminAmenities() {
@@ -1229,11 +1227,8 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		ResponseBody response = new ResponseBody();
 		String uid = java.util.UUID.randomUUID().toString();
 		try {
-			 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			 format.setTimeZone(TimeZone.getTimeZone(timeZon));
-			 Date date = new Date();
-			 SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			 Date dateTime= dateParser.parse(format.format(date));
+			String dateString = timestampFormatterUtilService.currentDate();
+			Timestamp timestamp = Timestamp.valueOf(dateString);
 			if (rentalAgreementDocId != null && !rentalAgreementDocId.isEmpty()) {
 
 				Optional<RentalAgreementDoc> RentalAgreementDetails = rentalAgreementDocRepository.findById(rentalAgreementDocId);
@@ -1250,7 +1245,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 					String uploadedFileName = "Rental Agreement//"+uid;
 					String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);					
 					oldDetails.setRentalAgreementDoc(fileUrl);
-					oldDetails.setUploadedAt(new java.sql.Timestamp(dateTime.getTime()));
+					oldDetails.setUploadedAt(timestamp);
 					rentalAgreementDocRepository.save(oldDetails);
 				}
 			} else {
