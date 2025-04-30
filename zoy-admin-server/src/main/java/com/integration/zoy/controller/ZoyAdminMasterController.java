@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -150,6 +151,9 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	@Value("${app.minio.zoypg.upload.docs.bucket.name}")
 	private String zoyPgRentalDocsUploadBucketName;
+	
+	@Value("${spring.jackson.time-zone}")
+	private String timeZon;
 
 	@Override
 	public ResponseEntity<String> zoyAdminAmenities() {
@@ -1224,8 +1228,12 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	public ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(String rentalAgreementDocId ,MultipartFile file) {
 		ResponseBody response = new ResponseBody();
 		String uid = java.util.UUID.randomUUID().toString();
-
 		try {
+			 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			 format.setTimeZone(TimeZone.getTimeZone(timeZon));
+			 Date date = new Date();
+			 SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			 Date dateTime= dateParser.parse(format.format(date));
 			if (rentalAgreementDocId != null && !rentalAgreementDocId.isEmpty()) {
 
 				Optional<RentalAgreementDoc> RentalAgreementDetails = rentalAgreementDocRepository.findById(rentalAgreementDocId);
@@ -1242,6 +1250,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 					String uploadedFileName = "Rental Agreement//"+uid;
 					String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);					
 					oldDetails.setRentalAgreementDoc(fileUrl);
+					oldDetails.setUploadedAt(new java.sql.Timestamp(dateTime.getTime()));
 					rentalAgreementDocRepository.save(oldDetails);
 				}
 			} else {
@@ -1277,8 +1286,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		RentalAgreementDocDto dto = new RentalAgreementDocDto();
 		dto.setRentalAgreementDocId(entity.getRentalAgreementDocId());
 		dto.setRentalAgreementDoc(zoyAdminService.generatePreSignedUrl(zoyPgRentalDocsUploadBucketName,entity.getRentalAgreementDoc()));
-		dto.setUploadedAt(entity.getUploadedAt() != null ? entity.getUploadedAt().toString() : null);
-		return dto;
+		dto.setUploadedAt(entity.getUploadedAt() != null && entity.getUploadedAt().toString().length() >16 ? entity.getUploadedAt().toString().substring(0, 16) : null);		return dto;
 	}
 	
 	public ResponseEntity<String> zoyAdminConfigGetRentalAgreementDocuments() {
