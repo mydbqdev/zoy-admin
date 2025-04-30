@@ -1194,17 +1194,17 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	if(!this.crpEffectiveDate || this.multirullsEffectiveDateValidation(this.crpEffectiveDate) ){
 		return;
 	}
-
+	payload.effectiveDate = this.crpEffectiveDate;	
 	if(this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel || this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.isApproved ){
 		const model = this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel ? this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel : this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel
 		const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
-		const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
-		if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate <= existingDate && existingDate )) {
+		const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);
+		if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate <= existingDate && this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.isApproved ) ||(selectedDate <= existingDate && !this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.isApproved && this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel )) {
 			this.notifyService.showInfo("Tt must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
 			return;
 		}
 	}
-	payload.effectiveDate = this.crpEffectiveDate;
+
 	if(task === 'approve'){
 		payload.isApproved=true;
 	}else{
@@ -1248,7 +1248,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}
 	let work =(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected':(payload.iscreate?'Create':'Update') ));
 		
-	const model = {"oldSTDRule":work == 'Create' ?this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel:this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel,"newSTDRule":payload};
+	const model = {"oldBCCRule":work == 'Create' ?this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel:this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel,"newBCCRule":payload};
 	this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+work +' ?')
 		.then(
 		   (confirmed) =>{
