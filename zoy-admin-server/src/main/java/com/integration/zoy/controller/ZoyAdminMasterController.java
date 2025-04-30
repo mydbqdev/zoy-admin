@@ -1277,6 +1277,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		RentalAgreementDocDto dto = new RentalAgreementDocDto();
 		dto.setRentalAgreementDocId(entity.getRentalAgreementDocId());
 		dto.setRentalAgreementDoc(zoyAdminService.generatePreSignedUrl(zoyPgRentalDocsUploadBucketName,entity.getRentalAgreementDoc()));
+		dto.setUploadedAt(entity.getUploadedAt() != null ? entity.getUploadedAt().toString() : null);
 		return dto;
 	}
 	

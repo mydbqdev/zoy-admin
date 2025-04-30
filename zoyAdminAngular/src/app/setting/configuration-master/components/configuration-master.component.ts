@@ -1791,8 +1791,8 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 				 }
 				payload.iscreate = payload.isApproved ;
 			}
-
-			payload.zoy_short_term_dto_info=finalSubmitShortList;
+			const list = payload.iscreate ? finalSubmitShortList.filter(item => !item.isDelete) : finalSubmitShortList ;
+			payload.zoy_short_term_dto_info=list;
 		}{
 			payload.comments=this.comments;
 		}
