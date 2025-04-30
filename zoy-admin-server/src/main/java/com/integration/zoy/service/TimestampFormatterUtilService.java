@@ -9,13 +9,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TimestampFormatterUtilService {
 	private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	private static final String TIME_ZONE = "Asia/Kolkata";
+//	private static final String TIME_ZONE = "Asia/Kolkata";	
+	@Value("${spring.jackson.time-zone}")
+	private String TIME_ZONE;
 
 	public  String formatTimestamp(Instant timestamp) {
 		ZonedDateTime zonedDateTime = timestamp.atZone(ZoneId.of(TIME_ZONE));
