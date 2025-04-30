@@ -80,7 +80,7 @@ export class DbMasterConfigurationService {
     },
     {
       'type': 'Rental Agreement Document',
-      'columns': ['rentalAgreementDoc', 'actions'],
+      'columns': ['rentalAgreementDoc','uploadedAt', 'actions'],
       'api': 'zoy_admin/rental-agreements'
   },
   ]
@@ -103,7 +103,8 @@ export class DbMasterConfigurationService {
     'end_day' :'END DAY',
     'floor_name':'FLOOR NAME',
     'rentalAgreementDoc':'RENTAL AGREEMENT DOCUMENT',
-    'special_amenity':'SPECIAL AENITY'
+    'special_amenity':'SPECIAL AENITY',
+    'uploadedAt':"UPLOADED DATE"
   }
 
   getDbSettingDetails(api:string): Observable<any> {
