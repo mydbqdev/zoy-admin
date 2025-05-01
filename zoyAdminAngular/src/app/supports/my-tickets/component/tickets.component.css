@@ -5,7 +5,7 @@
     /* background-color: #86d189;
     color: white; */
     border: none;
-    padding: 0.25rem 0.5rem; 
+    padding: 0.25rem 0.25rem; 
     font-weight: 600; 
     border-radius: 4px;
 }
@@ -17,7 +17,7 @@
     /* background-color: grey; 
     color: white; */
     border: none;
-    padding: 0.25rem 0.5rem; 
+    padding: 0.25rem 0.25rem; 
     font-weight: 600; 
     border-radius: 4px;
 }
@@ -27,7 +27,7 @@
   background-color: #cce0fa;
   color: #0064e5;
   border: none;
-  padding: 0.25rem 0.5rem; 
+  padding: 0.25rem 0.25rem; 
   font-weight: 600; 
   border-radius: 4px;
 }

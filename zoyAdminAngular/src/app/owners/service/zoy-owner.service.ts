@@ -31,6 +31,32 @@ import { MessageService } from 'src/app/message.service';
             );
     } 
 
+    public getTicketsList(data:any): Observable<any> {
+      const url1=this.basePath +"zoy_admin/open-support-ticket";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+               headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+    } 
+
+    public getTicketsCloseList(data:any): Observable<any> {
+      const url1=this.basePath +"zoy_admin/close-support-ticket";
+        return  this.httpclient.post<any>(
+            url1,
+            data,
+            {
+               headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+    } 
+
     public getZoyOwnerDetails(ownerid:any): Observable<any> {
       const url1=this.basePath +"zoy_admin/ownerdetailsportfolio?ownerid="+ownerid;
         return  this.httpclient.post<any>(

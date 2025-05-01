@@ -99,59 +99,59 @@
                             <div class="scrollable-container-main">
                                <div>
                                 <table mat-table [dataSource]="dataSource" matSort  
-                                  (matSortChange)="announceSortChange($event)" matSortActive="raisedDate" matSortDirection="asc"  >
+                                  (matSortChange)="announceSortChange($event)" matSortActive="created_date" matSortDirection="desc"  >
                                   <!-- Owner Name Column -->
-                                  <ng-container matColumnDef="ticketNo">
+                                  <ng-container matColumnDef="ticket_id">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;">TICKET NO 
                                       <span style="margin-left: 2px;">
-                                        <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['tenantName'] === 'asc' }"></i>
-                                        <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['tenantName'] === 'desc'}"></i>
+                                        <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['ticket_id'] === 'asc' }"></i>
+                                        <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['ticket_id'] === 'desc'}"></i>
                                       </span>
                                     </th>
-                                    <td mat-cell *matCellDef="let element"> {{ element.tenantName }} </td>
+                                    <td mat-cell *matCellDef="let element"> {{ element.ticket_id }} </td>
                                   </ng-container>  
                                   <!-- Zoy Code Column -->
-                                    <ng-container matColumnDef="raisedDate">
+                                    <ng-container matColumnDef="created_date">
                                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;" title="RAISED DATE">RAISED DATE
                                         <span style="margin-left: 2px;">
-                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['registeredDate'] === 'asc' }"></i>
-                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['registeredDate'] === 'desc'}"></i>
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['created_date'] === 'asc' }"></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['created_date'] === 'desc'}"></i>
                                         </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element"> {{ element.registeredDate | date: 'yyyy-MM-dd' }} </td>
+                                      <td mat-cell *matCellDef="let element"> {{ element.created_date | date: 'yyyy-MM-dd' }} </td>
                                     </ng-container>
 
                                     
                                     <!-- Date Column -->
-                                    <ng-container matColumnDef="type">
+                                    <ng-container matColumnDef="ticket_type">
                                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;" title="CATEGORY TYPE">TYPE
                                           <span style="margin-left: 2px;">
-                                            <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['appUser'] === 'asc' }"></i>
-                                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['appUser'] === 'desc'}"></i>
+                                            <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['ticket_type'] === 'asc' }"></i>
+                                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['ticket_type'] === 'desc'}"></i>
                                           </span>
                                         </th>
-                                        <td mat-cell *matCellDef="let element"> {{ element.appUser}} </td>
+                                        <td mat-cell *matCellDef="let element"> {{ element.ticket_type}} </td>
                                       </ng-container>
                                      <!-- Contact Column -->
-                                     <ng-container matColumnDef="ugency">
+                                     <ng-container matColumnDef="priority">
                                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> UGENCY 
                                           <span style="margin-left: 2px;">
-                                            <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['contactNumber'] === 'asc' }"></i>
-                                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['contactNumber'] === 'desc'}"></i>
+                                            <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['priority'] === 'asc' }"></i>
+                                            <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['priority'] === 'desc'}"></i>
                                           </span>
                                         </th>
-                                        <td mat-cell *matCellDef="let element"> {{ element.contactNumber }} </td>
+                                        <td mat-cell *matCellDef="let element"> {{ element.priority }} </td>
                                       </ng-container>
 
                                     <!-- Email Column -->
-                                    <ng-container matColumnDef="assignTo">
+                                    <ng-container matColumnDef="assign_name">
                                       <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> ASSIGNED TO
                                         <span style="margin-left: 2px;">
-                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['userEmail'] === 'asc' }"></i>
-                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['userEmail'] === 'desc'}"></i>
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['assign_name'] === 'asc' }"></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['assign_name'] === 'desc'}"></i>
                                         </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element">{{ element.userEmail }} </td>
+                                      <td mat-cell *matCellDef="let element">{{ element.assign_name }} </td>
                                     </ng-container>
 
                                 
@@ -165,11 +165,25 @@
                                       </th>
                                       <td mat-cell *matCellDef="let element" style="padding: 4px;">
                                         <span class="common-status"
-                                              [ngClass]="element.status === 'Inactive' ? 'status-inactive' : (element.status === 'Register' ? 'status-verified':'status-active' )" >
+                                              [ngClass]="element.status === 'New' ? 'status-inactive' : (element.status === 'Open' ? 'status-verified':'status-active' )" >
                                           {{element.status}}
                                         </span>
                                       </td>
                                       
+                                    </ng-container>
+                                    <ng-container  matColumnDef="action" >
+                                      <th mat-header-cell *matHeaderCellDef style="width: 40px;"></th>
+                                      <td mat-cell *matCellDef="let element" > 
+                                        <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw"  style="color:#000000;"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#details">Details</a>
+                                            <a class="dropdown-item" href="javascript:void(0)">Status Update</a>
+                                        </div>
+                                      </td>
                                     </ng-container>
                                     
                                     <!-- Header Row -->

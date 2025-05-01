@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.integration.zoy.model.FollowUp;
 import com.integration.zoy.model.TicketAssign;
 import com.integration.zoy.model.UpdateStatus;
-import com.integration.zoy.utils.SupportUsres;
+import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.UserPaymentFilterRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -110,5 +110,38 @@ public interface ZoyAdminSupportImpl {
 	ResponseEntity<String> FetchAllFollowUpDetails();
 	
 	
+	/**
+	 *  if isUserActivity is false then admin all ticket list
+	 *  if isUserActivity is true then support user all ticket list
+	 * @param paginationRequest
+	 * @return
+	 */
+	@Operation(summary = "My /All Open Support Ticket list", description = "getting support ticket details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Support Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/open-support-ticket",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyOpenSupportTicketList(@RequestBody PaginationRequest paginationRequest);
+	
+	/**
+	 *  if isUserActivity is false then admin all ticket list
+	 *  if isUserActivity is true then support user all ticket list
+	 * @param paginationRequest
+	 * @return
+	 */
+	@Operation(summary = "My /All Closed Support Ticket list", description = "getting support ticket details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Support Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/close-support-ticket",
+	produces = { "application/json" })
+	ResponseEntity<String> zoyCloseSupportTicketList(@RequestBody PaginationRequest paginationRequest);
 }
 
