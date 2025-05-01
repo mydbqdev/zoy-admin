@@ -1,33 +1,33 @@
 /* Registered status button styling - small size */
 .btn-registered {
-    background-color:  #ccf0eb;
-    color:  #00b69b;
+    background-color:  #f36f17;
+    color:  #20a08d;
     /* background-color: #86d189;
     color: white; */
     border: none;
-    padding: 0.25rem 0.5rem; 
+    padding: 0.25rem 0.25rem; 
     font-weight: 600; 
     border-radius: 4px;
 }
 
 /* Pending status button styling - small size */
 .btn-pending {
-    background-color: #fce6d4;
-    color: #ef8026;
+    background-color: #fa2b2b;
+    color: #fdfdfd;
     /* background-color: grey; 
     color: white; */
     border: none;
-    padding: 0.25rem 0.5rem; 
+    padding: 0.25rem 0.25rem; 
     font-weight: 600; 
     border-radius: 4px;
 }
 
 /* Registered status button styling - small size */
 .btn-partially {
-  background-color: #cce0fa;
+  background-color: #f8b9de;
   color: #0064e5;
   border: none;
-  padding: 0.25rem 0.5rem; 
+  padding: 0.25rem 0.25rem; 
   font-weight: 600; 
   border-radius: 4px;
 }
