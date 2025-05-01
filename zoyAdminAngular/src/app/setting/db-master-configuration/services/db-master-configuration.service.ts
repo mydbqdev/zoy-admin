@@ -80,7 +80,7 @@ export class DbMasterConfigurationService {
     },
     {
       'type': 'Rental Agreement Document',
-      'columns': ['rentalAgreementDoc','uploadedAt', 'actions'],
+      'columns': ['uploadedAt','rentalAgreementDoc'],
       'api': 'zoy_admin/rental-agreements'
   },
   ]

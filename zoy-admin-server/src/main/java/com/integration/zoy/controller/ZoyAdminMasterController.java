@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -40,14 +41,12 @@ import com.integration.zoy.entity.UserEkycTypeMaster;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
-import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
-import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
@@ -82,12 +81,12 @@ import com.integration.zoy.repository.RentalAgreementDocRepository;
 import com.integration.zoy.repository.UserBookingsRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
+import com.integration.zoy.service.TimestampFormatterUtilService;
 import com.integration.zoy.service.UserDBImpl;
 import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.service.ZoyS3Service;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
-import com.integration.zoy.utils.DueMaster;
 import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ResponseBody;
@@ -140,6 +139,8 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	@Autowired
 	ZoyAdminService zoyAdminService;
 
+	@Autowired
+	TimestampFormatterUtilService timestampFormatterUtilService;
 
 	@Value("${app.minio.Amenities.photos.bucket.name}")
 	private String amenitiesPhotoBucketName;
@@ -150,6 +151,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	@Value("${app.minio.zoypg.upload.docs.bucket.name}")
 	private String zoyPgRentalDocsUploadBucketName;
+	
 
 	@Override
 	public ResponseEntity<String> zoyAdminAmenities() {
@@ -1224,8 +1226,9 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	public ResponseEntity<String> zoyAdminConfigUpdateRentalAgreementdocument(String rentalAgreementDocId ,MultipartFile file) {
 		ResponseBody response = new ResponseBody();
 		String uid = java.util.UUID.randomUUID().toString();
-
 		try {
+			String dateString = timestampFormatterUtilService.currentDate();
+			Timestamp timestamp = Timestamp.valueOf(dateString);
 			if (rentalAgreementDocId != null && !rentalAgreementDocId.isEmpty()) {
 
 				Optional<RentalAgreementDoc> RentalAgreementDetails = rentalAgreementDocRepository.findById(rentalAgreementDocId);
@@ -1242,6 +1245,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 					String uploadedFileName = "Rental Agreement//"+uid;
 					String fileUrl = zoyS3Service.uploadFile(zoyPgRentalDocsUploadBucketName,uploadedFileName,file);					
 					oldDetails.setRentalAgreementDoc(fileUrl);
+					oldDetails.setUploadedAt(timestamp);
 					rentalAgreementDocRepository.save(oldDetails);
 				}
 			} else {
@@ -1277,8 +1281,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		RentalAgreementDocDto dto = new RentalAgreementDocDto();
 		dto.setRentalAgreementDocId(entity.getRentalAgreementDocId());
 		dto.setRentalAgreementDoc(zoyAdminService.generatePreSignedUrl(zoyPgRentalDocsUploadBucketName,entity.getRentalAgreementDoc()));
-		dto.setUploadedAt(entity.getUploadedAt() != null ? entity.getUploadedAt().toString() : null);
-		return dto;
+		dto.setUploadedAt(entity.getUploadedAt() != null && entity.getUploadedAt().toString().length() >16 ? entity.getUploadedAt().toString().substring(0, 16) : null);		return dto;
 	}
 	
 	public ResponseEntity<String> zoyAdminConfigGetRentalAgreementDocuments() {
