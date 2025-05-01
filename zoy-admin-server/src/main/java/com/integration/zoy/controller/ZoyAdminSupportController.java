@@ -2,7 +2,6 @@ package com.integration.zoy.controller;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -11,6 +10,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +31,7 @@ import com.integration.zoy.entity.FollowUps;
 import com.integration.zoy.entity.RegisteredPartner;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.model.FollowUp;
+import com.integration.zoy.model.SupportTicketDTO;
 import com.integration.zoy.model.TicketAssign;
 import com.integration.zoy.model.UpdateStatus;
 import com.integration.zoy.repository.AdminUserMasterRepository;
@@ -38,9 +40,11 @@ import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.OwnerDBImpl;
+import com.integration.zoy.service.SupportDBImpl;
 import com.integration.zoy.service.TimestampFormatterUtilService;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
+import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.RegisterLeadDetails;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.SupportUsres;
@@ -96,6 +100,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	
 	@Autowired
 	TimestampFormatterUtilService tuService;
+	
+	@Autowired
+	SupportDBImpl supportDBImpl;
+	
 
 	@Override
 	public ResponseEntity<String> getRegisteredLeadDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
@@ -293,6 +301,47 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	    followUpModel.setReminderDate(followUpsEntity.getReminderDate());
 	    followUpModel.setStatus(followUpsEntity.getStatus());
 	    return followUpModel;
+	}
+	
+	
+	@Override
+	public ResponseEntity<String> zoyOpenSupportTicketList(PaginationRequest paginationRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+			CommonResponseDTO<SupportTicketDTO> ticketList = supportDBImpl.zoySupportTicketList(paginationRequest,false);
+			return new ResponseEntity<>(gson2.toJson(ticketList), HttpStatus.OK);
+		}catch (DataAccessException dae) {
+			log.error("Database error occurred while fetching ticket list: " + dae.getMessage(), dae);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Database error: Unable to fetch ticket list");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+
+		}catch (Exception e) {
+			log.error("Unexpected error occurredAPI:/zoy_admin/open-support-ticket.zoyOpenSupportTicketList", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<String> zoyCloseSupportTicketList(PaginationRequest paginationRequest) {
+		ResponseBody response = new ResponseBody();
+		try {
+			CommonResponseDTO<SupportTicketDTO> ticketList = supportDBImpl.zoySupportTicketList(paginationRequest,true);
+			return new ResponseEntity<>(gson2.toJson(ticketList), HttpStatus.OK);
+		}catch (DataAccessException dae) {
+			log.error("Database error occurred while fetching ticket list: " + dae.getMessage(), dae);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError("Database error: Unable to fetch ticket list");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+
+		}catch (Exception e) {
+			log.error("Unexpected error occurredAPI:/zoy_admin/close-support-ticket.zoyCloseSupportTicketList", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }
