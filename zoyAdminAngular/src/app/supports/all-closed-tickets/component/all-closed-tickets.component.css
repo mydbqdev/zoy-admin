@@ -1,7 +1,7 @@
 /* Registered status button styling - small size */
-.btn-registered {
-    background-color:  #f36f17;
-    color:  #20a08d;
+.btn-closed {
+  background-color: #ed36d9;
+  color: #ffffff;
     /* background-color: #86d189;
     color: white; */
     border: none;
@@ -11,7 +11,7 @@
 }
 
 /* Pending status button styling - small size */
-.btn-pending {
+.btn-cancel {
     background-color: #fa2b2b;
     color: #fdfdfd;
     /* background-color: grey; 
@@ -23,7 +23,7 @@
 }
 
 /* Registered status button styling - small size */
-.btn-partially {
+.btn-resolve {
   background-color: #f8b9de;
   color: #0064e5;
   border: none;

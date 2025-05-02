@@ -90,7 +90,7 @@ public class SupportDBService implements SupportDBImpl{
 			
 			if (paginationRequest.getIsUserActivity()) {
 	            String assignedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-	            queryBuilder.append("AND LOWER(tkt.assign_email) = LOWER(:assignedEmail) \r\n");
+	            queryBuilder.append("AND (LOWER(tkt.assign_email) = LOWER(:assignedEmail) OR LOWER(tkt.assign_email) ='' OR tkt.assign_email IS NULL )\r\n");
 	            parameters.put("assignedEmail", assignedEmail);
 	        }
 			
