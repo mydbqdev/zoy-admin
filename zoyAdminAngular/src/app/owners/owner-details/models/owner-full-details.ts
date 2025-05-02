@@ -97,6 +97,13 @@ export class Profile {
     availability_status: string;
   }
   
+  export class AadhaarVerif {
+    aadhaar : string;
+    sessionid : string;
+    captcha : string;
+    otp : string;
+    session_id : string;
+  }
   
   
   

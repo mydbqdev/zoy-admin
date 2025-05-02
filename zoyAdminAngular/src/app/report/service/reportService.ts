@@ -57,7 +57,7 @@ import { MessageService } from 'src/app/message.service';
       'payerPayeeName':'PAYER/PAYEE Name',
       'ownerEmail':'OWNER EMAIL',
       'pgAddress':'PG ADDRESS',
-      'zoyShare':'ZOY SHARE',
+      'zoyShare':'ZOY REVENUE',
       'tenantMobileNum':'TENANT CONTACT',
       'userPgPropertyAddress':'PG ADDRESS',
       'ownerApprovalStatus':'OWNER APPROVAL STATUS',
