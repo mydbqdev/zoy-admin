@@ -140,7 +140,10 @@
                                             <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['priority'] === 'desc'}"></i>
                                           </span>
                                         </th>
-                                        <td mat-cell *matCellDef="let element"> {{ element.priority }} </td>
+                                        <td mat-cell *matCellDef="let element">
+                                          <span *ngIf="element.priority" style="color: #f10707;">High</span>
+                                          <span *ngIf="!element.priority" style="color: #055530;">Low</span>
+                                        </td>
                                       </ng-container>
 
                                     <!-- Email Column -->
@@ -165,7 +168,7 @@
                                       </th>
                                       <td mat-cell *matCellDef="let element" style="padding: 4px;">
                                         <span class="common-status"
-                                          [ngClass]="element.status === 'Close' ? 'btn-registered' : (element.status === 'Resolved' ? 'btn-partially':'btn-pending' )" >
+                                        [ngClass]="element.status === 'Close' ? 'btn-closed' : (element.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
                                           {{element.status}}
                                         </span>
                                       </td>
@@ -176,7 +179,7 @@
                                       <th mat-header-cell *matHeaderCellDef style="width: 30px;">
                                       </th>
                                       <td mat-cell *matCellDef="let element" style="padding: 4px;">
-                                        <i class="far fa-eye"></i>
+                                        <i class="far fa-eye" data-bs-toggle="modal" data-bs-target="#details"></i>
                                       </td>
                                       
                                     </ng-container>
@@ -200,4 +203,58 @@
         <!-- End of Content Wrapper -->
   </div>
   <!-- End of Page Wrapper -->
+</div>
+
+
+<!------To give the reason for Deactivate/Activate details PopUp model------->
+<div class="modal fade" id="details" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xl modal-fullscreen-sm-down ">
+    <div class="modal-content">
+      <div class="modal-header bg-gradiant-popup-header">
+        <h5 class="modal-title" id="modalLabel"><span >Leads Details</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModel></button>
+      </div>
+      <div class="modal-body p-3">
+        <div class="row mb-1">
+          <div class="col-sm-3">Unique Inquiry Number</div>
+          <div class="col-sm-1" style="color:#000000;">250001</div>
+          <div class="col-sm-2">Name</div>
+          <div class="col-sm-2" style="color:#000000;">Madhan Ram</div>
+          <div class="col-sm-1">Email</div>
+          <div class="col-sm-3" style="color:#000000;">-</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-3">Phone Number</div>
+          <div class="col-sm-1" style="color:#000000;">9874561230</div>
+          <div class="col-sm-2">State</div>
+          <div class="col-sm-2" style="color:#000000;">AP</div>
+          <div class="col-sm-1">City</div>
+          <div class="col-sm-3" style="color:#000000;">Guntur</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-3">Guest/ Property owner</div>
+          <div class="col-sm-1" style="color:#000000;">-</div>
+          <div class="col-sm-2">Inquired for </div>
+          <div class="col-sm-2" style="color:#000000;">Business inquiry</div>
+          <div class="col-sm-1">Description</div>
+          <div class="col-sm-3" style="color:#000000;">Description here</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-2">Date</div>
+          <div class="col-sm-2" style="color:#000000;">2025-03-15</div>
+          <div class="col-sm-2">Assign To </div>
+          <div class="col-sm-2" style="color:#000000;">Mahendra</div>
+          <div class="col-sm-1">Status</div>
+          <div class="col-sm-3"><span class="common-status btn-closed">Close</span></div>
+        </div>
+        <hr>
+        <div>
+          <div>Histoty Information</div> 
+          <div class="card">
+            <div class="card-body" style="padding: 2px;margin: 0px;" ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
