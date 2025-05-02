@@ -11,10 +11,10 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ZoyOwnerService } from 'src/app/owners/service/zoy-owner.service';
 import { Filter, SupportRequestParam } from '../../model/support-request-model';
-import { SupportList } from '../../model/suppot-list-model';
+import { SupportList, SupportTeamList } from '../../model/suppot-list-model';
 import { MatPaginator } from '@angular/material/paginator';
+import { SupportService } from '../../service/support.service';
 
 
 @Component({
@@ -42,6 +42,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 	paramFilter:Filter=new Filter();
 	displayedColumns: string[] = ['ticket_id', 'created_date', 'ticket_type', 'priority','assign_name', 'status', 'action'];
 	public ELEMENT_DATA:SupportList[]=[];
+	public supportTeamList:SupportTeamList[]=[];
 	dataSource:MatTableDataSource<SupportList>=new MatTableDataSource<SupportList>();
 	columnSortDirectionsOg: { [key: string]: string | null } = {
 		ticketNo: null,
@@ -54,7 +55,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	private _liveAnnouncer = inject(LiveAnnouncer);
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService,private zoyOwnerService : ZoyOwnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
+		private spinner: NgxSpinnerService,private supportService : SupportService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -91,6 +92,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		///	this.router.navigate(['/']);
 		//}
+		this.getSupportTeamList();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(6);
@@ -209,7 +211,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			this.spinner.show();
 			this.lastPageSize=this.param.pageSize;
 			this.param.isUserActivity=false;
-			this.zoyOwnerService.getTicketsList(this.param).subscribe(data => {
+			this.supportService.getTicketsList(this.param).subscribe(data => {
 			  
 				//this.orginalFetchData=  Object.assign([],data.data);
 				this.ELEMENT_DATA = Object.assign([],data.data);
@@ -218,6 +220,51 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 				this.totalProduct=data.count;
 				//this.dataService.setOwenerListFilterTotal(this.totalProduct);
 				this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}
+		
+		public assignTicketNumber:string='';
+		assignToTeam(element:any){
+			this.assignTicketNumber=element.ticket_id;
+		}
+
+		getDetails(element:any){
+			this.assignTicketNumber=element.ticket_id;
+		}
+
+
+		getSupportTeamList(){
+			this.supportService.getSupportTeamList().subscribe(data => {
+				this.supportTeamList = Object.assign([],data);
 			}, error => {
 			this.spinner.hide();
 			if(error.status == 0) {

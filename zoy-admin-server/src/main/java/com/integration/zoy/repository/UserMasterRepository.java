@@ -234,7 +234,7 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
 	Optional<UserMaster> findUserMaster(String phoneNumber);
 
 
-	@Query(value = "SELECT DISTINCT um.user_email, CONCAT(um.first_name, ' ', um.last_name) AS full_name " +
+	@Query(value = "SELECT DISTINCT um.user_email, CONCAT(um.first_name, ' ', um.last_name) AS full_name, 'SUPPORT_TEAM' as type " +
 			"FROM pgadmin.user_master um " +
 			"JOIN pgadmin.user_role ur ON um.user_email = ur.user_email " +
 			"JOIN pgadmin.role_screen rs ON ur.role_id = rs.role_id " +

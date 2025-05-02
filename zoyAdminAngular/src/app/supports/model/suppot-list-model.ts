@@ -8,3 +8,10 @@ export class SupportList {
   status:string;
   type:string;
   }
+
+
+  export class SupportTeamList{
+    email: string; 
+    name:string;
+    type:string;
+  }

@@ -188,7 +188,7 @@
                                   <th mat-header-cell *matHeaderCellDef style="width: 30px;">
                                   </th>
                                   <td mat-cell *matCellDef="let element" style="padding: 4px;">
-                                    <i class="far fa-eye" data-bs-toggle="modal" data-bs-target="#details"></i>
+                                    <i class="far fa-eye" data-bs-toggle="modal" data-bs-target="#details" data-bs-target="#details" (click)="getDetails(element)"></i>
                                   </td>
                                   
                                 </ng-container>
@@ -219,7 +219,7 @@
   <div class="modal-dialog modal-xl modal-fullscreen-sm-down ">
     <div class="modal-content">
       <div class="modal-header bg-gradiant-popup-header">
-        <h5 class="modal-title" id="modalLabel"><span >Leads Details</span></h5>
+        <h5 class="modal-title" id="modalLabel"><span >Details of #{{assignTicketNumber}}</span></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModel></button>
       </div>
       <div class="modal-body p-3">

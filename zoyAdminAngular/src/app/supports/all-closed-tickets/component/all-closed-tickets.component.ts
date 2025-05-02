@@ -12,9 +12,9 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { ZoyOwnerService } from 'src/app/owners/service/zoy-owner.service';
 import { Filter, SupportRequestParam } from '../../model/support-request-model';
 import { SupportList } from '../../model/suppot-list-model';
+import { SupportService } from '../../service/support.service';
 
 
 @Component({
@@ -54,7 +54,7 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	private _liveAnnouncer = inject(LiveAnnouncer);
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService,private zoyOwnerService : ZoyOwnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
+		private spinner: NgxSpinnerService,private supportService : SupportService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -209,7 +209,7 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 			this.spinner.show();
 			this.lastPageSize=this.param.pageSize;
 			this.param.isUserActivity=false;
-			this.zoyOwnerService.getTicketsCloseList(this.param).subscribe(data => {
+			this.supportService.getTicketsCloseList(this.param).subscribe(data => {
 			  
 				//this.orginalFetchData=  Object.assign([],data.data);
 				this.ELEMENT_DATA = Object.assign([],data.data);
@@ -249,4 +249,10 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 			}
 			});
 		}
+		public assignTicketNumber:string='';
+		
+		getDetails(element:any){
+			this.assignTicketNumber=element.ticket_id;
+		}
+
 }

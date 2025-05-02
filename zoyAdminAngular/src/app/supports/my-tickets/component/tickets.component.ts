@@ -12,9 +12,10 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { ZoyOwnerService } from 'src/app/owners/service/zoy-owner.service';
 import { Filter, SupportRequestParam } from '../../model/support-request-model';
 import { SupportList } from '../../model/suppot-list-model';
+import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
+import { SupportService } from '../../service/support.service';
 
 
 @Component({
@@ -54,7 +55,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	private _liveAnnouncer = inject(LiveAnnouncer);
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService,private zoyOwnerService : ZoyOwnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
+		private spinner: NgxSpinnerService,private supportService : SupportService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private confirmationDialogService:ConfirmationDialogService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -209,7 +210,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 			this.spinner.show();
 			this.lastPageSize=this.param.pageSize;
 			this.param.isUserActivity=true;
-			this.zoyOwnerService.getTicketsList(this.param).subscribe(data => {
+			this.supportService.getTicketsList(this.param).subscribe(data => {
 			  
 				//this.orginalFetchData=  Object.assign([],data.data);
 				this.ELEMENT_DATA = Object.assign([],data.data);
@@ -249,4 +250,31 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 			}
 			});
 		}
+
+		assignMe(element:any){
+			this.selectTicket=Object.assign(element);
+			this.assignMeTeam();
+		}
+
+		assignMeTeam(){
+			this.confirmationDialogService.confirm('Confirmation!!', 'Are you going to assign this ticket in yourself?')
+			.then(
+			(confirmed) =>{
+				if(confirmed){
+					// call api here
+					alert(this.selectTicket.ticket_id);
+				}
+			}).catch(
+				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+			);
+		}
+
+		public assignTicketNumber:string='';
+		public selectTicket:SupportList;
+		getDetails(element:any){
+			this.assignTicketNumber=element.ticket_id;
+			this.selectTicket=Object.assign(element);
+		}
+
+		
 }
