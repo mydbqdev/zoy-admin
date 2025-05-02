@@ -375,7 +375,7 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				populateColumn(masterSheet, 2, filteredShares, ZoyPgShareMaster::getShareType);
 				populateColumn(masterSheet, 3, filteredShares, ZoyPgShareMaster::getShareOccupancyCount);
 				populateColumn(masterSheet, 4, ownerDBImpl.getAllRoomTypes(), ZoyPgRoomTypeMaster::getRoomTypeName);
-				populateColumn(masterSheet, 5, ownerDBImpl.getAllPgTypes(), ZoyPgTypeMaster::getPgTypeName);
+				setStaticValues(masterSheet, 5, List.of("Male", "Female","Transgender"));
 				setStaticValues(masterSheet, 6, List.of("Yes", "No"));
 
 				masterSheet.protectSheet(masterPassword);
