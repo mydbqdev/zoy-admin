@@ -1,11 +1,15 @@
 package com.integration.zoy.entity;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "user_help_request", schema = "pgusers")
@@ -14,7 +18,7 @@ public class UserHelpRequest {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_help_request_id", nullable = false, updatable = false)
-	private Long userHelpRequestId;
+	private String userHelpRequestId;
 	
 	@Column(name = "user_id", nullable = false, length = 50)
 	private String userId;
@@ -35,10 +39,12 @@ public class UserHelpRequest {
 	private String requestStatus;
 
 	@Column(name = "created_at")
-	private String createdAt;
+	@CreationTimestamp
+	private Timestamp createdAt;
 
 	@Column(name = "update_at")
-	private String updateAt;
+	@CreationTimestamp
+	private Timestamp updateAt;
 
 	@Column(name = "assign_to_email")
 	private String assignedToEmail;
@@ -46,11 +52,11 @@ public class UserHelpRequest {
 	@Column(name = "assign_to_name")
 	private String assignedToName;
 
-	public Long getUserHelpRequestId() {
+	public String getUserHelpRequestId() {
 		return userHelpRequestId;
 	}
 
-	public void setUserHelpRequestId(Long userHelpRequestId) {
+	public void setUserHelpRequestId(String userHelpRequestId) {
 		this.userHelpRequestId = userHelpRequestId;
 	}
 
@@ -102,22 +108,7 @@ public class UserHelpRequest {
 		this.requestStatus = requestStatus;
 	}
 
-	public String getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(String createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public String getUpdateAt() {
-		return updateAt;
-	}
-
-	public void setUpdateAt(String updateAt) {
-		this.updateAt = updateAt;
-	}
-
+	
 	public String getAssignedToEmail() {
 		return assignedToEmail;
 	}
@@ -133,4 +124,22 @@ public class UserHelpRequest {
 	public void setAssignedToName(String assignedToName) {
 		this.assignedToName = assignedToName;
 	}
+
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Timestamp getUpdateAt() {
+		return updateAt;
+	}
+
+	public void setUpdateAt(Timestamp updateAt) {
+		this.updateAt = updateAt;
+	}
+	
+	
 }

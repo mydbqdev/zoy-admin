@@ -396,11 +396,11 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
 				}
 			}else if(assignTicket.getInquiryType().equals(ZoyConstant.SUPPORT_TICKET)) {
-				Optional<UserHelpRequest> partner = userHelpRequestRepository.findById(Long.valueOf(assignTicket.getInquiryNumber()));
+				Optional<UserHelpRequest> partner = userHelpRequestRepository.findById(assignTicket.getInquiryNumber());
 				if (partner.isPresent()) {
 					String currentDate=tuService.currentDate();
 					UserHelpRequest existingPartner = partner.get();
-					String historyContentForTicketAssign;
+					String historyContentForTicketAssign="";
 					String userName="";
 					Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
 					if(user.isPresent()) {
@@ -421,10 +421,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					response.setMessage("Support Ticket has been assigned successfully.");
 					response.setStatus(HttpStatus.OK.value());
 	
-					auditHistoryUtilities.userHelpRequestHistory(historyContentForTicketAssign,existingPartner.getRequestStatus(),assignTicket.getInquiryNumber());
+					auditHistoryUtilities.userHelpRequestHistory(historyContentForTicketAssign,existingPartner.getRequestStatus(),assignTicket.getInquiryNumber(),assignTicket.getEmail());
 					
 					String historyContentForChangeTicketStatus = "Support Ticket Number " + assignTicket.getInquiryNumber() + " Status has been Changed To " + existingPartner.getRequestStatus() + "."+ " On " + currentDate;
-					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),assignTicket.getInquiryNumber());
+					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),assignTicket.getInquiryNumber(),assignTicket.getEmail());
 					
 					if(!assignTicket.getSelf()) {
 					AdminUserMaster adminuserDetails=adminUserMasterRepo.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -442,6 +442,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Record not found");
 			}
 		} catch (Exception e) {
+			log.error("Error in assign to team {}",response.getMessage());
 			response.setMessage("An error occurred while assigning the ticket.");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
 		}

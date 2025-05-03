@@ -324,12 +324,13 @@ public class AuditHistoryUtilities {
 	}
 	
 	
-	public void userHelpRequestHistory(String history,String status,String inquryNumber) {
+	public void userHelpRequestHistory(String history,String status,String inquryNumber,String userEmail) {
 		try {
 			UserHelpRequestHistory auditHistory=new UserHelpRequestHistory();
 			auditHistory.setRequestStatus(status);
 			auditHistory.setDescription(history);
-			auditHistory.setUserHelpRequestHistoryId(inquryNumber);
+			auditHistory.setUserHelpRequestId(inquryNumber);
+			auditHistory.setUserEmail(userEmail);
 			userHelpRequestHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for User Help Request History",e);

@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.integration.zoy.entity.UserHelpRequest;
 @Repository
-public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest,Long>{
+public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest,String>{
 
 }
