@@ -25,11 +25,13 @@ import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AuditHistory;
 import com.integration.zoy.entity.LeadHistory;
+import com.integration.zoy.entity.UserHelpRequestHistory;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.AuditHistoryRepository;
 import com.integration.zoy.repository.LeadHistoryRepository;
+import com.integration.zoy.repository.UserHelpRequestHistoryRepository;
 @Service
 public class AuditHistoryUtilities {
 	private static final Logger log = LoggerFactory.getLogger(AuditHistoryUtilities.class);
@@ -39,6 +41,9 @@ public class AuditHistoryUtilities {
 	AdminUserMasterRepository userMasterRepository;
 	@Autowired
 	LeadHistoryRepository leadHistoryRepository;
+	
+	@Autowired
+	UserHelpRequestHistoryRepository userHelpRequestHistoryRepository;
 	
 	private static final Gson gson = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -304,15 +309,30 @@ public class AuditHistoryUtilities {
 		}
 	}
 	
-	public void leadHistory(String history,String supportEmail,String inquryNumber) {
+	public void leadHistory(String history,String supportEmail,String inquryNumber,String status) {
 		try {
 			LeadHistory auditHistory=new LeadHistory();
 			auditHistory.setUserEmail(supportEmail);
 			auditHistory.setHistoryData(history);
 			auditHistory.setInquiryNumber(inquryNumber);
+			auditHistory.setStatus(status);
 			leadHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for Lead History",e);
+			new ZoyAdminApplicationException(e, "");
+		}
+	}
+	
+	
+	public void userHelpRequestHistory(String history,String status,String inquryNumber) {
+		try {
+			UserHelpRequestHistory auditHistory=new UserHelpRequestHistory();
+			auditHistory.setRequestStatus(status);
+			auditHistory.setDescription(history);
+			auditHistory.setUserHelpRequestHistoryId(inquryNumber);
+			userHelpRequestHistoryRepository.save(auditHistory);
+		}catch(Exception e) {
+			log.error("Error in audit entry for User Help Request History",e);
 			new ZoyAdminApplicationException(e, "");
 		}
 	}

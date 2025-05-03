@@ -12,7 +12,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Filter, SupportRequestParam } from '../../model/support-request-model';
-import { SupportList, SupportTeamList } from '../../model/suppot-list-model';
+import { SupportList, SupportTeamList, TicketAssign } from '../../model/suppot-list-model';
 import { MatPaginator } from '@angular/material/paginator';
 import { SupportService } from '../../service/support.service';
 
@@ -281,6 +281,57 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			this.spinner.hide();
 			if(error.status == 0) {
 			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}
+		public selectAssignEmail:string='';
+		public ticketAssign:TicketAssign=new TicketAssign();
+		assignDetails:SupportTeamList=new SupportTeamList();
+		assignTeamApi(){
+			this.assignDetails=Object.assign(new SupportTeamList(),this.supportTeamList.filter(data => data.email === this.selectAssignEmail));
+			console.info(this.assignDetails);
+			console.info(this.assignDetails[0].name);
+			this.authService.checkLoginUserVlidaate();
+			this.spinner.show();
+			this.ticketAssign.email=this.selectAssignEmail;
+			this.ticketAssign.name=this.assignDetails[0].name;
+			this.ticketAssign.isSelf=false;
+			this.ticketAssign.inquiryNumber=this.selectTicket.ticket_id;
+			this.ticketAssign.inquiryType=this.selectTicket.type;
+			console.info(this.ticketAssign);
+			this.supportService.assignToTeam(this.ticketAssign).subscribe(data => {
+				this.notifyService.showSuccess(data.message, "")
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==409){
+			this.notifyService.showError("The ticket has already been assigned to another team member", "")
 		   }else if(error.status==401){
 			  console.error("Unauthorised");
 		  }else if(error.status==403){

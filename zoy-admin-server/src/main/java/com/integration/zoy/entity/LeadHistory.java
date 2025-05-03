@@ -29,7 +29,18 @@ public class LeadHistory {
     @Column(name = "inquiry_number")
     private String inquiryNumber;
     
-    @CreationTimestamp
+    @Column(name = "status")
+    private String status;
+    
+    public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@CreationTimestamp
     @Column(name = "created_on")
     private Timestamp createdOn;
 

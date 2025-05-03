@@ -284,8 +284,8 @@
         <div class="row mb-1">
           <div class="col-sm-2">Assign To</div>
           <div class="col-sm-6">
-            <select class="form-select form-select-sm">
-              <option>Choose one</option>
+            <select class="form-select form-select-sm" [(ngModel)]="selectAssignEmail">
+              <option value="">Choose one</option>
               <option *ngFor="let cond of supportTeamToAssignList" [value]="cond.email">{{cond.name}} ({{cond.email}})</option>
             </select>
           </div>
@@ -293,7 +293,7 @@
         <div class="row mb-1">
           <div class="col-sm-2"></div>
           <div class="col-sm-6">
-            <button type="button" class="btn btn-primary-custom me-2">Save</button>
+            <button type="button" class="btn btn-primary-custom me-2" (click)="assignTeamApi()">Save</button>
           </div>
         </div>
       </div>

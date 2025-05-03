@@ -13,7 +13,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { Filter, SupportRequestParam } from '../../model/support-request-model';
-import { SupportList } from '../../model/suppot-list-model';
+import { SupportList, TicketAssign } from '../../model/suppot-list-model';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { SupportService } from '../../service/support.service';
 
@@ -262,7 +262,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 			(confirmed) =>{
 				if(confirmed){
 					// call api here
-					alert(this.selectTicket.ticket_id);
+					this.assignTeamApi();
 				}
 			}).catch(
 				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
@@ -275,6 +275,49 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 			this.assignTicketNumber=element.ticket_id;
 			this.selectTicket=Object.assign(element);
 		}
-
-		
+        public ticketAssign:TicketAssign=new TicketAssign();
+		assignTeamApi(){
+			this.authService.checkLoginUserVlidaate();
+			this.spinner.show();
+			this.ticketAssign.email=this.userNameSession;
+			this.ticketAssign.name=this.userNameSession;
+			this.ticketAssign.isSelf=false;
+			this.ticketAssign.inquiryNumber=this.selectTicket.ticket_id;
+			this.ticketAssign.inquiryType=this.selectTicket.type;
+			this.supportService.assignToTeam(this.ticketAssign).subscribe(data => {
+				this.notifyService.showSuccess(data.message, "")
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==409){
+			this.notifyService.showError("The ticket has already been assigned to another team member", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}	
 }

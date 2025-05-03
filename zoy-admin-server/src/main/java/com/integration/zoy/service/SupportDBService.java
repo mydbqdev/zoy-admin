@@ -124,18 +124,14 @@ public class SupportDBService implements SupportDBImpl{
 			} else {
 				queryBuilder.append(" order by tkt.created_date desc ");
 			}
-			log.error("queryBuilder :{}",queryBuilder);
-			log.error("queryBuilder setParameter:{}",parameters);
 			Query query = entityManager.createNativeQuery(queryBuilder.toString());
 			parameters.forEach(query::setParameter);
 
 			    int filterCount = query.getResultList().size();
-			    log.error("queryBuilder filterCount:{}",filterCount);
 				query.setFirstResult(paginationRequest.getPageIndex() * paginationRequest.getPageSize());
 				query.setMaxResults(paginationRequest.getPageSize());
 
 			List<Object[]> results = query.getResultList();
-			 log.error("queryBuilder results:{}",results);
 			List<SupportTicketDTO> registerLeadDetails = results.stream().map(row -> {
 				SupportTicketDTO dto = new SupportTicketDTO();
 			    dto.setTicket_id(row[0] != null ? (String) row[0] : "");
@@ -149,7 +145,6 @@ public class SupportDBService implements SupportDBImpl{
 			    dto.setType(row[7] != null ? (String) row[7] : "");
 			    return dto;
 			}).collect(Collectors.toList());
-			log.error("queryBuilder registerLeadDetails:{}",registerLeadDetails);
 			
 			return new CommonResponseDTO<>(registerLeadDetails, filterCount);
 		} catch (Exception e) {

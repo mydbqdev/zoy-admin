@@ -143,5 +143,17 @@ public interface ZoyAdminSupportImpl {
 	@PostMapping(value = "/zoy_admin/close-support-ticket",
 	produces = { "application/json" })
 	ResponseEntity<String> zoyCloseSupportTicketList(@RequestBody PaginationRequest paginationRequest);
+	
+	
+	@Operation(summary = "Ticket assign / reassign", description = "assign ticket to the support/lead team", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Support Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/assign-to-team-ticket",
+	produces = { "application/json" })
+	ResponseEntity<String> assignTicketsToTeam(@RequestBody TicketAssign ticket);
 }
 

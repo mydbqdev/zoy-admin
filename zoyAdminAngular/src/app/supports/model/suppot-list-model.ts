@@ -15,3 +15,12 @@ export class SupportList {
     name:string;
     type:string;
   }
+
+
+  export class TicketAssign{
+    email: string; 
+    name:string;
+    inquiryNumber:string;
+    inquiryType:string;
+    isSelf:boolean;
+  }
