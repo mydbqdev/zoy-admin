@@ -43,6 +43,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 	displayedColumns: string[] = ['ticket_id', 'created_date', 'ticket_type', 'priority','assign_name', 'status', 'action'];
 	public ELEMENT_DATA:SupportList[]=[];
 	public supportTeamList:SupportTeamList[]=[];
+	public supportTeamToAssignList:SupportTeamList[]=[];
 	dataSource:MatTableDataSource<SupportList>=new MatTableDataSource<SupportList>();
 	columnSortDirectionsOg: { [key: string]: string | null } = {
 		ticketNo: null,
@@ -252,13 +253,24 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			});
 		}
 		
-		public assignTicketNumber:string='';
 		assignToTeam(element:any){
 			this.assignTicketNumber=element.ticket_id;
+			this.selectTicket=Object.assign(element);
+			const type=this.selectTicket.type=='SUPPORT_TICKET'?'SUPPORT_TEAM':'SALE_TEAM';
+			this.supportTeamToAssignList=Object.assign([],this.supportTeamList.filter(data => data.type === type));
+
 		}
 
+		assignToTeamDetails(){
+			const type=this.selectTicket.type=='SUPPORT_TICKET'?'SUPPORT_TEAM':'SALE_TEAM';
+			this.supportTeamToAssignList=Object.assign([],this.supportTeamList.filter(data => data.type === type));
+		}
+
+		public assignTicketNumber:string='';
+		public selectTicket:SupportList;
 		getDetails(element:any){
 			this.assignTicketNumber=element.ticket_id;
+			this.selectTicket=Object.assign(element);
 		}
 
 

@@ -234,12 +234,17 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
 	Optional<UserMaster> findUserMaster(String phoneNumber);
 
 
-	@Query(value = "SELECT DISTINCT um.user_email, CONCAT(um.first_name, ' ', um.last_name) AS full_name, 'SUPPORT_TEAM' as type " +
-			"FROM pgadmin.user_master um " +
-			"JOIN pgadmin.user_role ur ON um.user_email = ur.user_email " +
-			"JOIN pgadmin.role_screen rs ON ur.role_id = rs.role_id " +
-			"WHERE rs.screen_name = 'TICKETS' " +
-			"ORDER BY full_name ASC", nativeQuery = true)
+	@Query(value = "select * from (\n"
+			+ "SELECT DISTINCT um.user_email as email , CONCAT(um.first_name, ' ', um.last_name) AS full_name, 'SUPPORT_TEAM' as type \n"
+			+ "FROM pgadmin.user_master um \n"
+			+ "JOIN pgadmin.user_role ur ON um.user_email = ur.user_email \n"
+			+ "JOIN pgadmin.role_screen rs ON ur.role_id = rs.role_id \n"
+			+ "WHERE rs.screen_name = 'TICKETS' \n"
+			+ "union all\n"
+			+ "select psm.email_id as email,CONCAT(psm.first_name, ' ', psm.last_name) AS full_name,'SALE_TEAM' as type \n"
+			+ "from pgsales.pg_sales_master psm \n"
+			+ "where  psm .status = true)ss\n"
+			+ "ORDER BY ss.full_name asc", nativeQuery = true)
 	List<Object[]> findUsersWithTicketScreenAccess();
 
 }
