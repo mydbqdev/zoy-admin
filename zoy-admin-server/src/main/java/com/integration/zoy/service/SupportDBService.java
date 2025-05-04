@@ -42,8 +42,9 @@ public class SupportDBService implements SupportDBImpl{
 					+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
 					+ "from pgowners.zoy_pg_registered_owner_details zprod \n"
 					+ "union all\n"
-					+ "select helpreq.user_help_request_id as ticket_id,helpreq.created_at as created_date,helpreq.urgency as priority,'Support' as support_type,helpreq.assign_to_email as assign_email,helpreq.assign_to_name as assign_name,helpreq.request_status as status,'SUPPORT_TICKET' as type \n"
+					+ "select helpreq.user_help_request_id as ticket_id,helpreq.created_at as created_date,helpreq.urgency as priority,CONCAT('Support for, ',cat.categories_name) as support_type,helpreq.assign_to_email as assign_email,helpreq.assign_to_name as assign_name,helpreq.request_status as status,'SUPPORT_TICKET' as type \n"
 					+ "from pgusers.user_help_request helpreq\n"
+					+ "left join pgcommon.pg_user_help_desk_categories cat on cat.categories_id =helpreq.categories_id\n"
 					+ ")tkt WHERE 1=1   \r\n"
 					);
 			}else {
@@ -52,9 +53,10 @@ public class SupportDBService implements SupportDBImpl{
 						+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
 						+ "from pgowners.zoy_pg_registered_owner_details zprod \n"
 						+ "union all\n"
-						+ "select helpreq.user_help_request_id as ticket_id,helpreq.created_at as created_date,helpreq.urgency as priority,'Support' as support_type,helpreq.assign_to_email as assign_email,helpreq.assign_to_name as assign_name,helpreq.request_status as status,'SUPPORT_TICKET' as type \n"
+						+ "select helpreq.user_help_request_id as ticket_id,helpreq.created_at as created_date,helpreq.urgency as priority,CONCAT('Support for, ',cat.categories_name) as support_type,helpreq.assign_to_email as assign_email,helpreq.assign_to_name as assign_name,helpreq.request_status as status,'SUPPORT_TICKET' as type \n"
 						+ "from pgusers.user_help_request helpreq\n"
-						+ ")tkt WHERE 1=1   \r\n"
+						+ "left join pgcommon.pg_user_help_desk_categories cat on cat.categories_id =helpreq.categories_id\n"
+						+ ")tkt WHERE 1=1  \r\n"
 						);
 			}
 			Map<String, Object> parameters = new HashMap<>();
