@@ -126,20 +126,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 		}
 	}
 
-	@Override
-	public ResponseEntity<String> getSupportUserDetails() {
-		ResponseBody response = new ResponseBody();
-		try {
-			List<SupportUsres> supportUsrs = ownerDBImpl.getAllSupportUserNames();
-			return new ResponseEntity<>(gson2.toJson(supportUsrs), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error getting support user details API:/zoy_admin/support_user_details.getSupportUserDetails", e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-	}
-
+	
 	@Override
 	public ResponseEntity<String> assignTicketsToSupportTeam(TicketAssign assignTicket) {
 		ResponseBody response=new ResponseBody();
@@ -220,71 +207,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 		}
 	}
 
-	@Override
-	public ResponseEntity<String> updateInquiryStatus(UpdateStatus updateStatus) {
-		ResponseBody response=new ResponseBody();
-		try {
-			if(updateStatus.getInquiryType().equals(ZoyConstant.LEAD_GEN)) {
-			Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(updateStatus.getInquiryNumber());
-			if (partner.isPresent()) {
-				String historyContentForChangeTicketStatus="";
-				String currentDate=tuService.currentDate();
-				RegisteredPartner existingPartner = partner.get();
-				String previousStatus=existingPartner.getStatus();
-				existingPartner.setStatus(updateStatus.getStatus());
-				registeredPartnerDetailsRepository.save(existingPartner);
-				if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
-					response.setMessage("Comment has been added successfully.");
-					historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
-				}else {
-					response.setMessage("Status and comment has been updated successfully.");
-					historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
-				}
-				response.setStatus(HttpStatus.OK.value());
-				
-				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,SecurityContextHolder.getContext().getAuthentication().getName(),updateStatus.getInquiryNumber(),existingPartner.getStatus());
-				return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
-			} else {
-				response.setMessage("Inquiry number does not exist.");
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
-			}
-			}else if(updateStatus.getInquiryType().equals(ZoyConstant.SUPPORT_TICKET)) {
-				Optional<UserHelpRequest> partner = userHelpRequestRepository.findById(updateStatus.getInquiryNumber());
-				if (partner.isPresent()) {
-					String historyContentForChangeTicketStatus="";
-					String currentDate=tuService.currentDate();
-					UserHelpRequest existingPartner = partner.get();
-					String previousStatus=existingPartner.getRequestStatus();
-					existingPartner.setRequestStatus(updateStatus.getStatus());
-					userHelpRequestRepository.save(existingPartner);
-					if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
-						response.setMessage("Comment has been added successfully.");
-						historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
-					}else {
-						response.setMessage("Status and comment has been updated successfully.");
-						historyContentForChangeTicketStatus = "Support Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
-					}
-					response.setStatus(HttpStatus.OK.value());
-					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),updateStatus.getInquiryNumber(),SecurityContextHolder.getContext().getAuthentication().getName());
-
-					
-					return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
-				} else {
-					response.setMessage("Support Ticket number does not exist.");
-					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
-				}
-			}else {
-				// nothing matching
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Record not found");
-			}	
-			
-			
-		} catch (Exception e) {
-			response.setMessage("An error occurred while Changing the Lead Status.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
-		}
-	}
-
+	
 	@Override
 	public ResponseEntity<String> createFollowUp(FollowUp followUp) {
 		ResponseBody response=new ResponseBody();
@@ -345,6 +268,11 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	    return followUpModel;
 	}
 	
+	
+	
+	/*
+	 * Start coding for admin support
+	 */
 	
 	@Override
 	public ResponseEntity<String> zoyOpenSupportTicketList(PaginationRequest paginationRequest) {
@@ -485,5 +413,88 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
 		}
 	}
+	
+	@Override
+	public ResponseEntity<String> getSupportUserDetails() {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<SupportUsres> supportUsrs = ownerDBImpl.getAllSupportUserNames();
+			return new ResponseEntity<>(gson2.toJson(supportUsrs), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting support user details API:/zoy_admin/support_user_details.getSupportUserDetails", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<String> updateInquiryStatus(UpdateStatus updateStatus) {
+		ResponseBody response=new ResponseBody();
+		try {
+			if(updateStatus.getInquiryType().equals(ZoyConstant.LEAD_GEN)) {
+			Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(updateStatus.getInquiryNumber());
+			if (partner.isPresent()) {
+				String historyContentForChangeTicketStatus="";
+				String currentDate=tuService.currentDate();
+				RegisteredPartner existingPartner = partner.get();
+				String previousStatus=existingPartner.getStatus();
+				existingPartner.setStatus(updateStatus.getStatus());
+				registeredPartnerDetailsRepository.save(existingPartner);
+				if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
+					response.setMessage("Comment has been added successfully.");
+					historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+				}else {
+					response.setMessage("Status and comment has been updated successfully.");
+					historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+				}
+				response.setStatus(HttpStatus.OK.value());
+				
+				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,SecurityContextHolder.getContext().getAuthentication().getName(),updateStatus.getInquiryNumber(),existingPartner.getStatus());
+				return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+			} else {
+				response.setMessage("Inquiry number does not exist.");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
+			}
+			}else if(updateStatus.getInquiryType().equals(ZoyConstant.SUPPORT_TICKET)) {
+				Optional<UserHelpRequest> partner = userHelpRequestRepository.findById(updateStatus.getInquiryNumber());
+				if (partner.isPresent()) {
+					String historyContentForChangeTicketStatus="";
+					String currentDate=tuService.currentDate();
+					UserHelpRequest existingPartner = partner.get();
+					String previousStatus=existingPartner.getRequestStatus();
+					existingPartner.setRequestStatus(updateStatus.getStatus());
+					userHelpRequestRepository.save(existingPartner);
+					if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
+						response.setMessage("Comment has been added successfully.");
+						historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+					}else {
+						response.setMessage("Status and comment has been updated successfully.");
+						historyContentForChangeTicketStatus = "Support Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+					}
+					response.setStatus(HttpStatus.OK.value());
+					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),updateStatus.getInquiryNumber(),SecurityContextHolder.getContext().getAuthentication().getName());
+
+					
+					return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+				} else {
+					response.setMessage("Support Ticket number does not exist.");
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
+				}
+			}else {
+				// nothing matching
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Record not found");
+			}	
+			
+			
+		} catch (Exception e) {
+			response.setMessage("An error occurred while Changing the Lead Status.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
+		}
+	}
+	
+	/*
+	 * End coding for admin support
+	 */
 
 }
