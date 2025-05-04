@@ -9,6 +9,12 @@ public class UpdateStatus {
 	
 	@JsonProperty("status")
 	private String status;
+	
+	@JsonProperty("inquiryType")
+	private String inquiryType;
+	
+	@JsonProperty("comment")
+	private String comment;
 
 	public String getInquiryNumber() {
 		return inquiryNumber;
@@ -25,8 +31,21 @@ public class UpdateStatus {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
-	
-	
+
+	public String getInquiryType() {
+		return inquiryType;
+	}
+
+	public void setInquiryType(String inquiryType) {
+		this.inquiryType = inquiryType;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+		
 }

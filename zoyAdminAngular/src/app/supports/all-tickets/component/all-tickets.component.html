@@ -185,8 +185,8 @@
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                             aria-labelledby="dropdownMenuLink">
                                             <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#details" (click)="getDetails(element)">Details</a>
-                                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#assignToTeam" (click)="assignToTeam(element)" >Assign / Reassign</a>
-                                            <a class="dropdown-item" href="javascript:void(0)"  >Status Update</a>
+                                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#assignToTeam" (click)="assignToTeam(element,true)" >Assign / Reassign</a>
+                                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="updatePopupFromList(element,true)" >Status Update</a>
                                         </div>
                                       </td>
                                     </ng-container>
@@ -259,7 +259,10 @@
         <div>
           <div class="d-flex">
             <div>Histoty Information</div>
-            <div class="ml-auto"><button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#assignToTeam" (click)="assignToTeamDetails()">Assign/Reassign</button></div>
+            <div class="ml-auto">
+              <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#assignToTeam" (click)="assignToTeamDetails(false)">Assign/Reassign</button>&nbsp;&nbsp;
+              <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)">Status Update</button>
+            </div>
           </div> 
           <div class="card">
             <div class="card-body" style="padding: 2px;margin: 0px;" ></div>
@@ -294,6 +297,41 @@
           <div class="col-sm-2"></div>
           <div class="col-sm-6">
             <button type="button" class="btn btn-primary-custom me-2" (click)="assignTeamApi()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!------For update PopUp model------->
+<div class="modal fade" id="updatePopup" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg modal-fullscreen-sm-down ">
+    <div class="modal-content">
+      <div class="modal-header bg-gradiant-popup-header">
+        <h5 class="modal-title" id="modalLabel"><span >Update the [ #{{assignTicketNumber}}]</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModel></button>
+      </div>
+      <div class="modal-body p-3">
+        <div class="row mb-1">
+          <div class="col-sm-2">Status</div>
+          <div class="col-sm-6">
+            <select class="form-select form-select-sm" [(ngModel)]="selectedStatusForUpdate">
+              <option *ngFor="let cond of statusList" [value]="cond">{{cond}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-2">Comment</div>
+          <div class="col-sm-9">
+            <textarea class="form-control" placeholder="Leave a comment here" rows="5" [(ngModel)]="comment"></textarea>
+          </div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-6">
+            <button type="button" class="btn btn-primary-custom me-2" (click)="saveStatusComment()">Save</button>
           </div>
         </div>
       </div>

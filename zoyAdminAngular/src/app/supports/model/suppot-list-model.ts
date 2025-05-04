@@ -24,3 +24,11 @@ export class SupportList {
     inquiryType:string;
     isSelf:boolean;
   }
+
+
+  export class UpdateStatus{
+    status:string;
+    inquiryNumber:string;
+    inquiryType:string;
+    comment:string;
+  }

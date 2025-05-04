@@ -93,7 +93,7 @@ public class SupportDBService implements SupportDBImpl{
 	            if (isClose) {
 	            	queryBuilder.append("AND (LOWER(tkt.assign_email) = LOWER(:assignedEmail))\r\n");
 	            }else {
-	            	 queryBuilder.append("AND (LOWER(tkt.assign_email) = LOWER(:assignedEmail) OR LOWER(tkt.assign_email) ='' OR tkt.assign_email IS NULL )\r\n");
+	            	 queryBuilder.append("AND (LOWER(tkt.assign_email) = LOWER(:assignedEmail) OR LOWER(tkt.assign_email) ='' OR tkt.assign_email IS NULL ) AND tkt.type='SUPPORT_TICKET' \r\n");
 	            }
 	            parameters.put("assignedEmail", assignedEmail);
 	        }

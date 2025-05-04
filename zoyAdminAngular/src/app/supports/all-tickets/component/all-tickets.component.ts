@@ -12,7 +12,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Filter, SupportRequestParam } from '../../model/support-request-model';
-import { SupportList, SupportTeamList, TicketAssign } from '../../model/suppot-list-model';
+import { SupportList, SupportTeamList, TicketAssign, UpdateStatus } from '../../model/suppot-list-model';
 import { MatPaginator } from '@angular/material/paginator';
 import { SupportService } from '../../service/support.service';
 
@@ -55,6 +55,16 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 	};
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	private _liveAnnouncer = inject(LiveAnnouncer);
+
+	public assignTicketNumber:string='';
+		public selectTicket:SupportList;
+		public isFromSummeryScreen:boolean=true;
+		public selectAssignEmail:string='';
+		public ticketAssign:TicketAssign=new TicketAssign();
+		assignDetails:SupportTeamList=new SupportTeamList();
+		public selectedStatusForUpdate:string='';
+		statusList: String[] = ['Open', 'Progress','Reopen', 'Cancel','Close','Resolve']; 
+		public updateStatus:UpdateStatus=new UpdateStatus();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService,private supportService : SupportService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
@@ -106,8 +116,9 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 		{ id: 1, name: 'New', selected: false },
 		{ id: 2, name: 'Open', selected: false },
 		{ id: 3, name: 'Progress', selected: false },
-		// { id: 4, name: 'Registered', selected: false },
-		// { id: 4, name: 'Suspended', selected: false },
+		// { id: 4, name: 'Resolve', selected: false },
+		// { id: 5, name: 'Close', selected: false },
+		// { id: 5, name: 'Cancel', selected: false },
 	  ];
 	  selectedStatuses:string[]=[]; 
 	   // Toggle the selected status for a button
@@ -253,7 +264,8 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			});
 		}
 		
-		assignToTeam(element:any){
+		assignToTeam(element:any,isFromSummeryScreen:boolean){
+			this.isFromSummeryScreen=isFromSummeryScreen;
 			this.assignTicketNumber=element.ticket_id;
 			this.selectTicket=Object.assign(element);
 			const type=this.selectTicket.type=='SUPPORT_TICKET'?'SUPPORT_TEAM':'SALE_TEAM';
@@ -261,13 +273,13 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 
 		}
 
-		assignToTeamDetails(){
+		assignToTeamDetails(isFromSummeryScreen:boolean){
+			this.isFromSummeryScreen=isFromSummeryScreen;
 			const type=this.selectTicket.type=='SUPPORT_TICKET'?'SUPPORT_TEAM':'SALE_TEAM';
 			this.supportTeamToAssignList=Object.assign([],this.supportTeamList.filter(data => data.type === type));
 		}
 
-		public assignTicketNumber:string='';
-		public selectTicket:SupportList;
+		
 		getDetails(element:any){
 			this.assignTicketNumber=element.ticket_id;
 			this.selectTicket=Object.assign(element);
@@ -308,13 +320,9 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			}
 			});
 		}
-		public selectAssignEmail:string='';
-		public ticketAssign:TicketAssign=new TicketAssign();
-		assignDetails:SupportTeamList=new SupportTeamList();
+		
 		assignTeamApi(){
 			this.assignDetails=Object.assign(new SupportTeamList(),this.supportTeamList.filter(data => data.email === this.selectAssignEmail));
-			console.info(this.assignDetails);
-			console.info(this.assignDetails[0].name);
 			this.authService.checkLoginUserVlidaate();
 			this.spinner.show();
 			this.ticketAssign.email=this.selectAssignEmail;
@@ -322,9 +330,76 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			this.ticketAssign.isSelf=false;
 			this.ticketAssign.inquiryNumber=this.selectTicket.ticket_id;
 			this.ticketAssign.inquiryType=this.selectTicket.type;
-			console.info(this.ticketAssign);
 			this.supportService.assignToTeam(this.ticketAssign).subscribe(data => {
-				this.notifyService.showSuccess(data.message, "")
+				this.notifyService.showSuccess(data.message, "");
+				if(this.isFromSummeryScreen){
+					this.getTicketsList();
+				}else{
+					// call refresh details api here
+				}
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==409){
+			this.notifyService.showError("The ticket has already been assigned to another team member", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}
+
+		addNewCommentPopup(isFromSummeryScreen:boolean){
+			this.isFromSummeryScreen=isFromSummeryScreen;
+			this.selectedStatusForUpdate=this.selectTicket.status;
+			this.comment='';
+		}
+		updatePopupFromList(element:any,isFromSummeryScreen:boolean){
+			this.isFromSummeryScreen=isFromSummeryScreen;
+			this.assignTicketNumber=element.ticket_id;
+			this.selectTicket=Object.assign(element);
+			this.selectedStatusForUpdate=this.selectTicket.status;
+			this.comment='';
+		}
+
+		public comment:string='';
+		saveStatusComment(){
+			this.authService.checkLoginUserVlidaate();
+			this.spinner.show();
+			this.updateStatus.comment=this.comment;
+			this.updateStatus.status=this.selectedStatusForUpdate;
+			this.updateStatus.inquiryNumber=this.selectTicket.ticket_id;
+			this.updateStatus.inquiryType=this.selectTicket.type;
+			this.supportService.updateInquiryStatus(this.updateStatus).subscribe(data => {
+				this.notifyService.showSuccess(data.message, "");
+				if(this.isFromSummeryScreen){
+					this.getTicketsList();
+				}else{
+					// call refresh details api here
+				}
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
