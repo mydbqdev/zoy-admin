@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';
@@ -11,10 +11,10 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ZoyOwnerService } from 'src/app/owners/service/zoy-owner.service';
 import { Filter, SupportRequestParam } from '../../model/support-request-model';
-import { SupportList } from '../../model/suppot-list-model';
+import { SupportList, SupportTeamList, TicketAssign, UpdateStatus } from '../../model/suppot-list-model';
 import { MatPaginator } from '@angular/material/paginator';
+import { SupportService } from '../../service/support.service';
 
 
 @Component({
@@ -30,6 +30,8 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 	@ViewChild(SidebarComponent) sidemenuComp;
 	@ViewChild(MatSort) sort: MatSort;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
+	@ViewChild('closeModelAssign') closeModelAssign : ElementRef;
+	@ViewChild('closeModelUpdate') closeModelUpdate : ElementRef;
 	public rolesArray: string[] = [];
 	searchText:string='';
 	fromDate:string='';
@@ -42,6 +44,8 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 	paramFilter:Filter=new Filter();
 	displayedColumns: string[] = ['ticket_id', 'created_date', 'ticket_type', 'priority','assign_name', 'status', 'action'];
 	public ELEMENT_DATA:SupportList[]=[];
+	public supportTeamList:SupportTeamList[]=[];
+	public supportTeamToAssignList:SupportTeamList[]=[];
 	dataSource:MatTableDataSource<SupportList>=new MatTableDataSource<SupportList>();
 	columnSortDirectionsOg: { [key: string]: string | null } = {
 		ticketNo: null,
@@ -53,8 +57,18 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 	};
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	private _liveAnnouncer = inject(LiveAnnouncer);
+
+	public assignTicketNumber:string='';
+		public selectTicket:SupportList;
+		public isFromSummeryScreen:boolean=true;
+		public selectAssignEmail:string='';
+		public ticketAssign:TicketAssign=new TicketAssign();
+		assignDetails:SupportTeamList=new SupportTeamList();
+		public selectedStatusForUpdate:string='';
+		statusList: String[] = ['Open', 'Progress','Reopen', 'Cancel','Close','Resolve']; 
+		public updateStatus:UpdateStatus=new UpdateStatus();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService,private zoyOwnerService : ZoyOwnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
+		private spinner: NgxSpinnerService,private supportService : SupportService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -91,6 +105,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		///	this.router.navigate(['/']);
 		//}
+		this.getSupportTeamList();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(6);
@@ -103,8 +118,9 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 		{ id: 1, name: 'New', selected: false },
 		{ id: 2, name: 'Open', selected: false },
 		{ id: 3, name: 'Progress', selected: false },
-		// { id: 4, name: 'Registered', selected: false },
-		// { id: 4, name: 'Suspended', selected: false },
+		// { id: 4, name: 'Resolve', selected: false },
+		// { id: 5, name: 'Close', selected: false },
+		// { id: 5, name: 'Cancel', selected: false },
 	  ];
 	  selectedStatuses:string[]=[]; 
 	   // Toggle the selected status for a button
@@ -209,7 +225,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			this.spinner.show();
 			this.lastPageSize=this.param.pageSize;
 			this.param.isUserActivity=false;
-			this.zoyOwnerService.getTicketsList(this.param).subscribe(data => {
+			this.supportService.getTicketsList(this.param).subscribe(data => {
 			  
 				//this.orginalFetchData=  Object.assign([],data.data);
 				this.ELEMENT_DATA = Object.assign([],data.data);
@@ -222,6 +238,181 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			this.spinner.hide();
 			if(error.status == 0) {
 			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}
+		
+		assignToTeam(element:any,isFromSummeryScreen:boolean){
+			this.isFromSummeryScreen=isFromSummeryScreen;
+			this.assignTicketNumber=element.ticket_id;
+			this.selectTicket=Object.assign(element);
+			const type=this.selectTicket.type=='SUPPORT_TICKET'?'SUPPORT_TEAM':'SALE_TEAM';
+			this.supportTeamToAssignList=Object.assign([],this.supportTeamList.filter(data => data.type === type));
+
+		}
+
+		assignToTeamDetails(isFromSummeryScreen:boolean){
+			this.isFromSummeryScreen=isFromSummeryScreen;
+			const type=this.selectTicket.type=='SUPPORT_TICKET'?'SUPPORT_TEAM':'SALE_TEAM';
+			this.supportTeamToAssignList=Object.assign([],this.supportTeamList.filter(data => data.type === type));
+		}
+
+		
+		getDetails(element:any){
+			this.assignTicketNumber=element.ticket_id;
+			this.selectTicket=Object.assign(element);
+		}
+
+
+		getSupportTeamList(){
+			this.supportService.getSupportTeamList().subscribe(data => {
+				this.supportTeamList = Object.assign([],data);
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}
+		
+		assignTeamApi(){
+			this.assignDetails=Object.assign(new SupportTeamList(),this.supportTeamList.filter(data => data.email === this.selectAssignEmail));
+			this.authService.checkLoginUserVlidaate();
+			this.spinner.show();
+			this.ticketAssign.email=this.selectAssignEmail;
+			this.ticketAssign.name=this.assignDetails[0].name;
+			this.ticketAssign.isSelf=false;
+			this.ticketAssign.inquiryNumber=this.selectTicket.ticket_id;
+			this.ticketAssign.inquiryType=this.selectTicket.type;
+			this.supportService.assignToTeam(this.ticketAssign).subscribe(data => {
+				this.notifyService.showSuccess(data.message, "");
+				if(this.isFromSummeryScreen){
+					this.getTicketsList(); 
+				}else{
+					this.getTicketsList();
+					// call refresh details api here
+				}
+				this.closeModelAssign.nativeElement.click();
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==409){
+			this.notifyService.showError("The ticket has already been assigned to another team member", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}
+
+		addNewCommentPopup(isFromSummeryScreen:boolean){
+			this.isFromSummeryScreen=isFromSummeryScreen;
+			this.selectedStatusForUpdate=this.selectTicket.status;
+			this.comment='';
+		}
+		updatePopupFromList(element:any,isFromSummeryScreen:boolean){
+			this.isFromSummeryScreen=isFromSummeryScreen;
+			this.assignTicketNumber=element.ticket_id;
+			this.selectTicket=Object.assign(element);
+			this.selectedStatusForUpdate=this.selectTicket.status;
+			this.comment='';
+		}
+
+		public comment:string='';
+		saveStatusComment(){
+			this.authService.checkLoginUserVlidaate();
+			this.spinner.show();
+			this.updateStatus.comment=this.comment;
+			this.updateStatus.status=this.selectedStatusForUpdate;
+			this.updateStatus.inquiryNumber=this.selectTicket.ticket_id;
+			this.updateStatus.inquiryType=this.selectTicket.type;
+			this.supportService.updateInquiryStatus(this.updateStatus).subscribe(data => {
+				this.notifyService.showSuccess(data.message, "");
+				if(this.isFromSummeryScreen){
+					this.getTicketsList();
+				}else{
+					this.getTicketsList();
+					// call refresh details api here
+				}
+				this.closeModelUpdate.nativeElement.click(); 
+			this.spinner.hide();
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==409){
+			this.notifyService.showError("The ticket has already been assigned to another team member", "")
 		   }else if(error.status==401){
 			  console.error("Unauthorised");
 		  }else if(error.status==403){

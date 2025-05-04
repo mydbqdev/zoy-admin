@@ -42,8 +42,9 @@ public class SupportDBService implements SupportDBImpl{
 					+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
 					+ "from pgowners.zoy_pg_registered_owner_details zprod \n"
 					+ "union all\n"
-					+ "select helpreq.user_help_request_id as ticket_id,helpreq.created_at as created_date,helpreq.urgency as priority,'Support' as support_type,'-' as assign_email,'' as assign_name,helpreq.request_status as status,'SUPPORT_TICKET' as type \n"
+					+ "select helpreq.user_help_request_id as ticket_id,helpreq.created_at as created_date,helpreq.urgency as priority,CONCAT('Support for, ',cat.categories_name) as support_type,helpreq.assign_to_email as assign_email,helpreq.assign_to_name as assign_name,helpreq.request_status as status,'SUPPORT_TICKET' as type \n"
 					+ "from pgusers.user_help_request helpreq\n"
+					+ "left join pgcommon.pg_user_help_desk_categories cat on cat.categories_id =helpreq.categories_id\n"
 					+ ")tkt WHERE 1=1   \r\n"
 					);
 			}else {
@@ -52,9 +53,10 @@ public class SupportDBService implements SupportDBImpl{
 						+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
 						+ "from pgowners.zoy_pg_registered_owner_details zprod \n"
 						+ "union all\n"
-						+ "select helpreq.user_help_request_id as ticket_id,helpreq.created_at as created_date,helpreq.urgency as priority,'Support' as support_type,'-' as assign_email,'' as assign_name,helpreq.request_status as status,'SUPPORT_TICKET' as type \n"
+						+ "select helpreq.user_help_request_id as ticket_id,helpreq.created_at as created_date,helpreq.urgency as priority,CONCAT('Support for, ',cat.categories_name) as support_type,helpreq.assign_to_email as assign_email,helpreq.assign_to_name as assign_name,helpreq.request_status as status,'SUPPORT_TICKET' as type \n"
 						+ "from pgusers.user_help_request helpreq\n"
-						+ ")tkt WHERE 1=1   \r\n"
+						+ "left join pgcommon.pg_user_help_desk_categories cat on cat.categories_id =helpreq.categories_id\n"
+						+ ")tkt WHERE 1=1  \r\n"
 						);
 			}
 			Map<String, Object> parameters = new HashMap<>();
@@ -90,7 +92,11 @@ public class SupportDBService implements SupportDBImpl{
 			
 			if (paginationRequest.getIsUserActivity()) {
 	            String assignedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-	            queryBuilder.append("AND (LOWER(tkt.assign_email) = LOWER(:assignedEmail) OR LOWER(tkt.assign_email) ='' OR tkt.assign_email IS NULL )\r\n");
+	            if (isClose) {
+	            	queryBuilder.append("AND (LOWER(tkt.assign_email) = LOWER(:assignedEmail))\r\n");
+	            }else {
+	            	 queryBuilder.append("AND (LOWER(tkt.assign_email) = LOWER(:assignedEmail) OR LOWER(tkt.assign_email) ='' OR tkt.assign_email IS NULL ) AND tkt.type='SUPPORT_TICKET' \r\n");
+	            }
 	            parameters.put("assignedEmail", assignedEmail);
 	        }
 			
@@ -124,18 +130,14 @@ public class SupportDBService implements SupportDBImpl{
 			} else {
 				queryBuilder.append(" order by tkt.created_date desc ");
 			}
-			log.error("queryBuilder :{}",queryBuilder);
-			log.error("queryBuilder setParameter:{}",parameters);
 			Query query = entityManager.createNativeQuery(queryBuilder.toString());
 			parameters.forEach(query::setParameter);
 
 			    int filterCount = query.getResultList().size();
-			    log.error("queryBuilder filterCount:{}",filterCount);
 				query.setFirstResult(paginationRequest.getPageIndex() * paginationRequest.getPageSize());
 				query.setMaxResults(paginationRequest.getPageSize());
 
 			List<Object[]> results = query.getResultList();
-			 log.error("queryBuilder results:{}",results);
 			List<SupportTicketDTO> registerLeadDetails = results.stream().map(row -> {
 				SupportTicketDTO dto = new SupportTicketDTO();
 			    dto.setTicket_id(row[0] != null ? (String) row[0] : "");
@@ -149,7 +151,6 @@ public class SupportDBService implements SupportDBImpl{
 			    dto.setType(row[7] != null ? (String) row[7] : "");
 			    return dto;
 			}).collect(Collectors.toList());
-			log.error("queryBuilder registerLeadDetails:{}",registerLeadDetails);
 			
 			return new CommonResponseDTO<>(registerLeadDetails, filterCount);
 		} catch (Exception e) {
