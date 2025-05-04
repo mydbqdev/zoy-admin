@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';
@@ -31,6 +31,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 	@ViewChild(SidebarComponent) sidemenuComp;
 	@ViewChild(MatSort) sort: MatSort;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
+	@ViewChild('closeModelUpdate') closeModelUpdate : ElementRef;
 	public rolesArray: string[] = [];
 	searchText:string='';
 	fromDate:string='';
@@ -294,8 +295,9 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 				if(isFromSummeryScreen){
 					this.getTicketsList();
 				}else{
+					this.getTicketsList();
 					// call refresh details api here
-				}
+				}	
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
@@ -357,8 +359,10 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 				if(this.isFromSummeryScreen){
 					this.getTicketsList();
 				}else{
+					this.getTicketsList();
 					// call refresh details api here
 				}
+			this.closeModelUpdate.nativeElement.click(); 
 			this.spinner.hide();
 			}, error => {
 			this.spinner.hide();
