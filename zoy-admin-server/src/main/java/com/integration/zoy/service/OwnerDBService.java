@@ -955,6 +955,7 @@ public class OwnerDBService implements OwnerDBImpl{
 			SupportUsres dto = new SupportUsres();
 			dto.setEmail(row[0] != null ? (String) row[0] : "");
 			dto.setName(row[1] != null ? (String) row[1] : "");
+			dto.setType(row[2] != null ? (String) row[2] : "");
 			return dto;
 		}).collect(Collectors.toList());
 		return supportUsers;

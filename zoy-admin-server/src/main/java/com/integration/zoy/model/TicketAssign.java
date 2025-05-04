@@ -12,6 +12,12 @@ public class TicketAssign {
 
 	@JsonProperty("inquiryNumber")
 	private String inquiryNumber;
+	
+	@JsonProperty("inquiryType")
+	private String inquiryType;
+	
+	@JsonProperty("isSelf")
+	private boolean isSelf;
 
 	public String getEmail() {
 		return email;
@@ -35,6 +41,22 @@ public class TicketAssign {
 
 	public void setInquiryNumber(String inquiryNumber) {
 		this.inquiryNumber = inquiryNumber;
+	}
+
+	public String getInquiryType() {
+		return inquiryType;
+	}
+
+	public void setInquiryType(String inquiryType) {
+		this.inquiryType = inquiryType;
+	}
+
+	public boolean getSelf() {
+		return isSelf;
+	}
+
+	public void setIsSelf(boolean isSelf) {
+		this.isSelf = isSelf;
 	}
 	
 	

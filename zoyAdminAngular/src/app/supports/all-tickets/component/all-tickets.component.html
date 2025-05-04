@@ -184,9 +184,9 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                             aria-labelledby="dropdownMenuLink">
-                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#details">Details</a>
-                                            <a class="dropdown-item" href="javascript:void(0)"  >Assign / Reassign</a>
-                                            <a class="dropdown-item" href="javascript:void(0)"  >Status Update</a>
+                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#details" (click)="getDetails(element)">Details</a>
+                                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#assignToTeam" (click)="assignToTeam(element,true)" >Assign / Reassign</a>
+                                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="updatePopupFromList(element,true)" >Status Update</a>
                                         </div>
                                       </td>
                                     </ng-container>
@@ -210,4 +210,131 @@
         <!-- End of Content Wrapper -->
   </div>
   <!-- End of Page Wrapper -->
+</div>
+
+
+<!------To give the reason for Deactivate/Activate details PopUp model------->
+<div class="modal fade" id="details" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xl modal-fullscreen-sm-down ">
+    <div class="modal-content">
+      <div class="modal-header bg-gradiant-popup-header">
+        <h5 class="modal-title" id="modalLabel"><span >Details of #{{assignTicketNumber}}</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModelDetails></button>
+      </div>
+      <div class="modal-body p-3">
+        <div class="row mb-1">
+          <div class="col-sm-3">Unique Inquiry Number</div>
+          <div class="col-sm-1" style="color:#000000;">250001</div>
+          <div class="col-sm-2">Name</div>
+          <div class="col-sm-2" style="color:#000000;">Madhan Ram</div>
+          <div class="col-sm-1">Email</div>
+          <div class="col-sm-3" style="color:#000000;">-</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-3">Phone Number</div>
+          <div class="col-sm-1" style="color:#000000;">9874561230</div>
+          <div class="col-sm-2">State</div>
+          <div class="col-sm-2" style="color:#000000;">AP</div>
+          <div class="col-sm-1">City</div>
+          <div class="col-sm-3" style="color:#000000;">Guntur</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-3">Guest/ Property owner</div>
+          <div class="col-sm-1" style="color:#000000;">-</div>
+          <div class="col-sm-2">Inquired for </div>
+          <div class="col-sm-2" style="color:#000000;">Business inquiry</div>
+          <div class="col-sm-1">Description</div>
+          <div class="col-sm-3" style="color:#000000;">Description here</div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-2">Date</div>
+          <div class="col-sm-2" style="color:#000000;">2025-03-15</div>
+          <div class="col-sm-2">Assign To </div>
+          <div class="col-sm-2" style="color:#000000;">Mahendra</div>
+          <div class="col-sm-1">Status</div>
+          <div class="col-sm-3"><span class="common-status status-inactive">New</span></div>
+          
+        </div>
+        <hr>
+        <div>
+          <div class="d-flex">
+            <div>Histoty Information</div>
+            <div class="ml-auto">
+              <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#assignToTeam" (click)="assignToTeamDetails(false)">Assign/Reassign</button>&nbsp;&nbsp;
+              <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)">Status Update</button>
+            </div>
+          </div> 
+          <div class="card">
+            <div class="card-body" style="padding: 2px;margin: 0px;" ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!------For Assign/Reassign PopUp model------->
+<div class="modal fade" id="assignToTeam" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg modal-fullscreen-sm-down ">
+    <div class="modal-content">
+      <div class="modal-header bg-gradiant-popup-header">
+        <h5 class="modal-title" id="modalLabel"><span >Assign /Reassign [ #{{assignTicketNumber}}]</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModelAssign></button>
+      </div>
+      <div class="modal-body p-3">
+        <div class="row mb-1">
+          <div class="col-sm-2">Assign To</div>
+          <div class="col-sm-6">
+            <select class="form-select form-select-sm" [(ngModel)]="selectAssignEmail">
+              <option value="">Choose one</option>
+              <option *ngFor="let cond of supportTeamToAssignList" [value]="cond.email">{{cond.name}} ({{cond.email}})</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-6">
+            <button type="button" class="btn btn-primary-custom me-2" (click)="assignTeamApi()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!------For update PopUp model------->
+<div class="modal fade" id="updatePopup" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg modal-fullscreen-sm-down ">
+    <div class="modal-content">
+      <div class="modal-header bg-gradiant-popup-header">
+        <h5 class="modal-title" id="modalLabel"><span >Update the [ #{{assignTicketNumber}}]</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModelUpdate></button>
+      </div>
+      <div class="modal-body p-3">
+        <div class="row mb-1">
+          <div class="col-sm-2">Status</div>
+          <div class="col-sm-6">
+            <select class="form-select form-select-sm" [(ngModel)]="selectedStatusForUpdate">
+              <option *ngFor="let cond of statusList" [value]="cond">{{cond}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-2">Comment</div>
+          <div class="col-sm-9">
+            <textarea class="form-control" placeholder="Leave a comment here" rows="5" [(ngModel)]="comment"></textarea>
+          </div>
+        </div>
+        <div class="row mb-1">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-6">
+            <button type="button" class="btn btn-primary-custom me-2" (click)="saveStatusComment()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
