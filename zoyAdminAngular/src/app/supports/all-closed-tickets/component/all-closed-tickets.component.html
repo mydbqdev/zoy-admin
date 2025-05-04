@@ -260,7 +260,7 @@
           <div class="d-flex">
           <div>Histoty Information</div>
             <div class="ml-auto">
-              <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)">Status Update</button>
+              <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Status Update</button>
             </div> 
           </div>  
           <div class="card">
