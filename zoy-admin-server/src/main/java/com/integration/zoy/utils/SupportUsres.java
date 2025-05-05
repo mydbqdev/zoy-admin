@@ -10,6 +10,9 @@ public class SupportUsres {
 	@SerializedName("name")
 	private String name;
 	
+	@SerializedName("type")
+	private String type;
+	
 
 	public String getEmail() {
 		return email;
@@ -27,7 +30,13 @@ public class SupportUsres {
 		this.name = name;
 	}
 	
-	
+	public String getType() {
+		return name;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 	
 	
 }

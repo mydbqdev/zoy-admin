@@ -28,6 +28,7 @@ import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.FollowUps;
 import com.integration.zoy.entity.RegisteredPartner;
+import com.integration.zoy.entity.UserHelpRequest;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.model.FollowUp;
 import com.integration.zoy.model.SupportTicketDTO;
@@ -36,6 +37,7 @@ import com.integration.zoy.model.UpdateStatus;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.FollowUpRepository;
 import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
+import com.integration.zoy.repository.UserHelpRequestRepository;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.OwnerDBImpl;
@@ -81,6 +83,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 
 	@Autowired
 	RegisteredPartnerDetailsRepository registeredPartnerDetailsRepository;
+	
+	@Autowired
+	UserHelpRequestRepository userHelpRequestRepository;
 
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
@@ -121,20 +126,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 		}
 	}
 
-	@Override
-	public ResponseEntity<String> getSupportUserDetails() {
-		ResponseBody response = new ResponseBody();
-		try {
-			List<SupportUsres> supportUsrs = ownerDBImpl.getAllSupportUserNames();
-			return new ResponseEntity<>(gson2.toJson(supportUsrs), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error getting support user details API:/zoy_admin/support_user_details.getSupportUserDetails", e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
-	}
-
+	
 	@Override
 	public ResponseEntity<String> assignTicketsToSupportTeam(TicketAssign assignTicket) {
 		ResponseBody response=new ResponseBody();
@@ -161,9 +153,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				response.setMessage("Ticket assigned successfully.");
 				response.setStatus(HttpStatus.OK.value());
 
-				auditHistoryUtilities.leadHistory(historyContentForTicketAssign,assignTicket.getEmail(),assignTicket.getInquiryNumber());
+				auditHistoryUtilities.leadHistory(historyContentForTicketAssign,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus());
 				String historyContentForChangeTicketStatus = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " Status has been Changed To " + existingPartner.getStatus() + "."+ " On " + currentDate;
-				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,assignTicket.getEmail(),assignTicket.getInquiryNumber());
+				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus());
 				AdminUserMaster adminuserDetails=adminUserMasterRepo.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 				String notificationMessage = "Ticket ID: " + assignTicket.getInquiryNumber() + " assigned to you by "+adminuserDetails.getFirstName()+" "+adminuserDetails.getLastName()+ " received on "+currentDate+" Check the details in the Tickets section.";
 				notificationsAndAlertsService.ticketAssign(new String[]{assignTicket.getEmail()},notificationMessage);
@@ -215,33 +207,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 		}
 	}
 
-	@Override
-	public ResponseEntity<String> updateInquiryStatus(UpdateStatus updateStatus) {
-		ResponseBody response=new ResponseBody();
-		try {
-			Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(updateStatus.getInquiryNumber());
-			if (partner.isPresent()) {
-				
-				String currentDate=tuService.currentDate();
-				RegisteredPartner existingPartner = partner.get();
-				String previousStatus=existingPartner.getStatus();
-				existingPartner.setStatus(updateStatus.getStatus());
-				registeredPartnerDetailsRepository.save(existingPartner);
-				response.setMessage("Status Updated successfully.");
-				response.setStatus(HttpStatus.OK.value());
-				String historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " On " + currentDate + ".";
-				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,SecurityContextHolder.getContext().getAuthentication().getName(),updateStatus.getInquiryNumber());
-				return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
-			} else {
-				response.setMessage("Inquiry number does not exist.");
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
-			}
-		} catch (Exception e) {
-			response.setMessage("An error occurred while Changing the Lead Status.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
-		}
-	}
-
+	
 	@Override
 	public ResponseEntity<String> createFollowUp(FollowUp followUp) {
 		ResponseBody response=new ResponseBody();
@@ -303,6 +269,11 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	}
 	
 	
+	
+	/*
+	 * Start coding for admin support
+	 */
+	
 	@Override
 	public ResponseEntity<String> zoyOpenSupportTicketList(PaginationRequest paginationRequest) {
 		ResponseBody response = new ResponseBody();
@@ -342,5 +313,188 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	
+	@Override
+	public ResponseEntity<String> assignTicketsToTeam(TicketAssign assignTicket) {
+		ResponseBody response=new ResponseBody();
+		try {
+			if(assignTicket.getInquiryType().equals(ZoyConstant.LEAD_GEN)) {
+				Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(assignTicket.getInquiryNumber());
+				if (partner.isPresent()) {
+					String currentDate=tuService.currentDate();
+					RegisteredPartner existingPartner = partner.get();
+					String historyContentForTicketAssign;
+					String userName="";
+					Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
+					if(user.isPresent()) {
+						userName=user.get().getFirstName()+" "+user.get().getLastName();
+					}
+					if (existingPartner.getAssignedToEmail() != null && !existingPartner.getAssignedToEmail().isEmpty()) {
+						historyContentForTicketAssign = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " has been reassigned to " + assignTicket.getName() + " on " + currentDate + "." + " Reassigned by " + userName + ".";
+						if(assignTicket.getSelf()) {
+							return ResponseEntity.status(HttpStatus.CONFLICT).body("The lead ticket has already been assigned to another team member.");
+							}
+					} else {
+						historyContentForTicketAssign = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " has been assigned to " + assignTicket.getName() + " on " + currentDate + "." + " Assigned by " + userName + ".";
+					}
+					existingPartner.setAssignedToEmail(assignTicket.getEmail());
+					existingPartner.setAssignedToName(assignTicket.getName());
+					existingPartner.setStatus(ZoyConstant.OPEN);
+					registeredPartnerDetailsRepository.save(existingPartner);
+					response.setMessage("Lead Ticket has been assigned successfully.");
+					response.setStatus(HttpStatus.OK.value());
+	
+					auditHistoryUtilities.leadHistory(historyContentForTicketAssign,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus());
+					
+					String historyContentForChangeTicketStatus = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " Status has been Changed To " + existingPartner.getStatus() + "."+ " On " + currentDate;
+					auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus());
+					
+					if(!assignTicket.getSelf()) {
+					AdminUserMaster adminuserDetails=adminUserMasterRepo.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+					String notificationMessage = "Ticket ID: " + assignTicket.getInquiryNumber() + " assigned to you by "+adminuserDetails.getFirstName()+" "+adminuserDetails.getLastName()+ " received on "+currentDate+" Check the details in the Tickets section.";
+					notificationsAndAlertsService.ticketAssign(new String[]{assignTicket.getEmail()},notificationMessage);
+					}
+					
+					return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+				} else {
+					response.setMessage("Lead Inquiry number does not exist.");
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
+				}
+			}else if(assignTicket.getInquiryType().equals(ZoyConstant.SUPPORT_TICKET)) {
+				Optional<UserHelpRequest> partner = userHelpRequestRepository.findById(assignTicket.getInquiryNumber());
+				if (partner.isPresent()) {
+					String currentDate=tuService.currentDate();
+					UserHelpRequest existingPartner = partner.get();
+					String historyContentForTicketAssign="";
+					String userName="";
+					Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
+					if(user.isPresent()) {
+						userName=user.get().getFirstName()+" "+user.get().getLastName();
+					}
+					if (existingPartner.getAssignedToEmail() != null && !existingPartner.getAssignedToEmail().isEmpty()) {
+						historyContentForTicketAssign = "Support Ticket Number " + assignTicket.getInquiryNumber() + " has been reassigned to " + assignTicket.getName() + " on " + currentDate + "." + " Reassigned by " + userName + ".";
+						if(assignTicket.getSelf()) {
+						return ResponseEntity.status(HttpStatus.CONFLICT).body("The ticket has already been assigned to another team member.");
+						}
+					} else {
+						historyContentForTicketAssign = "Support Ticket Number " + assignTicket.getInquiryNumber() + " has been assigned to " + assignTicket.getName() + " on " + currentDate + "." + " Assigned by " + userName + ".";
+					}
+					existingPartner.setAssignedToEmail(assignTicket.getEmail());
+					existingPartner.setAssignedToName(assignTicket.getName());
+					existingPartner.setRequestStatus(ZoyConstant.OPEN);
+					userHelpRequestRepository.save(existingPartner);
+					response.setMessage("Support Ticket has been assigned successfully.");
+					response.setStatus(HttpStatus.OK.value());
+	
+					auditHistoryUtilities.userHelpRequestHistory(historyContentForTicketAssign,existingPartner.getRequestStatus(),assignTicket.getInquiryNumber(),assignTicket.getEmail());
+					
+					String historyContentForChangeTicketStatus = "Support Ticket Number " + assignTicket.getInquiryNumber() + " Status has been Changed To " + existingPartner.getRequestStatus() + "."+ " On " + currentDate;
+					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),assignTicket.getInquiryNumber(),assignTicket.getEmail());
+					
+					if(!assignTicket.getSelf()) {
+					AdminUserMaster adminuserDetails=adminUserMasterRepo.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+					String notificationMessage = "Ticket ID: " + assignTicket.getInquiryNumber() + " assigned to you by "+adminuserDetails.getFirstName()+" "+adminuserDetails.getLastName()+ " received on "+currentDate+" Check the details in the Tickets section.";
+					notificationsAndAlertsService.ticketAssign(new String[]{assignTicket.getEmail()},notificationMessage);
+					}
+					
+					return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+				} else {
+					response.setMessage("Support Ticket number does not exist.");
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
+				}
+			}else {
+				// nothing matching
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Record not found");
+			}
+		} catch (Exception e) {
+			log.error("Error in assign to team {}",response.getMessage());
+			response.setMessage("An error occurred while assigning the ticket.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
+		}
+	}
+	
+	@Override
+	public ResponseEntity<String> getSupportUserDetails() {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<SupportUsres> supportUsrs = ownerDBImpl.getAllSupportUserNames();
+			return new ResponseEntity<>(gson2.toJson(supportUsrs), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error getting support user details API:/zoy_admin/support_user_details.getSupportUserDetails", e);
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<String> updateInquiryStatus(UpdateStatus updateStatus) {
+		ResponseBody response=new ResponseBody();
+		try {
+			if(updateStatus.getInquiryType().equals(ZoyConstant.LEAD_GEN)) {
+			Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(updateStatus.getInquiryNumber());
+			if (partner.isPresent()) {
+				String historyContentForChangeTicketStatus="";
+				String currentDate=tuService.currentDate();
+				RegisteredPartner existingPartner = partner.get();
+				String previousStatus=existingPartner.getStatus();
+				existingPartner.setStatus(updateStatus.getStatus());
+				registeredPartnerDetailsRepository.save(existingPartner);
+				if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
+					response.setMessage("Comment has been added successfully.");
+					historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+				}else {
+					response.setMessage("Status and comment has been updated successfully.");
+					historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+				}
+				response.setStatus(HttpStatus.OK.value());
+				
+				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,SecurityContextHolder.getContext().getAuthentication().getName(),updateStatus.getInquiryNumber(),existingPartner.getStatus());
+				return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+			} else {
+				response.setMessage("Inquiry number does not exist.");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
+			}
+			}else if(updateStatus.getInquiryType().equals(ZoyConstant.SUPPORT_TICKET)) {
+				Optional<UserHelpRequest> partner = userHelpRequestRepository.findById(updateStatus.getInquiryNumber());
+				if (partner.isPresent()) {
+					String historyContentForChangeTicketStatus="";
+					String currentDate=tuService.currentDate();
+					UserHelpRequest existingPartner = partner.get();
+					String previousStatus=existingPartner.getRequestStatus();
+					existingPartner.setRequestStatus(updateStatus.getStatus());
+					userHelpRequestRepository.save(existingPartner);
+					if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
+						response.setMessage("Comment has been added successfully.");
+						historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+					}else {
+						response.setMessage("Status and comment has been updated successfully.");
+						historyContentForChangeTicketStatus = "Support Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+					}
+					response.setStatus(HttpStatus.OK.value());
+					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),updateStatus.getInquiryNumber(),SecurityContextHolder.getContext().getAuthentication().getName());
+
+					
+					return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+				} else {
+					response.setMessage("Support Ticket number does not exist.");
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
+				}
+			}else {
+				// nothing matching
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Record not found");
+			}	
+			
+			
+		} catch (Exception e) {
+			response.setMessage("An error occurred while Changing the Lead Status.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
+		}
+	}
+	
+	/*
+	 * End coding for admin support
+	 */
 
 }

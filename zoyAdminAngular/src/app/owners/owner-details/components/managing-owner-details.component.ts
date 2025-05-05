@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { GenerateZoyCodeService } from '../../service/zoy-code.service';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
-import { FloorInformation, PgOwnerData, PgOwnerPropertyInformation, Room } from '../models/owner-full-details';
+import { AadhaarVerif, FloorInformation, PgOwnerData, PgOwnerPropertyInformation, Room } from '../models/owner-full-details';
 import { ZoyOwnerService } from '../../service/zoy-owner.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -676,13 +676,227 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 			);
 	  }
-	  captcha
-	  generateCaptcha(): void {
-		const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		this.captcha = '';
-		for (let i = 0; i < 5; i++) {
-		  this.captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+
+	  aadhaarSession:AadhaarVerif=new AadhaarVerif();
+	  aadhaarDetails:AadhaarVerif=new AadhaarVerif();
+	  allowOnlyNumbers(event: KeyboardEvent): boolean {
+		const charCode = event.which ? event.which : event.keyCode;
+		if (charCode < 48 || charCode > 57) {
+		event.preventDefault();
+		return false;
 		}
+		return true;
+	}
+		
+  
+	isInvalidAadhaar(aadhaar: string): boolean {
+		const aadhaarRegex = /^[2-9]{1}[0-9]{11}$/;
+		return aadhaar ? !aadhaarRegex.test(aadhaar) : false;
+	}
+	submitAadhaar:boolean=false;
+	imgeURL: string;
+	  generateAadhaarSession(): void {
+		this.submitAadhaar = false ;
+		this.aadhaarSession = new AadhaarVerif();
+		this.aadhaarDetails = new AadhaarVerif();
+		sessionStorage.setItem('zoyadminapi', 'no');
+		this.zoyOwnerService.generateAadhaarSession().subscribe(res => {
+			this.aadhaarSession= JSON.parse(JSON.stringify(res.data));
+			this.imgeURL = 'data:image/jpeg;base64,' + this.aadhaarSession.captcha	;
+			sessionStorage.setItem('zoyadminapi', 'yes');
+		}, error => {
+			sessionStorage.setItem('zoyadminapi', 'yes');
+		 this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.message;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+			}
+		}); 
+	
 	  }
+	  generateAadhaarRecaptcha(): void {
+		this.imgeURL="";
+		this.aadhaarSession.sessionid=this.aadhaarSession.session_id;
+		sessionStorage.setItem('zoyadminapi', 'no');
+		this.zoyOwnerService.generateAadhaarRecaptcha(this.aadhaarSession).subscribe(res => {
+			this.aadhaarSession= JSON.parse(JSON.stringify(res.data));
+			if(res.data){
+				this.aadhaarSession.session_id=res.data?.session_id;
+				this.imgeURL = 'data:image/jpeg;base64,' + res.data?.captcha;
+			}
+			
+			sessionStorage.setItem('zoyadminapi', 'yes');
+		}, error => {
+			sessionStorage.setItem('zoyadminapi', 'yes');
+		 this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			}); 
+				
+	  }
+
+	  generateAadhaarOtp(): void {
+		this.submitAadhaar = true;
+		if(!this.aadhaarDetails.aadhaar || this.isInvalidAadhaar(this.aadhaarDetails.aadhaar) || !this.aadhaarDetails.captcha){
+			return;
+		}
+		console.log("this.aadhaarSession",this.aadhaarSession);
+		console.log("this.aadhaarDetails",this.aadhaarDetails);
+		this.aadhaarDetails.sessionid = this.aadhaarSession.session_id;
+		console.log("		this.aadhaarDetails",		this.aadhaarDetails)
+		sessionStorage.setItem('zoyadminapi', 'no');
+		this.zoyOwnerService.generateAadhaarOtp(this.aadhaarDetails).subscribe(res => {
+		this.notifyService.showSuccess("Please check the message on the mobile number linked to this Aadhaar.",res.message)
+		this.submitAadhaar = false ;	
+		sessionStorage.setItem('zoyadminapi', 'yes');
+	}, error => {
+		sessionStorage.setItem('zoyadminapi', 'yes');
+		 this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.message;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			}); 
+			
+	  }
+	  verifyAadhaarOtp(): void {
+		if(!this.aadhaarDetails.otp || !this.aadhaarDetails.sessionid){
+			return;
+		}
+		sessionStorage.setItem('zoyadminapi', 'no');
+		this.zoyOwnerService.verifyAadhaarOtp(this.aadhaarDetails).subscribe(res => {
+			this.notifyService.showSuccess(res.message,"");
+			this.updateAadhaar();
+		}, error => {
+			sessionStorage.setItem('zoyadminapi', 'yes');
+		 this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.message;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			}); 
+				
+	  }
+	  updateAadhaar(): void {
+		let model = {"ownerId":this.owenerId,"encodedAadhar":this.aadhaarDetails.aadhaar}
+		this.zoyOwnerService.updateAadhaar(model).subscribe(res => {
+			sessionStorage.setItem('zoyadminapi', 'yes');
+			this.getZoyOwnerDetails();
+		}, error => {
+			sessionStorage.setItem('zoyadminapi', 'yes');
+		 this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		}else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.message;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			}); 
+				
+	  }
+
 		
   }  

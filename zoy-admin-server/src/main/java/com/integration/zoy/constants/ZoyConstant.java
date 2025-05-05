@@ -89,5 +89,8 @@ public class ZoyConstant {
 	public static final String REGISTER="Register";
 	
 	public static final String INPROGRESS="In Progress";
+	public static final String OPEN="Open";
+	public static final String LEAD_GEN="LEAD_GEN";
+	public static final String SUPPORT_TICKET="SUPPORT_TICKET";
 
 }
