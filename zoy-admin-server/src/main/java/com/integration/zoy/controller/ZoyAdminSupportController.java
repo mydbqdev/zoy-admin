@@ -467,7 +467,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					userHelpRequestRepository.save(existingPartner);
 					if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
 						response.setMessage("Comment has been added successfully.");
-						historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+						historyContentForChangeTicketStatus = "Support Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
 					}else {
 						response.setMessage("Status and comment has been updated successfully.");
 						historyContentForChangeTicketStatus = "Support Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
