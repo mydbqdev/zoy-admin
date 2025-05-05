@@ -694,15 +694,15 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		return aadhaar ? !aadhaarRegex.test(aadhaar) : false;
 	}
 	submitAadhaar:boolean=false;
-  
+	imgeURL: string;
 	  generateAadhaarSession(): void {
-		console.log(">>>>>>>>>");
 		this.submitAadhaar = false ;
 		this.aadhaarSession = new AadhaarVerif();
 		this.aadhaarDetails = new AadhaarVerif();
 		sessionStorage.setItem('zoyadminapi', 'no');
 		this.zoyOwnerService.generateAadhaarSession().subscribe(res => {
-			this.aadhaarSession= JSON.parse(JSON.stringify(res));
+			this.aadhaarSession= JSON.parse(JSON.stringify(res.data));
+			this.imgeURL = 'data:image/jpeg;base64,' + this.aadhaarSession.captcha	;
 			sessionStorage.setItem('zoyadminapi', 'yes');
 		}, error => {
 			sessionStorage.setItem('zoyadminapi', 'yes');
@@ -734,9 +734,16 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	
 	  }
 	  generateAadhaarRecaptcha(): void {
+		this.imgeURL="";
+		this.aadhaarSession.sessionid=this.aadhaarSession.session_id;
 		sessionStorage.setItem('zoyadminapi', 'no');
 		this.zoyOwnerService.generateAadhaarRecaptcha(this.aadhaarSession).subscribe(res => {
-			this.aadhaarSession= JSON.parse(JSON.stringify(res));
+			this.aadhaarSession= JSON.parse(JSON.stringify(res.data));
+			if(res.data){
+				this.aadhaarSession.session_id=res.data?.session_id;
+				this.imgeURL = 'data:image/jpeg;base64,' + res.data?.captcha;
+			}
+			
 			sessionStorage.setItem('zoyadminapi', 'yes');
 		}, error => {
 			sessionStorage.setItem('zoyadminapi', 'yes');
@@ -772,10 +779,13 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 
 	  generateAadhaarOtp(): void {
 		this.submitAadhaar = true;
-		if(!this.aadhaarDetails.aadhaar || this.isInvalidAadhaar(this.aadhaarDetails.aadhaar) || this.aadhaarDetails.captcha != this.aadhaarSession.captcha){
+		if(!this.aadhaarDetails.aadhaar || this.isInvalidAadhaar(this.aadhaarDetails.aadhaar) || !this.aadhaarDetails.captcha){
 			return;
 		}
+		console.log("this.aadhaarSession",this.aadhaarSession);
+		console.log("this.aadhaarDetails",this.aadhaarDetails);
 		this.aadhaarDetails.sessionid = this.aadhaarSession.session_id;
+		console.log("		this.aadhaarDetails",		this.aadhaarDetails)
 		sessionStorage.setItem('zoyadminapi', 'no');
 		this.zoyOwnerService.generateAadhaarOtp(this.aadhaarDetails).subscribe(res => {
 		this.notifyService.showSuccess("Please check the message on the mobile number linked to this Aadhaar.",res.message)
