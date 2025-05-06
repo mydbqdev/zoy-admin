@@ -703,7 +703,7 @@ public class ZoyEmailService {
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
-				+ "<p><strong>What's Changing:</strong><br/>" + "• <strong>Security Deposit Limits:</strong></p>"
+				+ "<p><strong>What's Changing:</strong><br/>" + " <strong>Security Deposit Limits:</strong></p>"
 				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
 				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr><td>Between Rs. " + oldFixed
 				+ " – Rs. " + oldVariable + "</td><td>Between Rs. " + newFixed + " – Rs. " + newVariable + "</td></tr>"
@@ -712,7 +712,7 @@ public class ZoyEmailService {
 				+ "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a>.</p>"
 				+ "<p>Thank you for your continued support and cooperation.</p>"
 				+ "<p>Best regards,<br>ZOY Administrator</p>";
-
+		
 		email.setBody(message);
 		email.setContent("text/html");
 
@@ -742,11 +742,11 @@ public class ZoyEmailService {
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
-				+ "<p><strong>What's Changing:</strong><br/>" + "• <strong>GST Charges:</strong></p>"
+				+ "<p><strong>What's Changing:</strong><br/>" + " <strong>GST Charges:</strong></p>"
 				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
-				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr><td>GST @" + 4
-				+ "% for a daily rent greater than or equal to Rs. " + 1000 + "</td><td>GST @" + 6
-				+ "% for a daily rent greater than or equal to Rs. " + 1000 + "</td></tr>" + "</table>"
+				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr><td>GST @" + oldFixed
+				+ "% for a daily rent greater than or equal to Rs. " + oldVariable + "</td><td>GST @" + newFixed
+				+ "% for a daily rent greater than or equal to Rs. " + newVariable + "</td></tr>" + "</table>"
 				+ "<p>We kindly request that you review the updated rules and ensure that you understand the changes, as they will be applicable to all bookings made on or after the effective date mentioned above.</p>"
 				+ "<p>If you have any questions or require further clarification, feel free to reach out to our support team at <a href='mailto:support@zoy.com'>support@zoy.com</a> or call us at [Support Phone Number].</p>"
 				+ "<p>Thank you for your continued support and cooperation.</p>"
@@ -781,7 +781,7 @@ public class ZoyEmailService {
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
 				+ "<p><strong>What's Changing:</strong><br/>"
-				+ "• <strong>Other Charges (eKYC and Documentation):</strong></p>"
+				+ " <strong>Other Charges (eKYC and Documentation):</strong></p>"
 				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
 				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr><td>Rs. " + oldFixed
 				+ " for eKYC<br>Rs. " + oldVariable + " for Documentation</td><td>Rs. " + newFixed + " for eKYC<br>Rs. "
@@ -821,7 +821,7 @@ public class ZoyEmailService {
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
 				+ "<p><strong>What's Changing:</strong><br/>"
-				+ "• <strong>Other Charges (eKYC and Documentation):</strong></p>"
+				+ " <strong>Other Charges (eKYC and Documentation):</strong></p>"
 				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
 				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr><td>Rs. " + oldFixed
 				+ " for eKYC<br>Rs. " + oldVariable + " for Documentation</td><td>Rs. " + newFixed + " for eKYC<br>Rs. "
@@ -860,7 +860,7 @@ public class ZoyEmailService {
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
-				+ "<p><strong>What's Changing:</strong><br/>" + "• <strong>Force Checkout:</strong></p>"
+				+ "<p><strong>What's Changing:</strong><br/>" + " <strong>Force Checkout:</strong></p>"
 				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
 				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr><td>" + oldFixed + " Days</td><td>"
 				+ newFixed + " Days</td></tr>" + "</table>"
@@ -899,7 +899,7 @@ public class ZoyEmailService {
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
 				+ "<p><strong>What's Changing:</strong><br/>"
-				+ "• <strong>No Rental Agreement (Trigger Days):</strong></p>"
+				+ " <strong>No Rental Agreement (Trigger Days):</strong></p>"
 				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
 				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr><td>" + oldFixed + " Days</td><td>"
 				+ newFixed + " Days</td></tr>" + "</table>"
@@ -949,7 +949,7 @@ public class ZoyEmailService {
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
-				+ "<p><strong>What's Changing:</strong><br/>" + "• <strong>Early Check-out Rules:</strong></p>"
+				+ "<p><strong>What's Changing:</strong><br/>" + " <strong>Early Check-out Rules:</strong></p>"
 				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
 				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr><td>Check-out "
 				+ oldConditionDescription + " " + oldFixed
@@ -1001,7 +1001,7 @@ public class ZoyEmailService {
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
-				+ "<p><strong>What's Changing:</strong><br/>" + "• <strong>Security Deposit Deadline:</strong></p>"
+				+ "<p><strong>What's Changing:</strong><br/>" + " <strong>Security Deposit Deadline:</strong></p>"
 				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
 				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr><td>Total deposit to be paid "
 				+ oldConditionDescription + " " + oldFixed + " days of check-in. " + oldVariable
@@ -1126,7 +1126,7 @@ public class ZoyEmailService {
 				+ zoyUpdatedData.getEffectiveDate() + "</strong>.</p>" 
 			    + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
 				+ "<p><strong>What's Changing:</strong><br/>"
-				+ "• <strong>Cancellation and Refund Policy (Before Check-in):</strong></p>"
+				+ " <strong>Cancellation and Refund Policy (Before Check-in):</strong></p>"
 				+ "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>"
 				+ "<tr><th>Existing Rule</th><th>Upcoming Rule</th></tr>" + "<tr>" + "<td><table border='0'>"
 				+ oldRulesTable.toString() + "</table></td>" + "<td><table border='0'>" + newRulesTable.toString()

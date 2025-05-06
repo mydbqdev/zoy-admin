@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.integration.zoy.entity.RegisteredPartner;
+
+import io.lettuce.core.dynamic.annotation.Param;
 @Repository
 public interface RegisteredPartnerDetailsRepository extends JpaRepository<RegisteredPartner,Long>{
 	
@@ -52,4 +54,25 @@ public interface RegisteredPartnerDetailsRepository extends JpaRepository<Regist
 	List<RegisteredPartner> getAllRegisteredUsers();
 	
 	Optional<RegisteredPartner> findByRegisterId(String registerId);
+	
+	@Query(value = "	SELECT \r\n"
+			+ "	firstname || ' ' || lastname AS \"Name\",\r\n"
+			+ "	email AS \"OwnerEmail\",\r\n"
+			+ "	mobile AS \"Mobile\",\r\n"
+			+ "	property_name AS \"PropertyName\",\r\n"
+			+ "	address as \"Address\",\r\n"
+			+ "	pincode as \"pincode\",\r\n"
+			+ "    inquired_for AS \"InquiredFor\",\r\n"
+			+ "    ts AS \"Date\",\r\n"
+			+ "    status AS \"Status\",\r\n"
+			+ "    state AS \"State\",\r\n"
+			+ "    city AS \"City\",\r\n"
+			+ "    assign_to_name AS \"AssignedTo\",\r\n"
+			+ "    assign_to_name as \"AssignedToName\",\r\n"
+			+ "    description AS \"Description\"\r\n"
+			+ "FROM\r\n"
+			+ "    pgowners.zoy_pg_registered_owner_details where register_id=:registerId and status=:status", nativeQuery = true)
+	List<Object[]> getOwnerTicketDetails(@Param("registerId")String registerId,@Param("status")String status);
+	
+
 }
