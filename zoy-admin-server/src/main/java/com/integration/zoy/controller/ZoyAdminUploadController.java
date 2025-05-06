@@ -385,7 +385,8 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 
 				return ResponseEntity.ok()
 						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"BulkUpload.xlsm\"")
-						.contentType(MediaType.APPLICATION_OCTET_STREAM)
+						//.contentType(MediaType.APPLICATION_OCTET_STREAM)
+						.contentType(MediaType.parseMediaType("application/vnd.ms-excel.sheet.macroEnabled.12"))
 						.body(fileBytes);
 			}
 
