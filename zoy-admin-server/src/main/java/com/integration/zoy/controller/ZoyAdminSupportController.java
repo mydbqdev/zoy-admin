@@ -2,6 +2,7 @@ package com.integration.zoy.controller;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +31,17 @@ import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.FollowUps;
 import com.integration.zoy.entity.RegisteredPartner;
 import com.integration.zoy.entity.UserHelpRequest;
+import com.integration.zoy.model.ComplaintTicketDTO;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.model.FollowUp;
+import com.integration.zoy.model.RegisteredOwnerDetailsDTO;
 import com.integration.zoy.model.SupportTicketDTO;
 import com.integration.zoy.model.TicketAssign;
 import com.integration.zoy.model.UpdateStatus;
+import com.integration.zoy.model.UserTicketHistoryDTO;
 import com.integration.zoy.repository.AdminUserMasterRepository;
 import com.integration.zoy.repository.FollowUpRepository;
+import com.integration.zoy.repository.LeadHistoryRepository;
 import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
 import com.integration.zoy.repository.UserHelpRequestRepository;
 import com.integration.zoy.service.AdminReportImpl;
@@ -43,6 +49,7 @@ import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.SupportDBImpl;
 import com.integration.zoy.service.TimestampFormatterUtilService;
+import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.PaginationRequest;
@@ -100,6 +107,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	FollowUpRepository followUpRepository;
 	
 	@Autowired
+	LeadHistoryRepository leadHistoryRepo;
+	
+	@Autowired
 	AdminUserMasterRepository adminUserMasterRepo;
 	
 	@Autowired
@@ -108,7 +118,12 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	@Autowired
 	SupportDBImpl supportDBImpl;
 	
+	@Autowired
+	ZoyAdminService zoyAdminService;
 
+    @Value("${app.minio.user.docs.bucket.name}")
+    private String userDocBucketName;
+	
 	@Override
 	public ResponseEntity<String> getRegisteredLeadDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
 		ResponseBody response = new ResponseBody();
@@ -492,7 +507,141 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
 		}
 	}
-	
+
+
+	@Override
+	public ResponseEntity<String> GetDetailsForEachTickets(UpdateStatus updateStatus) {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        if (updateStatus == null) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError("Required filter details");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        if (updateStatus.getInquiryType() != null && !updateStatus.getInquiryType().isEmpty()) {
+	            if (updateStatus.getInquiryType().equals("SUPPORT_TICKET")) {
+	                List<Object[]> ticketDetails = registeredPartnerDetailsRepository.getOwnerTicketDetails(
+	                    updateStatus.getInquiryNumber(), updateStatus.getStatus());
+	                List<Object[]> ticketHistory = leadHistoryRepo.getOwnerTicketHistory(updateStatus.getInquiryNumber());
+
+	                if (ticketDetails.isEmpty()) {
+	                    response.setStatus(HttpStatus.NOT_FOUND.value());
+	                    response.setError("No support ticket details found.");
+	                    return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+	                }
+
+	                RegisteredOwnerDetailsDTO registeredOwnerDetails = new RegisteredOwnerDetailsDTO();
+	                List<UserTicketHistoryDTO> userTicketHistoryList = new ArrayList<>();
+
+	                for (Object[] ticketDetail : ticketDetails) {
+	                    registeredOwnerDetails.setName(ticketDetail[0] != null ? ticketDetail[0].toString() : null);
+	                    registeredOwnerDetails.setOwnerEmail(ticketDetail[1] != null ? ticketDetail[1].toString() : null);
+	                    registeredOwnerDetails.setMobile(ticketDetail[2] != null ? ticketDetail[2].toString() : null);
+	                    registeredOwnerDetails.setPropertyName(ticketDetail[3] != null ? ticketDetail[3].toString() : null);
+	                    registeredOwnerDetails.setAddress(ticketDetail[4] != null ? ticketDetail[4].toString() : null);
+	                    registeredOwnerDetails.setPincode(ticketDetail[5] != null ? ticketDetail[5].toString() : null);
+	                    registeredOwnerDetails.setInquiredFor(ticketDetail[6] != null ? ticketDetail[6].toString() : null);
+	                    registeredOwnerDetails.setDate(ticketDetail[7] != null ? ticketDetail[7].toString() : null);
+	                    registeredOwnerDetails.setStatus(ticketDetail[8] != null ? ticketDetail[8].toString() : null);
+	                    registeredOwnerDetails.setState(ticketDetail[9] != null ? ticketDetail[9].toString() : null);
+	                    registeredOwnerDetails.setCity(ticketDetail[10] != null ? ticketDetail[10].toString() : null);
+	                    registeredOwnerDetails.setAssignedTo(ticketDetail[11] != null ? ticketDetail[11].toString() : null);
+	                    registeredOwnerDetails.setAssignedToName(ticketDetail[12] != null ? ticketDetail[12].toString() : null);
+	                    registeredOwnerDetails.setDescription(ticketDetail[13] != null ? ticketDetail[13].toString() : null);
+	                }
+
+	                for (Object[] historyDetail : ticketHistory) {
+	                    UserTicketHistoryDTO historyDTO = new UserTicketHistoryDTO();
+	                    historyDTO.setUserHelpRequestId(historyDetail[0] != null ? historyDetail[0].toString() : null);
+	                    historyDTO.setCreatedAt(historyDetail[1] != null ? historyDetail[1].toString() : null);
+	                    historyDTO.setUserEmail(historyDetail[2] != null ? historyDetail[2].toString() : null);
+	                    historyDTO.setDescription(historyDetail[3] != null ? historyDetail[3].toString() : null);
+	                    historyDTO.setRequestStatus(historyDetail[4] != null ? historyDetail[4].toString() : null);
+
+	                    userTicketHistoryList.add(historyDTO);
+	                }
+
+	                registeredOwnerDetails.setUserTicketHistory(userTicketHistoryList);
+	                response.setMessage("Support ticket details fetched successfully.");
+	                response.setData(registeredOwnerDetails);
+	            } else {
+	                List<Object[]> complaintDetails = userHelpRequestRepository.getComplaintTicketDetails(
+	                    updateStatus.getInquiryNumber(), updateStatus.getStatus());
+	                List<Object[]> complaintHistory = userHelpRequestRepository.getComplaintTicketHistory(updateStatus.getInquiryNumber());
+
+	                if (complaintDetails.isEmpty()) {
+	                    response.setStatus(HttpStatus.NOT_FOUND.value());
+	                    response.setError("No complaint ticket details found.");
+	                    return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+	                }
+
+	                ComplaintTicketDTO complaintTicket = new ComplaintTicketDTO();
+	                List<UserTicketHistoryDTO> complaintHistoryList = new ArrayList<>();
+
+	                for (Object[] complaintDetail : complaintDetails) {
+	                    complaintTicket.setUsername(complaintDetail[0] != null ? complaintDetail[0].toString() : null);
+	                    complaintTicket.setPropertyName(complaintDetail[1] != null ? complaintDetail[1].toString() : null);
+	                    complaintTicket.setCategoriesName(complaintDetail[2] != null ? complaintDetail[2].toString() : null);
+	                    complaintTicket.setDescription(complaintDetail[3] != null ? complaintDetail[3].toString() : null);
+	                    complaintTicket.setUrgency(complaintDetail[4] != null ? complaintDetail[4].toString() : null);
+	                    complaintTicket.setRequestStatus(complaintDetail[5] != null ? complaintDetail[5].toString() : null);
+	                    complaintTicket.setCreatedAt(complaintDetail[6] != null ? complaintDetail[6].toString() : null);
+	                    complaintTicket.setUpdatedAt(complaintDetail[7] != null ? complaintDetail[7].toString() : null);
+	                    complaintTicket.setAssignToEmail(complaintDetail[8] != null ? complaintDetail[8].toString() : null);
+	                    complaintTicket.setAssignToName(complaintDetail[9] != null ? complaintDetail[9].toString() : null);
+	                    String imageLinks = complaintDetail[9] != null ? complaintDetail[9].toString() : null;
+	                    StringBuilder finalImageUrls = new StringBuilder();
+
+	                    if (imageLinks != null && !imageLinks.isEmpty()) {
+	                        String[] imageArray = imageLinks.split(",");
+
+	                        for (int i = 0; i < imageArray.length; i++) {
+	                            String imageUrl = imageArray[i].trim();
+	                            String preSignedUrl = zoyAdminService.generatePreSignedUrl(userDocBucketName,imageUrl);
+
+	                            finalImageUrls.append(preSignedUrl);
+
+	                            if (i < imageArray.length - 1) {
+	                                finalImageUrls.append(",");
+	                            }
+	                        }
+	                    }
+	                    String combinedPreSignedUrls = finalImageUrls.toString();	                    
+	                    zoyAdminService.generatePreSignedUrl(imageLinks, imageLinks);
+	                    complaintTicket.setImagesUrls(combinedPreSignedUrls != null ? combinedPreSignedUrls : null);
+	                }
+
+	                for (Object[] historyDetail : complaintHistory) {
+	                    UserTicketHistoryDTO historyDTO = new UserTicketHistoryDTO();
+	                    historyDTO.setUserHelpRequestId(historyDetail[0] != null ? historyDetail[0].toString() : null);
+	                    historyDTO.setCreatedAt(historyDetail[1] != null ? historyDetail[1].toString() : null);
+	                    historyDTO.setUserEmail(historyDetail[2] != null ? historyDetail[2].toString() : null);
+	                    historyDTO.setDescription(historyDetail[3] != null ? historyDetail[3].toString() : null);
+	                    historyDTO.setRequestStatus(historyDetail[4] != null ? historyDetail[4].toString() : null);
+
+	                    complaintHistoryList.add(historyDTO);
+	                }
+
+	                complaintTicket.setUserTicketHistory(complaintHistoryList);
+	                response.setMessage("Complaint ticket details fetched successfully.");
+	                response.setData(complaintTicket);
+	            }
+	        } else {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError("Inquiry type is required.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        response.setStatus(HttpStatus.OK.value());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error getting ticket details: API:/zoy_admin/GetDetailsForEachTickets", e);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError("Internal server error");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
 	/*
 	 * End coding for admin support
 	 */

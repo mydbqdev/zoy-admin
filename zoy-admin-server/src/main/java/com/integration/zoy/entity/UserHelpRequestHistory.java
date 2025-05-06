@@ -14,7 +14,7 @@ public class UserHelpRequestHistory {
 	@Id
     @GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
-	@Column(name = "id", updatable = false, nullable = false, unique = true, length = 36)
+	@Column(name = "user_help_request_history_id", updatable = false, nullable = false, unique = true, length = 36)
     private String id;
     
     public String getId() {
