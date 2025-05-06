@@ -48,12 +48,12 @@ export class BulkUploadService {
     const url1 = this.basePath + 'zoy_admin/download_bulk_upload_template';
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      Accept: 'application/vnd.ms-excel.sheet.macroEnabled.12'
     });
     return this.httpclient.get(url1, {
       headers,
       responseType: 'blob' 
-    }).pipe(
+    })/*.pipe(
       tap((data: Blob) => {
         this.downloadFile(data);
       }),
@@ -61,7 +61,7 @@ export class BulkUploadService {
         
         return throwError(error);
       })
-    );
+    )*/;
   }
 
   private downloadFile(data: Blob) {
