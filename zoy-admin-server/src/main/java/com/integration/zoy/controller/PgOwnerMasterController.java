@@ -66,6 +66,7 @@ import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.PdfGenerateService;
+import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.service.ZoyCodeGenerationService;
 import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.service.ZoyS3Service;
@@ -115,6 +116,15 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	
 	@Autowired
 	PgOwnerPropertyStatusRepository pgOwnerPropertyStatusRepository;
+	
+	@Autowired
+	ZoyAdminService zoyAdminService;
+	
+	@Value("${app.minio.user.photos.bucket.name}")
+	private String userPhotoBucketName;
+	
+	@Value("${app.minio.aadhaar.photos.bucket.name}")
+	String aadhaarPhotoBucket;
 
 	private static final Gson gson = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -336,7 +346,16 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			profile.setOwnerID(details[0] != null ? details[0] : null);
 			profile.setOwnerName(details[1] != null ? details[1] : null);
 			profile.setStatus(details[8] != null ? details[8].toString() : null);
-			profile.setProfilePhoto( details[9] != null ? details[9].toString() : null);
+			String ownerImagePath = details[9].toString();
+			String onwnerImageUrl="";
+			if (ownerImagePath != null && !ownerImagePath.isEmpty()) {
+				String folderName = ownerImagePath.split("/")[0];
+				if(folderName.equals(profile.getOwnerID()))
+						onwnerImageUrl= zoyAdminService.generatePreSignedUrl(userPhotoBucketName, ownerImagePath);
+				else 
+					onwnerImageUrl= zoyAdminService.generatePreSignedUrl(aadhaarPhotoBucket, ownerImagePath);
+			}
+			profile.setProfilePhoto(onwnerImageUrl);
 			profile.setZoyShare(details[37] != null ? details[37].toString() : null);
 			PgOwnerbasicInformation basicInformation = new PgOwnerbasicInformation();
 			basicInformation.setFirstName(details[2] != null ? details[2].toString() : null);
