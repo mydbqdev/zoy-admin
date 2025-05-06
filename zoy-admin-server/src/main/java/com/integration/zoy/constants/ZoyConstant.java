@@ -92,5 +92,5 @@ public class ZoyConstant {
 	public static final String OPEN="Open";
 	public static final String LEAD_GEN="LEAD_GEN";
 	public static final String SUPPORT_TICKET="SUPPORT_TICKET";
-
+	public static final String Leed_GEN="Leed_GEN";
 }
