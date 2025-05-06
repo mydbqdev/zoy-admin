@@ -11,6 +11,7 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,7 @@ import com.integration.zoy.model.UpcomingBookingDetails;
 import com.integration.zoy.model.UserStatus;
 import com.integration.zoy.repository.UserMasterRepository;
 import com.integration.zoy.service.UserDBImpl;
+import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
@@ -76,6 +78,15 @@ public class TenantMasterController implements TenantMasterImpl{
 	
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
+	
+	@Value("${app.minio.user.photos.bucket.name}")
+	private String userPhotoBucketName;
+	
+	@Value("${app.minio.aadhaar.photos.bucket.name}")
+	String aadhaarPhotoBucket;
+	
+	@Autowired
+	ZoyAdminService zoyAdminService;
 
 	@Override
 	public ResponseEntity<String> zoyTenantManagement(PaginationRequest paginationRequest) {
@@ -133,7 +144,16 @@ public class TenantMasterController implements TenantMasterImpl{
 	        profile.setPermanentAddress(details[15] != null ? details[15] : "");
 	        profile.setNationality(details[16] != null ? details[16] : "");
 	        profile.setMotherTongue(details[17] != null ? details[17] : "");
-	        profile.setUserProfile(details[18] != null ? details[18] : "");
+	        String customerImagePath = details[18].toString();
+			String customerImageUrl="";
+			if (customerImagePath != null && !customerImagePath.isEmpty()) {
+				String folderName = customerImagePath.split("/")[0];
+				if(folderName.equals(tenantId))
+					customerImageUrl= zoyAdminService.generatePreSignedUrl(userPhotoBucketName, customerImagePath);
+				else 
+					customerImageUrl= zoyAdminService.generatePreSignedUrl(aadhaarPhotoBucket, customerImagePath);
+			}
+	        profile.setUserProfile(customerImageUrl);
 	        
 	        List<String[]> activeBookingDetails = userRepo.fetchActiveBookingDetails(tenantId);
 	        ActiveBookings activeBookings = new ActiveBookings();
