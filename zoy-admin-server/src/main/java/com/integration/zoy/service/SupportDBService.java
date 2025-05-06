@@ -111,7 +111,7 @@ public class SupportDBService implements SupportDBImpl{
 					sort = "created_date";
 					break;
 				case "ticket_type":
-					sort = "ticket_type";
+					sort = "support_type";
 					break;
 				case "priority":
 					sort = "priority";

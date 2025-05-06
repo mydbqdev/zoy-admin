@@ -5,12 +5,15 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ComplaintTicketDTO {
+	
+	@JsonProperty("tickeNumber")
+	private String tickeNumber;
 
 	@JsonProperty("userHelpRequestId")
 	private String userHelpRequestId;
 
-	@JsonProperty("username")
-	private String username;
+	@JsonProperty("name")
+	private String name;
 
 	@JsonProperty("propertyName")
 	private String propertyName;
@@ -24,8 +27,8 @@ public class ComplaintTicketDTO {
 	@JsonProperty("urgency")
 	private String urgency;
 
-	@JsonProperty("requestStatus")
-	private String requestStatus;
+	@JsonProperty("status")
+	private String status;
 
 	@JsonProperty("createdAt")
 	private String createdAt;
@@ -33,8 +36,8 @@ public class ComplaintTicketDTO {
 	@JsonProperty("updatedAt")
 	private String updatedAt;
 
-	@JsonProperty("assignToEmail")
-	private String assignToEmail;
+	@JsonProperty("assignTo")
+	private String assignTo;
 
 	@JsonProperty("assignToName")
 	private String assignToName;
@@ -42,17 +45,28 @@ public class ComplaintTicketDTO {
 	@JsonProperty("imagesUrls")
 	private String imagesUrls;
 	
-	@JsonProperty("UserTicketHistoryDTO")
-	private List<UserTicketHistoryDTO> UserTicketHistory;
+	@JsonProperty("type")
+	private String type;
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	@JsonProperty("userTicketHistoryDTO")
+	private List<UserTicketHistoryDTO> userTicketHistory;
 
 	// Getters and Setters
 
-	public String getUsername() {
-		return username;
+	public String getName() {
+		return name;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getPropertyName() {
@@ -87,22 +101,7 @@ public class ComplaintTicketDTO {
 		this.urgency = urgency;
 	}
 
-	public String getRequestStatus() {
-		return requestStatus;
-	}
-
-	public void setRequestStatus(String requestStatus) {
-		this.requestStatus = requestStatus;
-	}
-
-	public String getAssignToEmail() {
-		return assignToEmail;
-	}
-
-	public void setAssignToEmail(String assignToEmail) {
-		this.assignToEmail = assignToEmail;
-	}
-
+	
 	public String getAssignToName() {
 		return assignToName;
 	}
@@ -135,20 +134,45 @@ public class ComplaintTicketDTO {
 		this.updatedAt = updatedAt;
 	}
 	
-	public List<UserTicketHistoryDTO> getUserTicketHistory() {
-		return UserTicketHistory;
-	}
-
-	public void setUserTicketHistory(List<UserTicketHistoryDTO> userTicketHistory) {
-		UserTicketHistory = userTicketHistory;
-	}
-
+	
 	public String getImagesUrls() {
 		return imagesUrls;
 	}
 
 	public void setImagesUrls(String imagesUrls) {
 		this.imagesUrls = imagesUrls;
+	}
+
+	public String getTickeNumber() {
+		return tickeNumber;
+	}
+
+	public void setTickeNumber(String tickeNumber) {
+		this.tickeNumber = tickeNumber;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getAssignTo() {
+		return assignTo;
+	}
+
+	public void setAssignTo(String assignTo) {
+		this.assignTo = assignTo;
+	}
+
+	public List<UserTicketHistoryDTO> getUserTicketHistory() {
+		return userTicketHistory;
+	}
+
+	public void setUserTicketHistory(List<UserTicketHistoryDTO> userTicketHistory) {
+		this.userTicketHistory = userTicketHistory;
 	}
 
 }

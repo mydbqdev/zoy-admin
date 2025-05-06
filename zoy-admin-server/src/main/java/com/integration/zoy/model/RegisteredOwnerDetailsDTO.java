@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RegisteredOwnerDetailsDTO {
 
+	@JsonProperty("tickeNumber")
+	private String tickeNumber;
+	
 	@JsonProperty("name")
 	private String name;
 
@@ -27,8 +30,8 @@ public class RegisteredOwnerDetailsDTO {
 	@JsonProperty("inquiredFor")
 	private String inquiredFor;
 
-	@JsonProperty("date")
-	private String date;
+	@JsonProperty("createdAt")
+	private String createdAt;
 
 	@JsonProperty("status")
 	private String status;
@@ -47,9 +50,12 @@ public class RegisteredOwnerDetailsDTO {
 
 	@JsonProperty("description")
 	private String description;
-
-	@JsonProperty("UserTicketHistoryDTO")
-	private List<UserTicketHistoryDTO> UserTicketHistory;
+	
+	@JsonProperty("type")
+	private String type;
+	
+	@JsonProperty("userTicketHistoryDTO")
+	private List<UserTicketHistoryDTO> userTicketHistory;
 
 	// Getters and Setters
 	public String getName() {
@@ -108,14 +114,7 @@ public class RegisteredOwnerDetailsDTO {
 		this.inquiredFor = inquiredFor;
 	}
 
-	public String getDate() {
-		return date;
-	}
-
-	public void setDate(String date) {
-		this.date = date;
-	}
-
+	
 	public String getStatus() {
 		return status;
 	}
@@ -164,11 +163,39 @@ public class RegisteredOwnerDetailsDTO {
 		this.description = description;
 	}
 
+	
+
+	public String getTickeNumber() {
+		return tickeNumber;
+	}
+
+	public void setTickeNumber(String tickeNumber) {
+		this.tickeNumber = tickeNumber;
+	}
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
 	public List<UserTicketHistoryDTO> getUserTicketHistory() {
-		return UserTicketHistory;
+		return userTicketHistory;
 	}
 
 	public void setUserTicketHistory(List<UserTicketHistoryDTO> userTicketHistory) {
-		UserTicketHistory = userTicketHistory;
+		this.userTicketHistory = userTicketHistory;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	
 }
