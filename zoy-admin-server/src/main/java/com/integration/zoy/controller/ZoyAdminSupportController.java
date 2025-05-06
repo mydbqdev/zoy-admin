@@ -521,7 +521,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	        }
 
 	        if (!StringUtils.isEmpty(updateStatus.getInquiryType())) {
-	            if (updateStatus.getInquiryType().equals(ZoyConstant.Leed_GEN)) {
+	            if (updateStatus.getInquiryType().equals(ZoyConstant.LEAD_GEN)) {
 	                List<Object[]> ticketDetails = registeredPartnerDetailsRepository.getOwnerTicketDetails(
 	                    updateStatus.getInquiryNumber(), updateStatus.getStatus());
 	                List<Object[]> ticketHistory = leadHistoryRepo.getOwnerTicketHistory(updateStatus.getInquiryNumber());
