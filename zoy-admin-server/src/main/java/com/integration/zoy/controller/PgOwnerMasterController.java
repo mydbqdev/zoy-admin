@@ -346,7 +346,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			profile.setOwnerID(details[0] != null ? details[0] : null);
 			profile.setOwnerName(details[1] != null ? details[1] : null);
 			profile.setStatus(details[8] != null ? details[8].toString() : null);
-			String ownerImagePath = details[9].toString();
+			String ownerImagePath = details[9]!=null?details[9].toString():null;
 			String onwnerImageUrl="";
 			if (ownerImagePath != null && !ownerImagePath.isEmpty()) {
 				String folderName = ownerImagePath.split("/")[0];
