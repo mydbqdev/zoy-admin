@@ -110,8 +110,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 		{ id: 1, name: 'New', selected: false },
 		{ id: 2, name: 'Open', selected: false },
 		{ id: 3, name: 'Progress', selected: false },
-		// { id: 4, name: 'Registered', selected: false },
-		// { id: 4, name: 'Suspended', selected: false },
+		{ id: 4, name: 'Reopen', selected: false }
 	  ];
 	  selectedStatuses:string[]=[]; 
 	   // Toggle the selected status for a button
@@ -122,7 +121,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
       selectedFilterStatus(){
 		this.selectedStatuses = this.statuses
 		.filter(status => status.selected)
-		.map(status => status.name);
+		.map(status => status.name.toLocaleLowerCase());
 	  }
 	  // Apply and process the selected statuses
 	  applyStatuses(): void {
@@ -130,7 +129,9 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 		
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
-		this.param.filter.status=this.selectedStatuses.join(",");
+		this.param.filter.status="('"+this.selectedStatuses.join("','")+"')";
+		console.log("this.param.filter",this.param.filter);
+		this.getTicketsList();
 
 	  }
 	  applyDates(): void {
@@ -157,6 +158,8 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 	  }
 	}
 	resetFilter(){
+		this.fromDate='';
+		this.toDate='';
 		this.searchText='';
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;

@@ -541,12 +541,12 @@
     <div class="modal-content">
       <div class="modal-header bg-gradiant-popup-header">
         <h5 class="modal-title" id="modalLabel">Aadhaar Verification</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModel></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeAadharModel></button>
       </div>
       <div class="modal-body p-3">
 
         <div class="mb-3">
-          <label for="aadhaarInput" class="form-label">Aadhaar No. {{aadhaarDetails.aadhaar}}</label>
+          <label for="aadhaarInput" class="form-label">Aadhaar No.</label>
           <input type="text" class="form-control" id="aadhaarInput" placeholder="Enter your Aadhaar number"
             [(ngModel)] ="aadhaarDetails.aadhaar"  (keypress)="allowOnlyNumbers($event)"  maxlength="12"
               [ngClass]="{'is-invalid':submitAadhaar && (!aadhaarDetails.aadhaar || isInvalidAadhaar(aadhaarDetails.aadhaar))}" />

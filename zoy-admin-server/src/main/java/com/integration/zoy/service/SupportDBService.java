@@ -80,13 +80,36 @@ public class SupportDBService implements SupportDBImpl{
 				parameters.put("fromDate", paginationRequest.getFilter().getStartDate());
 				parameters.put("toDate", paginationRequest.getFilter().getEndDate());
 			}
-
+			if(null !=paginationRequest.getFilter().getEmail() && paginationRequest.getFilter().getEmail().length()>0) {
+				queryBuilder.append("AND LOWER(tkt.assign_email) = LOWER('"+paginationRequest.getFilter().getEmail()+"') \r\n");
+				}
+			
+/*			if(null !=paginationRequest.getFilter().getType() && paginationRequest.getFilter().getType().length()>0) {
+				String []type=paginationRequest.getFilter().getType().split(",");
+				queryBuilder.append("AND ( LOWER(support_type) LIKE %"+type[0]+"% \r\n");
+				for(int i=1;i<type.length-1;i++) {
+					queryBuilder.append(" OR  LOWER(support_type) LIKE %"+paginationRequest.getFilter().getType()+"% \r\n");
+				}
+				if(type.length>1) {
+					queryBuilder.append(" OR  LOWER(support_type) LIKE %"+type[type.length-1]+"% ) \r\n");
+				}else {
+					queryBuilder.append(" ) ");
+				}
+			} */
 
 			if (isClose) {
-				queryBuilder.append("AND LOWER(status) in ('close','closed','cancelled','resolved') \r\n");
+				if(null !=paginationRequest.getFilter().getStatus() && paginationRequest.getFilter().getStatus().length()>0) {
+					queryBuilder.append("AND LOWER(status) in "+paginationRequest.getFilter().getStatus()+" \r\n");
+				}else {
+					queryBuilder.append("AND LOWER(status) in ('close','closed','cancelled','resolved') \r\n");
+				}
 				//parameters.put("status", "close");
 			}else {
-				queryBuilder.append("AND LOWER(status) not in ('close','closed','cancelled','resolved') \r\n");
+				if(null !=paginationRequest.getFilter().getStatus() && paginationRequest.getFilter().getStatus().length()>0) {
+					queryBuilder.append("AND LOWER(status) in "+paginationRequest.getFilter().getStatus()+" \r\n");
+				}else {
+					queryBuilder.append("AND LOWER(status) not in ('close','closed','cancelled','resolved') \r\n");
+				}
 				//parameters.put("status", "close");
 			}
 			
@@ -111,7 +134,7 @@ public class SupportDBService implements SupportDBImpl{
 					sort = "created_date";
 					break;
 				case "ticket_type":
-					sort = "ticket_type";
+					sort = "support_type";
 					break;
 				case "priority":
 					sort = "priority";

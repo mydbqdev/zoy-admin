@@ -109,3 +109,16 @@ tr.mat-mdc-row:hover {
   overflow: hidden;
   text-overflow: ellipsis;
 } */
+.default-filter {
+  color: rgb(56, 56, 56);
+  font-size: 14px;
+  border: 0px;
+  background-color: #F7F8FB;
+}
+
+.selected-filter {
+  color: #fff;
+  font-size: 14px;
+  background-color: #8b67de;
+  border-color: #955cf1;
+}

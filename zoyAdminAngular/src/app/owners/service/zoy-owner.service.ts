@@ -95,14 +95,7 @@ import { MessageService } from 'src/app/message.service';
       }//sessionStorage.setItem('zoyadminapi', 'yes');
     //  sessionStorage.setItem('exterApiToken', basicAuthValue);
       public generateAadhaarSession(): Observable<any> {
-        console.log("this.basePathForCustomerPartnerApis",this.basePathForCustomerPartnerApis)
         const url=this.basePathForCustomerPartnerApis+"/zoy_customer/generateAadhaarSession";
-            console.log( ">>><<<",url,
-              {
-                headers: this.buildHeadersForCustomerPartnerApis(),
-                observe: 'body',
-                withCredentials: true
-              })
         return this.httpclient.get<any>(
           url,
           {
@@ -112,19 +105,6 @@ import { MessageService } from 'src/app/message.service';
           }
         );
       }
-      generateAadhaarSession2() {
-        const url = 'https://api-qa.zoypg.com:30001/zoy_customer/generateAadhaarSession';
-        const headers = new HttpHeaders({
-          'Authorization': 'Basic em95YXBwOnpveXBhc3M=',
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        });
-    
-        const body = {}; // or whatever payload the API expects
-    
-        return this.httpclient.post(url, body, { headers });
-      }
-      
       
       public generateAadhaarRecaptcha(data:any): Observable<any> {
         const url=this.basePathForCustomerPartnerApis+"/zoy_customer/generateAadhaarRecaptcha";
