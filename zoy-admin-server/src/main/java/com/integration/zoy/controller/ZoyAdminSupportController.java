@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -519,8 +520,8 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	        }
 
-	        if (updateStatus.getInquiryType() != null && !updateStatus.getInquiryType().isEmpty()) {
-	            if (updateStatus.getInquiryType().equals("SUPPORT_TICKET")) {
+	        if (!StringUtils.isEmpty(updateStatus.getInquiryType())) {
+	            if (updateStatus.getInquiryType().equals(ZoyConstant.SUPPORT_TICKET)) {
 	                List<Object[]> ticketDetails = registeredPartnerDetailsRepository.getOwnerTicketDetails(
 	                    updateStatus.getInquiryNumber(), updateStatus.getStatus());
 	                List<Object[]> ticketHistory = leadHistoryRepo.getOwnerTicketHistory(updateStatus.getInquiryNumber());
@@ -593,7 +594,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                    String imageLinks = complaintDetail[9] != null ? complaintDetail[9].toString() : null;
 	                    StringBuilder finalImageUrls = new StringBuilder();
 
-	                    if (imageLinks != null && !imageLinks.isEmpty()) {
+	                    if (!StringUtils.isEmpty(imageLinks)) {
 	                        String[] imageArray = imageLinks.split(",");
 
 	                        for (int i = 0; i < imageArray.length; i++) {
