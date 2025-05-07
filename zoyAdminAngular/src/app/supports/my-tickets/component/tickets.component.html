@@ -30,7 +30,7 @@
                           <div  class="d-flex" style="border: 1px solid #dbd8d8;border-radius: 5px;">  
                           <div class="p-1 pl-2" style="border-right: 1px solid #dbd8d8;padding-top: 5px;"><i class="fas fa-filter mr-2"></i> </div> 
                           <div style="border-right: 1px solid #dbd8d8;">
-                              <button type="button" class="btn" style="color:rgb(56, 56, 56);font-size: 14px;border: 0px;background-color: #F7F8FB;" id="menuLink"
+                              <button type="button"  [ngClass]="selectedStatuses.length==0 ?'btn default-filter':'btn selected-filter'" id="menuLink"
                               data-toggle="dropdown">Status<i class="fas fa-chevron-down ml-2"></i></button>
                               <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width" aria-labelledby="menuLink" data-bs-auto-close="false" (click)="stopPropagation($event)">
                                   <div class="dropdown-header" style="margin-left: -21px;">Select Status</div>
@@ -56,8 +56,8 @@
                                </div>
                           </div> 
                           <div style="border-right: 1px solid #dbd8d8;">
-                            <button type="button" class="btn" style="color:rgb(56, 56, 56);font-size: 14px;border: 0px;background-color: #F7F8FB;" id="menuLinkForDateFilter"
-                            data-toggle="dropdown" (click)="fromDate='';toDate=''" >Date<i class="fas fa-chevron-down ml-2"></i></button>
+                            <button type="button" [ngClass]="(!fromDate || !toDate) ?'btn default-filter':'btn selected-filter'"  id="menuLinkForDateFilter"
+                            data-toggle="dropdown" >Date<i class="fas fa-chevron-down ml-2"></i></button>
                             <div id="dropdownMenu" class="dropdown-menu custom-dropdown-width" aria-labelledby="menuLinkForDateFilter" data-bs-auto-close="false" (click)="stopPropagation($event)">
                                 <div class="dropdown-header" style="margin-left: -21px;">Select registered date range to filter</div>
                                 <!-- Buttons in one row -->
