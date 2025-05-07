@@ -104,11 +104,10 @@ export class MyClosedTicketsComponent implements OnInit, AfterViewInit {
 	}
 
 	statuses = [
-		{ id: 1, name: 'New', selected: false },
-		{ id: 2, name: 'Open', selected: false },
-		{ id: 3, name: 'Progress', selected: false },
-		// { id: 4, name: 'Registered', selected: false },
-		// { id: 4, name: 'Suspended', selected: false },
+		{ id: 1, name: 'Close', selected: false },
+		{ id: 2, name: 'Closed', selected: false },
+		{ id: 3, name: 'Cancelled', selected: false },
+		{ id: 4, name: 'Resolved', selected: false }
 	  ];
 	  selectedStatuses:string[]=[]; 
 	   // Toggle the selected status for a button
@@ -119,15 +118,13 @@ export class MyClosedTicketsComponent implements OnInit, AfterViewInit {
       selectedFilterStatus(){
 		this.selectedStatuses = this.statuses
 		.filter(status => status.selected)
-		.map(status => status.name);
+		.map(status => status.name.toLocaleLowerCase());
 	  }
 	  // Apply and process the selected statuses
 	  applyStatuses(): void {
-		console.log('Selected Statuses:', this.selectedStatuses);
-		
-		this.param.pageIndex=0
-		this.paginator.pageIndex=0;
-		this.param.filter.status=this.selectedStatuses.join(",");
+		this.paginator.pageIndex=0;	
+		this.param.filter.status="('"+this.selectedStatuses.join("','")+"')";
+		this.getTicketsList();
 
 	  }
 	  applyDates(): void {
@@ -154,6 +151,8 @@ export class MyClosedTicketsComponent implements OnInit, AfterViewInit {
 	  }
 	}
 	resetFilter(){
+		this.fromDate='';
+		this.toDate='';
 		this.searchText='';
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
