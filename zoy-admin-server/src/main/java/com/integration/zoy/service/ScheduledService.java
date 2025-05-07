@@ -64,20 +64,25 @@ public class ScheduledService {
 	    }
 	}
 
+    @Scheduled(cron = "${rule.intimation.effective.date.cron}", zone = "${spring.jackson.time-zone}")
     @Transactional
-   	@Scheduled(cron = "${rule.intimation.effective.date.cron}", zone = "${spring.jackson.time-zone}")    
-	public void sendRuleEffectiveDateNotifications() {
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			format.setTimeZone(TimeZone.getTimeZone(timeZon));
-			Date date = new Date();
-			String dateTime = format.format(date);
-			autoCancellationOfMasterConfi.sendRuleEffective();
-			log.info("Auto cancellation for master configuraton executed at: " + dateTime);
-		} catch (Exception e) {
-			log.error("Error in autoCanceForTokenAdvance(): ", e);
-		}
-	}
+    public void sendRuleEffectiveDateNotifications() {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            format.setTimeZone(TimeZone.getTimeZone(timeZon)); // Ensure this is configured
+            String dateTime = format.format(new Date());
+
+            autoCancellationOfMasterConfi.sendForceCheckoutRuleEffective();
+            autoCancellationOfMasterConfi.sendNoRentalAgreementRuleEffective();
+            autoCancellationOfMasterConfi.sendTokenAdvanceRuleEffective();
+            autoCancellationOfMasterConfi.sendSecurityDepositRuleEffective();
+            log.info("Auto cancellation for master configuration executed at: " + dateTime);
+        } catch (Exception e) {
+            log.error("Error in autoCanceForTokenAdvance(): ", e);
+        }
+    }
+
+
     
 	
 }

@@ -261,15 +261,15 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>uat</id>
-			<properties>
-				<activatedProperties>uat</activatedProperties>
-			</properties>
-		</profile>
-		<profile>
 			<id>qa</id>
 			<properties>
 				<activatedProperties>qa</activatedProperties>
+			</properties>
+		</profile>
+		<profile>
+			<id>preprod</id>
+			<properties>
+				<activatedProperties>preprod</activatedProperties>
 			</properties>
 		</profile>
 		<profile>

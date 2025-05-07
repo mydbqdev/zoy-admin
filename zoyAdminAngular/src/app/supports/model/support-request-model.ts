@@ -12,4 +12,5 @@ export class SupportRequestParam {
     searchText:string;
     startDate: string;
     endDate: string;
+    email:string;
   }

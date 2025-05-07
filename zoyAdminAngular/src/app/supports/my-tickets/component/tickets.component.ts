@@ -16,6 +16,7 @@ import { Filter, SupportRequestParam } from '../../model/support-request-model';
 import { SupportList, TicketAssign, UpdateStatus } from '../../model/suppot-list-model';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { SupportService } from '../../service/support.service';
+import { SupportDetails } from '../../model/suppot-details-model';
 
 
 @Component({
@@ -60,6 +61,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 	statusList: String[] = ['Open', 'Progress','Reopen', 'Cancel','Close','Resolve']; 
 	public ticketAssign:TicketAssign=new TicketAssign();
 	public updateStatus:UpdateStatus=new UpdateStatus();
+	public supportTicketDetails:SupportDetails=new SupportDetails();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService,private supportService : SupportService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private confirmationDialogService:ConfirmationDialogService) {
 			this.authService.checkLoginUserVlidaate();
@@ -110,6 +112,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 		{ id: 1, name: 'New', selected: false },
 		{ id: 2, name: 'Open', selected: false },
 		{ id: 3, name: 'Progress', selected: false },
+		{ id: 4, name: 'Reopen', selected: false }
 		// { id: 4, name: 'Registered', selected: false },
 		// { id: 4, name: 'Suspended', selected: false },
 	  ];
@@ -122,7 +125,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
       selectedFilterStatus(){
 		this.selectedStatuses = this.statuses
 		.filter(status => status.selected)
-		.map(status => status.name);
+		.map(status => status.name.toLocaleLowerCase());
 	  }
 	  // Apply and process the selected statuses
 	  applyStatuses(): void {
@@ -130,8 +133,9 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 		
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
-		this.param.filter.status=this.selectedStatuses.join(",");
-
+		this.param.filter.status="('"+this.selectedStatuses.join("','")+"')";
+		console.log("this.param.filter",this.param.filter);
+		this.getTicketsList();
 	  }
 	  applyDates(): void {
 		this.param.pageIndex=0
@@ -157,6 +161,8 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 	  }
 	}
 	resetFilter(){
+		this.fromDate='';
+		this.toDate='';
 		this.searchText='';
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
@@ -280,6 +286,43 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 		getDetails(element:any){
 			this.assignTicketNumber=element.ticket_id;
 			this.selectTicket=Object.assign(element);
+
+			this.authService.checkLoginUserVlidaate();
+			this.updateStatus.status=this.selectTicket.status;
+			this.updateStatus.inquiryNumber=element.ticket_id;
+			this.updateStatus.inquiryType=this.selectTicket.type;
+			this.supportService.getInquiryDeatils(this.updateStatus).subscribe(data => {
+				this.supportTicketDetails = Object.assign([],data.data);
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
 		}
 		
 		assignTeamApi(isFromSummeryScreen){
