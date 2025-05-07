@@ -9,6 +9,7 @@ export class SupportDetails {
     created_at:string;
     status:string;
     city:string;
+    state:string;
     assigned_to:string;
     assigned_to_name:string;
     description:string;

@@ -222,47 +222,73 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModelDetails></button>
       </div>
       <div class="modal-body p-3">
-        <div *ngIf="supportTicketDetails?.type=='LEAD_GEN'">
+        <div *ngIf="supportTicketDetails?.type=='LEAD_GEN'" style="font-size: 13px;">
           <div class="row mb-1">
-            <div class="col-sm-1">Name</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.name}}</div>
-            <div class="col-sm-1">Property</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.property_name}}</div>
-            <div class="col-sm-1">Type</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.inquired_for}}</div>
+            <div class="col-sm-4">Name:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.name}}</span></div>
+            <div class="col-sm-4">Property:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.property_name}}</span></div>
+            <div class="col-sm-4">Type:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.inquired_for}}</span></div>
           </div>
           <div class="row mb-1">
-            <div class="col-sm-1">Address</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.address}}</div>
-            <div class="col-sm-1">Mobile</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.mobile}}</div>
-            <div class="col-sm-1">Pincode</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.pincode}}</div>
+            <div class="col-sm-4">Address:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.address}}</span></div>
+            <div class="col-sm-4">city:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.city}}</span></div>
+            <div class="col-sm-4">state:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.state}}</span></div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-sm-4">Pincode:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.pincode}}</span></div>
+            <div class="col-sm-4">Mobile:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.mobile}}</span></div>
+            <div class="col-sm-4">Owner Email:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.owner_email}}</span></div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-sm-4">Urgency :
+              <span style="color:#000000;margin-left:10px;">High</span></div>
+            <div class="col-sm-4">Created On:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
+            <div class="col-sm-4">Status:
+              <span style="margin-left:10px;">
+              <span class="common-status status-inactive">{{supportTicketDetails.status}}</span></span>
+            </div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-sm-8">Description:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.description}}</span></div>
+            <div class="col-sm-4">Assign To:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.assigned_to_name}}</span></div>
           </div>
         </div>
 
-        <div *ngIf="supportTicketDetails?.type=='SUPPORT_TICKET'">
+        <div *ngIf="supportTicketDetails?.type=='SUPPORT_TICKET'" style="font-size: 13px;">
           <div class="row mb-1">
-            <div class="col-sm-1">Name</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.name}}</div>
-            <div class="col-sm-1">Property</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.property_name}}</div>
-            <div class="col-sm-1">Type</div>
-            <div class="col-sm-3" style="color:#000000;">Support for,{{supportTicketDetails.categories_name}}</div>
+            <div class="col-sm-4">Name :
+            <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.name}}</span></div>
+            <div class="col-sm-4">Property:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.property_name}}</span></div>
+            <div class="col-sm-4">Type:
+              <span style="color:#000000;margin-left:10px;">Support for,{{supportTicketDetails.categories_name}}</span></div>
           </div>
           <div class="row mb-1">
-            <div class="col-sm-1">Urgency</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.urgency}}</div>
-            <div class="col-sm-1">Created On</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</div>
-            <div class="col-sm-1">Status</div>
-            <div class="col-sm-3" style="color:#000000;"><span class="common-status status-inactive">New</span></div>
+            <div class="col-sm-4">Urgency :
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.urgency}}</span></div>
+            <div class="col-sm-4">Created On:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
+            <div class="col-sm-4">Status:
+              <span style="margin-left:10px;">
+              <span class="common-status status-inactive">{{supportTicketDetails.status}}</span></span>
+            </div>
           </div>
           <div class="row mb-1">
-            <div class="col-sm-1">Description</div>
-            <div class="col-sm-7" style="color:#000000;">{{supportTicketDetails.description}}</div>
-            <div class="col-sm-1">Assign To</div>
-            <div class="col-sm-3" style="color:#000000;">{{supportTicketDetails.assigned_to_name}}</div>
+            <div class="col-sm-8">Description:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.description}}</span></div>
+            <div class="col-sm-4">Assign To:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.assigned_to_name}}</span></div>
           </div>
         </div>
 
