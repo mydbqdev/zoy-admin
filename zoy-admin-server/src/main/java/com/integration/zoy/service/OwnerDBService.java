@@ -220,7 +220,7 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public List<ZoyPgTypeMaster> getAllPgTypes() throws WebServiceException{
-		return zoyPgTypeMasterRepository.findAll();
+		return zoyPgTypeMasterRepository.findAllPgTypeData();
 	}
 
 
@@ -266,7 +266,8 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public List<ZoyPgShareMaster> getAllShares()throws WebServiceException {
-		return zoyPgShareMasterRepository.findAll();
+		List<ZoyPgShareMaster> results =zoyPgShareMasterRepository.findAllPgShareData(); 
+		return results;
 	}
 
 	@Override
@@ -295,7 +296,7 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public List<ZoyPgAmenetiesMaster> getAllAmeneties() throws WebServiceException{
-		return zoyPgAmenetiesMasterRepository.findAll();
+		return zoyPgAmenetiesMasterRepository.findAllPgShareData();
 	}
 
 	@Override
@@ -353,9 +354,15 @@ public class OwnerDBService implements OwnerDBImpl{
 		}
 	}
 
+//	@Override
+//	public List<ZoyPgRoomTypeMaster> getAllRoomTypes()throws WebServiceException {
+//		return roomTypeRepository.findAll();
+//	}
+	
 	@Override
 	public List<ZoyPgRoomTypeMaster> getAllRoomTypes()throws WebServiceException {
-		return roomTypeRepository.findAll();
+		List<ZoyPgRoomTypeMaster> results=roomTypeRepository.findAllRoomTypeData();  
+		return results;
 	}
 
 	@Override
@@ -392,7 +399,7 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public List<ZoyPgDueFactorMaster> getAllDueFactors() throws WebServiceException{
-		return zoyPgDueFactorMasterRepository.findAll();
+		return zoyPgDueFactorMasterRepository.findAllDueFactorData();
 	}
 
 	@Override
@@ -466,7 +473,8 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public List<ZoyPgRentCycleMaster> getAllRentCycle()throws WebServiceException {
-		return zoyPgRentCycleMasterRepository.findAll();
+		List<ZoyPgRentCycleMaster> results =zoyPgRentCycleMasterRepository.findAllPgRentCycleData();
+		return results;
 	}
 
 	@Override
@@ -603,7 +611,7 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public List<ZoyPgDueMaster> findAllDueMaster() throws WebServiceException{
-		return zoyPgDueMasterRepository.findAll();
+		return zoyPgDueMasterRepository.findAllPgDueData();
 	}
 
 	@Override
@@ -925,7 +933,7 @@ public class OwnerDBService implements OwnerDBImpl{
 
 	@Override
 	public List<ZoyPgFloorNameMaster> getAllFloorNames() throws WebServiceException {
-		return floorNameRepository.findAll();
+		return floorNameRepository.findAllFloorNameData();
 
 	}
 
