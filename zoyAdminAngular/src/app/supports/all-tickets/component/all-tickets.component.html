@@ -249,12 +249,16 @@
           </div>
           <div class="row mb-1">
             <div class="col-sm-4">Urgency :
-              <span style="color:#000000;margin-left:10px;">High</span></div>
+              <span style="margin-left:10px;color: #f10707;">High</span></div>
             <div class="col-sm-4">Created On:
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
             <div class="col-sm-4">Status:
               <span style="margin-left:10px;">
-              <span class="common-status status-inactive">{{supportTicketDetails.status}}</span></span>
+                    <span class="common-status"
+                    [ngClass]="supportTicketDetails.status === 'New' ? 'status-inactive' : (supportTicketDetails.status === 'Open' ? 'status-verified':'status-active' )" >
+                {{supportTicketDetails.status}}
+              </span>
+            </span>
             </div>
           </div>
           <div class="row mb-1">
@@ -276,12 +280,17 @@
           </div>
           <div class="row mb-1">
             <div class="col-sm-4">Urgency :
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.urgency}}</span></div>
+              <span style="color:#000000;margin-left:10px;"><span style="margin-left:10px;"> <span *ngIf="supportTicketDetails.urgency" style="color: #f10707;">High</span>
+              <span *ngIf="!supportTicketDetails.urgency" style="color: #055530;">Low</span></span></span></div>
             <div class="col-sm-4">Created On:
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
             <div class="col-sm-4">Status:
               <span style="margin-left:10px;">
-              <span class="common-status status-inactive">{{supportTicketDetails.status}}</span></span>
+                <span class="common-status"
+                [ngClass]="supportTicketDetails.status === 'New' ? 'status-inactive' : (supportTicketDetails.status === 'Open' ? 'status-verified':'status-active' )" >
+            {{supportTicketDetails.status}}
+              </span>
+            </span>
             </div>
           </div>
           <div class="row mb-1">
