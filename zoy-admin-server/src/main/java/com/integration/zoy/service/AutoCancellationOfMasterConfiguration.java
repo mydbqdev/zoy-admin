@@ -1,5 +1,6 @@
 package com.integration.zoy.service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,6 +13,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,8 @@ public class AutoCancellationOfMasterConfiguration {
 
     @PersistenceContext
     private EntityManager entityManager;
+    
+	private static final Logger log=LoggerFactory.getLogger(ScheduledService.class);
 
     @Transactional
     public int autoCancellationOfMaterConfiguration() {
@@ -113,33 +118,126 @@ public class AutoCancellationOfMasterConfiguration {
     
     
     
-    public void sendRuleEffective() {
-    	   TimeZone timeZone = TimeZone.getTimeZone(currentTimeZone);
-           Calendar calendar = Calendar.getInstance(timeZone);
-           Timestamp currentTimestamp = new Timestamp(calendar.getTimeInMillis());
+    public void sendForceCheckoutRuleEffective() {
+        try {
+            TimeZone timeZone = TimeZone.getTimeZone(currentTimeZone);
+            Calendar calendar = Calendar.getInstance(timeZone);
 
-           SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-           sdf.setTimeZone(timeZone);
-           String timestampString = sdf.format(currentTimestamp);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(timeZone);
+            String currentDateStr = sdf.format(calendar.getTime());
 
-        List<String[]> data = pgOwnerMaterRepository.findCheckOutDaysByDate(timestampString);
+            List<String[]> data = pgOwnerMaterRepository.findCheckOutDaysByDate(currentDateStr);
 
-        if (data != null && data.size() >= 2) {
-            try {
-                String futureDate = data.get(0)[0];
-                int newValue = Integer.parseInt(data.get(0)[1]);
-                String pastDate = data.get(1)[0];
-                int oldValue = Integer.parseInt(data.get(1)[1]);
+            if (data != null && data.size() >= 2) {
+                String pastDate = data.get(0)[0];
+                int oldValue  = Integer.parseInt(data.get(0)[1]);
+                String futureDate  = data.get(1)[0];
+                int newValue = Integer.parseInt(data.get(1)[1]);
 
                 zoyEmailService.sendForceCheckoutChangeEmail(futureDate, oldValue, newValue);
-            } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                System.err.println("Error parsing data: " + e.getMessage());
+            } else {
+                log.warn("Not enough data returned for processing force checkout change.");
             }
-        } else {
-            System.out.println("Not enough data returned for processing.");
+        } catch (Exception e) {
+            log.error("Error in sendRuleEffective(): ", e);
         }
     }
 
+    public void sendNoRentalAgreementRuleEffective() {
+        try {
+            TimeZone timeZone = TimeZone.getTimeZone(currentTimeZone);
+            Calendar calendar = Calendar.getInstance(timeZone);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(timeZone);
+            String currentDateStr = sdf.format(calendar.getTime());
+
+            List<String[]> data = pgOwnerMaterRepository.findNoRentalAgreementDaysByDate(currentDateStr);
+
+            if (data != null && data.size() >= 2) {
+                String pastDate = data.get(0)[0];
+                int oldValue  = Integer.parseInt(data.get(0)[1]);
+                String futureDate  = data.get(1)[0];
+                int newValue = Integer.parseInt(data.get(1)[1]);
+
+                zoyEmailService.sendNoRentalAgreementChangeEmail(futureDate, oldValue, newValue);
+            } else {
+                log.warn("Not enough data returned for processing force checkout change.");
+            }
+        } catch (Exception e) {
+            log.error("Error in sendRuleEffective(): ", e);
+        }
+    }
     
+    public void sendTokenAdvanceRuleEffective() {
+        try {
+            TimeZone timeZone = TimeZone.getTimeZone(currentTimeZone);
+            Calendar calendar = Calendar.getInstance(timeZone);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(timeZone);
+            String currentDateStr = sdf.format(calendar.getTime());
+
+            List<String[]> data = pgOwnerMaterRepository.findTokenAdvanceDetailsByDate(currentDateStr);
+
+            if (data != null && data.size() >= 2) {
+                try {
+                    String pastDate = data.get(0)[0];
+                    BigDecimal oldFixed = new BigDecimal(data.get(0)[1]); 
+                    BigDecimal oldVariable = new BigDecimal(data.get(0)[2]); 
+
+                    String futureDate = data.get(1)[0];
+                    BigDecimal newFixed = new BigDecimal(data.get(1)[1]); 
+                    BigDecimal newVariable = new BigDecimal(data.get(1)[2]); 
+
+                    zoyEmailService.sendTokenAdvanceRuleChangeEmail(
+                        futureDate, oldFixed, oldVariable, newFixed, newVariable
+                    );
+                } catch (NumberFormatException e) {
+                    log.error("Error parsing numeric values from data: ", e);
+                }
+            } else {
+                log.warn("Not enough data returned for processing force checkout change.");
+            }
+        } catch (Exception e) {
+            log.error("Error in sendRentalAgreementRuleEffective(): ", e);
+        }
+    }
+    
+    
+    public void sendSecurityDepositRuleEffective() {
+        try {
+            TimeZone timeZone = TimeZone.getTimeZone(currentTimeZone);
+            Calendar calendar = Calendar.getInstance(timeZone);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(timeZone);
+            String currentDateStr = sdf.format(calendar.getTime());
+
+            List<String[]> data = pgOwnerMaterRepository.findTokenAdvanceDetailsByDate(currentDateStr);
+
+            if (data != null && data.size() >= 2) {
+                try {
+                    String pastDate = data.get(0)[0];
+                    BigDecimal oldFixed = new BigDecimal(data.get(0)[1]); 
+                    BigDecimal oldVariable = new BigDecimal(data.get(0)[2]); 
+
+                    String futureDate = data.get(1)[0];
+                    BigDecimal newFixed = new BigDecimal(data.get(1)[1]); 
+                    BigDecimal newVariable = new BigDecimal(data.get(1)[2]); 
+
+                    zoyEmailService.sendSecurityDepositLimitsChangeEmail(futureDate, oldFixed, oldVariable, newFixed, newVariable);
+                } catch (NumberFormatException e) {
+                    log.error("Error parsing numeric values from data: ", e);
+                }
+            } else {
+                log.warn("Not enough data returned for processing force checkout change.");
+            }
+        } catch (Exception e) {
+            log.error("Error in sendRentalAgreementRuleEffective(): ", e);
+        }
+    }
+
 
 }
