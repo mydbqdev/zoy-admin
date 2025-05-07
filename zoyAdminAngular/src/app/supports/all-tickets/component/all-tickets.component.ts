@@ -15,6 +15,7 @@ import { Filter, SupportRequestParam } from '../../model/support-request-model';
 import { SupportList, SupportTeamList, TicketAssign, UpdateStatus } from '../../model/suppot-list-model';
 import { MatPaginator } from '@angular/material/paginator';
 import { SupportService } from '../../service/support.service';
+import { SupportDetails } from '../../model/suppot-details-model';
 
 
 @Component({
@@ -67,6 +68,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 		public selectedStatusForUpdate:string='';
 		statusList: String[] = ['Open', 'Progress','Reopen', 'Cancel','Close','Resolve']; 
 		public updateStatus:UpdateStatus=new UpdateStatus();
+		public supportTicketDetails:SupportDetails=new SupportDetails();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService,private supportService : SupportService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
@@ -285,6 +287,43 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 		getDetails(element:any){
 			this.assignTicketNumber=element.ticket_id;
 			this.selectTicket=Object.assign(element);
+			console.info("this.selectTicket.type:"+this.selectTicket.type);
+			this.authService.checkLoginUserVlidaate();
+			this.updateStatus.status=this.selectTicket.status;
+			this.updateStatus.inquiryNumber=element.ticket_id;
+			this.updateStatus.inquiryType=this.selectTicket.type;
+			this.supportService.getInquiryDeatils(this.updateStatus).subscribe(data => {
+				this.supportTicketDetails = Object.assign([],data.data);
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
 		}
 
 

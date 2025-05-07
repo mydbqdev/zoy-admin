@@ -222,39 +222,86 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModelDetails></button>
       </div>
       <div class="modal-body p-3">
-        <div class="row mb-1">
-          <div class="col-sm-3">Unique Inquiry Number</div>
-          <div class="col-sm-1" style="color:#000000;">250001</div>
-          <div class="col-sm-2">Name</div>
-          <div class="col-sm-2" style="color:#000000;">Madhan Ram</div>
-          <div class="col-sm-1">Email</div>
-          <div class="col-sm-3" style="color:#000000;">-</div>
+        <div *ngIf="supportTicketDetails?.type=='LEAD_GEN'" style="font-size: 13px;">
+          <div class="row mb-1">
+            <div class="col-sm-4">Name:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.name}}</span></div>
+            <div class="col-sm-4">Property:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.property_name}}</span></div>
+            <div class="col-sm-4">Type:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.inquired_for}}</span></div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-sm-4">Address:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.address}}</span></div>
+            <div class="col-sm-4">city:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.city}}</span></div>
+            <div class="col-sm-4">state:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.state}}</span></div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-sm-4">Pincode:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.pincode}}</span></div>
+            <div class="col-sm-4">Mobile:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.mobile}}</span></div>
+            <div class="col-sm-4">Owner Email:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.owner_email}}</span></div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-sm-4">Urgency :
+              <span style="margin-left:10px;color: #f10707;">High</span></div>
+            <div class="col-sm-4">Created On:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
+            <div class="col-sm-4">Status:
+              <span style="margin-left:10px;">
+                    <span class="common-status"
+                    [ngClass]="supportTicketDetails.status === 'New' ? 'status-inactive' : (supportTicketDetails.status === 'Open' ? 'status-verified':'status-active' )" >
+                {{supportTicketDetails.status}}
+              </span>
+            </span>
+            </div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-sm-8">Description:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.description}}</span></div>
+            <div class="col-sm-4">Assign To:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.assigned_to_name}}</span></div>
+          </div>
         </div>
-        <div class="row mb-1">
-          <div class="col-sm-3">Phone Number</div>
-          <div class="col-sm-1" style="color:#000000;">9874561230</div>
-          <div class="col-sm-2">State</div>
-          <div class="col-sm-2" style="color:#000000;">AP</div>
-          <div class="col-sm-1">City</div>
-          <div class="col-sm-3" style="color:#000000;">Guntur</div>
+
+        <div *ngIf="supportTicketDetails?.type=='SUPPORT_TICKET'" style="font-size: 13px;">
+          <div class="row mb-1">
+            <div class="col-sm-4">Name :
+            <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.name}}</span></div>
+            <div class="col-sm-4">Property:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.property_name}}</span></div>
+            <div class="col-sm-4">Type:
+              <span style="color:#000000;margin-left:10px;">Support for,{{supportTicketDetails.categories_name}}</span></div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-sm-4">Urgency :
+              <span style="color:#000000;margin-left:10px;"><span style="margin-left:10px;"> <span *ngIf="supportTicketDetails.urgency" style="color: #f10707;">High</span>
+              <span *ngIf="!supportTicketDetails.urgency" style="color: #055530;">Low</span></span></span></div>
+            <div class="col-sm-4">Created On:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
+            <div class="col-sm-4">Status:
+              <span style="margin-left:10px;">
+                <span class="common-status"
+                [ngClass]="supportTicketDetails.status === 'New' ? 'status-inactive' : (supportTicketDetails.status === 'Open' ? 'status-verified':'status-active' )" >
+            {{supportTicketDetails.status}}
+              </span>
+            </span>
+            </div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-sm-8">Description:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.description}}</span></div>
+            <div class="col-sm-4">Assign To:
+              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.assigned_to_name}}</span></div>
+          </div>
         </div>
-        <div class="row mb-1">
-          <div class="col-sm-3">Guest/ Property owner</div>
-          <div class="col-sm-1" style="color:#000000;">-</div>
-          <div class="col-sm-2">Inquired for </div>
-          <div class="col-sm-2" style="color:#000000;">Business inquiry</div>
-          <div class="col-sm-1">Description</div>
-          <div class="col-sm-3" style="color:#000000;">Description here</div>
-        </div>
-        <div class="row mb-1">
-          <div class="col-sm-2">Date</div>
-          <div class="col-sm-2" style="color:#000000;">2025-03-15</div>
-          <div class="col-sm-2">Assign To </div>
-          <div class="col-sm-2" style="color:#000000;">Mahendra</div>
-          <div class="col-sm-1">Status</div>
-          <div class="col-sm-3"><span class="common-status status-inactive">New</span></div>
-          
-        </div>
+
+        
         <hr>
         <div>
           <div class="d-flex">
@@ -265,7 +312,24 @@
             </div>
           </div> 
           <div class="card">
-            <div class="card-body" style="padding: 2px;margin: 0px;" ></div>
+            <div class="card-body" style="padding: 2px;margin: 0px;" >
+              <div class="row mb-1 ml-1 mr-1" style="font-size: 14px;">
+                  <div class="col-sm-2">Updated On</div>
+                  <div class="col-sm-3">Updated By</div>
+                  <div class="col-sm-1">Status</div>
+                  <div class="col-sm-6">Description</div>
+              </div>
+              <div *ngIf="supportTicketDetails?.user_ticket_history?.length>0">
+              <div class="row mb-1 ml-1 mr-1" style="font-size: 12px;border-top: 1px solid #edebeb;" *ngFor="let historyDet of supportTicketDetails?.user_ticket_history">
+                <div class="col-sm-2">{{ historyDet.created_at | date: 'yyyy-MM-dd HH:mm' }}</div>
+                <div class="col-sm-3">{{historyDet.user_email}}</div>
+                <div class="col-sm-1">{{historyDet.request_status}}</div>
+                <div class="col-sm-6">{{historyDet.description}}</div>
+              </div>
+              </div>
+              <div class="ml-1 mr-1" *ngIf="supportTicketDetails?.user_ticket_history?.length==0" style="text-align: center;font-size: 13px;border-top: 1px solid #edebeb;"> History is not available</div>
+
+            </div>
           </div>
         </div>
       </div>

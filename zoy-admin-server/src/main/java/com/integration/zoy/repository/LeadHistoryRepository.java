@@ -22,7 +22,7 @@ public interface LeadHistoryRepository extends JpaRepository<LeadHistory, String
 			+ "	history_data,\r\n"
 			+ "	status\r\n"
 			+ "	from pgadmin.lead_history\r\n"
-			+ "	where inquiry_number=:inquiryNumber", nativeQuery = true)
+			+ "	where inquiry_number=:inquiryNumber order by created_on desc", nativeQuery = true)
 	List<Object[]> getOwnerTicketHistory(@Param("inquiryNumber") String inquiryNumber);
 	
 }

@@ -520,7 +520,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	        }
 
-	        if (!StringUtils.isEmpty(updateStatus.getInquiryType())) {
+	        if (!StringUtils.isEmpty(updateStatus.getInquiryNumber())) {
 	            if (updateStatus.getInquiryType().equals(ZoyConstant.LEAD_GEN)) {
 	                List<Object[]> ticketDetails = registeredPartnerDetailsRepository.getOwnerTicketDetails(
 	                    updateStatus.getInquiryNumber(), updateStatus.getStatus());
@@ -536,6 +536,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                List<UserTicketHistoryDTO> userTicketHistoryList = new ArrayList<>();
 
 	                for (Object[] ticketDetail : ticketDetails) {
+	                	registeredOwnerDetails.setTickeNumber(updateStatus.getInquiryNumber());
 	                    registeredOwnerDetails.setName(ticketDetail[0] != null ? ticketDetail[0].toString() : null);
 	                    registeredOwnerDetails.setOwnerEmail(ticketDetail[1] != null ? ticketDetail[1].toString() : null);
 	                    registeredOwnerDetails.setMobile(ticketDetail[2] != null ? ticketDetail[2].toString() : null);
@@ -543,13 +544,14 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                    registeredOwnerDetails.setAddress(ticketDetail[4] != null ? ticketDetail[4].toString() : null);
 	                    registeredOwnerDetails.setPincode(ticketDetail[5] != null ? ticketDetail[5].toString() : null);
 	                    registeredOwnerDetails.setInquiredFor(ticketDetail[6] != null ? ticketDetail[6].toString() : null);
-	                    registeredOwnerDetails.setDate(ticketDetail[7] != null ? ticketDetail[7].toString() : null);
+	                    registeredOwnerDetails.setCreatedAt(ticketDetail[7] != null ? ticketDetail[7].toString() : null);
 	                    registeredOwnerDetails.setStatus(ticketDetail[8] != null ? ticketDetail[8].toString() : null);
 	                    registeredOwnerDetails.setState(ticketDetail[9] != null ? ticketDetail[9].toString() : null);
 	                    registeredOwnerDetails.setCity(ticketDetail[10] != null ? ticketDetail[10].toString() : null);
 	                    registeredOwnerDetails.setAssignedTo(ticketDetail[11] != null ? ticketDetail[11].toString() : null);
 	                    registeredOwnerDetails.setAssignedToName(ticketDetail[12] != null ? ticketDetail[12].toString() : null);
 	                    registeredOwnerDetails.setDescription(ticketDetail[13] != null ? ticketDetail[13].toString() : null);
+	                    registeredOwnerDetails.setType(ZoyConstant.LEAD_GEN);
 	                }
 
 	                for (Object[] historyDetail : ticketHistory) {
@@ -566,7 +568,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                registeredOwnerDetails.setUserTicketHistory(userTicketHistoryList);
 	                response.setMessage("Support ticket details fetched successfully.");
 	                response.setData(registeredOwnerDetails);
-	            } else {
+	            } else  if(updateStatus.getInquiryType().equals(ZoyConstant.SUPPORT_TICKET)){
 	                List<Object[]> complaintDetails = userHelpRequestRepository.getComplaintTicketDetails(
 	                    updateStatus.getInquiryNumber(), updateStatus.getStatus());
 	                List<Object[]> complaintHistory = userHelpRequestRepository.getComplaintTicketHistory(updateStatus.getInquiryNumber());
@@ -581,17 +583,19 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                List<UserTicketHistoryDTO> complaintHistoryList = new ArrayList<>();
 
 	                for (Object[] complaintDetail : complaintDetails) {
-	                    complaintTicket.setUsername(complaintDetail[0] != null ? complaintDetail[0].toString() : null);
+	                	complaintTicket.setTickeNumber(updateStatus.getInquiryNumber());
+	                    complaintTicket.setName(complaintDetail[0] != null ? complaintDetail[0].toString() : null);
 	                    complaintTicket.setPropertyName(complaintDetail[1] != null ? complaintDetail[1].toString() : null);
 	                    complaintTicket.setCategoriesName(complaintDetail[2] != null ? complaintDetail[2].toString() : null);
 	                    complaintTicket.setDescription(complaintDetail[3] != null ? complaintDetail[3].toString() : null);
 	                    complaintTicket.setUrgency(complaintDetail[4] != null ? complaintDetail[4].toString() : null);
-	                    complaintTicket.setRequestStatus(complaintDetail[5] != null ? complaintDetail[5].toString() : null);
+	                    complaintTicket.setStatus(complaintDetail[5] != null ? complaintDetail[5].toString() : null);
 	                    complaintTicket.setCreatedAt(complaintDetail[6] != null ? complaintDetail[6].toString() : null);
 	                    complaintTicket.setUpdatedAt(complaintDetail[7] != null ? complaintDetail[7].toString() : null);
-	                    complaintTicket.setAssignToEmail(complaintDetail[8] != null ? complaintDetail[8].toString() : null);
+	                    complaintTicket.setAssignTo(complaintDetail[8] != null ? complaintDetail[8].toString() : null);
 	                    complaintTicket.setAssignToName(complaintDetail[9] != null ? complaintDetail[9].toString() : null);
 	                    String imageLinks = complaintDetail[9] != null ? complaintDetail[9].toString() : null;
+	                    complaintTicket.setType(ZoyConstant.SUPPORT_TICKET);
 	                    StringBuilder finalImageUrls = new StringBuilder();
 
 	                    if (!StringUtils.isEmpty(imageLinks)) {
@@ -627,10 +631,14 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                complaintTicket.setUserTicketHistory(complaintHistoryList);
 	                response.setMessage("Complaint ticket details fetched successfully.");
 	                response.setData(complaintTicket);
+	            }else {
+	            	 response.setStatus(HttpStatus.NOT_FOUND.value());
+	                 response.setError("No support ticket details found.");
+	                 return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 	            }
 	        } else {
 	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setError("Inquiry type is required.");
+	            response.setError("Ticket number is missing.");
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	        }
 
