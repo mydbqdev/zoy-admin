@@ -62,6 +62,7 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 		statusList: String[] = ['Open', 'Progress','Reopen', 'Cancel','Close','Resolve']; 
 		public updateStatus:UpdateStatus=new UpdateStatus();
 	public supportTicketDetails:SupportDetails=new SupportDetails();
+	public	selectAssignEmail:string="";
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService,private supportService : SupportService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService) {
 			this.authService.checkLoginUserVlidaate();
@@ -128,11 +129,10 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 	  }
 	  // Apply and process the selected statuses
 	  applyStatuses(): void {
-		console.log('Selected Statuses:', this.selectedStatuses);
-		
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
-		this.param.filter.status=this.selectedStatuses.join(",");
+		this.param.filter.email=this.selectAssignEmail;
+		this.getTicketsList();
 
 	  }
 	  applyDates(): void {
@@ -159,6 +159,9 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 	  }
 	}
 	resetFilter(){
+		this.selectAssignEmail='';
+		this.fromDate='';
+		this.toDate='';
 		this.searchText='';
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
@@ -196,7 +199,41 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 		this.param.pageSize= event.pageSize;
 		this.getTicketsList();
 		}
-
+		public supportTeamList:SupportTeamList[]=[];
+		getSupportTeamList(){
+			this.supportService.getSupportTeamList().subscribe(data => {
+				this.supportTeamList = Object.assign([],data);
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}
 		getRetrieveData(){
 			this.dataSource.sort = this.sort;
 			this.dataSource.paginator = this.paginator;
