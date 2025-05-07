@@ -306,11 +306,26 @@
         <div>
           <div class="d-flex">
             <div>Histoty Information</div>
+            <div class="ml-auto mb-1">
+              <div  class="d-flex">
+                <div class="input-group input-group-sm" *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">
+                  <select class="form-select form-select-sm" [(ngModel)]="selectAssignEmail" >
+                    <option value="">Choose one</option>
+                    <option *ngFor="let cond of supportTeamToAssignList" [value]="cond.email">{{cond.name}} ({{cond.email}})</option>
+                  </select>
+                  <button class="btn btn-primary-custom text-nowrap" (click)="assignTeamApi()" [disabled]="selectAssignEmail==undefined || selectAssignEmail==''" >Assign/Reassign</button>
+                </div>
+                &nbsp;&nbsp;
+                <button class="btn btn-primary-custom text-nowrap"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Status Update</button>
+            </div>
+            </div>
+          </div> 
+            <!-- <div>Histoty Information</div>
             <div class="ml-auto">
               <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#assignToTeam" (click)="assignToTeamDetails(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Assign/Reassign</button>&nbsp;&nbsp;
               <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Status Update</button>
-            </div>
-          </div> 
+            </div> -->
+         
           <div class="card">
             <div class="card-body" style="padding: 2px;margin: 0px;" >
               <div class="row mb-1 ml-1 mr-1" style="font-size: 14px;">

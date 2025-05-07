@@ -5,6 +5,7 @@ public class Filter {
 	private String status;
     private String startDate;
     private String endDate;
+    private String email;
 	public String getSearchText() {
 		return searchText;
 	}
@@ -28,6 +29,12 @@ public class Filter {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
     

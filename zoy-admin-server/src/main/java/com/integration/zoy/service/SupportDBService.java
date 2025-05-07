@@ -80,13 +80,25 @@ public class SupportDBService implements SupportDBImpl{
 				parameters.put("fromDate", paginationRequest.getFilter().getStartDate());
 				parameters.put("toDate", paginationRequest.getFilter().getEndDate());
 			}
+			
+			if(null !=paginationRequest.getFilter().getEmail() && paginationRequest.getFilter().getEmail().length()>0) {
+				queryBuilder.append(" AND LOWER(tkt.assign_email) = LOWER('"+paginationRequest.getFilter().getEmail()+"') \r\n");
+			}
 
 
 			if (isClose) {
-				queryBuilder.append("AND LOWER(status) in ('close','closed','cancelled','resolved') \r\n");
+				if(null !=paginationRequest.getFilter().getStatus() && paginationRequest.getFilter().getStatus().length()>0) {
+					queryBuilder.append("AND LOWER(status) in "+paginationRequest.getFilter().getStatus()+" \r\n");
+				}else {
+					queryBuilder.append("AND LOWER(status) in ('close','closed','cancelled','resolved') \r\n");
+				}
 				//parameters.put("status", "close");
 			}else {
-				queryBuilder.append("AND LOWER(status) not in ('close','closed','cancelled','resolved') \r\n");
+				if(null !=paginationRequest.getFilter().getStatus() && paginationRequest.getFilter().getStatus().length()>0) {
+					queryBuilder.append("AND LOWER(status) in "+paginationRequest.getFilter().getStatus()+" \r\n");
+				}else {
+					queryBuilder.append("AND LOWER(status) not in ('close','closed','cancelled','resolved') \r\n");
+				}
 				//parameters.put("status", "close");
 			}
 			

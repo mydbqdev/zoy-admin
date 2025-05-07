@@ -73,6 +73,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  @ViewChild(MatSort) sort: MatSort;
 	  @ViewChild(MatPaginator) paginator: MatPaginator;
 	  @ViewChild('closeModel') closeModel : ElementRef;
+	  @ViewChild('closeAadharModel') closeAadharModel : ElementRef;
 	  constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService :ZoyOwnerService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private ownerReportService : OwnerReportService,private tenantReportService : TenantReportsService,private reportsService : ReportsService) {
 			  this.authService.checkLoginUserVlidaate();
@@ -785,10 +786,14 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		console.log("this.aadhaarSession",this.aadhaarSession);
 		console.log("this.aadhaarDetails",this.aadhaarDetails);
 		this.aadhaarDetails.sessionid = this.aadhaarSession.session_id;
-		console.log("		this.aadhaarDetails",		this.aadhaarDetails)
 		sessionStorage.setItem('zoyadminapi', 'no');
 		this.zoyOwnerService.generateAadhaarOtp(this.aadhaarDetails).subscribe(res => {
-		this.notifyService.showSuccess("Please check the message on the mobile number linked to this Aadhaar.",res.message)
+		const data = JSON.parse(res.data);
+			if(data.code == 200){
+				this.notifyService.showSuccess(data?.message,'');
+			}else{
+				this.notifyService.showError(data?.message,'');
+			}
 		this.submitAadhaar = false ;	
 		sessionStorage.setItem('zoyadminapi', 'yes');
 	}, error => {
@@ -826,10 +831,16 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		if(!this.aadhaarDetails.otp || !this.aadhaarDetails.sessionid){
 			return;
 		}
+		const model = {"otp":this.aadhaarDetails.otp,"sessionId": this.aadhaarDetails.sessionid }
 		sessionStorage.setItem('zoyadminapi', 'no');
-		this.zoyOwnerService.verifyAadhaarOtp(this.aadhaarDetails).subscribe(res => {
-			this.notifyService.showSuccess(res.message,"");
-			this.updateAadhaar();
+		this.zoyOwnerService.verifyAadhaarOtp(model).subscribe(res => {
+		const data = JSON.parse(res.data);
+			if(data.code == 200){
+				this.notifyService.showSuccess(data?.message,'');
+				this.updateAadhaar();
+			}else{
+				this.notifyService.showError(data?.message,'');
+			}
 		}, error => {
 			sessionStorage.setItem('zoyadminapi', 'yes');
 		 this.spinner.hide();
@@ -865,6 +876,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		let model = {"ownerId":this.owenerId,"encodedAadhar":this.aadhaarDetails.aadhaar}
 		this.zoyOwnerService.updateAadhaar(model).subscribe(res => {
 			sessionStorage.setItem('zoyadminapi', 'yes');
+			this.closeAadharModel.nativeElement.click(); 
 			this.getZoyOwnerDetails();
 		}, error => {
 			sessionStorage.setItem('zoyadminapi', 'yes');
