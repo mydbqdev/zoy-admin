@@ -120,6 +120,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 		{ id: 1, name: 'New', selected: false },
 		{ id: 2, name: 'Open', selected: false },
 		{ id: 3, name: 'Progress', selected: false },
+		{ id: 4, name: 'Reopen', selected: false }
 		// { id: 4, name: 'Resolve', selected: false },
 		// { id: 5, name: 'Close', selected: false },
 		// { id: 5, name: 'Cancel', selected: false },
@@ -133,7 +134,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
       selectedFilterStatus(){
 		this.selectedStatuses = this.statuses
 		.filter(status => status.selected)
-		.map(status => status.name);
+		.map(status => status.name.toLocaleLowerCase());
 	  }
 	  // Apply and process the selected statuses
 	  applyStatuses(): void {
@@ -141,7 +142,8 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 		
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
-		this.param.filter.status=this.selectedStatuses.join(",");
+		this.param.filter.status="('"+this.selectedStatuses.join("','")+"')";
+		this.getTicketsList();
 
 	  }
 	  applyDates(): void {
@@ -168,6 +170,8 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 	  }
 	}
 	resetFilter(){
+		this.fromDate='';
+		this.toDate='';
 		this.searchText='';
 		this.param.pageIndex=0
 		this.paginator.pageIndex=0;
@@ -285,6 +289,8 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 
 		
 		getDetails(element:any){
+			this.assignToTeamDetails(false);
+			this.selectAssignEmail="";
 			this.assignTicketNumber=element.ticket_id;
 			this.selectTicket=Object.assign(element);
 			console.info("this.selectTicket.type:"+this.selectTicket.type);
