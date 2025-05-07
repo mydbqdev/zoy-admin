@@ -104,7 +104,7 @@ public class UserDBService implements UserDBImpl{
 
 	@Override
 	public List<NotificationModeMaster> findAllNotificationMode() {
-		return notificationModeMasterRepository.findAll();
+		return notificationModeMasterRepository.findAllNotificationModeData();
 	}
 
 	@Override
@@ -246,7 +246,7 @@ public class UserDBService implements UserDBImpl{
 
 	@Override
 	public List<UserCurrencyMaster> findAllUserCurrency() {
-		return userCurrencyMasterRepository.findAll();
+		return userCurrencyMasterRepository.findAllUserCurrencyData();
 	}
 
 	@Override

@@ -19,4 +19,7 @@ public interface ZoyPgDueMasterRepository extends JpaRepository<ZoyPgDueMaster, 
 			+ "join pgowners.zoy_pg_due_master zpdm on zpdm.due_type_id =zpdtm.due_type "
 			+ "and zpdm.due_name ='Rent' where zppd.property_id =:propertyId ", nativeQuery = true)
 	List<String[]> findRentDue(String propertyId);
+	
+	 @Query(value = "select * from pgowners.zoy_pg_due_master order by due_name", nativeQuery = true)
+	  List<ZoyPgDueMaster> findAllPgDueData();
 }
