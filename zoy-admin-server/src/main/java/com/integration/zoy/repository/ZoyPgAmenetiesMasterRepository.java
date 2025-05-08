@@ -17,4 +17,7 @@ public interface ZoyPgAmenetiesMasterRepository extends JpaRepository<ZoyPgAmene
 
 	@Query(value = "SELECT ameneties_name FROM pgowners.zoy_pg_ameneties_master WHERE ameneties_name IN (:amenities)", nativeQuery = true)
 	List<String> getAmenityNameByNames(@Param("amenities") List<String> amenities);
+	
+	 @Query(value = "select * from pgowners.zoy_pg_ameneties_master order by ameneties_name", nativeQuery = true)
+	  List<ZoyPgAmenetiesMaster> findAllPgShareData();
 }

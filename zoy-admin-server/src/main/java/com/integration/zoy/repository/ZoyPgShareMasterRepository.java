@@ -1,5 +1,7 @@
 package com.integration.zoy.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,4 +15,7 @@ public interface ZoyPgShareMasterRepository extends JpaRepository<ZoyPgShareMast
 	
 	  @Query(value = "SELECT share_id FROM pgowners.zoy_pg_share_master WHERE share_type = :shareType LIMIT 1", nativeQuery = true)
 	    String findShareIdByShareType(@Param("shareType") String shareType);
+	  
+	  @Query(value = "select * from pgowners.zoy_pg_share_master order by share_type", nativeQuery = true)
+	  List<ZoyPgShareMaster> findAllPgShareData();
 }
