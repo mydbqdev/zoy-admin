@@ -52,5 +52,10 @@ public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest
 			+ "from pgusers.user_help_request_history where user_help_request_id =:registerId order by created_at desc", nativeQuery = true)
 	List<Object[]> getComplaintTicketHistory(@Param("registerId")String registerId);
 	
+	@Query(value = "select ud.user_email ,ud.user_first_name || ' ' || ud.user_last_name AS username FROM pgusers.user_help_request uhr\n"
+			+ "left join pgusers.user_master ud on ud.user_id =uhr.user_id \n"
+			+ "where uhr.user_help_request_id=:registerId", nativeQuery = true)
+	List<Object[]> getCompainUserEmail(@Param("registerId")String registerId);
+	
 
 }
