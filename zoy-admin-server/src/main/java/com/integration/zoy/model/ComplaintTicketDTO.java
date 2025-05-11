@@ -37,10 +37,10 @@ public class ComplaintTicketDTO {
 	private String updatedAt;
 
 	@JsonProperty("assignTo")
-	private String assignTo;
+	private String assignedTo;
 
 	@JsonProperty("assignToName")
-	private String assignToName;
+	private String assignedToName;
 	
 	@JsonProperty("imagesUrls")
 	private String imagesUrls;
@@ -102,12 +102,12 @@ public class ComplaintTicketDTO {
 	}
 
 	
-	public String getAssignToName() {
-		return assignToName;
+	public String getAssignedToName() {
+		return assignedToName;
 	}
 
-	public void setAssignToName(String assignToName) {
-		this.assignToName = assignToName;
+	public void setAssignToName(String assignedToName) {
+		this.assignedToName = assignedToName;
 	}
 
 	public String getUserHelpRequestId() {
@@ -159,12 +159,12 @@ public class ComplaintTicketDTO {
 		this.status = status;
 	}
 
-	public String getAssignTo() {
-		return assignTo;
+	public String getAssignedTo() {
+		return assignedTo;
 	}
 
-	public void setAssignTo(String assignTo) {
-		this.assignTo = assignTo;
+	public void setAssignTo(String assignedTo) {
+		this.assignedTo = assignedTo;
 	}
 
 	public List<UserTicketHistoryDTO> getUserTicketHistory() {
