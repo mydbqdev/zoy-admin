@@ -349,6 +349,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				if (partner.isPresent()) {
 					String currentDate=tuService.currentDate();
 					RegisteredPartner existingPartner = partner.get();
+					final String oldStatus=existingPartner.getStatus();
 					String historyContentForTicketAssign;
 					String userName="";
 					Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -365,7 +366,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					}
 					existingPartner.setAssignedToEmail(assignTicket.getEmail());
 					existingPartner.setAssignedToName(assignTicket.getName());
+					if(!oldStatus.equals(ZoyConstant.OPEN)) {
 					existingPartner.setStatus(ZoyConstant.OPEN);
+					}
 					registeredPartnerDetailsRepository.save(existingPartner);
 					response.setMessage("Lead Ticket has been assigned successfully.");
 					response.setStatus(HttpStatus.OK.value());
@@ -387,8 +390,19 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 		            to.add(user.get().getUserEmail());
 		            }
 					final String emailMessage=prepareEmailContentAssign(assignTicket.getName(),existingPartner.getDescription(),"High",currentDate,assignTicket.getInquiryNumber());
-					final String subject ="New Support Ticket Assigned: "+assignTicket.getInquiryNumber();
+					final String subject ="New Lead Ticket Assigned: "+assignTicket.getInquiryNumber();
 					emailSend(subject,emailMessage,to);
+					
+					if(existingPartner.getStatus().equals(ZoyConstant.OPEN) && !oldStatus.equals(ZoyConstant.OPEN)) {
+						List<String> toEmail = new ArrayList<>();
+						toEmail.add(assignTicket.getEmail().toLowerCase());
+						toEmail.add(existingPartner.getEmail().toLowerCase());
+
+						final String emailMessageOpen=prepareEmailContentOpenLead(existingPartner.getFirstname()+" "+existingPartner.getLastname(),existingPartner.getDescription(),currentDate,assignTicket.getInquiryNumber());
+						final String subjectOpen ="Support Ticket Opened – "+assignTicket.getInquiryNumber();
+						emailSend(subjectOpen,emailMessageOpen,toEmail);
+					}
+					
 					return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
 				} else {
 					response.setMessage("Lead Inquiry number does not exist.");
@@ -547,7 +561,6 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 							emailMessage=null;
 						}
 					}
-					
 					if(StringUtils.isNotEmpty(emailMessage) && !CollectionUtils.isEmpty(to)) {
 						emailSend(emailSubject,emailMessage,to);
 					}
@@ -750,6 +763,28 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 		return message;
 	}
 	
+	
+	private String prepareEmailContentOpenLead(String name, String description,String currentDate,
+			String inquiryNumber) {
+		 final String message = "<html>"
+	                + "<body style='font-family: Arial, sans-serif; line-height: 1.6;'>"
+	                + "<p>Dear " +name + ",</p>"
+	                + "<p>Thank you for reaching out to us. We’ve received your request and have opened a support ticket to assist you. </p>"
+	                + "<p>"
+	                + "<strong>Ticket ID:</strong> " + inquiryNumber + "<br>"
+	                + "<strong>Subject:</strong>" + description + "<br>"
+	                + "<strong>Date Opened:</strong>" + currentDate + "<br>"
+	                + "</p>"
+	                +"<p>Our support team is currently reviewing your request and will resolve it as soon as possible.<br>Thank you for your patience. \n"
+	                + "</p>"
+	                + "<p class='footer' style='margin-top: 20px;'>"
+	                + "Best regards,<br>"
+	                + "ZOY Support."
+	                + "</p>"
+	                + "</body>"
+	                + "</html>";
+		return message;
+	}
 	
 	private String prepareEmailContentClose(String name, String inquiryNumber) {
 		 final String message = "<html>"
