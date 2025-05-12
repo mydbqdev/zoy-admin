@@ -280,8 +280,8 @@
           </div>
           <div class="row mb-1">
             <div class="col-sm-4">Urgency :
-              <span style="color:#000000;margin-left:10px;"><span style="margin-left:10px;"> <span *ngIf="supportTicketDetails.urgency" style="color: #f10707;">High</span>
-              <span *ngIf="!supportTicketDetails.urgency" style="color: #055530;">Low</span></span></span></div>
+              <span style="color:#000000;margin-left:10px;"><span style="margin-left:10px;"> <span *ngIf="supportTicketDetails.urgency=='true'" style="color: #f10707;">High</span>
+              <span *ngIf="supportTicketDetails.urgency!='true'" style="color: #055530;">Low</span></span></span></div>
             <div class="col-sm-4">Created On:
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
             <div class="col-sm-4">Status:
@@ -290,6 +290,10 @@
                 [ngClass]="supportTicketDetails.status === 'New' ? 'status-inactive' : (supportTicketDetails.status === 'Open' ? 'status-verified':'status-active' )" >
             {{supportTicketDetails.status}}
               </span>
+            </span>
+            &nbsp; 
+            <span *ngIf="supportTicketDetails?.images_urls && supportTicketDetails?.images_urls!=''">
+              <a [href]="supportTicketDetails.images_urls" target="_blank"><i class="fas fa-paperclip" title="attachment of file"></i></a>
             </span>
             </div>
           </div>
@@ -306,13 +310,28 @@
         <div>
           <div class="d-flex">
             <div>Histoty Information</div>
+            <div class="ml-auto mb-1">
+              <div  class="d-flex">
+                <div class="input-group input-group-sm" *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">
+                  <select class="form-select form-select-sm" [(ngModel)]="selectAssignEmail" >
+                    <option value="">Choose one</option>
+                    <option *ngFor="let cond of supportTeamToAssignList" [value]="cond.email">{{cond.name}} ({{cond.email}})</option>
+                  </select>
+                  <button class="btn btn-primary-custom text-nowrap" (click)="assignTeamApi()" [disabled]="selectAssignEmail==undefined || selectAssignEmail==''" >Assign/Reassign</button>
+                </div>
+                &nbsp;&nbsp;
+                <button class="btn btn-primary-custom text-nowrap"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Status Update</button>
+            </div>
+            </div>
+          </div> 
+            <!-- <div>Histoty Information</div>
             <div class="ml-auto">
               <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#assignToTeam" (click)="assignToTeamDetails(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Assign/Reassign</button>&nbsp;&nbsp;
               <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Status Update</button>
-            </div>
-          </div> 
+            </div> -->
+         
           <div class="card">
-            <div class="card-body" style="padding: 2px;margin: 0px;" >
+            <div class="card-body scrollable-container" style="padding: 2px;margin: 0px;" >
               <div class="row mb-1 ml-1 mr-1" style="font-size: 14px;">
                   <div class="col-sm-2">Updated On</div>
                   <div class="col-sm-3">Updated By</div>

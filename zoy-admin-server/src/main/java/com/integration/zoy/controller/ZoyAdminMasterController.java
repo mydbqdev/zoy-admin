@@ -1287,7 +1287,7 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	public ResponseEntity<String> zoyAdminConfigGetRentalAgreementDocuments() {
 		ResponseBody response = new ResponseBody();
 		try {
-			List<RentalAgreementDoc> allDetails = rentalAgreementDocRepository.findAll();
+			List<RentalAgreementDoc> allDetails = rentalAgreementDocRepository.findAllPgShareData();
 			List<RentalAgreementDocDto> dto = allDetails.stream()
 					.map(this::convertToDTO)
 					.collect(Collectors.toList());

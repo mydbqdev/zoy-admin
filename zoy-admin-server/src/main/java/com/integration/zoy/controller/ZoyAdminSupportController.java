@@ -16,6 +16,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +47,7 @@ import com.integration.zoy.repository.LeadHistoryRepository;
 import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
 import com.integration.zoy.repository.UserHelpRequestRepository;
 import com.integration.zoy.service.AdminReportImpl;
+import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.SupportDBImpl;
@@ -53,6 +55,7 @@ import com.integration.zoy.service.TimestampFormatterUtilService;
 import com.integration.zoy.service.ZoyAdminService;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
+import com.integration.zoy.utils.Email;
 import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.RegisterLeadDetails;
 import com.integration.zoy.utils.ResponseBody;
@@ -120,10 +123,16 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	SupportDBImpl supportDBImpl;
 	
 	@Autowired
+	EmailService emailService;
+	
+	@Autowired
 	ZoyAdminService zoyAdminService;
 
     @Value("${app.minio.user.docs.bucket.name}")
     private String userDocBucketName;
+    
+    @Value("${zoy.admin.toMail}")
+	private String fromEmailId;
 	
 	@Override
 	public ResponseEntity<String> getRegisteredLeadDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
@@ -340,6 +349,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				if (partner.isPresent()) {
 					String currentDate=tuService.currentDate();
 					RegisteredPartner existingPartner = partner.get();
+					final String oldStatus=existingPartner.getStatus();
 					String historyContentForTicketAssign;
 					String userName="";
 					Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -356,7 +366,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					}
 					existingPartner.setAssignedToEmail(assignTicket.getEmail());
 					existingPartner.setAssignedToName(assignTicket.getName());
+					if(!oldStatus.equals(ZoyConstant.OPEN)) {
 					existingPartner.setStatus(ZoyConstant.OPEN);
+					}
 					registeredPartnerDetailsRepository.save(existingPartner);
 					response.setMessage("Lead Ticket has been assigned successfully.");
 					response.setStatus(HttpStatus.OK.value());
@@ -370,6 +382,25 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					AdminUserMaster adminuserDetails=adminUserMasterRepo.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 					String notificationMessage = "Ticket ID: " + assignTicket.getInquiryNumber() + " assigned to you by "+adminuserDetails.getFirstName()+" "+adminuserDetails.getLastName()+ " received on "+currentDate+" Check the details in the Tickets section.";
 					notificationsAndAlertsService.ticketAssign(new String[]{assignTicket.getEmail()},notificationMessage);
+					}
+					
+					List<String> to = new ArrayList<>();
+		            to.add(assignTicket.getEmail().toLowerCase());
+		            if(!to.contains(user.get().getUserEmail())) {
+		            to.add(user.get().getUserEmail());
+		            }
+					final String emailMessage=prepareEmailContentAssign(assignTicket.getName(),existingPartner.getDescription(),"High",currentDate,assignTicket.getInquiryNumber());
+					final String subject ="New Lead Ticket Assigned: "+assignTicket.getInquiryNumber();
+					emailSend(subject,emailMessage,to);
+					
+					if(existingPartner.getStatus().equals(ZoyConstant.OPEN) && !oldStatus.equals(ZoyConstant.OPEN)) {
+						List<String> toEmail = new ArrayList<>();
+						toEmail.add(assignTicket.getEmail().toLowerCase());
+						toEmail.add(existingPartner.getEmail().toLowerCase());
+
+						final String emailMessageOpen=prepareEmailContentOpenLead(existingPartner.getFirstname()+" "+existingPartner.getLastname(),existingPartner.getDescription(),currentDate,assignTicket.getInquiryNumber());
+						final String subjectOpen ="Support Ticket Opened – "+assignTicket.getInquiryNumber();
+						emailSend(subjectOpen,emailMessageOpen,toEmail);
 					}
 					
 					return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
@@ -413,7 +444,12 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					String notificationMessage = "Ticket ID: " + assignTicket.getInquiryNumber() + " assigned to you by "+adminuserDetails.getFirstName()+" "+adminuserDetails.getLastName()+ " received on "+currentDate+" Check the details in the Tickets section.";
 					notificationsAndAlertsService.ticketAssign(new String[]{assignTicket.getEmail()},notificationMessage);
 					}
-					
+					List<String> to = new ArrayList<>();
+		            to.add(assignTicket.getEmail().toLowerCase());
+		            to.add(user.get().getUserEmail());
+		            final String emailMessage=prepareEmailContentAssign(assignTicket.getName(),existingPartner.getDescription(),existingPartner.isUrgency()?"High":"Low",currentDate,assignTicket.getInquiryNumber());
+					final String subject ="New Support Ticket Assigned: "+assignTicket.getInquiryNumber();
+					emailSend(subject,emailMessage,to);
 					return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
 				} else {
 					response.setMessage("Support Ticket number does not exist.");
@@ -429,7 +465,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
 		}
 	}
-	
+
+
+
 	@Override
 	public ResponseEntity<String> getSupportUserDetails() {
 		ResponseBody response = new ResponseBody();
@@ -457,12 +495,28 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				String previousStatus=existingPartner.getStatus();
 				existingPartner.setStatus(updateStatus.getStatus());
 				registeredPartnerDetailsRepository.save(existingPartner);
+				String emailMessage=null;
+				String emailSubject="";
+				List<String> to = new ArrayList<>();
 				if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
 					response.setMessage("Comment has been added successfully.");
 					historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
 				}else {
 					response.setMessage("Status and comment has been updated successfully.");
 					historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+					to.add(partner.get().getEmail().toLowerCase());
+					if(updateStatus.getStatus().equals(ZoyConstant.REOPEN)) {
+						emailSubject="Your Support Ticket Has Been Reopened – "+updateStatus.getInquiryNumber();
+					emailMessage=prepareEmailContentReopened(partner.get().getFirstname()+" "+partner.get().getLastname(),updateStatus.getInquiryNumber());
+					}else if(updateStatus.getStatus().equals(ZoyConstant.CLOSE)){
+						emailSubject="Your Support Ticket [#"+updateStatus.getInquiryNumber()+"] Has Been Closed ";
+					emailMessage=prepareEmailContentClose(partner.get().getFirstname()+" "+partner.get().getLastname(),updateStatus.getInquiryNumber());
+					}else {
+						emailMessage=null;
+					}
+				}
+				if(StringUtils.isNotEmpty(emailMessage) && !CollectionUtils.isEmpty(to)) {
+					emailSend(emailSubject,emailMessage,to);
 				}
 				response.setStatus(HttpStatus.OK.value());
 				
@@ -481,12 +535,34 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					String previousStatus=existingPartner.getRequestStatus();
 					existingPartner.setRequestStatus(updateStatus.getStatus());
 					userHelpRequestRepository.save(existingPartner);
+					String emailMessage=null;
+					String emailSubject="";
+					List<String> to = new ArrayList<>();
 					if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
 						response.setMessage("Comment has been added successfully.");
 						historyContentForChangeTicketStatus = "Support Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
 					}else {
 						response.setMessage("Status and comment has been updated successfully.");
 						historyContentForChangeTicketStatus = "Support Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+						List<Object[]> userDet= userHelpRequestRepository.getCompainUserEmail(existingPartner.getUserHelpRequestId());
+						String userName="";
+						 for (Object[] complaintDetail : userDet) {
+							    to.add(complaintDetail[0] != null ? complaintDetail[0].toString() : "");
+			                	userName=complaintDetail[1] != null ? complaintDetail[1].toString() : "";
+						 }
+						
+						if(updateStatus.getStatus().equals(ZoyConstant.REOPEN)) {
+							emailSubject="Your Support Ticket Has Been Reopened – "+updateStatus.getInquiryNumber();
+						emailMessage=prepareEmailContentReopened(userName,updateStatus.getInquiryNumber());
+						}else if(updateStatus.getStatus().equals(ZoyConstant.CLOSE)){
+							emailSubject="Your Support Ticket [#"+updateStatus.getInquiryNumber()+"] Has Been Closed ";
+						emailMessage=prepareEmailContentClose(userName,updateStatus.getInquiryNumber());
+						}else {
+							emailMessage=null;
+						}
+					}
+					if(StringUtils.isNotEmpty(emailMessage) && !CollectionUtils.isEmpty(to)) {
+						emailSend(emailSubject,emailMessage,to);
 					}
 					response.setStatus(HttpStatus.OK.value());
 					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),updateStatus.getInquiryNumber(),SecurityContextHolder.getContext().getAuthentication().getName());
@@ -651,6 +727,97 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
+	
+	
+	private void emailSend(final String subject,final String message,final List<String> to) {
+		Email email = new Email();
+        email.setFrom(fromEmailId);
+        email.setTo(to);
+        email.setSubject(subject);
+        email.setBody(message);
+        email.setContent("text/html");
+        emailService.sendEmail(email, null);
+	}
+	
+	private String prepareEmailContentAssign(String name, String description, final String urgency, String currentDate,
+			String inquiryNumber) {
+		 final String message = "<html>"
+	                + "<body style='font-family: Arial, sans-serif; line-height: 1.6;'>"
+	                + "<p>Hi " +name + ",</p>"
+	                + "<p>A new support ticket has been assigned to you. Please find the details below: </p>"
+	                + "<p>"
+	                + "<strong>Ticket ID:</strong> " + inquiryNumber + "<br>"
+	                + "<strong>Issue Summary:</strong>" + description + "<br>"
+	                + "<strong>Priority:</strong>" + urgency + "<br>"
+	                + "<strong>Submitted On:</strong>" + currentDate + "<br>"
+	                + "</p>"
+	                +"<p><strong>Action Required:</strong><br>\n"
+	                + "Please review the ticket and begin working on a resolution and update the status.\n"
+	                + "</p>"
+	                + "<p class='footer' style='margin-top: 20px;'>"
+	                + "Best regards,<br>"
+	                + "ZOY Support."
+	                + "</p>"
+	                + "</body>"
+	                + "</html>";
+		return message;
+	}
+	
+	
+	private String prepareEmailContentOpenLead(String name, String description,String currentDate,
+			String inquiryNumber) {
+		 final String message = "<html>"
+	                + "<body style='font-family: Arial, sans-serif; line-height: 1.6;'>"
+	                + "<p>Dear " +name + ",</p>"
+	                + "<p>Thank you for reaching out to us. We’ve received your request and have opened a support ticket to assist you. </p>"
+	                + "<p>"
+	                + "<strong>Ticket ID:</strong> " + inquiryNumber + "<br>"
+	                + "<strong>Subject:</strong>" + description + "<br>"
+	                + "<strong>Date Opened:</strong>" + currentDate + "<br>"
+	                + "</p>"
+	                +"<p>Our support team is currently reviewing your request and will resolve it as soon as possible.<br>Thank you for your patience. \n"
+	                + "</p>"
+	                + "<p class='footer' style='margin-top: 20px;'>"
+	                + "Best regards,<br>"
+	                + "ZOY Support."
+	                + "</p>"
+	                + "</body>"
+	                + "</html>";
+		return message;
+	}
+	
+	private String prepareEmailContentClose(String name, String inquiryNumber) {
+		 final String message = "<html>"
+	                + "<body style='font-family: Arial, sans-serif; line-height: 1.6;'>"
+	                + "<p>Dear " +name + ",</p>"
+	                + "<p>We’re writing to let you know that your support ticket [#"+inquiryNumber+"] has been successfully resolved and is now closed. </p>"
+	                + "<p>If you feel that your issue has not been fully resolved or you have any further questions, please don’t hesitate to reopen the ticket within 48 hours. </p>"
+	                +" <p>Thank you for reaching out to our support team. We’re always here to help! </p>"
+	                + "<p class='footer' style='margin-top: 20px;'>"
+	                + "Best regards,<br>"
+	                + "ZOY Support."
+	                + "</p>"
+	                + "</body>"
+	                + "</html>";
+		return message;
+	}
+	
+	private String prepareEmailContentReopened(String name, String inquiryNumber) {
+		 final String message = "<html>"
+	                + "<body style='font-family: Arial, sans-serif; line-height: 1.6;'>"
+	                + "<p>Dear " +name + ",</p>"
+	                + "<p>We wanted to inform you that your support ticket ["+inquiryNumber+"] has been reopened for further review. </p>"
+	                + "<p>Our team is currently looking into the issue, and we’ll provide you with an update as soon as possible.</p>"
+	                +" <p>Thank you for your patience and continued cooperation.</p>"
+	                + "<p class='footer' style='margin-top: 20px;'>"
+	                + "Best regards,<br>"
+	                + "ZOY Support."
+	                + "</p>"
+	                + "</body>"
+	                + "</html>";
+		return message;
+	}
+	
 	/*
 	 * End coding for admin support
 	 */
