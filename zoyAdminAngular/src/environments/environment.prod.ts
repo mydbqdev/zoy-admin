@@ -3,7 +3,7 @@ export const environment = {
   //basePath:'http://45.129.87.152:8082/api-admin/',
   basePath:'https://api-admin-preprod.zoypg.com/api-admin/',
   //websocketBasePath:'https://api-admin.zoypg.com/api-admin/',
-  websocketBasePath:'https://api-admin-preprod.zoypg.com/api-admin/',
+  websocketBasePath:'ws://api-admin-preprod.zoypg.com/api-admin/',
   basePathExternal:'https://api-preprod.zoypg.com:30001',
   oDataBlockSize:100,
   defMenuEnable:{
