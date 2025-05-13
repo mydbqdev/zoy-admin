@@ -94,7 +94,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // Use wildcard or specify exact allowed origin(s)
-        configuration.setAllowedOrigins(ImmutableList.of(origin));  
+        configuration.setAllowedOrigins(ImmutableList.of("*"));  
         configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);  // Allow credentials (cookies, authorization headers)
         configuration.addAllowedHeader("*");  // Allow all headers
