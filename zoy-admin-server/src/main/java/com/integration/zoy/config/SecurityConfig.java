@@ -94,7 +94,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // Use wildcard or specify exact allowed origin(s)
-        configuration.setAllowedOrigins(ImmutableList.of("*"));  
+        configuration.setAllowedOrigins(ImmutableList.of(origin));  
         configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);  // Allow credentials (cookies, authorization headers)
         configuration.addAllowedHeader("*");  // Allow all headers
@@ -115,7 +115,7 @@ public class SecurityConfig {
                 System.out.println("CORS Origin: " + request.getHeader("Origin"));
                 System.out.println("CORS Method: " + request.getMethod());
                 System.out.println("CORS URL: " + request.getRequestURL());
-                        System.out.println(request.getContentType() +" "+ request.getAuthType());
+                System.out.println(request.getContentType() +" "+ request.getAuthType());
                 filterChain.doFilter(request, response);
             }
         });
