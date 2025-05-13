@@ -1,9 +1,17 @@
 package com.integration.zoy.config;
- 
+
 import static org.springframework.security.config.Customizer.withDefaults;
- 
+
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,119 +27,95 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
- 
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import com.google.common.collect.ImmutableList;
 import com.integration.zoy.service.AdminUserAuthService;
- 
+
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
- 
-	@Autowired
-	private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
- 
-	@Autowired
-	private CustomAccessDeniedHandler customAccessDeniedHandler;
- 
-	@Autowired
-	AdminUserAuthService adminUserAuthService;
- 
-	@Autowired
-	private JwtAuthenticationFilter jwtAuthenticationFilter;
-	
-	@Value("${web.origin.link}")
-	private String origin;
- 
-	
-	@Bean
-	public static PasswordEncoder passwordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
-	}
- 
-	@Bean
-	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-		AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-		authenticationManagerBuilder.userDetailsService(adminUserAuthService).passwordEncoder(passwordEncoder());
-		return authenticationManagerBuilder.build();
-	}
- 
- 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		
-	  //  http.cors(cors -> cors.configurationSource(request -> buildConfig()));
-	    http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-	    http.csrf(csrf -> csrf.disable()).sessionManagement(session -> session
-	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	    .authorizeHttpRequests(requests -> {
-	    	try {
-	    		requests
-	    		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-	    		.antMatchers("/public").permitAll()
-	    		.antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**").permitAll()
-	    		.antMatchers("/verify-email").permitAll()
-	    		.antMatchers("/forgotPassword").permitAll()
-	    		.antMatchers("/forgot-password").permitAll()
-	    		.antMatchers("/zoy_admin/login").permitAll()
-	    		.antMatchers("/zoy_admin/userSoftlogout").permitAll()
-	    		.antMatchers("/notificationPageHandler").permitAll()
-	    		.antMatchers("/admin_reset_password").permitAll()
-	    		.anyRequest().authenticated()
-	    		.and()
-	    		.exceptionHandling(handling -> handling
-	    				.authenticationEntryPoint(customAuthenticationEntryPoint)
-	    				.accessDeniedHandler(customAccessDeniedHandler));
-	    	} catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    })
-	    .httpBasic(withDefaults());
-	    http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-	    return http.build();
-	}
- 
- 
- 
-	private CorsConfiguration buildConfig() {
-		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		//corsConfiguration.addAllowedOrigin("*");
-		corsConfiguration.addAllowedOrigin(origin);
-		corsConfiguration.addAllowedHeader("*");
-		corsConfiguration.addAllowedMethod("*");
-		return corsConfiguration;
-	}
- 
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-	    CorsConfiguration configuration = new CorsConfiguration();
-	    configuration.setAllowedOrigins(ImmutableList.of(origin));
-	    configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-	    configuration.setAllowedHeaders(ImmutableList.of("*"));
-	    configuration.setAllowCredentials(true);
-	    configuration.setExposedHeaders(ImmutableList.of("Authorization"));
-	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	    source.registerCorsConfiguration("/**", configuration);
-	    return source;
-	}
-	
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-	    return new WebMvcConfigurer() {
-	        @Override
-	        public void addCorsMappings(CorsRegistry registry) {
-	            registry.addMapping("/**")
-	                    .allowedOrigins(origin)
-	                    .allowedMethods("*")
-	                    .allowedHeaders("*")
-	                    .allowCredentials(true);
-	        }
-	    };
-	}
- 
- 
- 
+
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    @Autowired
+    AdminUserAuthService adminUserAuthService;
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Value("${web.origin.link}")
+    private String origin;
+
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(adminUserAuthService).passwordEncoder(passwordEncoder());
+        return authenticationManagerBuilder.build();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authz -> authz
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow preflight CORS requests
+                .antMatchers("/public").permitAll()
+                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**").permitAll()
+                .antMatchers("/verify-email").permitAll()
+                .antMatchers("/forgotPassword", "/forgot-password").permitAll()
+                .antMatchers("/zoy_admin/login").permitAll()
+                .antMatchers("/zoy_admin/userSoftlogout").permitAll()
+                .antMatchers("/notificationPageHandler").permitAll()
+                .antMatchers("/admin_reset_password").permitAll()
+                .anyRequest().authenticated()
+            )
+            .exceptionHandling(handling -> handling
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .accessDeniedHandler(customAccessDeniedHandler))
+            .httpBasic(withDefaults());
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(ImmutableList.of(origin));  // More flexible than setAllowedOrigins
+        configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowCredentials(true);
+        configuration.addAllowedHeader("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    @Bean
+    public FilterRegistrationBean<OncePerRequestFilter> loggingFilter() {
+        FilterRegistrationBean<OncePerRequestFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+                    throws ServletException, IOException {
+                System.out.println("CORS Origin: " + request.getHeader("Origin"));
+                System.out.println("CORS Method: " + request.getMethod());
+                filterChain.doFilter(request, response);
+            }
+        });
+        registrationBean.addUrlPatterns("/*");
+        return registrationBean;
+    }
 }
- 
