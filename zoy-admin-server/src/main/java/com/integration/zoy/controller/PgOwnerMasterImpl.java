@@ -127,7 +127,7 @@ public interface PgOwnerMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PutMapping(value = "/zoy_admin/updateZoyShare",
 	produces = { "application/json" })
-	ResponseEntity<String> updateOwnerZoyShare(@RequestParam("ownerid") String ownerid,@RequestParam("newZoyShare") BigDecimal newZoyShare);
+	ResponseEntity<String> updateOwnerZoyShare(@RequestParam("propertyId") String propertyId,@RequestParam("newZoyShare") BigDecimal newZoyShare);
 	
 	
 	@Operation(summary = "Update property Status", description = "updating the property Status", security = {
@@ -164,5 +164,51 @@ public interface PgOwnerMasterImpl {
 	@GetMapping(value = "/zoy_admin/getOwnerCardDetails",
 	produces = { "application/json" })
 	ResponseEntity<String> getOwnerCardDetails();
+
+	@Operation(summary = "save existing owner detalis", description = "to save the details of the existing owner", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Pg Owner" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "409", description = "Already exist as zoy code against email id"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/saveExistingPgOwnerData",
+	produces = { "application/json" },
+	consumes = { "application/json"})
+	ResponseEntity<String> pgOwnerExistingDetalaisSave(@RequestBody PgOwnerMasterModel model);
+	
+	@Operation(summary = "Get existing owner details", description = "To retrieve the details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Pg Owner" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/getExistingPgOwnerData",
+	produces = { "application/json" })
+	ResponseEntity<String> pgOwnerDetailsGet(@RequestParam("emailMobile") String emailMobile);
+	
+	@Operation(summary = "Get all existing owner details", description = "To retrieve the details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Pg Owner" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/getAllExistingPgOwnerData",
+	produces = { "application/json" })
+	ResponseEntity<String> existingPgOwnerDetailsGet();
+	
+	@Operation(summary = "resend existing owner detalis", description = "to resend the details of the existing owner", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Pg Owner" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/resendExistingPgOwnerData",
+	produces = { "application/json" })
+	ResponseEntity<String> existingPgOwnerDetalaisresend(@RequestParam("zoyCode")String zoyCode);
 	
 }

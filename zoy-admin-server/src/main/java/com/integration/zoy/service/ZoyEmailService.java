@@ -1218,6 +1218,41 @@ public class ZoyEmailService {
 	    }
 	}
 
+	public void sendExistingOwnerZoyCode(String owneremail, String firstName, String lastName, String zoyCode) {
+		Email email = new Email();
+		email.setFrom(zoyAdminMail);
+		List<String> to = new ArrayList<>();
+		to.add(owneremail);
+		email.setTo(to);
+		email.setSubject("Welcome to ZOY! Unlock Your Journey With Zoy Today!");
+		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
+				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we've made it quick and simple for you!</p>"
+				+ "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
+				+ "<p>Please use this code to complete your new property registration in the app.</p>"
+				+ "<h4><strong>Steps to Add Property:</strong></h4>" + "<ul>" 
+				+ "<li>Open the app with existing credentials.</li>"
+				+ "<li>Go to profile and click on add property.</li>"
+				+ "<li>Enter your invitation code provided above.</li>"
+				+ "<li>Start filling the new property details.</li>"
+				+ "<li>Start exploring amazing functions tailored just for you!</li>" + "</ul>"
+				+ "<p>This verification ensures you a secure experience.</p>"
+				+ "<p>If you have any questions or need assistance, feel free to reach out to our support team at <a href='mailto:"
+				+ zoySupportMail + "'>" + zoySupportMail + "</a>.</p>"
+				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>" + "<p>Best regards,</p>"
+				+ "<p>ZOY Administrator</p>";
+
+		email.setBody(message);
+		email.setContent("text/html");
+		try {
+			emailService.sendEmail(email, null);
+		} catch (Exception e) {
+			log.error("Error occurred while sending the registration email to " + owneremail + ": " + e.getMessage(),
+					e);
+		}
+	
+		
+	}
+
 	
 	
 }
