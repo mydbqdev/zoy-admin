@@ -336,6 +336,7 @@ public class UploadService {
 
 					UserPayment payment=new UserPayment();
 					payment.setUserId(booking.getTenantId());
+					payment.setUserMoneyDueId(paidDue.getUserMoneyDueId());
 					payment.setUserPaymentBookingId(booking.getBookingId());
 					payment.setUserPaymentPayableAmount(depositAmount);
 					payment.setUserPaymentTimestamp(new Timestamp(System.currentTimeMillis()));
