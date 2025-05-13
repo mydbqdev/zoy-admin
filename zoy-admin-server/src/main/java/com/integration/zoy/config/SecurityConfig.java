@@ -66,11 +66,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(authz -> authz
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow preflight CORS requests
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Apply CORS config
+            .csrf(csrf -> csrf.disable())  // Disable CSRF for stateless APIs
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Use stateless session management
+            .authorizeRequests(authz -> authz
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow OPTIONS (preflight) requests
                 .antMatchers("/public").permitAll()
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**").permitAll()
                 .antMatchers("/verify-email").permitAll()
@@ -93,15 +93,17 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(ImmutableList.of(origin));  // More flexible than setAllowedOrigins
+        // Use wildcard or specify exact allowed origin(s)
+        configuration.setAllowedOrigins(ImmutableList.of(origin));  
         configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowCredentials(true);
-        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);  // Allow credentials (cookies, authorization headers)
+        configuration.addAllowedHeader("*");  // Allow all headers
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
     @Bean
     public FilterRegistrationBean<OncePerRequestFilter> loggingFilter() {
