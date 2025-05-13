@@ -114,6 +114,8 @@ public class SecurityConfig {
                     throws ServletException, IOException {
                 System.out.println("CORS Origin: " + request.getHeader("Origin"));
                 System.out.println("CORS Method: " + request.getMethod());
+                System.out.println("CORS URL: " + request.getRequestURL());
+                        System.out.println(request.getContentType() +" "+ request.getAuthType());
                 filterChain.doFilter(request, response);
             }
         });
