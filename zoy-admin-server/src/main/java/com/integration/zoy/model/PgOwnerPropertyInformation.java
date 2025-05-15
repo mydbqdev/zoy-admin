@@ -6,6 +6,7 @@ public class PgOwnerPropertyInformation {
 	private String propertyName;
 	private String propertyId;
 	private String status;
+	private String zoyShare;
 	private BasicPropertyInformation basicPropertyInformation;
 	private PgOwnerAdditionalInfo pgOwnerAdditionalInfo;
 	private List<FloorInformation> floorInformation;
@@ -61,6 +62,14 @@ public class PgOwnerPropertyInformation {
 
 	public void setPropertyId(String propertyId) {
 		this.propertyId = propertyId;
+	}
+
+	public String getZoyShare() {
+		return zoyShare;
+	}
+
+	public void setZoyShare(String zoyShare) {
+		this.zoyShare = zoyShare;
 	}
 	
 	

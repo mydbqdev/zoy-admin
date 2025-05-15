@@ -285,8 +285,7 @@ public class ZoyAdminService {
             try {
                 String value = cell.getStringCellValue().trim();
                 if (!value.isEmpty()) {
-                    // Try parsing known date format (adjust as needed)
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                     Date parsedDate = sdf.parse(value);
                     return new Timestamp(parsedDate.getTime());
                 }
@@ -296,26 +295,27 @@ public class ZoyAdminService {
         }
         return null;
     }
-    private String getStringCellValue(Row row, int cellIndex) {
-        Cell cell = row.getCell(cellIndex);
-        if (cell == null) {
-            return "";
-        }
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue();
-            case NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                    Date date = cell.getDateCellValue();
-                    return dateFormat.format(date);
-                } else {
-                    return String.valueOf(cell.getNumericCellValue());
-                }
-            default:
-                return "";
-        }
-    }
+	    private String getStringCellValue(Row row, int cellIndex) {
+	        Cell cell = row.getCell(cellIndex);
+	        if (cell == null) {
+	            return "";
+	        }
+	        switch (cell.getCellType()) {
+	            case STRING:
+	                return cell.getStringCellValue();
+	            case NUMERIC:
+	                if (DateUtil.isCellDateFormatted(cell)) {
+	                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	                    Date date = cell.getDateCellValue();
+	                    return dateFormat.format(date);
+	                } else {
+	                	double value = cell.getNumericCellValue();
+	                	return BigDecimal.valueOf(value).toPlainString();
+	                }
+	            default:
+	                return "";
+	        }
+	    }
 
 	public String validateVerificationToken(String token) {
 		UserProfile user = commonDBImpl.findByVerifyToken(token);
