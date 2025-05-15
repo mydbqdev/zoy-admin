@@ -24,7 +24,7 @@ import { Filter, OwnerRequestParam } from '../models/owner-details-request-model
   styleUrl: './managing-owner.component.css'
 })
 export class ManageOwnerComponent implements OnInit, AfterViewInit {
-	displayedColumns: string[] = [ 'owner_name', 'owner_email', 'owner_contact','number_of_properties', 'status'];
+	displayedColumns: string[] = [ 'owner_name', 'owner_email', 'owner_contact','number_of_properties', 'status','action'];
 	public ELEMENT_DATA:ZoyOwner[]=[];
 	orginalFetchData:ZoyOwner[]=[];
 	searchText:string='';
