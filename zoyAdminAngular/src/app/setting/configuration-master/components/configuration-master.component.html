@@ -88,7 +88,7 @@
                       
                                 </div>
                                 <div class="col-sm-2">
-                                  <div>Effective On</div>
+                                  <div>Effective From</div>
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
@@ -222,7 +222,7 @@
                                   </p>
                                 </div>
                                 <div class="col-sm-2">
-                                  <div>Effective On</div>
+                                  <div>Effective From</div>
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
@@ -390,7 +390,7 @@
                       
                                 </div>
                                 <div class="col-sm-2">
-                                  <div>Effective On</div>
+                                  <div>Effective From</div>
                                   <div class="input-group input-group-sm">
                                     <input 
                                       type="date" 
@@ -537,7 +537,7 @@
                                     <div style="text-align: left;">For Tenants</div>
                                 </div>
                                 <div class="col-sm-2">
-                                  <div style="text-align: left;">Effective On</div>
+                                  <div style="text-align: left;">Effective From</div>
                                 </div>
                               </div>
                             
@@ -733,7 +733,7 @@
                                   </div>
                                   </div>
                                   <div class="col-sm-2">
-                                    <div>Effective On</div>
+                                    <div>Effective From</div>
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
@@ -821,7 +821,7 @@
                                     </div>
                                   </div>
                                   <div class="col-sm-2">
-                                    <div>Effective On</div>
+                                    <div>Effective From</div>
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
@@ -915,7 +915,7 @@
                                     </div>
                                   </div>
                                   <div class="col-sm-2">
-                                    <div>Effective On</div>
+                                    <div>Effective From</div>
                                     <div class="input-group input-group-sm">
                                       <input 
                                         type="date" 
@@ -1043,7 +1043,7 @@
                                       </p>
                                     </div>
                                     <div class="col-sm-2">
-                                      <div>Effective On</div>
+                                      <div>Effective From</div>
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="date" 
@@ -1234,7 +1234,7 @@
                                         <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                       </a>
                                     </div> 
-                                  <div style="margin-right: 8px;margin-top:3px;">Effective On </div>
+                                  <div style="margin-right: 8px;margin-top:3px;">Effective From </div>
                                   <div style="width: 120px;margin-right: 10px;">
                                     <div class="input-group input-group-sm">
                                       <input class="form-control form-control-sm"
@@ -1450,7 +1450,7 @@
                                          <i class="far fa-hand-point-up mt-1 mr-2"></i>
                                        </a>
                                       </div>
-                                      <div style="margin-right: 8px;margin-top:3px;">Effective On</div>
+                                      <div style="margin-right: 8px;margin-top:3px;">Effective From</div>
                                       <div style="width: 120px;margin-right: 10px;">
                                         <div class="input-group input-group-sm">
                                           <input (change)="canShortSubmit=false"
@@ -1612,7 +1612,7 @@
                                       </div>
                                       </div>
                                     <div class="col-sm-2">
-                                      <div>Effective On</div>
+                                      <div>Effective From</div>
                                       <div class="input-group input-group-sm">
                                         <input 
                                           type="date" 
@@ -1699,10 +1699,10 @@
                                       <div><span style="font-size: 16px;color:#78177e;">After check-in Date </span></div>
                                       <div >
                                         <p class="small text-muted" style="font-size: 12px;">
-                                          <em>Configure the number of days after the check-in date to automatically cancel the bookings if tenant fails to check-in. If type is selected as “Rent” then total days
+                                          <em>Configure the number of days allowed for tenant to check-in after the scheduled check-in date.
                                             <a href="javascript:void(0)" *ngIf="!more"  (click)="more=!more">...more</a>
                                             <span *ngIf="more">
-                                               stayed rent amount will be deducted. If type is selected as “Total Paid Amount” then percentage of Total Paid Amount will be deducted. If type is selected as “Security Deposit” then percentage of Security Deposit Amount is to be deducted.
+                                              Failing which auto cancellation will trigger and the eligible days rent will be deducted from the total paid amount as per the short term rent slab.
                                               <a href="javascript:void(0)" (click)="more=!more"><<...less</a>
                                             </span>
                                           </em>
@@ -1749,7 +1749,7 @@
                                           </div>
                                         </div>
                                         <div class="col-sm-2">
-                                          <div>Effective On</div>
+                                          <div>Effective From</div>
                                           <div class="input-group input-group-sm">
                                             <input 
                                               type="date" 
@@ -1870,7 +1870,7 @@
             <div class="ms-3" style="min-width: 10px;" ></div>
             <div class="ms-3" style="min-width: 100px;">Fixed amount</div>
             <div class="ms-3" style="min-width: 160px;">% of Security Deposit</div>
-            <div class="ms-3" style="min-width: 100px;">Effective On</div>
+            <div class="ms-3" style="min-width: 100px;">Effective From</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
             <div class="ms-3" style="min-width: 250px;">Approved By</div>
           </div>
@@ -1903,7 +1903,7 @@
             <div class="ms-3" style="min-width: 10px;"></div>
             <div class="ms-3" style="min-width: 160px;">Minimum Deposit</div>
             <div class="ms-3" style="min-width: 160px;">Maximum Deposit</div>
-            <div class="ms-3" style="min-width: 100px;">Effective On</div>
+            <div class="ms-3" style="min-width: 100px;">Effective From</div>
             <div class="ms-3 text-break" style="min-width: 250px;">Created By</div>
             <div class="ms-3 text-break" style="min-width: 250px;">Approved By</div>
           </div>
@@ -1941,7 +1941,7 @@
             <div class="ms-3" style="min-width: 80px;">CGST</div>
             <div class="ms-3" style="min-width: 80px;">SGST</div>
             <div class="ms-3" style="min-width: 80px;">IGST</div>
-            <div class="ms-3" style="min-width: 100px;">Effective On</div>
+            <div class="ms-3" style="min-width: 100px;">Effective From</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
             <div class="ms-3" style="min-width: 250px;">Approved By</div>
           </div>
@@ -2120,7 +2120,7 @@
             <div class="ms-3" style="min-width: 160px;">Eligibility</div>
             <div class="ms-3" style="min-width: 160px;">Deduction Type</div>
             <div class="ms-3" style="min-width: 100px;">Deduction</div>
-            <div class="ms-3" style="min-width: 120px;">Effective On</div>
+            <div class="ms-3" style="min-width: 120px;">Effective From</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
             <div class="ms-3" style="min-width: 250px;">Approved By</div>
           </div>
@@ -2152,7 +2152,7 @@
             <div class="ms-3" style="min-width: 100px;">Condition</div>
             <div class="ms-3" style="min-width: 120px;">Eligibility</div>
             <div class="ms-3" style="min-width: 180px;">Deduction Type</div>
-            <div class="ms-3" style="min-width: 120px;">Effective On</div>
+            <div class="ms-3" style="min-width: 120px;">Effective From</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
             <div class="ms-3" style="min-width: 250px;">Approved By</div>
           </div>
@@ -2183,7 +2183,7 @@
             <div class="ms-3" style="min-width: 100px;">Condition</div>
             <div class="ms-3" style="min-width: 160px;">Eligibility</div>
             <div class="ms-3" style="min-width: 180px;">Deduction Type</div>
-            <div class="ms-3" style="min-width: 120px;">Effective On</div>
+            <div class="ms-3" style="min-width: 120px;">Effective From</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
             <div class="ms-3" style="min-width: 250px;">Approved By</div>
           </div>
@@ -2319,7 +2319,7 @@
           <div class="d-flex rule-header mb-2">
             <div style="min-width: 160px;">Minimum Deposit</div>
             <div class="ms-3" style="min-width: 160px;">Maximum Deposit</div>
-            <div class="ms-3" style="min-width: 100px;">Effective On</div>
+            <div class="ms-3" style="min-width: 100px;">Effective From</div>
             <div class="ms-3 text-break" style="min-width: 250px;">Created By</div>
           </div>
         
@@ -2346,7 +2346,7 @@
             <div class="ms-3" style="min-width: 80px;">CGST</div>
             <div class="ms-3" style="min-width: 80px;">SGST</div>
             <div class="ms-3" style="min-width: 80px;">IGST</div>
-            <div class="ms-3" style="min-width: 100px;">Effective On</div>
+            <div class="ms-3" style="min-width: 100px;">Effective From</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
           </div>
         
@@ -2467,7 +2467,7 @@
             <div class="ms-3" style="min-width: 160px;">Eligibility</div>
             <div class="ms-3" style="min-width: 160px;">Deduction Type</div>
             <div class="ms-3" style="min-width: 100px;">Deduction</div>
-            <div class="ms-3" style="min-width: 120px;">Effective On</div>
+            <div class="ms-3" style="min-width: 120px;">Effective From</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
           </div>
         
@@ -2488,7 +2488,7 @@
             <div style="min-width: 100px;">Condition</div>
             <div class="ms-3" style="min-width: 120px;">Eligibility</div>
             <div class="ms-3" style="min-width: 180px;">Deduction Type</div>
-            <div class="ms-3" style="min-width: 120px;">Effective On</div>
+            <div class="ms-3" style="min-width: 120px;">Effective From</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
           </div>
         
@@ -2508,7 +2508,7 @@
             <div style="min-width: 100px;">Condition</div>
             <div class="ms-3" style="min-width: 160px;">Eligibility</div>
             <div class="ms-3" style="min-width: 180px;">Deduction Type</div>
-            <div class="ms-3" style="min-width: 120px;">Effective On</div>
+            <div class="ms-3" style="min-width: 120px;">Effective From</div>
             <div class="ms-3" style="min-width: 250px;">Created By</div>
           </div>
         

@@ -1246,9 +1246,17 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		payload.comments=this.comments;
 		payload.ZoyBeforeCheckInCancellationInfo=payload.zoy_before_check_in_cancellation_info;
 	}
-	let work =(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected':(payload.iscreate?'Create':'Update') ));
-		
-	const model = {"oldBCCRule":work == 'Create' ?this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel:this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel,"newBCCRule":payload};
+	console.log("SHOW CONGI before:: ",this.showConfigMaster);
+	let work =(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected':(payload.iscreate?'Create':'Update') ));	
+	
+	if(work != 'Create'){
+		this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel.ZoyBeforeCheckInCancellationInfo=this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel.zoy_before_check_in_cancellation_info;
+	}else{
+	this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.ZoyBeforeCheckInCancellationInfo=this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.zoy_before_check_in_cancellation_info;
+	}
+	const model = {"oldBCCRule":work == 'Create' ?this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel:this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel,"newBCCRule":payload};	
+console.log("SHOW CONGI:: ",this.showConfigMaster);
+
 	this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+work +' ?')
 		.then(
 		   (confirmed) =>{
@@ -1798,8 +1806,14 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		}
 		
 		let work =(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected':(payload.iscreate?'Create':'Update') ));
-		const model = {"oldSTDRule":work == 'Create' ?this.editConfigMaster.shortTermMainModel:this.showConfigMaster.shortTermMainModel,"newSTDRule":payload};
 		
+		if(work != 'Create'){
+			this.showConfigMaster.shortTermMainModel.zoyShortTermDtoInfo=this.showConfigMaster.shortTermMainModel.zoy_short_term_dto_info;
+		}else{
+			this.editConfigMaster.shortTermMainModel.zoyShortTermDtoInfo=this.editConfigMaster.shortTermMainModel.zoy_short_term_dto_info;
+		}
+		const model = {"oldSTDRule":work == 'Create' ?this.editConfigMaster.shortTermMainModel:this.showConfigMaster.shortTermMainModel,"newSTDRule":payload};
+
 		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+work +' ?')
 			  .then(
 				 (confirmed) =>{
