@@ -5,7 +5,7 @@ public class PgOwnerProfile {
 	private String ownerID;
 	private String status;
 	private String profilePhoto;
-	//private String zoyShare;
+	private String zoyShare;
 	
 
 	public String getProfilePhoto() {
@@ -40,12 +40,12 @@ public class PgOwnerProfile {
 		this.status = status;
 	}
 
-//	public String getZoyShare() {
-//		return zoyShare;
-//	}
-//
-//	public void setZoyShare(String zoyShare) {
-//		this.zoyShare = zoyShare;
-//	}
+	public String getZoyShare() {
+		return zoyShare;
+	}
+
+	public void setZoyShare(String zoyShare) {
+		this.zoyShare = zoyShare;
+	}
 
 }
