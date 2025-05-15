@@ -439,7 +439,6 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 	        for (ZoyBeforeCheckInCancellation cancellation : zoyBeforeCheckInCancellation.getZoyBeforeCheckInCancellationInfo()) {
 	        
-	        	System.out.println("Boolean.TRUE.equals(cancellation.getIsDelete()"+Boolean.TRUE.equals(cancellation.getIsDelete()));
 	        	if (Boolean.TRUE.equals(cancellation.getIsDelete())) {
 	                deleteList.add(cancellation.getCancellationId());
 	            } else {
