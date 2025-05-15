@@ -13,8 +13,9 @@ public class ZoyCodeGenerationService {
 	
 	public String generateZoyCode(String email) {
         try {
+        	 String input = email + System.currentTimeMillis();
             MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(email.getBytes());
+            byte[] messageDigest = md.digest(input.getBytes());
             BigInteger no = new BigInteger(1, messageDigest);
             String hashtext = no.toString(16); 
             while (hashtext.length() < 32) {

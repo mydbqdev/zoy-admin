@@ -59,4 +59,9 @@ public interface ZoyPgOwnerDetailsRepository extends JpaRepository<ZoyPgOwnerDet
                    "SET zoy_share = :newZoyShare " +
                    "WHERE pg_owner_id = :ownerid", nativeQuery = true)
     int updateZoyShare(@Param("ownerid") String ownerid, @Param("newZoyShare") BigDecimal newZoyShare);
+	
+	@Modifying
+	@Transactional
+    @Query(value = "update pgowners.zoy_pg_property_details set zoy_share =:newZoyShare where property_id =:propertyId", nativeQuery = true)
+    int updatePropertyZoyShare(@Param("propertyId") String propertyId, @Param("newZoyShare") BigDecimal newZoyShare);
 }
