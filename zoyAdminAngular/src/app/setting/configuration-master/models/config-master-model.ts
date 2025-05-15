@@ -174,6 +174,7 @@ export class ShortTermMainModel{
     createdBy:string;
     comments:string='';
     zoy_short_term_dto_info:ShortTermSubModel[]=[];
+    zoyShortTermDtoInfo:ShortTermSubModel[]=[];
 }
 
 export class ShortTermSubModel{

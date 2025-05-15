@@ -1252,7 +1252,134 @@ public class ZoyEmailService {
 	
 		
 	}
+	
+	public String sendAuditNotificationsForShortTerm(ZoyShortTermDetails previousShortTerm,
+			ZoyShortTermDetails newShortTerm, String status) {
+		try {
+			StringBuilder oldRules = new StringBuilder();
+			StringBuilder newRules = new StringBuilder();
 
+			if (previousShortTerm != null && previousShortTerm.getZoyShortTermDtoInfo() != null) {
+				List<ZoyShortTermDto> dtos = previousShortTerm.getZoyShortTermDtoInfo();
+				List<ZoyShortTermDto> validDtos = new ArrayList<>();
+
+				for (ZoyShortTermDto dto : dtos) {
+					if (!Boolean.TRUE.equals(dto.getDelete())) {
+						validDtos.add(dto);
+					}
+				}
+
+				for (int i = 0; i < validDtos.size(); i++) {
+					ZoyShortTermDto oldDto = validDtos.get(i);
+					oldRules.append(oldDto.getStartDay()).append("-").append(oldDto.getEndDay()).append(" days")
+							.append(" Daily rent as ").append(oldDto.getPercentage()).append("% of monthly rent");
+				}
+			}
+
+			if (newShortTerm != null && newShortTerm.getZoyShortTermDtoInfo() != null) {
+				List<ZoyShortTermDto> dtos = newShortTerm.getZoyShortTermDtoInfo();
+				List<ZoyShortTermDto> validDtos = new ArrayList<>();
+
+				for (ZoyShortTermDto dto : dtos) {
+					if (!Boolean.TRUE.equals(dto.getDelete())) {
+						validDtos.add(dto);
+					}
+				}
+
+				for (int i = 0; i < validDtos.size(); i++) {
+					ZoyShortTermDto newDto = validDtos.get(i);
+					newRules.append(newDto.getStartDay()).append("-").append(newDto.getEndDay()).append(" days")
+							.append(" Daily rent as ").append(newDto.getPercentage()).append("% of monthly rent");
+					if (i < validDtos.size() - 1) {
+						newRules.append(",");
+					}
+				}
+			}
+
+			StringBuilder message = new StringBuilder("has " + status + " Short term duration period.");
+
+			boolean oldExists = oldRules.length() > 0;
+			boolean newExists = newRules.length() > 0;
+
+			if (oldExists || newExists) {
+				message.append("\nOld Rule: ").append(oldExists ? oldRules.toString() : "None");
+				message.append("\nNew Rule: ").append(newExists ? newRules.toString() : "None");
+			} else {
+				message.append(" No changes were made.");
+			}
+
+			return message.toString();
+
+		} catch (Exception e) {
+			log.error("Failed to generate cancellation/refund policy change message: {}", e.getMessage(), e);
+			return "Error generating cancellation/refund policy update message.";
+		}
+	}
+
+	public String sendCancellationRefundPolicyChange(ZoyBeforeCheckInCancellationModel zoyPreviousData,
+			ZoyBeforeCheckInCancellationModel zoyUpdatedData, String status) {
+		try {
+			Map<String, String> comparisonMap = new HashMap<>();
+			comparisonMap.put(">=", "on or after");
+			comparisonMap.put(">", "after");
+			comparisonMap.put("<=", "on or before");
+			comparisonMap.put("<", "before");
+			comparisonMap.put("==", "equal to");
+
+			StringBuilder oldRules = new StringBuilder();
+			StringBuilder newRules = new StringBuilder();
+
+			if (zoyPreviousData != null && zoyPreviousData.getZoyBeforeCheckInCancellationInfo() != null) {
+				List<ZoyBeforeCheckInCancellation> cancellations = zoyPreviousData
+						.getZoyBeforeCheckInCancellationInfo();
+				int size = cancellations.size();
+				for (int i = 0; i < size; i++) {
+					ZoyBeforeCheckInCancellation prev = cancellations.get(i);
+					if (oldRules.length() > 0)
+						;
+
+					oldRules.append(getConditionDescriptionforcancel(prev, comparisonMap)).append(" - ")
+							.append(prev.getDeductionPercentage()).append("% of total paid,");
+
+				}
+			}
+
+			if (zoyUpdatedData != null && zoyUpdatedData.getZoyBeforeCheckInCancellationInfo() != null) {
+				List<ZoyBeforeCheckInCancellation> updates = zoyUpdatedData.getZoyBeforeCheckInCancellationInfo();
+				int size = updates.size();
+				for (int i = 0; i < size; i++) {
+					ZoyBeforeCheckInCancellation updated = updates.get(i);
+					if (newRules.length() > 0)
+						;
+
+					newRules.append(getConditionDescriptionforcancel(updated, comparisonMap)).append(" - ")
+							.append(updated.getDeductionPercentage()).append("% of total paid,");
+
+					if (i < size - 1) {
+						newRules.append(",");
+					}
+				}
+			}
+
+			StringBuilder message = new StringBuilder("has " + status + " Cancellation and Refund Policy.");
+
+			boolean oldExists = oldRules.length() > 0;
+			boolean newExists = newRules.length() > 0;
+
+			if (oldExists || newExists) {
+				message.append("\nOld Policy: ").append(oldExists ? oldRules.toString() : "None");
+				message.append("\nNew Policy: ").append(newExists ? newRules.toString() : "None");
+			} else {
+				message.append(" No changes were made.");
+			}
+
+			return message.toString();
+
+		} catch (Exception e) {
+			log.error("Failed to generate cancellation/refund policy change message: {}", e.getMessage(), e);
+			return "Error generating cancellation/refund policy update message.";
+		}
+	}
 	
 	
 }
