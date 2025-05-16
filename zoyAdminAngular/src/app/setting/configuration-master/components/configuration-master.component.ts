@@ -1200,7 +1200,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 		const selectedDate = new Date(payload.effectiveDate).setHours(0, 0, 0, 0);
 		const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);
 		if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate <= existingDate && this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.isApproved ) ||(selectedDate <= existingDate && !this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.isApproved && this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel )) {
-			this.notifyService.showInfo("Tt must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
+			this.notifyService.showInfo("must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
 			return;
 		}
 	}
@@ -1793,7 +1793,7 @@ console.log("SHOW CONGI:: ",this.showConfigMaster);
 					const existingDate = new Date(model.effectiveDate).setHours(0, 0, 0, 0);	
 					 
 					if ( selectedDate < new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0) || (selectedDate <= existingDate && this.editConfigMaster.shortTermMainModel.isApproved ) ||(selectedDate <= existingDate && !this.editConfigMaster.shortTermMainModel.isApproved && this.showConfigMaster.shortTermMainModel )) {
-						this.notifyService.showInfo("Tt must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
+						this.notifyService.showInfo("must be greater than the previous rule’s date and at least 15 days in the future.", "Invalid effective date");
 						return;
 					}
 				 }
