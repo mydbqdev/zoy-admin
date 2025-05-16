@@ -1271,8 +1271,14 @@ public class ZoyEmailService {
 
 				for (int i = 0; i < validDtos.size(); i++) {
 					ZoyShortTermDto oldDto = validDtos.get(i);
-					oldRules.append(oldDto.getStartDay()).append("-").append(oldDto.getEndDay()).append(" days")
-							.append(" Daily rent as ").append(oldDto.getPercentage()).append("% of monthly rent");
+					oldRules.append(oldDto.getStartDay()).append("-").append(oldDto.getEndDay())
+							.append(" days Daily rent as ").append(oldDto.getPercentage()).append("% of monthly rent");
+
+					if (i < validDtos.size() - 1) {
+						oldRules.append(", ");
+					} else {
+						oldRules.append(".");
+					}
 				}
 			}
 
@@ -1288,22 +1294,25 @@ public class ZoyEmailService {
 
 				for (int i = 0; i < validDtos.size(); i++) {
 					ZoyShortTermDto newDto = validDtos.get(i);
-					newRules.append(newDto.getStartDay()).append("-").append(newDto.getEndDay()).append(" days")
-							.append(" Daily rent as ").append(newDto.getPercentage()).append("% of monthly rent");
+					newRules.append(newDto.getStartDay()).append("-").append(newDto.getEndDay())
+							.append(" days Daily rent as ").append(newDto.getPercentage()).append("% of monthly rent");
+
 					if (i < validDtos.size() - 1) {
-						newRules.append(",");
+						newRules.append(", ");
+					} else {
+						newRules.append(".");
 					}
 				}
 			}
 
-			StringBuilder message = new StringBuilder("has " + status + " Short term duration period.");
+			StringBuilder message = new StringBuilder("has ").append(status).append(" Short term duration period.");
 
 			boolean oldExists = oldRules.length() > 0;
 			boolean newExists = newRules.length() > 0;
 
 			if (oldExists || newExists) {
-				message.append("\nOld Rule: ").append(oldExists ? oldRules.toString() : "None");
-				message.append("\nNew Rule: ").append(newExists ? newRules.toString() : "None");
+				message.append("\nOld Rule: ").append(oldExists ? oldRules : "None");
+				message.append("\nNew Rule: ").append(newExists ? newRules : "None");
 			} else {
 				message.append(" No changes were made.");
 			}
@@ -1311,8 +1320,8 @@ public class ZoyEmailService {
 			return message.toString();
 
 		} catch (Exception e) {
-			log.error("Failed to generate cancellation/refund policy change message: {}", e.getMessage(), e);
-			return "Error generating cancellation/refund policy update message.";
+			log.error("Failed to generate short term duration message: {}", e.getMessage(), e);
+			return "Error generating short term duration update message.";
 		}
 	}
 
@@ -1335,12 +1344,14 @@ public class ZoyEmailService {
 				int size = cancellations.size();
 				for (int i = 0; i < size; i++) {
 					ZoyBeforeCheckInCancellation prev = cancellations.get(i);
-					if (oldRules.length() > 0)
-						;
-
 					oldRules.append(getConditionDescriptionforcancel(prev, comparisonMap)).append(" - ")
-							.append(prev.getDeductionPercentage()).append("% of total paid,");
+							.append(prev.getDeductionPercentage()).append("% of total paid");
 
+					if (i < size - 1) {
+						oldRules.append(", ");
+					} else {
+						oldRules.append(".");
+					}
 				}
 			}
 
@@ -1349,26 +1360,26 @@ public class ZoyEmailService {
 				int size = updates.size();
 				for (int i = 0; i < size; i++) {
 					ZoyBeforeCheckInCancellation updated = updates.get(i);
-					if (newRules.length() > 0)
-						;
-
 					newRules.append(getConditionDescriptionforcancel(updated, comparisonMap)).append(" - ")
-							.append(updated.getDeductionPercentage()).append("% of total paid,");
+							.append(updated.getDeductionPercentage()).append("% of total paid");
 
 					if (i < size - 1) {
-						newRules.append(",");
+						newRules.append(", ");
+					} else {
+						newRules.append(".");
 					}
 				}
 			}
 
-			StringBuilder message = new StringBuilder("has " + status + " Cancellation and Refund Policy.");
+			StringBuilder message = new StringBuilder("ZOY Admin has ").append(status)
+					.append(" Cancellation and Refund Policy.");
 
 			boolean oldExists = oldRules.length() > 0;
 			boolean newExists = newRules.length() > 0;
 
 			if (oldExists || newExists) {
-				message.append("\nOld Policy: ").append(oldExists ? oldRules.toString() : "None");
-				message.append("\nNew Policy: ").append(newExists ? newRules.toString() : "None");
+				message.append("\nOld Policy: ").append(oldExists ? oldRules : "None");
+				message.append("\nNew Policy: ").append(newExists ? newRules : "None");
 			} else {
 				message.append(" No changes were made.");
 			}
