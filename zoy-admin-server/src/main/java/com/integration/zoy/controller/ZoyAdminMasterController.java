@@ -3,24 +3,19 @@ package com.integration.zoy.controller;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
-import java.sql.Timestamp;
 import java.time.ZonedDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -98,10 +93,6 @@ import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ResponseBody;
 import com.integration.zoy.utils.UserPaymentFilterRequest;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("")
