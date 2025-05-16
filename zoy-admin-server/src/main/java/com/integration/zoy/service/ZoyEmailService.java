@@ -1218,7 +1218,7 @@ public class ZoyEmailService {
 	    }
 	}
 
-	public void sendExistingOwnerZoyCode(String owneremail, String firstName, String lastName, String zoyCode) {
+	public void sendExistingOwnerZoyCode(String owneremail, String firstName, String lastName, String zoyCode,String pgName) {
 		Email email = new Email();
 		email.setFrom(zoyAdminMail);
 		List<String> to = new ArrayList<>();
@@ -1228,7 +1228,7 @@ public class ZoyEmailService {
 		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
 				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we've made it quick and simple for you!</p>"
 				+ "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
-				+ "<p>Please use this code to complete your new property registration in the app.</p>"
+				+ "<p>Please use this code to complete your "+pgName+" property registration in the app.</p>"
 				+ "<h4><strong>Steps to Add Property:</strong></h4>" + "<ul>" 
 				+ "<li>Open the app with existing credentials.</li>"
 				+ "<li>Go to profile and click on add property.</li>"

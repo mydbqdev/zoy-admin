@@ -7,13 +7,14 @@ import java.security.NoSuchAlgorithmException;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.exception.ZoyAdminApplicationException;
+import com.integration.zoy.model.PgOwnerMasterModel;
 
 @Service
 public class ZoyCodeGenerationService {
 	
-	public String generateZoyCode(String email) {
+	public String generateZoyCode(PgOwnerMasterModel model) {
         try {
-        	 String input = email + System.currentTimeMillis();
+        	 String input = model.getEmailId() + System.currentTimeMillis();
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] messageDigest = md.digest(input.getBytes());
             BigInteger no = new BigInteger(1, messageDigest);
@@ -21,12 +22,31 @@ public class ZoyCodeGenerationService {
             while (hashtext.length() < 32) {
                 hashtext = "0" + hashtext; 
             }
-            return "ZOY" +( hashtext.substring(0, 9).toUpperCase());
+            return "ZOY" 
+            + model.getPropertyStateShortName()
+            + generateShortNameFromConsonants(model.getPropertyCity())
+            + generateShortNameFromConsonants(model.getPropertyLocality())
+            + (hashtext.substring(0, 4).toUpperCase());
         } catch (NoSuchAlgorithmException e) {
-           // throw new RuntimeException(e);
             new ZoyAdminApplicationException(e, "");
         }
 		return null;
+    }
+	
+	public static String generateShortNameFromConsonants(String cityName) {
+        if (cityName == null || cityName.isEmpty()) {
+            return "";
+        }
+        String upperName = cityName.toUpperCase();
+        String vowels = "AEIOU";
+        StringBuilder consonants = new StringBuilder();
+        for (int i = 0; i < upperName.length(); i++) {
+            char c = upperName.charAt(i);
+            if (Character.isLetter(c) && vowels.indexOf(c) == -1) {
+                consonants.append(c);
+            }
+        }
+        return consonants.substring(0,3).toString();
     }
 	
 	public String autoGeneratePassword(String firstName) {

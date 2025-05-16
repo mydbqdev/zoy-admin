@@ -27,6 +27,9 @@ public class PgOwnerDetails {
 
 	@JsonProperty("zoyShare")
 	private BigDecimal zoyShare;
+	
+	@JsonProperty("pgName")
+	private String pgName;
 
 	@JsonProperty("registerId")
 	private String registerId;
@@ -94,5 +97,15 @@ public class PgOwnerDetails {
 	public void setRegisterId(String registerId) {
 		this.registerId = registerId;
 	}
+
+	public String getPgName() {
+		return pgName;
+	}
+
+	public void setPgName(String pgName) {
+		this.pgName = pgName;
+	}
+	
+	
 
 }

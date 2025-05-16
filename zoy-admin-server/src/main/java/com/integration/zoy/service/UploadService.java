@@ -14,7 +14,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -72,6 +74,7 @@ import com.integration.zoy.entity.ZoyPgBedDetails;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgFloorRooms;
 import com.integration.zoy.entity.ZoyPgFloorRoomsId;
+import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.entity.ZoyPgOwnerSettlementSplitUp;
@@ -603,9 +606,36 @@ public class UploadService {
 		bookingDetails.setBookingMode("Offline");
 		bookingDetails.setTenantId(userId);
 		bookingDetails.setDepositPaid(true);
+		
+		if(checkTenantAge(tenantDetails.getDateOfBirth())) {
+			if(checkRentalAgreement(noOfDays))
+				bookingDetails.setRentalAgreement(true);
+		}
+		
 		zoyPgOwnerBookingDetails.add(bookingDetails);
 	}
+	
+	public Boolean checkRentalAgreement(double days) {
+		ZoyPgNoRentalAgreement duration=ownerDBImpl.findNoRentAgreementDuration();
+		if(duration!=null) {
+			if(days > duration.getNoRentalAgreementDays()) 
+				return true;
+		}
+		return false;
+	}
 
+	public Boolean checkTenantAge(Timestamp dob) {
+        try {
+            LocalDate birthDate = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate currentDate = LocalDate.now();
+            int years = Period.between(birthDate, currentDate).getYears();
+            return years >= 18;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+	
+	
 	private long getDiffofTimestamp(Timestamp currentDate, Timestamp outDate) {
 		//LocalDateTime startDateTime = currentDate.toLocalDateTime();
 		//LocalDateTime endDateTime = outDate.toLocalDateTime();
