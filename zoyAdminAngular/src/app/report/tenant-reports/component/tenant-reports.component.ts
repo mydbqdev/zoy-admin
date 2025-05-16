@@ -85,8 +85,8 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 		this.dataService.getIsExpandSideBar.subscribe(name=>{
 			this.isExpandSideBar=name;
 		});
-		this.fromDate=this.getLastMonthDate();
-		this.toDate=this.getCurrentDate();
+		this.fromDate=this.getLastMonthDate().substring(0,10);
+		this.toDate=this.getCurrentDate().substring(0,10);
 		this.reportColumnsList=tenantReportService.reportColumnsList;
 		this.columnHeaders = reportsService.columnHeaders;
 		 this.filteredOptions = this.reportControl.valueChanges.pipe(
@@ -139,8 +139,8 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 			this.toDate = this.toDate.substring(0,10);
 			}else{
 				if(this.fromDate.length == 10){
-					this.fromDate = this.fromDate+'T00:00';
-				   	this.toDate = this.toDate+'T23:59';
+					this.fromDate = this.fromDate;
+				   	this.toDate = this.toDate;
 				}
 			}
 	  }
@@ -269,11 +269,11 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 				this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 
 				if(this.reportName == 'Tenant Dues Report'){
-					this.filtersRequest.fromDate = this.fromDate+' 00:00:00'
+					this.filtersRequest.fromDate = this.fromDate+' 00:00:00';
 					this.filtersRequest.toDate = this.toDate+' 23:59:59';
 				}else{
-					this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
-					this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
+					this.filtersRequest.fromDate = this.fromDate+' 00:00:00';
+					this.filtersRequest.toDate = this.toDate+' 23:59:59';
 				}
 
 				this.filtersRequest.cityLocation = this.cityLocationName;
@@ -353,8 +353,8 @@ export class TenantReportsComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.sortActive=this.sortActive;
 		this.filtersRequest.sortDirection=this.sortDirection.toUpperCase();
 
-		this.filtersRequest.fromDate= (this.fromDate.replace('T',' '))+':00';
-		this.filtersRequest.toDate= (this.toDate.replace('T',' '))+':00';
+		this.filtersRequest.fromDate= this.fromDate+' 00:00:00';
+		this.filtersRequest.toDate= this.toDate+' 23:59:59';
 		this.filtersRequest.cityLocation = this.cityLocationName;
 		this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 		this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
