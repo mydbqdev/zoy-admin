@@ -114,30 +114,34 @@
                   <div class="row justify-content-center">
                     <div class="col-md-4 mb-2">
                       <label for="email">PG Name</label>
-                      <input type="text" id="userEmail" class="form-control" maxlength="100" placeholder="Enter PG Name">   
+                      <input type="text" id="pgName" [(ngModel)]="generateZCode.pgName" formControlName="pgName" class="form-control" maxlength="100" placeholder="Enter PG Name"  [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">   
                     </div>
 
                     <div class="col-md-4 mb-2">
                       <label for="phone">Pin Code</label>
-                      <input type="text"  maxlength="6" id="contactNumber" placeholder="Enter Pin Code" class="form-control" >
+                      <input type="text"  maxlength="6" id="pincode" [(ngModel)]="generateZCode.pincode" formControlName="pincode"  placeholder="Enter Pin Code" (blur)="onPincodeChange($event)" class="form-control"  [ngClass]="{'is-invalid':submitted && (form.controls.pincode.errors)}">
                     </div>
                   </div>
                   <div class="row justify-content-center">
                     <div class="col-md-4 mb-2">
                       <label for="email">State</label>
-                      <input type="text" id="userEmail" placeholder="State" class="form-control" maxlength="100">   
+                      <input type="text" id="userEmail" placeholder="State" [(ngModel)]="generateZCode.state" formControlName="state" class="form-control" maxlength="100" readonly>   
                     </div>
 
                     <div class="col-md-4 mb-2">
                       <label for="phone">City</label>
-                      <input type="text"  maxlength="100" placeholder="City" id="contactNumber" class="form-control" >
+                      <input type="text"  maxlength="100" placeholder="City" id="city" [(ngModel)]="generateZCode.city" formControlName="city" class="form-control" readonly>
                     </div>
                   </div>
 
                   <div class="row justify-content-center">
                     <div class="col-md-4 mb-2">
                       <label for="phone">Area</label>
-                      <input type="text"  maxlength="100" id="contactNumber" placeholder="Enter Area Address" class="form-control" >
+                      <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZCode.areaAddress" formControlName="areaAddress" placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
+                      <select id="area-dropdown" class="form-select form-select-sm" formControlName="areaAddress" [(ngModel)]="generateZCode.areaAddress" *ngIf="areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
+                        <option></option>
+                        <option *ngFor="let cond of areaList">{{cond}}</option>
+                      </select>
                     </div>
                     <div class="col-md-4 mb-2">
                       <label for="zoyShare">ZOY Revenue</label>

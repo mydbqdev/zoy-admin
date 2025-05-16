@@ -57,6 +57,37 @@ import { MessageService } from 'src/app/message.service';
             );
     } 
 
+
+
+
+    
+      extractCity(components: any[]) {
+        for (const component of components) {
+          if (component.types.includes('locality')) {
+            return component.long_name;
+          }
+        }
+        return '';
+      }
+
+	  extractArea(components: any[]) {
+        for (const component of components) {
+          if (component.types.includes('sublocality')) {
+            return component.long_name;
+          }
+        }
+        return '';
+      }
+    
+      extractState(components: any[]) {
+        for (const component of components) {
+          if (component.types.includes('administrative_area_level_1')) {
+            return component.long_name;
+          }
+        }
+        return '';
+      }
+
       private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");    
     }
