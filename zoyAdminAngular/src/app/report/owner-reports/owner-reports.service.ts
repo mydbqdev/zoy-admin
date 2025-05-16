@@ -62,7 +62,7 @@ import { MessageService } from 'src/app/message.service';
       { name: "Owner Payments Dues Report", key: "vendorPaymentsDuesReport" },
       { name: "Inactive Properties Report", key: "InactivePropertiesReport" }, 
       // { name: "Upcoming Potential Properties Report", key: "UpComingPotentialPropertyReport" }, 
-      { name: "Non-Potential Properties Report", key: "NonPotentialPropertyReport" }, 
+      // { name: "Non-Potential Properties Report", key: "NonPotentialPropertyReport" }, 
       { name: "Potential Properties Report", key: "PotentialPropertyReport" },
      
       ];
