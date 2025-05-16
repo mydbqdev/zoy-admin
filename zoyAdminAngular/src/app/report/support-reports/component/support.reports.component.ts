@@ -85,8 +85,8 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 		this.dataService.getIsExpandSideBar.subscribe(name=>{
 			this.isExpandSideBar=name;
 		});
-		this.fromDate=this.getLastMonthDate();
-		this.toDate=this.getCurrentDate();
+		this.fromDate=this.getLastMonthDate().substring(0,10);
+		this.toDate=this.getCurrentDate().substring(0,10);
 		this.reportColumnsList=supportReportService.reportColumnsList;
 		this.columnHeaders = reportsService.columnHeaders;
 		 this.filteredOptions = this.reportControl.valueChanges.pipe(
@@ -245,8 +245,8 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 				this.filtersRequest.sortActive=sortActive;
 				this.filtersRequest.sortDirection=sortDirection.toUpperCase();
 
-				this.filtersRequest.fromDate = (this.fromDate.replace('T',' '))+':00';
-				this.filtersRequest.toDate = (this.toDate.replace('T',' '))+':00';
+				this.filtersRequest.fromDate = this.fromDate+' 00:00:00';
+				this.filtersRequest.toDate = this.toDate+' 23:59:59';
 				this.filtersRequest.cityLocation = this.cityLocationName;
 				this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 				this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
@@ -320,8 +320,8 @@ export class SupportReportsComponent implements OnInit, AfterViewInit {
 		this.filtersRequest.sortActive=this.sortActive;
 		this.filtersRequest.sortDirection=this.sortDirection.toUpperCase();
 
-		this.filtersRequest.fromDate= (this.fromDate.replace('T',' '))+':00';
-		this.filtersRequest.toDate= (this.toDate.replace('T',' '))+':00';
+		this.filtersRequest.fromDate= this.fromDate+' 00:00:00';
+		this.filtersRequest.toDate= this.toDate+' 23:59:59';
 		this.filtersRequest.cityLocation = this.cityLocationName;
 		this.filtersRequest.reportType=this.reportNamesList.filter(n=>n.name == this.reportName)[0].key;
 		this.filtersRequest.filterData = JSON.stringify(this.filterData) ;
