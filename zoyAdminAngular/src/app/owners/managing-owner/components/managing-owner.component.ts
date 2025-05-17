@@ -311,7 +311,9 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	  areaList:string[];
 	  areaTypeOption:boolean=true;
       getCityAndState(pincode){
-        this.googleAPIService.getArea(pincode).subscribe(res => {
+        this.googleAPIService.getArea(pincode).then(result => {
+			console.info("Component owner:"+result.data);
+			const res=result.data;
         if (res.results && res.results?.length > 0 ) {
           const addressComponents = res.results[0].address_components;
           this.generateZoyCode.property_city = this.generateZoyCodeService.extractCity(addressComponents);
@@ -370,4 +372,82 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
       );
 
       }
+      
+	  ownerNameForPopup:string='';
+	  ownerMobileForPopup:string='';
+	  submittedAddProperty:boolean=false;
+	  addProperty(data:any){
+		this.submittedAddProperty=false;
+		this.ownerNameForPopup=data.owner_name;
+		this.ownerMobileForPopup=data.owner_contact;
+		this.generateZoyCode.contactNumber=data.owner_contact;
+		this.generateZoyCode.userEmail=data.owner_email;
+		this.generateZoyCode.firstName=data.owner_name.split(" ")[0];
+		this.generateZoyCode.lastName=data.owner_name.split(" ")[1];
+	  }
+
+	  generateCodeForProperty(){
+		this.submittedAddProperty=true;
+
+		if (this.generateZoyCode.property_name==undefined || this.generateZoyCode.property_name==null || this.generateZoyCode.property_name=='' || this.generateZoyCode.property_pincode==undefined || this.generateZoyCode.property_pincode==null || this.generateZoyCode.property_locality==undefined || this.generateZoyCode.property_locality==null || this.generateZoyCode.property_locality=='' || this.generateZoyCode.zoyShare==undefined || this.generateZoyCode.zoyShare==null || this.generateZoyCode.zoyShare=='' || this.isNotValidNumber(this.generateZoyCode.zoyShare)) {
+		return;
+		}
+		this.spinner.show();		     
+		this.submittedAddProperty=false;
+		this.generateZoyCodeService.generateOwnerCodeForMoreProperty(this.generateZoyCode).subscribe((res) => {
+			this.notifyService.showSuccess(res.message, "");			
+			this.spinner.hide();
+		  },error =>{
+			this.spinner.hide();
+			console.log("error.error",error)
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+			this.errorMsg =error.error.message;
+			console.log("Error:"+this.errorMsg);
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			  let str;
+			  if(error.status==400){
+			  str=error.error.error;
+			  }else{
+				str=error.error.message;
+				str=str.substring(str.indexOf(":")+1);
+			  }
+			  console.log("Error:",str);
+			  this.errorMsg=str;
+			}
+		  	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  	//this.notifyService.showError(this.errorMsg, "");
+			}
+		  }
+		  ); 
+	  }
+
+	  isNotValidNumber(value: any): boolean {
+	return  (value === '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
+  }
+percentageOnlyWithZero(event): boolean {
+	const charCode = (event.which) ? event.which : event.keyCode;
+	const inputValue = event.target.value + String.fromCharCode(charCode); 
+
+	if (inputValue.startsWith('.')) {
+		return false;
+	  }
+	
+	if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+	  if (charCode !== 46 ) { // Allow decimal point (46) and percent symbol (37)
+		return false;
+	  }
+	}
+  
+	if ((inputValue.match(/\./g) || []).length> 1 || parseFloat(inputValue) > 100 ) {
+	  return false;
+	}
+
+	return true;
+  }
   }  
