@@ -1806,12 +1806,13 @@ console.log("SHOW CONGI:: ",this.showConfigMaster);
 		}
 		
 		let work =(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected':(payload.iscreate?'Create':'Update') ));
-		
-		if(work != 'Create'){
-			this.showConfigMaster.shortTermMainModel.zoyShortTermDtoInfo=this.showConfigMaster.shortTermMainModel.zoy_short_term_dto_info;
-		}else{
-			this.editConfigMaster.shortTermMainModel.zoyShortTermDtoInfo=this.editConfigMaster.shortTermMainModel.zoy_short_term_dto_info;
-		}
+		if(this.showConfigMaster?.shortTermMainModel){
+			if(work != 'Create'){
+				this.showConfigMaster.shortTermMainModel.zoyShortTermDtoInfo=this.showConfigMaster.shortTermMainModel.zoy_short_term_dto_info;
+			}else{
+				this.editConfigMaster.shortTermMainModel.zoyShortTermDtoInfo=this.editConfigMaster.shortTermMainModel.zoy_short_term_dto_info;
+			}
+	    }
 		const model = {"oldSTDRule":work == 'Create' ?this.editConfigMaster.shortTermMainModel:this.showConfigMaster.shortTermMainModel,"newSTDRule":payload};
 
 		this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want '+work +' ?')
