@@ -4,6 +4,7 @@ import { Observable,of } from 'rxjs';
 import { MessageService } from 'src/app/message.service';
 import { BASE_PATH_EXTERNAL_SERVER } from 'src/app/common/shared/variables';
 import { ServiceHelper } from "src/app/common/shared/service-helper";
+import axios from 'axios';
 @Injectable({
     providedIn: 'root'
   })
@@ -14,6 +15,15 @@ import { ServiceHelper } from "src/app/common/shared/service-helper";
     httpOptions ={
         headers :new HttpHeaders({'Content-Type':'application/json'})
     };
+
+   headers:HttpHeaders = new HttpHeaders({
+            'Accept':'application/json',
+            'Content-Type':'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Authorization':this.API_KEY,
+            "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
+            'Access-Control-Allow-Methods':'DELETE, POST, GET, OPTIONS'
+        });
     constructor(private httpclient:HttpClient, private messageService:MessageService,@Inject(BASE_PATH_EXTERNAL_SERVER) private basePathExternalServer: string){
 
     }
@@ -22,9 +32,13 @@ import { ServiceHelper } from "src/app/common/shared/service-helper";
         return this.httpclient.get<any>(url);
       }
 
-      public getArea(pincode: string): Observable<any> {
+      public getArea(pincode: string): Promise<any> {
         const url ='https://maps.googleapis.com/maps/api/geocode/json?address='+pincode+'&key='+this.API_KEY;
-        return this.httpclient.get<any>(url,{headers:ServiceHelper.buildHeaders()});
+        //return this.httpclient.get<any>(url,{headers:this.headers, observe : 'body',
+        //         withCredentials:true});
+        const res= axios.get(url);
+        console.info("google api res:"+res);
+        return res;
       }
       private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");    
