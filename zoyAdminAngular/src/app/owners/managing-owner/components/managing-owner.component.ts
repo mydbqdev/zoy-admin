@@ -298,9 +298,13 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
         if (pincode && pincode.length === 6) {
           this. getCityAndState(pincode);
         } else {
-          this.generateZoyCode.city = '';
-          this.generateZoyCode.state = '';
-		  this.generateZoyCode.areaAddress ='';
+          this.generateZoyCode.property_city = '';
+          this.generateZoyCode.property_state = '';
+		  this.generateZoyCode.property_state_short_name = '';
+		  this.generateZoyCode.property_locality ='';
+		  this.generateZoyCode.property_house_area=''
+		  this.generateZoyCode.property_location_latitude='';
+		  this.generateZoyCode.property_location_longitude='';
         }
       }
 	  zoycodeDisableField:boolean=true;
@@ -310,21 +314,29 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
         this.googleAPIService.getArea(pincode).subscribe(res => {
         if (res.results && res.results?.length > 0 ) {
           const addressComponents = res.results[0].address_components;
-          this.generateZoyCode.city = this.generateZoyCodeService.extractCity(addressComponents);
-          this.generateZoyCode.state = this.generateZoyCodeService.extractState(addressComponents);
+          this.generateZoyCode.property_city = this.generateZoyCodeService.extractCity(addressComponents);
+          this.generateZoyCode.property_state = this.generateZoyCodeService.extractState(addressComponents);
+		  this.generateZoyCode.property_state_short_name=this.generateZoyCodeService.extractStateShortName(addressComponents);
+		  this.generateZoyCode.property_house_area=res.results[0].formatted_address;
+		  this.generateZoyCode.property_location_latitude=res.results[0].geometry.location.lat;
+		  this.generateZoyCode.property_location_longitude=res.results[0].geometry.location.lng;
 		   if(res.results[0].postcode_localities!=undefined && res.results[0]?.postcode_localities){
 		   this.areaList=Object.assign([],res.results[0].postcode_localities);
-		   this.generateZoyCode.areaAddress ="";
+		   this.generateZoyCode.property_locality ="";
 		   this.areaTypeOption=true;
 		   }else{
-			 this.generateZoyCode.areaAddress = this.generateZoyCodeService.extractArea(addressComponents);
+			 this.generateZoyCode.property_locality = this.generateZoyCodeService.extractArea(addressComponents);
 			 this.areaList=Object.assign([]);
 			 this.areaTypeOption=false;
 		   }
         } else {
-          this.generateZoyCode.city = '';
-          this.generateZoyCode.state = '';
-		  this.generateZoyCode.areaAddress ='';
+          this.generateZoyCode.property_city = '';
+          this.generateZoyCode.property_state = '';
+		  this.generateZoyCode.property_state_short_name = '';
+		  this.generateZoyCode.property_locality ='';
+		  this.generateZoyCode.property_house_area=''
+		  this.generateZoyCode.property_location_latitude='';
+		  this.generateZoyCode.property_location_longitude='';
         }      
         }, error => {
           this.spinner.hide();
