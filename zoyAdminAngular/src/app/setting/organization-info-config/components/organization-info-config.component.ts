@@ -465,7 +465,7 @@ export class OrganizationInfoConfigComponent implements OnInit, AfterViewInit {
       }
 
       getCityAndState(pincode){
-        this.googleAPIService.getCityAndState(pincode).subscribe(res => {
+        this.googleAPIService.getArea(pincode).subscribe(res => {
         if (res.results && res.results?.length > 0 ) {
           const addressComponents = res.results[0].address_components;
           this.infoModel.city = this.extractCity(addressComponents);

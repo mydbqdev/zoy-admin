@@ -17,6 +17,9 @@ import { FormBuilder } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { ZoyOwnerService } from '../../service/zoy-owner.service';
 import { Filter, OwnerRequestParam } from '../models/owner-details-request-model';
+import { GoogleAPIService } from 'src/app/setting/organization-info-config/services/google.api.service';
+import { GenerateZoyCodeService } from '../../service/zoy-code.service';
+import { ZoyData } from '../../zoy-code/models/zoy-code-model';
 
 @Component({
   selector: 'app-managing-owner',
@@ -24,7 +27,7 @@ import { Filter, OwnerRequestParam } from '../models/owner-details-request-model
   styleUrl: './managing-owner.component.css'
 })
 export class ManageOwnerComponent implements OnInit, AfterViewInit {
-	displayedColumns: string[] = [ 'owner_name', 'owner_email', 'owner_contact','number_of_properties', 'status'];
+	displayedColumns: string[] = [ 'owner_name', 'owner_email', 'owner_contact','number_of_properties', 'status','action'];
 	public ELEMENT_DATA:ZoyOwner[]=[];
 	orginalFetchData:ZoyOwner[]=[];
 	searchText:string='';
@@ -40,6 +43,7 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		event.stopPropagation();
 	  }
 	generateZCode : ZoyOwner=new ZoyOwner();
+	generateZoyCode : ZoyData=new ZoyData();
 	public userNameSession: string = "";
 	  errorMsg: any = "";
 	  mySubscription: any;
@@ -61,7 +65,7 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	  paramFilterBack:OwnerRequestParam=new OwnerRequestParam();
 	  totalProductFilterBack: number = 0;
 	  constructor(private zoyOwnerService : ZoyOwnerService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
-		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
+		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private generateZoyCodeService : GenerateZoyCodeService,private googleAPIService:GoogleAPIService) {
 			  this.authService.checkLoginUserVlidaate();
 			  this.userNameSession = userService.getUsername();
 		  //this.defHomeMenu=defMenuEnable;
@@ -287,4 +291,83 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 			this.dataService.setOwenerListFilterParam(this.param);
 			this.router.navigateByUrl('/manage-owner-details');
 		  }
+
+
+		  onPincodeChange(event: any) {
+        const pincode = event.target.value;
+        if (pincode && pincode.length === 6) {
+          this. getCityAndState(pincode);
+        } else {
+          this.generateZoyCode.property_city = '';
+          this.generateZoyCode.property_state = '';
+		  this.generateZoyCode.property_state_short_name = '';
+		  this.generateZoyCode.property_locality ='';
+		  this.generateZoyCode.property_house_area=''
+		  this.generateZoyCode.property_location_latitude='';
+		  this.generateZoyCode.property_location_longitude='';
+        }
+      }
+	  zoycodeDisableField:boolean=true;
+	  areaList:string[];
+	  areaTypeOption:boolean=true;
+      getCityAndState(pincode){
+        this.googleAPIService.getArea(pincode).subscribe(res => {
+        if (res.results && res.results?.length > 0 ) {
+          const addressComponents = res.results[0].address_components;
+          this.generateZoyCode.property_city = this.generateZoyCodeService.extractCity(addressComponents);
+          this.generateZoyCode.property_state = this.generateZoyCodeService.extractState(addressComponents);
+		  this.generateZoyCode.property_state_short_name=this.generateZoyCodeService.extractStateShortName(addressComponents);
+		  this.generateZoyCode.property_house_area=res.results[0].formatted_address;
+		  this.generateZoyCode.property_location_latitude=res.results[0].geometry.location.lat;
+		  this.generateZoyCode.property_location_longitude=res.results[0].geometry.location.lng;
+		   if(res.results[0].postcode_localities!=undefined && res.results[0]?.postcode_localities){
+		   this.areaList=Object.assign([],res.results[0].postcode_localities);
+		   this.generateZoyCode.property_locality ="";
+		   this.areaTypeOption=true;
+		   }else{
+			 this.generateZoyCode.property_locality = this.generateZoyCodeService.extractArea(addressComponents);
+			 this.areaList=Object.assign([]);
+			 this.areaTypeOption=false;
+		   }
+        } else {
+          this.generateZoyCode.property_city = '';
+          this.generateZoyCode.property_state = '';
+		  this.generateZoyCode.property_state_short_name = '';
+		  this.generateZoyCode.property_locality ='';
+		  this.generateZoyCode.property_house_area=''
+		  this.generateZoyCode.property_location_latitude='';
+		  this.generateZoyCode.property_location_longitude='';
+        }      
+        }, error => {
+          this.spinner.hide();
+          if(error.status == 0) {
+          this.notifyService.showError("Internal Server Error/Connection not established", "")
+          }else if(error.status==401){
+          console.error("Unauthorised");
+        }else if(error.status==403){
+            this.router.navigate(['/forbidden']);
+          }else if (error.error && error.error.message) {
+            this.errorMsg = error.error.message;
+            console.log("Error:" + this.errorMsg);
+            this.notifyService.showError(this.errorMsg, "");
+          } else {
+            if (error.status == 500 && error.statusText == "Internal Server Error") {
+              this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+            } else {
+              let str;
+              if (error.status == 400) {
+                str = error.error.error;
+              } else {
+                str = error.error.message;
+                str = str.substring(str.indexOf(":") + 1);
+              }
+              console.log("Error:" ,str);
+              this.errorMsg = str;
+            }
+            if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+          }
+        }
+      );
+
+      }
   }  
