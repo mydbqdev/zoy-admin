@@ -384,7 +384,10 @@ percentageOnlyWithZero(event): boolean {
 	  areaList:string[];
 	  areaTypeOption:boolean=true;
       getCityAndState(pincode){
-        this.googleAPIService.getArea(pincode).subscribe(res => {
+		this.spinner.show();
+        this.googleAPIService.getArea(pincode).then(result => {
+		console.info("Component :"+result.data);
+			const res=result.data;
         if (res.results && res.results?.length > 0 ) {
           const addressComponents = res.results[0].address_components;
           this.generateZCode.property_city = this.generateZoyCodeService.extractCity(addressComponents);
@@ -410,7 +413,8 @@ percentageOnlyWithZero(event): boolean {
 		  this.generateZCode.property_house_area=''
 		  this.generateZCode.property_location_latitude='';
 		  this.generateZCode.property_location_longitude='';
-        }      
+        }  
+		this.spinner.hide();    
         }, error => {
           this.spinner.hide();
           if(error.status == 0) {
