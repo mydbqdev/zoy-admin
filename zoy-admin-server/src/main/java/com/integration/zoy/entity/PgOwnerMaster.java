@@ -38,13 +38,38 @@ public class PgOwnerMaster {
 	@Column(name = "updated_at", nullable = false)
 	@UpdateTimestamp
 	private Timestamp updated_at;
-	
+
 	@Column(name = "zoy_share", nullable = false)
 	private BigDecimal zoyShare;
 
 	@Column(name ="register_id")
 	private String registerId;
-	
+
+	@Column(name ="property_name")
+	private String propertyName;
+
+	@Column(name ="property_pincode")
+	private Integer propertyPincode;
+
+	@Column(name ="property_state")
+	private String propertyState;
+
+	@Column(name ="property_city")
+	private String propertyCity;
+
+	@Column(name ="property_locality")
+	private String propertyLocality;
+
+	@Column(name ="property_house_area")
+	private String propertyHouseArea;
+
+	@Column(name = "property_location_latitude", precision = 10, scale = 7)
+	private BigDecimal propertyLocationLatitude;
+
+	@Column(name = "property_location_longitude", precision = 10, scale = 7)
+	private BigDecimal propertyLocationLongitude;
+
+
 	public String getRegisterId() {
 		return registerId;
 	}
@@ -115,6 +140,70 @@ public class PgOwnerMaster {
 
 	public void setZoyShare(BigDecimal zoyShare) {
 		this.zoyShare = zoyShare;
+	}
+
+	public String getPropertyName() {
+		return propertyName;
+	}
+
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
+	}
+
+	public Integer getPropertyPincode() {
+		return propertyPincode;
+	}
+
+	public void setPropertyPincode(Integer propertyPincode) {
+		this.propertyPincode = propertyPincode;
+	}
+
+	public String getPropertyState() {
+		return propertyState;
+	}
+
+	public void setPropertyState(String propertyState) {
+		this.propertyState = propertyState;
+	}
+
+	public String getPropertyCity() {
+		return propertyCity;
+	}
+
+	public void setPropertyCity(String propertyCity) {
+		this.propertyCity = propertyCity;
+	}
+
+	public String getPropertyLocality() {
+		return propertyLocality;
+	}
+
+	public void setPropertyLocality(String propertyLocality) {
+		this.propertyLocality = propertyLocality;
+	}
+
+	public String getPropertyHouseArea() {
+		return propertyHouseArea;
+	}
+
+	public void setPropertyHouseArea(String propertyHouseArea) {
+		this.propertyHouseArea = propertyHouseArea;
+	}
+
+	public BigDecimal getPropertyLocationLatitude() {
+		return propertyLocationLatitude;
+	}
+
+	public void setPropertyLocationLatitude(BigDecimal propertyLocationLatitude) {
+		this.propertyLocationLatitude = propertyLocationLatitude;
+	}
+
+	public BigDecimal getPropertyLocationLongitude() {
+		return propertyLocationLongitude;
+	}
+
+	public void setPropertyLocationLongitude(BigDecimal propertyLocationLongitude) {
+		this.propertyLocationLongitude = propertyLocationLongitude;
 	}
 
 

@@ -973,5 +973,10 @@ public class OwnerDBService implements OwnerDBImpl{
 	public List<String> getLeadFollowUpHistory(String inquiryNumber) throws WebServiceException {
 		return leadHistoryRepository.findHistoryDataByInquiryNumber(inquiryNumber);
 	}
+	
+	@Override
+	public ZoyPgNoRentalAgreement findNoRentAgreementDuration() {
+		return zoyPgNoRentalAgreementRespository.findNoRentAgreementDuration();
+	}
 
 }
