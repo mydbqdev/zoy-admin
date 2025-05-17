@@ -18,7 +18,9 @@ import { ServiceHelper } from "src/app/common/shared/service-helper";
    headers:HttpHeaders = new HttpHeaders({
             'Accept':'application/json',
             'Content-Type':'application/json',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+            'Authorization':this.API_KEY,
+            'Access-Control-Allow-Methods':'DELETE, POST, GET, OPTIONS'
         });
     constructor(private httpclient:HttpClient, private messageService:MessageService,@Inject(BASE_PATH_EXTERNAL_SERVER) private basePathExternalServer: string){
 
