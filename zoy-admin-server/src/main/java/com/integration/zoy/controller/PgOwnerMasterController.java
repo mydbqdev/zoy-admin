@@ -171,7 +171,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
 			}	
 			PgOwnerMaster ownerData = new PgOwnerMaster();
-			String zoyCode = zoyCodeGenerationService.generateZoyCode(model.getEmailId());
+			String zoyCode = zoyCodeGenerationService.generateZoyCode(model);
 			ownerData.setZoyCode(zoyCode);
 			ownerData.setEmailId(model.getEmailId());
 			ownerData.setFirstName(model.getFirstName());
@@ -179,6 +179,14 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			ownerData.setMobileNo(model.getMobileNo());
 			ownerData.setZoyShare(model.getZoyShare());
 			ownerData.setRegisterId(model.getRegisterId()!=null?model.getRegisterId():null);
+			ownerData.setPropertyName(model.getPropertyName());
+			ownerData.setPropertyCity(model.getPropertyCity());
+			ownerData.setPropertyHouseArea(model.getPropertyHouseArea());
+			ownerData.setPropertyLocality(model.getPropertyLocality());
+			ownerData.setPropertyLocationLatitude(model.getPropertyLocationLatitude());
+			ownerData.setPropertyLocationLongitude(model.getPropertyLocationLongitude());
+			ownerData.setPropertyPincode(model.getPropertyPincode());
+			ownerData.setPropertyState(model.getPropertyState());
 			pgOwnerMaterRepository.save(ownerData);
 
 			String token = UUID.randomUUID().toString();
@@ -356,7 +364,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					onwnerImageUrl= zoyAdminService.generatePreSignedUrl(aadhaarPhotoBucket, ownerImagePath);
 			}
 			profile.setProfilePhoto(onwnerImageUrl);
-			profile.setZoyShare(details[37] != null ? details[37].toString() : null);
+			//profile.setZoyShare(details[37] != null ? details[37].toString() : null);
 			PgOwnerbasicInformation basicInformation = new PgOwnerbasicInformation();
 			basicInformation.setFirstName(details[2] != null ? details[2].toString() : null);
 			basicInformation.setLastName(details[3] != null ? details[3].toString() : null);
@@ -375,6 +383,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					newProperty.setPropertyName(property[12] != null ? property[12].toString() : null);
 					newProperty.setPropertyId(propertyId);
 					newProperty.setStatus(property[13] != null ? property[13].toString() : null);
+					newProperty.setZoyShare(details[37] != null ? details[37].toString() : null);
 					BasicPropertyInformation basicPropertyInfo = new BasicPropertyInformation();
 					basicPropertyInfo.setPgType(property[14] != null ? property[14].toString() : null);
 					basicPropertyInfo.setPgAddress(property[15] != null ? property[15].toString() : null);
@@ -596,20 +605,20 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	}
 
 	@Override
-	public ResponseEntity<String> updateOwnerZoyShare(String ownerid,BigDecimal newZoyshare) {
+	public ResponseEntity<String> updateOwnerZoyShare(String propertyId,BigDecimal newZoyshare) {
 		ResponseBody response = new ResponseBody();
 		try {
-			int rowsUpdated = zoyPgOwnerDetailsRepo.updateZoyShare(ownerid, newZoyshare);
+			int rowsUpdated = zoyPgOwnerDetailsRepo.updatePropertyZoyShare(propertyId, newZoyshare);
 			if (rowsUpdated > 0) {
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("Zoy share updated successfully.");
 				
-				String historyContent=" has Updated Owner ZoyShare Details for" +ownerid;	
+				String historyContent=" has Updated Owner property ZoyShare Details for" +propertyId;	
 				auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_SHARE);
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 			} else {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
-				response.setError("Owner not found.");
+				response.setError("Property not found.");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
@@ -750,6 +759,179 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
+	}
+	
+	@Override
+	public ResponseEntity<String> pgOwnerExistingDetalaisSave(PgOwnerMasterModel model) {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<Object[]> result = pgOwnerMaterRepository.findEmailAndZoyCodeByEmailId(model.getEmailId());
+
+			if (result != null && !result.isEmpty()) {
+				Object[] row = result.get(0);
+				String existingEmailId = (String) row[0];
+
+				if (existingEmailId != null && !existingEmailId.isEmpty()) {
+					PgOwnerMaster ownerData = new PgOwnerMaster();
+					String zoyCode = zoyCodeGenerationService.generateZoyCode(model);
+					ownerData.setZoyCode(zoyCode);
+					ownerData.setEmailId(model.getEmailId());
+					ownerData.setFirstName(model.getFirstName());
+					ownerData.setLastName(model.getLastName());
+					ownerData.setMobileNo(model.getMobileNo());
+					ownerData.setZoyShare(model.getZoyShare());
+					ownerData.setRegisterId(model.getRegisterId()!=null?model.getRegisterId():null);
+					ownerData.setPropertyName(model.getPropertyName());
+					ownerData.setPropertyCity(model.getPropertyCity());
+					ownerData.setPropertyHouseArea(model.getPropertyHouseArea());
+					ownerData.setPropertyLocality(model.getPropertyLocality());
+					ownerData.setPropertyLocationLatitude(model.getPropertyLocationLatitude());
+					ownerData.setPropertyLocationLongitude(model.getPropertyLocationLongitude());
+					ownerData.setPropertyPincode(model.getPropertyPincode());
+					ownerData.setPropertyState(model.getPropertyState());
+					pgOwnerMaterRepository.save(ownerData);
+
+					//audit history here
+					String historyContent=" has generated the zoy code for existing owner,"+model.getFirstName() +" "+ model.getLastName();
+					auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);
+					emailBodyService.sendExistingOwnerZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,model.getPropertyName());
+
+
+					response.setStatus(HttpStatus.OK.value());
+					response.setMessage("ZOY code has been generated & sent successfully.");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+				} else {
+					response.setStatus(HttpStatus.NOT_FOUND.value());
+					response.setMessage("Email ID " + model.getEmailId() + " not found");
+					return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+				}
+			} else {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("Email ID " + model.getEmailId() + " not found");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			log.error("Error occurred while saving PG owner details API:/zoy_admin/savePgOwnerData.pgOwnerDetalaisSave ", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+//	@Override
+//	public ResponseEntity<String> pgOwnerDetailsGet(String emailMobile) {
+//		ResponseBody response = new ResponseBody();
+//		try {
+//			List<Object[]> existingPgOwnerDetails = pgOwnerMaterRepository.getExistingPgOwnerDetails(emailMobile);
+//
+//			if(existingPgOwnerDetails.isEmpty() || existingPgOwnerDetails==null) {
+//				response.setStatus(HttpStatus.NOT_FOUND.value());
+//				response.setMessage("Email ID / Mobile No " + emailMobile + " not found");
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+//			}
+//			PgOwnerMaster ownerDetails = new PgOwnerMaster();
+//			Object[] details=existingPgOwnerDetails.get(0);
+//			ownerDetails.setFirstName(details[0] != null ? (String) details[0] : null);
+//			ownerDetails.setLastName(details[1] != null ? (String) details[1] : null);
+//			ownerDetails.setEmailId(details[2] != null ? (String) details[2] : null);
+//			ownerDetails.setMobileNo(details[3] != null ? (String) details[3] : null);
+//
+//			return new ResponseEntity<>(gson.toJson(ownerDetails), HttpStatus.OK);
+//
+//		} catch (Exception e) {
+//			log.error("Error getting PG Owner details API:/zoy_admin/getExistingPgOwnerData.pgOwnerDetailsGet ", e);
+//			try {
+//				new ZoyAdminApplicationException(e, "");
+//			}catch(Exception ex){
+//				response.setStatus(HttpStatus.BAD_REQUEST.value());
+//				response.setError(ex.getMessage());
+//				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//			}
+//			response.setStatus(HttpStatus.BAD_REQUEST.value());
+//			response.setError(e.getMessage());
+//			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+//		}
+//
+//	}
+
+	@Override
+	public ResponseEntity<String> existingPgOwnerDetailsGet(String ownerId) {
+
+		ResponseBody response = new ResponseBody();
+		try {
+			List<Object[]> allPgOwnerDetails = pgOwnerMaterRepository.getAllExistingPgOwnerDetails(ownerId);
+
+			List<PgOwnerDetails> pgOwnerDetailsList = new ArrayList<>();
+
+			for (Object[] details : allPgOwnerDetails) {
+				PgOwnerDetails ownerDetails = new PgOwnerDetails();
+
+				ownerDetails.setZoyCode(details[0] != null ? (String) details[0] : null);
+				ownerDetails.setOwnerName(details[1] != null ? (String) details[1] : null);
+				ownerDetails.setEmailId(details[2] != null ? (String) details[2] : null);
+				ownerDetails.setMobileNo(details[3] != null ? (String) details[3] : null);
+				ownerDetails.setCreatedDate(details[4] != null ? (Timestamp) details[4] : null);
+				ownerDetails.setStatus(details[5] != null ? (String) details[5] : null);
+				ownerDetails.setZoyShare(details[6] != null ? (BigDecimal) details[6] : null);
+				ownerDetails.setRegisterId(details[7] != null ? (String) details[7] : null);
+				ownerDetails.setPgName(details[8] != null ? (String) details[7] : null);
+				pgOwnerDetailsList.add(ownerDetails);
+			}
+
+			return new ResponseEntity<>(gson.toJson(pgOwnerDetailsList), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error getting PG Owner details API:/zoy_admin/getAllExistingPgOwnerData.pgOwnerDetailsGet ", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	
+	}
+
+	@Override
+	public ResponseEntity<String> existingPgOwnerDetalaisresend(String zoyCode) {
+
+		ResponseBody response = new ResponseBody();
+		try {
+			PgOwnerMaster pgOwnerDetails = pgOwnerMaterRepository.getExistingOwnerDetails(zoyCode);
+			UserProfile profile=profileRepository.findRegisterEmail(pgOwnerDetails.getEmailId()).get();
+			emailBodyService.sendExistingOwnerZoyCode(pgOwnerDetails.getEmailId(),pgOwnerDetails.getFirstName(),pgOwnerDetails.getLastName(),pgOwnerDetails.getZoyCode(),pgOwnerDetails.getPropertyName());
+
+			String historyContent=" has resend the zoy code for existing owner,"+pgOwnerDetails.getFirstName()+" "+pgOwnerDetails.getLastName();
+			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_RESEND);
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("ZOY code has been sent successfully");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error occurred while resend PG owner details API:/zoy_admin/resendExistingPgOwnerData.pgOwnerDetalaisresend ", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	
 	}
 
 }

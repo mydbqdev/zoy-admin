@@ -1,5 +1,9 @@
 package com.integration.zoy.constants;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ZoyConstant {
 	public static final String ZOY_TENANT_DOC_PEND_REMAINDER = "2dfd0969-04dc-4bf3-94f1-e730e593042c";
 	public static final String ZOY_TENANT_WEBCHECKIN = "589dff61-c176-43f0-bf4c-cbff6bf8a9da";
@@ -82,16 +86,86 @@ public class ZoyConstant {
 	//Due Factor 
 	public static final String FIXED = "Fixed"; 
 	public static final String VARIABLE = "Variable";
-	
+
 	public static final String ACTIVE = "Active";
 	public static final String INACTIVE = "Inactive";
 	public static final String SUSPENDED="Suspended";
 	public static final String REGISTER="Register";
-	
+
 	public static final String INPROGRESS="In Progress";
 	public static final String OPEN="Open";
 	public static final String LEAD_GEN="LEAD_GEN";
 	public static final String SUPPORT_TICKET="SUPPORT_TICKET";
 	public static final String CLOSE="Close";
 	public static final String REOPEN="Reopen";
+
+
+	public static final Map<String, String> STATES;
+	public static final Map<String, String> CITIES;
+
+	static {
+		Map<String, String> states = new HashMap<>();
+		states.put("Andhra Pradesh", "AP");
+		states.put("Arunachal Pradesh", "AR");
+		states.put("Assam", "AS");
+		states.put("Bihar", "BR");
+		states.put("Chhattisgarh", "CG");
+		states.put("Goa", "GA");
+		states.put("Gujarat", "GJ");
+		states.put("Haryana", "HR");
+		states.put("Himachal Pradesh", "HP");
+		states.put("Jharkhand", "JH");
+		states.put("Karnataka", "KA");
+		states.put("Kerala", "KL");
+		states.put("Madhya Pradesh", "MP");
+		states.put("Maharashtra", "MH");
+		states.put("Manipur", "MN");
+		states.put("Meghalaya", "ML");
+		states.put("Mizoram", "MZ");
+		states.put("Nagaland", "NL");
+		states.put("Odisha", "OR");
+		states.put("Punjab", "PB");
+		states.put("Rajasthan", "RJ");
+		states.put("Sikkim", "SK");
+		states.put("Tamil Nadu", "TN");
+		states.put("Telangana", "TG");
+		states.put("Tripura", "TR");
+		states.put("Uttar Pradesh", "UP");
+		states.put("Uttarakhand", "UK");
+		states.put("West Bengal", "WB");
+		states.put("Andaman and Nicobar Islands", "AN");
+		states.put("Chandigarh", "CH");
+		states.put("Dadra and Nagar Haveli and Daman and Diu", "DN");
+		states.put("Delhi", "DL");
+		states.put("Jammu and Kashmir", "JK");
+		states.put("Ladakh", "LA");
+		states.put("Lakshadweep", "LD");
+		states.put("Puducherry", "PY");
+		STATES = Collections.unmodifiableMap(states);
+
+		Map<String, String> cities = new HashMap<>();
+		cities.put("Bengaluru", "BLR");
+		cities.put("Mumbai", "BOM");
+		cities.put("Delhi", "DEL");
+		cities.put("Chennai", "MAA");
+		cities.put("Hyderabad", "HYD");
+		cities.put("Kolkata", "CCU");
+		cities.put("Ahmedabad", "AMD");
+		cities.put("Pune", "PNQ");
+		cities.put("Jaipur", "JAI");
+		cities.put("Lucknow", "LKO");
+		cities.put("Bhopal", "BHO");
+		cities.put("Patna", "PAT");
+		cities.put("Kochi", "COK");
+		cities.put("Coimbatore", "CJB");
+		cities.put("Visakhapatnam", "VTZ");
+		cities.put("Guwahati", "GAU");
+		cities.put("Bhubaneswar", "BBI");
+		cities.put("Indore", "IDR");
+		cities.put("Chandigarh", "IXC");
+		cities.put("Thiruvananthapuram", "TRV");
+		CITIES = Collections.unmodifiableMap(cities);
+	}
+
+
 }

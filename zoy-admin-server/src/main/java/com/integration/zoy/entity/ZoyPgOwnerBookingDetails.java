@@ -107,7 +107,13 @@ public class ZoyPgOwnerBookingDetails {
 
     @Column(name = "include_current_month")
     private Boolean includeCurrentMonth;
-
+    
+    @Column(name = "short_term" ,nullable = false)
+    private Boolean shortTerm = false;
+    
+    @Column(name = "rental_agreement" ,nullable = false)
+    private Boolean rentalAgreement = false;
+    
 	public String getBookingId() {
 		return bookingId;
 	}
@@ -338,6 +344,22 @@ public class ZoyPgOwnerBookingDetails {
 
 	public void setDepositPaid(Boolean depositPaid) {
 		this.depositPaid = depositPaid;
+	}
+	
+	public Boolean getShortTerm() {
+		return shortTerm;
+	}
+
+	public void setShortTerm(Boolean shortTerm) {
+		this.shortTerm = shortTerm;
+	}
+	
+	public Boolean getRentalAgreement() {
+		return rentalAgreement;
+	}
+
+	public void setRentalAgreement(Boolean rentalAgreement) {
+		this.rentalAgreement = rentalAgreement;
 	}
 
 	@PrePersist
