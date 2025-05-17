@@ -3,17 +3,19 @@ package com.integration.zoy.controller;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import org.springframework.beans.factory.annotation.Value;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -141,6 +143,9 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	@Autowired
 	TimestampFormatterUtilService timestampFormatterUtilService;
+	
+	@Value("${spring.jackson.time-zone}")
+	private String timeZone;
 
 	@Value("${app.minio.Amenities.photos.bucket.name}")
 	private String amenitiesPhotoBucketName;
@@ -1278,11 +1283,25 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	}
 	
 	private RentalAgreementDocDto convertToDTO(RentalAgreementDoc entity) {
-		RentalAgreementDocDto dto = new RentalAgreementDocDto();
-		dto.setRentalAgreementDocId(entity.getRentalAgreementDocId());
-		dto.setRentalAgreementDoc(zoyAdminService.generatePreSignedUrl(zoyPgRentalDocsUploadBucketName,entity.getRentalAgreementDoc()));
-		dto.setUploadedAt(entity.getUploadedAt() != null && entity.getUploadedAt().toString().length() >16 ? entity.getUploadedAt().toString().substring(0, 16) : null);		return dto;
+	    RentalAgreementDocDto dto = new RentalAgreementDocDto();
+	    dto.setRentalAgreementDocId(entity.getRentalAgreementDocId());
+	    dto.setRentalAgreementDoc(zoyAdminService.generatePreSignedUrl(zoyPgRentalDocsUploadBucketName, entity.getRentalAgreementDoc()));
+
+	    Timestamp uploadedAtTimestamp = entity.getUploadedAt();
+	    if (uploadedAtTimestamp != null) {
+	        ZonedDateTime uploadedAtZoned = uploadedAtTimestamp.toInstant()
+	            .atZone(ZoneId.of(timeZone));
+
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	        dto.setUploadedAt(uploadedAtZoned.format(formatter));
+	    } else {
+	        dto.setUploadedAt(null);
+	    }
+
+	    return dto;
 	}
+
+
 	
 	public ResponseEntity<String> zoyAdminConfigGetRentalAgreementDocuments() {
 		ResponseBody response = new ResponseBody();
