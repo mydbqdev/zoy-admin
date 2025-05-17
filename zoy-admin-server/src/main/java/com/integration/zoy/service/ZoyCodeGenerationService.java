@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.PgOwnerMasterModel;
 
@@ -22,16 +23,50 @@ public class ZoyCodeGenerationService {
             while (hashtext.length() < 32) {
                 hashtext = "0" + hashtext; 
             }
-            return "ZOY" 
-            + model.getPropertyStateShortName()
-            + generateShortNameFromConsonants(model.getPropertyCity())
-            + generateShortNameFromConsonants(model.getPropertyLocality())
-            + (hashtext.substring(0, 4).toUpperCase());
+            StringBuffer buffer=new StringBuffer();
+            buffer.append("ZOY");
+            buffer.append(model.getPropertyStateShortName().toUpperCase());
+            if(ZoyConstant.CITIES.get(model.getPropertyCity())!=null) {
+            	buffer.append(ZoyConstant.CITIES.get(model.getPropertyCity()));
+            } else {
+            	buffer.append(getShortCode(model.getPropertyCity()));
+            }
+            buffer.append(getShortCode(model.getPropertyLocality()));
+            buffer.append(hashtext.substring(0, 5).toUpperCase());
+            return buffer.toString(); 
+            
         } catch (NoSuchAlgorithmException e) {
             new ZoyAdminApplicationException(e, "");
         }
 		return null;
     }
+	
+	public static String getShortCode(String location) {
+		String cleaned = location.replaceAll("[^a-zA-Z ]", "").trim();
+		String[] words = cleaned.split("\\s+");
+		StringBuilder sb = new StringBuilder();
+		if (words.length == 1) {
+			String word = words[0].toUpperCase();
+			if (word.length() >= 3) 
+				return word.substring(0, 3).toUpperCase();
+			sb.append(word);
+		} else {
+			for (String word : words) {
+				if (!word.isEmpty()) {
+					sb.append(Character.toUpperCase(word.charAt(0)));
+				}
+			}
+		}
+		while (sb.length() < 3) {
+			sb.append('X'); 
+		}
+		if (sb.length() > 3) {
+			return sb.substring(0, 3).toUpperCase();
+		}
+		return sb.toString().toUpperCase();
+	}
+
+	
 	
 	public static String generateShortNameFromConsonants(String cityName) {
         if (cityName == null || cityName.isEmpty()) {
