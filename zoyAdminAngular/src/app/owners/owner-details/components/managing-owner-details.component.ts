@@ -194,6 +194,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  
 	  selectProperty(){
 		this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_id == this.property_id);
+		this.zoyShare=this.propertyInfo.zoy_share ;
 		this.property_status = this.propertyInfo.status ;
 		if(this.propertyInfo.floor_information.length>0){
 
@@ -244,7 +245,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				this.showRooms();
 			}
 		} 
-		this.zoyShare = JSON.parse(JSON.stringify( this.pgOwnerData?.profile?.zoy_share? Number(this.pgOwnerData.profile.zoy_share):0));
+		this.zoyShare = JSON.parse(JSON.stringify( this.pgOwnerData?.pg_owner_property_information[0]?.zoy_share? Number(this.pgOwnerData.pg_owner_property_information[0].zoy_share):0));
 		
 		this.spinner.hide();
 		}, error => {
@@ -626,7 +627,8 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	zoyShareDisabled :boolean;
 	zoyShareReset(): void {
 		this.zoyShareDisabled = false;
-		this.zoyShare =JSON.parse(JSON.stringify( this.pgOwnerData.profile.zoy_share));
+		this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_id == this.property_id);
+		this.zoyShare =JSON.parse(JSON.stringify(this.propertyInfo.zoy_share));
 		}
 
 	zoyShareSubmit(): void {
@@ -640,8 +642,9 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-					this.zoyOwnerService.updateZoyShare(this.pgOwnerData.profile.owner_i_d,this.zoyShare).subscribe(res => {
-					this.pgOwnerData.profile.zoy_share = JSON.parse(JSON.stringify(this.zoyShare));
+					this.zoyOwnerService.updateZoyShare( this.property_id,this.zoyShare).subscribe(res => {
+					this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_id == this.property_id);	
+					this.propertyInfo.zoy_share = JSON.parse(JSON.stringify(this.zoyShare));
 					this.zoyShareDisabled = false;
 					this.spinner.hide();
 					}, error => {

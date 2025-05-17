@@ -16,6 +16,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GenerateZoyCodeService } from '../../service/zoy-code.service';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
+import { GoogleAPIService } from 'src/app/setting/organization-info-config/services/google.api.service';
 
 @Component({
   selector: 'app-zoy-code',
@@ -50,7 +51,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	private _liveAnnouncer = inject(LiveAnnouncer);
 	constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
-		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
+		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private googleAPIService:GoogleAPIService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
 		//this.defHomeMenu=defMenuEnable;
@@ -106,6 +107,11 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			firstName: ['', [Validators.required]],
 			lastName: ['', [Validators.required]],
 		    contactNumber: ['', [Validators.required],],
+			pgName: ['', [Validators.required],],
+			pincode: ['', [Validators.required],],
+			state: [''],
+			city: [''],
+			areaAddress: ['', [Validators.required],],
 			userEmail: ['', [
 			  Validators.required,
 			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
@@ -358,4 +364,87 @@ percentageOnlyWithZero(event): boolean {
 
 	return true;
   }
+
+  
+  onPincodeChange(event: any) {
+        const pincode = event.target.value;
+        if (pincode && pincode.length === 6) {
+          this. getCityAndState(pincode);
+        } else {
+          this.generateZCode.property_city = '';
+          this.generateZCode.property_state = '';
+		  this.generateZCode.property_state_short_name = '';
+		  this.generateZCode.property_locality ='';
+		  this.generateZCode.property_house_area=''
+		  this.generateZCode.property_location_latitude='';
+		  this.generateZCode.property_location_longitude='';
+        }
+      }
+	  zoycodeDisableField:boolean=true;
+	  areaList:string[];
+	  areaTypeOption:boolean=true;
+      getCityAndState(pincode){
+		this.spinner.show();
+        this.googleAPIService.getArea(pincode).then(result => {
+		console.info("Component :"+result.data);
+			const res=result.data;
+        if (res.results && res.results?.length > 0 ) {
+          const addressComponents = res.results[0].address_components;
+          this.generateZCode.property_city = this.generateZoyCodeService.extractCity(addressComponents);
+          this.generateZCode.property_state = this.generateZoyCodeService.extractState(addressComponents);
+		  this.generateZCode.property_state_short_name=this.generateZoyCodeService.extractStateShortName(addressComponents);
+		  this.generateZCode.property_house_area=res.results[0].formatted_address;
+		  this.generateZCode.property_location_latitude=res.results[0].geometry.location.lat;
+		  this.generateZCode.property_location_longitude=res.results[0].geometry.location.lng;
+		   if(res.results[0].postcode_localities!=undefined && res.results[0]?.postcode_localities){
+		   this.areaList=Object.assign([],res.results[0].postcode_localities);
+		   this.generateZCode.property_locality ="";
+		   this.areaTypeOption=true;
+		   }else{
+			 this.generateZCode.property_locality = this.generateZoyCodeService.extractArea(addressComponents);
+			 this.areaList=Object.assign([]);
+			 this.areaTypeOption=false;
+		   }
+        } else {
+          this.generateZCode.property_city = '';
+          this.generateZCode.property_state = '';
+		  this.generateZCode.property_state_short_name = '';
+		  this.generateZCode.property_locality ='';
+		  this.generateZCode.property_house_area=''
+		  this.generateZCode.property_location_latitude='';
+		  this.generateZCode.property_location_longitude='';
+        }  
+		this.spinner.hide();    
+        }, error => {
+          this.spinner.hide();
+          if(error.status == 0) {
+          this.notifyService.showError("Internal Server Error/Connection not established", "")
+          }else if(error.status==401){
+          console.error("Unauthorised");
+        }else if(error.status==403){
+            this.router.navigate(['/forbidden']);
+          }else if (error.error && error.error.message) {
+            this.errorMsg = error.error.message;
+            console.log("Error:" + this.errorMsg);
+            this.notifyService.showError(this.errorMsg, "");
+          } else {
+            if (error.status == 500 && error.statusText == "Internal Server Error") {
+              this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+            } else {
+              let str;
+              if (error.status == 400) {
+                str = error.error.error;
+              } else {
+                str = error.error.message;
+                str = str.substring(str.indexOf(":") + 1);
+              }
+              console.log("Error:" ,str);
+              this.errorMsg = str;
+            }
+            if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+          }
+        }
+      );
+
+      }
 }

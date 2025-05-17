@@ -1218,6 +1218,179 @@ public class ZoyEmailService {
 	    }
 	}
 
+	public void sendExistingOwnerZoyCode(String owneremail, String firstName, String lastName, String zoyCode,String pgName) {
+		Email email = new Email();
+		email.setFrom(zoyAdminMail);
+		List<String> to = new ArrayList<>();
+		to.add(owneremail);
+		email.setTo(to);
+		email.setSubject("Welcome to ZOY! Unlock Your Journey With Zoy Today!");
+		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
+				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we've made it quick and simple for you!</p>"
+				+ "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
+				+ "<p>Please use this code to complete your "+pgName+" property registration in the app.</p>"
+				+ "<h4><strong>Steps to Add Property:</strong></h4>" + "<ul>" 
+				+ "<li>Open the app with existing credentials.</li>"
+				+ "<li>Go to profile and click on add property.</li>"
+				+ "<li>Enter your invitation code provided above.</li>"
+				+ "<li>Start filling the new property details.</li>"
+				+ "<li>Start exploring amazing functions tailored just for you!</li>" + "</ul>"
+				+ "<p>This verification ensures you a secure experience.</p>"
+				+ "<p>If you have any questions or need assistance, feel free to reach out to our support team at <a href='mailto:"
+				+ zoySupportMail + "'>" + zoySupportMail + "</a>.</p>"
+				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>" + "<p>Best regards,</p>"
+				+ "<p>ZOY Administrator</p>";
+
+		email.setBody(message);
+		email.setContent("text/html");
+		try {
+			emailService.sendEmail(email, null);
+		} catch (Exception e) {
+			log.error("Error occurred while sending the registration email to " + owneremail + ": " + e.getMessage(),
+					e);
+		}
+	
+		
+	}
+	
+	public String sendAuditNotificationsForShortTerm(ZoyShortTermDetails previousShortTerm,
+			ZoyShortTermDetails newShortTerm, String status) {
+		try {
+			StringBuilder oldRules = new StringBuilder();
+			StringBuilder newRules = new StringBuilder();
+
+			if (previousShortTerm != null && previousShortTerm.getZoyShortTermDtoInfo() != null) {
+				List<ZoyShortTermDto> dtos = previousShortTerm.getZoyShortTermDtoInfo();
+				List<ZoyShortTermDto> validDtos = new ArrayList<>();
+
+				for (ZoyShortTermDto dto : dtos) {
+					if (!Boolean.TRUE.equals(dto.getDelete())) {
+						validDtos.add(dto);
+					}
+				}
+
+				for (int i = 0; i < validDtos.size(); i++) {
+					ZoyShortTermDto oldDto = validDtos.get(i);
+					oldRules.append(oldDto.getStartDay()).append("-").append(oldDto.getEndDay())
+							.append(" days Daily rent as ").append(oldDto.getPercentage()).append("% of monthly rent");
+
+					if (i < validDtos.size() - 1) {
+						oldRules.append(", ");
+					} else {
+						oldRules.append(".");
+					}
+				}
+			}
+
+			if (newShortTerm != null && newShortTerm.getZoyShortTermDtoInfo() != null) {
+				List<ZoyShortTermDto> dtos = newShortTerm.getZoyShortTermDtoInfo();
+				List<ZoyShortTermDto> validDtos = new ArrayList<>();
+
+				for (ZoyShortTermDto dto : dtos) {
+					if (!Boolean.TRUE.equals(dto.getDelete())) {
+						validDtos.add(dto);
+					}
+				}
+
+				for (int i = 0; i < validDtos.size(); i++) {
+					ZoyShortTermDto newDto = validDtos.get(i);
+					newRules.append(newDto.getStartDay()).append("-").append(newDto.getEndDay())
+							.append(" days Daily rent as ").append(newDto.getPercentage()).append("% of monthly rent");
+
+					if (i < validDtos.size() - 1) {
+						newRules.append(", ");
+					} else {
+						newRules.append(".");
+					}
+				}
+			}
+
+			StringBuilder message = new StringBuilder("has ").append(status).append(" Short term duration period.");
+
+			boolean oldExists = oldRules.length() > 0;
+			boolean newExists = newRules.length() > 0;
+
+			if (oldExists || newExists) {
+				message.append("\nOld Rule: ").append(oldExists ? oldRules : "None");
+				message.append("\nNew Rule: ").append(newExists ? newRules : "None");
+			} else {
+				message.append(" No changes were made.");
+			}
+
+			return message.toString();
+
+		} catch (Exception e) {
+			log.error("Failed to generate short term duration message: {}", e.getMessage(), e);
+			return "Error generating short term duration update message.";
+		}
+	}
+
+	public String sendCancellationRefundPolicyChange(ZoyBeforeCheckInCancellationModel zoyPreviousData,
+			ZoyBeforeCheckInCancellationModel zoyUpdatedData, String status) {
+		try {
+			Map<String, String> comparisonMap = new HashMap<>();
+			comparisonMap.put(">=", "on or after");
+			comparisonMap.put(">", "after");
+			comparisonMap.put("<=", "on or before");
+			comparisonMap.put("<", "before");
+			comparisonMap.put("==", "equal to");
+
+			StringBuilder oldRules = new StringBuilder();
+			StringBuilder newRules = new StringBuilder();
+
+			if (zoyPreviousData != null && zoyPreviousData.getZoyBeforeCheckInCancellationInfo() != null) {
+				List<ZoyBeforeCheckInCancellation> cancellations = zoyPreviousData
+						.getZoyBeforeCheckInCancellationInfo();
+				int size = cancellations.size();
+				for (int i = 0; i < size; i++) {
+					ZoyBeforeCheckInCancellation prev = cancellations.get(i);
+					oldRules.append(getConditionDescriptionforcancel(prev, comparisonMap)).append(" - ")
+							.append(prev.getDeductionPercentage()).append("% of total paid");
+
+					if (i < size - 1) {
+						oldRules.append(", ");
+					} else {
+						oldRules.append(".");
+					}
+				}
+			}
+
+			if (zoyUpdatedData != null && zoyUpdatedData.getZoyBeforeCheckInCancellationInfo() != null) {
+				List<ZoyBeforeCheckInCancellation> updates = zoyUpdatedData.getZoyBeforeCheckInCancellationInfo();
+				int size = updates.size();
+				for (int i = 0; i < size; i++) {
+					ZoyBeforeCheckInCancellation updated = updates.get(i);
+					newRules.append(getConditionDescriptionforcancel(updated, comparisonMap)).append(" - ")
+							.append(updated.getDeductionPercentage()).append("% of total paid");
+
+					if (i < size - 1) {
+						newRules.append(", ");
+					} else {
+						newRules.append(".");
+					}
+				}
+			}
+
+			StringBuilder message = new StringBuilder("ZOY Admin has ").append(status)
+					.append(" Cancellation and Refund Policy.");
+
+			boolean oldExists = oldRules.length() > 0;
+			boolean newExists = newRules.length() > 0;
+
+			if (oldExists || newExists) {
+				message.append("\nOld Policy: ").append(oldExists ? oldRules : "None");
+				message.append("\nNew Policy: ").append(newExists ? newRules : "None");
+			} else {
+				message.append(" No changes were made.");
+			}
+
+			return message.toString();
+
+		} catch (Exception e) {
+			log.error("Failed to generate cancellation/refund policy change message: {}", e.getMessage(), e);
+			return "Error generating cancellation/refund policy update message.";
+		}
+	}
 	
 	
 }

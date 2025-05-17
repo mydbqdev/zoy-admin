@@ -57,10 +57,10 @@
                     <div class="ml-2" style="width: 340px;" >
                            <label for="category" *ngIf="reportName != 'Upcoming Tenants Report'" >Date Range</label>
                             <div class="d-flex gap-2" *ngIf="reportName != 'Upcoming Tenants Report'">
-                              <input type="datetime-local" class="form-control form-control-sm" style="width: 160px;font-size: 12px; " id="fromDate" [(ngModel)]="fromDate" 
+                              <input type="date" class="form-control form-control-sm" style="width: 160px;font-size: 12px; " id="fromDate" [(ngModel)]="fromDate" 
                                     [ngClass]="{'is-invalid': (!fromDate ||(fromDate>toDate && toDate))}" 
                                     [title]="!fromDate? 'From Date is required':((fromDate>toDate && toDate)?'Invalid date range':'') " /> - 
-                              <input type="datetime-local" class="form-control form-control-sm" style="width: 160px; font-size: 12px;" id="toDate"  [(ngModel)]="toDate" 
+                              <input type="date" class="form-control form-control-sm" style="width: 160px; font-size: 12px;" id="toDate"  [(ngModel)]="toDate" 
                                     [ngClass]="{'is-invalid': (!toDate ||(fromDate>toDate && fromDate ))}"  
                                     [title]="!toDate? 'To Date is required':((fromDate>toDate && fromDate)?'Invalid date range':'') "/>
                             </div>

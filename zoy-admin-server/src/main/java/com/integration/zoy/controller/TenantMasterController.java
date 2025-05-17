@@ -144,7 +144,7 @@ public class TenantMasterController implements TenantMasterImpl{
 	        profile.setPermanentAddress(details[15] != null ? details[15] : "");
 	        profile.setNationality(details[16] != null ? details[16] : "");
 	        profile.setMotherTongue(details[17] != null ? details[17] : "");
-	        String customerImagePath = details[18].toString();
+	        String customerImagePath = details[18];
 			String customerImageUrl="";
 			if (customerImagePath != null && !customerImagePath.isEmpty()) {
 				String folderName = customerImagePath.split("/")[0];

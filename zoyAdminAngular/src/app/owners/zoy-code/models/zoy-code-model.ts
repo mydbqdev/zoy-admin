@@ -11,4 +11,13 @@ export class ZoyData {
     contactNumber: string;
     userEmail: string;
     zoyShare :string;
+    public property_city:string="";
+    public property_state:string="";
+    public property_state_short_name:string="";
+    public property_name:string;
+    public property_pincode:number;
+    public property_locality:string="";
+    public property_house_area:string="";
+    public property_location_latitude:string="";
+    public property_location_longitude:string="";
   }
