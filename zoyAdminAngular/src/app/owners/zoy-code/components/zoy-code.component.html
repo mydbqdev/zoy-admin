@@ -53,7 +53,7 @@
                 <div class="container" *ngIf="selectedModel == 'generate'">
                   <form [formGroup]="form" (ngSubmit)="generateZoyCode()" autocomplete="off">
                   <div class="row justify-content-center mt-3">
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-2">
                       <label for="firstName">First Name</label>
                       <input type="text" [(ngModel)]="generateZCode.firstName"
                         onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
@@ -66,7 +66,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-2">
                       <label for="lastName">Last Name</label>
                       <input type="text" [(ngModel)]="generateZCode.lastName"
                         onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
@@ -112,7 +112,38 @@
                     </div>
                   </div>
                   <div class="row justify-content-center">
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-2">
+                      <label for="email">PG Name</label>
+                      <input type="text" id="pgName" [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="100" placeholder="Enter PG Name"  [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">   
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                      <label for="phone">Pin Code</label>
+                      <input type="text"  maxlength="6" id="pincode" [(ngModel)]="generateZCode.property_pincode" formControlName="pincode"  placeholder="Enter Pin Code" (blur)="onPincodeChange($event)" class="form-control"  [ngClass]="{'is-invalid':submitted && (form.controls.pincode.errors)}">
+                    </div>
+                  </div>
+                  <div class="row justify-content-center">
+                    <div class="col-md-4 mb-2">
+                      <label for="email">State</label>
+                      <input type="text" id="userEmail" placeholder="State" [(ngModel)]="generateZCode.property_state" formControlName="state" class="form-control" maxlength="100" readonly>   
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                      <label for="phone">City</label>
+                      <input type="text"  maxlength="100" placeholder="City" id="city" [(ngModel)]="generateZCode.property_city" formControlName="city" class="form-control" readonly>
+                    </div>
+                  </div>
+
+                  <div class="row justify-content-center">
+                    <div class="col-md-4 mb-2">
+                      <label for="phone">Area</label>
+                      <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZCode.property_locality" formControlName="areaAddress" placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
+                      <select id="area-dropdown" class="form-select form-select-sm" formControlName="areaAddress" [(ngModel)]="generateZCode.property_locality" *ngIf="areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
+                        <option></option>
+                        <option *ngFor="let cond of areaList">{{cond}}</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4 mb-2">
                       <label for="zoyShare">ZOY Revenue</label>
                       <div class="input-group">
                       <input type="text" formControlName="zoyShare" id="zoyShare" class="form-control" placeholder="Enter Zoy Revenue" [(ngModel)]="generateZCode.zoyShare"
@@ -128,9 +159,6 @@
                           ZOY Revenue is invalid.
                         </div>
                       </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-
                     </div>
                   </div>
                   <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;" *ngIf="rolesArray.includes('ZOYCODES_WRITE')">

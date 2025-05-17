@@ -69,7 +69,7 @@ import { MessageService } from 'src/app/message.service';
         );
       }
       public updateZoyShare(ownerid:any,newZoyShare:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/updateZoyShare?ownerid="+ownerid+"&newZoyShare="+newZoyShare;
+        const url1=this.basePath +"zoy_admin/updateZoyShare?propertyId="+ownerid+"&newZoyShare="+newZoyShare;
           return  this.httpclient.put<any>(
               url1,
               '',
