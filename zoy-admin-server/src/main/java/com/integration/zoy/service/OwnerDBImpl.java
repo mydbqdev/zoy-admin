@@ -184,4 +184,5 @@ public interface OwnerDBImpl {
 	ZoyPgFloorNameMaster updateFloorName(ZoyPgFloorNameMaster floorNameMasters)throws WebServiceException;
 	List<SupportUsres> getAllSupportUserNames()throws WebServiceException;
 	List<String> getLeadFollowUpHistory(String inquiryNumber)throws WebServiceException;
+	ZoyPgNoRentalAgreement findNoRentAgreementDuration();
 }
