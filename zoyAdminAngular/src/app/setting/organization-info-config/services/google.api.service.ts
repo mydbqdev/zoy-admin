@@ -20,6 +20,7 @@ import { ServiceHelper } from "src/app/common/shared/service-helper";
             'Content-Type':'application/json',
             'Access-Control-Allow-Origin': '*',
             'Authorization':this.API_KEY,
+            "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
             'Access-Control-Allow-Methods':'DELETE, POST, GET, OPTIONS'
         });
     constructor(private httpclient:HttpClient, private messageService:MessageService,@Inject(BASE_PATH_EXTERNAL_SERVER) private basePathExternalServer: string){
@@ -32,7 +33,8 @@ import { ServiceHelper } from "src/app/common/shared/service-helper";
 
       public getArea(pincode: string): Observable<any> {
         const url ='https://maps.googleapis.com/maps/api/geocode/json?address='+pincode+'&key='+this.API_KEY;
-        return this.httpclient.get<any>(url,{headers:this.headers});
+        return this.httpclient.get<any>(url,{headers:this.headers, observe : 'body',
+                 withCredentials:true});
       }
       private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");    
