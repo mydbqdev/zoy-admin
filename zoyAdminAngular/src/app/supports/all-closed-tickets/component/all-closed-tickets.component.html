@@ -298,6 +298,7 @@
           <div class="d-flex">
           <div>Histoty Information</div>
             <div class="ml-auto">
+              <button class="btn btn-primary-custom" *ngIf="supportTicketDetails?.type=='LEAD_GEN' && rolesArray.includes('ALL_TICKETS_WRITE') && (supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Resolved')" disabled>Generate Zoycode</button>&nbsp;
               <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Status Update</button>
             </div> 
           </div>  

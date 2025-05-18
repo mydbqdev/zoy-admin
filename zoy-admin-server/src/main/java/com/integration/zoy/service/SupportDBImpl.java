@@ -7,5 +7,5 @@ import com.integration.zoy.utils.PaginationRequest;
 
 public interface SupportDBImpl {
 
-	CommonResponseDTO<SupportTicketDTO> zoySupportTicketList(PaginationRequest paginationRequest, boolean isClose)  throws WebServiceException;
+	CommonResponseDTO<SupportTicketDTO> zoySupportTicketList(PaginationRequest paginationRequest, boolean isClose,boolean isFinanceUser)  throws WebServiceException;
 }
