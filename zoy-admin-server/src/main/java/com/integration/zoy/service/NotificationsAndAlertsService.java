@@ -53,7 +53,7 @@ public class NotificationsAndAlertsService {
     public void masterConfigurationRuleRejection(String rejectionDoneBy,String ruleName) throws Exception {
         List<String> screens = Arrays.asList("CONFIGURATION_MASTER", "CONFIGURATION_MASTER_APPROVAL");
         String[] emails = notificationsAndAlertsRepository.findUsersWithScreenAccess(screens);
-        notificationService.notifyForRuleApprove(emails, rejectionDoneBy,ruleName);
+        notificationService.notifyForRuleReject(emails, rejectionDoneBy,ruleName);
     }
     
     public void masterConfigurationRuleRejection(String ruleName) throws Exception {
