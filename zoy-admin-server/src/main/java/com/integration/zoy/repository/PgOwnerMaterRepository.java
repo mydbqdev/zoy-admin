@@ -449,7 +449,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	List<Object[]> getExistingPgOwnerDetails(String emailMobile);
 
 	@Query(value = "SELECT distinct pom.zoy_code, pom.first_name || ' ' || pom.last_name AS owner_name,up.email_id,  "
-			+ "up.mobile_no AS contact,  pom.created_at,'pending' AS status,  pom.zoy_share, pom.register_id "
+			+ "up.mobile_no AS contact,  pom.created_at,'pending' AS status,  pom.zoy_share, pom.register_id,pom.property_name "
 			+ "FROM pgadmin.pg_owner_master pom   "
 			+ "JOIN pgcommon.user_profile up ON up.email_id = pom.email_id AND up.zoy_code != pom.zoy_code   "
 			+ "JOIN pgowners.zoy_pg_property_details zppd ON zppd.zoy_code != pom.zoy_code   "

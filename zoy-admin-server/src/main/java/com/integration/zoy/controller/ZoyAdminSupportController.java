@@ -303,7 +303,15 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	public ResponseEntity<String> zoyOpenSupportTicketList(PaginationRequest paginationRequest) {
 		ResponseBody response = new ResponseBody();
 		try {
-			CommonResponseDTO<SupportTicketDTO> ticketList = supportDBImpl.zoySupportTicketList(paginationRequest,false);
+			
+			boolean isFinanceUser=false;
+			Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
+			if(user.isPresent()) {
+				if(user.get().getDesignation().equals("Finance Admin")) {
+					isFinanceUser=true;
+				}
+			}
+			CommonResponseDTO<SupportTicketDTO> ticketList = supportDBImpl.zoySupportTicketList(paginationRequest,false,isFinanceUser);
 			return new ResponseEntity<>(gson2.toJson(ticketList), HttpStatus.OK);
 		}catch (DataAccessException dae) {
 			log.error("Database error occurred while fetching ticket list: " + dae.getMessage(), dae);
@@ -323,7 +331,14 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	public ResponseEntity<String> zoyCloseSupportTicketList(PaginationRequest paginationRequest) {
 		ResponseBody response = new ResponseBody();
 		try {
-			CommonResponseDTO<SupportTicketDTO> ticketList = supportDBImpl.zoySupportTicketList(paginationRequest,true);
+			boolean isFinanceUser=false;
+			Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
+			if(user.isPresent()) {
+				if(user.get().getDesignation().equals("Finance Admin")) {
+					isFinanceUser=true;
+				}
+			}
+			CommonResponseDTO<SupportTicketDTO> ticketList = supportDBImpl.zoySupportTicketList(paginationRequest,true,isFinanceUser);
 			return new ResponseEntity<>(gson2.toJson(ticketList), HttpStatus.OK);
 		}catch (DataAccessException dae) {
 			log.error("Database error occurred while fetching ticket list: " + dae.getMessage(), dae);
