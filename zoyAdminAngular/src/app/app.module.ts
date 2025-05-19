@@ -77,7 +77,7 @@ import { AllClosedTicketsComponent } from './supports/all-closed-tickets/compone
 import { AllTicketsComponent } from './supports/all-tickets/component/all-tickets.component';
 import { MyClosedTicketsComponent } from './supports/my-closed-tickets/component/my-closed-tickets.component';
 import { TicketsComponent } from './supports/my-tickets/component/tickets.component';
-
+import axios from 'axios';
 
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}

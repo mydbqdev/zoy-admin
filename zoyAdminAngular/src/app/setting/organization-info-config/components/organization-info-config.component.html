@@ -307,11 +307,11 @@
         </div>
 
         <div class="row mb-2">
-          <label for="pinCode" class="col-sm-5 col-form-label" style="text-align: left;">Pin Code </label>
+          <label for="pinCode" class="col-sm-5 col-form-label" style="text-align: left;">Pin Code</label>
           <div class="col-sm-1"> <span>:</span></div>
           <div class="col-sm-6" style="text-align: justify;">
             <span *ngIf="task === 'View'">{{infoModel.pinCode}}</span>
-            <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Pin Code" (keypress)="numberOnly($event)" 
+            <input type="text" class="form-control form-control-sm" *ngIf="task !== 'View'" placeholder="Enter Pin Code" (keypress)="numberOnly($event)" (blur)="onPincodeChange($event)" 
                    [(ngModel)]="infoModel.pinCode" [ngClass]="{'is-invalid': submittedBranchInfo && (!infoModel?.pinCode || validatePinCode(infoModel?.pinCode))}" maxlength="6" minlength="6">
           </div>
         </div>

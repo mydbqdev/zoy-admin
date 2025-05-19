@@ -13,7 +13,6 @@ export class Profile {
     profile_photo: string;
     status: string;
     reason:string;
-    zoy_share: number;
   }
   
   // PG Owner Basic Information Model
@@ -43,6 +42,7 @@ export class Profile {
     basic_property_information: BasicPropertyInformation;
     pg_owner_additional_info: PgOwnerAdditionalInfo;
     floor_information: FloorInformation[];
+    zoy_share:number;
   }
   
   // Basic Property Information Model
