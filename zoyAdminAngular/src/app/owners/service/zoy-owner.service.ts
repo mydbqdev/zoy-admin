@@ -170,6 +170,32 @@ import { MessageService } from 'src/app/message.service';
         return headers;
       }
 
+      public getExistingPgOwnerData(ownerid:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/getExistingPgOwnerData?ownerId="+ownerid;
+          return  this.httpclient.get<any>(
+              url1,
+              {
+                 headers:ServiceHelper.buildHeaders(),
+                 observe : 'body',
+                 withCredentials:true
+              }
+          );
+      }
+
+      public resendOwnerCode(data:string): Observable<any> {
+        const url1=this.basePath +"zoy_admin/resendExistingPgOwnerData?zoyCode="+data ;
+          return  this.httpclient.post<any>(
+              url1,
+              '',
+              {
+                headers:ServiceHelper.buildHeaders(),
+                observe : 'body',
+                withCredentials:true
+             }
+          );
+     }
+
+
       private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");    
     }

@@ -32,11 +32,18 @@ public class SupportDBService implements SupportDBImpl{
 
 	
 	@Override
-	public CommonResponseDTO<SupportTicketDTO> zoySupportTicketList(PaginationRequest paginationRequest,boolean isClose)  throws WebServiceException {
+	public CommonResponseDTO<SupportTicketDTO> zoySupportTicketList(PaginationRequest paginationRequest,boolean isClose,boolean isFinanceUser)  throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder();
 			if (isClose) {
 				// we will add extra column as closedOn for closed/resolved/cancelled status date
+				if(isFinanceUser) {
+					queryBuilder.append(
+							"select * from (\n"
+							+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
+							+ "from pgowners.zoy_pg_registered_owner_details zprod)tkt WHERE 1=1   \r\n"
+							);
+				}else {
 			queryBuilder.append(
 					"select * from (\n"
 					+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
@@ -47,7 +54,15 @@ public class SupportDBService implements SupportDBImpl{
 					+ "left join pgcommon.pg_user_help_desk_categories cat on cat.categories_id =helpreq.categories_id\n"
 					+ ")tkt WHERE 1=1   \r\n"
 					);
+				}
 			}else {
+				if(isFinanceUser) {
+					queryBuilder.append(
+							"select * from (\n"
+							+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
+							+ "from pgowners.zoy_pg_registered_owner_details zprod )tkt WHERE 1=1  \r\n"
+							);
+				}else {
 				queryBuilder.append(
 						"select * from (\n"
 						+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
@@ -58,6 +73,7 @@ public class SupportDBService implements SupportDBImpl{
 						+ "left join pgcommon.pg_user_help_desk_categories cat on cat.categories_id =helpreq.categories_id\n"
 						+ ")tkt WHERE 1=1  \r\n"
 						);
+				}
 			}
 			Map<String, Object> parameters = new HashMap<>();
 

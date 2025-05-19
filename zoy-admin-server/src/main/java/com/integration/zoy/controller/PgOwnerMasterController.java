@@ -881,7 +881,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				ownerDetails.setStatus(details[5] != null ? (String) details[5] : null);
 				ownerDetails.setZoyShare(details[6] != null ? (BigDecimal) details[6] : null);
 				ownerDetails.setRegisterId(details[7] != null ? (String) details[7] : null);
-				ownerDetails.setPgName(details[8] != null ? (String) details[7] : null);
+				ownerDetails.setPgName(details[8] != null ? (String) details[8] : null);
 				pgOwnerDetailsList.add(ownerDetails);
 			}
 
