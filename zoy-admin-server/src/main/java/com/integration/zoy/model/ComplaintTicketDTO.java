@@ -48,6 +48,15 @@ public class ComplaintTicketDTO {
 	@JsonProperty("type")
 	private String type;
 	
+	@JsonProperty("mobile")
+	private String mobile;
+	
+	@JsonProperty("address")
+	private String address;
+	
+	@JsonProperty("inquiredFor")
+	private String inquiredFor;
+	
 	public String getType() {
 		return type;
 	}
@@ -173,6 +182,30 @@ public class ComplaintTicketDTO {
 
 	public void setUserTicketHistory(List<UserTicketHistoryDTO> userTicketHistory) {
 		this.userTicketHistory = userTicketHistory;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getInquiredFor() {
+		return inquiredFor;
+	}
+
+	public void setInquiredFor(String inquiredFor) {
+		this.inquiredFor = inquiredFor;
 	}
 
 }

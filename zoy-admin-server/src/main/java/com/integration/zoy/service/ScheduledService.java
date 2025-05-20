@@ -76,6 +76,10 @@ public class ScheduledService {
             autoCancellationOfMasterConfi.sendNoRentalAgreementRuleEffective();
             autoCancellationOfMasterConfi.sendTokenAdvanceRuleEffective();
             autoCancellationOfMasterConfi.sendSecurityDepositRuleEffective();
+            autoCancellationOfMasterConfi.sendOtherChargersRuleEffective();
+            autoCancellationOfMasterConfi.sendAfterCheckInDateRuleEffective();
+            autoCancellationOfMasterConfi.sendEarlyCheckOutRuleEffective();
+            autoCancellationOfMasterConfi.sendSecurityDepositDeadlineRuleEffective();
             log.info("Auto cancellation for master configuration executed at: " + dateTime);
         } catch (Exception e) {
             log.error("Error in autoCanceForTokenAdvance(): ", e);
