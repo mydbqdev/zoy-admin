@@ -95,6 +95,7 @@ import com.integration.zoy.model.PropertyRentalDetails;
 import com.integration.zoy.model.RegisterUser;
 import com.integration.zoy.repository.ZoyPgRoomAmenetiesId;
 import com.integration.zoy.utils.CsvTenantDetails;
+import com.integration.zoy.utils.GenerateBulkUploadRentalPdf;
 import com.integration.zoy.utils.GeneratePDFRental;
 import com.integration.zoy.utils.PropertyList;
 import com.integration.zoy.utils.ResponseBody;
@@ -150,7 +151,8 @@ public class UploadService {
 	@Autowired
 	RestTemplate restTemplate;
 
-
+	@Autowired
+	NumberToWordsService numberToWordsService;
 
 	private static final Logger log = LoggerFactory.getLogger(UploadService.class);
 	private static final Gson gson = new GsonBuilder()
@@ -250,7 +252,7 @@ public class UploadService {
 				ZoyPgRoomDetails roomDetails=ownerDBImpl.findRoomName(saveMyBookings.getRoom());
 				zoyEmailService.sendBookingEmail(master.getUserEmail(), saveMyBookings, propertyDetail, zoyPgOwnerDetails,bedName,pgPropertyShareTypes.getShareType(),roomDetails.getRoomName());
 
-				generateSendRentalAgreement(master,zoyPgOwnerDetails,propertyDetail,saveMyBookings);
+				generateSendRentalAgreement(master,propertyDetail,saveMyBookings);
 			}
 
 			response.setStatus(HttpStatus.OK.value());
@@ -591,7 +593,7 @@ public class UploadService {
 		long noOfDays=getDiffofTimestamp(checkInDate,tenantDetails.getOutDate());
 		long noOfRentCalc=getDiffofTimestamp(checkInDate,date.getSecond());
 		long daysInMonth = checkInDate.toLocalDateTime().toLocalDate().lengthOfMonth();
-		bookingDetails.setNoOfDays(String.valueOf(noOfDays));
+		bookingDetails.setNoOfDays(String.valueOf((int)noOfDays));
 		BigDecimal calRent=new BigDecimal((details.getRoomMonthlyRent()/daysInMonth)*noOfRentCalc).setScale(2, RoundingMode.HALF_UP);
 		bookingDetails.setCalFixedRent(calRent);
 		bookingDetails.setOutDate(tenantDetails.getOutDate());
@@ -606,35 +608,36 @@ public class UploadService {
 		bookingDetails.setBookingMode("Offline");
 		bookingDetails.setTenantId(userId);
 		bookingDetails.setDepositPaid(true);
-		bookingDetails.setIsTermsAccepted(true);
+		
 		if(checkTenantAge(tenantDetails.getDateOfBirth())) {
 			if(checkRentalAgreement(noOfDays))
 				bookingDetails.setRentalAgreement(true);
 		}
+
 		zoyPgOwnerBookingDetails.add(bookingDetails);
 	}
-	
+
 	public Boolean checkRentalAgreement(double days) {
 		ZoyPgNoRentalAgreement duration=ownerDBImpl.findNoRentAgreementDuration();
 		if(duration!=null) {
-			if(days > duration.getNoRentalAgreementDays()) 
+			if(days >= duration.getNoRentalAgreementDays()) 
 				return true;
 		}
 		return false;
 	}
 
 	public Boolean checkTenantAge(Timestamp dob) {
-        try {
-            LocalDate birthDate = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            LocalDate currentDate = LocalDate.now();
-            int years = Period.between(birthDate, currentDate).getYears();
-            return years >= 18;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-	
-	
+		try {
+			LocalDate birthDate = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate currentDate = LocalDate.now();
+			int years = Period.between(birthDate, currentDate).getYears();
+			return years >= 18;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+
 	private long getDiffofTimestamp(Timestamp currentDate, Timestamp outDate) {
 		//LocalDateTime startDateTime = currentDate.toLocalDateTime();
 		//LocalDateTime endDateTime = outDate.toLocalDateTime();
@@ -872,94 +875,127 @@ public class UploadService {
 		}
 	}
 
-	public void generateSendRentalAgreement(UserMaster master, ZoyPgOwnerDetails zoyPgOwnerDetails,ZoyPgPropertyDetails propertyDetail, ZoyPgOwnerBookingDetails saveMyBookings) {
+	//	public void generateSendRentalAgreement(UserMaster master, ZoyPgOwnerDetails zoyPgOwnerDetails,ZoyPgPropertyDetails propertyDetail, ZoyPgOwnerBookingDetails saveMyBookings) {
+	//		try {
+	//			UserDetails userDetails=uploadDBImpl.findUserDetails(master.getUserId());
+	//			List<String[]> ids=uploadDBImpl.findFloorRoomBedNameByPropertyName(propertyDetail.getPropertyId(),saveMyBookings.getRoom(),saveMyBookings.getSelectedBed(),saveMyBookings.getLockInPeriod());
+	//			String floorId = "" , floorName="",roomId ="", roomName="",bedId="",bedName="",shareId="",shareName="",rentCycleName="",rentCycleId="";
+	//			if(ids.size()>0) {
+	//				floorId=ids.get(0)[0];
+	//				floorName=ids.get(0)[1];
+	//				roomId=ids.get(0)[2];
+	//				roomName=ids.get(0)[3];
+	//				bedId=ids.get(0)[4];
+	//				bedName=ids.get(0)[5];
+	//				shareId=ids.get(0)[6];
+	//				shareName=ids.get(0)[7];
+	//				rentCycleId=ids.get(0)[8];
+	//				rentCycleName=ids.get(0)[9];
+	//			}
+	//			//			Map<String, Object> data = new HashMap<>();
+	//			//			PropertyRentalDetails details = new PropertyRentalDetails();
+	//			//			details.setPgOwnerId(zoyPgOwnerDetails.getPgOwnerId());
+	//			//			details.setPgName(propertyDetail.getPropertyName());
+	//			//			details.setPgAddress(propertyDetail.getPropertyHouseArea());
+	//			//			details.setPropertyId(propertyDetail.getPropertyId());
+	//			//			details.setShareType(shareName);
+	//			//			details.setCustomerAddress(userDetails.getPersonalPermanentAddress());
+	//			//			List<String> propertyAmenities=ownerDBImpl.findPropertyAmenetiesName(propertyDetail.getPropertyId());
+	//			//			ZoyPgTermsMaster zoyPgTermsMaster=ownerDBImpl.findTermMaster(propertyDetail.getPropertyId());
+	//			//			details.setPropertyAmenities(propertyAmenities);
+	//			//			InputStream inputStreamImg =getClass().getResourceAsStream(zoyLogoPath);
+	//			//			String base64Image = pdfGenerateService.imageToBase64(inputStreamImg);
+	//			//			details.setBase64Images(base64Image);
+	//			//			details.setRoom(roomName);
+	//			//			details.setMoveInDate(saveMyBookings.getInDate());
+	//			//			details.setMoveOutDate(saveMyBookings.getOutDate());
+	//			//			details.setNoOfDays(saveMyBookings.getNoOfDays()!=null?Integer.valueOf(saveMyBookings.getNoOfDays()):0);
+	//			//			details.setBookingId(saveMyBookings.getBookingId());
+	//			//			details.setFloor(floorName);
+	//			//			details.setBed(bedName);
+	//			//			details.setFixedRent(saveMyBookings.getFixedRent().intValue());
+	//			//			details.setSecurityDeposit(saveMyBookings.getSecurityDeposit().intValue());
+	//			//			details.setNoticePeriod(zoyPgTermsMaster.getNoticePeriod()); 
+	//			//			details.setTenantName(saveMyBookings.getName());
+	//			//			details.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+	//			//			details.setManagerName(propertyDetail.getPropertyManagerName());
+	//			//			data.put("data", details);
+	//			//			pdfGenerateService.generateRenatalPdfFile("pdfRental", data, master.getUserId(),saveMyBookings.getBookingId());
+	//			//
+	//			//			//Email
+	//			//			InputStream is = zoyS3Service.downloadRentalAgreement(master.getUserId(), saveMyBookings.getBookingId());
+	//			//			zoyEmailService.sendRentalAgreementToTenant(master,propertyDetail.getPropertyName(),is);
+	//			GeneratePDFRental generatePDFRental=new GeneratePDFRental();
+	//			generatePDFRental.setPgOwnerId(zoyPgOwnerDetails.getPgOwnerId());
+	//			generatePDFRental.setPgName(propertyDetail.getPropertyName());
+	//			generatePDFRental.setPgAddress(propertyDetail.getPropertyHouseArea());
+	//			generatePDFRental.setPropertyId(propertyDetail.getPropertyId());
+	//			generatePDFRental.setShareType(shareName);
+	//			generatePDFRental.setCustomerAddress(userDetails.getPersonalPermanentAddress());
+	//			List<String> propertyAmenities=ownerDBImpl.findPropertyAmenetiesName(propertyDetail.getPropertyId());
+	//			ZoyPgTermsMaster zoyPgTermsMaster=ownerDBImpl.findTermMaster(propertyDetail.getPropertyId());
+	//			generatePDFRental.setPropertyAmenities(propertyAmenities);
+	//			generatePDFRental.setRoom(roomName);
+	//			generatePDFRental.setMoveInDate(saveMyBookings.getInDate());
+	//			generatePDFRental.setMoveOutDate(saveMyBookings.getOutDate());
+	//			generatePDFRental.setNoOfDays(saveMyBookings.getNoOfDays()!=null?Integer.valueOf(saveMyBookings.getNoOfDays()):0);
+	//			generatePDFRental.setBookingId(saveMyBookings.getBookingId());
+	//			generatePDFRental.setFloor(floorName);
+	//			generatePDFRental.setBed(bedName);
+	//			generatePDFRental.setFixedRent(saveMyBookings.getFixedRent().intValue());
+	//			generatePDFRental.setSecurityDeposit(saveMyBookings.getSecurityDeposit().intValue());
+	//			generatePDFRental.setNoticePeriod(Integer.valueOf(zoyPgTermsMaster.getNoticePeriod().split(" ")[0])); 
+	//			generatePDFRental.setTenantName(saveMyBookings.getName());
+	//			generatePDFRental.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+	//			generatePDFRental.setManagerName(propertyDetail.getPropertyManagerName());
+	//
+	//			processRentalPdf(master.getUserId(),master.getUserEmail(), generatePDFRental);
+	//
+	//
+	//		} catch (Exception e) {
+	//			log.error("Error occured while generating pdf rental: " + e.getMessage());
+	//		}
+	//	}
+
+	public void generateSendRentalAgreement(UserMaster master,ZoyPgPropertyDetails propertyDetail, ZoyPgOwnerBookingDetails saveMyBookings) {
 		try {
-			UserDetails userDetails=uploadDBImpl.findUserDetails(master.getUserId());
-			List<String[]> ids=uploadDBImpl.findFloorRoomBedNameByPropertyName(propertyDetail.getPropertyId(),saveMyBookings.getRoom(),saveMyBookings.getSelectedBed(),saveMyBookings.getLockInPeriod());
-			String floorId = "" , floorName="",roomId ="", roomName="",bedId="",bedName="",shareId="",shareName="",rentCycleName="",rentCycleId="";
-			if(ids.size()>0) {
-				floorId=ids.get(0)[0];
-				floorName=ids.get(0)[1];
-				roomId=ids.get(0)[2];
-				roomName=ids.get(0)[3];
-				bedId=ids.get(0)[4];
-				bedName=ids.get(0)[5];
-				shareId=ids.get(0)[6];
-				shareName=ids.get(0)[7];
-				rentCycleId=ids.get(0)[8];
-				rentCycleName=ids.get(0)[9];
-			}
-			//			Map<String, Object> data = new HashMap<>();
-			//			PropertyRentalDetails details = new PropertyRentalDetails();
-			//			details.setPgOwnerId(zoyPgOwnerDetails.getPgOwnerId());
-			//			details.setPgName(propertyDetail.getPropertyName());
-			//			details.setPgAddress(propertyDetail.getPropertyHouseArea());
-			//			details.setPropertyId(propertyDetail.getPropertyId());
-			//			details.setShareType(shareName);
-			//			details.setCustomerAddress(userDetails.getPersonalPermanentAddress());
-			//			List<String> propertyAmenities=ownerDBImpl.findPropertyAmenetiesName(propertyDetail.getPropertyId());
-			//			ZoyPgTermsMaster zoyPgTermsMaster=ownerDBImpl.findTermMaster(propertyDetail.getPropertyId());
-			//			details.setPropertyAmenities(propertyAmenities);
-			//			InputStream inputStreamImg =getClass().getResourceAsStream(zoyLogoPath);
-			//			String base64Image = pdfGenerateService.imageToBase64(inputStreamImg);
-			//			details.setBase64Images(base64Image);
-			//			details.setRoom(roomName);
-			//			details.setMoveInDate(saveMyBookings.getInDate());
-			//			details.setMoveOutDate(saveMyBookings.getOutDate());
-			//			details.setNoOfDays(saveMyBookings.getNoOfDays()!=null?Integer.valueOf(saveMyBookings.getNoOfDays()):0);
-			//			details.setBookingId(saveMyBookings.getBookingId());
-			//			details.setFloor(floorName);
-			//			details.setBed(bedName);
-			//			details.setFixedRent(saveMyBookings.getFixedRent().intValue());
-			//			details.setSecurityDeposit(saveMyBookings.getSecurityDeposit().intValue());
-			//			details.setNoticePeriod(zoyPgTermsMaster.getNoticePeriod()); 
-			//			details.setTenantName(saveMyBookings.getName());
-			//			details.setTimeStamp(new Timestamp(System.currentTimeMillis()));
-			//			details.setManagerName(propertyDetail.getPropertyManagerName());
-			//			data.put("data", details);
-			//			pdfGenerateService.generateRenatalPdfFile("pdfRental", data, master.getUserId(),saveMyBookings.getBookingId());
-			//
-			//			//Email
-			//			InputStream is = zoyS3Service.downloadRentalAgreement(master.getUserId(), saveMyBookings.getBookingId());
-			//			zoyEmailService.sendRentalAgreementToTenant(master,propertyDetail.getPropertyName(),is);
-			GeneratePDFRental generatePDFRental=new GeneratePDFRental();
-			generatePDFRental.setPgOwnerId(zoyPgOwnerDetails.getPgOwnerId());
-			generatePDFRental.setPgName(propertyDetail.getPropertyName());
-			generatePDFRental.setPgAddress(propertyDetail.getPropertyHouseArea());
-			generatePDFRental.setPropertyId(propertyDetail.getPropertyId());
-			generatePDFRental.setShareType(shareName);
-			generatePDFRental.setCustomerAddress(userDetails.getPersonalPermanentAddress());
-			List<String> propertyAmenities=ownerDBImpl.findPropertyAmenetiesName(propertyDetail.getPropertyId());
-			ZoyPgTermsMaster zoyPgTermsMaster=ownerDBImpl.findTermMaster(propertyDetail.getPropertyId());
-			generatePDFRental.setPropertyAmenities(propertyAmenities);
-			generatePDFRental.setRoom(roomName);
-			generatePDFRental.setMoveInDate(saveMyBookings.getInDate());
-			generatePDFRental.setMoveOutDate(saveMyBookings.getOutDate());
-			generatePDFRental.setNoOfDays(saveMyBookings.getNoOfDays()!=null?Integer.valueOf(saveMyBookings.getNoOfDays()):0);
-			generatePDFRental.setBookingId(saveMyBookings.getBookingId());
-			generatePDFRental.setFloor(floorName);
-			generatePDFRental.setBed(bedName);
-			generatePDFRental.setFixedRent(saveMyBookings.getFixedRent().intValue());
-			generatePDFRental.setSecurityDeposit(saveMyBookings.getSecurityDeposit().intValue());
-			generatePDFRental.setNoticePeriod(Integer.valueOf(zoyPgTermsMaster.getNoticePeriod().split(" ")[0])); 
-			generatePDFRental.setTenantName(saveMyBookings.getName());
-			generatePDFRental.setTimeStamp(new Timestamp(System.currentTimeMillis()));
-			generatePDFRental.setManagerName(propertyDetail.getPropertyManagerName());
+			List<String[]> data=ownerDBImpl.getRentalAgreementDetails(saveMyBookings.getBookingId());
+			GenerateBulkUploadRentalPdf pdf = new GenerateBulkUploadRentalPdf();
+			pdf.setTenantName(data.get(0)[0].toString());
+			pdf.setTenantAddress(data.get(0)[1].toString());
+			pdf.setOwnerName(data.get(0)[2].toString());
+			pdf.setOwnerPhNo(data.get(0)[3].toString());
+			pdf.setOwnerAddress(data.get(0)[4].toString());
+			pdf.setPgAddress(data.get(0)[4].toString());
+			pdf.setPgCity(data.get(0)[5].toString());
+			pdf.setShareName(data.get(0)[6].toString());
+			pdf.setFloorName(data.get(0)[7].toString());
+			pdf.setRoomName(data.get(0)[8].toString());
+			pdf.setSecurityWord(numberToWordsService.numberToWords(Double.valueOf(data.get(0)[9].toString())));
+			pdf.setRentWord(numberToWordsService.numberToWords(Double.valueOf(data.get(0)[10].toString())));
+			pdf.setInDate(data.get(0)[11].toString());
+			pdf.setOutDate(data.get(0)[12].toString());
+			pdf.setModeOfPayment(data.get(0)[13] != null ? data.get(0)[13].toString() : "Cash");
+			pdf.setRentCycle(data.get(0)[14].toString());
+			pdf.setNoOfDays(data.get(0)[15].toString());
+			pdf.setOfficeAddress(data.get(0)[16].toString());
+			pdf.setPgName(propertyDetail.getPropertyName());         
+			pdf.setIsRental(saveMyBookings.getRentalAgreement());               
+			pdf.setBookingId(saveMyBookings.getBookingId());             
 
-			processRentalPdf(master.getUserId(),master.getUserEmail(), generatePDFRental);
-
-
+			processRentalPdf(master.getUserId(),master.getUserEmail(), pdf);
 		} catch (Exception e) {
-			log.error("Error occured while generating pdf rental: " + e.getMessage());
+			log.error("Error generating renatla pdf " + e);
 		}
 	}
-	public void processRentalPdf(String userId,String userEmail,GeneratePDFRental generatePDFRental) {
+
+	public void processRentalPdf(String userId,String userEmail,GenerateBulkUploadRentalPdf generatePDFRental) {
 		try {
 			String url = zoyServerCustomerUrl + userId +"/"+userEmail+"/generatePdfRental";
 			HttpHeaders headers = new HttpHeaders();
 			setZoyServerHeader(headers);
 			headers.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<GeneratePDFRental> entityReq = new HttpEntity<>(generatePDFRental, headers);
+			HttpEntity<GenerateBulkUploadRentalPdf> entityReq = new HttpEntity<>(generatePDFRental, headers);
 			ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.POST, entityReq, String.class);
 			log.info(resp.getBody());
 		} catch (Exception e) {
