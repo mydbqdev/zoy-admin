@@ -440,7 +440,129 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 			+ ") adas",
 	        nativeQuery = true)
 	List<String[]> findSecurityDepositDetailsByDate(@Param("currentDate") String currentDate);
-
+	
+	@Query(value = "SELECT \r\n"
+			+ "  effective_date AS effectivedate,\r\n"
+			+ "  monthly_rent,\r\n"
+			+ "  igst_percentage \r\n"
+			+ "FROM pgowners.zoy_pg_rent_gst  \r\n"
+			+ "WHERE is_approved = true AND (  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '7 days', 'YYYY-MM-DD') OR  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '1 day', 'YYYY-MM-DD') OR  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE), 'YYYY-MM-DD')  \r\n"
+			+ ")  \r\n"
+			+ "UNION  \r\n"
+			+ "SELECT effectivedate, monthly_rent,igst_percentage \r\n"
+			+ "FROM (  \r\n"
+			+ "  SELECT effective_date AS effectivedate, monthly_rent,igst_percentage \r\n"
+			+ "  FROM pgowners.zoy_pg_rent_gst  \r\n"
+			+ "  WHERE is_approved = TRUE AND  \r\n"
+			+ "    TO_DATE(effective_date, 'YYYY-MM-DD') < CAST(:currentDate AS DATE)  \r\n"
+			+ "  ORDER BY TO_DATE(effective_date, 'YYYY-MM-DD') DESC  \r\n"
+			+ "  LIMIT 1  \r\n"
+			+ ") adas",
+	        nativeQuery = true)
+	List<String[]> findGSTDetailsByDate(@Param("currentDate") String currentDate);
+	
+	
+	
+	@Query(value = " SELECT \r\n"
+			+ "  effective_date AS effectivedate,\r\n"
+			+ "   owner_document_charges,\r\n"
+			+ "   owner_ekyc_charges,\r\n"
+			+ "   tenant_document_charges,\r\n"
+			+ "   tenant_ekyc_charges\r\n"
+			+ "FROM pgowners.zoy_pg_other_charges  \r\n"
+			+ "WHERE is_approved = true AND (  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '7 days', 'YYYY-MM-DD') OR  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '1 day', 'YYYY-MM-DD') OR  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE), 'YYYY-MM-DD')  \r\n"
+			+ ")  \r\n"
+			+ "UNION  \r\n"
+			+ "SELECT effectivedate, owner_document_charges,owner_ekyc_charges,tenant_document_charges,tenant_ekyc_charges\r\n"
+			+ "FROM (  \r\n"
+			+ "  SELECT effective_date AS effectivedate,owner_document_charges,owner_ekyc_charges,tenant_document_charges,tenant_ekyc_charges \r\n"
+			+ "  FROM pgowners.zoy_pg_other_charges  \r\n"
+			+ "  WHERE is_approved = TRUE AND  \r\n"
+			+ "    TO_DATE(effective_date, 'YYYY-MM-DD') < CAST(:currentDate AS DATE)  \r\n"
+			+ "  ORDER BY TO_DATE(effective_date, 'YYYY-MM-DD') DESC  \r\n"
+			+ "  LIMIT 1  \r\n"
+			+ ") adas",
+	        nativeQuery = true)
+	List<String[]> findOtherChargesDetailsByDate(@Param("currentDate") String currentDate);
+	
+	@Query(value = " SELECT \r\n"
+			+ "  effective_date AS effectivedate,\r\n"
+			+ "  trigger_condition,\r\n"
+			+ "  auto_cancellation_day \r\n"
+			+ "FROM pgowners.zoy_pg_auto_cancellation_after_check_in  \r\n"
+			+ "WHERE is_approved = true AND (  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '7 days', 'YYYY-MM-DD') OR  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '1 day', 'YYYY-MM-DD') OR  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE), 'YYYY-MM-DD')  \r\n"
+			+ ")  \r\n"
+			+ "UNION  \r\n"
+			+ "SELECT effectivedate,trigger_condition,auto_cancellation_day\r\n"
+			+ "FROM (  \r\n"
+			+ "  SELECT effective_date AS effectivedate,trigger_condition,auto_cancellation_day \r\n"
+			+ "  FROM pgowners.zoy_pg_auto_cancellation_after_check_in  \r\n"
+			+ "  WHERE is_approved = TRUE AND  \r\n"
+			+ "    TO_DATE(effective_date, 'YYYY-MM-DD') < CAST(:currentDate AS DATE)  \r\n"
+			+ "  ORDER BY TO_DATE(effective_date, 'YYYY-MM-DD') DESC  \r\n"
+			+ "  LIMIT 1  \r\n"
+			+ ") adas",
+	        nativeQuery = true)
+	List<String[]> findAftercheckInDateDetailsByDate(@Param("currentDate") String currentDate);
+	
+	
+	@Query(value = "SELECT \r\n"
+			+ "  effective_date AS effectivedate,\r\n"
+			+ "  trigger_condition,\r\n"
+			+ "  check_out_day \r\n"
+			+ "FROM pgowners.zoy_pg_early_check_out  \r\n"
+			+ "WHERE is_approved = true AND (  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '7 days', 'YYYY-MM-DD') OR  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '1 day', 'YYYY-MM-DD') OR  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE), 'YYYY-MM-DD')  \r\n"
+			+ ")  \r\n"
+			+ "UNION  \r\n"
+			+ "SELECT effectivedate,trigger_condition,check_out_day\r\n"
+			+ "FROM (  \r\n"
+			+ "  SELECT effective_date AS effectivedate,trigger_condition,check_out_day \r\n"
+			+ "  FROM pgowners.zoy_pg_early_check_out  \r\n"
+			+ "  WHERE is_approved = TRUE AND  \r\n"
+			+ "    TO_DATE(effective_date, 'YYYY-MM-DD') < CAST(:currentDate AS DATE)  \r\n"
+			+ "  ORDER BY TO_DATE(effective_date, 'YYYY-MM-DD') DESC  \r\n"
+			+ "  LIMIT 1  \r\n"
+			+ ") adas",
+	        nativeQuery = true)
+	List<String[]> findEarlyCheckOutDetailsByDate(@Param("currentDate") String currentDate);
+	
+	
+	@Query(value = " SELECT \r\n"
+			+ "  effective_date AS effectivedate,\r\n"
+			+ "  trigger_condition,\r\n"
+			+ "  auto_cancellation_day,\r\n"
+			+ "  deduction_percentage \r\n"
+			+ "FROM pgowners.zoy_pg_auto_cancellation_master  \r\n"
+			+ "WHERE is_approved = true AND (  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '7 days', 'YYYY-MM-DD') OR  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '1 day', 'YYYY-MM-DD') OR  \r\n"
+			+ "  effective_date = TO_CHAR(CAST(:currentDate AS DATE), 'YYYY-MM-DD')  \r\n"
+			+ ")  \r\n"
+			+ "UNION  \r\n"
+			+ "SELECT effectivedate,trigger_condition,auto_cancellation_day,deduction_percentage\r\n"
+			+ "FROM (  \r\n"
+			+ "  SELECT effective_date AS effectivedate,trigger_condition,auto_cancellation_day,deduction_percentage\r\n"
+			+ "  FROM pgowners.zoy_pg_auto_cancellation_master \r\n"
+			+ "  WHERE is_approved = TRUE AND  \r\n"
+			+ "    TO_DATE(effective_date, 'YYYY-MM-DD') < CAST(:currentDate AS DATE)  \r\n"
+			+ "  ORDER BY TO_DATE(effective_date, 'YYYY-MM-DD') DESC  \r\n"
+			+ "  LIMIT 1  \r\n"
+			+ ") adas",
+	        nativeQuery = true)
+	List<String[]> findSecurityDepositDeadlineDetailsByDate(@Param("currentDate") String currentDate);
+	
 	@Query(value = "SELECT pzm.first_name ,pzm.last_name, up.email_id, up.mobile_no "
 			+ "FROM pgadmin.pg_owner_master pzm  "
 			+ "join pgcommon.user_profile up ON pzm.email_id = up.email_id  "

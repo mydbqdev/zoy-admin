@@ -78,11 +78,11 @@ export class DbMasterConfigurationService {
       'columns': ['floor_name','actions'],
       'api': 'zoy_admin/floorName'
     },
-    {
-      'type': 'Rental Agreement Document',
-      'columns': ['uploadedAt','rentalAgreementDoc'],
-      'api': 'zoy_admin/rental-agreements'
-  },
+  //   {
+  //     'type': 'Rental Agreement Document',
+  //     'columns': ['uploadedAt','rentalAgreementDoc'],
+  //     'api': 'zoy_admin/rental-agreements'
+  // },
   ]
 
   columnHeaders = {
@@ -102,7 +102,7 @@ export class DbMasterConfigurationService {
     'start_day' : 'START DAY',
     'end_day' :'END DAY',
     'floor_name':'FLOOR NAME',
-    'rentalAgreementDoc':'RENTAL AGREEMENT DOCUMENT',
+    // 'rentalAgreementDoc':'RENTAL AGREEMENT DOCUMENT',
     'special_amenity':'SPECIAL AENITY',
     'uploadedAt':"UPLOADED DATE"
   }

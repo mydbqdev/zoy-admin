@@ -979,4 +979,9 @@ public class OwnerDBService implements OwnerDBImpl{
 		return zoyPgNoRentalAgreementRespository.findNoRentAgreementDuration();
 	}
 
+	@Override
+	public List<String[]> getRentalAgreementDetails(String bookingId) {
+		return bookingDetailsRepository.getRentalAgreementDetails(bookingId);
+	}
+
 }
