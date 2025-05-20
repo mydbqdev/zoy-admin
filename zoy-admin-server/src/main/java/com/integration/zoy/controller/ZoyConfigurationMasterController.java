@@ -1235,7 +1235,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		ResponseBody response = new ResponseBody();
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		String flag ="";
-		String ruleName ="Cancellation And Refund Policy (Before check in)";
+		String ruleName ="Early Check-out Rules";
 		try {
 			if (zoyPgEarlyCheckOut == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
