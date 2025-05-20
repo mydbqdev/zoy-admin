@@ -685,6 +685,8 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                    complaintTicket.setUpdatedAt(complaintDetail[7] != null ? complaintDetail[7].toString() : null);
 	                    complaintTicket.setAssignTo(complaintDetail[8] != null ? complaintDetail[8].toString() : null);
 	                    complaintTicket.setAssignToName(complaintDetail[9] != null ? complaintDetail[9].toString() : null);
+	                    complaintTicket.setMobile(complaintDetail[11] != null ? complaintDetail[11].toString() : null);
+	                    complaintTicket.setAddress(complaintDetail[12] != null ? complaintDetail[12].toString() : null);
 	                    String imageLinks = complaintDetail[9] != null ? complaintDetail[9].toString() : null;
 	                    complaintTicket.setType(ZoyConstant.SUPPORT_TICKET);
 	                    StringBuilder finalImageUrls = new StringBuilder();
