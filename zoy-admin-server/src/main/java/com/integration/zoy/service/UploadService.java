@@ -608,7 +608,7 @@ public class UploadService {
 		bookingDetails.setBookingMode("Offline");
 		bookingDetails.setTenantId(userId);
 		bookingDetails.setDepositPaid(true);
-		
+		bookingDetails.setIsTermsAccepted(true);
 		if(checkTenantAge(tenantDetails.getDateOfBirth())) {
 			if(checkRentalAgreement(noOfDays))
 				bookingDetails.setRentalAgreement(true);
