@@ -397,4 +397,31 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 			});
 		}
 
+		zoyShareForProperty:string='';
+		percentageOnlyWithZero(event): boolean {
+			const charCode = (event.which) ? event.which : event.keyCode;
+			const inputValue = event.target.value + String.fromCharCode(charCode); 
+			if (inputValue.startsWith('.')) {
+				return false;
+			  }
+			
+			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+			  if (charCode !== 46 ) { // Allow decimal point (46) and percent symbol (37)
+				return false;
+			  }
+			} 
+			if ((inputValue.match(/\./g) || []).length> 1 || parseFloat(inputValue) > 100 ) {
+			  return false;
+			}
+			return true;
+		  }
+
+		  generateZoyCodeUsingTicket(ticketId:string){
+			console.info(ticketId+"Ticket ::"+this.zoyShareForProperty);
+		  }
+
+		  isNotValidNumber(value: any): boolean {
+			return  (value === '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
+		  }
+
 }
