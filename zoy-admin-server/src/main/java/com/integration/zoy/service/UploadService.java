@@ -593,7 +593,7 @@ public class UploadService {
 		long noOfDays=getDiffofTimestamp(checkInDate,tenantDetails.getOutDate());
 		long noOfRentCalc=getDiffofTimestamp(checkInDate,date.getSecond());
 		long daysInMonth = checkInDate.toLocalDateTime().toLocalDate().lengthOfMonth();
-		bookingDetails.setNoOfDays(String.valueOf(noOfDays));
+		bookingDetails.setNoOfDays(String.valueOf((int)noOfDays));
 		BigDecimal calRent=new BigDecimal((details.getRoomMonthlyRent()/daysInMonth)*noOfRentCalc).setScale(2, RoundingMode.HALF_UP);
 		bookingDetails.setCalFixedRent(calRent);
 		bookingDetails.setOutDate(tenantDetails.getOutDate());
@@ -608,7 +608,7 @@ public class UploadService {
 		bookingDetails.setBookingMode("Offline");
 		bookingDetails.setTenantId(userId);
 		bookingDetails.setDepositPaid(true);
-
+		
 		if(checkTenantAge(tenantDetails.getDateOfBirth())) {
 			if(checkRentalAgreement(noOfDays))
 				bookingDetails.setRentalAgreement(true);
