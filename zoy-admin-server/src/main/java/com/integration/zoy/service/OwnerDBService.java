@@ -984,4 +984,9 @@ public class OwnerDBService implements OwnerDBImpl{
 		return bookingDetailsRepository.getRentalAgreementDetails(bookingId);
 	}
 
+	@Override
+	public Integer findZoyCodeCounter(String zoyCode) {
+		return zoyPgPropertyDetailsRepository.findZoyCodeCounter(zoyCode);
+	}
+
 }
