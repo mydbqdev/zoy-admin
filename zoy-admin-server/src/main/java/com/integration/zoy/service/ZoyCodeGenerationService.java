@@ -24,7 +24,7 @@ public class ZoyCodeGenerationService {
 			buffer.append(getShortCode(model.getPropertyCity()));
 			buffer.append(getShortCode(model.getPropertyLocality()));
 			Integer count=ownerDBImpl.findZoyCodeCounter(buffer.toString());
-			buffer.append(count+1);
+			buffer.append(String.format("%03d", count+1));
 			return buffer.toString(); 
 		} catch (Exception e) {
 			new ZoyAdminApplicationException(e, "");
