@@ -21,8 +21,8 @@ public class ZoyCodeGenerationService {
 	public String generateZoyCode(PgOwnerMasterModel model) {
 		try {
 			StringBuffer buffer=new StringBuffer();
-			buffer.append(getShortCode(model.getPropertyCity()));
-			buffer.append(getShortCode(model.getPropertyLocality()));
+			buffer.append(getShortCode(model.getPropertyCityCode()));
+			buffer.append(getShortCode(model.getPropertyLocalityCode()));
 			Integer count=ownerDBImpl.findZoyCodeCounter(buffer.toString());
 			buffer.append(String.format("%03d", count+1));
 			return buffer.toString(); 
