@@ -1,9 +1,13 @@
 package com.integration.zoy.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.entity.PgLocationCode;
 import com.integration.zoy.entity.UserProfile;
+import com.integration.zoy.repository.PgLocationCodeRepository;
 import com.integration.zoy.repository.UserProfileRepository;
 
 @Service
@@ -12,6 +16,8 @@ public class CommonDBService implements CommonDBImpl {
 	@Autowired
 	private UserProfileRepository userProfileRepository;
 
+	@Autowired
+	private PgLocationCodeRepository pgLocationCodeRepository;
 
 	@Override
 	public UserProfile registerNewUserAccount(UserProfile user) {
@@ -35,6 +41,11 @@ public class CommonDBService implements CommonDBImpl {
 	@Override
 	public UserProfile findRegisterEmail(String email) {
 		return userProfileRepository.findRegisterEmail(email).orElse(null);
+	}
+
+	@Override
+	public List<PgLocationCode> saveLocationCode(List<PgLocationCode> codes) {
+		return pgLocationCodeRepository.saveAll(codes);
 	}
 
 
