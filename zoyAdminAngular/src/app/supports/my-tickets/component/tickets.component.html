@@ -134,7 +134,7 @@
                                       </ng-container>
                                      <!-- Contact Column -->
                                      <ng-container matColumnDef="priority">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> UGENCY 
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;"> URGENCY 
                                           <span style="margin-left: 2px;">
                                             <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['priority'] === 'asc' }"></i>
                                             <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['priority'] === 'desc'}"></i>
@@ -308,7 +308,7 @@
         <hr>
         <div>
           <div class="d-flex">
-            <div>Histoty Information</div>
+            <div>History Information</div>
             <div class="ml-auto">
               <button class="btn btn-primary-custom" (click)="assignMeTeam(false)" *ngIf="rolesArray.includes('TICKETS_WRITE') && !supportTicketDetails?.assigned_to">Assign Me</button>&nbsp;&nbsp;
               <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('TICKETS_WRITE')">Status Update</button>
