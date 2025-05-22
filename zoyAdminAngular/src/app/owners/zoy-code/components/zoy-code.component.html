@@ -123,27 +123,36 @@
                     </div>
                   </div>
                   <div class="row justify-content-center">
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-3 mb-2">
                       <label for="email">State</label>
                       <input type="text" id="userEmail" placeholder="State" [(ngModel)]="generateZCode.property_state" formControlName="state" class="form-control" maxlength="100" readonly>   
                     </div>
 
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-3 mb-2">
                       <label for="phone">City</label>
                       <input type="text"  maxlength="100" placeholder="City" id="city" [(ngModel)]="generateZCode.property_city" formControlName="city" class="form-control" readonly>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                      <label for="phone">City Code</label>
+                      <input type="text"  maxlength="3" placeholder="City Code" id="city" [(ngModel)]="generateZCode.property_city_code" formControlName="cityCode" class="form-control"  [ngClass]="{'is-invalid':submitted && (form.controls.cityCode.errors)}" [disabled]="!isEditCityCode">
                     </div>
                   </div>
 
                   <div class="row justify-content-center">
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-3 mb-2">
                       <label for="phone">Area</label>
-                      <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZCode.property_locality" formControlName="areaAddress" placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
-                      <select id="area-dropdown" class="form-select form-select-sm" formControlName="areaAddress" [(ngModel)]="generateZCode.property_locality" *ngIf="areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
+                      <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZCode.property_locality" formControlName="areaAddress" placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}" (blur)="getLocationDetails(generateZCode.property_locality,2)">
+                      <select id="area-dropdown" class="form-select form-select-sm" formControlName="areaAddress" (change)="getLocationDetails(generateZCode.property_locality,2)" [(ngModel)]="generateZCode.property_locality" *ngIf="areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
                         <option></option>
                         <option *ngFor="let cond of areaList">{{cond}}</option>
                       </select>
                     </div>
-                    <div class="col-md-4 mb-2">
+                  
+                    <div class="col-md-2 mb-2">
+                      <label for="phone">Area Code</label>
+                      <input type="text"  maxlength="3" placeholder="Area Code" id="city" [(ngModel)]="generateZCode.property_locality_code" formControlName="areaCode" class="form-control" [ngClass]="{'is-invalid':submitted && (form.controls.areaCode.errors)}" [disabled]="!isEditAreaCode">
+                    </div>
+                    <div class="col-md-3 mb-2">
                       <label for="zoyShare">ZOY Revenue</label>
                       <div class="input-group">
                       <input type="text" formControlName="zoyShare" id="zoyShare" class="form-control" placeholder="Enter Zoy Revenue" [(ngModel)]="generateZCode.zoyShare"
