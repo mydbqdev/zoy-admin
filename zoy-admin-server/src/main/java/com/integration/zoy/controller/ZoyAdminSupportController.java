@@ -847,7 +847,6 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 	        }
 
-	        // Fetch image paths from DB as a list
 	        List<String> imageData = userHelpRequestRepository.getImages(inquiryNumber);
 
 	        ComplaintTicketDTO complaintTicket = new ComplaintTicketDTO();
@@ -862,10 +861,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                }
 	            }
 
-	            // Join all URLs into a comma-separated string
 	            complaintTicket.setImagesUrls(String.join(",", imageUrls));
 	        } else {
-	            complaintTicket.setImagesUrls(""); // No images found
+	            complaintTicket.setImagesUrls("");
 	        }
 
 	        response.setStatus(HttpStatus.OK.value());
