@@ -186,4 +186,5 @@ public interface OwnerDBImpl {
 	List<String> getLeadFollowUpHistory(String inquiryNumber)throws WebServiceException;
 	ZoyPgNoRentalAgreement findNoRentAgreementDuration();
 	List<String[]> getRentalAgreementDetails(String bookingId);
+	Integer findZoyCodeCounter(String zoyCode);
 }
