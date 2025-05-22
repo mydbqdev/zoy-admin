@@ -60,4 +60,10 @@ public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest
 	List<Object[]> getCompainUserEmail(@Param("registerId")String registerId);
 	
 
+	@Query(value="SELECT user_help_request_image_url FROM pgusers.user_request_images uri \r\n"
+	        + "LEFT JOIN pgusers.user_help_request_images uhri ON uri.user_help_request_image_id = uhri.user_help_request_image_id \r\n"
+	        + "WHERE uri.user_help_request_id = :registerId", nativeQuery=true)
+	List<String> getImages(@Param("registerId") String registerId);
+	
+	
 }
