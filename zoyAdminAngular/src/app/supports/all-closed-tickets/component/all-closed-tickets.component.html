@@ -282,7 +282,9 @@
               </span>
               &nbsp; 
               <span *ngIf="supportTicketDetails?.images_urls && supportTicketDetails?.images_urls!=''">
-                <a [href]="supportTicketDetails.images_urls" target="_blank"><i class="fas fa-paperclip" title="attachment of file"></i></a>
+                  <a href="javascript:void(0)" (click)="downloadImageUrls(supportTicketDetails.images_urls)">
+                  <i class="fas fa-download" title="Download all images" style="margin-left: 8px;"></i>
+                  </a>
               </span>
             </div>
           </div>
@@ -308,7 +310,7 @@
             </div>
             <div class="ml-auto">
                   <button class="btn btn-primary-custom mr-1" *ngIf="supportTicketDetails?.type=='LEAD_GEN' && rolesArray.includes('ALL_TICKETS_WRITE') && (supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Resolved')" [disabled]="(zoyShareForProperty==undefined || zoyShareForProperty==null || zoyShareForProperty=='' || isNotValidNumber(zoyShareForProperty))" (click)="generateZoyCodeUsingTicket(assignTicketNumber)">Generate Zoycode</button>&nbsp;
-                  <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Status Update</button>
+                  <button class="btn btn-primary-custom mb-2"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Status Update</button>
             </div> 
           </div>  
           <div class="card">

@@ -289,6 +289,70 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			this.supportTeamToAssignList=Object.assign([],this.supportTeamList.filter(data => data.type === type));
 		}
 
+		downloadAllTicketImages(element: any): void {
+		const inquiryNumber = element.ticket_id;
+
+		if (!inquiryNumber) {
+			this.notifyService.showWarning("Ticket ID is missing.", "Download Failed");
+			return;
+		}
+
+		this.spinner.show(); // Show loading spinner
+
+		this.supportService.getTicketImages(inquiryNumber).subscribe({
+			next: (response: string) => {
+				this.spinner.hide(); // Hide spinner once done
+				const imageUrls = response.split(',').map(url => url.trim());
+
+				if (imageUrls.length === 0 || !imageUrls[0]) {
+					this.notifyService.showInfo("No images found for this ticket.", "Info");
+					return;
+				}
+
+				imageUrls.forEach((url, index) => {
+					const anchor = document.createElement('a');
+					anchor.href = url;
+					anchor.download = `ticket_${inquiryNumber}_image_${index + 1}`;
+					anchor.target = '_blank'; // Fallback for cross-origin
+					document.body.appendChild(anchor);
+					anchor.click();
+					document.body.removeChild(anchor);
+				});
+			},
+			error: (error) => {
+				this.spinner.hide();
+				this.notifyService.showError("Failed to download images.", "Error");
+				console.error("Image download error:", error);
+			}
+		});
+	}
+
+
+	downloadImageUrls(imageUrlsString: string): void {
+		if (!imageUrlsString) {
+			// If you have a notification service, use it
+			console.warn("No image URLs found");
+			return;
+		}
+
+		const imageUrls = imageUrlsString.split(',').map(url => url.trim());
+
+		if (imageUrls.length === 0 || !imageUrls[0]) {
+			console.info("No valid image URLs to download");
+			return;
+		}
+
+		imageUrls.forEach((url, index) => {
+			const anchor = document.createElement('a');
+			anchor.href = url;
+			anchor.download = `image_${index + 1}`;
+			anchor.target = '_blank';
+			document.body.appendChild(anchor);
+			anchor.click();
+			document.body.removeChild(anchor);
+		});
+	}
+
 		getDetails(element:any){
 			this.assignTicketNumber=element.ticket_id;
 			this.selectTicket=Object.assign(element);
@@ -332,6 +396,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			});
 		}
 
+		
 
 		getSupportTeamList(){
 			this.supportService.getSupportTeamList().subscribe(data => {
