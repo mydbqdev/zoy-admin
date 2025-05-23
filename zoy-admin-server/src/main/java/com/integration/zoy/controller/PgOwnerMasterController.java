@@ -175,20 +175,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
 			}	
 			
-			List<PgLocationCode> codes=new ArrayList<>(); 
-			if(model.getPropertyCityCodeId()!=null || !model.getPropertyCityCodeId().isEmpty()) {
-				PgLocationCode code=new PgLocationCode();
-				code.setLocationName(model.getPropertyCity());
-				code.setLocationShortName(model.getPropertyCityCode());
-				codes.add(code);
-			}
-			if(model.getPropertyLocalityCodeId()!=null || !model.getPropertyLocalityCodeId().isEmpty()) {
-				PgLocationCode code=new PgLocationCode();
-				code.setLocationName(model.getPropertyLocality());
-				code.setLocationShortName(model.getPropertyLocalityCode());
-				codes.add(code);
-			}
-			commonDBImpl.saveLocationCode(codes);
+			processLocation(model);
 			
 			PgOwnerMaster ownerData = new PgOwnerMaster();
 			String zoyCode = zoyCodeGenerationService.generateZoyCode(model);
@@ -792,20 +779,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				String existingEmailId = (String) row[0];
 
 				if (existingEmailId != null && !existingEmailId.isEmpty()) {
-					List<PgLocationCode> codes=new ArrayList<>(); 
-					if(model.getPropertyCityCodeId()!=null || !model.getPropertyCityCodeId().isEmpty()) {
-						PgLocationCode code=new PgLocationCode();
-						code.setLocationName(model.getPropertyCity());
-						code.setLocationShortName(model.getPropertyCityCode());
-						codes.add(code);
-					}
-					if(model.getPropertyLocalityCodeId()!=null || !model.getPropertyLocalityCodeId().isEmpty()) {
-						PgLocationCode code=new PgLocationCode();
-						code.setLocationName(model.getPropertyLocality());
-						code.setLocationShortName(model.getPropertyLocalityCode());
-						codes.add(code);
-					}
-					commonDBImpl.saveLocationCode(codes);
+					
+					processLocation(model);
 					
 					PgOwnerMaster ownerData = new PgOwnerMaster();
 					String zoyCode = zoyCodeGenerationService.generateZoyCode(model);
@@ -858,6 +833,23 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			response.setError(e.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	private void processLocation(PgOwnerMasterModel model) {
+		List<PgLocationCode> codes=new ArrayList<>(); 
+		if(model.getPropertyCityCodeId()==null || model.getPropertyCityCodeId().trim().isEmpty()) {
+			PgLocationCode code=new PgLocationCode();
+			code.setLocationName(model.getPropertyCity());
+			code.setLocationShortName(model.getPropertyCityCode());
+			codes.add(code);
+		}
+		if(model.getPropertyLocalityCodeId()==null || model.getPropertyLocalityCodeId().trim().isEmpty()) {
+			PgLocationCode code=new PgLocationCode();
+			code.setLocationName(model.getPropertyLocality());
+			code.setLocationShortName(model.getPropertyLocalityCode());
+			codes.add(code);
+		}
+		commonDBImpl.saveLocationCode(codes);
 	}
 
 //	@Override
