@@ -176,13 +176,13 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			}	
 			
 			List<PgLocationCode> codes=new ArrayList<>(); 
-			if(model.getPropertyCityCodeId()!=null && !model.getPropertyCityCodeId().isEmpty()) {
+			if(model.getPropertyCityCodeId()!=null || !model.getPropertyCityCodeId().isEmpty()) {
 				PgLocationCode code=new PgLocationCode();
 				code.setLocationName(model.getPropertyCity());
 				code.setLocationShortName(model.getPropertyCityCode());
 				codes.add(code);
 			}
-			if(model.getPropertyLocalityCodeId()!=null && !model.getPropertyLocalityCodeId().isEmpty()) {
+			if(model.getPropertyLocalityCodeId()!=null || !model.getPropertyLocalityCodeId().isEmpty()) {
 				PgLocationCode code=new PgLocationCode();
 				code.setLocationName(model.getPropertyLocality());
 				code.setLocationShortName(model.getPropertyLocalityCode());
@@ -793,13 +793,13 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 
 				if (existingEmailId != null && !existingEmailId.isEmpty()) {
 					List<PgLocationCode> codes=new ArrayList<>(); 
-					if(model.getPropertyCityCodeId()!=null && !model.getPropertyCityCodeId().isEmpty()) {
+					if(model.getPropertyCityCodeId()!=null || !model.getPropertyCityCodeId().isEmpty()) {
 						PgLocationCode code=new PgLocationCode();
 						code.setLocationName(model.getPropertyCity());
 						code.setLocationShortName(model.getPropertyCityCode());
 						codes.add(code);
 					}
-					if(model.getPropertyLocalityCodeId()!=null && !model.getPropertyLocalityCodeId().isEmpty()) {
+					if(model.getPropertyLocalityCodeId()!=null || !model.getPropertyLocalityCodeId().isEmpty()) {
 						PgLocationCode code=new PgLocationCode();
 						code.setLocationName(model.getPropertyLocality());
 						code.setLocationShortName(model.getPropertyLocalityCode());
