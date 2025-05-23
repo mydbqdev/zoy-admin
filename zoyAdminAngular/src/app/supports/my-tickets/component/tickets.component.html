@@ -293,9 +293,11 @@
             {{supportTicketDetails.status}}
           </span>
         </span> &nbsp; 
-        <span *ngIf="supportTicketDetails?.images_urls && supportTicketDetails?.images_urls!=''">
-          <a [href]="supportTicketDetails.images_urls" target="_blank"><i class="fas fa-paperclip" title="attachment of file"></i></a>
-        </span>
+       <span *ngIf="supportTicketDetails?.images_urls && supportTicketDetails?.images_urls!=''">
+                  <a href="javascript:void(0)" (click)="downloadImageUrls(supportTicketDetails.images_urls)">
+                  <i class="fas fa-download" title="Download all images" style="margin-left: 8px;"></i>
+                  </a>
+       </span>
             </div>
           </div>
           <div class="row mb-1">
