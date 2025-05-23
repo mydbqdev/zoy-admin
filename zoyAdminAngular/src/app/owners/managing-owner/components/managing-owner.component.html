@@ -185,7 +185,7 @@
         <div class="row">
           <div class="col-sm-2">PG Name</div>
           <div class="col-sm-4">
-            <input class="form-control" [(ngModel)]="generateZoyCode.property_name" placeholder="Enter PG Name" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_name==undefined || generateZoyCode.property_name==null || generateZoyCode.property_name=='')}"/>
+            <input class="form-control" [(ngModel)]="generateZoyCode.property_name" placeholder="Enter PG Name" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_name==undefined || generateZoyCode.property_name==null || generateZoyCode.property_name=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'/>
           </div>
           <div class="col-sm-2" style="text-align: right;">Pin Code</div>
           <div class="col-sm-4">
@@ -205,12 +205,12 @@
         <div class="row mt-2">
           <div class="col-sm-2" >City Code</div>
           <div class="col-sm-4">
-            <input class="form-control" placeholder="City Code" [(ngModel)]="generateZoyCode.property_city_code" maxlength="3" [disabled]="!isEditCityCode"  [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_city_code==undefined || generateZoyCode.property_city_code==null || generateZoyCode.property_city_code=='')}"/>
+            <input class="form-control" placeholder="City Code" [(ngModel)]="generateZoyCode.property_city_code" maxlength="3" [readonly]="!isEditCityCode"  [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_city_code==undefined || generateZoyCode.property_city_code==null || generateZoyCode.property_city_code=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'/>
           </div>
           <div class="col-sm-2" style="text-align: right;">Area</div>
           <div class="col-sm-4">
             <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZoyCode.property_locality"  placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}"  (blur)="getLocationDetails(generateZoyCode.property_locality,2)" >
-                      <select id="area-dropdown" class="form-select form-select-sm" (change)="getLocationDetails(generateZoyCode.property_locality,2)"  [(ngModel)]="generateZoyCode.property_locality" *ngIf="areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}">
+                      <select id="area-dropdown" class="form-select" (change)="getLocationDetails(generateZoyCode.property_locality,2)"  [(ngModel)]="generateZoyCode.property_locality" *ngIf="areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}">
                         <option></option>
                         <option *ngFor="let cond of areaList">{{cond}}</option>
                       </select>
@@ -219,7 +219,7 @@
         <div class="row mt-2">
           <div class="col-sm-2">Area Code</div>
           <div class="col-sm-4">
-            <input class="form-control" placeholder="Area Code" [(ngModel)]="generateZoyCode.property_locality_code" maxlength="3" [disabled]="!isEditAreaCode" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality_code==undefined || generateZoyCode.property_locality_code==null || generateZoyCode.property_locality_code=='')}"/>
+            <input class="form-control" placeholder="Area Code" [(ngModel)]="generateZoyCode.property_locality_code" maxlength="3" [readonly]="!isEditAreaCode" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality_code==undefined || generateZoyCode.property_locality_code==null || generateZoyCode.property_locality_code=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'/>
           </div>
           <div class="col-sm-2" style="text-align: right;">Zoy Revenue</div>
           <div class="col-sm-4">

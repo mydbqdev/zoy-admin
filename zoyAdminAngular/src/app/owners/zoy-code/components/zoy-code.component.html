@@ -114,7 +114,7 @@
                   <div class="row justify-content-center">
                     <div class="col-md-4 mb-2">
                       <label for="email">PG Name</label>
-                      <input type="text" id="pgName" [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="100" placeholder="Enter PG Name"  [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">   
+                      <input type="text" id="pgName" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="100" placeholder="Enter PG Name"  [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">   
                     </div>
 
                     <div class="col-md-4 mb-2">
@@ -134,7 +134,7 @@
                     </div>
                     <div class="col-md-2 mb-2">
                       <label for="phone">City Code</label>
-                      <input type="text"  maxlength="3" placeholder="City Code" id="city" [(ngModel)]="generateZCode.property_city_code" formControlName="cityCode" class="form-control"  [ngClass]="{'is-invalid':submitted && (form.controls.cityCode.errors)}" [disabled]="!isEditCityCode">
+                      <input type="text"  maxlength="3" placeholder="City Code" id="city" [(ngModel)]="generateZCode.property_city_code" formControlName="cityCode" class="form-control"  [ngClass]="{'is-invalid':submitted && (form.controls.cityCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [readonly]="!isEditCityCode">
                     </div>
                   </div>
 
@@ -142,7 +142,7 @@
                     <div class="col-md-3 mb-2">
                       <label for="phone">Area</label>
                       <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZCode.property_locality" formControlName="areaAddress" placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}" (blur)="getLocationDetails(generateZCode.property_locality,2)">
-                      <select id="area-dropdown" class="form-select form-select-sm" formControlName="areaAddress" (change)="getLocationDetails(generateZCode.property_locality,2)" [(ngModel)]="generateZCode.property_locality" *ngIf="areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
+                      <select id="area-dropdown" class="form-select" formControlName="areaAddress" (change)="getLocationDetails(generateZCode.property_locality,2)" [(ngModel)]="generateZCode.property_locality" *ngIf="areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
                         <option></option>
                         <option *ngFor="let cond of areaList">{{cond}}</option>
                       </select>
@@ -150,7 +150,7 @@
                   
                     <div class="col-md-2 mb-2">
                       <label for="phone">Area Code</label>
-                      <input type="text"  maxlength="3" placeholder="Area Code" id="city" [(ngModel)]="generateZCode.property_locality_code" formControlName="areaCode" class="form-control" [ngClass]="{'is-invalid':submitted && (form.controls.areaCode.errors)}" [disabled]="!isEditAreaCode">
+                      <input type="text"  maxlength="3" placeholder="Area Code" id="city" [(ngModel)]="generateZCode.property_locality_code" formControlName="areaCode" class="form-control" [ngClass]="{'is-invalid':submitted && (form.controls.areaCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [readonly]="!isEditAreaCode">
                     </div>
                     <div class="col-md-3 mb-2">
                       <label for="zoyShare">ZOY Revenue</label>
