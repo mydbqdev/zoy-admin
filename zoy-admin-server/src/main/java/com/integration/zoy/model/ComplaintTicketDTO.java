@@ -1,5 +1,6 @@
 package com.integration.zoy.model;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,10 +32,10 @@ public class ComplaintTicketDTO {
 	private String status;
 
 	@JsonProperty("createdAt")
-	private String createdAt;
+	private Timestamp createdAt;
 
 	@JsonProperty("updatedAt")
-	private String updatedAt;
+	private Timestamp updatedAt;
 
 	@JsonProperty("assignTo")
 	private String assignedTo;
@@ -47,6 +48,15 @@ public class ComplaintTicketDTO {
 	
 	@JsonProperty("type")
 	private String type;
+	
+	@JsonProperty("mobile")
+	private String mobile;
+	
+	@JsonProperty("address")
+	private String address;
+	
+	@JsonProperty("inquiredFor")
+	private String inquiredFor;
 	
 	public String getType() {
 		return type;
@@ -118,19 +128,19 @@ public class ComplaintTicketDTO {
 		this.userHelpRequestId = userHelpRequestId;
 	}
 
-	public String getCreatedAt() {
+	public Timestamp getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(String createdAt) {
+	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public String getUpdatedAt() {
+	public Timestamp getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(String updatedAt) {
+	public void setUpdatedAt(Timestamp updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 	
@@ -173,6 +183,30 @@ public class ComplaintTicketDTO {
 
 	public void setUserTicketHistory(List<UserTicketHistoryDTO> userTicketHistory) {
 		this.userTicketHistory = userTicketHistory;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getInquiredFor() {
+		return inquiredFor;
+	}
+
+	public void setInquiredFor(String inquiredFor) {
+		this.inquiredFor = inquiredFor;
 	}
 
 }

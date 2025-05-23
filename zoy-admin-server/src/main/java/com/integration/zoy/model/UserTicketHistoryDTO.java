@@ -1,5 +1,7 @@
 package com.integration.zoy.model;
 
+import java.sql.Timestamp;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserTicketHistoryDTO {
@@ -8,7 +10,7 @@ public class UserTicketHistoryDTO {
 	private String userHelpRequestId;
 
 	@JsonProperty("createdAt")
-	private String createdAt;
+	private Timestamp createdAt;
 
 	@JsonProperty("userEmail")
 	private String userEmail;
@@ -28,11 +30,11 @@ public class UserTicketHistoryDTO {
 		this.userHelpRequestId = userHelpRequestId;
 	}
 
-	public String getCreatedAt() {
+	public Timestamp getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(String createdAt) {
+	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
 

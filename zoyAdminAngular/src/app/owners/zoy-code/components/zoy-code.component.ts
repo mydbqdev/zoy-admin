@@ -112,6 +112,8 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			state: [''],
 			city: [''],
 			areaAddress: ['', [Validators.required],],
+			cityCode: ['', [Validators.required],],
+			areaCode: ['', [Validators.required],],
 			userEmail: ['', [
 			  Validators.required,
 			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
@@ -371,10 +373,14 @@ percentageOnlyWithZero(event): boolean {
         if (pincode && pincode.length === 6) {
           this. getCityAndState(pincode);
         } else {
-          this.generateZCode.property_city = '';
+		  this.generateZCode.property_city = '';
+		  this.generateZCode.property_city_code_id = '';
+		this.generateZCode.property_city_code = '';
           this.generateZCode.property_state = '';
 		  this.generateZCode.property_state_short_name = '';
 		  this.generateZCode.property_locality ='';
+		  this.generateZCode.property_locality_code ='';
+		this.generateZCode.property_locality_code_id ='';
 		  this.generateZCode.property_house_area=''
 		  this.generateZCode.property_location_latitude='';
 		  this.generateZCode.property_location_longitude='';
@@ -403,13 +409,23 @@ percentageOnlyWithZero(event): boolean {
 		   }else{
 			 this.generateZCode.property_locality = this.generateZoyCodeService.extractArea(addressComponents);
 			 this.areaList=Object.assign([]);
+			 this.getLocationDetails(this.generateZCode.property_locality,2)
 			 this.areaTypeOption=false;
 		   }
+
+		   this.getLocationDetails(this.generateZCode.property_city,1);
+		   if(this.areaTypeOption){
+		   this.getLocationDetails(this.generateZCode.property_locality,2);
+		   }
         } else {
-          this.generateZCode.property_city = '';
+		  this.generateZCode.property_city = '';
+		  this.generateZCode.property_city_code_id = '';
+		this.generateZCode.property_city_code = '';
           this.generateZCode.property_state = '';
 		  this.generateZCode.property_state_short_name = '';
 		  this.generateZCode.property_locality ='';
+		  this.generateZCode.property_locality_code ='';
+		  this.generateZCode.property_locality_code_id ='';
 		  this.generateZCode.property_house_area=''
 		  this.generateZCode.property_location_latitude='';
 		  this.generateZCode.property_location_longitude='';
@@ -446,5 +462,52 @@ percentageOnlyWithZero(event): boolean {
         }
       );
 
-      }
+	  }
+	  isEditCityCode:boolean=true;
+  		isEditAreaCode:boolean=true;
+	  getLocationDetails(loc:string,type:number){
+		this.spinner.show();
+		this.generateZoyCodeService.getLocationDetails(loc).subscribe(data => {
+			if(data!="" && data!=null && data!=undefined){
+				if(type==1 && data.location_short_name!=''){
+				this.isEditCityCode=false;
+				this.generateZCode.property_city_code_id = data.location_code_id;
+				this.generateZCode.property_city_code = data.location_short_name;
+				}
+				if(type==2 && data.location_short_name!=''){
+					this.isEditAreaCode=false;
+					this.generateZCode.property_locality_code_id = data.location_code_id;
+					this.generateZCode.property_locality_code = data.location_short_name;
+				}
+			}
+			this.spinner.hide();
+		}, error => {
+		this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		 }else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+			this.errorMsg = error.error.message;
+			console.log("Error:" + this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+		} else {
+			if (error.status == 500 && error.statusText == "Internal Server Error") {
+			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+			} else {
+			let str;
+			if (error.status == 400) {
+				str = error.error.error;
+			} else {
+				str = error.error.message;
+				str = str.substring(str.indexOf(":") + 1);
+			}
+			console.log("Error:" ,str);
+			this.errorMsg = str;
+			}
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			//this.notifyService.showError(this.errorMsg, "");
+		}
+		});
+    }
 }

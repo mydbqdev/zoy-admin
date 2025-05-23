@@ -1,4 +1,4 @@
- <ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
   <div class="spinner-container"><img class="spinner-home-logo" src="assets/images/home-logo.png" alt="Home"/>
     <img class="spinner-location-logo" src="assets/images/location-logo.png" alt="User"/>
     <div class="spinner-loading">Loading</div>
@@ -140,15 +140,15 @@
                                     <ng-container matColumnDef="action">
                                       <th mat-header-cell *matHeaderCellDef style="width: 30px;"> </th>
                                       <td mat-cell *matCellDef="let element" style="width: 30px;">
-                                        <!--a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
+                                        <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fas fa-ellipsis-v fa-sm fa-fw"  style="color:#000000;"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                         aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addProperty">Add Property</a>
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#resendEmail">Resend Email</a>
-                                    </div-->
+                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addProperty" (click)="addProperty(element)">Add Property</a>
+                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#resendEmail" (click)="resendPropertyList(element)">Resend Email</a>
+                                    </div>
                                       </td>
                                     </ng-container>
                                     <!-- Header Row -->
@@ -178,18 +178,18 @@
   <div class="modal-dialog modal-lg modal-fullscreen-sm-down ">
     <div class="modal-content">
       <div class="modal-header bg-gradiant-popup-header">
-        <h5 class="modal-title" id="modalLabel"><span >Add Property for [owner name -phone number]</span></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModelAssign></button>
+        <h5 class="modal-title" id="modalLabel"><span >Add Property for [{{ownerNameForPopup}} - {{ownerMobileForPopup}}]</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModelAddProperty (click)="resetProperty()"></button>
       </div>
       <div class="modal-body p-3">
         <div class="row">
           <div class="col-sm-2">PG Name</div>
           <div class="col-sm-4">
-            <input class="form-control" [(ngModel)]="generateZoyCode.property_name" placeholder="Enter PG Name"/>
+            <input class="form-control" [(ngModel)]="generateZoyCode.property_name" placeholder="Enter PG Name" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_name==undefined || generateZoyCode.property_name==null || generateZoyCode.property_name=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'/>
           </div>
           <div class="col-sm-2" style="text-align: right;">Pin Code</div>
           <div class="col-sm-4">
-            <input class="form-control" placeholder="Enter Pin Code"  (blur)="onPincodeChange($event)"/>
+            <input class="form-control" placeholder="Enter Pin Code" [(ngModel)]="generateZoyCode.property_pincode"  (blur)="onPincodeChange($event)" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_pincode==undefined || generateZoyCode.property_pincode==null)}"/>
           </div>
         </div>
         <div class="row mt-2">
@@ -203,17 +203,32 @@
           </div>
         </div>
         <div class="row mt-2">
-          <div class="col-sm-2">Area</div>
+          <div class="col-sm-2" >City Code</div>
           <div class="col-sm-4">
-            <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZoyCode.property_locality"  placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption">
-                      <select id="area-dropdown" class="form-select form-select-sm"  [(ngModel)]="generateZoyCode.property_locality" *ngIf="areaTypeOption" >
+            <input class="form-control" placeholder="City Code" [(ngModel)]="generateZoyCode.property_city_code" maxlength="3" [readonly]="!isEditCityCode"  [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_city_code==undefined || generateZoyCode.property_city_code==null || generateZoyCode.property_city_code=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'/>
+          </div>
+          <div class="col-sm-2" style="text-align: right;">Area</div>
+          <div class="col-sm-4">
+            <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZoyCode.property_locality"  placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}"  (blur)="getLocationDetails(generateZoyCode.property_locality,2)" >
+                      <select id="area-dropdown" class="form-select" (change)="getLocationDetails(generateZoyCode.property_locality,2)"  [(ngModel)]="generateZoyCode.property_locality" *ngIf="areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}">
                         <option></option>
                         <option *ngFor="let cond of areaList">{{cond}}</option>
                       </select>
           </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-2">Area Code</div>
+          <div class="col-sm-4">
+            <input class="form-control" placeholder="Area Code" [(ngModel)]="generateZoyCode.property_locality_code" maxlength="3" [readonly]="!isEditAreaCode" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality_code==undefined || generateZoyCode.property_locality_code==null || generateZoyCode.property_locality_code=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'/>
+          </div>
           <div class="col-sm-2" style="text-align: right;">Zoy Revenue</div>
           <div class="col-sm-4">
-            <input class="form-control" />
+            <div class="input-group">
+                      <input type="text" id="zoyShare" class="form-control" placeholder="Enter Zoy Revenue" [(ngModel)]="generateZoyCode.zoyShare"
+                      (keypress)="percentageOnlyWithZero($event)"
+                        [ngClass]="{'is-invalid':submittedAddProperty && ((generateZoyCode.zoyShare==undefined || generateZoyCode.zoyShare==null || generateZoyCode.zoyShare=='') || isNotValidNumber(generateZoyCode.zoyShare))}" maxlength="5">
+                        <span class="input-group-text"> %</span>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -226,7 +241,7 @@
         </div>
         <div class="row mb-1 mt-2">
           <div class="col-sm-12" style="text-align: center;">
-            <button type="button" class="btn btn-primary-custom me-2" >Save and Generate Zoycode</button>
+            <button type="button" class="btn btn-primary-custom me-2" (click)="generateCodeForProperty()">Save and Generate Zoycode</button>
           </div>
         </div>
       </div>
@@ -240,33 +255,23 @@
   <div class="modal-dialog modal-lg modal-fullscreen-sm-down ">
     <div class="modal-content">
       <div class="modal-header bg-gradiant-popup-header">
-        <h5 class="modal-title" id="modalLabel"><span >Resend Zoycode [owner name -phone number]</span></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModelAssign></button>
+        <h5 class="modal-title" id="modalLabel"><span >Resend Zoycode [{{ownerNameForPopup}} - {{ownerMobileForPopup}}]</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModelResendZoyCode></button>
       </div>
       <div class="modal-body p-3">
         <div class="row">
           <div class="col-sm-3">Choose Property</div>
           <div class="col-sm-6">
-            <select class="form-select form-select-sm">
+            <select class="form-select form-select-sm"  [(ngModel)]="resendZoycode">
               <option value="">Select one</option>
-              <option value="">Property one - Zoycode</option>
-              <option value="">Property two - Zoycode</option>
-              <option value="">Property three - Zoycode</option>
+              <option *ngFor="let cond of propertyListForResend" [value]="cond.zoy_code">{{cond.pg_name}}</option>
             </select>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-3"></div>
-          <div class="col-sm-6">
-            <div class="text-danger">
-              Please choose the property.
-            </div>
-         </div>
         </div>
         <div class="row mb-1 mt-2">
           <div class="col-sm-3"></div>
           <div class="col-sm-6">
-            <button type="button" class="btn btn-primary-custom me-2" >Resend</button>
+            <button type="button" class="btn btn-primary-custom me-2" (click)="resendZoycodeEmail()" [disabled]="resendZoycode=='' || resendZoycode==undefined">Resend</button>
           </div>
         </div>
       </div>

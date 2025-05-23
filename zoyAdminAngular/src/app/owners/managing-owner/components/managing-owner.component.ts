@@ -63,7 +63,11 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	  public lastPageSize:number=0;
 	  public ownerIdBackFormDetails:string="";
 	  paramFilterBack:OwnerRequestParam=new OwnerRequestParam();
+	  
 	  totalProductFilterBack: number = 0;
+	  @ViewChild('closeModelAddProperty') closeModelAddProperty: any;
+	  @ViewChild('closeModelResendZoyCode') closeModelResendZoyCode: any;
+	  
 	  constructor(private zoyOwnerService : ZoyOwnerService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
 		  private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private generateZoyCodeService : GenerateZoyCodeService,private googleAPIService:GoogleAPIService) {
 			  this.authService.checkLoginUserVlidaate();
@@ -296,9 +300,11 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		  onPincodeChange(event: any) {
         const pincode = event.target.value;
         if (pincode && pincode.length === 6) {
-          this. getCityAndState(pincode);
+		  this. getCityAndState(pincode);
         } else {
-          this.generateZoyCode.property_city = '';
+		  this.generateZoyCode.property_city = '';
+		  this.generateZoyCode.property_city_code_id = '';
+		  this.generateZoyCode.property_city_code = '';
           this.generateZoyCode.property_state = '';
 		  this.generateZoyCode.property_state_short_name = '';
 		  this.generateZoyCode.property_locality ='';
@@ -329,13 +335,23 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		   }else{
 			 this.generateZoyCode.property_locality = this.generateZoyCodeService.extractArea(addressComponents);
 			 this.areaList=Object.assign([]);
+			 this.getLocationDetails(this.generateZoyCode.property_locality,2)
 			 this.areaTypeOption=false;
 		   }
+
+		   this.getLocationDetails(this.generateZoyCode.property_city,1);
+		   if(this.areaTypeOption){
+		   this.getLocationDetails(this.generateZoyCode.property_locality,2);
+		   }
         } else {
-          this.generateZoyCode.property_city = '';
+		  this.generateZoyCode.property_city = '';
+		  this.generateZoyCode.property_city_code_id = '';
+		this.generateZoyCode.property_city_code = '';
           this.generateZoyCode.property_state = '';
 		  this.generateZoyCode.property_state_short_name = '';
 		  this.generateZoyCode.property_locality ='';
+		  this.generateZoyCode.property_locality_code ='';
+		this.generateZoyCode.property_locality_code_id ='';
 		  this.generateZoyCode.property_house_area=''
 		  this.generateZoyCode.property_location_latitude='';
 		  this.generateZoyCode.property_location_longitude='';
@@ -386,16 +402,35 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		this.generateZoyCode.lastName=data.owner_name.split(" ")[1];
 	  }
 
+	  resetProperty(){
+		this.generateZoyCode.property_pincode =null;	
+		this.generateZoyCode.property_name = '';
+		this.generateZoyCode.property_city = '';
+		this.generateZoyCode.property_city_code_id = '';
+		this.generateZoyCode.property_city_code = '';
+		this.generateZoyCode.property_state = '';
+		this.generateZoyCode.property_state_short_name = '';
+		this.generateZoyCode.property_locality ='';
+		this.generateZoyCode.property_locality_code ='';
+		this.generateZoyCode.property_locality_code_id ='';
+		this.generateZoyCode.property_house_area=''
+		this.generateZoyCode.property_location_latitude='';
+		this.generateZoyCode.property_location_longitude='';
+		this.generateZoyCode.zoyShare='';
+		this.areaList=Object.assign([]);
+		this.areaTypeOption=true;
+	  }
 	  generateCodeForProperty(){
 		this.submittedAddProperty=true;
-
-		if (this.generateZoyCode.property_name==undefined || this.generateZoyCode.property_name==null || this.generateZoyCode.property_name=='' || this.generateZoyCode.property_pincode==undefined || this.generateZoyCode.property_pincode==null || this.generateZoyCode.property_locality==undefined || this.generateZoyCode.property_locality==null || this.generateZoyCode.property_locality=='' || this.generateZoyCode.zoyShare==undefined || this.generateZoyCode.zoyShare==null || this.generateZoyCode.zoyShare=='' || this.isNotValidNumber(this.generateZoyCode.zoyShare)) {
+		if (this.generateZoyCode.property_name==undefined || this.generateZoyCode.property_name==null || this.generateZoyCode.property_name=='' || this.generateZoyCode.property_pincode==undefined || this.generateZoyCode.property_pincode==null || this.generateZoyCode.property_locality==undefined || this.generateZoyCode.property_locality==null || this.generateZoyCode.property_locality=='' || this.generateZoyCode.zoyShare==undefined || this.generateZoyCode.zoyShare==null || this.generateZoyCode.zoyShare=='' || this.isNotValidNumber(this.generateZoyCode.zoyShare) || this.generateZoyCode.property_city_code==undefined || this.generateZoyCode.property_city_code==null || this.generateZoyCode.property_city_code=='' || this.generateZoyCode.property_locality_code==undefined || this.generateZoyCode.property_locality_code==null || this.generateZoyCode.property_locality_code=='') {
 		return;
 		}
 		this.spinner.show();		     
 		this.submittedAddProperty=false;
 		this.generateZoyCodeService.generateOwnerCodeForMoreProperty(this.generateZoyCode).subscribe((res) => {
-			this.notifyService.showSuccess(res.message, "");			
+			this.notifyService.showSuccess(res.message, "");
+		    this.resetProperty();
+			this.closeModelAddProperty.nativeElement.click();			
 			this.spinner.hide();
 		  },error =>{
 			this.spinner.hide();
@@ -427,13 +462,12 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		  ); 
 	  }
 
-	  isNotValidNumber(value: any): boolean {
+  isNotValidNumber(value: any): boolean {
 	return  (value === '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
   }
 percentageOnlyWithZero(event): boolean {
 	const charCode = (event.which) ? event.which : event.keyCode;
 	const inputValue = event.target.value + String.fromCharCode(charCode); 
-
 	if (inputValue.startsWith('.')) {
 		return false;
 	  }
@@ -442,12 +476,134 @@ percentageOnlyWithZero(event): boolean {
 	  if (charCode !== 46 ) { // Allow decimal point (46) and percent symbol (37)
 		return false;
 	  }
-	}
-  
+	} 
 	if ((inputValue.match(/\./g) || []).length> 1 || parseFloat(inputValue) > 100 ) {
 	  return false;
 	}
-
 	return true;
   }
+  propertyListForResend:ZoyOwner[]=[];
+  resendZoycode:string='';
+  resendPropertyList(data:any){
+	this.ownerNameForPopup=data.owner_name;
+	this.ownerMobileForPopup=data.owner_contact;  
+	this.resendZoycode='';  
+	this.spinner.show();		     
+	this.zoyOwnerService.getExistingPgOwnerData(data.owner_id).subscribe((res) => {
+		this.propertyListForResend=	Object.assign([],res);	
+		this.spinner.hide();
+	  },error =>{
+		this.spinner.hide();
+		console.log("error.error",error)
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		 }else if(error.status==403){
+		this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+		this.errorMsg =error.error.message;
+		console.log("Error:"+this.errorMsg);
+		if(error.status==500 && error.statusText=="Internal Server Error"){
+		  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+		}else{
+		  let str;
+		  if(error.status==400){
+		  str=error.error.error;
+		  }else{
+			str=error.error.message;
+			str=str.substring(str.indexOf(":")+1);
+		  }
+		  console.log("Error:",str);
+		  this.errorMsg=str;
+		}
+		  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  //this.notifyService.showError(this.errorMsg, "");
+		}
+	  }
+	  ); 
+  }
+
+  resendZoycodeEmail(){
+	this.spinner.show();		     
+	this.zoyOwnerService.resendOwnerCode(this.resendZoycode).subscribe((res) => {
+		this.notifyService.showSuccess(res.message, "");
+		this.resendZoycode='';
+		this.closeModelResendZoyCode.nativeElement.click();			
+		this.spinner.hide();
+	  },error =>{
+		this.spinner.hide();
+		console.log("error.error",error)
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		 }else if(error.status==403){
+		this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+		this.errorMsg =error.error.message;
+		console.log("Error:"+this.errorMsg);
+		if(error.status==500 && error.statusText=="Internal Server Error"){
+		  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+		}else{
+		  let str;
+		  if(error.status==400){
+		  str=error.error.error;
+		  }else{
+			str=error.error.message;
+			str=str.substring(str.indexOf(":")+1);
+		  }
+		  console.log("Error:",str);
+		  this.errorMsg=str;
+		}
+		  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  //this.notifyService.showError(this.errorMsg, "");
+		}
+	  }
+	  ); 
+  }
+  isEditCityCode:boolean=true;
+  isEditAreaCode:boolean=true;
+  getLocationDetails(location:string,type:number){
+	this.spinner.show();
+	this.generateZoyCodeService.getLocationDetails(location).subscribe(data => {
+		if(data!="" && data!=null && data!=undefined){
+			if(type==1 && data.location_short_name!=''){
+			this.isEditCityCode=false;
+			this.generateZoyCode.property_city_code_id = data.location_code_id;
+			this.generateZoyCode.property_city_code = data.location_short_name;
+			}
+			if(type==2 && data.location_short_name!=''){
+				this.isEditAreaCode=false;
+				this.generateZoyCode.property_locality_code_id = data.location_code_id;
+				this.generateZoyCode.property_locality_code = data.location_short_name;
+			}
+		}
+		this.spinner.hide();
+	}, error => {
+	this.spinner.hide();
+	if(error.status == 0) {
+		this.notifyService.showError("Internal Server Error/Connection not established", "")
+	 }else if(error.status==403){
+		this.router.navigate(['/forbidden']);
+	}else if (error.error && error.error.message) {
+		this.errorMsg = error.error.message;
+		console.log("Error:" + this.errorMsg);
+		this.notifyService.showError(this.errorMsg, "");
+	} else {
+		if (error.status == 500 && error.statusText == "Internal Server Error") {
+		this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+		} else {
+		let str;
+		if (error.status == 400) {
+			str = error.error.error;
+		} else {
+			str = error.error.message;
+			str = str.substring(str.indexOf(":") + 1);
+		}
+		console.log("Error:" ,str);
+		this.errorMsg = str;
+		}
+		if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		//this.notifyService.showError(this.errorMsg, "");
+	}
+	});
+}
+
   }  

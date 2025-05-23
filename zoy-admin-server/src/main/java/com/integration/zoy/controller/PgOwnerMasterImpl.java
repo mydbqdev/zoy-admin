@@ -201,4 +201,16 @@ public interface PgOwnerMasterImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> existingPgOwnerDetalaisresend(@RequestParam("zoyCode")String zoyCode);
 	
+	@Operation(summary = "Get Location Code Details", description = "to get location details", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Pg Owner" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "409", description = "Already exist as Location"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/location_code",
+	produces = { "application/json" })
+	ResponseEntity<String> getPgLocationCode(@RequestParam("location")String location);
+	
 }

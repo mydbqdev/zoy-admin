@@ -303,7 +303,15 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	public ResponseEntity<String> zoyOpenSupportTicketList(PaginationRequest paginationRequest) {
 		ResponseBody response = new ResponseBody();
 		try {
-			CommonResponseDTO<SupportTicketDTO> ticketList = supportDBImpl.zoySupportTicketList(paginationRequest,false);
+			
+			boolean isFinanceUser=false;
+			Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
+			if(user.isPresent()) {
+				if(user.get().getDesignation().equals("Finance Admin")) {
+					isFinanceUser=true;
+				}
+			}
+			CommonResponseDTO<SupportTicketDTO> ticketList = supportDBImpl.zoySupportTicketList(paginationRequest,false,isFinanceUser);
 			return new ResponseEntity<>(gson2.toJson(ticketList), HttpStatus.OK);
 		}catch (DataAccessException dae) {
 			log.error("Database error occurred while fetching ticket list: " + dae.getMessage(), dae);
@@ -323,7 +331,14 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	public ResponseEntity<String> zoyCloseSupportTicketList(PaginationRequest paginationRequest) {
 		ResponseBody response = new ResponseBody();
 		try {
-			CommonResponseDTO<SupportTicketDTO> ticketList = supportDBImpl.zoySupportTicketList(paginationRequest,true);
+			boolean isFinanceUser=false;
+			Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
+			if(user.isPresent()) {
+				if(user.get().getDesignation().equals("Finance Admin")) {
+					isFinanceUser=true;
+				}
+			}
+			CommonResponseDTO<SupportTicketDTO> ticketList = supportDBImpl.zoySupportTicketList(paginationRequest,true,isFinanceUser);
 			return new ResponseEntity<>(gson2.toJson(ticketList), HttpStatus.OK);
 		}catch (DataAccessException dae) {
 			log.error("Database error occurred while fetching ticket list: " + dae.getMessage(), dae);
@@ -587,7 +602,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 
 
 	@Override
-	public ResponseEntity<String> GetDetailsForEachTickets(UpdateStatus updateStatus) {
+	public ResponseEntity<String> getDetailsForEachTickets(UpdateStatus updateStatus) {
 	    ResponseBody response = new ResponseBody();
 	    try {
 	        if (updateStatus == null) {
@@ -633,7 +648,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                for (Object[] historyDetail : ticketHistory) {
 	                    UserTicketHistoryDTO historyDTO = new UserTicketHistoryDTO();
 	                    historyDTO.setUserHelpRequestId(historyDetail[0] != null ? historyDetail[0].toString() : null);
-	                    historyDTO.setCreatedAt(historyDetail[1] != null ? historyDetail[1].toString() : null);
+	                    historyDTO.setCreatedAt(historyDetail[1] != null ? Timestamp.valueOf(historyDetail[1].toString()) : null);
 	                    historyDTO.setUserEmail(historyDetail[2] != null ? historyDetail[2].toString() : null);
 	                    historyDTO.setDescription(historyDetail[3] != null ? historyDetail[3].toString() : null);
 	                    historyDTO.setRequestStatus(historyDetail[4] != null ? historyDetail[4].toString() : null);
@@ -666,11 +681,13 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                    complaintTicket.setDescription(complaintDetail[3] != null ? complaintDetail[3].toString() : null);
 	                    complaintTicket.setUrgency(complaintDetail[4] != null ? complaintDetail[4].toString() : null);
 	                    complaintTicket.setStatus(complaintDetail[5] != null ? complaintDetail[5].toString() : null);
-	                    complaintTicket.setCreatedAt(complaintDetail[6] != null ? complaintDetail[6].toString() : null);
-	                    complaintTicket.setUpdatedAt(complaintDetail[7] != null ? complaintDetail[7].toString() : null);
+	                    complaintTicket.setCreatedAt(complaintDetail[6] != null ? Timestamp.valueOf(complaintDetail[6].toString()) : null);
+	                    complaintTicket.setUpdatedAt(complaintDetail[7] != null ? Timestamp.valueOf(complaintDetail[7].toString()) : null);
 	                    complaintTicket.setAssignTo(complaintDetail[8] != null ? complaintDetail[8].toString() : null);
 	                    complaintTicket.setAssignToName(complaintDetail[9] != null ? complaintDetail[9].toString() : null);
-	                    String imageLinks = complaintDetail[9] != null ? complaintDetail[9].toString() : null;
+	                    complaintTicket.setMobile(complaintDetail[11] != null ? complaintDetail[11].toString() : null);
+	                    complaintTicket.setAddress(complaintDetail[12] != null ? complaintDetail[12].toString() : null);
+	                    String imageLinks = complaintDetail[10] != null ? complaintDetail[10].toString() : null;
 	                    complaintTicket.setType(ZoyConstant.SUPPORT_TICKET);
 	                    StringBuilder finalImageUrls = new StringBuilder();
 
@@ -696,7 +713,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                for (Object[] historyDetail : complaintHistory) {
 	                    UserTicketHistoryDTO historyDTO = new UserTicketHistoryDTO();
 	                    historyDTO.setUserHelpRequestId(historyDetail[0] != null ? historyDetail[0].toString() : null);
-	                    historyDTO.setCreatedAt(historyDetail[1] != null ? historyDetail[1].toString() : null);
+	                    historyDTO.setCreatedAt(historyDetail[1] != null ? Timestamp.valueOf(historyDetail[1].toString()) : null);
 	                    historyDTO.setUserEmail(historyDetail[2] != null ? historyDetail[2].toString() : null);
 	                    historyDTO.setDescription(historyDetail[3] != null ? historyDetail[3].toString() : null);
 	                    historyDTO.setRequestStatus(historyDetail[4] != null ? historyDetail[4].toString() : null);
@@ -817,7 +834,52 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                + "</html>";
 		return message;
 	}
-	
+
+
+	@Override
+	public ResponseEntity<String> getImagesForEachTickets(String inquiryNumber) {
+	    ResponseBody response = new ResponseBody();
+
+	    try {
+	        if (StringUtils.isBlank(inquiryNumber)) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError("Inquiry number is required.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        List<String> imageData = userHelpRequestRepository.getImages(inquiryNumber);
+
+	        ComplaintTicketDTO complaintTicket = new ComplaintTicketDTO();
+
+	        if (imageData != null && !imageData.isEmpty()) {
+	            List<String> imageUrls = new ArrayList<>();
+
+	            for (String image : imageData) {
+	                if (StringUtils.isNotBlank(image)) {
+	                    String preSignedUrl = zoyAdminService.generatePreSignedUrl(userDocBucketName, image.trim());
+	                    imageUrls.add(preSignedUrl);
+	                }
+	            }
+
+	            complaintTicket.setImagesUrls(String.join(",", imageUrls));
+	        } else {
+	            complaintTicket.setImagesUrls("");
+	        }
+
+	        response.setStatus(HttpStatus.OK.value());
+	        response.setMessage("Ticket images fetched successfully.");
+	        response.setData(complaintTicket);
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error in GetImagesForEachTickets", e);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError("Internal server error occurred while fetching ticket images.");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+
+
 	/*
 	 * End coding for admin support
 	 */

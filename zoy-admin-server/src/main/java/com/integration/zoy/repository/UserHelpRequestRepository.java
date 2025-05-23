@@ -24,7 +24,9 @@ public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest
 			+ "    uhr.update_at,\r\n"
 			+ "    uhr.assign_to_email,\r\n"
 			+ "    uhr.assign_to_name,\r\n"
-			+ "    STRING_AGG(uhri.user_help_request_image_url, ',') AS images\r\n"
+			+ "    STRING_AGG(uhri.user_help_request_image_url, ',') AS images,\r\n"
+			+ "    um.user_mobile\r\n,"
+			+ "    zppd.property_house_area\r\n"
 			+ "FROM pgusers.user_help_request uhr\r\n"
 			+ "JOIN pgcommon.pg_user_help_desk_categories puhsc \r\n"
 			+ "    ON uhr.categories_id = puhsc.categories_id\r\n"
@@ -40,7 +42,7 @@ public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest
 			+ "  AND uhr.request_status = :status\r\n"
 			+ "GROUP BY \r\n"
 			+ "    uhr.user_help_request_id,um.user_first_name,um.user_last_name,zppd.property_name,puhsc.categories_name,\r\n"
-			+ "    uhr.description,uhr.urgency,uhr.request_status,uhr.created_at,uhr.update_at,uhr.assign_to_email,uhr.assign_to_name", nativeQuery = true)
+			+ "    uhr.description,uhr.urgency,uhr.request_status,uhr.created_at,uhr.update_at,uhr.assign_to_email,uhr.assign_to_name,zppd.property_house_area,um.user_mobile", nativeQuery = true)
 	List<Object[]> getComplaintTicketDetails(@Param("registerId")String registerId,@Param("status")String status);
 	
 	@Query(value = "select \r\n"
@@ -58,4 +60,10 @@ public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest
 	List<Object[]> getCompainUserEmail(@Param("registerId")String registerId);
 	
 
+	@Query(value="SELECT user_help_request_image_url FROM pgusers.user_request_images uri \r\n"
+	        + "LEFT JOIN pgusers.user_help_request_images uhri ON uri.user_help_request_image_id = uhri.user_help_request_image_id \r\n"
+	        + "WHERE uri.user_help_request_id = :registerId", nativeQuery=true)
+	List<String> getImages(@Param("registerId") String registerId);
+	
+	
 }
