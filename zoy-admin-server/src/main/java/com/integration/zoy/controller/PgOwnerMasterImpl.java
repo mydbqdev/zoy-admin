@@ -210,8 +210,7 @@ public interface PgOwnerMasterImpl {
 			@ApiResponse(responseCode = "409", description = "Already exist as Location"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@GetMapping(value = "/zoy_admin/location_code",
-	produces = { "application/json" },
-	consumes = { "application/json"})
+	produces = { "application/json" })
 	ResponseEntity<String> getPgLocationCode(@RequestParam("location")String location);
 	
 }
