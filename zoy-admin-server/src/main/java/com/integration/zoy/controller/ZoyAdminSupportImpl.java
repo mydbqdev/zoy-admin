@@ -177,7 +177,18 @@ public interface ZoyAdminSupportImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PostMapping(value = "/zoy_admin/GetDetailsForEachTickets",
 	produces = { "application/json" })
-	ResponseEntity<String> GetDetailsForEachTickets(@RequestBody UpdateStatus updateStatus);
+	ResponseEntity<String> getDetailsForEachTickets(@RequestBody UpdateStatus updateStatus);
+	
+	@Operation(summary = "Get Images For Each Tickets", description = "To get complete Images of the ticket", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Report" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/GetImagesForEachTickets",
+	produces = { "application/json" })
+	ResponseEntity<String> getImagesForEachTickets(@RequestParam("inquiryNumber")String inquiryNumber);
 	
 	/*
 	 * end coding for admin support api's

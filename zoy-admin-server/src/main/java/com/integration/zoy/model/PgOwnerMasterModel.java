@@ -35,15 +35,27 @@ public class PgOwnerMasterModel {
 
 	@JsonProperty("property_state")
 	private String propertyState;
-	
+
 	@JsonProperty("property_state_short_name")
 	private String propertyStateShortName;
 
 	@JsonProperty("property_city")
 	private String propertyCity;
+	
+	@JsonProperty("property_city_code_id")
+	private String propertyCityCodeId;
+	
+	@JsonProperty("property_city_code")
+	private String propertyCityCode;
 
 	@JsonProperty("property_locality")
 	private String propertyLocality;
+
+	@JsonProperty("property_locality_code_id")
+	private String propertyLocalityCodeId;
+	
+	@JsonProperty("property_locality_code")
+	private String propertyLocalityCode;
 
 	@JsonProperty("property_house_area")
 	private String propertyHouseArea;
@@ -172,6 +184,38 @@ public class PgOwnerMasterModel {
 
 	public void setPropertyStateShortName(String propertyStateShortName) {
 		this.propertyStateShortName = propertyStateShortName;
+	}
+
+	public String getPropertyCityCode() {
+		return propertyCityCode;
+	}
+
+	public void setPropertyCityCode(String propertyCityCode) {
+		this.propertyCityCode = propertyCityCode;
+	}
+
+	public String getPropertyLocalityCode() {
+		return propertyLocalityCode;
+	}
+
+	public void setPropertyLocalityCode(String propertyLocalityCode) {
+		this.propertyLocalityCode = propertyLocalityCode;
+	}
+
+	public String getPropertyCityCodeId() {
+		return propertyCityCodeId;
+	}
+
+	public void setPropertyCityCodeId(String propertyCityCodeId) {
+		this.propertyCityCodeId = propertyCityCodeId;
+	}
+
+	public String getPropertyLocalityCodeId() {
+		return propertyLocalityCodeId;
+	}
+
+	public void setPropertyLocalityCodeId(String propertyLocalityCodeId) {
+		this.propertyLocalityCodeId = propertyLocalityCodeId;
 	}
 
 
