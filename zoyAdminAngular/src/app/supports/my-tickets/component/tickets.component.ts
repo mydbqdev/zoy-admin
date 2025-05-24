@@ -388,6 +388,40 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 			}
 			});
 		}
+
+		getDetailsRefresh(){
+			this.supportService.getInquiryDeatils(this.updateStatus).subscribe(data => {
+				this.supportTicketDetails = Object.assign([],data.data);
+			}, error => {
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}
 		
 		assignTeamApi(isFromSummeryScreen){
 			this.authService.checkLoginUserVlidaate();
@@ -404,6 +438,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 				}else{
 					this.getTicketsList();
 					// call refresh details api here
+					this.getDetailsRefresh();
 				}	
 			this.spinner.hide();
 			}, error => {

@@ -106,14 +106,14 @@ public class SupportDBService implements SupportDBImpl{
 				if(null !=paginationRequest.getFilter().getStatus() && paginationRequest.getFilter().getStatus().length()>0) {
 					queryBuilder.append("AND LOWER(status) in "+paginationRequest.getFilter().getStatus()+" \r\n");
 				}else {
-					queryBuilder.append("AND LOWER(status) in ('close','closed','cancelled','resolved') \r\n");
+					queryBuilder.append("AND LOWER(status) in ('close','closed','cancelled','cancel','resolved','resolve') \r\n");
 				}
 				//parameters.put("status", "close");
 			}else {
 				if(null !=paginationRequest.getFilter().getStatus() && paginationRequest.getFilter().getStatus().length()>0) {
 					queryBuilder.append("AND LOWER(status) in "+paginationRequest.getFilter().getStatus()+" \r\n");
 				}else {
-					queryBuilder.append("AND LOWER(status) not in ('close','closed','cancelled','resolved') \r\n");
+					queryBuilder.append("AND LOWER(status) not in ('close','closed','cancelled','cancel','resolved','resolve') \r\n");
 				}
 				//parameters.put("status", "close");
 			}

@@ -309,13 +309,15 @@ public class AuditHistoryUtilities {
 		}
 	}
 	
-	public void leadHistory(String history,String supportEmail,String inquryNumber,String status) {
+	public void leadHistory(String history,String supportEmail,String inquryNumber,String status,String createdDate) {
 		try {
+			final Timestamp ts = Timestamp.valueOf(createdDate);
 			LeadHistory auditHistory=new LeadHistory();
 			auditHistory.setUserEmail(supportEmail);
 			auditHistory.setHistoryData(history);
 			auditHistory.setInquiryNumber(inquryNumber);
 			auditHistory.setStatus(status);
+			auditHistory.setCreatedOn(ts);
 			leadHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for Lead History",e);
@@ -324,13 +326,15 @@ public class AuditHistoryUtilities {
 	}
 	
 	
-	public void userHelpRequestHistory(String history,String status,String inquryNumber,String userEmail) {
+	public void userHelpRequestHistory(String history,String status,String inquryNumber,String userEmail,String createdDate) {
 		try {
+			final Timestamp ts = Timestamp.valueOf(createdDate);
 			UserHelpRequestHistory auditHistory=new UserHelpRequestHistory();
 			auditHistory.setRequestStatus(status);
 			auditHistory.setDescription(history);
 			auditHistory.setUserHelpRequestId(inquryNumber);
 			auditHistory.setUserEmail(userEmail);
+			auditHistory.setCreatedAt(ts);
 			userHelpRequestHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for User Help Request History",e);
