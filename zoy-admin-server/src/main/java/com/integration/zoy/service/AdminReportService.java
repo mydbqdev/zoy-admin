@@ -1715,7 +1715,7 @@ public class AdminReportService implements AdminReportImpl{
 				String userImageUrl="";
 				if (userImagePath != null && !userImagePath.isEmpty()) {
 					String folderName = userImagePath.split("/")[0];
-					if(folderName.equals(row[5]))
+					if(folderName.equals(row[4]))
 						userImageUrl= zoyAdminService.generatePreSignedUrl(userPhotoBucketName, userImagePath);
 					else 
 						userImageUrl= zoyAdminService.generatePreSignedUrl(aadhaarPhotoBucket, userImagePath);
@@ -1737,7 +1737,7 @@ public class AdminReportService implements AdminReportImpl{
 							String customerImageUrl="";
 							if (customerImagePath != null && !customerImagePath.isEmpty()) {
 								String folderName = customerImagePath.split("/")[0];
-								if(folderName.equals(parts[3]))
+								if(folderName.equals(parts[2]))
 									customerImageUrl= zoyAdminService.generatePreSignedUrl(userPhotoBucketName, customerImagePath);
 								else 
 									customerImageUrl= zoyAdminService.generatePreSignedUrl(aadhaarPhotoBucket, customerImagePath);
