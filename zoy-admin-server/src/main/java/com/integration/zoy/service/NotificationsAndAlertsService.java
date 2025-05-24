@@ -38,10 +38,10 @@ public class NotificationsAndAlertsService {
         notificationService.notifyTicketAssignedToSupportUser(userId,notificationMessage);
     }
     
-    public void masterConfigurationRulechange(String ruleCreatedBy, String approvalDetails) throws Exception {
+    public void masterConfigurationRulechange(String ruleCreatedBy, String ruleName) throws Exception {
         List<String> screens = Arrays.asList("CONFIGURATION_MASTER", "CONFIGURATION_MASTER_APPROVAL");
         String[] emails = notificationsAndAlertsRepository.findUsersWithScreenAccess(screens);
-        notificationService.notifyForRuleChange(emails, approvalDetails);
+        notificationService.notifyForRuleChange(emails, ruleCreatedBy,ruleName);
     }
 
     public void masterConfigurationRuleApproval( String approvalDoneBy,String ruleName) throws Exception {

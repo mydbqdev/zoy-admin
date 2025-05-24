@@ -1,11 +1,14 @@
 package com.integration.zoy.entity;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity 
@@ -37,6 +40,9 @@ public class UserHelpRequestHistory {
     @Column(name = "user_email")
     private String userEmail;
 
+	@CreationTimestamp
+    @Column(name = "created_at")
+    private Timestamp createdAt;
 	
 	public String getUserHelpRequestId() {
 		return userHelpRequestId;
@@ -68,6 +74,14 @@ public class UserHelpRequestHistory {
 
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
+	}
+
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	
