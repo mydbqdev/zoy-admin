@@ -231,11 +231,17 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			+ "select email from pgowners.zoy_pg_registered_owner_details zprod ",nativeQuery=true)
 	String[] allOwnerEmails();
 	
-	@Query(value="select user_email from pgusers.user_master um \r\n"
-			+ "union\r\n"
-			+ "select email from pgowners.zoy_pg_registered_owner_details zprod \r\n"
-			+ "union\r\n"
-			+ "select email_id from pgadmin.pg_owner_master pom",nativeQuery=true)
+	@Query(value="SELECT DISTINCT LOWER(TRIM(um.user_email)) AS email\r\n"
+			+ "FROM pgusers.user_master um\r\n"
+			+ "WHERE um.user_email IS NOT NULL\r\n"
+			+ "UNION\r\n"
+			+ "SELECT DISTINCT LOWER(TRIM(zprod.email)) AS email\r\n"
+			+ "FROM pgowners.zoy_pg_registered_owner_details zprod\r\n"
+			+ "WHERE zprod.email IS NOT NULL\r\n"
+			+ "UNION\r\n"
+			+ "SELECT DISTINCT LOWER(TRIM(pom.email_id)) AS email\r\n"
+			+ "FROM pgadmin.pg_owner_master pom\r\n"
+			+ "WHERE pom.email_id IS NOT NULL",nativeQuery=true)
 	String[] allTenantAndOwnerEmails();
 	
 	
