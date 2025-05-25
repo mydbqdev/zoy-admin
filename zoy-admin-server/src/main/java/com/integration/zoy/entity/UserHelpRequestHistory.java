@@ -39,6 +39,10 @@ public class UserHelpRequestHistory {
     
     @Column(name = "user_email")
     private String userEmail;
+    
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private Timestamp createdAt;
 
 	@CreationTimestamp
     @Column(name = "created_at")
