@@ -44,9 +44,6 @@ public class UserHelpRequestHistory {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-	@CreationTimestamp
-    @Column(name = "created_at")
-    private Timestamp createdAt;
 	
 	public String getUserHelpRequestId() {
 		return userHelpRequestId;
