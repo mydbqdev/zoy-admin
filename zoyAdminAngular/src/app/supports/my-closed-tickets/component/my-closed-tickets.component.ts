@@ -104,8 +104,7 @@ export class MyClosedTicketsComponent implements OnInit, AfterViewInit {
 	}
 
 	statuses = [
-		{ id: 1, name: 'Close', selected: false },
-		{ id: 2, name: 'Closed', selected: false },
+		{ id: 1, name: 'Closed', selected: false },
 		{ id: 3, name: 'Cancelled', selected: false },
 		{ id: 4, name: 'Resolved', selected: false }
 	  ];
