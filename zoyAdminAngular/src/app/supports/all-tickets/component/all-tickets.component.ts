@@ -67,7 +67,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 		public ticketAssign:TicketAssign=new TicketAssign();
 		assignDetails:SupportTeamList=new SupportTeamList();
 		public selectedStatusForUpdate:string='';
-		statusList: String[] = ['Open', 'Progress','Reopen', 'Cancel','Close','Resolve']; 
+		statusList: String[] = ['Open', 'In Progress','On Hold','Reopen', 'Cancelled','Closed','Resolved'];  
 		public updateStatus:UpdateStatus=new UpdateStatus();
 		public supportTicketDetails:SupportDetails=new SupportDetails();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService, private confirmationDialogService:ConfirmationDialogService,
@@ -120,9 +120,9 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 	statuses = [
 		{ id: 1, name: 'New', selected: false },
 		{ id: 2, name: 'Open', selected: false },
-		{ id: 3, name: 'Progress', selected: false },
-		{ id: 4, name: 'Reopen', selected: false }
-		// { id: 4, name: 'Resolve', selected: false },
+		{ id: 3, name: 'In Progress', selected: false },
+		{ id: 4, name: 'Reopen', selected: false },
+		{ id: 5, name: 'On Hold', selected: false }
 		// { id: 5, name: 'Close', selected: false },
 		// { id: 5, name: 'Cancel', selected: false },
 	  ];
@@ -289,6 +289,70 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			this.supportTeamToAssignList=Object.assign([],this.supportTeamList.filter(data => data.type === type));
 		}
 
+		downloadAllTicketImages(element: any): void {
+		const inquiryNumber = element.ticket_id;
+
+		if (!inquiryNumber) {
+			this.notifyService.showWarning("Ticket ID is missing.", "Download Failed");
+			return;
+		}
+
+		this.spinner.show(); // Show loading spinner
+
+		this.supportService.getTicketImages(inquiryNumber).subscribe({
+			next: (response: string) => {
+				this.spinner.hide(); // Hide spinner once done
+				const imageUrls = response.split(',').map(url => url.trim());
+
+				if (imageUrls.length === 0 || !imageUrls[0]) {
+					this.notifyService.showInfo("No images found for this ticket.", "Info");
+					return;
+				}
+
+				imageUrls.forEach((url, index) => {
+					const anchor = document.createElement('a');
+					anchor.href = url;
+					anchor.download = `ticket_${inquiryNumber}_image_${index + 1}`;
+					anchor.target = '_blank'; // Fallback for cross-origin
+					document.body.appendChild(anchor);
+					anchor.click();
+					document.body.removeChild(anchor);
+				});
+			},
+			error: (error) => {
+				this.spinner.hide();
+				this.notifyService.showError("Failed to download images.", "Error");
+				console.error("Image download error:", error);
+			}
+		});
+	}
+
+
+	downloadImageUrls(imageUrlsString: string): void {
+		if (!imageUrlsString) {
+			// If you have a notification service, use it
+			console.warn("No image URLs found");
+			return;
+		}
+
+		const imageUrls = imageUrlsString.split(',').map(url => url.trim());
+
+		if (imageUrls.length === 0 || !imageUrls[0]) {
+			console.info("No valid image URLs to download");
+			return;
+		}
+
+		imageUrls.forEach((url, index) => {
+			const anchor = document.createElement('a');
+			anchor.href = url;
+			anchor.download = `image_${index + 1}`;
+			anchor.target = '_blank';
+			document.body.appendChild(anchor);
+			anchor.click();
+			document.body.removeChild(anchor);
+		});
+	}
+
 		getDetails(element:any){
 			this.assignTicketNumber=element.ticket_id;
 			this.selectTicket=Object.assign(element);
@@ -332,6 +396,43 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			});
 		}
 
+		getDetailsRefresh(){
+			this.assignToTeamDetails(false);
+			this.selectAssignEmail="";
+			this.supportService.getInquiryDeatils(this.updateStatus).subscribe(data => {
+				this.supportTicketDetails = Object.assign([],data.data);
+			}, error => {
+			this.spinner.hide();
+			if(error.status == 0) {
+			  this.notifyService.showError("Internal Server Error/Connection not established", "")
+		   }else if(error.status==401){
+			  console.error("Unauthorised");
+		  }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+			}else if (error.error && error.error.message) {
+				this.errorMsg = error.error.message;
+				console.log("Error:" + this.errorMsg);
+				this.notifyService.showError(this.errorMsg, "");
+			} else {
+				if (error.status == 500 && error.statusText == "Internal Server Error") {
+				this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+				} else {
+				let str;
+				if (error.status == 400) {
+					str = error.error.error;
+				} else {
+					str = error.error.message;
+					str = str.substring(str.indexOf(":") + 1);
+				}
+				console.log("Error:" ,str);
+				this.errorMsg = str;
+				}
+				if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+				//this.notifyService.showError(this.errorMsg, "");
+			}
+			});
+		}
+		
 
 		getSupportTeamList(){
 			this.supportService.getSupportTeamList().subscribe(data => {
@@ -388,6 +489,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 					}else{
 						this.getTicketsList();
 						// call refresh details api here
+						this.getDetailsRefresh();
 					}
 				this.closeModelAssign.nativeElement.click();
 				this.spinner.hide();

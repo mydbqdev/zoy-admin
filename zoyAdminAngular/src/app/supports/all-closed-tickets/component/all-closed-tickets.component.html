@@ -142,7 +142,7 @@
                                           <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['assign_name'] === 'desc'}"></i>
                                         </span>
                                       </th>
-                                      <td mat-cell *matCellDef="let element">{{ element.assign_name }} </td>
+                                      <td mat-cell *matCellDef="let element"><span *ngIf="element.assign_name==null || element.assign_name==undefined || element.assign_name==''">-</span>{{ element.assign_name }} </td>
                                     </ng-container>
 
                                  <!-- Email Column -->
@@ -166,7 +166,7 @@
                                   </th>
                                   <td mat-cell *matCellDef="let element" style="padding: 4px;">
                                     <span class="common-status"
-                                          [ngClass]="element.status === 'Close' ? 'btn-closed' : (element.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
+                                          [ngClass]="element.status === 'Close' || element.status === 'Closed' ? 'btn-closed' : (element.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
                                       {{element.status}}
                                     </span>
                                   </td>
@@ -223,9 +223,9 @@
           <div class="row mb-1">
             <div class="col-sm-4">Address:
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.address}}</span></div>
-            <div class="col-sm-4">city:
+            <div class="col-sm-4">City:
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.city}}</span></div>
-            <div class="col-sm-4">state:
+            <div class="col-sm-4">State:
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.state}}</span></div>
           </div>
           <div class="row mb-1">
@@ -244,7 +244,7 @@
             <div class="col-sm-4">Status:
               <span style="margin-left:10px;">
                 <span class="common-status"
-                [ngClass]="supportTicketDetails.status === 'Close' ? 'btn-closed' : (supportTicketDetails.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
+                [ngClass]="supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Closed'? 'btn-closed' : (supportTicketDetails.status === 'Resolved' || supportTicketDetails.status === 'Resolve' ? 'btn-resolve':'btn-cancel' )" >
                   {{supportTicketDetails.status}}
                 </span>
               </span>
@@ -276,13 +276,15 @@
             <div class="col-sm-4">Status:
               <span style="margin-left:10px;">
                 <span class="common-status"
-                [ngClass]="supportTicketDetails.status === 'Close' ? 'btn-closed' : (supportTicketDetails.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
+                [ngClass]="supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Closed' ? 'btn-closed' : (supportTicketDetails.status === 'Resolved' || supportTicketDetails.status === 'Resolve' ? 'btn-resolve':'btn-cancel' )" >
                   {{supportTicketDetails.status}}
                 </span>
               </span>
               &nbsp; 
               <span *ngIf="supportTicketDetails?.images_urls && supportTicketDetails?.images_urls!=''">
-                <a [href]="supportTicketDetails.images_urls" target="_blank"><i class="fas fa-paperclip" title="attachment of file"></i></a>
+                  <a href="javascript:void(0)" (click)="downloadImageUrls(supportTicketDetails.images_urls)">
+                  <i class="fas fa-download" title="Download all images" style="margin-left: 8px;"></i>
+                  </a>
               </span>
             </div>
           </div>
@@ -299,7 +301,7 @@
           <div>Histoty Information</div>
             <div style="width: 300px;"></div>
             <div>
-                <div class="input-group" *ngIf="supportTicketDetails?.type=='LEAD_GEN' && rolesArray.includes('ALL_TICKETS_WRITE') && (supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Resolved')" >
+                <div class="input-group" *ngIf="supportTicketDetails?.type=='LEAD_GEN' && rolesArray.includes('ALL_TICKETS_WRITE') && (supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Closed'|| supportTicketDetails.status === 'Resolved' || supportTicketDetails.status === 'Resolve')" >
                   <input type="text" id="zoyShare" class="form-control" placeholder="Enter Zoy Revenue" [(ngModel)]="zoyShareForProperty"
                   (keypress)="percentageOnlyWithZero($event)"
                     maxlength="5">
@@ -307,8 +309,8 @@
                 </div>
             </div>
             <div class="ml-auto">
-                  <button class="btn btn-primary-custom mr-1" *ngIf="supportTicketDetails?.type=='LEAD_GEN' && rolesArray.includes('ALL_TICKETS_WRITE') && (supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Resolved')" [disabled]="(zoyShareForProperty==undefined || zoyShareForProperty==null || zoyShareForProperty=='' || isNotValidNumber(zoyShareForProperty))" (click)="generateZoyCodeUsingTicket(assignTicketNumber)">Generate Zoycode</button>&nbsp;
-                  <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Status Update</button>
+                  <button class="btn btn-primary-custom mr-1" *ngIf="supportTicketDetails?.type=='LEAD_GEN' && rolesArray.includes('ALL_TICKETS_WRITE') && (supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Closed' || supportTicketDetails.status === 'Resolved' || supportTicketDetails.status === 'Resolve')" [disabled]="(zoyShareForProperty==undefined || zoyShareForProperty==null || zoyShareForProperty=='' || isNotValidNumber(zoyShareForProperty))" (click)="generateZoyCodeUsingTicket(assignTicketNumber)">Generate Zoycode</button>&nbsp;
+                  <button class="btn btn-primary-custom mb-2"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('ALL_TICKETS_WRITE')">Status Update</button>
             </div> 
           </div>  
           <div class="card">
@@ -327,7 +329,7 @@
                 <div class="col-sm-6">{{historyDet.description}}</div>
               </div>
               </div>
-              <div class="ml-1 mr-1" *ngIf="supportTicketDetails?.user_ticket_history?.length==0" style="text-align: center;font-size: 13px;border-top: 1px solid #edebeb;"> History is not available</div>
+              <div class="ml-1 mr-1" *ngIf="supportTicketDetails?.user_ticket_history?.length==0" style="text-align: center;font-size: 13px;border-top: 1px solid #edebeb;"> No data found</div>
 
             </div>
           </div>

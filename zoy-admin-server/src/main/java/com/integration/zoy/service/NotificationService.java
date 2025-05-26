@@ -73,9 +73,10 @@ public class NotificationService {
         notifyUsers(userIds, notificationMessage, screenName, category, infoType);
     }
     
-    public void notifyForRuleChange(String[] userIds, String requestRaisedBy) throws Exception {
-        String notificationMessage = "Approval Request Raised for rule change in Configuration Master by " + requestRaisedBy;
-        String screenName = "CONFIGURATION_MASTER,CONFIGURATION_MASTER_APPROVAL";
+    public void notifyForRuleChange(String[] userIds, String ruleCreatedBy,String ruleName) throws Exception {
+    	String notificationMessage = "Approval Request Raised for rule change in Configuration Master by " 
+                + ruleCreatedBy + " for " + ruleName;      
+                String screenName = "CONFIGURATION_MASTER,CONFIGURATION_MASTER_APPROVAL";
         String category = "Rule Approval Request";
         String infoType = "alert";
         notifyUsers(userIds, notificationMessage, screenName, category, infoType);
