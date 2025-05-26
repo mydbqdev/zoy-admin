@@ -80,6 +80,15 @@ public class AdminReportService implements AdminReportImpl{
 	private String zoyLogoPath;
 	@Value("${zoy.admin.watermark}")
 	private String watermarkImagePath;
+	
+	@Autowired
+	ZoyAdminService zoyAdminService;
+	@Value("${app.minio.user.photos.bucket.name}")
+	private String userPhotoBucketName;
+	
+	@Value("${app.minio.aadhaar.photos.bucket.name}")
+	String aadhaarPhotoBucket;
+
 
 
 	@Override
@@ -1702,7 +1711,16 @@ public class AdminReportService implements AdminReportImpl{
 				model.setOverallRating(row[3] != null ? row[3].toString() : "");
 				model.setPropertyName(row[10] != null ? row[10].toString() : "");
 				model.setCustomerName(row[13] != null ? row[13].toString() : "");
-				model.setCustomerImage(row[14] != null ? row[14].toString() : "");
+				String userImagePath = row[14] !=null?row[14].toString():null;
+				String userImageUrl="";
+				if (userImagePath != null && !userImagePath.isEmpty()) {
+					String folderName = userImagePath.split("/")[0];
+					if(folderName.equals(row[4]))
+						userImageUrl= zoyAdminService.generatePreSignedUrl(userPhotoBucketName, userImagePath);
+					else 
+						userImageUrl= zoyAdminService.generatePreSignedUrl(aadhaarPhotoBucket, userImagePath);
+				}
+				model.setCustomerImage(userImageUrl);
 				model.setCustomerMobileNo(row[15] != null ? row[15].toString() : "");
 				model.setCleanliness(row[16] != null ? row[16].toString() : "");
 				model.setAmenities(row[17] != null ? row[17].toString() : "");
@@ -1714,11 +1732,31 @@ public class AdminReportService implements AdminReportImpl{
 				List<String[]> reviewReplies = zoyPgPropertyDetailsRepository.findAllReviewsReplies(replies);
 
 				model.setThreads(reviewReplies != null ? reviewReplies.stream()
-						.map(parts -> new RatingsAndReviewsReport.ReviewReplies(parts[0], parts[1], parts[2], parts[3],
-								parts[4], parts[5], parts[6], parts[7] != null ? Timestamp.valueOf(parts[7]) : null,
-										parts[8] != null ? Boolean.valueOf(parts[8]) : false,
-												parts[9] != null ? Boolean.valueOf(parts[9]) : false,
-														parts[10] != null ? parts[10] : "", parts[11] != null ? parts[11] : ""))
+						.map(parts -> {
+							String customerImagePath = parts[10] !=null?parts[10].toString():null;
+							String customerImageUrl="";
+							if (customerImagePath != null && !customerImagePath.isEmpty()) {
+								String folderName = customerImagePath.split("/")[0];
+								if(folderName.equals(parts[2]))
+									customerImageUrl= zoyAdminService.generatePreSignedUrl(userPhotoBucketName, customerImagePath);
+								else 
+									customerImageUrl= zoyAdminService.generatePreSignedUrl(aadhaarPhotoBucket, customerImagePath);
+							}
+							String ownerImagePath = parts[11] !=null?parts[11].toString():null;
+							String ownerImageUrl="";
+							if (ownerImagePath != null && !ownerImagePath.isEmpty()) {
+								String folderName = ownerImagePath.split("/")[0];
+								if(folderName.equals(parts[4]))
+									ownerImageUrl= zoyAdminService.generatePreSignedUrl(userPhotoBucketName, ownerImagePath);
+								else 
+									ownerImageUrl= zoyAdminService.generatePreSignedUrl(aadhaarPhotoBucket, ownerImagePath);
+							}
+							return new RatingsAndReviewsReport.ReviewReplies(parts[0], parts[1], parts[2], parts[3],
+									parts[4], parts[5], parts[6], parts[7] != null ? Timestamp.valueOf(parts[7]) : null,
+											parts[8] != null ? Boolean.valueOf(parts[8]) : false,
+													parts[9] != null ? Boolean.valueOf(parts[9]) : false,
+															customerImageUrl, ownerImageUrl);
+						})
 						.collect(Collectors.toList()) : new ArrayList<>());
 
 				return model;
