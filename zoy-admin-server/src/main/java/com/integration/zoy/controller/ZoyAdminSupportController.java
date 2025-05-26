@@ -637,7 +637,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                    registeredOwnerDetails.setAddress(ticketDetail[4] != null ? ticketDetail[4].toString() : null);
 	                    registeredOwnerDetails.setPincode(ticketDetail[5] != null ? ticketDetail[5].toString() : null);
 	                    registeredOwnerDetails.setInquiredFor(ticketDetail[6] != null ? ticketDetail[6].toString() : null);
-	                    registeredOwnerDetails.setCreatedAt(ticketDetail[7] != null ? ticketDetail[7].toString() : null);
+	                    registeredOwnerDetails.setCreatedAt(ticketDetail[7] != null ? Timestamp.valueOf(ticketDetail[7].toString()) : null);
 	                    registeredOwnerDetails.setStatus(ticketDetail[8] != null ? ticketDetail[8].toString() : null);
 	                    registeredOwnerDetails.setState(ticketDetail[9] != null ? ticketDetail[9].toString() : null);
 	                    registeredOwnerDetails.setCity(ticketDetail[10] != null ? ticketDetail[10].toString() : null);
