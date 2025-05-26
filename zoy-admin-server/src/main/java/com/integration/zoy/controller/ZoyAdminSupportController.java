@@ -190,6 +190,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
 			}
 		} catch (Exception e) {
+			log.error("Error in assignTicketsToSupportTeam", e);
 			response.setMessage("An error occurred while assigning the ticket.");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
 		}
@@ -595,6 +596,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			
 			
 		} catch (Exception e) {
+			log.error("Error getting support user details API:/zoy_admin/support_user_details.getSupportUserDetails", e);
 			response.setMessage("An error occurred while Changing the Lead Status.");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
 		}
@@ -738,7 +740,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	        response.setStatus(HttpStatus.OK.value());
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 	    } catch (Exception e) {
-	        log.error("Error getting ticket details: API:/zoy_admin/GetDetailsForEachTickets", e);
+	        log.error("Error getting ticket details: updateInquiryStatus", e);
 	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	        response.setError("Internal server error");
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
