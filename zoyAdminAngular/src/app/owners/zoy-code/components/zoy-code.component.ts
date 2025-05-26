@@ -126,7 +126,11 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		this.sidemenuComp.activeMenu(2, 'zoy-code');
 		this.dataService.setHeaderName("Zoy Code");
 	}
-
+	emailLower(event){
+		if(this.generateZCode.userEmail!=undefined && this.generateZCode.userEmail!=null && this.generateZCode.userEmail!=''){
+		this.generateZCode.userEmail=this.generateZCode.userEmail.toLocaleLowerCase();
+		}
+	}
 	numberOnly(event): boolean {
 		const charCode = (event.which) ? event.which : event.keyCode;
 		if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -142,6 +146,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		}
 		this.spinner.show();		     
 		this.submitted=false;
+		this.generateZCode.userEmail=this.generateZCode.userEmail.toLocaleLowerCase();
 		this.generateZoyCodeService.generateOwnerCode(this.generateZCode).subscribe((res) => {
 			this.notifyService.showSuccess(res.message, "");			
 			this.spinner.hide();

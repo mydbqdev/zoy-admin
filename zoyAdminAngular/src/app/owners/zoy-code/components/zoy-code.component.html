@@ -85,7 +85,7 @@
                     <div class="col-md-4 mb-3">
                       <label for="email">Owner Email</label>
                       <input type="email" formControlName="userEmail" id="userEmail" class="form-control" placeholder="Enter Owner Email" [(ngModel)]="generateZCode.userEmail"
-                        [ngClass]="{'is-invalid':submitted && form.controls.userEmail.errors}" maxlength="100">
+                        [ngClass]="{'is-invalid':submitted && form.controls.userEmail.errors}" maxlength="100" (keypress)="emailLower($event)">
                       <div *ngIf="submitted && form.controls.userEmail.errors" class="text-danger">
                         <div *ngIf="submitted && form.controls.userEmail.errors?.required">
                           Owner Email Id is required.
@@ -114,7 +114,7 @@
                   <div class="row justify-content-center">
                     <div class="col-md-4 mb-2">
                       <label for="email">PG Name</label>
-                      <input type="text" id="pgName" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="100" placeholder="Enter PG Name"  [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">   
+                      <input type="text" id="pgName" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="20" placeholder="Enter PG Name"  [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">   
                     </div>
 
                     <div class="col-md-4 mb-2">
