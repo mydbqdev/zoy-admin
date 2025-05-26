@@ -168,7 +168,7 @@
                                       </th>
                                       <td mat-cell *matCellDef="let element" style="padding: 4px;">
                                         <span class="common-status"
-                                        [ngClass]="element.status === 'Close' ? 'btn-closed' : (element.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
+                                        [ngClass]="element.status === 'Close' || element.status === 'Closed' ? 'btn-closed' : (element.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
                                           {{element.status}}
                                         </span>
                                       </td>

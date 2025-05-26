@@ -59,7 +59,7 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 	public selectTicket:SupportList;
 		public isFromSummeryScreen:boolean=true;
 		public selectedStatusForUpdate:string='';
-		statusList: String[] = ['Open', 'Progress','Reopen', 'Cancel','Close','Resolve']; 
+		statusList: String[] = ['Open', 'In Progress','On Hold','Reopen', 'Cancelled','Closed','Resolved']; 
 		public updateStatus:UpdateStatus=new UpdateStatus();
 	public supportTicketDetails:SupportDetails=new SupportDetails();
 	public	selectAssignEmail:string="";
