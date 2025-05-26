@@ -58,7 +58,7 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 	private _liveAnnouncer = inject(LiveAnnouncer);
 	public isFromSummeryScreen:boolean=true;
 	public selectedStatusForUpdate:string='';
-	statusList: String[] = ['Open', 'Progress','Reopen', 'Cancel','Close','Resolve']; 
+	statusList: String[] = ['Open', 'In Progress','On Hold','Reopen', 'Cancelled','Closed','Resolved']; 
 	public ticketAssign:TicketAssign=new TicketAssign();
 	public updateStatus:UpdateStatus=new UpdateStatus();
 	public supportTicketDetails:SupportDetails=new SupportDetails();
@@ -111,9 +111,9 @@ export class TicketsComponent implements OnInit, AfterViewInit {
 	statuses = [
 		{ id: 1, name: 'New', selected: false },
 		{ id: 2, name: 'Open', selected: false },
-		{ id: 3, name: 'Progress', selected: false },
-		{ id: 4, name: 'Reopen', selected: false }
-		// { id: 4, name: 'Registered', selected: false },
+		{ id: 3, name: 'In Progress', selected: false },
+		{ id: 4, name: 'Reopen', selected: false },
+		{ id: 5, name: 'On Hold', selected: false }
 		// { id: 4, name: 'Suspended', selected: false },
 	  ];
 	  selectedStatuses:string[]=[]; 

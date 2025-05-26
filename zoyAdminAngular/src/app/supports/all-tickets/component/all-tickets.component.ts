@@ -67,7 +67,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 		public ticketAssign:TicketAssign=new TicketAssign();
 		assignDetails:SupportTeamList=new SupportTeamList();
 		public selectedStatusForUpdate:string='';
-		statusList: String[] = ['Open', 'Progress','Reopen', 'Cancel','Close','Resolve']; 
+		statusList: String[] = ['Open', 'In Progress','On Hold','Reopen', 'Cancelled','Closed','Resolved'];  
 		public updateStatus:UpdateStatus=new UpdateStatus();
 		public supportTicketDetails:SupportDetails=new SupportDetails();
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService, private confirmationDialogService:ConfirmationDialogService,
@@ -120,9 +120,9 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 	statuses = [
 		{ id: 1, name: 'New', selected: false },
 		{ id: 2, name: 'Open', selected: false },
-		{ id: 3, name: 'Progress', selected: false },
-		{ id: 4, name: 'Reopen', selected: false }
-		// { id: 4, name: 'Resolve', selected: false },
+		{ id: 3, name: 'In Progress', selected: false },
+		{ id: 4, name: 'Reopen', selected: false },
+		{ id: 5, name: 'On Hold', selected: false }
 		// { id: 5, name: 'Close', selected: false },
 		// { id: 5, name: 'Cancel', selected: false },
 	  ];
