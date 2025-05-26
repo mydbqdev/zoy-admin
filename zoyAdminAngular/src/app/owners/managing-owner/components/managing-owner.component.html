@@ -185,7 +185,7 @@
         <div class="row">
           <div class="col-sm-2">PG Name</div>
           <div class="col-sm-4">
-            <input class="form-control" [(ngModel)]="generateZoyCode.property_name" placeholder="Enter PG Name" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_name==undefined || generateZoyCode.property_name==null || generateZoyCode.property_name=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'/>
+            <input class="form-control" maxlength="20" [(ngModel)]="generateZoyCode.property_name" placeholder="Enter PG Name" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_name==undefined || generateZoyCode.property_name==null || generateZoyCode.property_name=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'/>
           </div>
           <div class="col-sm-2" style="text-align: right;">Pin Code</div>
           <div class="col-sm-4">
