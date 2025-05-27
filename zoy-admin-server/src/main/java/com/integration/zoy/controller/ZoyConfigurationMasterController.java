@@ -1581,17 +1581,18 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	}
 
 
-//	private List<ZoyShortTermDto> convertShortToDTO(List<ZoyPgShortTermMaster> shortTermMaster) {
-//		List<ZoyShortTermDto> dtos = new ArrayList<>();
-//		for (ZoyPgShortTermMaster master : shortTermMaster) {
-//			ZoyShortTermDto dto = new ZoyShortTermDto();
-//			dto.setShortTermId(master.getZoyPgShortTermMasterId());
-//			dto.setDays(master.getStartDay() + "-" + master.getEndDay());
-//			dto.setPercentage(master.getPercentage());
-//			dtos.add(dto);
-//		}
-//		return dtos;
-//	}
+	private List<ZoyShortTermDto> convertShortToDTO(List<ZoyPgShortTermMaster> shortTermMaster) {
+		List<ZoyShortTermDto> dtos = new ArrayList<>();
+		for (ZoyPgShortTermMaster master : shortTermMaster) {
+			ZoyShortTermDto dto = new ZoyShortTermDto();
+			dto.setShortTermId(master.getZoyPgShortTermMasterId());
+			dto.setStartDay(master.getStartDay());
+			dto.setEndDay(master.getEndDay());
+			dto.setPercentage(master.getPercentage());
+			dtos.add(dto);
+		}
+		return dtos;
+	}
 
 	@Override
 	public ResponseEntity<String> zoyAdminCreateUpadateSecurityDepositDeadline(
@@ -1936,7 +1937,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				zoyPgShortTermMasterRepository.deleteShortTermDetailsbyIds(todeleteList);
 			}
 
+			List<ZoyPgShortTermMaster> shortTermMaster = ownerDBImpl.findAllShortTerm();
+			List<ZoyShortTermDto> dto = convertShortToDTO(shortTermMaster);
 			response.setStatus(HttpStatus.OK.value());
+			response.setData(dto);
 			response.setMessage(flag + " Short term duration period details successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
@@ -2547,7 +2551,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			List<ZoyDataGrouping> dataGrouping = ownerDBImpl.findAllDataGroupingSorted();
 			List<ZoyPgOtherCharges> otherCharges = ownerDBImpl.findAllOtherChargesDetailsSorted();
 			List<ZoyPgGstCharges> gstCharges = ownerDBImpl.findAllGstChargesDetailsSorted();
-//			List<ZoyPgShortTermMaster> shortTermMaster = ownerDBImpl.findAllShortTerm();
+			List<ZoyPgShortTermMaster> shortTermMaster = ownerDBImpl.findAllShortTerm();
 			List<ZoyPgForceCheckOut> forceCheckOut = ownerDBImpl.findAllForceCheckOutDetailsSorted();
 			List<ZoyPgNoRentalAgreement> noRentalAgreement = ownerDBImpl.findAllNoRentalAgreementDetailsSorted();
 //			List<ZoyPgShortTermRentingDuration> rentingDuration = ownerDBImpl
@@ -2623,10 +2627,10 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				configDTO.setGstCharges(listZoyGstChargesDto);
 			}
 
-//			if (shortTermMaster != null) {
-//				configDTO.setZoyShortTermDtos(convertShortToDTO(shortTermMaster));
-//
-//			}
+			if (shortTermMaster != null) {
+				configDTO.setZoyShortTermDtos(convertShortToDTO(shortTermMaster));
+
+			}
 			if (forceCheckOut != null) {
 				List<ZoyForceCheckOutDto> listZoyForceCheckOutDto = new ArrayList<>();
 				for (ZoyPgForceCheckOut checkOut : forceCheckOut) {
