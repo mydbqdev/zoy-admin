@@ -167,9 +167,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					userName=user.get().getFirstName()+" "+user.get().getLastName();
 				}
 				if (existingPartner.getAssignedToEmail() != null && !existingPartner.getAssignedToEmail().isEmpty()) {
-					historyContentForTicketAssign = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " has been reassigned to " + assignTicket.getName() + " on " + currentDate + "." + " Reassigned by " + userName + ".";
+					historyContentForTicketAssign = "Lead Ticket has been reassigned to " + assignTicket.getName() +"," + " Reassigned by " + userName + ".";
 				} else {
-					historyContentForTicketAssign = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " has been assigned to " + assignTicket.getName() + " on " + currentDate + "." + " Assigned by " + userName + ".";
+					historyContentForTicketAssign = "Lead Ticket has been assigned to " + assignTicket.getName() +  "," + " Assigned by " + userName + ".";
 				}
 				existingPartner.setAssignedToEmail(assignTicket.getEmail());
 				existingPartner.setAssignedToName(assignTicket.getName());
@@ -178,9 +178,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				response.setMessage("Ticket assigned successfully.");
 				response.setStatus(HttpStatus.OK.value());
 
-				auditHistoryUtilities.leadHistory(historyContentForTicketAssign,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus());
-				String historyContentForChangeTicketStatus = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " Status has been Changed To " + existingPartner.getStatus() + "."+ " On " + currentDate;
-				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus());
+				auditHistoryUtilities.leadHistory(historyContentForTicketAssign,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus(),currentDate);
+				String historyContentForChangeTicketStatus = "Lead Ticket Status has been Changed To " + existingPartner.getStatus() + ".";
+				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus(),currentDate);
 				AdminUserMaster adminuserDetails=adminUserMasterRepo.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 				String notificationMessage = "Ticket ID: " + assignTicket.getInquiryNumber() + " assigned to you by "+adminuserDetails.getFirstName()+" "+adminuserDetails.getLastName()+ " received on "+currentDate+" Check the details in the Tickets section.";
 				notificationsAndAlertsService.ticketAssign(new String[]{assignTicket.getEmail()},notificationMessage);
@@ -190,6 +190,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.getMessage());
 			}
 		} catch (Exception e) {
+			log.error("Error in assignTicketsToSupportTeam", e);
 			response.setMessage("An error occurred while assigning the ticket.");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
 		}
@@ -372,12 +373,12 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 						userName=user.get().getFirstName()+" "+user.get().getLastName();
 					}
 					if (existingPartner.getAssignedToEmail() != null && !existingPartner.getAssignedToEmail().isEmpty()) {
-						historyContentForTicketAssign = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " has been reassigned to " + assignTicket.getName() + " on " + currentDate + "." + " Reassigned by " + userName + ".";
+						historyContentForTicketAssign = "Lead Ticket has been reassigned to " + assignTicket.getName() + "," + " Reassigned by " + userName + ".";
 						if(assignTicket.getSelf()) {
 							return ResponseEntity.status(HttpStatus.CONFLICT).body("The lead ticket has already been assigned to another team member.");
 							}
 					} else {
-						historyContentForTicketAssign = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " has been assigned to " + assignTicket.getName() + " on " + currentDate + "." + " Assigned by " + userName + ".";
+						historyContentForTicketAssign = "Lead Ticket has been assigned to " + assignTicket.getName() +"," + " Assigned by " + userName + ".";
 					}
 					existingPartner.setAssignedToEmail(assignTicket.getEmail());
 					existingPartner.setAssignedToName(assignTicket.getName());
@@ -388,10 +389,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					response.setMessage("Lead Ticket has been assigned successfully.");
 					response.setStatus(HttpStatus.OK.value());
 	
-					auditHistoryUtilities.leadHistory(historyContentForTicketAssign,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus());
+					auditHistoryUtilities.leadHistory(historyContentForTicketAssign,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus(),currentDate);
 					
-					String historyContentForChangeTicketStatus = "Lead Ticket Number " + assignTicket.getInquiryNumber() + " Status has been Changed To " + existingPartner.getStatus() + "."+ " On " + currentDate;
-					auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus());
+					String historyContentForChangeTicketStatus = "Lead Ticket Status has been Changed To " + existingPartner.getStatus() + ".";
+					auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,assignTicket.getEmail(),assignTicket.getInquiryNumber(),existingPartner.getStatus(),currentDate);
 					
 					if(!assignTicket.getSelf()) {
 					AdminUserMaster adminuserDetails=adminUserMasterRepo.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -435,12 +436,12 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 						userName=user.get().getFirstName()+" "+user.get().getLastName();
 					}
 					if (existingPartner.getAssignedToEmail() != null && !existingPartner.getAssignedToEmail().isEmpty()) {
-						historyContentForTicketAssign = "Support Ticket Number " + assignTicket.getInquiryNumber() + " has been reassigned to " + assignTicket.getName() + " on " + currentDate + "." + " Reassigned by " + userName + ".";
+						historyContentForTicketAssign = "Support Ticket has been reassigned to " + assignTicket.getName() + "," + " Reassigned by " + userName + ".";
 						if(assignTicket.getSelf()) {
 						return ResponseEntity.status(HttpStatus.CONFLICT).body("The ticket has already been assigned to another team member.");
 						}
 					} else {
-						historyContentForTicketAssign = "Support Ticket Number " + assignTicket.getInquiryNumber() + " has been assigned to " + assignTicket.getName() + " on " + currentDate + "." + " Assigned by " + userName + ".";
+						historyContentForTicketAssign = "Support Ticket has been assigned to " + assignTicket.getName() + "," + " Assigned by " + userName + ".";
 					}
 					existingPartner.setAssignedToEmail(assignTicket.getEmail());
 					existingPartner.setAssignedToName(assignTicket.getName());
@@ -449,10 +450,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					response.setMessage("Support Ticket has been assigned successfully.");
 					response.setStatus(HttpStatus.OK.value());
 	
-					auditHistoryUtilities.userHelpRequestHistory(historyContentForTicketAssign,existingPartner.getRequestStatus(),assignTicket.getInquiryNumber(),assignTicket.getEmail());
+					auditHistoryUtilities.userHelpRequestHistory(historyContentForTicketAssign,existingPartner.getRequestStatus(),assignTicket.getInquiryNumber(),assignTicket.getEmail(),currentDate);
 					
-					String historyContentForChangeTicketStatus = "Support Ticket Number " + assignTicket.getInquiryNumber() + " Status has been Changed To " + existingPartner.getRequestStatus() + "."+ " On " + currentDate;
-					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),assignTicket.getInquiryNumber(),assignTicket.getEmail());
+					String historyContentForChangeTicketStatus = "Support Ticket Status has been changed to " + existingPartner.getRequestStatus() + ".";
+					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),assignTicket.getInquiryNumber(),assignTicket.getEmail(),currentDate);
 					
 					if(!assignTicket.getSelf()) {
 					AdminUserMaster adminuserDetails=adminUserMasterRepo.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -515,10 +516,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				List<String> to = new ArrayList<>();
 				if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
 					response.setMessage("Comment has been added successfully.");
-					historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+					historyContentForChangeTicketStatus = "Lead Ticket Status has been added the comment, "+updateStatus.getComment() +".";
 				}else {
 					response.setMessage("Status and comment has been updated successfully.");
-					historyContentForChangeTicketStatus = "Lead Ticket Number " + existingPartner.getRegisterId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+					historyContentForChangeTicketStatus = "Lead Ticket Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +".";
 					to.add(partner.get().getEmail().toLowerCase());
 					if(updateStatus.getStatus().equals(ZoyConstant.REOPEN)) {
 						emailSubject="Your Support Ticket Has Been Reopened – "+updateStatus.getInquiryNumber();
@@ -535,7 +536,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				}
 				response.setStatus(HttpStatus.OK.value());
 				
-				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,SecurityContextHolder.getContext().getAuthentication().getName(),updateStatus.getInquiryNumber(),existingPartner.getStatus());
+				auditHistoryUtilities.leadHistory(historyContentForChangeTicketStatus,SecurityContextHolder.getContext().getAuthentication().getName(),updateStatus.getInquiryNumber(),existingPartner.getStatus(),currentDate);
 				return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
 			} else {
 				response.setMessage("Inquiry number does not exist.");
@@ -555,10 +556,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					List<String> to = new ArrayList<>();
 					if(updateStatus.getStatus()!=null && updateStatus.getStatus().equals(previousStatus)) {
 						response.setMessage("Comment has been added successfully.");
-						historyContentForChangeTicketStatus = "Support Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been added the comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+						historyContentForChangeTicketStatus = "Support Ticket Status has been added the comment, "+updateStatus.getComment() +".";
 					}else {
 						response.setMessage("Status and comment has been updated successfully.");
-						historyContentForChangeTicketStatus = "Support Ticket Number " + existingPartner.getUserHelpRequestId() + " Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() +" On " + currentDate + ".";
+						historyContentForChangeTicketStatus = "Support Ticket Status has been Changed From " + previousStatus + " To " + updateStatus.getStatus() + " with comment, "+updateStatus.getComment() + ".";
 						List<Object[]> userDet= userHelpRequestRepository.getCompainUserEmail(existingPartner.getUserHelpRequestId());
 						String userName="";
 						 for (Object[] complaintDetail : userDet) {
@@ -580,7 +581,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 						emailSend(emailSubject,emailMessage,to);
 					}
 					response.setStatus(HttpStatus.OK.value());
-					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),updateStatus.getInquiryNumber(),SecurityContextHolder.getContext().getAuthentication().getName());
+					auditHistoryUtilities.userHelpRequestHistory(historyContentForChangeTicketStatus,existingPartner.getRequestStatus(),updateStatus.getInquiryNumber(),SecurityContextHolder.getContext().getAuthentication().getName(),currentDate);
 
 					
 					return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
@@ -595,6 +596,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			
 			
 		} catch (Exception e) {
+			log.error("Error getting support user details API:/zoy_admin/support_user_details.getSupportUserDetails", e);
 			response.setMessage("An error occurred while Changing the Lead Status.");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.getMessage());
 		}
@@ -635,7 +637,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                    registeredOwnerDetails.setAddress(ticketDetail[4] != null ? ticketDetail[4].toString() : null);
 	                    registeredOwnerDetails.setPincode(ticketDetail[5] != null ? ticketDetail[5].toString() : null);
 	                    registeredOwnerDetails.setInquiredFor(ticketDetail[6] != null ? ticketDetail[6].toString() : null);
-	                    registeredOwnerDetails.setCreatedAt(ticketDetail[7] != null ? ticketDetail[7].toString() : null);
+	                    registeredOwnerDetails.setCreatedAt(ticketDetail[7] != null ? Timestamp.valueOf(ticketDetail[7].toString()) : null);
 	                    registeredOwnerDetails.setStatus(ticketDetail[8] != null ? ticketDetail[8].toString() : null);
 	                    registeredOwnerDetails.setState(ticketDetail[9] != null ? ticketDetail[9].toString() : null);
 	                    registeredOwnerDetails.setCity(ticketDetail[10] != null ? ticketDetail[10].toString() : null);
@@ -738,7 +740,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	        response.setStatus(HttpStatus.OK.value());
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 	    } catch (Exception e) {
-	        log.error("Error getting ticket details: API:/zoy_admin/GetDetailsForEachTickets", e);
+	        log.error("Error getting ticket details: updateInquiryStatus", e);
 	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	        response.setError("Internal server error");
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);

@@ -34,75 +34,93 @@ import com.integration.zoy.service.AdminUserAuthService;
 
 @Configuration
 @EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    @Autowired
-    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+	@Autowired
+	private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    @Autowired
-    private CustomAccessDeniedHandler customAccessDeniedHandler;
+	@Autowired
+	private CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    @Autowired
-    AdminUserAuthService adminUserAuthService;
+	@Autowired
+	AdminUserAuthService adminUserAuthService;
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+	@Autowired
+	private JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+	@Value("${web.origin.link}")
+	private String origin;
 
-    @Value("${web.origin.link}")
-    private String origin;
+	
+	@Bean
+	public static PasswordEncoder passwordEncoder() {
+		return NoOpPasswordEncoder.getInstance();
+	}
 
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
+	@Bean
+	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+		AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+		authenticationManagerBuilder.userDetailsService(adminUserAuthService).passwordEncoder(passwordEncoder());
+		return authenticationManagerBuilder.build();
+	}
 
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(adminUserAuthService).passwordEncoder(passwordEncoder());
-        return authenticationManagerBuilder.build();
-    }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Apply CORS config
-            .csrf(csrf -> csrf.disable())  // Disable CSRF for stateless APIs
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Use stateless session management
-            .authorizeRequests(authz -> authz
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow OPTIONS (preflight) requests
-                .antMatchers("/public").permitAll()
-                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**").permitAll()
-                .antMatchers("/verify-email").permitAll()
-                .antMatchers("/forgotPassword", "/forgot-password").permitAll()
-                .antMatchers("/zoy_admin/login").permitAll()
-                .antMatchers("/zoy_admin/userSoftlogout").permitAll()
-                .antMatchers("/notificationPageHandler").permitAll()
-                .antMatchers("/admin_reset_password").permitAll()
-                .anyRequest().authenticated()
-            )
-            .exceptionHandling(handling -> handling
-                .authenticationEntryPoint(customAuthenticationEntryPoint)
-                .accessDeniedHandler(customAccessDeniedHandler))
-            .httpBasic(withDefaults());
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		
+	  //  http.cors(cors -> cors.configurationSource(request -> buildConfig()));
+	    http.cors(cors -> cors.configurationSource(corsConfigurationSource())); 
+	    http.csrf(csrf -> csrf.disable()).sessionManagement(session -> session
+	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	    .authorizeHttpRequests(requests -> {
+	        try {
+	            requests.antMatchers("/public").permitAll()
+	            .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**").permitAll()
+	            .antMatchers("/verify-email").permitAll()
+	            .antMatchers("/forgotPassword").permitAll()
+	            .antMatchers("/forgot-password").permitAll()
+	            .antMatchers("/zoy_admin/login").permitAll()
+	            .antMatchers("/zoy_admin/userSoftlogout").permitAll()
+	            .antMatchers("/notificationPageHandler").permitAll()
+	            .antMatchers("/admin_reset_password").permitAll()
+	            .anyRequest().authenticated()
+	            .and()
+	            .exceptionHandling(handling -> handling
+	                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+	                    .accessDeniedHandler(customAccessDeniedHandler));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    })
+	    .httpBasic(withDefaults());
+	    http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+	    return http.build();
+	}
 
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        // Use wildcard or specify exact allowed origin(s)
-        configuration.setAllowedOrigins(ImmutableList.of(origin));  
-        configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowCredentials(true);  // Allow credentials (cookies, authorization headers)
-        configuration.addAllowedHeader("*");  // Allow all headers
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+	private CorsConfiguration buildConfig() {
+		CorsConfiguration corsConfiguration = new CorsConfiguration();
+		//corsConfiguration.addAllowedOrigin("*"); 
+		corsConfiguration.addAllowedOrigin(origin);
+		corsConfiguration.addAllowedHeader("*"); 
+		corsConfiguration.addAllowedMethod("*"); 
+		return corsConfiguration;
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		final CorsConfiguration configuration = new CorsConfiguration();
+	//	configuration.setAllowedOrigins(ImmutableList.of("*"));
+		configuration.setAllowedOrigins(ImmutableList.of(origin));  
+		configuration.setAllowedMethods(ImmutableList.of("HEAD","GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"));
+		configuration.setAllowCredentials(true);
+		configuration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
+		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
 
 
     @Bean
