@@ -5,7 +5,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -2664,70 +2666,57 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	}
 	@Override
 	public ResponseEntity<String> zoyAdminConfigShortTermDetails() {
-	    ResponseBody response = new ResponseBody();
-	    List<ZoyShortTermDetails> ZoyShortTermDetailsList = new ArrayList<>();
+		ResponseBody response = new ResponseBody();
+		List<ZoyShortTermDetails> ZoyShortTermDetailsList = new ArrayList<>();
 
-	    try {
-	        List<ZoyPgShortTermMaster> ShortTermList = zoyPgShortTermMasterRepository.findAllShortTermDetails();
+		try {
+			List<ZoyPgShortTermMaster> ShortTermList = zoyPgShortTermMasterRepository.findAllShortTermDetails();
 
-	        if (ShortTermList == null || ShortTermList.isEmpty()) {
-	            response.setStatus(HttpStatus.OK.value());
-	            response.setData(ZoyShortTermDetailsList);
-	            response.setError("No Short Term details found.");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-	        }
+			if (ShortTermList == null || ShortTermList.isEmpty()) {
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(ZoyShortTermDetailsList);
+				response.setError("No Short Term details found.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
 
-	        String effectiveDate = null;
-	        String comments ="";
-	        ZoyShortTermDetails termDetails = null;
-	        List<ZoyShortTermDto> zoyShortTermDtoDetailsList = new ArrayList<>();
+			Map<String, ZoyShortTermDetails> groupedMap = new HashMap<>();
 
-	        for (ZoyPgShortTermMaster details : ShortTermList) {
-	            if (!(Objects.toString(effectiveDate, "") + Objects.toString(comments, ""))
-	                    .equals(Objects.toString(details.getEffectiveDate(), "") + Objects.toString(details.getComments(), ""))) {
-	                if (termDetails != null) {
-	                    termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
-	                    ZoyShortTermDetailsList.add(termDetails);
-	                }
-	                termDetails = new ZoyShortTermDetails();
-	                termDetails.setApproved(details.getIsApproved() != null ? details.getIsApproved() : false);
-	                termDetails.setApprovedBy(details.getApprovedBy());
-	                termDetails.setCreatedBy(details.getCreatedBy());
-	                termDetails.setEffectiveDate(details.getEffectiveDate());
-	                termDetails.setComments(details.getComments());
-	                zoyShortTermDtoDetailsList = new ArrayList<>();
-	                effectiveDate = details.getEffectiveDate();
-	                comments = details.getComments();
-	            }
+			for (ZoyPgShortTermMaster details : ShortTermList) {
+				String key = Objects.toString(details.getEffectiveDate(), "") + Objects.toString(details.getComments(), "");
 
-	            ZoyShortTermDto zoyShortTermDtoDetails = new ZoyShortTermDto();
-	            zoyShortTermDtoDetails.setEndDay(details.getEndDay());
-	            zoyShortTermDtoDetails.setPercentage(details.getPercentage());
-	            zoyShortTermDtoDetails.setShortTermId(details.getZoyPgShortTermMasterId());
-	            zoyShortTermDtoDetails.setStartDay(details.getStartDay());
+				ZoyShortTermDetails termDetails = groupedMap.get(key);
+				if (termDetails == null) {
+					termDetails = new ZoyShortTermDetails();
+					termDetails.setApproved(details.getIsApproved() != null ? details.getIsApproved() : false);
+					termDetails.setApprovedBy(details.getApprovedBy());
+					termDetails.setCreatedBy(details.getCreatedBy());
+					termDetails.setEffectiveDate(details.getEffectiveDate());
+					termDetails.setComments(details.getComments());
+					termDetails.setZoyShortTermDtoInfo(new ArrayList<>());
+					groupedMap.put(key, termDetails);
+				}
 
-	            zoyShortTermDtoDetailsList.add(zoyShortTermDtoDetails);
-	            
-	            if (!(Objects.toString(effectiveDate, "") + Objects.toString(comments, ""))
-		                .equals(Objects.toString(details.getEffectiveDate(), "") + Objects.toString(details.getComments(), ""))) {
-		        if (termDetails != null) {
-		            termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
-		            ZoyShortTermDetailsList.add(termDetails);
-		        }
-		        }
-	        }
-	       
+				ZoyShortTermDto zoyShortTermDtoDetails = new ZoyShortTermDto();
+				zoyShortTermDtoDetails.setEndDay(details.getEndDay());
+				zoyShortTermDtoDetails.setPercentage(details.getPercentage());
+				zoyShortTermDtoDetails.setShortTermId(details.getZoyPgShortTermMasterId());
+				zoyShortTermDtoDetails.setStartDay(details.getStartDay());
 
-	        response.setStatus(HttpStatus.OK.value());
-	        response.setData(ZoyShortTermDetailsList);
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+				termDetails.getZoyShortTermDtoInfo().add(zoyShortTermDtoDetails);
+			}
 
-	    } catch (Exception e) {
-	        log.error("Error in API :/zoy_admin/config/fetchzoyAdminConfigShortTermDetails.zoyAdminConfigShortTermDetails", e);
-	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setError(e.getMessage());
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+			ZoyShortTermDetailsList.addAll(groupedMap.values());
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(ZoyShortTermDetailsList);
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error in API :/zoy_admin/config/fetchzoyAdminConfigShortTermDetails.zoyAdminConfigShortTermDetails", e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	
