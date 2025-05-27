@@ -5,6 +5,7 @@ import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { BASE_PATH } from 'src/app/common/shared/variables';
 import { MessageService } from 'src/app/message.service';
 import { ServiceHelper } from 'src/app/common/shared/service-helper';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
@@ -96,6 +97,22 @@ import { ServiceHelper } from 'src/app/common/shared/service-helper';
             }
         );
     } 
+
+public getTicketImages(inquiryNumber: string): Observable<string> {
+  const url = `${this.basePath}zoy_admin/GetImagesForEachTickets`;
+  const httpParams = new HttpParams().set('inquiryNumber', inquiryNumber);
+
+  return this.httpclient.post(
+    url,
+    {}, // empty body
+    {
+      headers: ServiceHelper.buildHeaders(),
+      params: httpParams,
+      responseType: 'text', // Expect plain text (a string of URLs)
+      withCredentials: true
+    }
+  );
+}
 
   private errorHandler(error:HttpErrorResponse){
     return of(error.message || "server error");

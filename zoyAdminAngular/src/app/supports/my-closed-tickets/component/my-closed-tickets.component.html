@@ -168,7 +168,7 @@
                                       </th>
                                       <td mat-cell *matCellDef="let element" style="padding: 4px;">
                                         <span class="common-status"
-                                        [ngClass]="element.status === 'Close' ? 'btn-closed' : (element.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
+                                        [ngClass]="element.status === 'Close' || element.status === 'Closed' ? 'btn-closed' : (element.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
                                           {{element.status}}
                                         </span>
                                       </td>
@@ -227,9 +227,9 @@
           <div class="row mb-1">
             <div class="col-sm-4">Address:
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.address}}</span></div>
-            <div class="col-sm-4">city:
+            <div class="col-sm-4">City:
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.city}}</span></div>
-            <div class="col-sm-4">state:
+            <div class="col-sm-4">State:
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.state}}</span></div>
           </div>
           <div class="row mb-1">
@@ -248,7 +248,7 @@
             <div class="col-sm-4">Status:
               <span style="margin-left:10px;">
                 <span class="common-status"
-                [ngClass]="supportTicketDetails.status === 'Close' ? 'btn-closed' : (supportTicketDetails.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
+                [ngClass]="supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Closed' ? 'btn-closed' : (supportTicketDetails.status === 'Resolved' || supportTicketDetails.status === 'Resolve' ? 'btn-resolve':'btn-cancel' )" >
                   {{supportTicketDetails.status}}
                 </span>
               </span>
@@ -280,13 +280,15 @@
             <div class="col-sm-4">Status:
               <span style="margin-left:10px;">
                 <span class="common-status"
-                [ngClass]="supportTicketDetails.status === 'Close' ? 'btn-closed' : (supportTicketDetails.status === 'Resolved' ? 'btn-resolve':'btn-cancel' )" >
+                [ngClass]="supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Closed' ? 'btn-closed' : (supportTicketDetails.status === 'Resolved' || supportTicketDetails.status === 'Resolve' ? 'btn-resolve':'btn-cancel' )" >
                   {{supportTicketDetails.status}}
                 </span>
               </span>
               &nbsp; 
               <span *ngIf="supportTicketDetails?.images_urls && supportTicketDetails?.images_urls!=''">
-                <a [href]="supportTicketDetails.images_urls" target="_blank"><i class="fas fa-paperclip" title="attachment of file"></i></a>
+                  <a href="javascript:void(0)" (click)="downloadImageUrls(supportTicketDetails.images_urls)">
+                  <i class="fas fa-download" title="Download all images" style="margin-left: 8px;"></i>
+                  </a>
               </span>
             </div>
           </div>
@@ -316,7 +318,7 @@
                 <div class="col-sm-6">{{historyDet.description}}</div>
               </div>
               </div>
-              <div class="ml-1 mr-1" *ngIf="supportTicketDetails?.user_ticket_history?.length==0" style="text-align: center;font-size: 13px;border-top: 1px solid #edebeb;"> History is not available</div>
+              <div class="ml-1 mr-1" *ngIf="supportTicketDetails?.user_ticket_history?.length==0" style="text-align: center;font-size: 13px;border-top: 1px solid #edebeb;"> No data found</div>
 
             </div>
           </div>
