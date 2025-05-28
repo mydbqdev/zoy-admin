@@ -134,7 +134,7 @@
                     </div>
                     <div class="col-md-2 mb-2">
                       <label for="phone">City Code</label>
-                      <input type="text"  maxlength="3" placeholder="City Code" id="city" [(ngModel)]="generateZCode.property_city_code" formControlName="cityCode" class="form-control"  [ngClass]="{'is-invalid':submitted && (form.controls.cityCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [readonly]="!isEditCityCode">
+                      <input type="text"  maxlength="3" placeholder="City Code" id="city" [(ngModel)]="generateZCode.property_city_code" (ngModelChange)="generateZCode.property_city_code = $event.toUpperCase()" formControlName="cityCode" class="form-control"  [ngClass]="{'is-invalid':submitted && (form.controls.cityCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))' [readonly]="!isEditCityCode">
                     </div>
                   </div>
 
@@ -150,7 +150,7 @@
                   
                     <div class="col-md-2 mb-2">
                       <label for="phone">Area Code</label>
-                      <input type="text"  maxlength="3" placeholder="Area Code" id="city" [(ngModel)]="generateZCode.property_locality_code" formControlName="areaCode" class="form-control" [ngClass]="{'is-invalid':submitted && (form.controls.areaCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [readonly]="!isEditAreaCode">
+                      <input type="text"  maxlength="3" placeholder="Area Code" id="city" [(ngModel)]="generateZCode.property_locality_code" (ngModelChange)="generateZCode.property_locality_code = $event.toUpperCase()" formControlName="areaCode" class="form-control" [ngClass]="{'is-invalid':submitted && (form.controls.areaCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))' [readonly]="!isEditAreaCode">
                     </div>
                     <div class="col-md-3 mb-2">
                       <label for="zoyShare">ZOY Revenue</label>
