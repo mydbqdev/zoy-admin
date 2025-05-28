@@ -563,6 +563,47 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	        nativeQuery = true)
 	List<String[]> findSecurityDepositDeadlineDetailsByDate(@Param("currentDate") String currentDate);
 	
+	@Query(value = " SELECT zoy_pg_short_term_master_id,\r\n"
+			+ "start_day ,\r\n"
+			+ "end_day,\r\n"
+			+ "percentage,\r\n"
+			+ "pg_type,\r\n"
+			+ "effective_date,\r\n"
+			+ "is_approved ,\r\n"
+			+ "approved_by ,\r\n"
+			+ "created_by ,\r\n"
+			+ "comments \r\n"
+			+ "  FROM pgowners.zoy_pg_short_term_master \r\n"
+			+ "  WHERE is_approved = TRUE AND  \r\n"
+			+ "    TO_DATE(effective_date, 'YYYY-MM-DD') < CAST(:currentDate AS DATE)  \r\n"
+			+ "  ORDER BY TO_DATE(effective_date, 'YYYY-MM-DD') DESC",
+	        nativeQuery = true)
+	List<Object[]> findShortTermOldDetailsByDate(@Param("currentDate") String currentDate);
+	
+	@Query(value = "SELECT zoy_pg_short_term_master_id, " +
+	        "start_day, " +
+	        "end_day, " +
+	        "percentage, " +
+	        "pg_type, " +
+	        "effective_date, " +
+	        "is_approved, " +
+	        "approved_by, " +
+	        "created_by, " +
+	        "comments " +
+	        "FROM pgowners.zoy_pg_short_term_master " +
+	        "WHERE is_approved = TRUE AND ( " +
+	        "  effective_date = TO_CHAR(CAST(:currentDate AS DATE), 'YYYY-MM-DD') OR " +
+	        "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '1 day', 'YYYY-MM-DD') OR " +
+	        "  effective_date = TO_CHAR(CAST(:currentDate AS DATE) + INTERVAL '7 days', 'YYYY-MM-DD') " +
+	        ") " +
+	        "ORDER BY start_day",
+	        nativeQuery = true)
+	List<Object[]> findShortTermNewDetailsByDate(@Param("currentDate") String currentDate);
+	
+    @Query(value = "SELECT pg_type_id FROM pgowners.zoy_pg_type_master", nativeQuery = true)
+    List<String> findAllPgTypeIds();
+
+	
 	@Query(value = "SELECT pzm.first_name ,pzm.last_name, up.email_id, up.mobile_no "
 			+ "FROM pgadmin.pg_owner_master pzm  "
 			+ "join pgcommon.user_profile up ON pzm.email_id = up.email_id  "
@@ -588,5 +629,6 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	        nativeQuery = true)
 	PgOwnerMaster getExistingOwnerDetails(String zoyCode);
 
+	
 
 }

@@ -244,5 +244,9 @@ public interface AdminUserMasterRepository extends JpaRepository<AdminUserMaster
 			+ "WHERE pom.email_id IS NOT NULL",nativeQuery=true)
 	String[] allTenantAndOwnerEmails();
 	
+	@Query(value="select pg_type_name from pgowners.zoy_pg_type_master where pg_type_id=:pgid",nativeQuery=true)
+	String pgTypeName(String pgid);
+	
+
 	
 }

@@ -647,6 +647,7 @@ public class ZoyEmailService {
 //	
 	public void sendTokenAdvanceRuleChangeEmail(String effectiveDate, BigDecimal oldFixed, BigDecimal oldVariable,
 			BigDecimal newFixed, BigDecimal newVariable) throws WebServiceException {
+		
 		String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
 
 		if (allMails == null || allMails.length == 0) {
@@ -655,7 +656,7 @@ public class ZoyEmailService {
 		}
 		String subject="Important Update: Changes in Token Advance Policy, Effective from " + effectiveDate;
 
-		String message = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
+		String message = "<p>Dear Owner,</p>" + "<p>We hope this message finds you well.</p>"
 				+ "<p>This is to inform you of an important change in our Token Advance policy, effective from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency, we have revised certain clauses in our Token Advance policy. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
@@ -697,7 +698,7 @@ public class ZoyEmailService {
 
 		String subject="Important Update: Changes in cancellation and payment rules, policy terms effective from "+ effectiveDate;
 
-		String message = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
+		String message = "<p>Dear Owner,</p>" + "<p>We hope this message finds you well.</p>"
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
@@ -738,7 +739,7 @@ public class ZoyEmailService {
 
 		String subject="Important Update: Changes in cancellation and payment rules, policy terms effective from "+ effectiveDate;
 
-		String message = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
+		String message = "<p>Dear Owner,</p>" + "<p>We hope this message finds you well.</p>"
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
@@ -867,7 +868,7 @@ public class ZoyEmailService {
 	    String subject = "Important Update: Changes in cancellation and payment rules, policy terms effective from "
 	            + effectiveDate;
 
-	    String message = "<p>Dear Owner/Tenant,</p>" +
+	    String message = "<p>Dear Owner,</p>" +
 	            "<p>We hope this message finds you well.</p>" +
 	            "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 	            + effectiveDate + "</strong>.</p>" +
@@ -911,7 +912,7 @@ public class ZoyEmailService {
 
 		String subject = "Important Update: Changes in cancellation and payment rules, policy terms effective from "+ effectiveDate;
 
-		String message = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
+		String message = "<p>Dear Owner,</p>" + "<p>We hope this message finds you well.</p>"
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
@@ -965,7 +966,7 @@ public class ZoyEmailService {
 	
 		String subject ="Important Update: Changes in cancellation and payment rules, policy terms effective from "+ effectiveDate;
 
-		String message = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
+		String message = "<p>Dear Owner,</p>" + "<p>We hope this message finds you well.</p>"
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
@@ -1021,7 +1022,7 @@ public class ZoyEmailService {
 		String oldConditionDescription = comparisonMap.getOrDefault(oldCondition, oldCondition);
 		String newConditionDescription = comparisonMap.getOrDefault(newCondition, newCondition);
 
-		String message = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
+		String message = "<p>Dear Owner,</p>" + "<p>We hope this message finds you well.</p>"
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
@@ -1077,7 +1078,7 @@ public class ZoyEmailService {
 		String oldConditionDescription = comparisonMap.getOrDefault(oldCondition, oldCondition);
 		String newConditionDescription = comparisonMap.getOrDefault(newCondition, newCondition);
 
-		String message = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
+		String message = "<p>Dear Owner,</p>" + "<p>We hope this message finds you well.</p>"
 				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
 				+ effectiveDate + "</strong>.</p>"
 				+ "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
@@ -1115,7 +1116,7 @@ public class ZoyEmailService {
 	public void sendCancellationRefundPolicyChangeEmail(ZoyBeforeCheckInCancellationModel zoyPreviousData,
 			ZoyBeforeCheckInCancellationModel zoyUpdatedData) throws WebServiceException {
 		String[] allMails = adminUserMasterRepo.allTenantAndOwnerEmails();
-
+		String pgType=adminUserMasterRepo.pgTypeName(zoyUpdatedData.getPgType());
 		if (allMails == null || allMails.length == 0) {
 			log.warn("No recipient email addresses found for Cancellation & Refund Policy rule change notification.");
 			return;
@@ -1151,8 +1152,8 @@ public class ZoyEmailService {
 			}
 		}
 
-		String message = "<p>Dear Owner/Tenant,</p>" + "<p>We hope this message finds you well.</p>"
-				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms, which will come into effect from <strong>"
+		String message = "<p>Dear Owner,</p>" + "<p>We hope this message finds you well.</p>"
+				+ "<p>We are writing to inform you about an important update regarding our Cancellation & Payment rules and Policy Terms for <strong>PG TYPE-"+pgType +"</strong>, which will come into effect from <strong>"
 				+ zoyUpdatedData.getEffectiveDate() + "</strong>.</p>" 
 			    + "<p>As part of our ongoing efforts to enhance user experience and ensure transparency for both property owners and tenants, we have revised certain clauses and rules in our cancellation, payment, refund policies and terms of stay rules. These changes aim to create a fair and balanced approach that protects the interests of all parties involved.</p>"
 				+ "<p><strong>What's Changing:</strong><br/>"
@@ -1224,7 +1225,7 @@ public class ZoyEmailService {
 	        }
 	    }
 
-	    String message = "<p>Dear Owner/Tenant,</p>"
+	    String message = "<p>Dear Owner,</p>"
 	            + "<p>We hope this message finds you well.</p>"
 	            + "<p>We are writing to inform you about an important update regarding our Short-Term Stay Rent Calculation Policy, which will come into effect from <strong>"
 	            + newShortTerm.getEffectiveDate() + "</strong>.</p>"
