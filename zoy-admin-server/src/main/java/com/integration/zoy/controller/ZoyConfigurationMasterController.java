@@ -5,7 +5,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -214,8 +216,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-     					zoyEmailService.sendTokenAdvanceRuleChangeEmail(details.getEffectiveDate(),oldFixed,oldVariable,details.getFixedToken(),details.getVariableToken());
-     					
+//     					zoyEmailService.sendTokenAdvanceRuleChangeEmail(details.getEffectiveDate(),oldFixed,oldVariable,details.getFixedToken(),details.getVariableToken());
      					// audit 
      					StringBuffer historyContent = new StringBuffer(" has "+flag+" the Token for");
     					if (!oldFixed.equals(details.getFixedToken())) {
@@ -234,7 +235,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						oldDetails.setApprovedBy(currentUser);
 						oldDetails.setComments(details.getComments());
 						flag="Rejected";
-						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());	
 						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 						
 						StringBuffer historyContent = new StringBuffer(" has "+flag+" the Token for");
@@ -488,7 +489,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            zoyEmailService.sendApprovalNotificationEmail(currentUser, ruleName);
 	            notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
 	        	
-	            zoyEmailService.sendCancellationRefundPolicyChangeEmail(previousZoyBeforeCheckInCancellation, zoyBeforeCheckInCancellation);
+//	            zoyEmailService.sendCancellationRefundPolicyChangeEmail(previousZoyBeforeCheckInCancellation, zoyBeforeCheckInCancellation);
 	            
 				// audit history here
 				String historyContent =zoyEmailService.sendCancellationRefundPolicyChange(previousZoyBeforeCheckInCancellation, zoyBeforeCheckInCancellation,flag);
@@ -682,8 +683,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendOtherChargesChangeEmailForOwners(details.getEffectiveDate(),oldOwnerCharges,oldOwnerEkycCharges,ownerCharges,ownerEkycCharges);
-						zoyEmailService.sendOtherChargesChangeEmailForUsers(details.getEffectiveDate(),oldTenantCharges,oldTenantEkycCharges,tenantCharges,tenantEkycCharges);
+//						zoyEmailService.sendOtherChargesChangeEmailForOwners(details.getEffectiveDate(),oldOwnerCharges,oldOwnerEkycCharges,ownerCharges,ownerEkycCharges);
+//						zoyEmailService.sendOtherChargesChangeEmailForUsers(details.getEffectiveDate(),oldTenantCharges,oldTenantEkycCharges,tenantCharges,tenantEkycCharges);
 						
 						// Audit history here
 						StringBuilder historyContent = new StringBuilder(" has "+flag+" the Other Charges for");
@@ -844,7 +845,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendGstChargesChangeEmail(details.getEffectiveDate(),oldCGstPercentage,oldMonthlyRent,cgstPercentage,monthlyRent);
+//						zoyEmailService.sendGstChargesChangeEmail(details.getEffectiveDate(),oldCGstPercentage,oldMonthlyRent,cgstPercentage,monthlyRent);
 						
 						// Audit history here
 						StringBuilder historyContent = new StringBuilder(" has "+flag+" the Gst Changes for");
@@ -1153,7 +1154,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Rejected";
 						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());
 						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
-						zoyEmailService.sendSecurityDepositLimitsChangeEmail(details.getEffectiveDate(),oldVariable,oldFixed,details.getMinimumDeposit(),details.getMaximumDeposit());
+//						zoyEmailService.sendSecurityDepositLimitsChangeEmail(details.getEffectiveDate(),oldVariable,oldFixed,details.getMinimumDeposit(),details.getMaximumDeposit());
 						
 						// Build history for audit
 						StringBuffer historyContent = new StringBuffer(" has "+flag+" the Security Deposit Limit for ");
@@ -1274,7 +1275,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendEarlyCheckoutChangeEmail(zoyPgEarlyCheckOut.getEffectiveDate(),oldFixed,zoyPgEarlyCheckOut.getCheckOutDay(),oldcondition,zoyPgEarlyCheckOut.getTriggerCondition());
+//						zoyEmailService.sendEarlyCheckoutChangeEmail(zoyPgEarlyCheckOut.getEffectiveDate(),oldFixed,zoyPgEarlyCheckOut.getCheckOutDay(),oldcondition,zoyPgEarlyCheckOut.getTriggerCondition());
 						
 						//audit history
 						StringBuffer historyContent = new StringBuffer(" has "+flag+" the Early Check out for");
@@ -1494,7 +1495,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendAutoCancellationAfterCheckinChangeEmail(zoyAfterCheckInCancellation.getEffectiveDate(), oldFixed, zoyAfterCheckInCancellation.getAutoCancellationDay(),oldcondition,zoyAfterCheckInCancellation.getTriggerCondition());
+//						zoyEmailService.sendAutoCancellationAfterCheckinChangeEmail(zoyAfterCheckInCancellation.getEffectiveDate(), oldFixed, zoyAfterCheckInCancellation.getAutoCancellationDay(),oldcondition,zoyAfterCheckInCancellation.getTriggerCondition());
 					
 						// Audit history
 						StringBuffer historyContent = new StringBuffer(" has "+flag+" the Early Check out for");
@@ -1638,7 +1639,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendSecurityDepositDeadlineChangeEmail(zoySecurityDeadLine.getEffectiveDate(),oldFixed,oldVariable,zoySecurityDeadLine.getAutoCancellationDay(),zoySecurityDeadLine.getDeductionPercentage(),oldcondition,zoySecurityDeadLine.getTriggerCondition());
+//						zoyEmailService.sendSecurityDepositDeadlineChangeEmail(zoySecurityDeadLine.getEffectiveDate(),oldFixed,oldVariable,zoySecurityDeadLine.getAutoCancellationDay(),zoySecurityDeadLine.getDeductionPercentage(),oldcondition,zoySecurityDeadLine.getTriggerCondition());
 						
 						// Audit history for the update
 						StringBuffer historyContent = new StringBuffer(" has "+flag+" the Security Deposit DeadLine for");
@@ -1902,7 +1903,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 				zoyEmailService.sendApprovalNotificationEmail(currentUser, ruleName);
 				notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-				zoyEmailService.sendEmailNotificationsForShortTerm(previousShortTerm, shortTerm);
+//				zoyEmailService.sendEmailNotificationsForShortTerm(previousShortTerm, shortTerm);
 
 				// audit history here
 				String historyContent = zoyEmailService.sendAuditNotificationsForShortTerm(previousShortTerm, shortTerm,
@@ -1986,7 +1987,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendForceCheckoutChangeEmail(forceCheckOut.getEffectiveDate(),oldFixed,forceCheckOut.getForceCheckOutDays());
+//						zoyEmailService.sendForceCheckoutChangeEmail(forceCheckOut.getEffectiveDate(),oldFixed,forceCheckOut.getForceCheckOutDays());
 						
 						// Audit the update action
 						String historyContent = " has "+flag+" the Force Check Out for, Considering days from " + oldFixed
@@ -2097,7 +2098,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendNoRentalAgreementChangeEmail(NoRentalAgreement.getEffectiveDate(),oldFixed,NoRentalAgreement.getNoRentalAgreementDays());
+//						zoyEmailService.sendNoRentalAgreementChangeEmail(NoRentalAgreement.getEffectiveDate(),oldFixed,NoRentalAgreement.getNoRentalAgreementDays());
 						
 						// Audit the update action
 						String historyContent = " has "+flag+" the No Rental Agreement for, Considering days from "
@@ -2664,70 +2665,57 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	}
 	@Override
 	public ResponseEntity<String> zoyAdminConfigShortTermDetails() {
-	    ResponseBody response = new ResponseBody();
-	    List<ZoyShortTermDetails> ZoyShortTermDetailsList = new ArrayList<>();
+		ResponseBody response = new ResponseBody();
+		List<ZoyShortTermDetails> ZoyShortTermDetailsList = new ArrayList<>();
 
-	    try {
-	        List<ZoyPgShortTermMaster> ShortTermList = zoyPgShortTermMasterRepository.findAllShortTermDetails();
+		try {
+			List<ZoyPgShortTermMaster> ShortTermList = zoyPgShortTermMasterRepository.findAllShortTermDetails();
 
-	        if (ShortTermList == null || ShortTermList.isEmpty()) {
-	            response.setStatus(HttpStatus.OK.value());
-	            response.setData(ZoyShortTermDetailsList);
-	            response.setError("No Short Term details found.");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
-	        }
+			if (ShortTermList == null || ShortTermList.isEmpty()) {
+				response.setStatus(HttpStatus.OK.value());
+				response.setData(ZoyShortTermDetailsList);
+				response.setError("No Short Term details found.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			}
 
-	        String effectiveDate = null;
-	        String comments ="";
-	        ZoyShortTermDetails termDetails = null;
-	        List<ZoyShortTermDto> zoyShortTermDtoDetailsList = new ArrayList<>();
+			Map<String, ZoyShortTermDetails> groupedMap = new HashMap<>();
 
-	        for (ZoyPgShortTermMaster details : ShortTermList) {
-	            if (!(Objects.toString(effectiveDate, "") + Objects.toString(comments, ""))
-	                    .equals(Objects.toString(details.getEffectiveDate(), "") + Objects.toString(details.getComments(), ""))) {
-	                if (termDetails != null) {
-	                    termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
-	                    ZoyShortTermDetailsList.add(termDetails);
-	                }
-	                termDetails = new ZoyShortTermDetails();
-	                termDetails.setApproved(details.getIsApproved() != null ? details.getIsApproved() : false);
-	                termDetails.setApprovedBy(details.getApprovedBy());
-	                termDetails.setCreatedBy(details.getCreatedBy());
-	                termDetails.setEffectiveDate(details.getEffectiveDate());
-	                termDetails.setComments(details.getComments());
-	                zoyShortTermDtoDetailsList = new ArrayList<>();
-	                effectiveDate = details.getEffectiveDate();
-	                comments = details.getComments();
-	            }
+			for (ZoyPgShortTermMaster details : ShortTermList) {
+				String key = Objects.toString(details.getEffectiveDate(), "") + Objects.toString(details.getComments(), "");
 
-	            ZoyShortTermDto zoyShortTermDtoDetails = new ZoyShortTermDto();
-	            zoyShortTermDtoDetails.setEndDay(details.getEndDay());
-	            zoyShortTermDtoDetails.setPercentage(details.getPercentage());
-	            zoyShortTermDtoDetails.setShortTermId(details.getZoyPgShortTermMasterId());
-	            zoyShortTermDtoDetails.setStartDay(details.getStartDay());
+				ZoyShortTermDetails termDetails = groupedMap.get(key);
+				if (termDetails == null) {
+					termDetails = new ZoyShortTermDetails();
+					termDetails.setApproved(details.getIsApproved() != null ? details.getIsApproved() : false);
+					termDetails.setApprovedBy(details.getApprovedBy());
+					termDetails.setCreatedBy(details.getCreatedBy());
+					termDetails.setEffectiveDate(details.getEffectiveDate());
+					termDetails.setComments(details.getComments());
+					termDetails.setZoyShortTermDtoInfo(new ArrayList<>());
+					groupedMap.put(key, termDetails);
+				}
 
-	            zoyShortTermDtoDetailsList.add(zoyShortTermDtoDetails);
-	            
-	            if (!(Objects.toString(effectiveDate, "") + Objects.toString(comments, ""))
-		                .equals(Objects.toString(details.getEffectiveDate(), "") + Objects.toString(details.getComments(), ""))) {
-		        if (termDetails != null) {
-		            termDetails.setZoyShortTermDtoInfo(zoyShortTermDtoDetailsList);
-		            ZoyShortTermDetailsList.add(termDetails);
-		        }
-		        }
-	        }
-	       
+				ZoyShortTermDto zoyShortTermDtoDetails = new ZoyShortTermDto();
+				zoyShortTermDtoDetails.setEndDay(details.getEndDay());
+				zoyShortTermDtoDetails.setPercentage(details.getPercentage());
+				zoyShortTermDtoDetails.setShortTermId(details.getZoyPgShortTermMasterId());
+				zoyShortTermDtoDetails.setStartDay(details.getStartDay());
 
-	        response.setStatus(HttpStatus.OK.value());
-	        response.setData(ZoyShortTermDetailsList);
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+				termDetails.getZoyShortTermDtoInfo().add(zoyShortTermDtoDetails);
+			}
 
-	    } catch (Exception e) {
-	        log.error("Error in API :/zoy_admin/config/fetchzoyAdminConfigShortTermDetails.zoyAdminConfigShortTermDetails", e);
-	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setError(e.getMessage());
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+			ZoyShortTermDetailsList.addAll(groupedMap.values());
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(ZoyShortTermDetailsList);
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error in API :/zoy_admin/config/fetchzoyAdminConfigShortTermDetails.zoyAdminConfigShortTermDetails", e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	
