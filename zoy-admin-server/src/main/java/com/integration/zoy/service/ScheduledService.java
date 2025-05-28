@@ -64,8 +64,8 @@ public class ScheduledService {
 	    }
 	}
 
-    @Scheduled(cron = "${rule.intimation.effective.date.cron}", zone = "${spring.jackson.time-zone}")
-    @Transactional
+//    @Scheduled(cron = "${rule.intimation.effective.date.cron}", zone = "${spring.jackson.time-zone}")
+//    @Transactional
     public void sendRuleEffectiveDateNotifications() {
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -80,6 +80,8 @@ public class ScheduledService {
             autoCancellationOfMasterConfi.sendAfterCheckInDateRuleEffective();
             autoCancellationOfMasterConfi.sendEarlyCheckOutRuleEffective();
             autoCancellationOfMasterConfi.sendSecurityDepositDeadlineRuleEffective();
+            autoCancellationOfMasterConfi.sendShortTermRuleEffective();
+            
             log.info("Auto cancellation for master configuration executed at: " + dateTime);
         } catch (Exception e) {
             log.error("Error in autoCanceForTokenAdvance(): ", e);

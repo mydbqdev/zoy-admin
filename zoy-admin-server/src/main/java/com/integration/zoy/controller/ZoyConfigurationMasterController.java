@@ -216,8 +216,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-     					zoyEmailService.sendTokenAdvanceRuleChangeEmail(details.getEffectiveDate(),oldFixed,oldVariable,details.getFixedToken(),details.getVariableToken());
-     					
+//     					zoyEmailService.sendTokenAdvanceRuleChangeEmail(details.getEffectiveDate(),oldFixed,oldVariable,details.getFixedToken(),details.getVariableToken());
      					// audit 
      					StringBuffer historyContent = new StringBuffer(" has "+flag+" the Token for");
     					if (!oldFixed.equals(details.getFixedToken())) {
@@ -236,7 +235,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						oldDetails.setApprovedBy(currentUser);
 						oldDetails.setComments(details.getComments());
 						flag="Rejected";
-						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());
+						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());	
 						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
 						
 						StringBuffer historyContent = new StringBuffer(" has "+flag+" the Token for");
@@ -490,7 +489,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	            zoyEmailService.sendApprovalNotificationEmail(currentUser, ruleName);
 	            notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
 	        	
-	            zoyEmailService.sendCancellationRefundPolicyChangeEmail(previousZoyBeforeCheckInCancellation, zoyBeforeCheckInCancellation);
+//	            zoyEmailService.sendCancellationRefundPolicyChangeEmail(previousZoyBeforeCheckInCancellation, zoyBeforeCheckInCancellation);
 	            
 				// audit history here
 				String historyContent =zoyEmailService.sendCancellationRefundPolicyChange(previousZoyBeforeCheckInCancellation, zoyBeforeCheckInCancellation,flag);
@@ -684,8 +683,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendOtherChargesChangeEmailForOwners(details.getEffectiveDate(),oldOwnerCharges,oldOwnerEkycCharges,ownerCharges,ownerEkycCharges);
-						zoyEmailService.sendOtherChargesChangeEmailForUsers(details.getEffectiveDate(),oldTenantCharges,oldTenantEkycCharges,tenantCharges,tenantEkycCharges);
+//						zoyEmailService.sendOtherChargesChangeEmailForOwners(details.getEffectiveDate(),oldOwnerCharges,oldOwnerEkycCharges,ownerCharges,ownerEkycCharges);
+//						zoyEmailService.sendOtherChargesChangeEmailForUsers(details.getEffectiveDate(),oldTenantCharges,oldTenantEkycCharges,tenantCharges,tenantEkycCharges);
 						
 						// Audit history here
 						StringBuilder historyContent = new StringBuilder(" has "+flag+" the Other Charges for");
@@ -846,7 +845,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendGstChargesChangeEmail(details.getEffectiveDate(),oldCGstPercentage,oldMonthlyRent,cgstPercentage,monthlyRent);
+//						zoyEmailService.sendGstChargesChangeEmail(details.getEffectiveDate(),oldCGstPercentage,oldMonthlyRent,cgstPercentage,monthlyRent);
 						
 						// Audit history here
 						StringBuilder historyContent = new StringBuilder(" has "+flag+" the Gst Changes for");
@@ -1155,7 +1154,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Rejected";
 						zoyEmailService.sendApprovalRejectionEmail(ruleName, currentUser, details.getEffectiveDate(), details.getComments());
 						notificationsAndAlertsService.masterConfigurationRuleRejection(currentUser,ruleName);
-						zoyEmailService.sendSecurityDepositLimitsChangeEmail(details.getEffectiveDate(),oldVariable,oldFixed,details.getMinimumDeposit(),details.getMaximumDeposit());
+//						zoyEmailService.sendSecurityDepositLimitsChangeEmail(details.getEffectiveDate(),oldVariable,oldFixed,details.getMinimumDeposit(),details.getMaximumDeposit());
 						
 						// Build history for audit
 						StringBuffer historyContent = new StringBuffer(" has "+flag+" the Security Deposit Limit for ");
@@ -1276,7 +1275,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendEarlyCheckoutChangeEmail(zoyPgEarlyCheckOut.getEffectiveDate(),oldFixed,zoyPgEarlyCheckOut.getCheckOutDay(),oldcondition,zoyPgEarlyCheckOut.getTriggerCondition());
+//						zoyEmailService.sendEarlyCheckoutChangeEmail(zoyPgEarlyCheckOut.getEffectiveDate(),oldFixed,zoyPgEarlyCheckOut.getCheckOutDay(),oldcondition,zoyPgEarlyCheckOut.getTriggerCondition());
 						
 						//audit history
 						StringBuffer historyContent = new StringBuffer(" has "+flag+" the Early Check out for");
@@ -1496,7 +1495,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendAutoCancellationAfterCheckinChangeEmail(zoyAfterCheckInCancellation.getEffectiveDate(), oldFixed, zoyAfterCheckInCancellation.getAutoCancellationDay(),oldcondition,zoyAfterCheckInCancellation.getTriggerCondition());
+//						zoyEmailService.sendAutoCancellationAfterCheckinChangeEmail(zoyAfterCheckInCancellation.getEffectiveDate(), oldFixed, zoyAfterCheckInCancellation.getAutoCancellationDay(),oldcondition,zoyAfterCheckInCancellation.getTriggerCondition());
 					
 						// Audit history
 						StringBuffer historyContent = new StringBuffer(" has "+flag+" the Early Check out for");
@@ -1640,7 +1639,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendSecurityDepositDeadlineChangeEmail(zoySecurityDeadLine.getEffectiveDate(),oldFixed,oldVariable,zoySecurityDeadLine.getAutoCancellationDay(),zoySecurityDeadLine.getDeductionPercentage(),oldcondition,zoySecurityDeadLine.getTriggerCondition());
+//						zoyEmailService.sendSecurityDepositDeadlineChangeEmail(zoySecurityDeadLine.getEffectiveDate(),oldFixed,oldVariable,zoySecurityDeadLine.getAutoCancellationDay(),zoySecurityDeadLine.getDeductionPercentage(),oldcondition,zoySecurityDeadLine.getTriggerCondition());
 						
 						// Audit history for the update
 						StringBuffer historyContent = new StringBuffer(" has "+flag+" the Security Deposit DeadLine for");
@@ -1904,7 +1903,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 				zoyEmailService.sendApprovalNotificationEmail(currentUser, ruleName);
 				notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-				zoyEmailService.sendEmailNotificationsForShortTerm(previousShortTerm, shortTerm);
+//				zoyEmailService.sendEmailNotificationsForShortTerm(previousShortTerm, shortTerm);
 
 				// audit history here
 				String historyContent = zoyEmailService.sendAuditNotificationsForShortTerm(previousShortTerm, shortTerm,
@@ -1988,7 +1987,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendForceCheckoutChangeEmail(forceCheckOut.getEffectiveDate(),oldFixed,forceCheckOut.getForceCheckOutDays());
+//						zoyEmailService.sendForceCheckoutChangeEmail(forceCheckOut.getEffectiveDate(),oldFixed,forceCheckOut.getForceCheckOutDays());
 						
 						// Audit the update action
 						String historyContent = " has "+flag+" the Force Check Out for, Considering days from " + oldFixed
@@ -2099,7 +2098,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 						flag="Approved";
 						zoyEmailService.sendApprovalNotificationEmail(currentUser,ruleName);
 						notificationsAndAlertsService.masterConfigurationRuleApproval(currentUser, ruleName);
-						zoyEmailService.sendNoRentalAgreementChangeEmail(NoRentalAgreement.getEffectiveDate(),oldFixed,NoRentalAgreement.getNoRentalAgreementDays());
+//						zoyEmailService.sendNoRentalAgreementChangeEmail(NoRentalAgreement.getEffectiveDate(),oldFixed,NoRentalAgreement.getNoRentalAgreementDays());
 						
 						// Audit the update action
 						String historyContent = " has "+flag+" the No Rental Agreement for, Considering days from "

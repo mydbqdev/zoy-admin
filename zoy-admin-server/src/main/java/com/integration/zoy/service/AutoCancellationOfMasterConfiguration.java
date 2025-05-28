@@ -3,6 +3,7 @@ package com.integration.zoy.service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,7 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.model.oldNewConfigRequest;
 import com.integration.zoy.repository.PgOwnerMaterRepository;
+import com.integration.zoy.utils.ZoyShortTermDetails;
+import com.integration.zoy.utils.ZoyShortTermDto;
 
 @Service
 public class AutoCancellationOfMasterConfiguration {
@@ -413,5 +417,108 @@ public class AutoCancellationOfMasterConfiguration {
 			log.error("Error in sendEarlyCheckOutRuleEffective(): ", e);
 		}
 	}
+	
+	
+	public void sendShortTermRuleEffective() {
+	    try {
+	        TimeZone timeZone = TimeZone.getTimeZone(currentTimeZone);
+	        Calendar calendar = Calendar.getInstance(timeZone);
+
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	        sdf.setTimeZone(timeZone);
+	        String currentDateStr = sdf.format(calendar.getTime());
+	        
+	        List<Object[]> newData = pgOwnerMaterRepository.findShortTermNewDetailsByDate(currentDateStr);
+	        List<Object[]> oldData = pgOwnerMaterRepository.findShortTermOldDetailsByDate(currentDateStr);
+
+	        oldNewConfigRequest configRequest = new oldNewConfigRequest();
+
+	        ZoyShortTermDetails newRule = mapToZoyShortTermDetails(newData);
+	        ZoyShortTermDetails oldRule = mapToZoyShortTermDetails(oldData);
+
+	        configRequest.setNewSTDRule(newRule);
+	        configRequest.setOldSTDRule(oldRule);
+
+	        if (!newData.isEmpty()) {
+	            zoyEmailService.sendEmailNotificationsForShortTerm(oldRule, newRule);
+	        } else {
+	            log.warn("No new short-term rule found for current or upcoming effective dates.");
+	        }
+
+	    } catch (Exception e) {
+	        log.error("Error in sendShortTermRuleEffective(): ", e);
+	    }
+	}
+
+	
+	    public static ZoyShortTermDetails mapToZoyShortTermDetails(List<Object[]> data) {
+	        ZoyShortTermDetails details = new ZoyShortTermDetails();
+	        if (data == null || data.isEmpty()) 
+	        	return details;
+
+	        List<ZoyShortTermDto> dtoList = new ArrayList<>();
+
+	        for (Object[] row : data) {
+	            ZoyShortTermDto dto = new ZoyShortTermDto();
+
+	            dto.setShortTermId(row[0] != null ? row[0].toString() : null);
+	            dto.setStartDay(row[1] != null ? ((Number) row[1]).intValue() : 0);
+	            dto.setEndDay(row[2] != null ? ((Number) row[2]).intValue() : 0);
+	            dto.setPercentage(row[3] instanceof BigDecimal ? (BigDecimal) row[3] : BigDecimal.ZERO);
+	            dtoList.add(dto);
+	        }
+
+	        Object[] first = data.get(0);
+	        details.setEffectiveDate(first[5] != null ? first[5].toString() : null);
+	        details.setApproved(first[6] != null && (Boolean) first[6]);
+	        details.setApprovedBy(first[7] != null ? first[7].toString() : null);
+	        details.setCreatedBy(first[8] != null ? first[8].toString() : null);
+	        details.setPgType(first[4] != null ? first[4].toString() : null);
+	        details.setComments(first[9] != null ? first[9].toString() : null);
+
+	        details.setZoyShortTermDtoInfo(dtoList);
+	        return details;
+	    }
+	
+
+	    
+	    public void sendCancellationAndRefundPolicyBeforeCheckInRuleEffective() {
+		    try {
+		        TimeZone timeZone = TimeZone.getTimeZone(currentTimeZone);
+		        Calendar calendar = Calendar.getInstance(timeZone);
+
+		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		        sdf.setTimeZone(timeZone);
+		        String currentDateStr = sdf.format(calendar.getTime());
+		        
+		        List<String> pgtype = pgOwnerMaterRepository.findAllPgTypeIds();
+		        
+		        for (String type : pgtype) {
+		        
+		        
+		        List<Object[]> newData = pgOwnerMaterRepository.findShortTermNewDetailsByDate(currentDateStr);
+		        List<Object[]> oldData = pgOwnerMaterRepository.findShortTermOldDetailsByDate(currentDateStr);
+		        
+		        
+
+		        oldNewConfigRequest configRequest = new oldNewConfigRequest();
+
+		        ZoyShortTermDetails newRule = mapToZoyShortTermDetails(newData);
+		        ZoyShortTermDetails oldRule = mapToZoyShortTermDetails(oldData);
+
+		        configRequest.setNewSTDRule(newRule);
+		        configRequest.setOldSTDRule(oldRule);
+
+		        if (!newData.isEmpty()) {
+		            zoyEmailService.sendEmailNotificationsForShortTerm(oldRule, newRule);
+		        } else {
+		            log.warn("No new short-term rule found for current or upcoming effective dates.");
+		        }
+
+		    } 
+		    }  catch (Exception e) {
+		        log.error("Error in sendShortTermRuleEffective(): ", e);
+		    }
+		}
 
 }
