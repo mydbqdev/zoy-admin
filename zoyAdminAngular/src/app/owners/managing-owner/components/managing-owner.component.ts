@@ -427,6 +427,8 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		}
 		this.spinner.show();		     
 		this.submittedAddProperty=false;
+		this.generateZoyCode.property_city_code=this.generateZoyCode.property_city_code.toUpperCase();
+		this.generateZoyCode.property_locality_code=this.generateZoyCode.property_locality_code.toUpperCase();
 		this.generateZoyCodeService.generateOwnerCodeForMoreProperty(this.generateZoyCode).subscribe((res) => {
 			this.notifyService.showSuccess(res.message, "");
 		    this.resetProperty();

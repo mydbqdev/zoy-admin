@@ -147,6 +147,8 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		this.spinner.show();		     
 		this.submitted=false;
 		this.generateZCode.userEmail=this.generateZCode.userEmail.toLocaleLowerCase();
+		this.generateZCode.property_city_code=this.generateZCode.property_city_code.toUpperCase();
+		this.generateZCode.property_locality_code=this.generateZCode.property_locality_code.toUpperCase();
 		this.generateZoyCodeService.generateOwnerCode(this.generateZCode).subscribe((res) => {
 			this.notifyService.showSuccess(res.message, "");			
 			this.spinner.hide();
