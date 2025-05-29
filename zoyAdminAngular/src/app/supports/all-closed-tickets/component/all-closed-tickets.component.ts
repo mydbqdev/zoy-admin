@@ -362,7 +362,7 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 		});
 	}
 
-
+		isRequireUpdateStatus:boolean=true;
 		getDetails(element:any){
 			this.assignTicketNumber=element.ticket_id;
 			this.selectTicket=Object.assign(element);
@@ -373,6 +373,17 @@ export class AllClosedTicketsComponent implements OnInit, AfterViewInit {
 			this.updateStatus.inquiryType=this.selectTicket.type;
 			this.supportService.getInquiryDeatils(this.updateStatus).subscribe(data => {
 				this.supportTicketDetails = Object.assign([],data.data);
+				if(this.supportTicketDetails?.user_ticket_history){
+					if((this.supportTicketDetails?.user_ticket_history[0].request_status=='Closed' || this.supportTicketDetails?.user_ticket_history[0].request_status=='Close')){
+						let time: number = Date.parse(this.supportTicketDetails?.user_ticket_history[0].created_at);
+						let res: Date = new Date(time);
+						res.setDate(res.getDate() + 2 );
+						let now = new Date();
+						if(!(res>now)){
+							this.isRequireUpdateStatus=false;
+						}
+					}
+				}
 			}, error => {
 			this.spinner.hide();
 			if(error.status == 0) {
