@@ -24,7 +24,7 @@ public interface RegisteredPartnerDetailsRepository extends JpaRepository<Regist
 			+ "     FROM pgowners.zoy_pg_registered_owner_details szrd "
 			+ "     JOIN pgadmin.pg_owner_master pom "
 			+ "     ON szrd.register_id = pom.register_id "
-			+ " )) AS registeredOwnerCount,       "
+			+ " ) and zrd.status IN ('Open', 'Reopen', 'In Progress', 'Follow Up ','New')) AS registeredOwnerCount,       "
 			+ "(SELECT COUNT(*) "
 			+ " FROM pgadmin.pg_owner_master pzm "
 			+ " JOIN pgcommon.user_profile up ON pzm.email_id = up.email_id "

@@ -3,9 +3,14 @@ package com.integration.zoy.controller;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
@@ -81,6 +86,7 @@ import com.integration.zoy.model.TotalBookingsDetails;
 import com.integration.zoy.model.UserNameDTO;
 import com.integration.zoy.repository.RentalAgreementDocRepository;
 import com.integration.zoy.repository.UserBookingsRepository;
+import com.integration.zoy.repository.ZoyPgOwnerSettlementStatusRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.TimestampFormatterUtilService;
@@ -152,6 +158,9 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	
 	@Autowired
 	RentalAgreementDocRepository rentalAgreementDocRepository;
+	
+	@Autowired
+	ZoyPgOwnerSettlementStatusRepository zoyPgOwnerSettlementStatusRepo;
 	
 
 	@Value("${app.minio.zoypg.upload.docs.bucket.name}")
@@ -1319,4 +1328,98 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		}
 	}
 	
+	
+	public ResponseEntity<String> getQuarterlyRevenue(String financialYear) {
+		ResponseBody response = new ResponseBody();
+
+		try {
+			if (financialYear == null || !financialYear.matches("\\d{4}-\\d{4}")) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Invalid or missing financial year. Format should be 'YYYY-YYYY'.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+
+			List<Object[]> results = zoyPgOwnerSettlementStatusRepo.getQuarterlyRevenueByFinancialYear(financialYear);
+			List<Map<String, Object>> data = new ArrayList<>();
+
+			for (Object[] row : results) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("quarter", row[0]);
+				map.put("totalRevenue", row[1]);
+				data.add(map);
+			}
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(data);
+
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error in API: /zoy_admin/getQuarterlyRevenue", e);
+
+			try {
+				new ZoyAdminApplicationException(e, "");
+			} catch (Exception ex) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public ResponseEntity<String> getLast7DaysRevenue() {
+		ResponseBody response = new ResponseBody();
+		try {
+			TimeZone tz = TimeZone.getTimeZone(timeZone);
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			format.setTimeZone(tz);
+
+			LocalDate today = LocalDate.parse(format.format(new Date()));
+
+			Map<String, Double> dailyRevenue = new LinkedHashMap<>();
+			for (int i = 6; i >= 0; i--) {
+				String date = today.minusDays(i).toString();
+				dailyRevenue.put(date, 0.0);
+			}
+
+			List<Object[]> results = zoyPgOwnerSettlementStatusRepo.getLast7DaysRevenue();
+			if (results != null) {
+				for (Object[] row : results) {
+					if (row.length >= 2 && row[0] != null && row[1] != null) {
+						String date = row[0].toString();
+						Double revenue = ((Number) row[1]).doubleValue();
+						dailyRevenue.put(date, revenue);
+					}
+				}
+			}
+
+			List<Map<String, Object>> data = new ArrayList<>();
+			for (Map.Entry<String, Double> entry : dailyRevenue.entrySet()) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("date", entry.getKey());
+				map.put("revenueInThousands", entry.getValue());
+				data.add(map);
+			}
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(data);
+
+			SimpleDateFormat logFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			logFormat.setTimeZone(tz);
+			log.info("Zoy 7-day revenue API executed at: {}", logFormat.format(new Date()));
+
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.error("Error in API: /zoy_admin/getLast7DaysRevenue.getLast7DaysRevenue", e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Internal server error occurred.");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }
