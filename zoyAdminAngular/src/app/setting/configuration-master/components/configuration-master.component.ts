@@ -1248,12 +1248,13 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 	}
 	console.log("SHOW CONGI before:: ",this.showConfigMaster);
 	let work =(task === 'approve' ? 'Approve':(task === 'reject'? 'Rejected':(payload.iscreate?'Create':'Update') ));	
-	
+	if(this.showConfigMaster?.beforeCheckInCancellationRefundMainObjModel){
 	if(work != 'Create'){
 		this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel.ZoyBeforeCheckInCancellationInfo=this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel.zoy_before_check_in_cancellation_info;
 	}else{
 	this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.ZoyBeforeCheckInCancellationInfo=this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel.zoy_before_check_in_cancellation_info;
 	}
+    }
 	const model = {"oldBCCRule":work == 'Create' ?this.editConfigMaster.beforeCheckInCancellationRefundMainObjModel:this.showConfigMaster.beforeCheckInCancellationRefundMainObjModel,"newBCCRule":payload};	
 console.log("SHOW CONGI:: ",this.showConfigMaster);
 
