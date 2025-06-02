@@ -78,7 +78,28 @@ export class AppService{
               );
       } 
       
-
+      getRevenueCardDetails(year:string): Observable<any> { 
+        const url1=this.basePath +"zoy_admin/getQuarterlyRevenue?financialYear="+year;
+              return this.httpclient.post<any>(
+                  url1,
+                  {
+                      headers:ServiceHelper.buildHeaders(),
+                     observe : 'body',
+                     withCredentials:true
+                  }
+              );
+      } 
+      getTotalRevenueDetails(): Observable<any> { 
+        const url1=this.basePath +"zoy_admin/getLast7DaysRevenue";
+              return this.httpclient.get<any>(
+                  url1,
+                  {
+                      headers:ServiceHelper.buildHeaders(),
+                     observe : 'body',
+                     withCredentials:true
+                  }
+              );
+      } 
 
     private errorHandler(error:HttpErrorResponse){
         return of(error.message || "server error");

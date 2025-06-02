@@ -36,3 +36,10 @@ export class PropertiesCardModel{
     nonPotentialProperties : number = 0 ;
     upComingpotentialProperties : number = 0 ;
 }
+
+export class ZoyQuarterRevenue{
+    quarter1:string;
+    quarter2:string;
+    quarter3:string;
+    quarter4:string;
+}
