@@ -2,7 +2,9 @@ package com.integration.zoy.service;
 
 
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -14,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import com.integration.zoy.repository.UserHelpRequestRepository;
+import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
 
 @Service
 public class ScheduledService {
@@ -30,6 +35,13 @@ public class ScheduledService {
 	
 	@Autowired
 	private ZoyEmailService zoyEmailService;
+	
+	@Autowired
+    private UserHelpRequestRepository userHelpRequestRepo;
+    
+    
+    @Autowired
+    private ZoyPgOwnerDetailsRepository zoyPgOwnerDetailsRepo ;
 	
 	/**
 	 * passwordChangeWarMails execute based on schedule date & time. it will send password change warning email every 39-45 days
@@ -89,6 +101,25 @@ public class ScheduledService {
     }
 
 
-    
+    @Transactional
+    @Scheduled(cron = "${support.ticket.status.change.cron}", zone = "${spring.jackson.time-zone}")
+    public void closeResolvedUserHelpRequests() {
+        try {
+            TimeZone timeZone = TimeZone.getTimeZone(timeZon);
+            Calendar calendar = Calendar.getInstance(timeZone);
+            Timestamp currentTimestamp = new Timestamp(calendar.getTimeInMillis());
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdf.setTimeZone(timeZone);
+            String timestampString = sdf.format(currentTimestamp);
+
+            zoyPgOwnerDetailsRepo.updateResolvedRequestsToClosedAfter48Hours(timestampString);
+            userHelpRequestRepo.updateResolvedRequestsToClosedAfter48Hours( timestampString);  	
+
+            log.info("Closed resolved user help requests older than 48 hours.");
+        } catch (Exception e) {
+            log.error("Error closing resolved user help requests: ", e);
+        }
+    }
 	
 }

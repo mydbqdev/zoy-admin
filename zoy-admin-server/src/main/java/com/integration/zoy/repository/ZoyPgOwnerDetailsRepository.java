@@ -64,4 +64,13 @@ public interface ZoyPgOwnerDetailsRepository extends JpaRepository<ZoyPgOwnerDet
 	@Transactional
     @Query(value = "update pgowners.zoy_pg_property_details set zoy_share =:newZoyShare where property_id =:propertyId", nativeQuery = true)
     int updatePropertyZoyShare(@Param("propertyId") String propertyId, @Param("newZoyShare") BigDecimal newZoyShare);
+	
+	
+	@Modifying
+	@Transactional
+	@Query(value = "UPDATE pgowners.zoy_pg_registered_owner_details " +
+	               "SET status = 'Closed' " +
+	               "WHERE status = 'Resolved' " +
+	               "AND ts <= (CAST(:timeZone AS date) - interval '48 hours')", nativeQuery = true)
+	void updateResolvedRequestsToClosedAfter48Hours(String timeZone);
 }

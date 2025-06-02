@@ -35,15 +35,15 @@ public interface ZoyPgOwnerSettlementStatusRepository extends JpaRepository<ZoyP
 	List<Object[]> getQuarterlyRevenueByFinancialYear(@Param("financialYear") String financialYear);
 
 	@Query(value = 
-		    "SELECT " +
-		    " to_char(payment_process_date, 'YYYY-MM-DD') AS date, " +
-		    " COALESCE(SUM(zoy_share_amount) / 1000, 0) AS revenue_in_thousands " +
-		    "FROM pgowners.zoy_pg_owner_settlement_status " +
-		    "WHERE payment_process_date >= CURRENT_DATE - INTERVAL '6 days' " +
-		    "  AND payment_process_date <= CURRENT_DATE " +
-		    "GROUP BY date " +
-		    "ORDER BY date"
+		    "SELECT \r\n"
+		    + "  to_char(payment_process_date, 'YYYY-MM-DD') AS date, \r\n"
+		    + "  COALESCE(SUM(zoy_share_amount) / 1000, 0) AS revenue_in_thousands \r\n"
+		    + "FROM pgowners.zoy_pg_owner_settlement_status \r\n"
+		    + "WHERE payment_process_date >=  CAST(:currentDate AS DATE) - INTERVAL '6 days' \r\n"
+		    + "  AND payment_process_date < CAST(:currentDate AS DATE) + INTERVAL '1 day'\r\n"
+		    + "GROUP BY date \r\n"
+		    + "ORDER BY date"
 		, nativeQuery = true)
-		List<Object[]> getLast7DaysRevenue();
+	List<Object[]> getLast7DaysRevenue(@Param("currentDate")String currentDate );
 
 }

@@ -75,6 +75,7 @@ import com.integration.zoy.model.NotificationModeId;
 import com.integration.zoy.model.OwnerPropertyDTO;
 import com.integration.zoy.model.PgType;
 import com.integration.zoy.model.PgTypeId;
+import com.integration.zoy.model.QuarterlyRevenue;
 import com.integration.zoy.model.RentCycle;
 import com.integration.zoy.model.RentCycleId;
 import com.integration.zoy.model.RoomType;
@@ -1330,96 +1331,119 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	
 	
 	public ResponseEntity<String> getQuarterlyRevenue(String financialYear) {
-		ResponseBody response = new ResponseBody();
+	    ResponseBody response = new ResponseBody();
 
-		try {
-			if (financialYear == null || !financialYear.matches("\\d{4}-\\d{4}")) {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError("Invalid or missing financial year. Format should be 'YYYY-YYYY'.");
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
+	    try {
+	        if (financialYear == null || !financialYear.matches("\\d{4}-\\d{4}")) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError("Invalid or missing financial year. Format should be 'YYYY-YYYY'.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
 
-			List<Object[]> results = zoyPgOwnerSettlementStatusRepo.getQuarterlyRevenueByFinancialYear(financialYear);
-			List<Map<String, Object>> data = new ArrayList<>();
+	        List<Object[]> results = zoyPgOwnerSettlementStatusRepo.getQuarterlyRevenueByFinancialYear(financialYear);
 
-			for (Object[] row : results) {
-				Map<String, Object> map = new HashMap<>();
-				map.put("quarter", row[0]);
-				map.put("totalRevenue", row[1]);
-				data.add(map);
-			}
+	        QuarterlyRevenue revenue = new QuarterlyRevenue();
 
-			response.setStatus(HttpStatus.OK.value());
-			response.setData(data);
+	        for (Object[] row : results) {
+	            if (row == null || row.length < 2) continue;
 
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	            String quarter = row[0] != null ? row[0].toString() : null;
+	            String totalRevenueStr = row[1] != null ? row[1].toString() : null;
 
-		} catch (Exception e) {
-			log.error("Error in API: /zoy_admin/getQuarterlyRevenue", e);
+	            if (quarter == null) continue;
 
-			try {
-				new ZoyAdminApplicationException(e, "");
-			} catch (Exception ex) {
-				response.setStatus(HttpStatus.BAD_REQUEST.value());
-				response.setError(ex.getMessage());
-				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-			}
+	            switch (quarter) {
+	                case "Q1":
+	                    revenue.setQuarter1(totalRevenueStr);
+	                    break;
+	                case "Q2":
+	                    revenue.setQuarter2(totalRevenueStr);
+	                    break;
+	                case "Q3":
+	                    revenue.setQuarter3(totalRevenueStr);
+	                    break;
+	                case "Q4":
+	                    revenue.setQuarter4(totalRevenueStr);
+	                    break;
+	            }
+	        }
 
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	        response.setStatus(HttpStatus.OK.value());
+	        response.setData(revenue);
+
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error in API: /zoy_admin/getQuarterlyRevenue", e);
+
+	        try {
+	            new ZoyAdminApplicationException(e, "");
+	        } catch (Exception ex) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError(ex.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
+
+
 
 	public ResponseEntity<String> getLast7DaysRevenue() {
-		ResponseBody response = new ResponseBody();
-		try {
-			TimeZone tz = TimeZone.getTimeZone(timeZone);
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			format.setTimeZone(tz);
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        TimeZone tz = TimeZone.getTimeZone(timeZone);
+	        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	        format.setTimeZone(tz);
 
-			LocalDate today = LocalDate.parse(format.format(new Date()));
+	        String todayStr = format.format(new Date());
 
-			Map<String, Double> dailyRevenue = new LinkedHashMap<>();
-			for (int i = 6; i >= 0; i--) {
-				String date = today.minusDays(i).toString();
-				dailyRevenue.put(date, 0.0);
-			}
+	        LocalDate today = LocalDate.parse(todayStr);
 
-			List<Object[]> results = zoyPgOwnerSettlementStatusRepo.getLast7DaysRevenue();
-			if (results != null) {
-				for (Object[] row : results) {
-					if (row.length >= 2 && row[0] != null && row[1] != null) {
-						String date = row[0].toString();
-						Double revenue = ((Number) row[1]).doubleValue();
-						dailyRevenue.put(date, revenue);
-					}
-				}
-			}
+	        Map<String, Double> dailyRevenue = new LinkedHashMap<>();
+	        for (int i = 6; i >= 0; i--) {
+	            String date = today.minusDays(i).toString();
+	            dailyRevenue.put(date, 0.0);
+	        }
 
-			List<Map<String, Object>> data = new ArrayList<>();
-			for (Map.Entry<String, Double> entry : dailyRevenue.entrySet()) {
-				Map<String, Object> map = new HashMap<>();
-				map.put("date", entry.getKey());
-				map.put("revenueInThousands", entry.getValue());
-				data.add(map);
-			}
+	        List<Object[]> results = zoyPgOwnerSettlementStatusRepo.getLast7DaysRevenue(todayStr);
+	        if (results != null) {
+	            for (Object[] row : results) {
+	                if (row.length >= 2 && row[0] != null && row[1] != null) {
+	                    String date = row[0].toString();
+	                    Double revenue = ((Number) row[1]).doubleValue();
+	                    dailyRevenue.put(date, revenue);
+	                }
+	            }
+	        }
 
-			response.setStatus(HttpStatus.OK.value());
-			response.setData(data);
+	        List<Map<String, Object>> data = new ArrayList<>();
+	        for (Map.Entry<String, Double> entry : dailyRevenue.entrySet()) {
+	            Map<String, Object> map = new HashMap<>();
+	            map.put("date", entry.getKey());
+	            map.put("revenueInThousands", entry.getValue());
+	            data.add(map);
+	        }
 
-			SimpleDateFormat logFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			logFormat.setTimeZone(tz);
-			log.info("Zoy 7-day revenue API executed at: {}", logFormat.format(new Date()));
+	        response.setStatus(HttpStatus.OK.value());
+	        response.setData(data);
 
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+	        SimpleDateFormat logFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	        logFormat.setTimeZone(tz);
+	        log.info("Zoy 7-day revenue API executed at: {}", logFormat.format(new Date()));
 
-		} catch (Exception e) {
-			log.error("Error in API: /zoy_admin/getLast7DaysRevenue.getLast7DaysRevenue", e);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			response.setError("Internal server error occurred.");
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error in API: /zoy_admin/getLast7DaysRevenue.getLast7DaysRevenue", e);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError("Internal server error occurred.");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
+
 
 }
