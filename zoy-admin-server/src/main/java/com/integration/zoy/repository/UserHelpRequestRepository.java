@@ -3,8 +3,10 @@ package com.integration.zoy.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.integration.zoy.entity.UserHelpRequest;
 
@@ -65,5 +67,13 @@ public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest
 	        + "WHERE uri.user_help_request_id = :registerId", nativeQuery=true)
 	List<String> getImages(@Param("registerId") String registerId);
 	
+	@Modifying
+	@Transactional
+	@Query(value = "UPDATE pgowners.zoy_pg_registered_owner_details " +
+	               "SET status = 'Closed' " +
+	               "WHERE status = 'Resolved' " +
+	               "AND ts <= (CAST(:timeZone AS date) - interval '48 hours')", nativeQuery = true)
+	void updateResolvedRequestsToClosedAfter48Hours(String timeZone);
+
 	
 }
