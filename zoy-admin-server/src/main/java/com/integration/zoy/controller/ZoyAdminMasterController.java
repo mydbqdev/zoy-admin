@@ -1133,25 +1133,19 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	}
 
 	@Override
-	public ResponseEntity<String> getBookingDetails(UserPaymentFilterRequest filterdata) {
+	public ResponseEntity<String> getBookingDetails() {
 		ResponseBody response = new ResponseBody();
 
 	    try {
-	        Timestamp fromDate = filterdata.getFromDate();
-	        Timestamp endDate = filterdata.getToDate();
+	    	   TimeZone tz = TimeZone.getTimeZone(timeZone);
+		        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		        format.setTimeZone(tz);
 
-	        if (fromDate == null || endDate == null) {
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setError("From Date and End Date are required.");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        }
+		        String todayStr = format.format(new Date());
 
-	        //Timestamp fromDate = Timestamp.valueOf(fromDateString);
-	        //Timestamp fromDate = Timestamp.valueOf(endDateString);
-
-	        long checkedInCount = userBookings.getBookedCountByDates(fromDate, endDate); 
-	        long bookedCount = userBookings.getCheckInCountByDates(fromDate, endDate);
-	        long vacancyCount = userBookings.getVacancyCount(fromDate, endDate); 
+	        long bookedCount = userBookings.getBookedCountByDates(todayStr); 
+	        long checkedInCount = userBookings.getCheckInCountByDates(todayStr);
+	        long vacancyCount = userBookings.getVacancyCount(todayStr); 
 
 	        TotalBookingsDetails bookingDetails = new TotalBookingsDetails();
 	        bookingDetails.setCheckedIn(checkedInCount);
