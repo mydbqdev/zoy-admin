@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TotalBookingsDetails {
 
+	@JsonProperty("totalBeds")
+	private long totalBeds;
+	
     @JsonProperty("checkedIn")
     private long checkedIn;
 
@@ -58,4 +61,14 @@ public class TotalBookingsDetails {
     public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
+
+	public long getTotalBeds() {
+		return totalBeds;
+	}
+
+	public void setTotalBeds(long totalBeds) {
+		this.totalBeds = totalBeds;
+	}
+
+
 }
