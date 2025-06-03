@@ -378,6 +378,7 @@ percentageOnlyWithZero(event): boolean {
   onPincodeChange(event: any) {
         const pincode = event.target.value;
         if (pincode && pincode.length === 6) {
+		  this.generateZCode.property_city_code = '';
           this. getCityAndState(pincode);
         } else {
 		  this.generateZCode.property_city = '';
