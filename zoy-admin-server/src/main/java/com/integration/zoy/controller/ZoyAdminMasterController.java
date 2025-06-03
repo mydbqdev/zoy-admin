@@ -83,10 +83,12 @@ import com.integration.zoy.model.RoomTypeId;
 import com.integration.zoy.model.ShareType;
 import com.integration.zoy.model.ShareTypeId;
 import com.integration.zoy.model.ShortTerm;
+import com.integration.zoy.model.TicketCategory;
 import com.integration.zoy.model.TotalBookingsDetails;
 import com.integration.zoy.model.UserNameDTO;
 import com.integration.zoy.repository.RentalAgreementDocRepository;
 import com.integration.zoy.repository.UserBookingsRepository;
+import com.integration.zoy.repository.UserHelpRequestRepository;
 import com.integration.zoy.repository.ZoyPgOwnerSettlementStatusRepository;
 import com.integration.zoy.service.CommonDBImpl;
 import com.integration.zoy.service.OwnerDBImpl;
@@ -167,6 +169,9 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	@Value("${app.minio.zoypg.upload.docs.bucket.name}")
 	private String zoyPgRentalDocsUploadBucketName;
 	
+	
+	@Autowired
+    private UserHelpRequestRepository userHelpRequestRepo;
 
 	@Override
 	public ResponseEntity<String> zoyAdminAmenities() {
@@ -1440,10 +1445,47 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	    } catch (Exception e) {
 	        log.error("Error in API: /zoy_admin/getLast7DaysRevenue.getLast7DaysRevenue", e);
 	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setError("Internal server error occurred.");
+	        response.setError(e.getMessage());
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
 
+	@Override
+	public ResponseEntity<String> getTotalIssues() {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        List<Object[]> result = userHelpRequestRepo.getTicketInfo();
+
+	        if (result == null || result.isEmpty()) {
+	            response.setStatus(HttpStatus.NOT_FOUND.value());
+	            response.setError("No data found.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+	        }
+
+	        Object[] row = result.get(0);
+	        TicketCategory ticketCategory = new TicketCategory();
+
+	        ticketCategory.setPending(row[0] != null ? row[0].toString() : "0");
+	        ticketCategory.setResolved(row[1] != null ? row[1].toString() : "0");
+	        ticketCategory.setCancelled(row[2] != null ? row[2].toString() : "0");
+	        ticketCategory.setOpened(row[3] != null ? row[3].toString() : "0");
+	        ticketCategory.setTotalIssues(row[4] != null ? row[4].toString() : "0");
+
+	        return new ResponseEntity<>(gson.toJson(ticketCategory), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error in API: /zoy_admin/getTotalIssues.getTotalIssues", e);
+	        try {
+	            new ZoyAdminApplicationException(e, "");
+	        } catch (Exception ex) {
+	            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	            response.setError(ex.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
 
 }
