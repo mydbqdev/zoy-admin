@@ -1145,12 +1145,21 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 
 	        long bookedCount = userBookings.getBookedCountByDates(todayStr); 
 	        long checkedInCount = userBookings.getCheckInCountByDates(todayStr);
-	        long vacancyCount = userBookings.getVacancyCount(todayStr); 
-
+	        List<Object[]>  bedCount = userBookings.getVacancyCount(); 
+	      
 	        TotalBookingsDetails bookingDetails = new TotalBookingsDetails();
 	        bookingDetails.setCheckedIn(checkedInCount);
 	        bookingDetails.setBooked(bookedCount);
-	        bookingDetails.setVacancy(vacancyCount);
+	        
+	        if (bedCount != null && !bedCount.isEmpty()) {
+	            Object[] row = bedCount.get(0);
+
+	            long totalBeds = row[1] != null ? ((Number) row[1]).longValue() : 0L;
+	            long vacancy = row[0] != null ? ((Number) row[0]).longValue() : 0L;
+
+	            bookingDetails.setTotalBeds(totalBeds);
+	            bookingDetails.setVacancy(vacancy);
+	        }
 
 	        return new ResponseEntity<>(gson.toJson(bookingDetails), HttpStatus.OK);
 
