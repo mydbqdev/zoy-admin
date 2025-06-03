@@ -9,7 +9,7 @@ import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AppService } from 'src/app/common/service/application.service';
-import { DashboardFilterModel, OwnersCardModel, PropertiesCardModel, TenantsCardModel, TopRevenuePG, TotalBookingDetailsModel } from 'src/app/common/models/dashboard.model';
+import { DashboardFilterModel, OwnersCardModel, PropertiesCardModel, TenantsCardModel, TopRevenuePG, TotalBookingDetailsModel, ZoyQuarterRevenue } from 'src/app/common/models/dashboard.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 
@@ -33,6 +33,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	public ELEMENT_DATA:TopRevenuePG[]=[];
 	dataSourceTopRevenuePG:MatTableDataSource<TopRevenuePG>=new MatTableDataSource<TopRevenuePG>();
 	userInfo:UserInfo=new UserInfo();
+	revenueFilterYears :string[]=[];
+	zoyQuarterRevenue :ZoyQuarterRevenue=new ZoyQuarterRevenue();
+	revenuefy:string="";
+	totalRevenueLast7days:number=0;
 	constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService,private appService:AppService) {
 		this.userNameSession = userService.getUsername();
@@ -75,6 +79,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		this.getTotalBookings();
 		this.getOwnersCardDetails();
 		this.getPropertiesCardDetails();
+		this.getLastThreeFinancialYears();
+		this.getTotalRevenueDetails();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(1);
@@ -265,8 +271,91 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		  });
 	}
 
+	 getLastThreeFinancialYears() {
+		const today = new Date();
+		const currentYear = today.getFullYear();
+		const currentMonth = today.getMonth(); 
+		let startYear = currentMonth >= 3 ? currentYear : currentYear - 1;
 	
+		const financialYears: string[] = [];
 	
+		for (let i = 0; i < 3; i++) {
+			const endYear = startYear + 1;
+			financialYears.push(startYear +"-"+endYear);
+			startYear--; 
+		}
+		this.revenueFilterYears=financialYears
+		this.revenuefy=financialYears[0];
+		this.getRevenueCardDetails();
+	}
+	
+	getRevenueCardDetails(){
+		this.authService.checkLoginUserVlidaate();
+		this.appService.getRevenueCardDetails(this.revenuefy).subscribe((result) => {
+			this.zoyQuarterRevenue = result.data;			 
+		  },error =>{
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==403){
+			  this.router.navigate(['/forbidden']);
+			 }else if(error.status==401){
+		 	 this.router.navigate(['/signin']);
+			}else if (error.error && error.error.message) {
+			  this.errorMsg =error.error.message;
+			  console.log("Error:"+this.errorMsg);
+			  this.notifyService.showError(this.errorMsg, "");
+			} else {
+			  if(error.status==500 && error.statusText=="Internal Server Error"){
+				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			  }else{
+				let str;
+				  if(error.status==400){
+				  str=error.error.error;
+				  }else{
+					str=error.error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:",str);
+				  this.errorMsg=str;
+			  }
+			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+		  });
+	}
+	
+	getTotalRevenueDetails(){
+	this.appService.getTotalRevenueDetails().subscribe((result) => {
+			this.totalRevenueLast7days = result.data?.reduce((acc, item) =>acc + (isNaN(item.revenueInThousands) ? 0 : item.revenueInThousands), 0);
+		  },error =>{
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==403){
+			  this.router.navigate(['/forbidden']);
+			 }else if(error.status==401){
+		  	  this.router.navigate(['/signin']);
+			}else if (error.error && error.error.message) {
+			  this.errorMsg =error.error.message;
+			  console.log("Error:"+this.errorMsg);
+			  this.notifyService.showError(this.errorMsg, "");
+			} else {
+			  if(error.status==500 && error.statusText=="Internal Server Error"){
+				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			  }else{
+				let str;
+				  if(error.status==400){
+				  str=error.error.error;
+				  }else{
+					str=error.error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:",str);
+				  this.errorMsg=str;
+			  }
+			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+		  });
+		}
+		
 }
 
 
