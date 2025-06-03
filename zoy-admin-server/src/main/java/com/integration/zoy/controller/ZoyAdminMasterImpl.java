@@ -581,8 +581,8 @@ public interface ZoyAdminMasterImpl {
 			@ApiResponse(responseCode = "400", description = "Bad Request"),
 			@ApiResponse(responseCode = "404", description = "Not Found"),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
-	@PostMapping(value = "/zoy_admin/getBookingDetails", produces = { "application/json" })
-	ResponseEntity<String> getBookingDetails(@RequestBody UserPaymentFilterRequest filterdata);
+	@GetMapping(value = "/zoy_admin/getBookingDetails", produces = { "application/json" })
+	ResponseEntity<String> getBookingDetails();
 
 	@Operation(summary = "Admin Configration for  Rental Agreement document ", description = "Uploading/Updating Admin Configration for Rental Agreement document", security = {
 			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Configration" })
