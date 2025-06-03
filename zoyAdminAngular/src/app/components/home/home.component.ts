@@ -9,7 +9,7 @@ import { DataService } from 'src/app/common/service/data.service';
 import { NotificationService } from 'src/app/common/shared/message/notification.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AppService } from 'src/app/common/service/application.service';
-import { DashboardFilterModel, OwnersCardModel, PropertiesCardModel, TenantsCardModel, TopRevenuePG, TotalBookingDetailsModel, ZoyQuarterRevenue } from 'src/app/common/models/dashboard.model';
+import { DashboardFilterModel, IssuesDetails, OwnersCardModel, PropertiesCardModel, TenantsCardModel, TopRevenuePG, TotalBookingDetailsModel, ZoyQuarterRevenue } from 'src/app/common/models/dashboard.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserInfo } from 'src/app/common/shared/model/userinfo.service';
 
@@ -81,6 +81,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		this.getPropertiesCardDetails();
 		this.getLastThreeFinancialYears();
 		this.getTotalRevenueDetails();
+		this.getTotalIssuesDetails();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(1);
@@ -197,48 +198,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	}
 
 	totalBookingDetails :TotalBookingDetailsModel= new TotalBookingDetailsModel();
-	bookingDetailsFilter :DashboardFilterModel =new DashboardFilterModel();
-	 
-	 getFormattedDate(days: number = 0, months: number = 0, years: number = 0): string {
-		const date = new Date();  
 	
-		if (days) date.setDate(date.getDate() - days); 
-		if (months) date.setMonth(date.getMonth() - months); 
-		if (years) date.setFullYear(date.getFullYear() - years);  
-
-		const year = date.getFullYear();
-		const month = (date.getMonth() + 1).toString().padStart(2, '0');  
-		const day = date.getDate().toString().padStart(2, '0');
-		const hours = date.getHours().toString().padStart(2, '0');
-		const minutes = date.getMinutes().toString().padStart(2, '0');
-		const seconds = date.getSeconds().toString().padStart(2, '0');
-	
-		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-	  }
-
 	getTotalBookings(){
-		this.bookingDetailsFilter.toDate = this.getFormattedDate(0, 0, 0); 
-		switch (this.bookingDetailsFilter.selectedDays) {
-			case '15 days':
-				this.bookingDetailsFilter.fromDate = this.getFormattedDate(15, 0, 0);  
-				break;
-			case '30 days':
-				this.bookingDetailsFilter.fromDate = this.getFormattedDate(30, 0, 0); 
-				break;
-			case '6 months':
-				this.bookingDetailsFilter.fromDate = this.getFormattedDate(0, 6, 0); 
-				break;
-			case '1 year':
-				this.bookingDetailsFilter.fromDate = this.getFormattedDate(0, 0, 1); 
-				break;
-		
-			default:
-				this.bookingDetailsFilter.fromDate = this.getFormattedDate(15, 0, 0);  
-				break;
-		}
-
 		this.authService.checkLoginUserVlidaate();
-		this.appService.getTotalBookings(this.bookingDetailsFilter).subscribe((result) => {
+		this.appService.getTotalBookings().subscribe((result) => {
 			this.totalBookingDetails=result;
 			this.dataService.setDashboardBookingDetails(this.totalBookingDetails);
 		  },error =>{
@@ -326,6 +289,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 	getTotalRevenueDetails(){
 	this.appService.getTotalRevenueDetails().subscribe((result) => {
 			this.totalRevenueLast7days = result.data?.reduce((acc, item) =>acc + (isNaN(item.revenueInThousands) ? 0 : item.revenueInThousands), 0);
+			this.dataService.setTotalRevenueDetails(result.data);
 		  },error =>{
 			if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
@@ -333,6 +297,46 @@ export class HomeComponent implements OnInit, AfterViewInit {
 			  this.router.navigate(['/forbidden']);
 			 }else if(error.status==401){
 		  	  this.router.navigate(['/signin']);
+			}else if (error.error && error.error.message) {
+			  this.errorMsg =error.error.message;
+			  console.log("Error:"+this.errorMsg);
+			  this.notifyService.showError(this.errorMsg, "");
+			} else {
+			  if(error.status==500 && error.statusText=="Internal Server Error"){
+				this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			  }else{
+				let str;
+				  if(error.status==400){
+				  str=error.error.error;
+				  }else{
+					str=error.error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:",str);
+				  this.errorMsg=str;
+			  }
+			  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			}
+		  });
+	}
+
+	issuesDetails:IssuesDetails=new IssuesDetails();
+	progress(issues): number {
+		const total = Number(this.issuesDetails.total_issues);
+		const  issuesCount = Number(issues)?Number(issues):0;
+		return total > 0 ? Math.round((issuesCount / total) * 100) : 0;
+	  }
+
+	getTotalIssuesDetails(){
+		this.appService.getTotalIssuesDetails().subscribe((result) => {
+			this.issuesDetails = result;
+		  },error =>{
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==403){
+			  this.router.navigate(['/forbidden']);
+			 }else if(error.status==401){
+				this.router.navigate(['/signin']);
 			}else if (error.error && error.error.message) {
 			  this.errorMsg =error.error.message;
 			  console.log("Error:"+this.errorMsg);

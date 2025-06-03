@@ -9,8 +9,9 @@ export class TotalBookingDetailsModel{
     checked_in:number=0;
     booked:number=0;
     vacancy:number=0;
+    totalBeds:number=0;
 }   
-export class DashboardFilterModel{
+export class DashboardFilterModel{ 
     fromDate:string="";
     toDate:string="";
     selectedDays:string="15 days";
@@ -42,4 +43,17 @@ export class ZoyQuarterRevenue{
     quarter2:string;
     quarter3:string;
     quarter4:string;
+}
+
+export class BarChartZoyRevenue{ 
+    date: string;
+    revenueInThousands :number;
+}
+
+export class IssuesDetails{
+    total_issues:string;
+    resolved:string;
+    opened:string;
+    pending:string;
+    cancelled:string;
 }
