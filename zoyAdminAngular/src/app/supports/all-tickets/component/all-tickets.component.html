@@ -254,10 +254,11 @@
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
             <div class="col-sm-4">Status:
               <span style="margin-left:10px;">
-                    <span class="common-status"
+                    <span class="common-status" *ngIf="supportTicketDetails?.assigned_to_name"
                     [ngClass]="supportTicketDetails.status === 'New' ? 'status-inactive' : (supportTicketDetails.status === 'Open' ? 'status-verified':'status-active' )" >
                 {{supportTicketDetails.status}}
               </span>
+              <span class="common-status status-inactive" *ngIf="!(supportTicketDetails?.assigned_to_name)" >New</span>
             </span>
             </div>
           </div>

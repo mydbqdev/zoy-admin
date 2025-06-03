@@ -185,7 +185,7 @@
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                             aria-labelledby="dropdownMenuLink">
                                             <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#details" data-bs-target="#details" (click)="getDetails(element)">Details</a>
-                                            <a *ngIf="element.status !== 'New' &&  rolesArray.includes('TICKETS_WRITE')" class="dropdown-item" href="javascript:void(0)"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="updatePopupFromList(element,true)">Status Update</a>
+                                            <a *ngIf="element.status !== 'New' && !(element.assign_name==null || element.assign_name==undefined || element.assign_name=='') &&  rolesArray.includes('TICKETS_WRITE')" class="dropdown-item" href="javascript:void(0)"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="updatePopupFromList(element,true)">Status Update</a>
                                             <a *ngIf="element.status === 'New' &&  rolesArray.includes('TICKETS_WRITE')" class="dropdown-item" href="javascript:void(0)" (click)="assignMe(element,true)">Assign Me</a>
                                         </div>
                                       </td>
@@ -256,10 +256,11 @@
               <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
             <div class="col-sm-4">Status:
               <span style="margin-left:10px;">
-                <span class="common-status"
+                <span class="common-status" *ngIf="supportTicketDetails?.assigned_to_name"
                 [ngClass]="supportTicketDetails.status === 'New' ? 'status-inactive' : (supportTicketDetails.status === 'Open' ? 'status-verified':'status-active' )" >
             {{supportTicketDetails.status}}
           </span>
+          <span class="common-status status-inactive" *ngIf="!(supportTicketDetails?.assigned_to_name)">New</span>
         </span>
             </div>
           </div>
@@ -313,7 +314,7 @@
             <div>History Information</div>
             <div class="ml-auto">
               <button class="btn btn-primary-custom" (click)="assignMeTeam(false)" *ngIf="rolesArray.includes('TICKETS_WRITE') && !supportTicketDetails?.assigned_to">Assign Me</button>&nbsp;&nbsp;
-              <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('TICKETS_WRITE')">Status Update</button>
+              <button class="btn btn-primary-custom"  data-bs-toggle="modal" data-bs-target="#updatePopup" (click)="addNewCommentPopup(false)"  *ngIf="rolesArray.includes('TICKETS_WRITE') && supportTicketDetails?.assigned_to">Status Update</button>
             
             </div>
           </div> 
