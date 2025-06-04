@@ -44,12 +44,11 @@ public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest
 			+ "LEFT JOIN pgowners.zoy_pg_property_details zppd  "
 			+ "    ON uhr.property_id = zppd.property_id "
 			+ "WHERE uhr.user_help_request_id = :registerId "
-			+ "  AND uhr.request_status = :status "
 			+ "GROUP BY  "
 			+ "    uhr.user_help_request_id,um.user_first_name,um.user_last_name,zppd.property_name,puhsc.categories_name, "
 			+ "    uhr.description,uhr.urgency,uhr.request_status,uhr.created_at,uhr.update_at,uhr.assign_to_email, "
 			+ "    uhr.assign_to_name,zppd.property_house_area,um.user_mobile,zpod.pg_owner_name,zpod.pg_owner_mobile,puhdsc.sub_categories_name", nativeQuery = true)
-	List<Object[]> getComplaintTicketDetails(@Param("registerId")String registerId,@Param("status")String status);
+	List<Object[]> getComplaintTicketDetails(@Param("registerId")String registerId);
 	
 	@Query(value = "select  "
 			+ "user_help_request_id, "

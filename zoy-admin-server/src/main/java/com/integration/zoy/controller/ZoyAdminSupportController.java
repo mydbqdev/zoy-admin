@@ -616,7 +616,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	        if (!StringUtils.isEmpty(updateStatus.getInquiryNumber())) {
 	            if (updateStatus.getInquiryType().equals(ZoyConstant.LEAD_GEN)) {
 	                List<Object[]> ticketDetails = registeredPartnerDetailsRepository.getOwnerTicketDetails(
-	                    updateStatus.getInquiryNumber(), updateStatus.getStatus());
+	                    updateStatus.getInquiryNumber());
 	                List<Object[]> ticketHistory = leadHistoryRepo.getOwnerTicketHistory(updateStatus.getInquiryNumber());
 
 	                if (ticketDetails.isEmpty()) {
@@ -663,7 +663,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	                response.setData(registeredOwnerDetails);
 	            } else  if(updateStatus.getInquiryType().equals(ZoyConstant.SUPPORT_TICKET)){
 	                List<Object[]> complaintDetails = userHelpRequestRepository.getComplaintTicketDetails(
-	                    updateStatus.getInquiryNumber(), updateStatus.getStatus());
+	                    updateStatus.getInquiryNumber());
 	                List<Object[]> complaintHistory = userHelpRequestRepository.getComplaintTicketHistory(updateStatus.getInquiryNumber());
 
 	                if (complaintDetails.isEmpty()) {

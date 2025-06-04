@@ -2,13 +2,12 @@ package com.integration.zoy.service;
 
 
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
-
-import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.integration.zoy.repository.UserHelpRequestRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
@@ -105,13 +105,9 @@ public class ScheduledService {
     @Scheduled(cron = "${support.ticket.status.change.cron}", zone = "${spring.jackson.time-zone}")
     public void closeResolvedUserHelpRequests() {
         try {
-            TimeZone timeZone = TimeZone.getTimeZone(timeZon);
-            Calendar calendar = Calendar.getInstance(timeZone);
-            Timestamp currentTimestamp = new Timestamp(calendar.getTimeInMillis());
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sdf.setTimeZone(timeZone);
-            String timestampString = sdf.format(currentTimestamp);
+            ZoneId zoneId = ZoneId.of(timeZon);
+            LocalDateTime now = LocalDateTime.now(zoneId);
+            String timestampString = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
             zoyPgOwnerDetailsRepo.updateResolvedRequestsToClosedAfter48Hours(timestampString);
             userHelpRequestRepo.updateResolvedRequestsToClosedAfter48Hours( timestampString);  	
