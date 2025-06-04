@@ -359,7 +359,7 @@ export class AllTicketsComponent implements OnInit, AfterViewInit {
 			this.assignToTeamDetails(false);
 			this.selectAssignEmail="";
 			this.authService.checkLoginUserVlidaate();
-			this.updateStatus.status=this.selectTicket.status;
+			//this.updateStatus.status=this.selectTicket.status;
 			this.updateStatus.inquiryNumber=element.ticket_id;
 			this.updateStatus.inquiryType=this.selectTicket.type;
 			this.supportService.getInquiryDeatils(this.updateStatus).subscribe(data => {
