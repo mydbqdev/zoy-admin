@@ -71,8 +71,8 @@ public interface RegisteredPartnerDetailsRepository extends JpaRepository<Regist
 			+ "assign_to_name as AssignedToName, "
 			+ "description AS Description "
 			+ "FROM "
-			+ "pgowners.zoy_pg_registered_owner_details zprod where register_id=:registerId and status=:status", nativeQuery = true)
-	List<Object[]> getOwnerTicketDetails(@Param("registerId")String registerId,@Param("status")String status);
+			+ "pgowners.zoy_pg_registered_owner_details zprod where register_id=:registerId", nativeQuery = true)
+	List<Object[]> getOwnerTicketDetails(@Param("registerId")String registerId);
 	
 
 }
