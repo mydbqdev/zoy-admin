@@ -126,7 +126,7 @@
                                             <div style="border-radius: 15px;background-color: rgb(247, 204, 184);"><i class="fas fa-house-user text-danger" style="margin: 10px;font-size: 22px;"></i></div>
                                         </div>
                                       </div>
-                                      <div class="ml-3 mt-2 mb-2 mr-3" style="font-size: 12px;">
+                                      <div class="ml-3 mt-2 mb-2 mr-3" style="font-size: 12px; height: 80px;">
                                           <div class="item">
                                               <div class="status-item"><span class="active"></span></div>
                                               <span class="label">Potential</span>
@@ -224,14 +224,7 @@
                                                       <!-- Title -->
                                                       <div class="text-xs font-weight-bold mb-1" style="font-size: 20px;"> Total Bookings</div>
                                                       <!-- Dropdown -->
-                                                      <div class="ml-auto" style="width: 130px;">
-                                                              <select class="form-select form-select-sm" [(ngModel)]="this.bookingDetailsFilter.selectedDays" (ngModelChange)="getTotalBookings()">
-                                                                  <option value="15 days">Last 15 days</option>
-                                                                  <option value="30 days">Last 30 days</option>
-                                                                  <option value="6 months">Last 6 months</option>
-                                                                  <option value="1 year">Last 1 year</option>
-                                                              </select>
-                                                      </div>
+                                                      <div class="ml-auto" > {{totalBookingDetails.totalBeds}}  </div>
                                                   </div>
                                                   <div>   
                                                       <doughnut-ngx></doughnut-ngx>
@@ -252,15 +245,10 @@
                                   <div class="card-body">
                                       <div class="no-gutters align-items-center" style="height: 478px;">
                                           <!-- Row with Title and Dropdown -->
-                                              <div class="text-xs font-weight-bold mb-3" style="font-size: 20px;"> Total Issues</div>
-                                              <div class="mr-3 mb-3 pb-2">
-                                                  <select class="form-select form-select-sm">
-                                                      <option selected>Nov 1 - Nov 9, 2024</option>
-                                                      <option value="1">Last 30 days</option>
-                                                      <option value="2">Last 6 months</option>
-                                                      <option value="3">Last 1 year</option>
-                                                  </select>
-                                              </div>                                                  
+                                          <div class="d-flex justify-content-between align-items-center mb-2">
+                                              <div class="text-xs font-weight-bold" style="font-size: 20px;"> Total Issues</div>
+                                              <div class="ml-auto"> {{this.issuesDetails.total_issues}} </div>   
+                                          </div>                                               
                                           <!-- Image -->
                                           <div class="justify-content-between align-items-center">
                                               <!-- First Progress Bar -->
@@ -270,10 +258,10 @@
                                                   </div>
                                                   <div class="progress progress-sm mr-2">
                                                       <div class="progress-bar bg-info" role="progressbar"
-                                                          style="width: 50%" aria-valuenow="50"
+                                                          [style.width.%]="progress(issuesDetails.resolved)"  [attr.aria-valuenow]="progress(issuesDetails.resolved)"
                                                           aria-valuemin="0" aria-valuemax="100"></div>
                                                   </div>
-                                                  <div class="font-weight-bold text-gray-800 mt-2" style="font-size: 13px;">50% resolved (375/750)</div>
+                                                  <div class="font-weight-bold text-gray-800 mt-2" style="font-size: 13px;">{{progress(issuesDetails.resolved)}}% resolved ({{issuesDetails.resolved}}/{{issuesDetails.total_issues}})</div>
                                               </div>
   
                                               <!-- Second Progress Bar -->
@@ -284,10 +272,10 @@
                                                   </div>
                                                   <div class="progress progress-sm mr-2">
                                                       <div class="progress-bar bg-warning" role="progressbar"
-                                                          style="width: 30%" aria-valuenow="30"
+                                                          [style.width.%]="progress(issuesDetails.opened)"  [attr.aria-valuenow]="progress(issuesDetails.opened)"
                                                           aria-valuemin="0" aria-valuemax="100"></div>
                                                   </div>
-                                                  <div class="font-weight-bold text-gray-800 mt-2" style="font-size: 13px;">30% opened (112/375)</div>
+                                                  <div class="font-weight-bold text-gray-800 mt-2" style="font-size: 13px;">{{progress(issuesDetails.opened)}}% opened ({{issuesDetails.opened}}/{{issuesDetails.total_issues}})</div>
                                               </div>
   
                                               <!-- Third Progress Bar -->
@@ -298,23 +286,24 @@
                                                   </div>
                                                   <div class="progress progress-sm mr-2">
                                                       <div class="progress-bar bg-danger" role="progressbar"
-                                                          style="width: 70%" aria-valuenow="70"
+                                                          [style.width.%]="progress(issuesDetails.pending)"  [attr.aria-valuenow]="progress(issuesDetails.pending)"
                                                           aria-valuemin="0" aria-valuemax="100"></div>
                                                   </div>
-                                                  <div class="font-weight-bold text-gray-800 mt-2" style="font-size: 13px;">70% pending (263/375)</div>
+                                                  <div class="font-weight-bold text-gray-800 mt-2" style="font-size: 13px;">{{progress(issuesDetails.pending)}}% pending ({{issuesDetails.pending}}/{{issuesDetails.total_issues}})</div>
                                               </div>
                                               <!-- fourth Progress Bar -->
                                               <div>
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <div class="font-weight-bold text-danger" style="font-size: 15px;">
+                                                    <div class="font-weight-bold" style="font-size: 15px;color: #6f6d6d;">
                                                         Cancelled </div>
                                                 </div>
                                                 <div class="progress progress-sm mr-2">
                                                     <div class="progress-bar"  role="progressbar"
-                                                        style="background-color: #6f6d6d ;width: 10%" aria-valuenow="10"
+                                                        style="background-color: #6f6d6d ;" 
+                                                        [style.width.%]="progress(issuesDetails.cancelled)"  [attr.aria-valuenow]="progress(issuesDetails.cancelled)"
                                                         aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
-                                                <div class="font-weight-bold text-gray-800 mt-2" style="font-size: 13px;">10% cancelled (37/375)</div>
+                                                <div class="font-weight-bold text-gray-800 mt-2" style="font-size: 13px;">{{progress(issuesDetails.cancelled)}}% cancelled ({{issuesDetails.cancelled}}/{{issuesDetails.total_issues}})</div>
                                             </div>
                                           </div>
                                         </div>

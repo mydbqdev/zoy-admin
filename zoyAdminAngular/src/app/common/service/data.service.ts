@@ -4,7 +4,7 @@ import { OwnerRequestParam } from 'src/app/owners/managing-owner/models/owner-de
 import { ZoyOwner } from 'src/app/owners/managing-owner/models/zoy-owner-model';
 import { UserInfo } from '../shared/model/userinfo.service';
 import { ManageTenant } from 'src/app/tenants/tenant-profile/model/manage.tenant';
-import { TotalBookingDetailsModel } from '../models/dashboard.model';
+import { BarChartZoyRevenue, TotalBookingDetailsModel } from '../models/dashboard.model';
 @Injectable({
     providedIn:'root'
 })
@@ -86,5 +86,11 @@ export class DataService{
      getDashboardBookingDetails=this.dashboardBookingDetails.asObservable();
      setDashboardBookingDetails(dashboardBookingDetails:TotalBookingDetailsModel){
         this.dashboardBookingDetails.next(dashboardBookingDetails);
+     }
+
+     public totalRevenueDetails=new BehaviorSubject<BarChartZoyRevenue[]>([]);
+     getTotalRevenueDetails=this.totalRevenueDetails.asObservable();
+     setTotalRevenueDetails(totalRevenueDetails:BarChartZoyRevenue[]){
+        this.totalRevenueDetails.next(totalRevenueDetails);
      }
 }

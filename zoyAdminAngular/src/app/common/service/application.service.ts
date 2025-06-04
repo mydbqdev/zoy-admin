@@ -65,11 +65,10 @@ export class AppService{
                   }
               );
       } 
-      getTotalBookings(data:any): Observable<any> {
+      getTotalBookings(): Observable<any> {
         const url1=this.basePath +"zoy_admin/getBookingDetails";
-              return this.httpclient.post<any>(
+              return this.httpclient.get<any>(
                   url1,
-                  data,
                   {
                       headers:ServiceHelper.buildHeaders(),
                      observe : 'body',
@@ -91,6 +90,18 @@ export class AppService{
       } 
       getTotalRevenueDetails(): Observable<any> { 
         const url1=this.basePath +"zoy_admin/getLast7DaysRevenue";
+              return this.httpclient.get<any>(
+                  url1,
+                  {
+                      headers:ServiceHelper.buildHeaders(),
+                     observe : 'body',
+                     withCredentials:true
+                  }
+              );
+      } 
+    
+      getTotalIssuesDetails(): Observable<any> { 
+        const url1=this.basePath +"zoy_admin/getTotalIssues";
               return this.httpclient.get<any>(
                   url1,
                   {
