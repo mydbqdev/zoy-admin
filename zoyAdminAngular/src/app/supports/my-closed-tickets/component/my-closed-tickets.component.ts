@@ -322,7 +322,7 @@ export class MyClosedTicketsComponent implements OnInit, AfterViewInit {
 			this.assignTicketNumber=element.ticket_id;
 			this.selectTicket=Object.assign(element);
 			this.authService.checkLoginUserVlidaate();
-			this.updateStatus.status=this.selectTicket.status;
+			//this.updateStatus.status=this.selectTicket.status;
 			this.updateStatus.inquiryNumber=element.ticket_id;
 			this.updateStatus.inquiryType=this.selectTicket.type;
 			this.supportService.getInquiryDeatils(this.updateStatus).subscribe(data => {
