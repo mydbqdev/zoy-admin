@@ -53,7 +53,7 @@ import { MessageService } from 'src/app/message.service';
     }, 
     { 
       'reportName': 'Potential Properties Report', 
-      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'numberOfBeds', 'expectedRentPerMonth']
+      'columns': ['ownerFullName', 'propertyName', 'propertyContactNumber', 'propertyEmailAddress', 'propertyAddress', 'numberOfBeds', 'expectedRentPerMonth','zoyShare','zoyShareAmount']
     }
 	  ];
   

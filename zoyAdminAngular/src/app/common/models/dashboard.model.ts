@@ -9,7 +9,7 @@ export class TotalBookingDetailsModel{
     checked_in:number=0;
     booked:number=0;
     vacancy:number=0;
-    totalBeds:number=0;
+    total_beds:number=0;
 }   
 export class DashboardFilterModel{ 
     fromDate:string="";
