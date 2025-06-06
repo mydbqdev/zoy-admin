@@ -167,5 +167,6 @@ public class ZoyConstant {
 		CITIES = Collections.unmodifiableMap(cities);
 	}
 
-
+	public static final String ZOY_SALES_TEAM= "Sales Team";
+	public static final String ZOY_API_USER= "zoyadmin@mydbq.com"; 
 }
