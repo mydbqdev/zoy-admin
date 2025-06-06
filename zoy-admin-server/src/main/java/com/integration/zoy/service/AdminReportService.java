@@ -2739,7 +2739,7 @@ public class AdminReportService implements AdminReportImpl{
 	            "    COUNT(DISTINCT zpqbd.selected_bed) AS numberOfBedsOccupied, " +
 	            "    COALESCE(SUM(zpqbd.fixed_rent), 0) AS expectedRent, " +
 	            "    zpd.zoy_share, " +
-	            "    ((zpd.zoy_share / 100) * COALESCE(SUM(zpqbd.fixed_rent), 0)) AS zoyShareAmount, " +
+	            "    ROUND((zpd.zoy_share / 100) * COALESCE(SUM(zpqbd.fixed_rent), 0), 2) AS zoyShareAmount, " +
 	            "    zpd.property_city " +
 	            "FROM pgowners.zoy_pg_owner_booking_details zpqbd " +
 	            "JOIN pgowners.zoy_pg_property_details zpd ON zpqbd.property_id = zpd.property_id " +
