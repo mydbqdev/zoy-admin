@@ -57,7 +57,7 @@ import { MessageService } from 'src/app/message.service';
       'payerPayeeName':'PAYER/PAYEE Name',
       'ownerEmail':'OWNER EMAIL',
       'pgAddress':'PG ADDRESS',
-      'zoyShare':'ZOY REVENUE',
+      'zoyShare':'ZOY SHARE %',
       'tenantMobileNum':'TENANT CONTACT',
       'userPgPropertyAddress':'PG ADDRESS',
       'ownerApprovalStatus':'OWNER APPROVAL STATUS',
@@ -101,6 +101,8 @@ import { MessageService } from 'src/app/message.service';
       'registrationDate':'REGISTRATION DATE',
       'lastCheckOutDate' :'LAST CHECH-OUT DATE',
       'lastCheckInDate':'LAST CHECH-IN DATE',
+
+      'zoyShareAmount':'ZOY SHARE AMOUNT'
       
   };
   

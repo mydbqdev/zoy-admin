@@ -10,7 +10,7 @@ import { NotificationService } from 'src/app/common/shared/message/notification.
 import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { DbMasterConfigurationService } from '../services/db-master-configuration.service';
-import { DbSettingDataModel, DbSettingSubmitDataModel, settingTypeObjClmApiDetailsModel } from '../models/db-setting-models';
+import { DbSettingDataModel, DbSettingSubmitDataModel, GenderTypesModel, settingTypeObjClmApiDetailsModel } from '../models/db-setting-models';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 
@@ -85,10 +85,12 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 			this.mySubscription.unsubscribe();
 		}
 	}
+  genderTypes: GenderTypesModel[] =[];
 	ngOnInit() {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		//	this.router.navigate(['/']);
 		//}
+  
       
 	}
 	ngAfterViewInit() {
@@ -100,12 +102,15 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 
   changeSettingType(){
     if(this.settingType == 'Amenities' ){
-    this.resetChange();
+      this.resetChange();
+    }
+    if(this.settingType == 'PG Type' ){
+      this.getGenderTypes();
     }
     this.settingTypeDetails = this.settingTypeObjClmApiDetailsList.find(t=>t.type == this.settingType);
     this.selectedsettingColumns = this.settingTypeDetails.columns ;
     this.getDbSettingDetails() ;
-
+    
   }
 
    navigateMasterConfig(){
@@ -664,6 +669,58 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.downloadProgress=false
     }
 
+    getGenderTypes(){
+      this.genderTypes = [
+        {
+            "gender_id": "ad868939-c111-4635-8f4c-6ade7abd23fb",
+            "gender_name": "Male",
+            "checked" :false
+        },
+        {
+            "gender_id": "64251df8-66c3-4691-8f5b-14c0caa8819f",
+            "gender_name": "Female",
+            "checked" :false
+        },
+        {
+            "gender_id": "a4ccbcc9-e2c7-4708-a6b2-1175568ef64b",
+            "gender_name": "Transgender",
+            "checked" :false
+        }
+    ]
+    return;
+      this.dbMasterConfigurationService.getGenderTypes().subscribe(data => {
+        this.genderTypes = data;
+      }, error => {
+      this.spinner.hide();
+      if(error.status == 0) {
+        this.notifyService.showError("Internal Server Error/Connection not established", "")
+      }else if(error.status==401){
+        console.error("Unauthorised");
+      }else if(error.status==403){
+      this.router.navigate(['/forbidden']);
+      }else if (error.error && error.error.message) {
+      this.errorMsg = error.error.message;
+      console.log("Error:" + this.errorMsg);
+      this.notifyService.showError(this.errorMsg, "");
+      } else {
+      if (error.status == 500 && error.statusText == "Internal Server Error") {
+        this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+      } else {
+        let str;
+        if (error.status == 400) {
+        str = error.error.error;
+        } else {
+        str = error.error.message;
+        str = str.substring(str.indexOf(":") + 1);
+        }
+        console.log("Error:" ,str);
+        this.errorMsg = str;
+      }
+      if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+      }
+      });
+        	
+     }
 }
 
   

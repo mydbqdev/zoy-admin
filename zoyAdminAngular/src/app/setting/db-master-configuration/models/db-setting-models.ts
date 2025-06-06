@@ -84,4 +84,8 @@ export class DbSettingSubmitDataModel{
     specialAmenity ?:boolean;
 
 }
-
+export class GenderTypesModel{
+    gender_id:string;
+    gender_name:string;
+    checked :boolean=false;
+}
