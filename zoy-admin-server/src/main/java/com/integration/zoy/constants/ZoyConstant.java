@@ -168,5 +168,5 @@ public class ZoyConstant {
 	}
 
 	public static final String ZOY_SALES_TEAM= "Sales Team";
-	public static final String ZOY_API_USER= "zoyadmin@mydbq.com"; 
+	public static final String ZOY_API_USER= "zoyadmin@zoypg.com"; 
 }
