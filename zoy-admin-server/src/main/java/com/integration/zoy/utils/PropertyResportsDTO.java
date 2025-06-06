@@ -38,6 +38,12 @@ public class PropertyResportsDTO {
     
     @SerializedName("lastCheckInDate")
     private Timestamp lastCheckInDate;
+    
+    @SerializedName("zoyShare")
+    private String zoyShare;
+    
+    @SerializedName("zoyShareAmount")
+    private String zoyShareAmount;
 
 	public String getOwnerFullName() {
 		return ownerFullName;
@@ -126,6 +132,21 @@ public class PropertyResportsDTO {
 	public void setLastCheckInDate(Timestamp lastCheckInDate) {
 		this.lastCheckInDate = lastCheckInDate;
 	}
-    
-    
+
+	public String getZoyShare() {
+		return zoyShare;
+	}
+
+	public void setZoyShare(String zoyShare) {
+		this.zoyShare = zoyShare;
+	}
+
+	public String getZoyShareAmount() {
+		return zoyShareAmount;
+	}
+
+	public void setZoyShareAmount(String zoyShareAmount) {
+		this.zoyShareAmount = zoyShareAmount;
+	}
+
 }

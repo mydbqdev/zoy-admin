@@ -294,6 +294,9 @@ public class AuditHistoryUtilities {
 			Optional<AdminUserMaster> user=userMasterRepository.findById(loginEmail);
 			if(user.isPresent()) {
 				userName=user.get().getFirstName()+" "+user.get().getLastName();
+			} else {
+				loginEmail=ZoyConstant.ZOY_API_USER;
+				userName=ZoyConstant.ZOY_SALES_TEAM;
 			}
 			String histotyData=	userName+" "+history;
 

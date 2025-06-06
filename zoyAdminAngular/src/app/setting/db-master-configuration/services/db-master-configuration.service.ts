@@ -48,11 +48,11 @@ export class DbMasterConfigurationService {
 		  'columns': ['notification_mod_name', 'actions'],
       'api':'zoy_admin/notification_mode'
     },
-    {
-		  'type': 'Factor',
-		  'columns': ['factor_name', 'actions'],
-      'api':'zoy_admin/factor'
-    },
+    // {
+		//   'type': 'Factor',
+		//   'columns': ['factor_name', 'actions'],
+    //   'api':'zoy_admin/factor'
+    // },
     {
 		  'type': 'Due Type',
 		  'columns': ['due_name','due_image', 'actions'],
@@ -161,12 +161,23 @@ export class DbMasterConfigurationService {
         );
       }
   } 
-
   rentalAgreementDocumentSubmit(data): Observable<any> {
     const url1=this.basePath +'zoy_admin/config/rentalAgreementDocumentSubmit';
         return  this.httpclient.post<any>(
             url1,
             data,
+            {
+                headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+  } 
+
+  getGenderTypes(): Observable<any> {
+    const url1=this.basePath +'zoy_admin/zoy_admin/genderTypes';
+        return  this.httpclient.get<any>(
+            url1,
             {
                 headers:ServiceHelper.buildHeaders(),
                observe : 'body',

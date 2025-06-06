@@ -77,12 +77,16 @@
                           <th mat-header-cell style="width: 50px;" *matHeaderCellDef ></th>
                           <td mat-cell style="width: 50px;" *matCellDef="let term">
                             <div *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE')">
-                              <div *ngIf="(settingType == 'Due Type' && !term.due_status)">
+                              <div *ngIf="(settingType == 'Due Type' && !term.due_status)
+                                          || (settingType == 'Occupancy type' && term.share_occupancy_count == 0)
+                                          || (settingType == 'Rent Cycle' && term.cycle_name == '00-00')">
                                 <div style="color:red;padding: 5px 0px;font-size: 14px;"><i class="fa fa-info-circle" title="This is internally configured, and we can't modify it."></i></div>
                               </div>
-                              <div *ngIf="!(settingType == 'Due Type' && !term.due_status)">
+                              <div *ngIf="!(settingType == 'Due Type' && !term.due_status) &&
+                                           !(settingType == 'Occupancy type' && term.share_occupancy_count == 0) &&
+                                           !(settingType == 'Rent Cycle' && term.cycle_name == '00-00')">
                                 <span style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#createUpdateDetails" *ngIf="rolesArray.includes('DB_MASTER_CONFIGURATION_WRITE') && !(settingType == 'Due Type' && !term.due_status)" >
-                                    <i class="bi bi-pencil-square" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="View Details"  (click)="getElement(term)" ></i>
+                                    <i class="bi bi-pencil-square" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="Edit Details"  (click)="getElement(term)" ></i>
                                 </span>
                               </div>
                            </div>
@@ -200,6 +204,12 @@
         <div *ngIf="submitted && (this.dbSettingDataModel.pg_type_name == null || this.dbSettingDataModel.pg_type_name == '' )" class="text-danger">
           PG Type is required.
         </div>
+        <label for="genderType" class="mt-2">Gender Type :</label>
+        <ul>
+          <div *ngFor="let gender of genderTypes" class="fs-6">
+            <input type="checkbox" [(ngModel)]="gender.checked" class="mr-2">{{gender.gender_name}}
+          </div>
+        </ul>
       </div>
     
      </div>
