@@ -43,6 +43,9 @@ public class RegisteredPartner {
 
 	@Column(name = "property_name", nullable = false, length = 100)
 	private String propertyName;
+	
+	@Column(name = "property_id", length = 36)
+	private String propertyId;
 
 	@Column(name = "ts", nullable = false)
 	@CreationTimestamp
@@ -204,6 +207,14 @@ public class RegisteredPartner {
 
 	public void setAssignedToName(String assignedToName) {
 		this.assignedToName = assignedToName;
+	}
+
+	public String getPropertyId() {
+		return propertyId;
+	}
+
+	public void setPropertyId(String propertyId) {
+		this.propertyId = propertyId;
 	}
 
 

@@ -69,7 +69,10 @@ public class PgOwnerMaster {
 	@Column(name = "property_location_longitude", precision = 10, scale = 7)
 	private BigDecimal propertyLocationLongitude;
 
-
+	@Column(name = "initial_zoy_code")
+	private Boolean initialZoyCode;
+	
+	
 	public String getRegisterId() {
 		return registerId;
 	}
@@ -204,6 +207,14 @@ public class PgOwnerMaster {
 
 	public void setPropertyLocationLongitude(BigDecimal propertyLocationLongitude) {
 		this.propertyLocationLongitude = propertyLocationLongitude;
+	}
+
+	public Boolean getInitialZoyCode() {
+		return initialZoyCode;
+	}
+
+	public void setInitialZoyCode(Boolean initialZoyCode) {
+		this.initialZoyCode = initialZoyCode;
 	}
 
 
