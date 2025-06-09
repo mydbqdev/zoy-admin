@@ -219,7 +219,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(model.getRegisterId());
 				if(partner.isPresent()) {
 					RegisteredPartner existingPartner = partner.get();
-					existingPartner.setState(ZoyConstant.CLOSE);
+					existingPartner.setStatus(ZoyConstant.CLOSE);
 					registeredPartnerDetailsRepository.save(existingPartner);
 				}
 			}
@@ -822,7 +822,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 						Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(model.getRegisterId());
 						if(partner.isPresent()) {
 							RegisteredPartner existingPartner = partner.get();
-							existingPartner.setState(ZoyConstant.CLOSE);
+							existingPartner.setStatus(ZoyConstant.CLOSE);
 							registeredPartnerDetailsRepository.save(existingPartner);
 						}
 					}
