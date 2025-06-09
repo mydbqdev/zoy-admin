@@ -77,6 +77,8 @@ public class SecurityConfig {
 	            .antMatchers("/zoy_admin/savePgOwnerData").permitAll()
 	            .antMatchers("/zoy_admin/location_code").permitAll()
 	            .antMatchers("/zoy_admin/saveExistingPgOwnerData").permitAll()
+	            .antMatchers("/zoy_admin/resendPgOwnerData").permitAll()
+	            .antMatchers("/zoy_admin/resendExistingPgOwnerData").permitAll()
 	            .anyRequest().authenticated()
 	            .and()
 	            .exceptionHandling(handling -> handling

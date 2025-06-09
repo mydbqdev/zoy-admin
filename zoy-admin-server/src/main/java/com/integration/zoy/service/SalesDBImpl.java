@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
+import com.integration.zoy.entity.Property;
 import com.integration.zoy.entity.ZoyPgSalesMaster;
 import com.integration.zoy.entity.ZoyPgSalesUserLoginDetails;
 import com.integration.zoy.exception.WebServiceException;
@@ -22,5 +23,9 @@ public interface SalesDBImpl {
 	Optional<ZoyPgSalesMaster> findByEmail(String email);
 
 	Optional<ZoyPgSalesUserLoginDetails> findLoginDetailsByEmail(String email);
+
+	Property findPropertyById(String string);
+
+	Property savePropertyDetails(Property property);
 
 }

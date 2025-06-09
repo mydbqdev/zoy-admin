@@ -17,11 +17,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.entity.AdminSalesUserLoginDetails;
+import com.integration.zoy.entity.Property;
 import com.integration.zoy.entity.ZoyPgSalesMaster;
 import com.integration.zoy.entity.ZoyPgSalesUserLoginDetails;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.model.ZoyPgSalesMasterModel;
 import com.integration.zoy.repository.AdminSalesUserLoginDetailsRepository;
+import com.integration.zoy.repository.PropertyRepository;
 import com.integration.zoy.repository.ZoyPgSalesMasterRepository;
 import com.integration.zoy.repository.ZoyPgSalesUserLoginDetailsRepository;
 import com.integration.zoy.utils.PaginationRequest;
@@ -37,6 +39,9 @@ public class SalesDBService implements SalesDBImpl{
 	
 	@Autowired
 	AdminSalesUserLoginDetailsRepository adminSalesUserLoginDetailsRepo;
+	
+	@Autowired
+	PropertyRepository propertyRepository;
 	
 	@Override
 	public boolean existsByUserEmail(String userEmail) throws WebServiceException{
@@ -131,6 +136,17 @@ public class SalesDBService implements SalesDBImpl{
 	@Override
 	public Optional<ZoyPgSalesUserLoginDetails> findLoginDetailsByEmail(String email) {
 		return zoyPgSalesUserLoginDetailsRepo.findByUserEmail(email);
+	}
+
+	@Override
+	public Property findPropertyById(String propertyId) {
+		return propertyRepository.findById(propertyId).orElse(null);
+	}
+
+	@Override
+	public Property savePropertyDetails(Property property) {
+		return propertyRepository.save(property);
+		
 	}
 
 }
