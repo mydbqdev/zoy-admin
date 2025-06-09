@@ -31,8 +31,11 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.FollowUps;
+import com.integration.zoy.entity.PgOwnerMaster;
+import com.integration.zoy.entity.Property;
 import com.integration.zoy.entity.RegisteredPartner;
 import com.integration.zoy.entity.UserHelpRequest;
+import com.integration.zoy.entity.ZoyPgSalesMaster;
 import com.integration.zoy.model.ComplaintTicketDTO;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.model.FollowUp;
@@ -50,6 +53,7 @@ import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.OwnerDBImpl;
+import com.integration.zoy.service.SalesDBImpl;
 import com.integration.zoy.service.SupportDBImpl;
 import com.integration.zoy.service.TimestampFormatterUtilService;
 import com.integration.zoy.service.ZoyAdminService;
@@ -124,6 +128,9 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	
 	@Autowired
 	EmailService emailService;
+	
+	@Autowired
+	SalesDBImpl salesDBImpl;
 	
 	@Autowired
 	ZoyAdminService zoyAdminService;
@@ -386,6 +393,17 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					existingPartner.setStatus(ZoyConstant.OPEN);
 					}
 					registeredPartnerDetailsRepository.save(existingPartner);
+					//Assign the ticket
+					  Optional<ZoyPgSalesMaster> userOptional = salesDBImpl.findByEmail(assignTicket.getEmail());
+					  if(userOptional.isPresent()) {
+						  ZoyPgSalesMaster data=userOptional.get();
+						  Property property = salesDBImpl.findPropertyById(existingPartner.getPropertyId());
+						  if(property!=null) {
+							  property.setSalesId(data.getUserId());
+							  salesDBImpl.savePropertyDetails(property);
+						  }
+					  }
+					
 					response.setMessage("Lead Ticket has been assigned successfully.");
 					response.setStatus(HttpStatus.OK.value());
 	
