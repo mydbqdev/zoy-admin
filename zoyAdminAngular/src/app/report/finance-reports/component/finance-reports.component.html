@@ -80,7 +80,7 @@
                             </div>
                            
                             <div class="col-sm-6" *ngIf=" reportName =='Tenant Transactions Report' || reportName == 'Tenant Dues Report' || reportName =='Tenant Payments GST Report' || reportName =='Tenant Refunds Report' || reportName =='Ratings and Reviews Report' 
-                                        || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report' || reportName =='Failure Transactions Report'">
+                                        || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report' || reportName =='Failure Transactions Report' || reportName =='ZOY Share Report'">
                               <div class="form-group">
                                 <label for="tenantName" class="text-search-header">Tenant Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantName" name="tenantName" />
@@ -129,7 +129,7 @@
                             <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' ||  reportName =='Tenant Transactions Report' 
                                                        || reportName == 'Owner Payments Report' || reportName =='Tenant Payments GST Report' || reportName == 'Tenant Dues Report' || reportName =='Ratings and Reviews Report'
                                                        || reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'
-                                                       || reportName =='Consolidated Finance Report'">
+                                                       || reportName =='Consolidated Finance Report' || reportName =='ZOY Share Report'">
                               <div class="form-group">
                                 <label for="pgName" class="text-search-header">PG Property Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.pgName" name="pgName" />
@@ -140,6 +140,13 @@
                               <div class="form-group">
                                 <label for="payerType" class="text-search-header">Payee/Payer type</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.payerType" name="payerType" />
+                              </div>
+                            </div> 
+
+                            <div class="col-sm-6" *ngIf="reportName == 'ZOY Share Report'">
+                              <div class="form-group">
+                                <label for="invoiceNo" class="text-search-header">Invoice No</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.invoiceNo" name="invoiceNo" />
                               </div>
                             </div> 
                           
@@ -179,7 +186,18 @@
                               </div>
                             </div>
 
-                          
+                            <div class="col-sm-6" *ngIf="reportName =='ZOY Share Report'">
+                              <div class="form-group">
+                                <label for="roomNo" class="text-search-header">Room No</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.roomNo" name="roomNo" />
+                              </div>
+                            </div>
+                            <div class="col-sm-6" *ngIf="reportName =='ZOY Share Report'">
+                              <div class="form-group">
+                                <label for="roomNo" class="text-search-header">Mode Of Payment</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.modeOfPayment" name="modeOfPayment" />
+                              </div>
+                            </div>
 
                           </div>
                         </div>

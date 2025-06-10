@@ -101,8 +101,13 @@ import { MessageService } from 'src/app/message.service';
       'registrationDate':'REGISTRATION DATE',
       'lastCheckOutDate' :'LAST CHECH-OUT DATE',
       'lastCheckInDate':'LAST CHECH-IN DATE',
-
-      'zoyShareAmount':'ZOY SHARE AMOUNT'
+      'zoyShareAmount':'ZOY SHARE AMOUNT',
+      'invoiceNumber': 'INVOICE NO',
+      'sharingType': 'SHARING TYPE',
+      'roomNumber': 'ROOM NO',
+      'paymentMode': 'MODE OF PAYMENT',
+      
+      
       
   };
   

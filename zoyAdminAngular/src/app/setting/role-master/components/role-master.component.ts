@@ -353,10 +353,10 @@ function convertRoleData(input: RoleModel): any {
   // Iterate over the roleScreen array and build the permissions structure
   input.roleScreen.forEach(screen => {
       if (screen.readPrv) {
-          output.roleScreenList[`${screen.screenName.toUpperCase()}_READ`] = true;
+          output.roleScreenList[`${screen?.screenName?.toUpperCase()}_READ`] = true;
       }
       if (screen.writePrv) {
-          output.roleScreenList[`${screen.screenName.toUpperCase()}_WRITE`] = true;
+          output.roleScreenList[`${screen?.screenName?.toUpperCase()}_WRITE`] = true;
       }
   });
 
