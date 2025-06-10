@@ -41,6 +41,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.NotificationModeMaster;
+import com.integration.zoy.entity.PgTypeGenderMapping;
 import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.UserBillingMaster;
 import com.integration.zoy.entity.UserCurrencyMaster;
@@ -49,11 +50,13 @@ import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgDueFactorMaster;
 import com.integration.zoy.entity.ZoyPgDueMaster;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
+import com.integration.zoy.entity.ZoyPgGenderMaster;
 import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
+import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
@@ -74,6 +77,7 @@ import com.integration.zoy.model.NotificationMode;
 import com.integration.zoy.model.NotificationModeId;
 import com.integration.zoy.model.OwnerPropertyDTO;
 import com.integration.zoy.model.PgType;
+import com.integration.zoy.model.PgTypeDTO;
 import com.integration.zoy.model.PgTypeId;
 import com.integration.zoy.model.QuarterlyRevenue;
 import com.integration.zoy.model.RentCycle;
@@ -553,39 +557,86 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 		}
 	}
 
-	//Pg Type
 	@Override
 	public ResponseEntity<String> zoyAdminPgType() {
-		ResponseBody response=new ResponseBody();
-		try {
-			List<ZoyPgTypeMaster> zoyPgTypeMasters =  ownerDBImpl.getAllPgTypes();
-			return new ResponseEntity<>(gson2.toJson(zoyPgTypeMasters), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error getting pg type details API:/zoy_admin/pgType.zoyAdminPgType ",e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
+	    ResponseBody response = new ResponseBody();
+
+	    try {
+	        List<Object[]> rawData = ownerDBImpl.getAllPgTypes();
+	        if (rawData == null || rawData.isEmpty()) {
+	            return new ResponseEntity<>(gson.toJson(new ArrayList<>()), HttpStatus.OK);
+	        }
+
+	        List<PgTypeDTO> pgTypesData = new ArrayList<>();
+
+	        for (Object[] details : rawData) {
+	            PgTypeDTO pgTypeDTO = new PgTypeDTO();
+	            pgTypeDTO.setPgTypeId(details[0] != null ? String.valueOf(details[0]) : null);
+	            pgTypeDTO.setPgTypeName(details[1] != null ? String.valueOf(details[1]) : null);
+	            pgTypeDTO.setGenderNames(details[2] != null ? String.valueOf(details[2]) : null);
+	            pgTypesData.add(pgTypeDTO);
+	        }
+
+	        return new ResponseEntity<>(gson.toJson(pgTypesData), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error getting PG type details API:/zoy_admin/pgType.zoyAdminPgType ", e);
+
+	        try {
+	            new ZoyAdminApplicationException(e, "");
+	        } catch (Exception ex) {
+	            response.setStatus(HttpStatus.BAD_REQUEST.value());
+	            response.setError(ex.getMessage());
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	        }
+
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
 	}
 
 	@Override
 	public ResponseEntity<String> zoyAdminPgTypePost(PgType pgType) {
-		ResponseBody response=new ResponseBody();
-		try {
-			ZoyPgTypeMaster zoyPgTypeMasters =  new ZoyPgTypeMaster();
-			zoyPgTypeMasters.setPgTypeName(pgType.getPgTypeName());
-			ZoyPgTypeMaster saved=ownerDBImpl.createPgType(zoyPgTypeMasters);
-			//audit history here
-			String historyContent=" has created the PG Type for, "+pgType.getPgTypeName();
-			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
+	    ResponseBody response = new ResponseBody();
 
-			return new ResponseEntity<>(gson2.toJson(saved), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error("Error posting pg type details API:/zoy_admin/pgType.zoyAdminPgTypePost ",e);
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-		}
+	    if (pgType == null || pgType.getPgTypeName() == null || pgType.getPgTypeName().trim().isEmpty()) {
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError("PgType or PgTypeName cannot be null or empty");
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+
+	    try {
+	        ZoyPgTypeMaster zoyPgTypeMaster = new ZoyPgTypeMaster();
+	        zoyPgTypeMaster.setPgTypeName(pgType.getPgTypeName());
+
+	        ZoyPgTypeMaster savedPgType = ownerDBImpl.createPgType(zoyPgTypeMaster);
+
+	        String pgId = ownerDBImpl.getPgIdByPgType(pgType.getPgTypeName());
+
+	        if (pgId != null && pgType.getGenderIds() != null && !pgType.getGenderIds().isEmpty()) {
+	            for (String genderId : pgType.getGenderIds()) {
+	                if (genderId != null && !genderId.trim().isEmpty()) {
+	                    PgTypeGenderMapping mapping = new PgTypeGenderMapping();
+	                    mapping.setPgTypeId(pgId);
+	                    mapping.setGenderId(genderId);
+	                    ownerDBImpl.savePgTypeGenderMapping(mapping);
+	                }
+	            }
+	        }
+	        // Audit
+	        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+	        String historyContent = " has created the PG Type for, " + pgType.getPgTypeName();
+	        auditHistoryUtilities.auditForCommon(username, historyContent, ZoyConstant.ZOY_ADMIN_DB_CONFIG_CREATE);
+
+	        return new ResponseEntity<>(gson2.toJson(savedPgType), HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        log.error("Error posting pg type details API:/zoy_admin/pgType.zoyAdminPgTypePost", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
 	}
 
 	@Override
@@ -597,6 +648,19 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				final String oldCount=zoyPgTypeMasters.getPgTypeName();
 				zoyPgTypeMasters.setPgTypeName(pgTypeId.getPgTypeName());
 				ZoyPgTypeMaster updated=ownerDBImpl.updatePgType(zoyPgTypeMasters);
+				
+				ownerDBImpl.deletePgTypeGenderMapping(pgTypeId.getId());
+				
+				  if (pgTypeId.getId() != null && pgTypeId.getGenderIds() != null && !pgTypeId.getGenderIds().isEmpty()) {
+			            for (String genderId : pgTypeId.getGenderIds()) {
+			                if (genderId != null && !genderId.trim().isEmpty()) {
+			                    PgTypeGenderMapping mapping = new PgTypeGenderMapping();
+			                    mapping.setPgTypeId(pgTypeId.getId());
+			                    mapping.setGenderId(genderId);
+			                    ownerDBImpl.savePgTypeGenderMapping(mapping);
+			                }
+			            }
+			        }
 
 				//audit history here
 				String historyContent=" has updated the PG Type for, from "+oldCount+" to "+pgTypeId.getPgTypeName();
@@ -1490,5 +1554,25 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
+
+	public ResponseEntity<String> zoyAdminGenderTypes() {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        List<ZoyPgGenderMaster> genderList = ownerDBImpl.getAllGenderTypes(); 
+	        
+	        if (genderList == null || genderList.isEmpty()) {
+	            response.setStatus(HttpStatus.NO_CONTENT.value());
+	            response.setMessage("No gender types found.");
+	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NO_CONTENT);
+	        }
+	        return new ResponseEntity<>(gson2.toJson(genderList), HttpStatus.OK);
+	    } catch (Exception e) {
+	        log.error("Error fetching gender types at API: /zoy_admin/gender-types", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
+	
 
 }

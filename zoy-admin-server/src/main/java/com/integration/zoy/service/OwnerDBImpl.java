@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import com.integration.zoy.entity.PgTypeGenderMapping;
 import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.ZoyCompanyMaster;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
@@ -19,6 +20,7 @@ import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgForceCheckOut;
+import com.integration.zoy.entity.ZoyPgGenderMaster;
 import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
@@ -49,7 +51,7 @@ public interface OwnerDBImpl {
 
 	ZoyPgTypeMaster createPgType(ZoyPgTypeMaster pgType)throws WebServiceException;
 	ZoyPgTypeMaster getPgTypeById(String id)throws WebServiceException;
-	List<ZoyPgTypeMaster> getAllPgTypes()throws WebServiceException;
+	List<Object[]>  getAllPgTypes()throws WebServiceException;
 	ZoyPgTypeMaster updatePgType( ZoyPgTypeMaster pgType)throws WebServiceException;
 	void deletePgType(String id)throws WebServiceException;
 
@@ -187,4 +189,8 @@ public interface OwnerDBImpl {
 	ZoyPgNoRentalAgreement findNoRentAgreementDuration();
 	List<String[]> getRentalAgreementDetails(String bookingId);
 	Integer findZoyCodeCounter(String zoyCode);
+	List<ZoyPgGenderMaster> getAllGenderTypes() throws WebServiceException;
+	PgTypeGenderMapping savePgTypeGenderMapping(PgTypeGenderMapping mapping) throws WebServiceException;
+	String getPgIdByPgType(String pgType) throws WebServiceException;
+	void deletePgTypeGenderMapping(String pgId) throws WebServiceException;
 }
