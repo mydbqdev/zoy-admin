@@ -42,4 +42,10 @@ export class FilterData {
     tenantEmail: string ='';
     propertyContactNum : string ='';
     pgAddress:string ='';
+
+    invoiceNo:string='';
+    SharingType:string='';
+    roomNo:string='';
+    modeOfPayment:string='';
+
   }

@@ -86,6 +86,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
 		}
 	}
   genderTypes: GenderTypesModel[] =[];
+  orgGenderTypes: GenderTypesModel[] =[];
 	ngOnInit() {
 		//if (this.userNameSession == null || this.userNameSession == undefined || this.userNameSession == '') {
 		//	this.router.navigate(['/']);
@@ -177,6 +178,14 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.imgeURLDueType2=null;
       const data =  JSON.parse(JSON.stringify(row));
       this.dbSettingDataModel = Object.assign(new DbSettingDataModel(),data);
+      if(this.settingType ==='PG Type'){
+        const genderNames = this.dbSettingDataModel.gender_names?.split(', ');
+        const genders= this.orgGenderTypes.map(gender => {
+          const isChecked = genderNames?.includes(gender.gender_name) || false;
+          return {...gender, checked: isChecked};
+         });
+         this.genderTypes = JSON.parse(JSON.stringify(genders));
+       }
   
       if (this.settingType === 'Rent Cycle' && this.dbSettingDataModel.cycle_name) {
         const cycleParts = this.dbSettingDataModel.cycle_name.split('-');
@@ -342,9 +351,16 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
                   this.notifyService.showError("PG Type is already available.", "");
                   return false;
                  }
+                 this.genderTypes
+                 const ids =this.genderTypes.filter(g=>g.checked).map(g=>g.gender_id);
+                 if(ids.length>0){
+                  this.notifyService.showError("must select any one gender.", "");
+                  return false;
+                 }
                     this.submitDataModel.id = this.dbSettingDataModel?.pg_type_id;
                     this.submitDataModel.pgTypeName = this.dbSettingDataModel.pg_type_name;
-                
+                    this.submitDataModel.genderIds = ids;
+                console.log("this.submitDataModel",this.submitDataModel)
           break;
           case 'Notification Mode':
                 if ( this.dbSettingDataModel.notification_mod_name == null || this.dbSettingDataModel.notification_mod_name == '') {
@@ -670,26 +686,12 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
     }
 
     getGenderTypes(){
-      this.genderTypes = [
-        {
-            "gender_id": "ad868939-c111-4635-8f4c-6ade7abd23fb",
-            "gender_name": "Male",
-            "checked" :false
-        },
-        {
-            "gender_id": "64251df8-66c3-4691-8f5b-14c0caa8819f",
-            "gender_name": "Female",
-            "checked" :false
-        },
-        {
-            "gender_id": "a4ccbcc9-e2c7-4708-a6b2-1175568ef64b",
-            "gender_name": "Transgender",
-            "checked" :false
-        }
-    ]
-    return;
       this.dbMasterConfigurationService.getGenderTypes().subscribe(data => {
-        this.genderTypes = data;
+      this.orgGenderTypes = Object.assign([],data);
+      const genders= this.orgGenderTypes.map(gender => { return { ...gender,checked: false }; });
+      this.genderTypes = JSON.parse(JSON.stringify(genders));
+      console.log("this.genderTypes",this.genderTypes);
+        
       }, error => {
       this.spinner.hide();
       if(error.status == 0) {
