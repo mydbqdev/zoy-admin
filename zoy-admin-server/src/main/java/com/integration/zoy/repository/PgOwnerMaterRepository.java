@@ -318,7 +318,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
     		+ "CASE WHEN tm.is_late_payment_fee = TRUE THEN tm.grace_period ELSE '0' END AS grace_period,  "
     		+ "zppd.cancellation_fixed_charges AS additional_charges,zppd.property_agreement_charges AS agreement_charges,  "
     		+ "zppd.property_ekyc_charges AS ekyc_charges,zppd.property_description,  "
-    		+ "zppfd.floor_id ,zppfd.floor_name ,zprd.room_id ,zprd.room_name ,  "
+    		+ "zppfd.master_floor_id ,zppfd.floor_name ,zprd.room_id ,zprd.room_name ,  "
     		+ "STRING_AGG(DISTINCT CASE WHEN zpbd.bed_available = 'available' THEN zpbd.bed_id ||'|'||zpbd.bed_name||'|'||zpbd.bed_available END, ',') AS available_beds,  "
     		+ "STRING_AGG(DISTINCT CASE WHEN zpbd.bed_available = 'occupied' THEN zpbd.bed_id ||'|'||zpbd.bed_name||'|'||zpbd.bed_available END, ',') AS occupied_beds,  "
     		+ "zppd.zoy_share AS zoyShare "
