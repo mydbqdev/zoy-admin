@@ -105,7 +105,7 @@ export class DbMasterConfigurationService {
     // 'rentalAgreementDoc':'RENTAL AGREEMENT DOCUMENT',
     'special_amenity':'SPECIAL AENITY',
     'uploadedAt':"UPLOADED DATE",
-    'gender_names':"GENDER"
+    'gender_names':"GENDER WHO CAN STAY ?"
   }
 
   getDbSettingDetails(api:string): Observable<any> {
