@@ -40,7 +40,7 @@ export class DbMasterConfigurationService {
     },
     {
 		  'type': 'PG Type',
-		  'columns': ['pg_type_name', 'actions'],
+		  'columns': ['pg_type_name','gender_names','actions'],
       'api':'zoy_admin/pgType'
     },
     {
@@ -104,7 +104,8 @@ export class DbMasterConfigurationService {
     'floor_name':'FLOOR NAME',
     // 'rentalAgreementDoc':'RENTAL AGREEMENT DOCUMENT',
     'special_amenity':'SPECIAL AENITY',
-    'uploadedAt':"UPLOADED DATE"
+    'uploadedAt':"UPLOADED DATE",
+    'gender_names':"GENDER"
   }
 
   getDbSettingDetails(api:string): Observable<any> {
@@ -175,7 +176,7 @@ export class DbMasterConfigurationService {
   } 
 
   getGenderTypes(): Observable<any> {
-    const url1=this.basePath +'zoy_admin/zoy_admin/genderTypes';
+    const url1=this.basePath +'zoy_admin/genderTypes';
         return  this.httpclient.get<any>(
             url1,
             {
