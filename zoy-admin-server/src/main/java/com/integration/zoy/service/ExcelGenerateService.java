@@ -283,6 +283,8 @@ public class ExcelGenerateService {
 			row.createCell(4).setCellValue("Property Address");
 			row.createCell(5).setCellValue("Number of beds occupied");
 			row.createCell(6).setCellValue("Expected rent per Month");
+			row.createCell(7).setCellValue("Zoy Share %");
+			row.createCell(8).setCellValue("Zoy Share Amount");
 			break;
 		case "NonPotentialPropertyReport":
 			row.createCell(0).setCellValue("Owner Name");
@@ -544,7 +546,10 @@ public class ExcelGenerateService {
 				row.createCell(3).setCellValue(nullSafe(potentialPropertyReport.getPropertyEmailAddress()));
 				row.createCell(4).setCellValue(nullSafe(potentialPropertyReport.getPropertyAddress()));
 				setCurrencyCell(row,5,nullSafe(potentialPropertyReport.getExpectedRentPerMonth()));
-				row.createCell(6).setCellValue(nullSafe(potentialPropertyReport.getNumberOfBeds()));			
+				row.createCell(6).setCellValue(nullSafe(potentialPropertyReport.getNumberOfBeds()));
+				row.createCell(7).setCellValue(nullSafe(potentialPropertyReport.getZoyShare()));
+				row.createCell(8).setCellValue(nullSafe(potentialPropertyReport.getZoyShareAmount()));
+
 			}
 			break;
 		case "NonPotentialPropertyReport":
