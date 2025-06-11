@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import com.integration.zoy.entity.PgTypeGenderMapping;
+import com.integration.zoy.entity.PgTypeGenderMaster;
 import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.ZoyCompanyMaster;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
@@ -190,7 +190,7 @@ public interface OwnerDBImpl {
 	List<String[]> getRentalAgreementDetails(String bookingId);
 	Integer findZoyCodeCounter(String zoyCode);
 	List<ZoyPgGenderMaster> getAllGenderTypes() throws WebServiceException;
-	PgTypeGenderMapping savePgTypeGenderMapping(PgTypeGenderMapping mapping) throws WebServiceException;
+	PgTypeGenderMaster savePgTypeGenderMapping(PgTypeGenderMaster mapping) throws WebServiceException;
 	String getPgIdByPgType(String pgType) throws WebServiceException;
 	void deletePgTypeGenderMapping(String pgId) throws WebServiceException;
 }
