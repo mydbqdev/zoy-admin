@@ -204,7 +204,7 @@
         <div *ngIf="submitted && (this.dbSettingDataModel.pg_type_name == null || this.dbSettingDataModel.pg_type_name == '' )" class="text-danger">
           PG Type is required.
         </div>
-        <label for="genderType" class="mt-2">Gender Type :</label>
+        <label for="genderType" class="mt-2">Gender who can stay? :</label>
         <ul>
           <div *ngFor="let gender of genderTypes" class="fs-6">
             <input type="checkbox" [(ngModel)]="gender.checked" class="mr-2">{{gender.gender_name}}
