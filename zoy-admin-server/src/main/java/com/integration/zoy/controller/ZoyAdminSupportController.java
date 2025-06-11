@@ -315,7 +315,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			boolean isFinanceUser=false;
 			Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
 			if(user.isPresent()) {
-				if(user.get().getDesignation().equals("Finance Admin")) {
+				if(user.get().getDesignation().equals("Sales Admin")) {
 					isFinanceUser=true;
 				}
 			}
@@ -342,7 +342,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			boolean isFinanceUser=false;
 			Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
 			if(user.isPresent()) {
-				if(user.get().getDesignation().equals("Finance Admin")) {
+				if(user.get().getDesignation().equals("Sales Admin")) {
 					isFinanceUser=true;
 				}
 			}
