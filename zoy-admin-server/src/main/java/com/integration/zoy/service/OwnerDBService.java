@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.entity.PgTypeGenderMapping;
 import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.ZoyCompanyMaster;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
@@ -28,6 +29,7 @@ import com.integration.zoy.entity.ZoyPgDueTypeMaster;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgForceCheckOut;
+import com.integration.zoy.entity.ZoyPgGenderMaster;
 import com.integration.zoy.entity.ZoyPgGstCharges;
 import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
@@ -49,6 +51,7 @@ import com.integration.zoy.entity.ZoyPgTypeMaster;
 import com.integration.zoy.entity.ZoyShareMaster;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.repository.LeadHistoryRepository;
+import com.integration.zoy.repository.PgTypeGenderMappingRepository;
 import com.integration.zoy.repository.RentalAgreementDocRepository;
 import com.integration.zoy.repository.UserMasterRepository;
 import com.integration.zoy.repository.ZoyCompanyMasterRepository;
@@ -65,6 +68,7 @@ import com.integration.zoy.repository.ZoyPgDueTypeMasterRepository;
 import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
 import com.integration.zoy.repository.ZoyPgFloorNameMasterRepository;
 import com.integration.zoy.repository.ZoyPgForceCheckOutRepository;
+import com.integration.zoy.repository.ZoyPgGenderMasterRepository;
 import com.integration.zoy.repository.ZoyPgGstChargesRepository;
 import com.integration.zoy.repository.ZoyPgNoRentalAgreementRespository;
 import com.integration.zoy.repository.ZoyPgOtherChargesRepository;
@@ -207,22 +211,42 @@ public class OwnerDBService implements OwnerDBImpl{
 	
 	@Autowired
 	private LeadHistoryRepository leadHistoryRepository;
+	
+	@Autowired
+	private ZoyPgGenderMasterRepository zoyPgGenderMasterRepository;
+	
+	@Autowired
+	private PgTypeGenderMappingRepository pgTypeGenderMappingRepo;
 
 	@Override
 	public ZoyPgTypeMaster createPgType(ZoyPgTypeMaster pgType)throws WebServiceException {
 		return zoyPgTypeMasterRepository.save(pgType);
+	}
+	
+	@Override
+	public PgTypeGenderMapping savePgTypeGenderMapping(PgTypeGenderMapping mapping) throws WebServiceException {
+	    return pgTypeGenderMappingRepo.save(mapping);
+	}
+	
+	@Override
+	public void deletePgTypeGenderMapping(String pgId) throws WebServiceException {
+		pgTypeGenderMappingRepo.deleteByPgTypeId(pgId);
 	}
 
 	@Override
 	public ZoyPgTypeMaster getPgTypeById(String id) throws WebServiceException{
 		return zoyPgTypeMasterRepository.findById(id).orElse(null);
 	}
-
+	
 	@Override
-	public List<ZoyPgTypeMaster> getAllPgTypes() throws WebServiceException{
-		return zoyPgTypeMasterRepository.findAllPgTypeData();
+	public String getPgIdByPgType(String pgType) throws WebServiceException{
+		return zoyPgTypeMasterRepository.findPgId(pgType);
 	}
-
+	
+	@Override
+	public List<Object[]> getAllPgTypes() {
+		return zoyPgTypeMasterRepository.findPgTypeAndGenders();
+	}
 
 	@Override
 	public ZoyPgTypeMaster updatePgType(ZoyPgTypeMaster pgType) throws WebServiceException{
@@ -297,6 +321,12 @@ public class OwnerDBService implements OwnerDBImpl{
 	@Override
 	public List<ZoyPgAmenetiesMaster> getAllAmeneties() throws WebServiceException{
 		return zoyPgAmenetiesMasterRepository.findAllPgShareData();
+	}
+	
+
+	@Override
+	public List<ZoyPgGenderMaster> getAllGenderTypes() throws WebServiceException {
+	        return zoyPgGenderMasterRepository.findAll();
 	}
 
 	@Override

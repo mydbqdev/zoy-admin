@@ -21,6 +21,7 @@ export class DbSettingDataModel{
 
     pg_type_id ?: string  ;
     pg_type_name ?: string  ;
+    gender_names ?: string  ;
 
     notification_mode_id ?:string ;
     notification_mod_name ?:string ;
@@ -66,6 +67,7 @@ export class DbSettingSubmitDataModel{
     rentCycleName ?:string ;
 
     pgTypeName ?:string ;
+    genderIds ?:string[] ;
 
     notificationModeName ?:string ;
 
