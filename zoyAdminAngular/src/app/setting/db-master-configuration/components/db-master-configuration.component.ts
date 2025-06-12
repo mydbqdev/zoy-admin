@@ -168,6 +168,10 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
       this.previewUrl=false;
       this.previewUrlDueType=false;
       this.resetChange();
+      if(this.settingType ==='PG Type'){
+        const genders= this.orgGenderTypes.map(gender => { return { ...gender,checked: false }; });
+        this.genderTypes = JSON.parse(JSON.stringify(genders));
+      }
     }
     getElement(row:any){
       this.submitted = false;
@@ -353,7 +357,7 @@ export class DbMasterConfigurationComponent implements OnInit, AfterViewInit {
                  }
                  this.genderTypes
                  const ids =this.genderTypes.filter(g=>g.checked).map(g=>g.gender_id);
-                 if(ids.length>0){
+                 if(ids.length<1){
                   this.notifyService.showError("must select any one gender.", "");
                   return false;
                  }

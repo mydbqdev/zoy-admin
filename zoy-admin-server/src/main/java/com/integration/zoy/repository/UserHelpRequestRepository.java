@@ -72,10 +72,10 @@ public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest
 	
 	@Modifying
 	@Transactional
-	@Query(value = "UPDATE pgowners.zoy_pg_registered_owner_details " +
-	               "SET status = 'Closed' " +
-	               "WHERE status = 'Resolved' " +
-	               "AND ts <= (CAST(:timeZone AS date) - interval '48 hours')", nativeQuery = true)
+	@Query(value = "UPDATE pgusers.user_help_request\r\n"
+			+ "SET request_status = 'Closed'\r\n"
+			+ "WHERE request_status = 'Resolved'\r\n"
+			+ "AND update_at <= (CAST(:timeZone AS timestamp) - INTERVAL '48 hours')", nativeQuery = true)
 	void updateResolvedRequestsToClosedAfter48Hours(String timeZone);
 	
 	@Query(value = "  SELECT  \r\n"

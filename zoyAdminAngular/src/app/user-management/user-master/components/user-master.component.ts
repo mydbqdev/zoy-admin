@@ -48,7 +48,7 @@ export class UserMasterComponent implements OnInit {
 	form: FormGroup;
   userReg : UserDetails=new UserDetails();
   filterUserData: UserDetails[] = [];
-  roles:string[]=['Super Admin','Finance Admin','Support Admin']
+  roles:string[]=['Super Admin','Finance Admin','Support Admin','Sales Admin']
   submitted=false;
   dropdownList = [];
   settings = {};

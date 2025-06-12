@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,13 +16,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import org.springframework.beans.factory.annotation.Value;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -41,7 +41,8 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.NotificationModeMaster;
-import com.integration.zoy.entity.PgTypeGenderMapping;
+import com.integration.zoy.entity.PgTypeGenderKey;
+import com.integration.zoy.entity.PgTypeGenderMaster;
 import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.UserBillingMaster;
 import com.integration.zoy.entity.UserCurrencyMaster;
@@ -56,7 +57,6 @@ import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgShortTermMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
-import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.Amenetie;
 import com.integration.zoy.model.AmenetiesId;
@@ -105,7 +105,6 @@ import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.RentalAgreementDocDto;
 import com.integration.zoy.utils.ResponseBody;
-import com.integration.zoy.utils.UserPaymentFilterRequest;
 
 @RestController
 @RequestMapping("")
@@ -617,9 +616,10 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 	        if (pgId != null && pgType.getGenderIds() != null && !pgType.getGenderIds().isEmpty()) {
 	            for (String genderId : pgType.getGenderIds()) {
 	                if (genderId != null && !genderId.trim().isEmpty()) {
-	                    PgTypeGenderMapping mapping = new PgTypeGenderMapping();
-	                    mapping.setPgTypeId(pgId);
-	                    mapping.setGenderId(genderId);
+	                	
+	                    PgTypeGenderKey key = new PgTypeGenderKey(pgId, genderId);
+	                    PgTypeGenderMaster mapping = new PgTypeGenderMaster();
+	                    mapping.setId(key);
 	                    ownerDBImpl.savePgTypeGenderMapping(mapping);
 	                }
 	            }
@@ -650,17 +650,17 @@ public class ZoyAdminMasterController implements ZoyAdminMasterImpl {
 				ZoyPgTypeMaster updated=ownerDBImpl.updatePgType(zoyPgTypeMasters);
 				
 				ownerDBImpl.deletePgTypeGenderMapping(pgTypeId.getId());
-				
-				  if (pgTypeId.getId() != null && pgTypeId.getGenderIds() != null && !pgTypeId.getGenderIds().isEmpty()) {
-			            for (String genderId : pgTypeId.getGenderIds()) {
-			                if (genderId != null && !genderId.trim().isEmpty()) {
-			                    PgTypeGenderMapping mapping = new PgTypeGenderMapping();
-			                    mapping.setPgTypeId(pgTypeId.getId());
-			                    mapping.setGenderId(genderId);
-			                    ownerDBImpl.savePgTypeGenderMapping(mapping);
-			                }
-			            }
-			        }
+
+				if (pgTypeId.getId() != null && pgTypeId.getGenderIds() != null && !pgTypeId.getGenderIds().isEmpty()) {
+					for (String genderId : pgTypeId.getGenderIds()) {
+						if (genderId != null && !genderId.trim().isEmpty()) {
+							PgTypeGenderKey key = new PgTypeGenderKey(pgTypeId.getId(), genderId);
+							PgTypeGenderMaster mapping = new PgTypeGenderMaster();
+							mapping.setId(key);
+							ownerDBImpl.savePgTypeGenderMapping(mapping);
+						}
+					}
+				}
 
 				//audit history here
 				String historyContent=" has updated the PG Type for, from "+oldCount+" to "+pgTypeId.getPgTypeName();

@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.integration.zoy.entity.PgTypeGenderMapping;
+import com.integration.zoy.entity.PgTypeGenderKey;
+import com.integration.zoy.entity.PgTypeGenderMaster;
 
 @Repository
-public interface PgTypeGenderMappingRepository extends JpaRepository<PgTypeGenderMapping, String> {
+public interface PgTypeGenderMappingRepository extends JpaRepository<PgTypeGenderMaster, PgTypeGenderKey> {
 
 	@Modifying
 	@Transactional
