@@ -27,7 +27,10 @@ public class SupportTicketDTO {
 	
 	@JsonProperty("type")
     private String type;
-
+	
+	@JsonProperty("ticketRaisedby")
+	 private String ticketRaisedby;
+	
 	public String getTicket_id() {
 		return ticket_id;
 	}
@@ -90,5 +93,13 @@ public class SupportTicketDTO {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getTicketRaisedby() {
+		return ticketRaisedby;
+	}
+
+	public void setTicketRaisedby(String ticketRaisedby) {
+		this.ticketRaisedby = ticketRaisedby;
 	}
 }

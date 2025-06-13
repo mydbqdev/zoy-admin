@@ -527,6 +527,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				String currentDate=tuService.currentDate();
 				RegisteredPartner existingPartner = partner.get();
 				String previousStatus=existingPartner.getStatus();
+				if (updateStatus.getStatus().equals(ZoyConstant.CLOSE) ||updateStatus.getStatus().equals(ZoyConstant.CANCELLED) ||updateStatus.getStatus().equals(ZoyConstant.RESOLVED)) {
+					    existingPartner.setAssignedToEmail(ZoyConstant.SYSTEM);
+					    existingPartner.setAssignedToName(ZoyConstant.SYSTEM);
+					}
 				existingPartner.setStatus(updateStatus.getStatus());
 				registeredPartnerDetailsRepository.save(existingPartner);
 				String emailMessage=null;
@@ -567,6 +571,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					String currentDate=tuService.currentDate();
 					UserHelpRequest existingPartner = partner.get();
 					String previousStatus=existingPartner.getRequestStatus();
+					if (updateStatus.getStatus().equals(ZoyConstant.CLOSE) ||updateStatus.getStatus().equals(ZoyConstant.CANCELLED) ||updateStatus.getStatus().equals(ZoyConstant.RESOLVED)) {
+					    existingPartner.setAssignedToEmail(ZoyConstant.SYSTEM);
+					    existingPartner.setAssignedToName(ZoyConstant.SYSTEM);
+					}
 					existingPartner.setRequestStatus(updateStatus.getStatus());
 					userHelpRequestRepository.save(existingPartner);
 					String emailMessage=null;
