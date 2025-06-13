@@ -95,10 +95,12 @@ public class ZoyConstant {
 	public static final String INPROGRESS="In Progress";
 	public static final String OPEN="Open";
 	public static final String LEAD_GEN="LEAD_GEN";
+	public static final String SYSTEM="System";
 	public static final String SUPPORT_TICKET="SUPPORT_TICKET";
 	public static final String CLOSE="Close";
 	public static final String REOPEN="Reopen";
-
+	public static final String CANCELLED="Cancelled";
+	public static final String RESOLVED="Resolved";
 
 	public static final Map<String, String> STATES;
 	public static final Map<String, String> CITIES;
