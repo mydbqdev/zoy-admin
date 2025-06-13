@@ -13,7 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.integration.zoy.entity.PgTypeGenderMapping;
+import com.integration.zoy.entity.PgTypeGenderMaster;
 import com.integration.zoy.entity.RentalAgreementDoc;
 import com.integration.zoy.entity.ZoyCompanyMaster;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
@@ -224,7 +224,7 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 	
 	@Override
-	public PgTypeGenderMapping savePgTypeGenderMapping(PgTypeGenderMapping mapping) throws WebServiceException {
+	public PgTypeGenderMaster savePgTypeGenderMapping(PgTypeGenderMaster mapping) throws WebServiceException {
 	    return pgTypeGenderMappingRepo.save(mapping);
 	}
 	

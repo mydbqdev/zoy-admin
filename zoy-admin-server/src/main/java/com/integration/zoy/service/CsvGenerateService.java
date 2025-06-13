@@ -130,7 +130,7 @@ public class CsvGenerateService {
             	writer.println("Transaction Date,Tenant Name,Contact Number,eMail Id,Amount,Reason");
                 break;
             case "PotentialPropertyReport":
-            	writer.println("Owner Name,Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month");
+            	writer.println("Owner Name,Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month,Zoy Share %,Zoy Share Amount");
                 break;
             case "NonPotentialPropertyReport":
             	writer.println("Owner Name,Property Name,Property Contact Number,Property Email address,Property Address,Last Check-out Date (Last tenant checkout Date),Last Check-in Date (Last tenant check-in  Date)");
@@ -406,14 +406,16 @@ public class CsvGenerateService {
             case "PotentialPropertyReport":
             	if (dto instanceof PropertyResportsDTO) {
             		PropertyResportsDTO potentialProperty = (PropertyResportsDTO) dto;
-            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                             safeToString(potentialProperty.getOwnerFullName()),
                             safeToString(potentialProperty.getPropertyName()),
                             safeToString(potentialProperty.getPropertyContactNumber()),
                             safeToString(potentialProperty.getPropertyEmailAddress()),
                             safeToString(potentialProperty.getPropertyAddress()),
                             safeToString(potentialProperty.getNumberOfBeds()),
-                            formatAmountWithCommas(potentialProperty.getExpectedRentPerMonth()));     		 
+                            formatAmountWithCommas(potentialProperty.getExpectedRentPerMonth()),
+                     		safeToString(potentialProperty.getZoyShare()),
+                            safeToString(potentialProperty.getZoyShareAmount()));
                 }
                 break;
             case "NonPotentialPropertyReport":
