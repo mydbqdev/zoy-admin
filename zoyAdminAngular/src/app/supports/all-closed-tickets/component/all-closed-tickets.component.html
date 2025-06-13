@@ -109,10 +109,19 @@
                                       <td mat-cell *matCellDef="let element"> {{ element.created_date | date: 'yyyy-MM-dd' }} </td>
                                     </ng-container>
 
-                                    
+                                    <ng-container matColumnDef="ticket_raisedby">
+                                      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;" title="RAISED BY">RAISED BY
+                                        <span style="margin-left: 2px;">
+                                          <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['ticket_raisedby'] === 'asc' }"></i>
+                                          <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['ticket_raisedby'] === 'desc'}"></i>
+                                        </span>
+                                      </th>
+                                      <td mat-cell *matCellDef="let element"> <span [ngClass]="{'fw-semibold':element.status === 'New'}">{{ element.ticket_raisedby }}</span> </td>
+                                    </ng-container>
+
                                     <!-- Date Column -->
                                     <ng-container matColumnDef="ticket_type">
-                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;" title="CATEGORY TYPE">TYPE
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 600;" title="CATEGORY TYPE">CATEGORY
                                           <span style="margin-left: 2px;">
                                             <i class="fas fa-lg fa-sort-up sorting-normal-color" [ngClass]="{'sorting-selected-color': columnSortDirections['ticket_type'] === 'asc' }"></i>
                                             <i class="fas fa-lg fa-sort-down sorting-normal-color" style="margin-left:-11px" [ngClass]="{'sorting-selected-color': columnSortDirections['ticket_type'] === 'desc'}"></i>
@@ -211,90 +220,180 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeModel></button>
       </div>
       <div class="modal-body p-3">
-        <div *ngIf="supportTicketDetails?.type=='LEAD_GEN'" style="font-size: 13px;">
-          <div class="row mb-1">
-            <div class="col-sm-4">Name:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.name}}</span></div>
-            <div class="col-sm-4">Property:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.property_name}}</span></div>
-            <div class="col-sm-4">Type:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.inquired_for}}</span></div>
-          </div>
-          <div class="row mb-1">
-            <div class="col-sm-4">Address:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.address}}</span></div>
-            <div class="col-sm-4">City:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.city}}</span></div>
-            <div class="col-sm-4">State:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.state}}</span></div>
-          </div>
-          <div class="row mb-1">
-            <div class="col-sm-4">Pincode:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.pincode}}</span></div>
-            <div class="col-sm-4">Mobile:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.mobile}}</span></div>
-            <div class="col-sm-4">Owner Email:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.owner_email}}</span></div>
-          </div>
-          <div class="row mb-1">
-            <div class="col-sm-4">Urgency :
-              <span style="margin-left:10px;color: #f10707;">High</span></div>
-            <div class="col-sm-4">Created On:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
-            <div class="col-sm-4">Status:
-              <span style="margin-left:10px;">
-                <span class="common-status"
-                [ngClass]="supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Closed'? 'btn-closed' : (supportTicketDetails.status === 'Resolved' || supportTicketDetails.status === 'Resolve' ? 'btn-resolve':'btn-cancel' )" >
-                  {{supportTicketDetails.status}}
-                </span>
-              </span>
+        <div *ngIf="supportTicketDetails?.type === 'LEAD_GEN'" style="font-size: 13px;">
+  
+          <div class="row mb-2">
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Name</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.name }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Property</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.property_name }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Category</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.inquired_for }}</div>
             </div>
           </div>
-          <div class="row mb-1">
-            <div class="col-sm-8">Description:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.description}}</span></div>
-            <div class="col-sm-4">Assign To:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.assigned_to_name}}</span></div>
+        
+          <div class="row mb-2">
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Address</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.address }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">City</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.city }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">State</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.state }}</div>
+            </div>
           </div>
+        
+          <div class="row mb-2">
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Pincode</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.pincode }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Mobile No</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.mobile }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Owner Email</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.owner_email }}</div>
+            </div>
+          </div>
+        
+          <div class="row mb-2">
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Urgency</div>
+              <div class="mx-1">:</div>
+              <div>
+                <span *ngIf="supportTicketDetails.urgency === 'true'" style="color: #f10707;">High</span>
+                <span *ngIf="supportTicketDetails.urgency !== 'true'" style="color: #055530;">Low</span>
+              </div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Raised On</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm' }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Status</div>
+              <div class="mx-1">:</div>
+              <div>
+                <span class="common-status"
+                      [ngClass]="
+                        supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Closed'
+                          ? 'btn-closed'
+                          : (supportTicketDetails.status === 'Resolved' || supportTicketDetails.status === 'Resolve'
+                            ? 'btn-resolve'
+                            : 'btn-cancel')
+                      ">
+                  {{ supportTicketDetails.status }}
+                </span>
+              </div>
+            </div>
+          </div>
+        
+          <div class="row mb-2">
+            <div class="col-md-8 d-flex">
+              <div style="color:#505050; min-width: 100px;">Description</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000; word-break: break-word;">{{ supportTicketDetails.description }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Assigned To</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.assigned_to_name }}</div>
+            </div>
+          </div>
+        
         </div>
+        
+        <div *ngIf="supportTicketDetails?.type === 'SUPPORT_TICKET'" style="font-size: 13px;">
 
-        <div *ngIf="supportTicketDetails?.type=='SUPPORT_TICKET'" style="font-size: 13px;">
-          <div class="row mb-1">
-            <div class="col-sm-4">Name :
-            <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.name}}</span></div>
-            <div class="col-sm-4">Property:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.property_name}}</span></div>
-            <div class="col-sm-4">Type:
-              <span style="color:#000000;margin-left:10px;">Support for,{{supportTicketDetails.categories_name}}</span></div>
-          </div>
-          <div class="row mb-1">
-            <div class="col-sm-4">Urgency :
-              <span style="margin-left:10px;"> <span *ngIf="supportTicketDetails.urgency=='true'" style="color: #f10707;">High</span>
-              <span *ngIf="supportTicketDetails.urgency!='true'" style="color: #055530;">Low</span></span></div>
-            <div class="col-sm-4">Created On:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm'}}</span></div>
-            <div class="col-sm-4">Status:
-              <span style="margin-left:10px;">
-                <span class="common-status"
-                [ngClass]="supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Closed' ? 'btn-closed' : (supportTicketDetails.status === 'Resolved' || supportTicketDetails.status === 'Resolve' ? 'btn-resolve':'btn-cancel' )" >
-                  {{supportTicketDetails.status}}
-                </span>
-              </span>
-              &nbsp; 
-              <span *ngIf="supportTicketDetails?.images_urls && supportTicketDetails?.images_urls!=''">
-                  <a href="javascript:void(0)" (click)="downloadImageUrls(supportTicketDetails.images_urls)">
-                  <i class="fas fa-download" title="Download all images" style="margin-left: 8px;"></i>
-                  </a>
-              </span>
+          <div class="row mb-2">
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Name</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.name }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Property</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.property_name }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Category</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">Support for {{ supportTicketDetails.categories_name }}</div>
             </div>
           </div>
-          <div class="row mb-1">
-            <div class="col-sm-8">Description:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.description}}</span></div>
-            <div class="col-sm-4">Assign To:
-              <span style="color:#000000;margin-left:10px;">{{supportTicketDetails.assigned_to_name}}</span></div>
+        
+          <div class="row mb-2">
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Urgency</div>
+              <div class="mx-1">:</div>
+              <div>
+                <span *ngIf="supportTicketDetails.urgency === 'true'" style="color: #f10707;">High</span>
+                <span *ngIf="supportTicketDetails.urgency !== 'true'" style="color: #055530;">Low</span>
+              </div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Created On</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.created_at | date: 'yyyy-MM-dd HH:mm' }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Status</div>
+              <div class="mx-1">:</div>
+              <div class="d-flex align-items-center">
+                <span class="common-status"
+                      [ngClass]="
+                        supportTicketDetails.status === 'Close' || supportTicketDetails.status === 'Closed'
+                          ? 'btn-closed'
+                          : (supportTicketDetails.status === 'Resolved' || supportTicketDetails.status === 'Resolve'
+                            ? 'btn-resolve'
+                            : 'btn-cancel')">
+                  {{ supportTicketDetails.status }}
+                </span>
+                <ng-container *ngIf="supportTicketDetails?.images_urls && supportTicketDetails.images_urls !== ''">
+                  <a href="javascript:void(0)" (click)="downloadImageUrls(supportTicketDetails.images_urls)">
+                    <i class="fas fa-download ml-2" title="Download all images" style="margin-left: 8px;"></i>
+                  </a>
+                </ng-container>
+              </div>
+            </div>
           </div>
+        
+          <div class="row mb-2">
+            <div class="col-md-8 d-flex">
+              <div style="color:#505050; min-width: 100px;">Description</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000; word-break: break-word;">{{ supportTicketDetails.description }}</div>
+            </div>
+            <div class="col-md-4 d-flex">
+              <div style="color:#505050; min-width: 100px;">Assigned To</div>
+              <div class="mx-1">:</div>
+              <div style="color:#000000;">{{ supportTicketDetails.assigned_to_name }}</div>
+            </div>
+          </div>
+        
         </div>
+        
         <hr>
         <div>
           <div class="d-flex">

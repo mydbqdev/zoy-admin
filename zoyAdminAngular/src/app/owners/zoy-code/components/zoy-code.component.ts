@@ -119,6 +119,8 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
 			]],
 			zoyShare:['', [Validators.required]],
+			property_street_name:['', [Validators.required]],
+			property_door_number:['', [Validators.required]],
 		  });
 	}
 	ngAfterViewInit() {
