@@ -41,12 +41,13 @@ export class MyClosedTicketsComponent implements OnInit, AfterViewInit {
 	totalProduct: number = 0;
 	public lastPageSize:number=0;
 	paramFilter:Filter=new Filter();
-	displayedColumns: string[] = ['ticket_id', 'created_date', 'ticket_type', 'priority', 'closedOn','status','action'];
+	displayedColumns: string[] = ['ticket_id', 'created_date','ticket_raisedby', 'ticket_type', 'priority', 'closedOn','status','action'];
 	public ELEMENT_DATA:SupportList[]=[];
 	dataSource:MatTableDataSource<SupportList>=new MatTableDataSource<SupportList>();
 	columnSortDirectionsOg: { [key: string]: string | null } = {
 		ticketNo: null,
 		raisedDate: null,
+		ticket_raisedby:null,
 		type: null,
 		ugency: null,
 		assignTo: null,
