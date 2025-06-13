@@ -175,8 +175,7 @@ public class SupportDBService implements SupportDBImpl{
 			   
 			    dto.setAssign_email(row[4] != null ? (String) row[4] : "");
 			    dto.setAssign_name(row[5] != null ? (String) row[5] : "");
-			    dto.setStatus(row[6] != null && row[5] != null && row[4] != null ? (String) row[6] : (row[6] != null ? (String) row[6] :"New"));
-			    dto.setType(row[7] != null ? (String) row[7] : "");
+			    dto.setStatus(row[6] != null && row[5] != null && row[4] != null ? (String) row[6] : "New");			    dto.setType(row[7] != null ? (String) row[7] : "");
 			    return dto;
 			}).collect(Collectors.toList());
 			
