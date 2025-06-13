@@ -7,6 +7,7 @@ export class SupportList {
   assign_email: string; 
   status:string;
   type:string;
+  ticket_raisedby:string;
   }
 
 
