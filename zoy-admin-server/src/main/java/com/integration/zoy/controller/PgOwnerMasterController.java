@@ -197,6 +197,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			ownerData.setPropertyPincode(model.getPropertyPincode());
 			ownerData.setPropertyState(model.getPropertyState());
 			ownerData.setInitialZoyCode(true);
+			ownerData.setPropertyDoorNumber(model.getPropertyDoorNumber());
+			ownerData.setPropertyStreetName(model.getPropertyStreetName());
 			pgOwnerMaterRepository.save(ownerData);
 
 			String token = UUID.randomUUID().toString();
@@ -811,6 +813,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					ownerData.setPropertyPincode(model.getPropertyPincode());
 					ownerData.setPropertyState(model.getPropertyState());
 					ownerData.setInitialZoyCode(false);
+					ownerData.setPropertyDoorNumber(model.getPropertyDoorNumber());
+					ownerData.setPropertyStreetName(model.getPropertyStreetName());
 					pgOwnerMaterRepository.save(ownerData);
 
 					//audit history here
