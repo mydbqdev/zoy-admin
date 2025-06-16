@@ -65,6 +65,12 @@ public class PgOwnerMasterModel {
 
 	@JsonProperty("property_location_longitude")
 	private BigDecimal propertyLocationLongitude;
+	
+	@Column(name ="property_door_number")
+	private String propertyDoorNumber;
+
+	@Column(name ="property_street_name")
+	private String propertyStreetName;
 
 	public String getFirstName() {
 		return firstName;
@@ -216,6 +222,22 @@ public class PgOwnerMasterModel {
 
 	public void setPropertyLocalityCodeId(String propertyLocalityCodeId) {
 		this.propertyLocalityCodeId = propertyLocalityCodeId;
+	}
+
+	public String getPropertyDoorNumber() {
+		return propertyDoorNumber;
+	}
+
+	public void setPropertyDoorNumber(String propertyDoorNumber) {
+		this.propertyDoorNumber = propertyDoorNumber;
+	}
+
+	public String getPropertyStreetName() {
+		return propertyStreetName;
+	}
+
+	public void setPropertyStreetName(String propertyStreetName) {
+		this.propertyStreetName = propertyStreetName;
 	}
 
 
