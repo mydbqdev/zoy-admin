@@ -169,11 +169,11 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				}
 			}
 
-			String phoneNumber= pgOwnerMaterRepository.findPhoneNumber(model.getMobileNo());
+			List<String> phoneNumber= pgOwnerMaterRepository.findPhoneNumber(model.getMobileNo());
 
 			if (phoneNumber != null && !phoneNumber.isEmpty()) {
 				response.setStatus(HttpStatus.CONFLICT.value());
-				response.setMessage("Phone number " + phoneNumber + " already exists");
+				response.setMessage("Phone number " + phoneNumber.get(0) + " already exists");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
 			}	
 			
