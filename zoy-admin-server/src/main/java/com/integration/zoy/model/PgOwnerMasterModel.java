@@ -66,10 +66,10 @@ public class PgOwnerMasterModel {
 	@JsonProperty("property_location_longitude")
 	private BigDecimal propertyLocationLongitude;
 	
-	@Column(name ="property_door_number")
+	@JsonProperty("property_door_number")
 	private String propertyDoorNumber;
 
-	@Column(name ="property_street_name")
+	@JsonProperty("property_street_name")
 	private String propertyStreetName;
 
 	public String getFirstName() {
