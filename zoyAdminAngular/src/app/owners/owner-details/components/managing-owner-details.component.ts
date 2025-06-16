@@ -701,6 +701,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	imgeURL: string;
 	  generateAadhaarSession(): void {
 		this.submitAadhaar = false ;
+		this.isVerifyAadhaarOtp=false;
 		this.aadhaarSession = new AadhaarVerif();
 		this.aadhaarDetails = new AadhaarVerif();
 		sessionStorage.setItem('zoyadminapi', 'no');
@@ -786,9 +787,8 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		if(!this.aadhaarDetails.aadhaar || this.isInvalidAadhaar(this.aadhaarDetails.aadhaar) || !this.aadhaarDetails.captcha){
 			return;
 		}
-		console.log("this.aadhaarSession",this.aadhaarSession);
-		console.log("this.aadhaarDetails",this.aadhaarDetails);
 		this.aadhaarDetails.sessionid = this.aadhaarSession.session_id;
+		this.spinner.show();
 		sessionStorage.setItem('zoyadminapi', 'no');
 		this.zoyOwnerService.generateAadhaarOtp(this.aadhaarDetails).subscribe(res => {
 		const data = JSON.parse(res.data);
@@ -798,7 +798,8 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				this.notifyService.showError(data?.message,'');
 			}
 		this.submitAadhaar = false ;	
-		sessionStorage.setItem('zoyadminapi', 'yes');
+		sessionStorage.setItem('zoyadminapi', 'yes'); 
+		this.spinner.hide();
 	}, error => {
 		sessionStorage.setItem('zoyadminapi', 'yes');
 		 this.spinner.hide();
@@ -830,10 +831,13 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			}); 
 			
 	  }
+	  isVerifyAadhaarOtp:boolean=false;
 	  verifyAadhaarOtp(): void {
+		this.isVerifyAadhaarOtp=true;
 		if(!this.aadhaarDetails.otp || !this.aadhaarDetails.sessionid){
 			return;
 		}
+		this.spinner.show();
 		const model = {"otp":this.aadhaarDetails.otp,"sessionId": this.aadhaarDetails.sessionid }
 		sessionStorage.setItem('zoyadminapi', 'no');
 		this.zoyOwnerService.verifyAadhaarOtp(model).subscribe(res => {
@@ -841,8 +845,10 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			if(data.code == 200){
 				this.notifyService.showSuccess(data?.message,'');
 				this.updateAadhaar();
+				this.isVerifyAadhaarOtp=false;
 			}else{
 				this.notifyService.showError(data?.message,'');
+				this.spinner.hide();
 			}
 		}, error => {
 			sessionStorage.setItem('zoyadminapi', 'yes');
