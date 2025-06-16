@@ -39,39 +39,84 @@ public class SupportDBService implements SupportDBImpl{
 				// we will add extra column as closedOn for closed/resolved/cancelled status date
 				if(isFinanceUser) {
 					queryBuilder.append(
-							"select * from (\n"
-							+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
-							+ "from pgowners.zoy_pg_registered_owner_details zprod)tkt WHERE 1=1   \r\n"
-							);
+							  "SELECT * FROM (\n" +
+				                        "SELECT zprod.register_id AS ticket_id, zprod.ts AS created_date, true AS priority, zprod.inquired_for AS support_type, " +
+				                        "zprod.assign_to_email AS assign_email, zprod.assign_to_name AS assign_name, zprod.status AS status, " +
+				                        "'LEAD_GEN' AS type, 'SUPPORT_TICKET' AS type, zprod.firstname || ' ' || zprod.lastname AS full_name \n" +
+				                        "FROM pgowners.zoy_pg_registered_owner_details zprod) tkt WHERE 1=1 \n"
+				                );
 				}else {
 			queryBuilder.append(
-					"select * from (\n"
-					+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
-					+ "from pgowners.zoy_pg_registered_owner_details zprod \n"
-					+ "union all\n"
-					+ "select helpreq.user_help_request_id as ticket_id,helpreq.created_at as created_date,helpreq.urgency as priority,CONCAT('Support for, ',cat.categories_name) as support_type,helpreq.assign_to_email as assign_email,helpreq.assign_to_name as assign_name,helpreq.request_status as status,'SUPPORT_TICKET' as type \n"
-					+ "from pgusers.user_help_request helpreq\n"
-					+ "left join pgcommon.pg_user_help_desk_categories cat on cat.categories_id =helpreq.categories_id\n"
-					+ ")tkt WHERE 1=1   \r\n"
+					"SELECT * FROM (\r\n"
+					+ "    SELECT \r\n"
+					+ "        zprod.register_id AS ticket_id,\r\n"
+					+ "        zprod.ts AS created_date,\r\n"
+					+ "        true AS priority,\r\n"
+					+ "        zprod.inquired_for AS support_type,\r\n"
+					+ "        zprod.assign_to_email AS assign_email,\r\n"
+					+ "        zprod.assign_to_name AS assign_name,\r\n"
+					+ "        zprod.status AS status,\r\n"
+					+ "        'LEAD_GEN' AS type,\r\n"
+					+ "        zprod.firstname || ' ' || zprod.lastname AS full_name\r\n"
+					+ "    FROM pgowners.zoy_pg_registered_owner_details zprod\r\n"
+					+ "    UNION ALL\r\n"
+					+ "    SELECT \r\n"
+					+ "        helpreq.user_help_request_id AS ticket_id,\r\n"
+					+ "        helpreq.created_at AS created_date,\r\n"
+					+ "        helpreq.urgency AS priority,\r\n"
+					+ "        CONCAT('Support for, ', cat.categories_name) AS support_type,\r\n"
+					+ "        helpreq.assign_to_email AS assign_email,\r\n"
+					+ "        helpreq.assign_to_name AS assign_name,\r\n"
+					+ "        helpreq.request_status AS status,\r\n"
+					+ "        'SUPPORT_TICKET' AS type,\r\n"
+					+ "        um.user_first_name || ' ' || um.user_last_name AS full_name\r\n"
+					+ "    FROM pgusers.user_help_request helpreq\r\n"
+					+ "    JOIN pgusers.user_master um ON um.user_id = helpreq.user_id\r\n"
+					+ "    LEFT JOIN pgcommon.pg_user_help_desk_categories cat ON cat.categories_id = helpreq.categories_id\r\n"
+					+ ") tkt \r\n"
+					+ "WHERE 1=1 "
 					);
 				}
 			}else {
 				if(isFinanceUser) {
 					queryBuilder.append(
-							"select * from (\n"
-							+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
-							+ "from pgowners.zoy_pg_registered_owner_details zprod )tkt WHERE 1=1  \r\n"
-							);
+							 "SELECT * FROM (\n" +
+				                        "SELECT zprod.register_id AS ticket_id, zprod.ts AS created_date, true AS priority, zprod.inquired_for AS support_type, " +
+				                        "zprod.assign_to_email AS assign_email, zprod.assign_to_name AS assign_name, zprod.status AS status, " +
+				                        "'LEAD_GEN' AS type, 'SUPPORT_TICKET' AS type, zprod.firstname || ' ' || zprod.lastname AS full_name \n" +
+				                        "FROM pgowners.zoy_pg_registered_owner_details zprod) tkt WHERE 1=1 \n"
+				                );
 				}else {
 				queryBuilder.append(
-						"select * from (\n"
-						+ "select zprod.register_id as ticket_id,zprod.ts as created_date,true as priority,zprod.inquired_for as support_type,zprod.assign_to_email as assign_email,zprod.assign_to_name as assign_name, zprod.status as status, 'LEAD_GEN' as type\n"
-						+ "from pgowners.zoy_pg_registered_owner_details zprod \n"
-						+ "union all\n"
-						+ "select helpreq.user_help_request_id as ticket_id,helpreq.created_at as created_date,helpreq.urgency as priority,CONCAT('Support for, ',cat.categories_name) as support_type,helpreq.assign_to_email as assign_email,helpreq.assign_to_name as assign_name,helpreq.request_status as status,'SUPPORT_TICKET' as type \n"
-						+ "from pgusers.user_help_request helpreq\n"
-						+ "left join pgcommon.pg_user_help_desk_categories cat on cat.categories_id =helpreq.categories_id\n"
-						+ ")tkt WHERE 1=1  \r\n"
+						"SELECT * \r\n"
+						+ "FROM (\r\n"
+						+ "    SELECT \r\n"
+						+ "        zprod.register_id AS ticket_id,\r\n"
+						+ "        zprod.ts AS created_date,\r\n"
+						+ "        true AS priority,\r\n"
+						+ "        zprod.inquired_for AS support_type,\r\n"
+						+ "        zprod.assign_to_email AS assign_email,\r\n"
+						+ "        zprod.assign_to_name AS assign_name,\r\n"
+						+ "        zprod.status AS status,\r\n"
+						+ "        'LEAD_GEN' AS type,\r\n"
+						+ "        zprod.firstname || ' ' || zprod.lastname AS full_name \r\n"
+						+ "    FROM pgowners.zoy_pg_registered_owner_details zprod\r\n"
+						+ "    UNION ALL\r\n"
+						+ "    SELECT \r\n"
+						+ "        helpreq.user_help_request_id AS ticket_id,\r\n"
+						+ "        helpreq.created_at AS created_date,\r\n"
+						+ "        helpreq.urgency AS priority,\r\n"
+						+ "        CONCAT('Support for, ', cat.categories_name) AS support_type,\r\n"
+						+ "        helpreq.assign_to_email AS assign_email,\r\n"
+						+ "        helpreq.assign_to_name AS assign_name,\r\n"
+						+ "        helpreq.request_status AS status,\r\n"
+						+ "        'SUPPORT_TICKET' AS type,\r\n"
+						+ "        um.user_first_name || ' ' || um.user_last_name AS full_name \r\n"
+						+ "    FROM pgusers.user_help_request helpreq\r\n"
+						+ "    JOIN pgusers.user_master um ON um.user_id = helpreq.user_id\r\n"
+						+ "    LEFT JOIN pgcommon.pg_user_help_desk_categories cat ON cat.categories_id = helpreq.categories_id\r\n"
+						+ ") tkt \r\n"
+						+ "WHERE 1=1 "
 						);
 				}
 			}
@@ -79,16 +124,19 @@ public class SupportDBService implements SupportDBImpl{
 
 
 			if (paginationRequest.getFilter().getSearchText() != null && !paginationRequest.getFilter().getSearchText().isEmpty()) {
-				queryBuilder.append("AND ( \r\n");
+				queryBuilder.append(" AND ( \r\n");
 				queryBuilder.append(" LOWER(tkt.status) LIKE LOWER('%' || :status || '%') \r\n");
 				queryBuilder.append( "OR LOWER(tkt.support_type) LIKE LOWER('%' || :typesupport || '%') \r\n");
 				queryBuilder.append( "OR LOWER(tkt.ticket_id) LIKE LOWER('%' || :tktid || '%') \r\n");
 				queryBuilder.append( "OR LOWER(tkt.assign_name) LIKE LOWER('%' || :assignname || '%') \r\n");
+			    queryBuilder.append(" OR LOWER(tkt.full_name) LIKE LOWER('%' || :fullname || '%') \r\n");
 				queryBuilder.append(" ) \r\n");
 				parameters.put("status", paginationRequest.getFilter().getSearchText());
 				parameters.put("typesupport", paginationRequest.getFilter().getSearchText());
 				parameters.put("tktid", paginationRequest.getFilter().getSearchText());
 				parameters.put("assignname", paginationRequest.getFilter().getSearchText());
+			    parameters.put("fullname", paginationRequest.getFilter().getSearchText());
+
 			}
 			
 			if (paginationRequest.getFilter().getStartDate() != null && paginationRequest.getFilter().getEndDate() != null) {
@@ -150,6 +198,9 @@ public class SupportDBService implements SupportDBImpl{
 				case "status":
 					sort = "status";
 					break;
+				case "full_name":
+				    sort = "full_name";
+				    break;	
 				default:
 					sort = "ticket_id";
 				}
@@ -177,6 +228,7 @@ public class SupportDBService implements SupportDBImpl{
 			    dto.setAssign_name(row[5] != null ? (String) row[5] : "");
 			    dto.setStatus(row[6] != null && row[5] != null && row[4] != null ? (String) row[6] : "New");
 			    dto.setType(row[7] != null ? (String) row[7] : "");
+			    dto.setTicketRaisedby(row[8] != null ? (String) row[8] : "");
 			    return dto;
 			}).collect(Collectors.toList());
 			

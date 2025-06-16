@@ -114,7 +114,7 @@
                   <div class="row justify-content-center">
                     <div class="col-md-4 mb-2">
                       <label for="email">PG Name</label>
-                      <input type="text" id="pgName" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="20" placeholder="Enter PG Name"  [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">   
+                      <input type="text" id="pgName" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="75" placeholder="Enter PG Name"  [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">   
                     </div>
 
                     <div class="col-md-4 mb-2">
@@ -135,6 +135,32 @@
                     <div class="col-md-2 mb-2">
                       <label for="phone">City Code</label>
                       <input type="text"  maxlength="3" placeholder="City Code" id="city" [(ngModel)]="generateZCode.property_city_code" (ngModelChange)="generateZCode.property_city_code = $event.toUpperCase()" formControlName="cityCode" class="form-control"  [ngClass]="{'is-invalid':submitted && (form.controls.cityCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))' [readonly]="!isEditCityCode">
+                    </div>
+                  </div>
+                  <div class="row justify-content-center mt-3">
+                    <div class="col-md-4 mb-2">
+                      <label for="property_street_name">Street Name</label>
+                      <input type="text" [(ngModel)]="generateZCode.property_street_name"
+                        maxlength="75" id="property_street_name" formControlName="property_street_name" class="form-control" placeholder="Enter PG Street Name"
+                        [ngClass]="{'is-invalid':submitted && form.controls.property_street_name.errors}" required
+                        autocomplete="off" (paste)="nameValidation($event,'property_street_name')">
+                      <div *ngIf="submitted && form.controls.property_street_name.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.property_street_name.errors?.required">
+                          PG Street Name is required.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                      <label for="property_door_number">Door/Flat Number </label>
+                      <input type="text" [(ngModel)]="generateZCode.property_door_number"
+                        maxlength="75" formControlName="property_door_number" id="property_door_number" class="form-control" placeholder="Enter PG Door number"
+                        [ngClass]="{'is-invalid':submitted && form.controls.property_door_number.errors}"
+                        (paste)="nameValidation($event,'property_door_number')">
+                      <div *ngIf="submitted && form.controls.property_door_number.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.property_door_number.errors?.required">
+                          Door/Flat Number is required.
+                        </div>
+                      </div>
                     </div>
                   </div>
 

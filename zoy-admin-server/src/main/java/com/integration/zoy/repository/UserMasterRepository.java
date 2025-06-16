@@ -235,9 +235,11 @@ public interface UserMasterRepository extends JpaRepository<UserMaster, String>{
 
 
 	@Query(value = "select * from (\r\n"
-			+ "SELECT DISTINCT um.user_email as email , CONCAT(um.first_name, ' ', um.last_name) AS full_name, designation as type \r\n"
-			+ "FROM pgadmin.user_master um \r\n"
-			+ "WHERE um.designation ='Support Admin'\r\n"
+			+ "SELECT DISTINCT um.user_email as email , CONCAT(um.first_name, ' ', um.last_name) AS full_name, 'SUPPORT_TEAM' as type \n"
+			+ "FROM pgadmin.user_master um \n"
+			+ "JOIN pgadmin.user_role ur ON um.user_email = ur.user_email \n"
+			+ "JOIN pgadmin.role_screen rs ON ur.role_id = rs.role_id \n"
+			+ "WHERE rs.screen_name = 'TICKETS' \n"
 			+ "union all\r\n"
 			+ "select psm.email_id as email,CONCAT(psm.first_name, ' ', psm.last_name) AS full_name,'SALE_TEAM' as type \r\n"
 			+ "from pgsales.pg_sales_master psm \r\n"

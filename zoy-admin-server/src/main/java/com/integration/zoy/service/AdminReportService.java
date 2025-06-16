@@ -89,7 +89,8 @@ public class AdminReportService implements AdminReportImpl{
 	@Value("${app.minio.aadhaar.photos.bucket.name}")
 	String aadhaarPhotoBucket;
 
-
+	@Value("${spring.jackson.time-zone}")
+	private String TIME_ZONE;
 
 	@Override
 	public CommonResponseDTO<UserPaymentDTO> getUserPaymentDetails(UserPaymentFilterRequest filterRequest,FilterData filterData,Boolean applyPagination,Boolean isGstReport) throws WebServiceException {
@@ -870,8 +871,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -905,8 +906,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -939,8 +940,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -972,8 +973,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1009,8 +1010,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1047,8 +1048,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1081,8 +1082,8 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("overallRating", review.getOverallRating() != null ? review.getOverallRating() : "");
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1116,8 +1117,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1149,7 +1150,7 @@ public class AdminReportService implements AdminReportImpl{
 			// Common fields
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1181,8 +1182,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1213,8 +1214,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1250,8 +1251,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1284,8 +1285,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1340,8 +1341,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1375,8 +1376,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -1410,8 +1411,8 @@ public class AdminReportService implements AdminReportImpl{
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
 
-			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

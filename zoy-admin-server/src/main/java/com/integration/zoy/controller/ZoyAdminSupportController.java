@@ -315,7 +315,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			boolean isFinanceUser=false;
 			Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
 			if(user.isPresent()) {
-				if(user.get().getDesignation().equals("Finance Admin")) {
+				if(user.get().getDesignation().equals("Sales Admin")) {
 					isFinanceUser=true;
 				}
 			}
@@ -342,7 +342,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 			boolean isFinanceUser=false;
 			Optional<AdminUserMaster> user=userMasterRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName());
 			if(user.isPresent()) {
-				if(user.get().getDesignation().equals("Finance Admin")) {
+				if(user.get().getDesignation().equals("Sales Admin")) {
 					isFinanceUser=true;
 				}
 			}
@@ -527,6 +527,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 				String currentDate=tuService.currentDate();
 				RegisteredPartner existingPartner = partner.get();
 				String previousStatus=existingPartner.getStatus();
+				if (updateStatus.getStatus().equals(ZoyConstant.CLOSE) ||updateStatus.getStatus().equals(ZoyConstant.CANCELLED) ||updateStatus.getStatus().equals(ZoyConstant.RESOLVED)) {
+					    existingPartner.setAssignedToEmail(ZoyConstant.SYSTEM);
+					    existingPartner.setAssignedToName(ZoyConstant.SYSTEM);
+					}
 				existingPartner.setStatus(updateStatus.getStatus());
 				registeredPartnerDetailsRepository.save(existingPartner);
 				String emailMessage=null;
@@ -567,6 +571,10 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 					String currentDate=tuService.currentDate();
 					UserHelpRequest existingPartner = partner.get();
 					String previousStatus=existingPartner.getRequestStatus();
+					if (updateStatus.getStatus().equals(ZoyConstant.CLOSE) ||updateStatus.getStatus().equals(ZoyConstant.CANCELLED) ||updateStatus.getStatus().equals(ZoyConstant.RESOLVED)) {
+					    existingPartner.setAssignedToEmail(ZoyConstant.SYSTEM);
+					    existingPartner.setAssignedToName(ZoyConstant.SYSTEM);
+					}
 					existingPartner.setRequestStatus(updateStatus.getStatus());
 					userHelpRequestRepository.save(existingPartner);
 					String emailMessage=null;

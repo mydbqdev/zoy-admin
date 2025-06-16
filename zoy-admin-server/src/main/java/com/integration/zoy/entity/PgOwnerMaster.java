@@ -72,6 +72,12 @@ public class PgOwnerMaster {
 	@Column(name = "initial_zoy_code")
 	private Boolean initialZoyCode;
 	
+	@Column(name ="property_door_number")
+	private String propertyDoorNumber;
+
+	@Column(name ="property_street_name")
+	private String propertyStreetName;
+	
 	
 	public String getRegisterId() {
 		return registerId;
@@ -215,6 +221,22 @@ public class PgOwnerMaster {
 
 	public void setInitialZoyCode(Boolean initialZoyCode) {
 		this.initialZoyCode = initialZoyCode;
+	}
+
+	public String getPropertyDoorNumber() {
+		return propertyDoorNumber;
+	}
+
+	public void setPropertyDoorNumber(String propertyDoorNumber) {
+		this.propertyDoorNumber = propertyDoorNumber;
+	}
+
+	public String getPropertyStreetName() {
+		return propertyStreetName;
+	}
+
+	public void setPropertyStreetName(String propertyStreetName) {
+		this.propertyStreetName = propertyStreetName;
 	}
 
 
