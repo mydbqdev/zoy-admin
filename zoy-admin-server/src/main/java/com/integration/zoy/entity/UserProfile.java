@@ -52,9 +52,13 @@ public class UserProfile implements Serializable {
 	    @Column(name = "encrypted_aadhar")
 	    private String encryptedAadhar;
 	    
-	    @Column(name = "zoy_share", nullable = false)
-		private BigDecimal zoyShare;
+	    @Column(name = "zoy_variable_share", nullable = false)
+		private BigDecimal zoyVariableShare;
 
+	    @Column(name = "zoy_fixed_share", nullable = false)
+		private BigDecimal zoyFixedShare;
+
+	    
 	    // Getters and Setters
 
 	    public Long getId() {
@@ -145,13 +149,23 @@ public class UserProfile implements Serializable {
 			this.encryptedAadhar = encryptedAadhar;
 		}
 
-		public BigDecimal getZoyShare() {
-			return zoyShare;
+		public BigDecimal getZoyVariableShare() {
+			return zoyVariableShare;
 		}
 
-		public void setZoyShare(BigDecimal zoyShare) {
-			this.zoyShare = zoyShare;
+		public void setZoyVariableShare(BigDecimal zoyVariableShare) {
+			this.zoyVariableShare = zoyVariableShare;
 		}
+
+		public BigDecimal getZoyFixedShare() {
+			return zoyFixedShare;
+		}
+
+		public void setZoyFixedShare(BigDecimal zoyFixedShare) {
+			this.zoyFixedShare = zoyFixedShare;
+		}
+
+		
 	    
 	    
 	    

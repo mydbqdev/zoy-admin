@@ -321,7 +321,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
     		+ "zppfd.master_floor_id ,zppfd.floor_name ,zprd.room_id ,zprd.room_name ,  "
     		+ "STRING_AGG(DISTINCT CASE WHEN zpbd.bed_available = 'available' THEN zpbd.bed_id ||'|'||zpbd.bed_name||'|'||zpbd.bed_available END, ',') AS available_beds,  "
     		+ "STRING_AGG(DISTINCT CASE WHEN zpbd.bed_available = 'occupied' THEN zpbd.bed_id ||'|'||zpbd.bed_name||'|'||zpbd.bed_available END, ',') AS occupied_beds,  "
-    		+ "zppd.zoy_share AS zoyShare "
+    		+ "zppd.zoy_variable_share AS zoyShare ,zppd.zoy_fixed_share"
     		+ "from pgowners.zoy_pg_owner_details zpod   "
     		+ "join pgadmin.pg_owner_master pom on pom.zoy_code =zpod.zoy_code   "
     		+ "left join pgcommon.ekyc_details ekyc on zpod.pg_owner_encrypted_aadhar =ekyc.enocded_aadhaar   "

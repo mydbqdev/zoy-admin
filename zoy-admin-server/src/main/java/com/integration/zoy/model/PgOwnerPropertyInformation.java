@@ -6,7 +6,8 @@ public class PgOwnerPropertyInformation {
 	private String propertyName;
 	private String propertyId;
 	private String status;
-	private String zoyShare;
+	private String zoyFixedShare;
+	private String zoyVariableShare;
 	private BasicPropertyInformation basicPropertyInformation;
 	private PgOwnerAdditionalInfo pgOwnerAdditionalInfo;
 	private List<FloorInformation> floorInformation;
@@ -51,11 +52,6 @@ public class PgOwnerPropertyInformation {
 		this.floorInformation = floorInformation;
 	}
 
-	public void setPgOwnerAdditionalInfo(List<PgOwnerAdditionalInfo> singletonList) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public String getPropertyId() {
 		return propertyId;
 	}
@@ -64,13 +60,23 @@ public class PgOwnerPropertyInformation {
 		this.propertyId = propertyId;
 	}
 
-	public String getZoyShare() {
-		return zoyShare;
+	public String getZoyFixedShare() {
+		return zoyFixedShare;
 	}
 
-	public void setZoyShare(String zoyShare) {
-		this.zoyShare = zoyShare;
+	public void setZoyFixedShare(String zoyFixedShare) {
+		this.zoyFixedShare = zoyFixedShare;
 	}
+
+	public String getZoyVariableShare() {
+		return zoyVariableShare;
+	}
+
+	public void setZoyVariableShare(String zoyVariableShare) {
+		this.zoyVariableShare = zoyVariableShare;
+	}
+
+	
 	
 	
 
