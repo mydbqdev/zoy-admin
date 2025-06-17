@@ -23,7 +23,8 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 			+ "    up.mobile_no AS contact,  "
 			+ "    pzm.created_at,  "
 			+ "    'pending' AS status,  "
-			+ "     pzm.zoy_share,  "
+			+ "     pzm.zoy_variable_share,  "
+			+ "     pzm.zoy_fixed_share,  "
 			+ "     pzm.register_id "
 			+ "FROM  "
 			+ "    pgadmin.pg_owner_master pzm  "
@@ -613,7 +614,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	List<Object[]> getExistingPgOwnerDetails(String emailMobile);
 
 	@Query(value = "select distinct pom.zoy_code, pom.first_name || ' ' || pom.last_name AS owner_name,up.email_id,   "
-			+ "up.mobile_no AS contact,  pom.created_at,'pending' AS status,  pom.zoy_share, pom.register_id,pom.property_name  "
+			+ "up.mobile_no AS contact,  pom.created_at,'pending' AS status,  pom.zoy_variable_share,pom.zoy_fixed_share, pom.register_id,pom.property_name  "
 			+ "from pgowners.zoy_pg_owner_details zpod  "
 			+ "join  pgadmin.pg_owner_master pom on pom.email_id =zpod.pg_owner_email  "
 			+ "JOIN pgcommon.user_profile up ON up.email_id = pom.email_id and up.enabled = true and pom.zoy_code != up.zoy_code  "
