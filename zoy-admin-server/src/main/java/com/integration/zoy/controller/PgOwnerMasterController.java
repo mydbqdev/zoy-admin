@@ -169,11 +169,11 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				}
 			}
 
-			String phoneNumber= pgOwnerMaterRepository.findPhoneNumber(model.getMobileNo());
+			List<String> phoneNumber= pgOwnerMaterRepository.findPhoneNumber(model.getMobileNo());
 
 			if (phoneNumber != null && !phoneNumber.isEmpty()) {
 				response.setStatus(HttpStatus.CONFLICT.value());
-				response.setMessage("Phone number " + phoneNumber + " already exists");
+				response.setMessage("Phone number " + phoneNumber.get(0) + " already exists");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
 			}	
 			
@@ -186,7 +186,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			ownerData.setFirstName(model.getFirstName());
 			ownerData.setLastName(model.getLastName());
 			ownerData.setMobileNo(model.getMobileNo());
-			ownerData.setZoyShare(model.getZoyShare());
+			ownerData.setZoyFixedShare(model.getZoyFixedShare());
+			ownerData.setZoyVariableShare(model.getZoyVariableShare());
 			ownerData.setRegisterId(model.getRegisterId()!=null?model.getRegisterId():null);
 			ownerData.setPropertyName(model.getPropertyName());
 			ownerData.setPropertyCity(model.getPropertyCity());
@@ -210,7 +211,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			user.setEnabled(false);
 			user.setUserApplicationName("O");
 			user.setVerifyToken(token);
-			user.setZoyShare(model.getZoyShare());
+			user.setZoyFixedShare(model.getZoyFixedShare());
+			user.setZoyVariableShare(model.getZoyVariableShare());
 			commonDBImpl.registerNewUserAccount(user);
 			//audit history here
 			String historyContent=" has generated the zoy code for,"+user.getPropertyOwnerName();
@@ -403,7 +405,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					newProperty.setPropertyName(property[12] != null ? property[12].toString() : null);
 					newProperty.setPropertyId(propertyId);
 					newProperty.setStatus(property[13] != null ? property[13].toString() : null);
-					newProperty.setZoyShare(details[37] != null ? details[37].toString() : null);
+					newProperty.setZoyVariableShare(details[37] != null ? details[37].toString() : null);
+					newProperty.setZoyFixedShare(details[38] != null ? details[38].toString() : null);
 					BasicPropertyInformation basicPropertyInfo = new BasicPropertyInformation();
 					basicPropertyInfo.setPgType(property[14] != null ? property[14].toString() : null);
 					basicPropertyInfo.setPgAddress(property[15] != null ? property[15].toString() : null);
@@ -802,7 +805,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					ownerData.setFirstName(model.getFirstName());
 					ownerData.setLastName(model.getLastName());
 					ownerData.setMobileNo(model.getMobileNo());
-					ownerData.setZoyShare(model.getZoyShare());
+					ownerData.setZoyFixedShare(model.getZoyFixedShare());
+					ownerData.setZoyVariableShare(model.getZoyVariableShare());
 					ownerData.setRegisterId(model.getRegisterId()!=null?model.getRegisterId():null);
 					ownerData.setPropertyName(model.getPropertyName());
 					ownerData.setPropertyCity(model.getPropertyCity());

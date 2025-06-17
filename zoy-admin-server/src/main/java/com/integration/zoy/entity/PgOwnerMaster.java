@@ -39,8 +39,14 @@ public class PgOwnerMaster {
 	@UpdateTimestamp
 	private Timestamp updated_at;
 
-	@Column(name = "zoy_share", nullable = false)
-	private BigDecimal zoyShare;
+	//	@Column(name = "zoy_share", nullable = false)
+	//	private BigDecimal zoyShare;
+
+	@Column(name = "zoy_variable_share", nullable = false)
+	private BigDecimal zoyVariableShare;
+
+	@Column(name = "zoy_fixed_share", nullable = false)
+	private BigDecimal zoyFixedShare;
 
 	@Column(name ="register_id")
 	private String registerId;
@@ -71,14 +77,14 @@ public class PgOwnerMaster {
 
 	@Column(name = "initial_zoy_code")
 	private Boolean initialZoyCode;
-	
+
 	@Column(name ="property_door_number")
 	private String propertyDoorNumber;
 
 	@Column(name ="property_street_name")
 	private String propertyStreetName;
-	
-	
+
+
 	public String getRegisterId() {
 		return registerId;
 	}
@@ -143,16 +149,33 @@ public class PgOwnerMaster {
 		this.createdAt = createdAt;
 	}
 
-	public BigDecimal getZoyShare() {
-		return zoyShare;
-	}
-
-	public void setZoyShare(BigDecimal zoyShare) {
-		this.zoyShare = zoyShare;
-	}
+//	public BigDecimal getZoyShare() {
+//		return zoyShare;
+//	}
+//
+//	public void setZoyShare(BigDecimal zoyShare) {
+//		this.zoyShare = zoyShare;
+//	}
+	
 
 	public String getPropertyName() {
 		return propertyName;
+	}
+
+	public BigDecimal getZoyVariableShare() {
+		return zoyVariableShare;
+	}
+
+	public void setZoyVariableShare(BigDecimal zoyVariableShare) {
+		this.zoyVariableShare = zoyVariableShare;
+	}
+
+	public BigDecimal getZoyFixedShare() {
+		return zoyFixedShare;
+	}
+
+	public void setZoyFixedShare(BigDecimal zoyFixedShare) {
+		this.zoyFixedShare = zoyFixedShare;
 	}
 
 	public void setPropertyName(String propertyName) {

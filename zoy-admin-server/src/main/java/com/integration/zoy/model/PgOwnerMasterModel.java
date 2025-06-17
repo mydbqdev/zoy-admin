@@ -21,8 +21,13 @@ public class PgOwnerMasterModel {
 	@JsonProperty("mobileNo")
 	private String mobileNo;
 
-	@JsonProperty("zoyShare")
-	private BigDecimal zoyShare;
+	//	@JsonProperty("zoyShare")
+	//	private BigDecimal zoyShare;
+	@JsonProperty("zoy_variable_share")
+	private BigDecimal zoyVariableShare;
+
+	@JsonProperty("zoy_fixed_share")
+	private BigDecimal zoyFixedShare;
 
 	@JsonProperty("registerId")
 	private String registerId;
@@ -41,10 +46,10 @@ public class PgOwnerMasterModel {
 
 	@JsonProperty("property_city")
 	private String propertyCity;
-	
+
 	@JsonProperty("property_city_code_id")
 	private String propertyCityCodeId;
-	
+
 	@JsonProperty("property_city_code")
 	private String propertyCityCode;
 
@@ -53,7 +58,7 @@ public class PgOwnerMasterModel {
 
 	@JsonProperty("property_locality_code_id")
 	private String propertyLocalityCodeId;
-	
+
 	@JsonProperty("property_locality_code")
 	private String propertyLocalityCode;
 
@@ -65,7 +70,7 @@ public class PgOwnerMasterModel {
 
 	@JsonProperty("property_location_longitude")
 	private BigDecimal propertyLocationLongitude;
-	
+
 	@JsonProperty("property_door_number")
 	private String propertyDoorNumber;
 
@@ -104,16 +109,32 @@ public class PgOwnerMasterModel {
 		this.mobileNo = mobileNo;
 	}
 
-	public BigDecimal getZoyShare() {
-		return zoyShare;
-	}
-
-	public void setZoyShare(BigDecimal zoyShare) {
-		this.zoyShare = zoyShare;
-	}
-
+//	public BigDecimal getZoyShare() {
+//		return zoyShare;
+//	}
+//
+//	public void setZoyShare(BigDecimal zoyShare) {
+//		this.zoyShare = zoyShare;
+//	}
+	
 	public String getRegisterId() {
 		return registerId;
+	}
+
+	public BigDecimal getZoyVariableShare() {
+		return zoyVariableShare;
+	}
+
+	public void setZoyVariableShare(BigDecimal zoyVariableShare) {
+		this.zoyVariableShare = zoyVariableShare;
+	}
+
+	public BigDecimal getZoyFixedShare() {
+		return zoyFixedShare;
+	}
+
+	public void setZoyFixedShare(BigDecimal zoyFixedShare) {
+		this.zoyFixedShare = zoyFixedShare;
 	}
 
 	public void setRegisterId(String registerId) {

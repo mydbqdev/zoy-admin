@@ -54,9 +54,15 @@ public class ZoyPgOwnerDetails {
     @Column(name = "pg_owner_ekyc_isvideo_verified")
     private Boolean pgOwnerEkycIsVideoVerified = false;
     
-    @Column(name = "zoy_share", nullable = false)
-    private BigDecimal zoyShare;
+//    @Column(name = "zoy_share", nullable = false)
+//    private BigDecimal zoyShare;
 
+    @Column(name = "zoy_variable_share", nullable = false)
+	private BigDecimal zoyVariableShare;
+
+	@Column(name = "zoy_fixed_share", nullable = false)
+	private BigDecimal zoyFixedShare;
+    
     public String getPgOwnerId() {
         return pgOwnerId;
     }
@@ -153,13 +159,29 @@ public class ZoyPgOwnerDetails {
 		this.pgOwnerMPin = pgOwnerMPin;
 	}
 
-	public BigDecimal getZoyShare() {
-		return zoyShare;
+	public BigDecimal getZoyVariableShare() {
+		return zoyVariableShare;
 	}
 
-	public void setZoyShare(BigDecimal zoyShare) {
-		this.zoyShare = zoyShare;
+	public void setZoyVariableShare(BigDecimal zoyVariableShare) {
+		this.zoyVariableShare = zoyVariableShare;
 	}
+
+	public BigDecimal getZoyFixedShare() {
+		return zoyFixedShare;
+	}
+
+	public void setZoyFixedShare(BigDecimal zoyFixedShare) {
+		this.zoyFixedShare = zoyFixedShare;
+	}
+
+//	public BigDecimal getZoyShare() {
+//		return zoyShare;
+//	}
+//
+//	public void setZoyShare(BigDecimal zoyShare) {
+//		this.zoyShare = zoyShare;
+//	}
     
     
     

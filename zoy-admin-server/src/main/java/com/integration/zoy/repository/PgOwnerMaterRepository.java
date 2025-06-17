@@ -14,7 +14,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	List<Object[]> findEmailAndZoyCodeByEmailId(String emailId);
 	
 	@Query(value = "select mobile_no from pg_owner_master where mobile_no = :mobile_no", nativeQuery = true)
-	String findPhoneNumber(String mobile_no);
+	List<String> findPhoneNumber(String mobile_no);
 	
 	@Query(value = " SELECT  "
 			+ "    pzm.zoy_code, "
@@ -321,7 +321,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
     		+ "zppfd.master_floor_id ,zppfd.floor_name ,zprd.room_id ,zprd.room_name ,  "
     		+ "STRING_AGG(DISTINCT CASE WHEN zpbd.bed_available = 'available' THEN zpbd.bed_id ||'|'||zpbd.bed_name||'|'||zpbd.bed_available END, ',') AS available_beds,  "
     		+ "STRING_AGG(DISTINCT CASE WHEN zpbd.bed_available = 'occupied' THEN zpbd.bed_id ||'|'||zpbd.bed_name||'|'||zpbd.bed_available END, ',') AS occupied_beds,  "
-    		+ "zppd.zoy_share AS zoyShare "
+    		+ "zppd.zoy_variable_share AS zoyShare ,zppd.zoy_fixed_share "
     		+ "from pgowners.zoy_pg_owner_details zpod   "
     		+ "join pgadmin.pg_owner_master pom on pom.zoy_code =zpod.zoy_code   "
     		+ "left join pgcommon.ekyc_details ekyc on zpod.pg_owner_encrypted_aadhar =ekyc.enocded_aadhaar   "
@@ -344,7 +344,7 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
     		+ "LEFT join pgowners.zoy_pg_rent_cycle_master rcm ON prc.cycle_id = rcm.cycle_id   "
     		+ "where zpod.pg_owner_id =:ownerId   "
     		+ "group by pom.zoy_code,zpod.pg_owner_id,ekyc.enocded_aadhaar,zppd.property_id,up.enabled, pops.status,zpm.pg_type_name,  "
-    		+ "tm.term_id,zppfd.floor_id,zprd.room_id,up.pwd,zppd.zoy_share ",nativeQuery = true)
+    		+ "tm.term_id,zppfd.floor_id,zprd.room_id,up.pwd,zppd.zoy_variable_share,zppd.zoy_fixed_share ",nativeQuery = true)
 	List<String[]> getOwnerPropertyDetails(String ownerId);
 	
 
