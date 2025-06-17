@@ -628,10 +628,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	}
 
 	@Override
-	public ResponseEntity<String> updateOwnerZoyShare(String propertyId,BigDecimal newZoyshare) {
+	public ResponseEntity<String> updateOwnerZoyShare(String propertyId,BigDecimal zoyVariableShare,BigDecimal zoyFixedShare) {
 		ResponseBody response = new ResponseBody();
 		try {
-			int rowsUpdated = zoyPgOwnerDetailsRepo.updatePropertyZoyShare(propertyId, newZoyshare);
+			int rowsUpdated = zoyPgOwnerDetailsRepo.updatePropertyZoyShare(propertyId, zoyVariableShare,zoyFixedShare);
 			if (rowsUpdated > 0) {
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("Zoy share updated successfully.");
