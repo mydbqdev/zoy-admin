@@ -127,7 +127,8 @@ public interface PgOwnerMasterImpl {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 	@PutMapping(value = "/zoy_admin/updateZoyShare",
 	produces = { "application/json" })
-	ResponseEntity<String> updateOwnerZoyShare(@RequestParam("propertyId") String propertyId,@RequestParam("newZoyShare") BigDecimal newZoyShare);
+	ResponseEntity<String> updateOwnerZoyShare(@RequestParam("propertyId") String propertyId,@RequestParam("zoyVariableShare") BigDecimal zoyVariableShare,
+			@RequestParam("zoyFixedShare") BigDecimal zoyFixedShare);
 	
 	
 	@Operation(summary = "Update property Status", description = "updating the property Status", security = {

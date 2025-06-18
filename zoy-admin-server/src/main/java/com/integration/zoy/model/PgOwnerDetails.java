@@ -25,8 +25,11 @@ public class PgOwnerDetails {
 	@JsonProperty("status")
 	private String status;
 
-	@JsonProperty("zoyShare")
-	private BigDecimal zoyShare;
+	@JsonProperty("zoyVariableShare")
+	private BigDecimal zoyVariableShare;
+
+	@JsonProperty("zoyFixedShare")
+	private BigDecimal zoyFixedShare;
 	
 	@JsonProperty("pgName")
 	private String pgName;
@@ -82,12 +85,20 @@ public class PgOwnerDetails {
 		this.status = status;
 	}
 
-	public BigDecimal getZoyShare() {
-		return zoyShare;
+	public BigDecimal getZoyVariableShare() {
+		return zoyVariableShare;
 	}
 
-	public void setZoyShare(BigDecimal zoyShare) {
-		this.zoyShare = zoyShare;
+	public void setZoyVariableShare(BigDecimal zoyVariableShare) {
+		this.zoyVariableShare = zoyVariableShare;
+	}
+
+	public BigDecimal getZoyFixedShare() {
+		return zoyFixedShare;
+	}
+
+	public void setZoyFixedShare(BigDecimal zoyFixedShare) {
+		this.zoyFixedShare = zoyFixedShare;
 	}
 
 	public String getRegisterId() {

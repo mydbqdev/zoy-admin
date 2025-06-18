@@ -42,7 +42,8 @@ export class Profile {
     basic_property_information: BasicPropertyInformation;
     pg_owner_additional_info: PgOwnerAdditionalInfo;
     floor_information: FloorInformation[];
-    zoy_share:number;
+    zoy_fixed_share:string;
+    zoy_variable_share:string;
   }
   
   // Basic Property Information Model
