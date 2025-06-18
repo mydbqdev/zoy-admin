@@ -178,8 +178,16 @@
                       <label for="phone">Area Code</label>
                       <input type="text"  maxlength="3" placeholder="Area Code" id="city" [(ngModel)]="generateZCode.property_locality_code" (ngModelChange)="generateZCode.property_locality_code = $event.toUpperCase()" formControlName="areaCode" class="form-control" [ngClass]="{'is-invalid':submitted && (form.controls.areaCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))' [readonly]="!isEditAreaCode">
                     </div>
-                    <div class="col-md-3 mb-2">
-                      <label for="zoyShare">ZOY Revenue</label>
+                    <!-- <div class="col-md-3 mb-2">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="otpInput" class="form-label mb-0">ZOY Revenue </label>
+                        <div>
+                          <mat-button-toggle-group  aria-label="Font Style">
+                            <mat-button-toggle value="bold">Fixed</mat-button-toggle>
+                            <mat-button-toggle value="italic">variable </mat-button-toggle>
+                          </mat-button-toggle-group>
+                        </div>
+                      </div>
                       <div class="input-group">
                       <input type="text" formControlName="zoyShare" id="zoyShare" class="form-control" placeholder="Enter Zoy Revenue" [(ngModel)]="generateZCode.zoyShare"
                       (keypress)="percentageOnlyWithZero($event)"
@@ -194,7 +202,46 @@
                           ZOY Revenue is invalid.
                         </div>
                       </div>
+                    </div> -->
+                    <div class="col-md-3 mb-2">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label mb-0">ZOY Share</label>
+                        <mat-button-toggle-group class="small-toggle"   [formControl]="revenueType" aria-label="Revenue Type"  appearance="legacy" >
+                          <mat-button-toggle value="fixed">Fixed</mat-button-toggle>
+                          <mat-button-toggle value="variable"> Variable</mat-button-toggle>
+                        </mat-button-toggle-group>
+                      </div>
+                    
+                      <div class="input-group">
+                        <input type="text"
+                          id="zoyShare"
+                          formControlName="zoyShare"
+                          class="form-control"
+                          placeholder="Enter ZOY share "
+                          [(ngModel)]="generateZCode.zoyShare"
+                          [attr.maxlength]="revenueType.value == 'fixed' ? 8 : 5"
+                          (keypress)="revenueType.value == 'fixed' ? numberOnly($event) : percentageOnly($event)"
+                          [ngClass]="{
+                            'is-invalid': submitted &&
+                            (form.controls.zoyShare.errors || isInvalidZoyShare())
+                          }"
+                        />
+                        <span class="input-group-text">
+                          {{ revenueType.value === 'fixed' ? 'Rs' : '%' }}
+                        </span>
+                      </div>
+                    
+                      <!-- Validation messages -->
+                      <div *ngIf="submitted && form.controls.zoyShare.errors" class="text-danger">
+                        <div *ngIf="form.controls.zoyShare.errors?.required">
+                          ZOY Revenue is required.
+                        </div>
+                        <div *ngIf="!form.controls.zoyShare.errors?.required && isInvalidZoyShare()">
+                          ZOY Revenue is invalid.
+                        </div>
+                      </div>
                     </div>
+                    
                   </div>
                   <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;" *ngIf="rolesArray.includes('ZOYCODES_WRITE')">
                     <input type="submit" class="btn btn-primary-custom me-2" value="Generate Zoy Code" />

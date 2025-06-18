@@ -13,10 +13,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ZoyData } from '../models/zoy-code-model';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GenerateZoyCodeService } from '../../service/zoy-code.service';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { GoogleAPIService } from 'src/app/setting/organization-info-config/services/google.api.service';
+
 
 @Component({
   selector: 'app-zoy-code',
@@ -121,6 +122,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 			zoyShare:['', [Validators.required]],
 			property_street_name:['', [Validators.required]],
 			property_door_number:['', [Validators.required]],
+			revenueType: new FormControl('fixed')
 		  });
 	}
 	ngAfterViewInit() {
@@ -149,9 +151,9 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		this.spinner.show();		     
 		this.submitted=false;
 		this.generateZCode.userEmail=this.generateZCode.userEmail.toLocaleLowerCase();
-		this.generateZCode.property_city_code=this.generateZCode.property_city_code.toUpperCase();
-		this.generateZCode.property_locality_code=this.generateZCode.property_locality_code.toUpperCase();
-		this.generateZoyCodeService.generateOwnerCode(this.generateZCode).subscribe((res) => {
+		this.generateZCode.property_city_code=this.generateZCode.property_city_code?.toUpperCase();
+		this.generateZCode.property_locality_code=this.generateZCode.property_locality_code?.toUpperCase();
+		this.generateZoyCodeService.generateOwnerCode(this.generateZCode,this.revenueType.value).subscribe((res) => {
 			this.notifyService.showSuccess(res.message, "");			
 			this.spinner.hide();
 			this.form.reset();
@@ -430,7 +432,7 @@ percentageOnlyWithZero(event): boolean {
         } else {
 		  this.generateZCode.property_city = '';
 		  this.generateZCode.property_city_code_id = '';
-		this.generateZCode.property_city_code = '';
+		  this.generateZCode.property_city_code = '';
           this.generateZCode.property_state = '';
 		  this.generateZCode.property_state_short_name = '';
 		  this.generateZCode.property_locality ='';
@@ -520,4 +522,26 @@ percentageOnlyWithZero(event): boolean {
 		}
 		});
     }
+	isFixed:boolean=false;
+	revenueType = new FormControl('fixed');
+
+isInvalidZoyShare(): boolean {
+  const rawValue = this.generateZCode.zoyShare;
+  const value = Number(rawValue);
+  if (this.revenueType.value === 'fixed') {
+    return isNaN(value) || value < 0 || value.toString().length > 8;
+  } else {
+    return isNaN(value) || value < 0 || value > 100;
+  }
+}
+
+percentageOnly(event: KeyboardEvent) {
+  const input = (event.target as HTMLInputElement).value;
+  const char = String.fromCharCode(event.which ?? event.keyCode);
+  const futureValue = input + char;
+  if (!/^\d{0,3}$/.test(futureValue) || parseInt(futureValue, 10) > 100) {
+    event.preventDefault();
+  }
+}
+
 }

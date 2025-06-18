@@ -194,7 +194,10 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  
 	  selectProperty(){
 		this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_id == this.property_id);
-		this.zoyShare=this.propertyInfo.zoy_share ;
+		const share = Number(this.propertyInfo.zoy_fixed_share) == 0?'fixed':'variable';
+		this.revenueType = share;
+		const amount = share == 'fixed'?this.propertyInfo.zoy_fixed_share:this.propertyInfo.zoy_variable_share;
+		this.zoyShare= amount;
 		this.property_status = this.propertyInfo.status ;
 		if(this.propertyInfo.floor_information.length>0){
 
@@ -245,7 +248,16 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 				this.showRooms();
 			}
 		} 
-		this.zoyShare = JSON.parse(JSON.stringify( this.pgOwnerData?.pg_owner_property_information[0]?.zoy_share? Number(this.pgOwnerData.pg_owner_property_information[0].zoy_share):0));
+		const property=this.pgOwnerData?.pg_owner_property_information[0];
+		if(property != null && property.zoy_fixed_share){
+			const share = Number(property.zoy_fixed_share) == 0?'variable':'fixed';
+			this.revenueType = share;
+			const amount = share == 'fixed'?property.zoy_fixed_share:property.zoy_variable_share;
+			this.zoyShare = amount ;
+		}else{
+			this.revenueType = 'fixed';
+			this.zoyShare = '0';
+		}
 		
 		this.spinner.hide();
 		}, error => {
@@ -623,12 +635,17 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		return true;
 	  }
 
-	zoyShare :number=0;
+	zoyShare :String='';
 	zoyShareDisabled :boolean;
 	zoyShareReset(): void {
 		this.zoyShareDisabled = false;
 		this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_id == this.property_id);
-		this.zoyShare =JSON.parse(JSON.stringify(this.propertyInfo.zoy_share));
+		
+		const share = Number(this.propertyInfo.zoy_fixed_share) == 0?'variable':'fixed';
+		this.revenueType = share;
+		const amount = share == 'fixed'?this.propertyInfo.zoy_fixed_share:this.propertyInfo.zoy_variable_share;
+	
+		this.zoyShare =JSON.parse(JSON.stringify(amount));
 		}
 
 	zoyShareSubmit(): void {
@@ -642,9 +659,12 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			if(confirmed){
 				this.authService.checkLoginUserVlidaate();
 				this.spinner.show();
-					this.zoyOwnerService.updateZoyShare( this.property_id,this.zoyShare).subscribe(res => {
+				const zoyFixedShare = this.revenueType == 'fixed'?Number(this.zoyShare):0;
+				const zoyVariableShare= this.revenueType == 'variable'? Number(this.zoyShare):0;
+					this.zoyOwnerService.updateZoyShare( this.property_id,zoyVariableShare,zoyFixedShare).subscribe(res => {
 					this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_id == this.property_id);	
-					this.propertyInfo.zoy_share = JSON.parse(JSON.stringify(this.zoyShare));
+					this.propertyInfo.zoy_fixed_share = JSON.parse(JSON.stringify(zoyFixedShare));
+					this.propertyInfo.zoy_variable_share = JSON.parse(JSON.stringify(zoyVariableShare));
 					this.zoyShareDisabled = false;
 					this.spinner.hide();
 					}, error => {
@@ -700,6 +720,9 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	submitAadhaar:boolean=false;
 	imgeURL: string;
 	  generateAadhaarSession(): void {
+		this.isNotYetAadhaarOtp=true;
+		this.desableAadhaarOtp=false;
+		clearInterval(this.timerInterval); 
 		this.submitAadhaar = false ;
 		this.isVerifyAadhaarOtp=false;
 		this.aadhaarSession = new AadhaarVerif();
@@ -781,7 +804,9 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			}); 
 				
 	  }
-
+	  isGeneratedAadhaarOtp:boolean=false;
+	  desableAadhaarOtp:boolean=false;
+	  isNotYetAadhaarOtp:boolean=true;
 	  generateAadhaarOtp(): void {
 		this.submitAadhaar = true;
 		if(!this.aadhaarDetails.aadhaar || this.isInvalidAadhaar(this.aadhaarDetails.aadhaar) || !this.aadhaarDetails.captcha){
@@ -793,6 +818,8 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 		this.zoyOwnerService.generateAadhaarOtp(this.aadhaarDetails).subscribe(res => {
 		const data = JSON.parse(res.data);
 			if(data.code == 200){
+				this.startOtpTimer();
+				this.isNotYetAadhaarOtp=false;
 				this.notifyService.showSuccess(data?.message,'');
 			}else{
 				this.notifyService.showError(data?.message,'');
@@ -831,6 +858,25 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			}); 
 			
 	  }
+
+	  otpTimer: number = 60;
+	  private timerInterval: any;
+
+	  startOtpTimer() {
+		this.desableAadhaarOtp=true;
+		this.otpTimer = 60; 
+		clearInterval(this.timerInterval); 
+	  
+		this.timerInterval = setInterval(() => {
+		  this.otpTimer--;
+	  
+		  if (this.otpTimer <= 0) {
+			this.desableAadhaarOtp=false;
+			clearInterval(this.timerInterval);
+		  }
+		}, 1000);
+	  }
+	  
 	  isVerifyAadhaarOtp:boolean=false;
 	  verifyAadhaarOtp(): void {
 		this.isVerifyAadhaarOtp=true;
@@ -917,6 +963,35 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 			}
 			}); 
 				
+	  }
+
+	  revenueType:string = 'fixed';
+	  numberOnly(event): boolean {
+		  const charCode = (event.which) ? event.which : event.keyCode;
+		  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+			return false;
+		  }
+		  return true;
+		 }
+  
+	  
+	  isInvalidZoyShare(): boolean {
+		const rawValue = this.zoyShare;
+		const value = Number(rawValue);
+		if (this.revenueType === 'fixed') {
+		  return isNaN(value) || value < 0 || value.toString().length > 8;
+		} else {
+		  return isNaN(value) || value < 0 || value > 100;
+		}
+	  }
+	  
+	  percentageOnly(event: KeyboardEvent) {
+		const input = (event.target as HTMLInputElement).value;
+		const char = String.fromCharCode(event.which ?? event.keyCode);
+		const futureValue = input + char;
+		if (!/^\d{0,3}$/.test(futureValue) || parseInt(futureValue, 10) > 100) {
+		  event.preventDefault();
+		}
 	  }
 
 		

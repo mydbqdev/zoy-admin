@@ -137,3 +137,14 @@ th, td {
   margin-right: 8px;
   max-width: 100px;
 }
+
+::ng-deep .small-toggle .mat-button-toggle {
+  font-size: 0.75rem;
+  height: 27px;
+}
+
+::ng-deep .mat-button-toggle-label-content{
+  padding: 0 9px;
+  line-height: normal !important;
+  
+}

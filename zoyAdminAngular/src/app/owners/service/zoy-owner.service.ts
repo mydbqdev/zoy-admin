@@ -68,8 +68,8 @@ import { MessageService } from 'src/app/message.service';
             }
         );
       }
-      public updateZoyShare(ownerid:any,newZoyShare:any): Observable<any> {
-        const url1=this.basePath +"zoy_admin/updateZoyShare?propertyId="+ownerid+"&newZoyShare="+newZoyShare;
+      public updateZoyShare(ownerid:any,zoyVariableShare:any,zoyFixedShare:any): Observable<any> {
+        const url1=this.basePath +"zoy_admin/updateZoyShare?propertyId="+ownerid+"&zoyVariableShare="+zoyVariableShare+"&zoyFixedShare="+zoyFixedShare;
           return  this.httpclient.put<any>(
               url1,
               '',

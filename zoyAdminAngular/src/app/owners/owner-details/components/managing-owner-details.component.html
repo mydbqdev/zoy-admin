@@ -60,7 +60,7 @@
                                       </div>
                                       <div style="margin-top: 25px;">
                                         <img src="assets/images/ekyc-pending.png" *ngIf="!pgOwnerData.pg_ownerbasic_information?.aadhar" title="eKYC verification pending" class="image-responsive"
-                                           style="height: 25px; width: 55px;margin-left: -12px;" data-bs-toggle="modal" data-bs-target="#aadhar" (click)="generateAadhaarSession()">
+                                           style="height: 25px; width: 55px;margin-left: -12px;">
                                         <img src="assets/images/ekyc-verified.png" *ngIf="pgOwnerData.pg_ownerbasic_information?.aadhar" title="eKYC verified " class="image-responsive" style="height: 25px; width: 55px;margin-left: -12px;">
                                       </div>
                                     </div>
@@ -97,7 +97,7 @@
                                           <div class="col-sm-1 align-items-center">:</div>
                                           <div class="col-sm-7" style="font-size: 14px;color:#000000;">
                                             <span *ngIf="pgOwnerData.pg_ownerbasic_information?.aadhar"> {{pgOwnerData.pg_ownerbasic_information?.aadhar}} </span>
-                                              <a class="link-opacity-100-hover" *ngIf="!pgOwnerData.pg_ownerbasic_information?.aadhar" data-bs-toggle="modal" data-bs-target="#aadhar" (click)="generateAadhaarSession()" style="font-size: 13px;cursor: pointer;">
+                                              <a class="link-opacity-100-hover" *ngIf="!pgOwnerData.pg_ownerbasic_information?.aadhar && pgOwnerData?.profile?.status != 'Not Registered' " data-bs-toggle="modal" data-bs-target="#aadhar" (click)="generateAadhaarSession()" style="font-size: 13px;cursor: pointer;">
                                               Click Here for verification
                                               </a>
                                           </div>
@@ -205,6 +205,13 @@
                                     <div  class="d-sm-flex">
                                       <div style="font-size: 18px;">Property Information</div>
                                       <div class="ml-auto">
+                                        <div class="input-group" *ngIf="pgOwnerData?.pg_owner_property_information?.length > 0">
+                                          <label class="form-label mb-0 mr-2">ZOY Revenue</label>
+                                          <mat-button-toggle-group class="small-toggle"  [disabled]="!zoyShareDisabled" [(ngModel)]="revenueType" aria-label="Revenue Type"  appearance="legacy" >
+                                            <mat-button-toggle value="fixed">Fixed</mat-button-toggle>
+                                            <mat-button-toggle value="variable"> Variable</mat-button-toggle>
+                                          </mat-button-toggle-group>
+                                        </div>
                                         <!-- <a class="dropdown no-arrow dropdown-toggle" href="javascript:void(0)" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fas fa-ellipsis-v fa-sm fa-fw " style="color:#000000;"></i>
                                         </a> -->
@@ -224,15 +231,18 @@
                                             <option *ngFor="let property of pgOwnerData?.pg_owner_property_information" [value]="property.property_id" >{{property.property_name}}</option>
                                             </select> 
                                           </div>
-                                          <div class="col-sm-6 d-flex">
-                                            <div class="ml-2">ZOY Revenue</div>
+                                        <div class="col-sm-1"></div>
+                                          <div class="col-sm-5 d-flex">
+                                            <!-- <div class="ml-2">ZOY Revenue</div> -->
                                           <div>
-                                            <div class="input-group input-group-sm ml-1">
-                                                <input type="text" class="form-control form-control-sm" style="max-width: 70px !important;" 
+                                            <div class="input-group input-group-sm mr-2">
+                                                <input type="text" class="form-control form-control-sm" 
                                                   [(ngModel)]="zoyShare" [disabled]="!zoyShareDisabled"
-                                                  (keypress)="percentageOnlyWithZero($event)" maxlength="5" 
-                                                  [ngClass]="{'is-invalid': zoyShareDisabled && isNotValidNumber(zoyShare)}"  />
-                                                  <span class="input-group-text"> %</span>
+                                                  (keypress)="revenueType == 'fixed' ? numberOnly($event) : percentageOnly($event)" [attr.maxlength]="revenueType == 'fixed' ? 8 : 5"
+                                                  [ngClass]="{'is-invalid': zoyShareDisabled && isNotValidNumber(zoyShare) || isInvalidZoyShare()}"  />
+                                                  <span class="input-group-text"> 
+                                                    {{ revenueType === 'fixed' ? 'Rs' : '%' }}
+                                                  </span>
                                               </div> 
                                           </div>
                                           <div class="ml-auto">
@@ -597,12 +607,19 @@
         </div>
 
         <div class="d-flex align-items-end gap-2 mb-3">
-          <div class="flex-grow-1">
+          
+          <div>
             <label for="otpInput" class="form-label">Enter OTP</label>
             <input type="text" class="form-control" id="otpInput" placeholder="Enter OTP"
                    [(ngModel)]="aadhaarDetails.otp" [ngClass]="{'is-invalid': isVerifyAadhaarOtp && isNotValidNumber(aadhaarDetails.otp)}" >
+          
           </div>
-          <button type="button" class="btn btn-primary" (click)="generateAadhaarOtp()">Get OTP</button>
+          <div>
+            <div class="text-muted" style="font-size: 0.9rem;">{{desableAadhaarOtp?(otpTimer + 's'):''}}</div>
+            <button type="button" class="btn btn-primary" [disabled]="desableAadhaarOtp" (click)="generateAadhaarOtp()">
+              {{isNotYetAadhaarOtp ?'Send ':'Resend ' }} OTP</button>
+          </div>
+         
         </div>
 
         <div class="d-flex justify-content-end">

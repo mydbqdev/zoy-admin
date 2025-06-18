@@ -423,15 +423,17 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	  }
 	  generateCodeForProperty(){
 		this.submittedAddProperty=true;
-		if (this.generateZoyCode.property_name==undefined || this.generateZoyCode.property_name==null || this.generateZoyCode.property_name=='' || this.generateZoyCode.property_pincode==undefined || this.generateZoyCode.property_pincode==null || this.generateZoyCode.property_locality==undefined || this.generateZoyCode.property_locality==null || this.generateZoyCode.property_locality=='' || this.generateZoyCode.zoyShare==undefined || this.generateZoyCode.zoyShare==null || this.generateZoyCode.zoyShare=='' || this.isNotValidNumber(this.generateZoyCode.zoyShare) || this.generateZoyCode.property_city_code==undefined || this.generateZoyCode.property_city_code==null || this.generateZoyCode.property_city_code=='' || this.generateZoyCode.property_locality_code==undefined || this.generateZoyCode.property_locality_code==null || this.generateZoyCode.property_locality_code=='') {
+		if (this.generateZoyCode.property_name==undefined || this.generateZoyCode.property_name==null || this.generateZoyCode.property_name=='' || this.generateZoyCode.property_pincode==undefined || this.generateZoyCode.property_pincode==null || this.generateZoyCode.property_locality==undefined || this.generateZoyCode.property_locality==null || this.generateZoyCode.property_locality=='' 
+			|| this.generateZoyCode.zoyShare==undefined || this.generateZoyCode.zoyShare==null || this.generateZoyCode.zoyShare=='' || this.isInvalidZoyShare() 
+			|| this.isNotValidNumber(this.generateZoyCode.zoyShare) || this.generateZoyCode.property_city_code==undefined || this.generateZoyCode.property_city_code==null || this.generateZoyCode.property_city_code=='' || this.generateZoyCode.property_locality_code==undefined || this.generateZoyCode.property_locality_code==null || this.generateZoyCode.property_locality_code=='') {
 		return;
 		}
 		this.spinner.show();		     
 		this.submittedAddProperty=false;
-		this.generateZoyCode.property_city_code=this.generateZoyCode.property_city_code.toUpperCase();
-		this.generateZoyCode.property_locality_code=this.generateZoyCode.property_locality_code.toUpperCase();
-		this.generateZoyCodeService.generateOwnerCodeForMoreProperty(this.generateZoyCode).subscribe((res) => {
-			this.notifyService.showSuccess(res.message, "");
+		this.generateZoyCode.property_city_code=this.generateZoyCode.property_city_code?.toUpperCase();
+		this.generateZoyCode.property_locality_code=this.generateZoyCode.property_locality_code?.toUpperCase();
+		this.generateZoyCodeService.generateOwnerCodeForMoreProperty(this.generateZoyCode," ").subscribe((res) => {
+			this.notifyService.showSuccess(res.message, this.revenueType);
 		    this.resetProperty();
 			this.closeModelAddProperty.nativeElement.click();			
 			this.spinner.hide();
@@ -465,10 +467,10 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		  ); 
 	  }
 
-  isNotValidNumber(value: any): boolean {
-	return  (value === '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
-  }
-percentageOnlyWithZero(event): boolean {
+	isNotValidNumber(value: any): boolean {
+		return  (value === '' || value == undefined || value == null || isNaN(value) || (value === false && value !== 0));
+	}
+	percentageOnlyWithZero(event): boolean {
 	const charCode = (event.which) ? event.which : event.keyCode;
 	const inputValue = event.target.value + String.fromCharCode(charCode); 
 	if (inputValue.startsWith('.')) {
@@ -609,4 +611,32 @@ percentageOnlyWithZero(event): boolean {
 	});
 }
 
+		revenueType:string = 'fixed';
+		numberOnly(event): boolean {
+			const charCode = (event.which) ? event.which : event.keyCode;
+			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+			  return false;
+			}
+			return true;
+		   }
+	
+		
+		isInvalidZoyShare(): boolean {
+		  const rawValue = this.generateZoyCode.zoyShare;
+		  const value = Number(rawValue);
+		  if (this.revenueType === 'fixed') {
+			return isNaN(value) || value < 0 || value.toString().length > 8;
+		  } else {
+			return isNaN(value) || value < 0 || value > 100;
+		  }
+		}
+		
+		percentageOnly(event: KeyboardEvent) {
+		  const input = (event.target as HTMLInputElement).value;
+		  const char = String.fromCharCode(event.which ?? event.keyCode);
+		  const futureValue = input + char;
+		  if (!/^\d{0,3}$/.test(futureValue) || parseInt(futureValue, 10) > 100) {
+			event.preventDefault();
+		  }
+		}
   }  
