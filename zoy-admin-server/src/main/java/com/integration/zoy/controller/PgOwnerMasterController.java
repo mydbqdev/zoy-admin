@@ -293,8 +293,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				ownerDetails.setMobileNo(details[3] != null ? (String) details[3] : null);
 				ownerDetails.setCreatedDate(details[4] != null ? (Timestamp) details[4] : null);
 				ownerDetails.setStatus(details[5] != null ? (String) details[5] : null);
-				ownerDetails.setZoyShare(details[6] != null ? (BigDecimal) details[6] : null);
-				ownerDetails.setRegisterId(details[7] != null ? (String) details[7] : null);
+				ownerDetails.setZoyVariableShare(details[6] != null ? (BigDecimal) details[6] : null);
+				ownerDetails.setZoyFixedShare(details[7] != null ? (BigDecimal) details[7] : null);
+				ownerDetails.setRegisterId(details[8] != null ? (String) details[8] : null);
 				pgOwnerDetailsList.add(ownerDetails);
 			}
 
@@ -628,10 +629,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	}
 
 	@Override
-	public ResponseEntity<String> updateOwnerZoyShare(String propertyId,BigDecimal newZoyshare) {
+	public ResponseEntity<String> updateOwnerZoyShare(String propertyId,BigDecimal zoyVariableShare,BigDecimal zoyFixedShare) {
 		ResponseBody response = new ResponseBody();
 		try {
-			int rowsUpdated = zoyPgOwnerDetailsRepo.updatePropertyZoyShare(propertyId, newZoyshare);
+			int rowsUpdated = zoyPgOwnerDetailsRepo.updatePropertyZoyShare(propertyId, zoyVariableShare,zoyFixedShare);
 			if (rowsUpdated > 0) {
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("Zoy share updated successfully.");
@@ -934,9 +935,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				ownerDetails.setMobileNo(details[3] != null ? (String) details[3] : null);
 				ownerDetails.setCreatedDate(details[4] != null ? (Timestamp) details[4] : null);
 				ownerDetails.setStatus(details[5] != null ? (String) details[5] : null);
-				ownerDetails.setZoyShare(details[6] != null ? (BigDecimal) details[6] : null);
-				ownerDetails.setRegisterId(details[7] != null ? (String) details[7] : null);
-				ownerDetails.setPgName(details[8] != null ? (String) details[8] : null);
+				ownerDetails.setZoyVariableShare(details[6] != null ? (BigDecimal) details[6] : null);
+				ownerDetails.setZoyFixedShare(details[7] != null ? (BigDecimal) details[7] : null);
+				ownerDetails.setRegisterId(details[8] != null ? (String) details[8] : null);
+				ownerDetails.setPgName(details[9] != null ? (String) details[9] : null);
 				pgOwnerDetailsList.add(ownerDetails);
 			}
 
