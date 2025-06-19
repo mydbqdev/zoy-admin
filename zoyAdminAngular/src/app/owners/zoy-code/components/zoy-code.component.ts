@@ -567,4 +567,10 @@ percentageOnly(event: KeyboardEvent) {
 	}
   }
 
+  zoyShare(element:any):string{
+		return   Number(element.zoy_fixed_share) === 0 
+			? (Number(element.zoy_variable_share).toFixed(2) + ' %') 
+			: ('Rs. ' + Number(element.zoy_fixed_share).toFixed(2));
+  }
+
 }
