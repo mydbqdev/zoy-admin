@@ -53,7 +53,7 @@
                 <div class="container" *ngIf="selectedModel == 'generate'">
                   <form [formGroup]="form" (ngSubmit)="generateZoyCode()" autocomplete="off">
                   <div class="row justify-content-center mt-3">
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-3 mb-2">
                       <label for="firstName">First Name</label>
                       <input type="text" [(ngModel)]="generateZCode.firstName"
                         onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
@@ -66,7 +66,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-3 mb-2">
                       <label for="lastName">Last Name</label>
                       <input type="text" [(ngModel)]="generateZCode.lastName"
                         onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
@@ -79,10 +79,11 @@
                         </div>
                       </div>
                     </div>
+                    
                   </div>
                   <!-- Second Row of Input Fields -->
                   <div class="row justify-content-center">
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-3 mb-3">
                       <label for="email">Owner Email</label>
                       <input type="email" formControlName="userEmail" id="userEmail" class="form-control" placeholder="Enter Owner Email" [(ngModel)]="generateZCode.userEmail"
                         [ngClass]="{'is-invalid':submitted && form.controls.userEmail.errors}" maxlength="100" (keypress)="emailLower($event)">
@@ -95,8 +96,7 @@
                         </div>
                       </div>
                     </div>
-
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-3 mb-3">
                       <label for="phone">Contact</label>
                       <input type="text" formControlName="contactNumber"  maxlength="10" id="contactNumber" class="form-control"  name="contactNumber"
                        autocomplete="false" maxlength="10"  (keypress)="numberOnly($event)" [(ngModel)]="generateZCode.contactNumber"
@@ -110,17 +110,32 @@
                         Contact Number is invalid.
                       </div>
                     </div>
+                   
+                    
                   </div>
-                  <div class="row justify-content-center">
+                  <div class="row justify-content-center mt-3">
                     <div class="col-md-4 mb-2">
                       <label for="email">PG Name</label>
-                      <input type="text" id="pgName" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="75" placeholder="Enter PG Name"  [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">   
+                      <input type="text" id="pgName" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="75" placeholder="Enter PG Name" 
+                       [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">  
+                       <div *ngIf="submitted && form.controls.pgName.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.pgName.errors?.required">
+                          PG Name is required.
+                        </div>
+                      </div> 
                     </div>
 
-                    <div class="col-md-4 mb-2">
-                      <label for="phone">Pin Code</label>
-                      <input type="text"  maxlength="6" id="pincode" [(ngModel)]="generateZCode.property_pincode" formControlName="pincode"  placeholder="Enter Pin Code" (blur)="onPincodeChange($event)" class="form-control"  [ngClass]="{'is-invalid':submitted && (form.controls.pincode.errors)}">
+                    <div class="col-md-2 mb-2">
+                      <label for="phone">PG Pin Code</label>
+                      <input type="text"  maxlength="6" id="pincode" [(ngModel)]="generateZCode.property_pincode" formControlName="pincode"  placeholder="Enter Pin Code" (blur)="onPincodeChange($event)" class="form-control" 
+                       [ngClass]="{'is-invalid':submitted && (form.controls.pincode.errors)}">
+                       <div *ngIf="submitted && form.controls.pincode.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.pincode.errors?.required">
+                          PG Pincode is required.
+                        </div>
+                      </div>
                     </div>
+                    
                   </div>
                   <div class="row justify-content-center">
                     <div class="col-md-3 mb-2">
@@ -132,82 +147,79 @@
                       <label for="phone">City</label>
                       <input type="text"  maxlength="100" placeholder="City" id="city" [(ngModel)]="generateZCode.property_city" formControlName="city" class="form-control" readonly>
                     </div>
+                  </div>
+                
+                  <div class="row justify-content-center">
                     <div class="col-md-2 mb-2">
                       <label for="phone">City Code</label>
-                      <input type="text"  maxlength="3" placeholder="City Code" id="city" [(ngModel)]="generateZCode.property_city_code" (ngModelChange)="generateZCode.property_city_code = $event.toUpperCase()" formControlName="cityCode" class="form-control"  [ngClass]="{'is-invalid':submitted && (form.controls.cityCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))' [readonly]="!isEditCityCode">
+                      <input type="text"  maxlength="3" placeholder="City Code" id="city" [(ngModel)]="generateZCode.property_city_code" (ngModelChange)="generateZCode.property_city_code = $event.toUpperCase()" formControlName="cityCode" class="form-control"  
+                      [ngClass]="{'is-invalid':submitted && (form.controls.cityCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))' [readonly]="!isEditCityCode">
+                      <div *ngIf="submitted && form.controls.cityCode.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.cityCode.errors?.required">
+                          City Code is required.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                      <label for="phone">Area</label>
+                      <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZCode.property_locality" formControlName="areaAddress" placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}" (blur)="getLocationDetails(generateZCode.property_locality,2)">
+                      <select id="area-dropdown" class="form-select" formControlName="areaAddress" (change)="getLocationDetails(generateZCode.property_locality,2)" [(ngModel)]="generateZCode.property_locality" *ngIf="areaTypeOption"  
+                      [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
+                        <option></option>
+                        <option *ngFor="let cond of areaList">{{cond}}</option>
+                      </select>
+                      <div *ngIf="submitted && form.controls.areaAddress.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.areaAddress.errors?.required">
+                          PG Area is required.
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div class="row justify-content-center mt-3">
-                    <div class="col-md-4 mb-2">
+                    
+                    <div class="col-md-3 mb-2">
                       <label for="property_street_name">Street Name</label>
                       <input type="text" [(ngModel)]="generateZCode.property_street_name"
                         maxlength="75" id="property_street_name" formControlName="property_street_name" class="form-control" placeholder="Enter PG Street Name"
                         [ngClass]="{'is-invalid':submitted && form.controls.property_street_name.errors}" required
                         autocomplete="off" (paste)="nameValidation($event,'property_street_name')">
-                      <div *ngIf="submitted && form.controls.property_street_name.errors" class="text-danger">
-                        <div *ngIf="submitted && form.controls.property_street_name.errors?.required">
-                          PG Street Name is required.
+                        <div *ngIf="submitted && form.controls.property_street_name.errors" class="text-danger">
+                          <div *ngIf="submitted && form.controls.property_street_name.errors?.required">
+                            PG Street Name is required.
+                          </div>
                         </div>
-                      </div>
                     </div>
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-3 mb-2">
                       <label for="property_door_number">Door/Flat Number </label>
                       <input type="text" [(ngModel)]="generateZCode.property_door_number"
                         maxlength="75" formControlName="property_door_number" id="property_door_number" class="form-control" placeholder="Enter PG Door number"
                         [ngClass]="{'is-invalid':submitted && form.controls.property_door_number.errors}"
                         (paste)="nameValidation($event,'property_door_number')">
-                      <div *ngIf="submitted && form.controls.property_door_number.errors" class="text-danger">
-                        <div *ngIf="submitted && form.controls.property_door_number.errors?.required">
-                          Door/Flat Number is required.
+                        <div *ngIf="submitted && form.controls.property_door_number.errors" class="text-danger">
+                          <div *ngIf="submitted && form.controls.property_door_number.errors?.required">
+                            Door/Flat Number is required.
+                          </div>
                         </div>
-                      </div>
                     </div>
+                    
                   </div>
 
                   <div class="row justify-content-center">
-                    <div class="col-md-3 mb-2">
-                      <label for="phone">Area</label>
-                      <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZCode.property_locality" formControlName="areaAddress" placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}" (blur)="getLocationDetails(generateZCode.property_locality,2)">
-                      <select id="area-dropdown" class="form-select" formControlName="areaAddress" (change)="getLocationDetails(generateZCode.property_locality,2)" [(ngModel)]="generateZCode.property_locality" *ngIf="areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
-                        <option></option>
-                        <option *ngFor="let cond of areaList">{{cond}}</option>
-                      </select>
-                    </div>
-                  
                     <div class="col-md-2 mb-2">
                       <label for="phone">Area Code</label>
-                      <input type="text"  maxlength="3" placeholder="Area Code" id="city" [(ngModel)]="generateZCode.property_locality_code" (ngModelChange)="generateZCode.property_locality_code = $event.toUpperCase()" formControlName="areaCode" class="form-control" [ngClass]="{'is-invalid':submitted && (form.controls.areaCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))' [readonly]="!isEditAreaCode">
+                      <input type="text"  maxlength="3" placeholder="Area Code" id="city" [(ngModel)]="generateZCode.property_locality_code" (ngModelChange)="generateZCode.property_locality_code = $event.toUpperCase()" formControlName="areaCode" class="form-control" 
+                      [ngClass]="{'is-invalid':submitted && (form.controls.areaCode.errors)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))' [readonly]="!isEditAreaCode">
+                      <div *ngIf="submitted && form.controls.areaCode.errors" class="text-danger">
+                        <div *ngIf="submitted && form.controls.areaCode.errors?.required">
+                          Area Code is required.
+                        </div>
+                      </div>
                     </div>
-                    <!-- <div class="col-md-3 mb-2">
-                      <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label for="otpInput" class="form-label mb-0">ZOY Revenue </label>
-                        <div>
-                          <mat-button-toggle-group  aria-label="Font Style">
-                            <mat-button-toggle value="bold">Fixed</mat-button-toggle>
-                            <mat-button-toggle value="italic">variable </mat-button-toggle>
-                          </mat-button-toggle-group>
-                        </div>
-                      </div>
-                      <div class="input-group">
-                      <input type="text" formControlName="zoyShare" id="zoyShare" class="form-control" placeholder="Enter Zoy Revenue" [(ngModel)]="generateZCode.zoyShare"
-                      (keypress)="percentageOnlyWithZero($event)"
-                        [ngClass]="{'is-invalid':submitted && (form.controls.zoyShare.errors || isNotValidNumber(generateZCode.zoyShare))}" maxlength="5">
-                        <span class="input-group-text"> %</span>
-                       </div>
-                      <div *ngIf="submitted && form.controls.zoyShare.errors" class="text-danger">
-                        <div *ngIf="submitted && form.controls.zoyShare.errors?.required">
-                          ZOY Revenue is required.
-                        </div>
-                        <div *ngIf="submitted && !form.controls.zoyShare.errors?.required && isNotValidNumber(generateZCode.zoyShare)">
-                          ZOY Revenue is invalid.
-                        </div>
-                      </div>
-                    </div> -->
-                    <div class="col-md-3 mb-2">
+                    <div class="col-md-4 mb-2">
                       <div class="d-flex justify-content-between align-items-center mb-1">
                         <label class="form-label mb-0">ZOY Share</label>
                         <mat-button-toggle-group class="small-toggle"   [formControl]="revenueType" aria-label="Revenue Type"  appearance="legacy" >
-                          <mat-button-toggle value="fixed">Fixed</mat-button-toggle>
+                          <mat-button-toggle value="fixed"> Fixed</mat-button-toggle>
                           <mat-button-toggle value="variable"> Variable</mat-button-toggle>
                         </mat-button-toggle-group>
                       </div>

@@ -49,6 +49,10 @@
   padding-right: 1px; /* Optional: prevent scrollbar overlap */
   box-sizing: border-box; /* Prevents padding from affecting width */
 }
+::ng-deep .small-toggle .mat-button-toggle-checked {
+  background-color: #4CAF50 !important;
+  color: white !important;              
+}
 ::ng-deep .small-toggle .mat-button-toggle {
   font-size: 0.75rem;
   height: 27px;
