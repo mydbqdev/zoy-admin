@@ -528,28 +528,42 @@ public class AdminReportService implements AdminReportImpl{
 	@Override
 	public CommonResponseDTO<VendorPayments> getVendorPaymentDetails(UserPaymentFilterRequest filterRequest, FilterData filterData,Boolean applyPagination) throws WebServiceException{
 		try{
-			StringBuilder queryBuilder = new StringBuilder(
-					"SELECT DISTINCT ON (up.user_payment_id) " +
-							"o.pg_owner_name AS ownerName, " +
-							"pd.property_name AS pgName, " +
-							"up.user_payment_payable_amount AS totalAmountFromTenants, " +
-							"up.user_payment_timestamp AS transactionDate, " +
-							"up.user_payment_result_invoice_id AS transactionNumber, " +
-							"up.user_payment_payment_status AS paymentStatus, " +
-							"pd.property_city AS city, " +
-							"pd.property_house_area AS propertyAddress, " +
-							"o.pg_owner_email AS ownerEmail " +
-							"FROM pgusers.user_payments up " +
-							"JOIN pgusers.user_pg_details pgd ON up.user_id = pgd.user_id " +
-							"JOIN pgusers.user_details ud ON up.user_id = ud.user_id " +
-							"JOIN pgowners.zoy_pg_owner_booking_details bkd ON up.user_id = bkd.tenant_id " +
-							"AND up.user_payment_booking_id = bkd.booking_id " +
-							"AND pgd.user_pg_property_id = bkd.property_id " +
-							"JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id " +
-							"JOIN pgowners.zoy_pg_property_details pd ON bkd.property_id = pd.property_id " +
-							"JOIN pgowners.zoy_pg_owner_details o ON pd.pg_owner_id = o.pg_owner_id " +
-							"WHERE 1=1 "
-					);
+			StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT ON (up.user_payment_id) "
+					+ "o.pg_owner_name AS ownerName, "
+					+ "pd.property_name AS pgName, "
+					+ "ud2.user_money_due_amount AS totalAmountFromTenants,  "
+					+ "up.user_payment_timestamp AS transactionDate,  "
+					+ "up.user_payment_result_invoice_id AS transactionNumber,  "
+					+ "up.user_payment_payment_status AS paymentStatus,  "
+					+ "pd.property_city AS city,  "
+					+ "pd.property_house_area AS propertyAddress,  "
+					+ "o.pg_owner_email AS ownerEmail, "
+					+ "case when zpdm.due_name = 'Rent' then (case when pd.zoy_variable_share =0 then pd.zoy_fixed_share "
+					+ "else pd.zoy_variable_share end) else 0 end as zoyshare, "
+					+ "case when zpdm.due_name = 'Rent' then case when pd.zoy_variable_share =0 then "
+					+ "ud2.user_money_due_amount - pd.zoy_fixed_share "
+					+ "else  ud2.user_money_due_amount - (ud2.user_money_due_amount * (pd.zoy_variable_share/100)) end  "
+					+ "else ud2.user_money_due_amount end as paidToOwner, "
+					+ "case when zposs.is_approved =true then 'Approved' else (case when zposs.is_rejected =true  "
+					+ "then 'Rejected' else 'Processing' end) end as ownerPaymentStatus "
+					+ "FROM pgusers.user_payments up  "
+					+ "JOIN pgusers.user_pg_details pgd ON up.user_id = pgd.user_id  "
+					+ "JOIN pgusers.user_details ud ON up.user_id = ud.user_id  "
+					+ "JOIN pgowners.zoy_pg_owner_booking_details bkd ON up.user_id = bkd.tenant_id  "
+					+ "AND up.user_payment_booking_id = bkd.booking_id  "
+					+ "AND pgd.user_pg_property_id = bkd.property_id  "
+					+ "JOIN pgowners.zoy_pg_bed_details bd ON bkd.selected_bed = bd.bed_id  "
+					+ "JOIN pgowners.zoy_pg_property_details pd ON bkd.property_id = pd.property_id  "
+					+ "JOIN pgowners.zoy_pg_owner_details o ON pd.pg_owner_id = o.pg_owner_id  "
+					+ "join pgowners.zoy_pg_owner_settlement_status zposs on zposs.property_id =pd.property_id  "
+					+ "join pgowners.zoy_pg_owner_settlement_split_up zpossu on zpossu.pg_owner_settlement_id =zposs.pg_owner_settlement_id  "
+					+ "and zpossu.payment_id =up.user_payment_id "
+					+ "join pgusers.user_payment_due upd on upd.user_payment_id =up.user_payment_id  "
+					+ "join pgusers.user_dues ud2 on ud2.user_money_due_id =upd.user_money_due_id  "
+					+ "join pgowners.zoy_pg_due_type_master zpdtm on zpdtm.due_id=ud2.user_money_due_type   "
+					+ "join pgowners.zoy_pg_due_factor_master zpdfm on zpdfm.factor_id =ud2.user_money_due_billing_type "
+					+ "join pgowners.zoy_pg_due_master zpdm on zpdm.due_type_id =zpdtm.due_type  "
+					+ "WHERE 1=1 ");
 
 
 			Map<String, Object> parameters = new HashMap<>();
@@ -631,9 +645,9 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setPaymentStatus(row[5] != null ? (String) row[5] : "");
 				dto.setPgAddress(row[7] != null ? (String) row[7] : "");
 				dto.setOwnerEmail(row[8] != null ? (String) row[8] : "");
-				dto.setAmountPaidToOwner(BigDecimal.valueOf(0).doubleValue());
-				dto.setZoyShare(BigDecimal.valueOf(0).doubleValue());
-				dto.setOwnerApprovalStatus(null);
+				dto.setAmountPaidToOwner(row[10] != null ? new BigDecimal(row[10].toString()).doubleValue():BigDecimal.valueOf(0).doubleValue());
+				dto.setZoyShare(row[9] != null ? new BigDecimal(row[9].toString()).doubleValue():BigDecimal.valueOf(0).doubleValue());
+				dto.setOwnerApprovalStatus(row[11] != null ? (String) row[11] : "");
 				return dto;
 			}).collect(Collectors.toList());
 
@@ -2742,8 +2756,10 @@ public class AdminReportService implements AdminReportImpl{
 	            "    zpd.property_house_area AS propertyAddress, " +
 	            "    COUNT(DISTINCT zpqbd.selected_bed) AS numberOfBedsOccupied, " +
 	            "    COALESCE(SUM(zpqbd.fixed_rent), 0) AS expectedRent, " +
-	            "    zpd.zoy_share, " +
-	            "    ROUND((zpd.zoy_share / 100) * COALESCE(SUM(zpqbd.fixed_rent), 0),2) AS zoyShareAmount, " +
+	            "    case when zpd.zoy_variable_share =0 then concat(zpd.zoy_fixed_share,' Rs') "+
+	            "    else concat(zpd.zoy_variable_share,' %') end as zoyshare, "+
+	            "    case when zpd.zoy_variable_share =0 then (COUNT(DISTINCT zpqbd.selected_bed) * zpd.zoy_fixed_share) "+
+	            "    else ROUND((zpd.zoy_variable_share / 100) * COALESCE(SUM(zpqbd.fixed_rent), 0),2) end AS zoyShareAmount, " +
 	            "    zpd.property_city " +
 	            "FROM pgowners.zoy_pg_owner_booking_details zpqbd " +
 	            "JOIN pgowners.zoy_pg_property_details zpd ON zpqbd.property_id = zpd.property_id " +
@@ -2801,7 +2817,8 @@ public class AdminReportService implements AdminReportImpl{
 	            "zpd.property_contact_number, " +
 	            "zpd.property_pg_email, " +
 	            "zpd.property_house_area, " +
-	            "zpd.zoy_share, " +
+	            "zpd.zoy_variable_share , "+
+	            "zpd.zoy_fixed_share, " +
 	            "zpd.property_city ");
 
 	        if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
@@ -2830,7 +2847,7 @@ public class AdminReportService implements AdminReportImpl{
 	                    sort = "expectedRent";
 	                    break;
 	                case "zoyShare":
-	                    sort = "zpd.zoy_share";
+	                    sort = "zoyshare";
 	                    break;
 	                case "zoyShareAmount":
 	                    sort = "zoyShareAmount";
