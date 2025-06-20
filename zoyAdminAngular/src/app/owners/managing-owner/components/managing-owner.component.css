@@ -87,6 +87,10 @@ tr.mat-mdc-row:hover {
   background-color: #f7f5fb;
   cursor: pointer;
 }
+::ng-deep .small-toggle .mat-button-toggle-checked {
+  background-color: #4CAF50 !important;
+  color: white !important;              
+}
 
 ::ng-deep .small-toggle .mat-button-toggle {
   font-size: 0.75rem;

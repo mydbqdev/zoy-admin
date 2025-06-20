@@ -231,7 +231,7 @@
           <div class="col-sm-4">
             <input class="form-control" placeholder="Area Code" [(ngModel)]="generateZoyCode.property_locality_code" (ngModelChange)="generateZoyCode.property_locality_code = $event.toUpperCase()" maxlength="3" [readonly]="!isEditAreaCode" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality_code==undefined || generateZoyCode.property_locality_code==null || generateZoyCode.property_locality_code=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))'/>
           </div>
-          <div class="col-sm-2" style="text-align: right;">Zoy Revenue</div>
+          <div class="col-sm-2" style="text-align: right;">Zoy Share</div>
           
           <div class="col-sm-4">
             <div class="mb-1">

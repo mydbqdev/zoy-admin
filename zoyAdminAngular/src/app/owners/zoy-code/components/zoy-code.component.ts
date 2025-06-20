@@ -536,12 +536,41 @@ isInvalidZoyShare(): boolean {
 }
 
 percentageOnly(event: KeyboardEvent) {
-  const input = (event.target as HTMLInputElement).value;
-  const char = String.fromCharCode(event.which ?? event.keyCode);
-  const futureValue = input + char;
-  if (!/^\d{0,3}$/.test(futureValue) || parseInt(futureValue, 10) > 100) {
-    event.preventDefault();
+	const inputElement = event.target as HTMLInputElement;
+	const input = inputElement.value;
+	const char = event.key;
+  
+	if (['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'].includes(char)) {
+	  return;
+	}
+  
+	if (!char.match(/[0-9.]/)) {
+	  event.preventDefault();
+	  return;
+	}
+  
+	if (char === '.' && input.includes('.')) {
+	  event.preventDefault();
+	  return;
+	}
+  
+	const futureValue = input + char;
+  
+	if (/^0\d/.test(futureValue)) {
+	  event.preventDefault();
+	  return;
+	}
+  
+	const numericValue = parseFloat(futureValue);
+	if (isNaN(numericValue) || numericValue > 100) {
+	  event.preventDefault();
+	}
   }
-}
+
+  zoyShare(element:any):string{
+		return   Number(element.zoy_fixed_share) === 0 
+			? (Number(element.zoy_variable_share).toFixed(2) + ' %') 
+			: ('Rs. ' + Number(element.zoy_fixed_share).toFixed(2));
+  }
 
 }
