@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "user_help_request", schema = "pgusers")
@@ -19,32 +20,41 @@ public class UserHelpRequest {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_help_request_id", nullable = false, updatable = false)
 	private String userHelpRequestId;
-	
-	@Column(name = "user_id", nullable = false, length = 50)
-	private String userId;
 
-	@Column(name = "booking_id", nullable = false, length = 50)
-	private String bookingId;
+    @Column(name = "user_id", length = 36)
+    private String userId;
 
-	@Column(name = "categories_id", nullable = false, length = 100)
-	private String categoriesId;
+    @Column(name = "property_id", nullable = false, length = 36)
+    private String propertyId;
+    
+    @Column(name = "booking_id", length = 36)
+    private String bookingId;
 
-	@Column(name = "description")
-	private String description;
+    @Column(name = "categories_id", nullable = false, length = 36)
+    private String categoriesId;
 
-	@Column(name = "urgency")
-	private boolean urgency;
+    @Column(name = "description")
+    private String description;
 
-	@Column(name = "request_status", nullable = false)
-	private String requestStatus;
+    @Column(name = "urgency", nullable = false)
+    private boolean urgency = false;
 
-	@Column(name = "created_at")
-	@CreationTimestamp
-	private Timestamp createdAt;
+    @Column(name = "request_status", nullable = false)
+    private String requestStatus;
 
-	@Column(name = "update_at")
-	@CreationTimestamp
-	private Timestamp updateAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @Column(name = "update_at")
+    @UpdateTimestamp
+    private Timestamp updateAt;
+    
+    @Column(name = "partner_id",  length = 36)
+    private String partnerId;
+    
+    @Column(name = "sub_categories_id", length = 36)
+    private String subCategoriesId;
 
 	@Column(name = "assign_to_email")
 	private String assignedToEmail;
@@ -139,6 +149,30 @@ public class UserHelpRequest {
 
 	public void setUpdateAt(Timestamp updateAt) {
 		this.updateAt = updateAt;
+	}
+
+	public String getPropertyId() {
+		return propertyId;
+	}
+
+	public void setPropertyId(String propertyId) {
+		this.propertyId = propertyId;
+	}
+
+	public String getPartnerId() {
+		return partnerId;
+	}
+
+	public void setPartnerId(String partnerId) {
+		this.partnerId = partnerId;
+	}
+
+	public String getSubCategoriesId() {
+		return subCategoriesId;
+	}
+
+	public void setSubCategoriesId(String subCategoriesId) {
+		this.subCategoriesId = subCategoriesId;
 	}
 	
 	
