@@ -401,6 +401,9 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		this.generateZoyCode.userEmail=data.owner_email;
 		this.generateZoyCode.firstName=data.owner_name.split(" ")[0];
 		this.generateZoyCode.lastName=data.owner_name.split(" ")[1];
+		this.generateZoyCode.property_street_name='';
+		this.generateZoyCode.property_door_number='';
+		this.revenueType = 'fixed';
 	  }
 
 	  resetProperty(){
@@ -418,8 +421,11 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		this.generateZoyCode.property_location_latitude='';
 		this.generateZoyCode.property_location_longitude='';
 		this.generateZoyCode.zoyShare='';
+		this.generateZoyCode.property_street_name='';
+		this.generateZoyCode.property_door_number='';
 		this.areaList=Object.assign([]);
 		this.areaTypeOption=true;
+		this.revenueType = 'fixed';
 	  }
 	  generateCodeForProperty(){
 		this.submittedAddProperty=true;
@@ -432,8 +438,8 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		this.submittedAddProperty=false;
 		this.generateZoyCode.property_city_code=this.generateZoyCode.property_city_code?.toUpperCase();
 		this.generateZoyCode.property_locality_code=this.generateZoyCode.property_locality_code?.toUpperCase();
-		this.generateZoyCodeService.generateOwnerCodeForMoreProperty(this.generateZoyCode," ").subscribe((res) => {
-			this.notifyService.showSuccess(res.message, this.revenueType);
+		this.generateZoyCodeService.generateOwnerCodeForMoreProperty(this.generateZoyCode,this.revenueType).subscribe((res) => {
+			this.notifyService.showSuccess(res.message, '');
 		    this.resetProperty();
 			this.closeModelAddProperty.nativeElement.click();			
 			this.spinner.hide();
