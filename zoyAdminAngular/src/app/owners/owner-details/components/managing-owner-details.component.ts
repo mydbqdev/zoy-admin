@@ -666,6 +666,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 					this.propertyInfo.zoy_fixed_share = JSON.parse(JSON.stringify(zoyFixedShare));
 					this.propertyInfo.zoy_variable_share = JSON.parse(JSON.stringify(zoyVariableShare));
 					this.zoyShareDisabled = false;
+					this.notifyService.showSuccess(res.message,"");
 					this.spinner.hide();
 					}, error => {
 					 this.spinner.hide();
