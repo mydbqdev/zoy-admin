@@ -406,8 +406,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					newProperty.setPropertyName(property[12] != null ? property[12].toString() : null);
 					newProperty.setPropertyId(propertyId);
 					newProperty.setStatus(property[13] != null ? property[13].toString() : null);
-					newProperty.setZoyVariableShare(details[37] != null ? details[37].toString() : null);
-					newProperty.setZoyFixedShare(details[38] != null ? details[38].toString() : null);
+					newProperty.setZoyVariableShare(property[37] != null ? property[37].toString() : null);
+					newProperty.setZoyFixedShare(property[38] != null ? property[38].toString() : null);
 					BasicPropertyInformation basicPropertyInfo = new BasicPropertyInformation();
 					basicPropertyInfo.setPgType(property[14] != null ? property[14].toString() : null);
 					basicPropertyInfo.setPgAddress(property[15] != null ? property[15].toString() : null);
