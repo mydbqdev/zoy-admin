@@ -194,7 +194,7 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  
 	  selectProperty(){
 		this.propertyInfo = this.pgOwnerData.pg_owner_property_information.find(info=>info.property_id == this.property_id);
-		const share = Number(this.propertyInfo.zoy_fixed_share) == 0?'fixed':'variable';
+		const share = Number(this.propertyInfo.zoy_fixed_share) == 0?'variable':'fixed';
 		this.revenueType = share;
 		const amount = share == 'fixed'?this.propertyInfo.zoy_fixed_share:this.propertyInfo.zoy_variable_share;
 		this.zoyShare= amount;
@@ -764,15 +764,16 @@ export class OwnerDetailsComponent implements OnInit, AfterViewInit {
 	  }
 	  generateAadhaarRecaptcha(): void {
 		this.imgeURL="";
-		this.aadhaarSession.sessionid=this.aadhaarSession.session_id;
+		
+		const session_id = this.aadhaarSession.session_id
+		this.aadhaarSession.sessionid = session_id;
 		sessionStorage.setItem('zoyadminapi', 'no');
 		this.zoyOwnerService.generateAadhaarRecaptcha(this.aadhaarSession).subscribe(res => {
 			this.aadhaarSession= JSON.parse(JSON.stringify(res.data));
 			if(res.data){
-				this.aadhaarSession.session_id=res.data?.session_id;
+				this.aadhaarSession.session_id= session_id;
 				this.imgeURL = 'data:image/jpeg;base64,' + res.data?.captcha;
 			}
-			
 			sessionStorage.setItem('zoyadminapi', 'yes');
 		}, error => {
 			sessionStorage.setItem('zoyadminapi', 'yes');

@@ -344,6 +344,8 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
 
 
 getEditData(data:any){
+  this.dataSelectedRead =[];
+  this.dataSelectedWrite =[];
 function convertRoleData(input: RoleModel): any {
   const output: RoleModel = new RoleModel();
   output.id=input.id;
