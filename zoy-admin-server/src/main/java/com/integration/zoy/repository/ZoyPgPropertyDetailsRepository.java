@@ -103,42 +103,13 @@ public interface ZoyPgPropertyDetailsRepository extends JpaRepository<ZoyPgPrope
 	        "        zpd.property_pg_email, " +
 	        "        zpd.property_house_area " +
 	        ") AS subquery) AS nonPotentialPropertiesCount, " +
-
-	        "(SELECT COUNT(*) " +
-	        "FROM (" +
-	        "    SELECT DISTINCT " +
-	        "        zpd.property_contact_number, " +
-	        "        (SELECT COUNT(*) " +
-	        "         FROM pgowners.zoy_pg_owner_booking_details AS zpobd2 " +
-	        "         JOIN pgusers.user_bookings AS ub2 " +
-	        "             ON zpobd2.booking_id = ub2.user_bookings_id " +
-	        "         WHERE zpobd2.property_id = zpobd.property_id " +
-	        "           AND zpobd2.in_date > CURRENT_DATE " +
-	        "           AND ub2.user_bookings_is_cancelled = false " +
-	        "           AND ub2.user_bookings_web_check_out = false " +
-	        "           AND ub2.user_bookings_web_check_in = false) AS future_bookings " +
-	        "    FROM pgowners.zoy_pg_owner_booking_details AS zpobd " +
-	        "    JOIN pgusers.user_bookings AS ub " +
-	        "        ON zpobd.booking_id = ub.user_bookings_id " +
-	        "    JOIN pgowners.zoy_pg_property_details AS zpd " +
-	        "        ON zpobd.property_id = zpd.property_id " +
-	        "    JOIN pgowners.zoy_pg_owner_details AS zpod " +
-	        "        ON zpd.pg_owner_id = zpod.pg_owner_id " +
-	        "    WHERE zpobd.in_date > CURRENT_DATE " +
-	        "      AND ub.user_bookings_is_cancelled = false " +
-	        "      AND ub.user_bookings_web_check_out = false " +
-	        "      AND ub.user_bookings_web_check_in = false " +
-	        "      AND zpobd.property_id NOT IN ( " +
-	        "          SELECT DISTINCT zpobd2.property_id " +
-	        "          FROM pgowners.zoy_pg_owner_booking_details AS zpobd2 " +
-	        "          JOIN pgusers.user_bookings AS ub2 " +
-	        "              ON zpobd2.booking_id = ub2.user_bookings_id " +
-	        "          WHERE ub2.user_bookings_is_cancelled = false " +
-	        "            AND ub2.user_bookings_web_check_out = false " +
-	        "            AND ub2.user_bookings_web_check_in = true " +
-	        "      ) " +
-	        ") AS subquery) AS upcomingPotentialPropertyCount " ,
-	        nativeQuery = true)
+			
+			" (SELECT count(pom.*)\r\n"
+			+ "FROM pgadmin.pg_owner_master pom\r\n"
+			+ "LEFT JOIN pgowners.zoy_pg_property_details zppd ON pom.zoy_code = zppd.zoy_code\r\n"
+			+ "WHERE zppd.zoy_code IS null" +
+			")  AS upcomingPotentialPropertyCount " ,
+			nativeQuery = true)
 	List<Object[]> findPropertiesCardDetails();
 
 	@Query(value = "SELECT COALESCE(MAX(CAST(SUBSTRING(zoy_code, 7) AS INTEGER)), 0) " +
