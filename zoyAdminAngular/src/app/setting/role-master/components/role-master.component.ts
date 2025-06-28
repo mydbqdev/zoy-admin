@@ -179,8 +179,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
         this.spinner.hide();
         this.notifyService.showSuccess(result.message, "");  
         this.closeNewModal.nativeElement.click(); 
-        this.reloadCurrentPage(); 
-        // this.getRolesData();
+        this.getRolesData();
        }, error => {
         this.spinner.hide();
         if(error.status == 0) {
@@ -266,8 +265,7 @@ export class RoleMasterComponent implements OnInit,AfterViewInit{
         this.spinner.hide();
         this.notifyService.showSuccess(result.message, "");  
        this.editNewModal.nativeElement.click(); 
-          this.reloadCurrentPage(); 
-          // this.getRolesData();
+       this.getRolesData();
       }, error => {
         this.spinner.hide();
         if(error.status == 0) {
@@ -429,15 +427,6 @@ deleteRecord(row : RoleModel){
     ); 
   
 }
-
-
-reloadCurrentPage(){
-  let currentUrl = this.router.url;
-  this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-  this.router.navigate([currentUrl]);
-  });
- }
-
 
  onChangeCheckAll(id,type,sec){
   var str=sec+type;
