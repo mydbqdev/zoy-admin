@@ -39,7 +39,12 @@ export class SigninComponent implements OnInit {
 	constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService,private dataService :DataService,
 		private encryptDecryptHelper:AESEncryptDecryptHelper,private profileService:ProfileService,private confirmationDialogService:ConfirmationDialogService,
 				private spinner: NgxSpinnerService,private formBuilder: FormBuilder, private notifyService: NotificationService
-	) { }
+	) { 
+		const backdrop = document.querySelector('.modal-backdrop');
+		if (backdrop) {
+		backdrop.remove();
+		}
+	}
 
 	ngOnInit() {
 				this.form = this.formBuilder.group({
