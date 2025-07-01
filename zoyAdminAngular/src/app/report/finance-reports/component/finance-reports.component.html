@@ -99,7 +99,7 @@
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantEmail" name="tenantEmail" />
                               </div>
                           </div>
-                            <div class="col-sm-6" *ngIf=" reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report'">
+                            <div class="col-sm-6" *ngIf=" reportName =='Upcoming Tenants Report' || reportName =='Suspended Tenants Report' || reportName =='Inactive Tenants Report' || reportName =='Active Tenants Report' || reportName =='ZOY Share Report'">
                               <div class="form-group">
                                 <label for="bedNumber" class="text-search-header">Bed Number</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.bedNumber" name="bedNumber" />
@@ -186,12 +186,12 @@
                               </div>
                             </div>
 
-                            <div class="col-sm-6" *ngIf="reportName =='ZOY Share Report'">
+                            <!-- <div class="col-sm-6" *ngIf="reportName =='ZOY Share Report'">
                               <div class="form-group">
                                 <label for="roomNo" class="text-search-header">Room No</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.roomNo" name="roomNo" />
                               </div>
-                            </div>
+                            </div> -->
                             <div class="col-sm-6" *ngIf="reportName =='ZOY Share Report'">
                               <div class="form-group">
                                 <label for="roomNo" class="text-search-header">Mode Of Payment</label>

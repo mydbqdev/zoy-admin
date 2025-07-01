@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.TenantResportsDTO;
+import com.integration.zoy.model.ZoyShareReportDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
@@ -321,6 +322,18 @@ public class ExcelGenerateService {
 				row.createCell(4).setCellValue("Assigned To");
 				row.createCell(5).setCellValue("Status");
 				break;	
+		case "ZoyShareReport":
+			row.createCell(0).setCellValue("Transaction Date");
+			row.createCell(1).setCellValue("Tenant Invoice No. (Rent)");
+			row.createCell(2).setCellValue("PG Name");
+			row.createCell(3).setCellValue("Tenant Name");
+			row.createCell(4).setCellValue("Sharing Type");
+			row.createCell(5).setCellValue("Bed Number");
+			row.createCell(6).setCellValue("Mode of Payment");
+			row.createCell(7).setCellValue("Amount Paid");
+			row.createCell(8).setCellValue("ZOY Share in %");
+			row.createCell(9).setCellValue("ZOY Share Amount");
+			break;		
 		default:
 			throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 		}
@@ -617,7 +630,23 @@ public class ExcelGenerateService {
 				row.createCell(5).setCellValue(nullSafe(registerLeadDetails.getStatus()));
 				
 			}
-			break;	
+			break;
+		case "ZoyShareReport":
+		    if (dto instanceof ZoyShareReportDTO) {
+		        ZoyShareReportDTO report = (ZoyShareReportDTO) dto;
+		        row.createCell(0).setCellValue(nullSafe(report.getTransactionDate() != null ? tuService.formatTimestamp(report.getTransactionDate().toInstant()): ""));
+		        row.createCell(1).setCellValue(nullSafe(report.getInvoiceNumber()));
+		        row.createCell(2).setCellValue(nullSafe(report.getPgName()));
+		        row.createCell(3).setCellValue(nullSafe(report.getTenantName()));
+		        row.createCell(4).setCellValue(nullSafe(report.getSharingType()));
+		        row.createCell(5).setCellValue(nullSafe(report.getBedNumber()));
+		        row.createCell(6).setCellValue(nullSafe(report.getPaymentMode()));
+		        row.createCell(7).setCellValue(nullSafe(report.getAmountPaid()));
+		        row.createCell(8).setCellValue(nullSafe(report.getZoyShare()));
+		        row.createCell(9).setCellValue(nullSafe(report.getZoyShareAmount()));
+		    }
+		    break;
+	
 		default:
 			//throw new IllegalArgumentException("Invalid report type provided: " + reportType);
 			new ZoyAdminApplicationException(new Exception() ,"Invalid report type provided: " + reportType);

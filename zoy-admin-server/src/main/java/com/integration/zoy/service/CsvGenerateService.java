@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.model.TenantResportsDTO;
+import com.integration.zoy.model.ZoyShareReportDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
 import com.integration.zoy.utils.RatingsAndReviewsReport;
@@ -143,7 +144,10 @@ public class CsvGenerateService {
                 break;
             case "RegisteredLeadDetails":
             	writer.println("Inquiry Number,Name,Inquired For, Date,Assigned To,Status");
-                break;  
+                break; 
+            case "ZoyShareReport":
+            	writer.println("Transaction Date,Tenant Invoice No. (Rent),PG Name,Tenant Name,Sharing Type,Bed Number,Mode of Payment,Amount Paid,ZOY Share in %,Zoy Share Amount");
+                break;    
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }
@@ -460,6 +464,23 @@ public class CsvGenerateService {
                 }
                 break;
                 
+            case "ZoyShareReport":
+                if (dto instanceof ZoyShareReportDTO) {
+                    ZoyShareReportDTO zoyShareReportDetails = (ZoyShareReportDTO) dto;
+                    writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                        tuService.formatTimestamp(zoyShareReportDetails.getTransactionDate().toInstant()),
+                        safeToString(zoyShareReportDetails.getInvoiceNumber()),
+                        safeToString(zoyShareReportDetails.getPgName()),
+                        safeToString(zoyShareReportDetails.getTenantName()),
+                        safeToString(zoyShareReportDetails.getSharingType()),
+                        safeToString(zoyShareReportDetails.getBedNumber()),
+                        safeToString(zoyShareReportDetails.getPaymentMode()),
+                        safeToString(zoyShareReportDetails.getAmountPaid()),
+                        safeToString(zoyShareReportDetails.getZoyShare()),
+                        safeToString(zoyShareReportDetails.getZoyShareAmount()));
+                }
+                break;
+
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
         }

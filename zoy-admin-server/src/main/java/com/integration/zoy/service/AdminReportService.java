@@ -30,6 +30,7 @@ import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.model.TenantResportsDTO;
+import com.integration.zoy.model.ZoyShareReportDTO;
 import com.integration.zoy.repository.UserPaymentDueRepository;
 import com.integration.zoy.repository.UserPaymentRepository;
 import com.integration.zoy.repository.ZoyPgPropertyDetailsRepository;
@@ -807,6 +808,11 @@ public class AdminReportService implements AdminReportImpl{
 				dataListWrapper=this.generateSuspendedPropertiesReport(reportData,filterRequest);
 				templatePath ="templates/suspendedPropertiesReport.docx";
 				break;	
+			case "ZoyShareReport":
+				reportData = getZoyShareReport(filterRequest, filterData,applyPagination);
+				dataListWrapper=this.generateZoyShareReport(reportData,filterRequest);
+				templatePath ="templates/zoyShareReport.docx";
+				break;		
 			case "RegisteredLeadDetails":
 				boolean isSupportUser = false;
 				reportData = getRegisterLeadDetails(filterRequest, filterData,applyPagination,isSupportUser);
@@ -1459,6 +1465,43 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("bedAllocation", tenantRefund.getBedNumber() != null ? tenantRefund.getBedNumber() : "");
 			data.put("expectedCheckin", tuService.formatTimestamp(tenantRefund.getExpectedCheckIndate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getExpectedCheckIndate().toInstant()) : "");
 			data.put("expectedCheckOut", tuService.formatTimestamp(tenantRefund.getExpectedCheckOutdate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getExpectedCheckOutdate().toInstant()) : "");
+			data.put("printedOn", currentDate);
+
+			dataList.add(data);
+		}
+		return dataList;
+	}
+	public List<Map<String, Object>> generateZoyShareReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
+		List<Map<String, Object>> dataList = new ArrayList<>();
+		List<?> dataItems = reportData.getData();
+		String currentDate = LocalDate.now().toString();
+
+		for (Object item : dataItems) {
+			Map<String, Object> data = new HashMap<>();
+			ZoyShareReportDTO zoyShareReport = (ZoyShareReportDTO) item;
+
+			data.put("transactionDate", tuService.formatTimestamp(zoyShareReport.getTransactionDate().toInstant()) != null ? tuService.formatTimestamp(zoyShareReport.getTransactionDate().toInstant()) : "");
+			data.put("invoiceNumber", zoyShareReport.getInvoiceNumber() != null ? zoyShareReport.getInvoiceNumber() : "");
+			data.put("pgName", zoyShareReport.getPgName() != null ? zoyShareReport.getPgName() : "");
+			data.put("tenantName", zoyShareReport.getTenantName() != null ? zoyShareReport.getTenantName() : "");
+			data.put("sharingType", zoyShareReport.getSharingType() != null ? zoyShareReport.getSharingType() : "");
+			data.put("bedNumber", zoyShareReport.getBedNumber() != null ? zoyShareReport.getBedNumber() : "");
+			data.put("paymentMode", zoyShareReport.getPaymentMode() != null ? zoyShareReport.getPaymentMode() : "");
+			data.put("amountPaid", zoyShareReport.getAmountPaid() != null ? zoyShareReport.getAmountPaid() : "");
+			data.put("zoyShare", zoyShareReport.getZoyShare() != null ? zoyShareReport.getZoyShare() : "");
+			data.put("zoyShareAmount", zoyShareReport.getZoyShareAmount() != null ? zoyShareReport.getZoyShareAmount() : "");
+
+			// Common fields
+			Timestamp fromDateTimestamp = filterRequest.getFromDate();
+			Timestamp toDateTimestamp = filterRequest.getToDate();
+
+			LocalDate fromDate = fromDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+			LocalDate toDate = toDateTimestamp.toInstant().atZone(ZoneId.of(TIME_ZONE)).toLocalDate();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			data.put("fromDate", fromDate.format(formatter));
+			data.put("toDate", toDate.format(formatter));
 			data.put("printedOn", currentDate);
 
 			dataList.add(data);
@@ -3266,6 +3309,170 @@ public class AdminReportService implements AdminReportImpl{
 			return new CommonResponseDTO<>(registerLeadDetails, filterCount);
 		} catch (Exception e) {
 			throw new WebServiceException("Error retrieving Register Lead Details: " + e.getMessage());
+		}
+	}
+	
+	@Override
+	public CommonResponseDTO<ZoyShareReportDTO> getZoyShareReport(UserPaymentFilterRequest filterRequest,
+			FilterData filterData, Boolean applyPagination) throws WebServiceException {
+		try {
+			StringBuilder queryBuilder = new StringBuilder(
+				"SELECT " +
+				" zpossu.pg_owner_settlement_split_up_id, " +
+				" zposs.pg_owner_settlement_id, " +
+				" up.user_payment_created_at AS TransactionDate, " +
+				" up.user_payment_result_invoice_id AS TenantInvoiceNo, " +
+				" zpd.property_name AS PGName, " +
+				" CONCAT(um.user_first_name, '', um.user_last_name) AS TenantName, " +
+				" sm.share_type AS SharingType, " +
+				" bd.bed_name AS BedNo, " +
+				" up.user_payment_zoy_payment_mode AS ModeOfPayment, " +
+				" up.user_payment_payable_amount AS AmountPaid, " +
+				" CASE WHEN zpd.zoy_variable_share = 0 THEN CONCAT(zpd.zoy_fixed_share, ' Rs') " +
+				" ELSE CONCAT(zpd.zoy_variable_share, ' %') END AS zoyshare, " +
+				" CASE WHEN zpd.zoy_variable_share = 0 THEN (COUNT(DISTINCT zpqbd.selected_bed) * zpd.zoy_fixed_share) " +
+				" ELSE ROUND((zpd.zoy_variable_share / 100) * COALESCE(SUM(zpqbd.fixed_rent), 0), 2) END AS zoyShareAmount, " +
+				" zpd.property_city AS PropertyCity " +
+				" FROM pgowners.zoy_pg_owner_settlement_split_up zpossu " +
+				" LEFT JOIN pgowners.zoy_pg_owner_settlement_status zposs ON zposs.pg_owner_settlement_id = zpossu.pg_owner_settlement_id " +
+				" LEFT JOIN pgusers.user_payments up ON up.user_payment_id = zpossu.payment_id " +
+				" LEFT JOIN pgowners.zoy_pg_property_details zpd ON zpd.property_id = zposs.property_id " +
+				" LEFT JOIN pgowners.zoy_pg_owner_booking_details zpdb ON up.user_payment_booking_id = zpdb.booking_id " +
+				" LEFT JOIN pgowners.zoy_pg_bed_details bd ON zpdb.selected_bed = bd.bed_id " +
+				" LEFT JOIN pgusers.user_master um ON up.user_id = um.user_id " +
+				" LEFT JOIN pgowners.zoy_pg_property_details pd ON zpdb.property_id = pd.property_id " +
+				" LEFT JOIN pgowners.zoy_pg_share_master sm ON zpdb.share = sm.share_id " +
+				" LEFT JOIN pgowners.zoy_pg_owner_booking_details zpqbd ON zpdb.booking_id = zpqbd.booking_id " +
+				" WHERE 1=1 "
+			);
+ 
+			Map<String, Object> parameters = new HashMap<>();
+ 
+			if (filterRequest.getFromDate() != null && filterRequest.getToDate() != null) {
+				queryBuilder.append(" AND up.user_payment_created_at BETWEEN :fromDate AND :toDate ");
+				parameters.put("fromDate", filterRequest.getFromDate());
+				parameters.put("toDate", filterRequest.getToDate());
+			}
+			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(CONCAT(um.user_first_name, um.user_last_name)) LIKE LOWER(:tenantName) ");
+				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
+			}
+			if (filterData.getInvoiceNo() != null && !filterData.getInvoiceNo().isEmpty()) {
+				queryBuilder.append(" AND LOWER(up.user_payment_result_invoice_id) LIKE LOWER(:invoiceNo) ");
+				parameters.put("invoiceNo", "%" + filterData.getInvoiceNo() + "%");
+			}
+			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
+				parameters.put("pgName", "%" + filterData.getPgName() + "%");
+			}
+			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpd.property_city) LIKE LOWER(:cityLocation) ");
+				parameters.put("cityLocation", "%" + filterRequest.getCityLocation() + "%");
+			}
+			if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
+				queryBuilder.append(" AND LOWER(bd.bed_name) LIKE LOWER(:bedNumber) ");
+				parameters.put("bedNumber", "%" + filterData.getBedNumber() + "%");
+			}
+			if (filterData.getModeOfPayment() != null && !filterData.getModeOfPayment().isEmpty()) {
+				queryBuilder.append(" AND LOWER(up.user_payment_zoy_payment_mode) LIKE LOWER(:modeOfPayment) ");
+				parameters.put("modeOfPayment", "%" + filterData.getModeOfPayment() + "%");
+			}
+ 
+			queryBuilder.append(
+				" GROUP BY " +
+				" zpossu.pg_owner_settlement_split_up_id, " +
+				" zposs.pg_owner_settlement_id, " +
+				" up.user_payment_created_at, " +
+				" up.user_payment_result_invoice_id, " +
+				" zpd.property_name, " +
+				" um.user_first_name, " +
+				" um.user_last_name, " +
+				" sm.share_type, " +
+				" bd.bed_name, " +
+				" up.user_payment_zoy_payment_mode, " +
+				" up.user_payment_payable_amount, " +
+				" pd.zoy_variable_share, " +
+				" zpd.zoy_variable_share, " +
+				" zpd.zoy_fixed_share, " +
+				" zpd.property_city "
+			);
+ 
+			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
+              && filterRequest.getSortActive() != null) {
+ 
+				String sort;
+				
+				switch (filterRequest.getSortActive()) {
+					case "tenantName":
+						sort = "um.user_first_name || '' || um.user_last_name";
+						break;
+					case "pgName":
+						sort = "zpd.property_name";
+						break;
+					case "transactionDate":
+						sort = "up.user_payment_created_at";
+						break;
+					case "invoiceNumber":
+						sort = "up.user_payment_result_invoice_id";
+						break;
+					case "sharingType":
+						sort = "sm.share_type";
+						break;
+					case "bedNumber":
+						sort = "bd.bed_name";
+						break;
+					case "paymentMode":
+						sort = "up.user_payment_zoy_payment_mode";
+						break;
+					case "amountPaid":
+						sort = "up.user_payment_payable_amount";
+						break;
+					case "zoyShare":
+						sort = "zoyshare";
+						break;
+					case "zoyShareAmount":
+						sort = "zoyShareAmount";
+						break;
+					default:
+						sort = "um.user_first_name || '' || um.user_last_name";
+				}
+				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+				queryBuilder.append(" ORDER BY ").append(sort).append(" ").append(sortDirection);
+			} else {
+				queryBuilder.append(" ORDER BY um.user_first_name || '' || um.user_last_name DESC ");
+			}
+ 
+			Query query = entityManager.createNativeQuery(queryBuilder.toString());
+			parameters.forEach(query::setParameter);
+ 
+			int filterCount = query.getResultList().size();
+ 
+			if (applyPagination) {
+				query.setFirstResult(filterRequest.getPageIndex() * filterRequest.getPageSize());
+				query.setMaxResults(filterRequest.getPageSize());
+			}
+ 
+			List<Object[]> results = query.getResultList();
+ 
+			List<ZoyShareReportDTO> dtoList = results.stream().map(row -> {
+				ZoyShareReportDTO dto = new ZoyShareReportDTO();
+				dto.setTransactionDate(row[2] != null ? (Timestamp) row[2] : null);
+				dto.setInvoiceNumber(row[3] != null ? row[3].toString() : "");
+				dto.setPgName(row[4] != null ? row[4].toString() : "");
+				dto.setTenantName(row[5] != null ? row[5].toString() : "");
+				dto.setSharingType(row[6] != null ? row[6].toString() : "");
+				dto.setBedNumber(row[7] != null ? row[7].toString() : "");
+				dto.setPaymentMode(row[8] != null ? row[8].toString() : "");
+				dto.setAmountPaid(row[9] != null ?(BigDecimal) row[9] : BigDecimal.ZERO);
+				dto.setZoyShare(row[10] != null ? row[10].toString() : "0");
+				dto.setZoyShareAmount(row[11] != null ?(BigDecimal) row[11] : BigDecimal.ZERO);
+				
+				return dto;
+			}).collect(Collectors.toList());
+ 
+			return new CommonResponseDTO<>(dtoList, filterCount);
+		} catch (Exception e) {
+			throw new WebServiceException("Error retrieving Zoy Share Report: " + e.getMessage());
 		}
 	}
 
