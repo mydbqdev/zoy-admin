@@ -25,7 +25,7 @@ import { MessageService } from 'src/app/message.service';
       'consolidatedFinanceReport':'consolidated_finance_report_details',
       'vendorPaymentsGstReport':'vendor-payment-gst-report',
       'FailedTransactionReport':'failure_transactions_details',
-      'zoyShareReport':'user_gst_report_details'//'zoyShareReportDetails'
+      'ZoyShareReport':'zoyShareReportDetails'
       
     };
       
@@ -48,7 +48,7 @@ import { MessageService } from 'src/app/message.service';
     },
     { 
       'reportName': 'ZOY Share Report', 
-      "columns": ["transactionDate", "invoiceNumber", "pgName", "tenantName", "sharingType", "roomNumber", "bedNumber", "paymentMode", "amountPaid", "zoyShare", "zoyShareAmount"]
+      "columns": ["transactionDate", "invoiceNumber", "payingGuestName", "tenantName", "sharingType", "bedNumber", "paymentMode", "amountPaid", "zoyShareIn", "zoyShareAmount"]
     }
 
 	  ];
@@ -58,7 +58,7 @@ import { MessageService } from 'src/app/message.service';
       { name: "Owner Payments Gst Report", key: "vendorPaymentsGstReport" },
       { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
       { name: "Failure Transactions Report", key: "FailedTransactionReport" },
-      { name: "ZOY Share Report", key: "zoyShareReport" }
+      { name: "ZOY Share Report", key: "ZoyShareReport" }
 
       ];
 

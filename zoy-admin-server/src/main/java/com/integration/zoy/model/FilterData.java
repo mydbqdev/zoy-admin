@@ -114,6 +114,8 @@ public class FilterData {
 	@SerializedName("city")
 	String city;
 	
+	@SerializedName("invoiceNo")
+	String invoiceNo;
 
 	public String getCheckInDate() {
 		return checkInDate;
@@ -409,6 +411,14 @@ public class FilterData {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getInvoiceNo() {
+		return invoiceNo;
+	}
+
+	public void setInvoiceNo(String invoiceNo) {
+		this.invoiceNo = invoiceNo;
 	}
 
 }
