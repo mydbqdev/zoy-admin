@@ -25,7 +25,6 @@ import { MessageService } from 'src/app/message.service';
       'ownerName': 'OWNER NAME',
       'pgId': 'PG ID',
       'pgName': 'PG PROPERTY NAME',
-      'payingGuestName':'PG NAME',
       'totalAmountFromTenants': 'TOTAL AMOUNT FROM TENANTS',
       'amountPaidToOwner': 'AMOUNT PAID TO OWNER',
       'zoyCommission': 'ZOY COMMISSION',
@@ -59,7 +58,6 @@ import { MessageService } from 'src/app/message.service';
       'ownerEmail':'OWNER EMAIL',
       'pgAddress':'PG ADDRESS',
       'zoyShare':'ZOY SHARE %',
-      'zoyShareIn':'ZOY SHARE IN %',
       'tenantMobileNum':'TENANT CONTACT',
       'userPgPropertyAddress':'PG ADDRESS',
       'ownerApprovalStatus':'OWNER APPROVAL STATUS',
@@ -108,8 +106,8 @@ import { MessageService } from 'src/app/message.service';
       'sharingType': 'SHARING TYPE',
       'roomNumber': 'ROOM NO',
       'paymentMode': 'MODE OF PAYMENT',
-      
-      
+      'ownerEmailAddress':'OWNER EMAIL ADDRESS',
+      'ownerContactNumber':"OWNER CONTACT NUMBER",
       
   };
   

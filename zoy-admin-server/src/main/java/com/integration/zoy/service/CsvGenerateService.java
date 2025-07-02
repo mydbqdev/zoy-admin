@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.model.TenantResportsDTO;
+import com.integration.zoy.model.UpcomingPotentialPropertyDTO;
 import com.integration.zoy.model.ZoyShareReportDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
@@ -137,7 +138,7 @@ public class CsvGenerateService {
             	writer.println("Owner Name,Property Name,Property Contact Number,Property Email address,Property Address,Last Check-out Date (Last tenant checkout Date),Last Check-in Date (Last tenant check-in  Date)");
                 break;
             case "UpComingPotentialPropertyReport":
-            	writer.println("Owner Name,Booked Property Name,Property Contact Number,Property Email address,Property Address,Number of beds occupied,Expected rent per Month");
+            	writer.println("Owner Full Name,Property Name,Owner Contact Number,Owner Email address,Property Address");
                 break;
             case "SuspendedPropertiesReport":
             	writer.println("Owner Full Name,Inactive Property Name,Property Contact Number, Property Email Address,Property Address,Suspended Date,Reason for suspension");
@@ -438,16 +439,14 @@ public class CsvGenerateService {
                 break;
                 
             case "UpComingPotentialPropertyReport":
-            	if (dto instanceof PropertyResportsDTO) {
-            		PropertyResportsDTO potentialProperty = (PropertyResportsDTO) dto;
-            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+            	if (dto instanceof UpcomingPotentialPropertyDTO) {
+            		UpcomingPotentialPropertyDTO potentialProperty = (UpcomingPotentialPropertyDTO) dto;
+            		 writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                             safeToString(potentialProperty.getOwnerFullName()),
                             safeToString(potentialProperty.getPropertyName()),
-                            safeToString(potentialProperty.getPropertyContactNumber()),
-                            safeToString(potentialProperty.getPropertyEmailAddress()),
-                            safeToString(potentialProperty.getPropertyAddress()),
-                            safeToString(potentialProperty.getNumberOfBeds()),
-                            formatAmountWithCommas(potentialProperty.getExpectedRentPerMonth()));     		 
+                            safeToString(potentialProperty.getOwnerContactNumber()),
+                            safeToString(potentialProperty.getOwnerEmailAddress()),
+                            safeToString(potentialProperty.getPropertyAddress()));
                 }
                 break;
                 

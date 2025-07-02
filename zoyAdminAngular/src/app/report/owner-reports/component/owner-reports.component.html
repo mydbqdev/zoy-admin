@@ -113,14 +113,14 @@
                             </div>
                            
                             
-                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' || reportName == 'Owner Payments Report' || reportName == 'Inactive Properties Report' || reportName == 'Potential Properties Report' " >
+                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' || reportName == 'Owner Payments Report' || reportName == 'Inactive Properties Report' || reportName == 'Potential Properties Report' || reportName == 'Upcoming Potential Properties Report' " >
                               <div class="form-group">
                                 <label for="ownerName" class="text-search-header">Owner Name</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.ownerName" name="ownerName" />
                               </div>
                             </div>
                           
-                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' || reportName == 'Owner Payments Report' || reportName == 'Inactive Properties Report' " >
+                            <div class="col-sm-6" *ngIf="reportName == 'Owner Payments Dues Report' || reportName == 'Owner Payments Gst Report' || reportName == 'Owner Payments Report' || reportName == 'Inactive Properties Report' || reportName == 'Upcoming Potential Properties Report' " >
                               <div class="form-group">
                                 <label for="ownerEmail" class="text-search-header">Owner Email</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.ownerEmail" name="ownerEmail" />
@@ -137,7 +137,7 @@
                               </div>
                             </div>
 
-                            <div class="col-sm-6" *ngIf="reportName == 'Inactive Properties Report' || reportName == 'Potential Properties Report'" >
+                            <div class="col-sm-6" *ngIf="reportName == 'Inactive Properties Report' || reportName == 'Potential Properties Report' || reportName == 'Upcoming Potential Properties Report'" >
                               <div class="form-group">
                                 <label for="propertyContactNum" class="text-search-header">Property Contact Number</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.propertyContactNum" name="propertyContactNum" />
@@ -245,8 +245,7 @@
                                       <ng-container [matColumnDef]="column" *ngIf=" column != 'reviews'">
                                         <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-weight: 400;" [matTooltip]="columnHeaders[column] "> 
                                           {{ column == 'numberOfBeds' ? 'NUMBER OF BEDS OCCUPIED' :
-                                          (column == 'propertyName' && reportName == 'Upcoming Potential Properties Report' ? 'BOOKED PROPERTY NAME' :
-                                          (columnHeaders[column] || column)) }}
+                                          (columnHeaders[column] || column) }}
 
                                           <i class="fas fa-lg fa-sort ml-1" style="color:#d1cfcf;margin-right: 3px;"></i>
                                           <i class="fas fa-lg fa-sort-up" *ngIf="sortActive === column && sortDirection === 'asc'" 
