@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.model.TenantResportsDTO;
+import com.integration.zoy.model.ZoyShareReportDTO;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
@@ -42,5 +43,6 @@ public interface AdminReportImpl {
 	CommonResponseDTO<PropertyResportsDTO> getUpcomingPotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	CommonResponseDTO<PropertyResportsDTO> getNonPotentialPropertyReport(UserPaymentFilterRequest filterRequest,FilterData filterData, boolean applyPagination)throws WebServiceException;
 	CommonResponseDTO<RegisterLeadDetails> getRegisterLeadDetails(UserPaymentFilterRequest filterRequest,FilterData filterData, boolean applyPagination, boolean isSupportUser)throws WebServiceException;
+	CommonResponseDTO<ZoyShareReportDTO> getZoyShareReport(UserPaymentFilterRequest filterRequest,FilterData filterData, Boolean applyPagination) throws WebServiceException;
 	
 }

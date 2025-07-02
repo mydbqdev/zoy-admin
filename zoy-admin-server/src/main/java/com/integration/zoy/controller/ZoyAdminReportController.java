@@ -26,6 +26,7 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.model.TenantResportsDTO;
+import com.integration.zoy.model.ZoyShareReportDTO;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.CommonResponseDTO;
@@ -451,4 +452,21 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 	    }
 	}
 	
+	
+	@Override
+	public ResponseEntity<String> getZoyShareDetailsByDateRange(UserPaymentFilterRequest filterRequest) {
+	    ResponseBody response = new ResponseBody();
+	    try {
+	        FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
+	        boolean applyPagination = true;
+ 
+	        CommonResponseDTO<ZoyShareReportDTO> zoyShareReport = adminReportImpl.getZoyShareReport(filterRequest, filterData, applyPagination);
+             return new ResponseEntity<>(gson.toJson(zoyShareReport), HttpStatus.OK);
+           } catch (Exception e) {
+	        log.error("Error in API: /zoy_admin/zoy_share_report.getZoyShareReport", e);
+	        response.setStatus(HttpStatus.BAD_REQUEST.value());
+	        response.setError(e.getMessage());
+	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+	    }
+	}
 }
