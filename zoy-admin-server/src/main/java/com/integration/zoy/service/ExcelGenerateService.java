@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.TenantResportsDTO;
+import com.integration.zoy.model.UpcomingPotentialPropertyDTO;
 import com.integration.zoy.model.ZoyShareReportDTO;
 import com.integration.zoy.utils.ConsilidatedFinanceDetails;
 import com.integration.zoy.utils.PropertyResportsDTO;
@@ -297,13 +298,11 @@ public class ExcelGenerateService {
 			row.createCell(6).setCellValue("Last Check-in Date (Last tenant check-in  Date)");
 			break;
 		case "UpComingPotentialPropertyReport":
-			row.createCell(0).setCellValue("Owner Name");
-			row.createCell(1).setCellValue("Booked Property Name");
-			row.createCell(2).setCellValue("Property Contact Number");
-			row.createCell(3).setCellValue("Property Email address");
+			row.createCell(0).setCellValue("Owner Full Name");
+			row.createCell(1).setCellValue("Property Name");
+			row.createCell(2).setCellValue("Owner Contact Number");
+			row.createCell(3).setCellValue("Owner Email address");
 			row.createCell(4).setCellValue("Property Address");
-			row.createCell(5).setCellValue("Number of beds occupied");
-			row.createCell(6).setCellValue("Expected rent per Month");
 			break;
 		case "SuspendedPropertiesReport":
 			row.createCell(0).setCellValue("Owner Full Name");
@@ -586,16 +585,13 @@ public class ExcelGenerateService {
 			}
 			break;
 		case "UpComingPotentialPropertyReport":
-			if (dto instanceof PropertyResportsDTO) {
-				PropertyResportsDTO potentialPropertyReport = (PropertyResportsDTO) dto;
+			if (dto instanceof UpcomingPotentialPropertyDTO) {
+				UpcomingPotentialPropertyDTO potentialPropertyReport = (UpcomingPotentialPropertyDTO) dto;
 				row.createCell(0).setCellValue(nullSafe(potentialPropertyReport.getOwnerFullName()));
 				row.createCell(1).setCellValue(nullSafe(potentialPropertyReport.getPropertyName()));
-				row.createCell(2).setCellValue(nullSafe(potentialPropertyReport.getPropertyContactNumber()));
-				row.createCell(3).setCellValue(nullSafe(potentialPropertyReport.getPropertyEmailAddress()));
+				row.createCell(2).setCellValue(nullSafe(potentialPropertyReport.getOwnerContactNumber()));
+				row.createCell(3).setCellValue(nullSafe(potentialPropertyReport.getOwnerEmailAddress()));
 				row.createCell(4).setCellValue(nullSafe(potentialPropertyReport.getPropertyAddress()));
-				row.createCell(5).setCellValue(nullSafe(potentialPropertyReport.getNumberOfBeds()));
-				setCurrencyCell(row,6,nullSafe(potentialPropertyReport.getExpectedRentPerMonth()));
-							
 			}
 			break;
 		case "RegesterTenantsReport":
