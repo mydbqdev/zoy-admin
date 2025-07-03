@@ -26,6 +26,7 @@ import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.model.FilterData;
 import com.integration.zoy.model.TenantResportsDTO;
+import com.integration.zoy.model.UpcomingPotentialPropertyDTO;
 import com.integration.zoy.model.ZoyShareReportDTO;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.utils.AuditHistoryUtilities;
@@ -426,7 +427,7 @@ public class ZoyAdminReportController implements ZoyAdminReportImpl{
 		try {
 			 FilterData filterData = gson.fromJson(filterRequest.getFilterData(), FilterData.class);
 	        boolean applyPagination = true;
-	        CommonResponseDTO<PropertyResportsDTO>potentialPropertyDetails = adminReportImpl.getUpcomingPotentialPropertyReport(filterRequest,filterData, applyPagination);
+	        CommonResponseDTO<UpcomingPotentialPropertyDTO>potentialPropertyDetails = adminReportImpl.getUpcomingPotentialPropertyReport(filterRequest,filterData, applyPagination);
 	        return new ResponseEntity<>(gson.toJson(potentialPropertyDetails), HttpStatus.OK);
 	    } catch (Exception e) {
 	        log.error("Error in API:/zoy_admin/up_coming_potential_property_details.getUpComingPotentialPropertyDetailsByDateRange", e);
