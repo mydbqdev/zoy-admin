@@ -93,6 +93,12 @@
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.tenantContactNum" name="tenantContactNum" />
                               </div>
                             </div>
+                            <div class="col-sm-6" *ngIf=" reportName == 'Upcoming Potential Properties Report'">
+                              <div class="form-group">
+                                <label for="ownerContactNumber" class="text-search-header">Owner Contact Number</label>
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.ownerContactNum" name="ownerContactNumber" />
+                              </div>
+                            </div>
                             <div class="col-sm-6" *ngIf=" reportName =='Failure Transactions Report'">
                             <div class="form-group">
                               <label for="tenantContactNum" class="text-search-header">Tenant Email</label>
@@ -137,7 +143,7 @@
                               </div>
                             </div>
 
-                            <div class="col-sm-6" *ngIf="reportName == 'Inactive Properties Report' || reportName == 'Potential Properties Report' || reportName == 'Upcoming Potential Properties Report'" >
+                            <div class="col-sm-6" *ngIf="reportName == 'Inactive Properties Report' || reportName == 'Potential Properties Report'" >
                               <div class="form-group">
                                 <label for="propertyContactNum" class="text-search-header">Property Contact Number</label>
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="filterData.propertyContactNum" name="propertyContactNum" />

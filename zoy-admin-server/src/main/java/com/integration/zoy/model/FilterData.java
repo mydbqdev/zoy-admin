@@ -96,6 +96,9 @@ public class FilterData {
 	@SerializedName("propertyContactNum")
 	String propertyContactNum;
 	
+	@SerializedName("ownerContactNum")
+	String ownerContactNum;
+	
 	@SerializedName("status")
 	String status;
 	
@@ -419,6 +422,14 @@ public class FilterData {
 
 	public void setInvoiceNo(String invoiceNo) {
 		this.invoiceNo = invoiceNo;
+	}
+
+	public String getOwnerContactNum() {
+		return ownerContactNum;
+	}
+
+	public void setOwnerContactNum(String ownerContactNum) {
+		this.ownerContactNum = ownerContactNum;
 	}
 
 }
