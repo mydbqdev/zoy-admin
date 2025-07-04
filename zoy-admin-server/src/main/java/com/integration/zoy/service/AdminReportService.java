@@ -2977,9 +2977,9 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append(" AND LOWER(pom.property_name) LIKE LOWER(:propertyName) ");
 				parameters.put("propertyName", "%" + filterData.getPgName() + "%");
 			}
-			if (filterData.getPropertyContactNum() != null && !filterData.getPropertyContactNum().isEmpty()) {
-				queryBuilder.append(" AND LOWER(pom.mobile_no) LIKE LOWER(:propertyContactNumber) ");
-				parameters.put("propertyContactNumber", "%" + filterData.getPropertyContactNum() + "%");
+			if (filterData.getOwnerContactNum() != null && !filterData.getOwnerContactNum().isEmpty()) {
+				queryBuilder.append(" AND LOWER(pom.mobile_no) LIKE LOWER(:ownerContactNumber) ");
+				parameters.put("ownerContactNumber", "%" + filterData.getOwnerContactNum() + "%");
 			}
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {

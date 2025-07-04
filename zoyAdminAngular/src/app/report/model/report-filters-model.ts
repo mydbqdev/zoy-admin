@@ -32,6 +32,7 @@ export class FilterData {
     payerName: string ='';
     payerType: string ='';
     tenantContactNum: string ='';
+    ownerContactNum: string ='';
     transactionNumber: string ='';
     ownerEmail: string ='';
     bedNumber: string ='';
