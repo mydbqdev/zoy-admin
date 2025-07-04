@@ -47,7 +47,7 @@ import { MessageService } from 'src/app/message.service';
       'columns': ['transactionDate', 'customerName', 'tenantContactNum', 'email', 'totalAmount', 'failedReason']
     },
     { 
-      'reportName': 'ZOY Share Report', 
+      'reportName': 'ZOY Revenue Report', 
       "columns": ["transactionDate", "invoiceNumber", "pgName", "tenantName", "sharingType", "bedNumber", "paymentMode", "amountPaid", "zoyShare", "zoyShareAmount"]
     }
 
@@ -58,7 +58,7 @@ import { MessageService } from 'src/app/message.service';
       { name: "Owner Payments Gst Report", key: "vendorPaymentsGstReport" },
       { name: "Consolidated Finance Report", key: "consolidatedFinanceReport" },
       { name: "Failure Transactions Report", key: "FailedTransactionReport" },
-      { name: "ZOY Share Report", key: "ZoyShareReport" }
+      { name: "ZOY Revenue Report", key: "ZoyShareReport" }
 
       ];
 
