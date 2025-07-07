@@ -278,5 +278,11 @@
 				<activatedProperties>prod</activatedProperties>
 			</properties>
 		</profile>
+		<profile>
+			<id>aws-prod</id>
+			<properties>
+				<activatedProperties>aws-prod</activatedProperties>
+			</properties>
+		</profile>
 	</profiles>
 </project>
