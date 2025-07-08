@@ -2956,7 +2956,10 @@ public class AdminReportService implements AdminReportImpl{
 				    + "    pom.property_name,\r\n"
 				    + "    pom.mobile_no,\r\n"
 				    + "    pom.email_id,\r\n"
-				    + "    pom.property_house_area,\r\n"
+				    + "    pom.property_door_number || ', ' || \r\n"
+				    + "    pom.property_street_name || ', ' || \r\n"
+				    + "    pom.property_locality || ', ' || \r\n"
+				    + "    pom.property_house_area AS propertyaddress,\r\n"
 				    + "    pom.property_city\r\n"
 				    + "FROM pgadmin.pg_owner_master pom\r\n"
 				    + "LEFT JOIN pgowners.zoy_pg_property_details zppd\r\n"
@@ -3003,7 +3006,7 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "pom.email_id";
 					break;
 				case "propertyAddress":
-					sort = "pom.property_house_area";
+					sort = "propertyaddress";
 					break;
 				default:
 					sort = "ownerName";
