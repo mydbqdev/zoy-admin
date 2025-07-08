@@ -42,7 +42,7 @@ public class ZoyS3Service {
 
 	public Boolean uploadFile(String bucketName, String s3Path, String contentType, InputStream inputStream) {
 		try {
-			
+
 			minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).contentType(contentType).object(s3Path)
 					.stream(inputStream, inputStream.available(), -1).build());
 			return true;
@@ -52,29 +52,46 @@ public class ZoyS3Service {
 		}
 	}
 
+	//	public String uploadFile(String bucketName,String folderName,MultipartFile file) throws IOException {
+	//		String objectName="";
+	//		InputStream inputStream=new BufferedInputStream(file.getInputStream());
+	//		String mimeType= file.getContentType();
+	//		try {
+	//			boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+	//			if (!found) {
+	//				minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+	//			}
+	//			objectName = folderName+"/"+file.getOriginalFilename();
+	//			minioClient.putObject(
+	//					PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(
+	//							inputStream, inputStream.available(), -1)
+	//					.contentType(mimeType)
+	//					.build());
+	//		} catch (Exception e) {
+	//			throw GenericErrorResponse.builder()
+	//			.message("Unable to upload file to S3")
+	//			.httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	//			.build();
+	//		}
+	//		return objectName;
+	//	}
 	public String uploadFile(String bucketName,String folderName,MultipartFile file) throws IOException {
 		String objectName="";
 		InputStream inputStream=new BufferedInputStream(file.getInputStream());
 		String mimeType= file.getContentType();
 		try {
-			boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
-			if (!found) {
-				minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-			}
 			objectName = folderName+"/"+file.getOriginalFilename();
-			minioClient.putObject(
-					PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(
-							inputStream, inputStream.available(), -1)
-					.contentType(mimeType)
-					.build());
+			minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).contentType(mimeType).object(objectName)
+					.stream(inputStream, inputStream.available(), -1).build());
 		} catch (Exception e) {
 			throw GenericErrorResponse.builder()
-			.message("Unable to upload file to S3")
+			.message("Unable to upload file to S3 " + e)
 			.httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 			.build();
 		}
 		return objectName;
 	}
+
 
 	public Map<String,Object>  downloadFile(String bucketName,String id) {
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -119,21 +136,21 @@ public class ZoyS3Service {
 	public InputStream downloadFile2(String bucketName, String s3Path) 
 	{
 		InputStream is  = null;
-		  try {
-			  is = minioClient.getObject(
-	                    GetObjectArgs.builder()
-	                            .bucket(bucketName)
-	                            .object(s3Path)
-	                            .build());
-	                    
-			 
-			  return is;
+		try {
+			is = minioClient.getObject(
+					GetObjectArgs.builder()
+					.bucket(bucketName)
+					.object(s3Path)
+					.build());
 
-		  } catch (Exception ex) {
-				ex.printStackTrace();
-				return is;
-			}
-			
+
+			return is;
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return is;
+		}
+
 	}
 	public String deleteFile(String bucketName, String id) {
 		try {
@@ -193,29 +210,29 @@ public class ZoyS3Service {
 		String s3Path =  userId + "/" + bookingId + "/" + ZoyConstant.CANCELLATION_PDF_NAME;
 		return uploadFile(userDocsBucket, s3Path,contentType,inputStream);
 	}
-	
-	
+
+
 	public InputStream downloadRentalAgreement(String userId,String bookingId) 
 	{
 		String s3Path =  userId + "/" + bookingId + "/" + ZoyConstant.RENTAL_AGGREMENT_PDF_NAME;
 		return downloadFile2(userDocsBucket, s3Path);
 	}
-	
+
 	public InputStream downloadCancellationFile(String userId,String bookingId) 
 	{
 		String s3Path =  userId + "/" + bookingId + "/" + ZoyConstant.CANCELLATION_PDF_NAME;
 		return downloadFile2(userDocsBucket, s3Path);
 	}
-	
+
 	public String generatePreSignedUrl(String bucketName,String objectName)
 	{
-		 try {
+		try {
 			return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-				        .bucket(bucketName)
-				        .object(objectName)
-				        .expiry(10, TimeUnit.MINUTES)
-				        .method(Method.GET)
-				        .build());
+					.bucket(bucketName)
+					.object(objectName)
+					.expiry(10, TimeUnit.MINUTES)
+					.method(Method.GET)
+					.build());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "";
