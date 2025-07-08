@@ -30,6 +30,9 @@ public class ZoyPgSalesMasterModel {
     
     @SerializedName("isPassWordChange")
     private Boolean isPassWordChange;
+    
+    @SerializedName("userDesignation")
+    private String userDesignation;
 
     public String getEmailId() {
         return emailId;
@@ -101,6 +104,14 @@ public class ZoyPgSalesMasterModel {
 
 	public void setIsPassWordChange(Boolean isPassWordChange) {
 		this.isPassWordChange = isPassWordChange;
+	}
+
+	public String getUserDesignation() {
+		return userDesignation;
+	}
+
+	public void setUserDesignation(String userDesignation) {
+		this.userDesignation = userDesignation;
 	}
     
     
