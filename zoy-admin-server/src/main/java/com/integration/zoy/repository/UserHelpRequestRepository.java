@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.integration.zoy.entity.UserHelpRequest;
+import org.springframework.data.repository.query.Param;
 
-import io.lettuce.core.dynamic.annotation.Param;
 @Repository
 public interface UserHelpRequestRepository extends JpaRepository<UserHelpRequest,String>{
 	
