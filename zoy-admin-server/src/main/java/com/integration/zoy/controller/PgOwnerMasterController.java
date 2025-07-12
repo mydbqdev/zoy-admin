@@ -518,8 +518,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			PgOwnerdetailPortfolio root = new PgOwnerdetailPortfolio();
 			root.setProfile(profile);
 			root.setPgOwnerbasicInformation(basicInformation);
+			log.info("Owner bank details " + details[10]);
 			root.setPgOwnerBusinessInfo(details[10] != null ? Arrays.stream(details[10].split(","))
-					.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 5)   
+					.map(rating -> rating.split("\\|"))
 					.map(parts -> new PgOwnerBusinessInfo(parts[0], parts[1],parts[2],parts[3],parts[4]))
 					.collect(Collectors.toList()) : new ArrayList<>());
 			root.setPgOwnerPropertyInformation(new ArrayList<>(propertyMap.values()));
