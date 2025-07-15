@@ -11,7 +11,7 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { SalesData } from '../models/sales-model';
+import { SalesData, UserDesignation } from '../models/sales-model';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GenerateSalesService } from '../../service/sales.service';
@@ -55,6 +55,8 @@ export class SalesComponent implements OnInit, AfterViewInit {
 	submitted=false;
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	private _liveAnnouncer = inject(LiveAnnouncer);
+	designationList :UserDesignation[]=[];
+	salesGroupList :UserDesignation[]=[];
 	constructor(private generateSalesService : GenerateSalesService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			this.authService.checkLoginUserVlidaate();
@@ -105,8 +107,12 @@ export class SalesComponent implements OnInit, AfterViewInit {
 			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
 			]],
 			empId:[''],
+			userDesignation: ['', Validators.required],
+    		userGroupId: ['', Validators.required],
 		  });
 
+		  this.getUserDesignation();
+		  this.getSalesGroup();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(9);
@@ -233,6 +239,73 @@ export class SalesComponent implements OnInit, AfterViewInit {
 				}
 			  });  
 	    }  
+		
+      getUserDesignation() {
+			this.generateSalesService.getUserDesignation().subscribe((res) => {
+				this.designationList = res.data || [];
+			  },error =>{
+				this.spinner.hide();
+				console.log("error.error",error)
+				if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "")
+				 }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+				this.errorMsg =error.error.message;
+				console.log("Error:"+this.errorMsg);
+		  
+				if(error.status==500 && error.statusText=="Internal Server Error"){
+				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+				}else{
+				//  this.spinner.hide();
+				  let str;
+				  if(error.status==400){
+				  str=error.error.error;
+				  }else{
+					str=error.error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:",str);
+				  this.errorMsg=str;
+				}
+			  	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			    //this.notifyService.showError(this.errorMsg, "");
+				}
+			  });  
+	    }
+		
+	 getSalesGroup() {
+			this.generateSalesService.getSalesGroup().subscribe((res) => {
+					this.salesGroupList = res.data || [];
+			  },error =>{
+				this.spinner.hide();
+				console.log("error.error",error)
+				if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "")
+				 }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+				this.errorMsg =error.error.message;
+				console.log("Error:"+this.errorMsg);
+		  
+				if(error.status==500 && error.statusText=="Internal Server Error"){
+				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+				}else{
+				  let str;
+				  if(error.status==400){
+				  str=error.error.error;
+				  }else{
+					str=error.error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:",str);
+				  this.errorMsg=str;
+				}
+			  	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			    //this.notifyService.showError(this.errorMsg, "");
+				}
+			  });  
+	    }
 		filterData($event: KeyboardEvent){
 			if ($event.keyCode === 13) {
 				if(this.searchText==''){

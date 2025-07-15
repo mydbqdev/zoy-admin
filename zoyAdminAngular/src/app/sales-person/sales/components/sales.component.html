@@ -126,7 +126,48 @@
                        </div>
                     </div>
                   </div>
-                  
+                  <div class="row justify-content-center">
+                  <!-- Designation Dropdown -->
+                  <div class="col-md-4 mb-3">
+                    <label for="userDesignation">Designation</label>
+                    <select
+                      id="userDesignation"
+                      formControlName="userDesignation"
+                      class="form-select"
+                      [ngClass]="{ 'is-invalid': submitted && form.controls.userDesignation.errors }"
+                      [(ngModel)]="generateSalesPerson.userDesignation"
+                    >
+                      <option value="" disabled selected>Select Designation</option>
+                      <option *ngFor="let designation of designationList" [value]="designation.id">
+                        {{ designation.name }}
+                      </option>
+                    </select>
+                    <div *ngIf="submitted && form.controls.userDesignation.errors" class="text-danger">
+                      <div *ngIf="form.controls.userDesignation.errors.required">Designation is required.</div>
+                    </div>
+                  </div>
+
+                  <!-- Sales Group Dropdown -->
+                  <div class="col-md-4 mb-3">
+                    <label for="userGroupId">Sales Group</label>
+                    <select
+                      id="userGroupId"
+                      formControlName="userGroupId"
+                      class="form-select"
+                      [ngClass]="{ 'is-invalid': submitted && form.controls.userGroupId.errors }"
+                      [(ngModel)]="generateSalesPerson.userGroupId"
+                    >
+                      <option value="" disabled selected>Select Sales Group</option>
+                      <option *ngFor="let group of salesGroupList" [value]="group.id">
+                        {{ group.name }}
+                      </option>
+                    </select>
+                    <div *ngIf="submitted && form.controls.userGroupId.errors" class="text-danger">
+                      <div *ngIf="form.controls.userGroupId.errors.required">Sales Group is required.</div>
+                    </div>
+                  </div>
+                </div>
+
                   <div class="d-flex justify-content-center mt-3 mb-2" style="align-items: center;">
                     <input type="submit" class="btn btn-primary-custom me-2" value="Register" />
                   </div>
