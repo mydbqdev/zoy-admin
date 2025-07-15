@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,13 +36,17 @@ import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.model.ZoyPgSalesMasterModel;
 import com.integration.zoy.repository.AdminUserPasswordHistoryRepository;
 import com.integration.zoy.service.EmailService;
+import com.integration.zoy.service.JsonParserUtil;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.SalesDBImpl;
+import com.integration.zoy.service.TicketSmartService;
+import com.integration.zoy.service.ZoyAdminTicketSmartService;
 import com.integration.zoy.service.ZoyCodeGenerationService;
 import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.Email;
 import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
+import com.integration.zoy.utils.UserMaster;
 
 @RestController
 @RequestMapping("")
@@ -80,13 +85,19 @@ public class SalesMasterController implements SalesMasterImpl {
 
 	@Autowired
 	AdminUserPasswordHistoryRepository adminUserPasswordHistoryRepo;
-	
+
 	@Autowired
 	EmailService emailService;
 
 	@Value("${spring.jackson.time-zone}")
 	private String currentTimeZone;
-	
+
+	@Autowired
+	JsonParserUtil jsonParserUtil;
+
+	@Autowired
+	private ZoyAdminTicketSmartService zoyAdminTicketSmartService;
+
 
 	@Override
 	public ResponseEntity<String> zoyAdminSalesCreateUser(ZoyPgSalesMasterModel pgSalesMasterModel) {
@@ -130,7 +141,14 @@ public class SalesMasterController implements SalesMasterImpl {
 			newPasswordHistory.setPassword(adminSalesUserLoginDetails.getPassword());
 			adminUserPasswordHistoryRepo.save(newPasswordHistory);
 			// audit here
-//			auditHistoryUtilities.auditForCreateSalesUserDelete(SecurityContextHolder.getContext().getAuthentication().getName(), true, master);
+			//			auditHistoryUtilities.auditForCreateSalesUserDelete(SecurityContextHolder.getContext().getAuthentication().getName(), true, master);
+			//Ticket user creation and group added
+			UserMaster userCreated=zoyAdminTicketSmartService.createTicketSmartUser(pgSalesMasterModel);
+			log.info(userCreated!=null ? "Ticket smart user created" : "Ticket smart user not created");
+			if(userCreated!=null) {
+				Boolean userGroup=zoyAdminTicketSmartService.assignTicketToGroup(userCreated,pgSalesMasterModel);
+				log.info(userGroup.equals(Boolean.TRUE) ? "User group added in ticket system" : "User group unable to add in ticket system");
+			}
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("sales User created Successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -168,82 +186,127 @@ public class SalesMasterController implements SalesMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	private void sendLogInInfoToUser(ZoyPgSalesUserLoginDetails adminSalesUserLoginDetails,String plainPassword) {
-	    try {
-	    	Optional<ZoyPgSalesMaster> masterdetails = salesDBImpl.findByEmail(adminSalesUserLoginDetails.getUserEmail());
-	    	ZoyPgSalesMaster master =masterdetails.get();
-	    	Email email = new Email();
-	            email.setFrom("zoyAdmin@mydbq.com");
-	            List<String> to = new ArrayList<>();
-	            to.add(adminSalesUserLoginDetails.getUserEmail());
-	            email.setTo(to);
-	            email.setSubject("Zoy Sales App Signin Information");
-	            String message = "<html>"
-	                + "<body style='font-family: Arial, sans-serif; line-height: 1.6;'>"
-	                + "<p>Hi " + master.getFirstName() + " " + master.getLastName() + ",</p>"
-	                + "<p>Welcome to Zoy Sales Portal, We are excited to have you as part of our community!<br>"
-	                + "Below are your sign-in credentials for accessing your account.</p>"
-	                + "<p>"
-	                + "<strong>Username:</strong> " + adminSalesUserLoginDetails.getUserEmail() + "<br>"
-	                + "<strong>Password:</strong> <b>" + plainPassword + "</b><br><br>"
-	                // + "Zoy Sales App Sign-in Link: <a href='" + qaSigninLink + "'>" + qaSigninLink + "</a>"
-	                + "</p>"
-	                + "<p class='footer' style='margin-top: 20px;'>"
-	                + "Warm regards,<br>"
-	                + "<strong>Team ZOY</strong>"
-	                + "</p>"
-	                + "</body>"
-	                + "</html>";
-	            email.setBody(message);
-	            email.setContent("text/html");
-	            emailService.sendEmail(email, null);
-	            log.info("Signin Details sent successfully to " + adminSalesUserLoginDetails.getUserEmail());
-	       
-	    } catch (Exception e) {
-	        log.error("Error sending login info to user: " + e.getMessage(), e);
-	    }
+		try {
+			Optional<ZoyPgSalesMaster> masterdetails = salesDBImpl.findByEmail(adminSalesUserLoginDetails.getUserEmail());
+			ZoyPgSalesMaster master =masterdetails.get();
+			Email email = new Email();
+			email.setFrom("zoyAdmin@mydbq.com");
+			List<String> to = new ArrayList<>();
+			to.add(adminSalesUserLoginDetails.getUserEmail());
+			email.setTo(to);
+			email.setSubject("Zoy Sales App Signin Information");
+			String message = "<html>"
+					+ "<body style='font-family: Arial, sans-serif; line-height: 1.6;'>"
+					+ "<p>Hi " + master.getFirstName() + " " + master.getLastName() + ",</p>"
+					+ "<p>Welcome to Zoy Sales Portal, We are excited to have you as part of our community!<br>"
+					+ "Below are your sign-in credentials for accessing your account.</p>"
+					+ "<p>"
+					+ "<strong>Username:</strong> " + adminSalesUserLoginDetails.getUserEmail() + "<br>"
+					+ "<strong>Password:</strong> <b>" + plainPassword + "</b><br><br>"
+					// + "Zoy Sales App Sign-in Link: <a href='" + qaSigninLink + "'>" + qaSigninLink + "</a>"
+					+ "</p>"
+					+ "<p class='footer' style='margin-top: 20px;'>"
+					+ "Warm regards,<br>"
+					+ "<strong>Team ZOY</strong>"
+					+ "</p>"
+					+ "</body>"
+					+ "</html>";
+			email.setBody(message);
+			email.setContent("text/html");
+			emailService.sendEmail(email, null);
+			log.info("Signin Details sent successfully to " + adminSalesUserLoginDetails.getUserEmail());
+
+		} catch (Exception e) {
+			log.error("Error sending login info to user: " + e.getMessage(), e);
+		}
 	}
 
 	@Override
 	public ResponseEntity<String> resendUserDetails(String email) {
-	    ResponseBody response = new ResponseBody();
-	    try {
-	        if (email == null || email.trim().isEmpty()) {
-	            response.setStatus(HttpStatus.BAD_REQUEST.value());
-	            response.setError("Email cannot be empty");
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
-	        }
+		ResponseBody response = new ResponseBody();
+		try {
+			if (email == null || email.trim().isEmpty()) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Email cannot be empty");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
 
-	        Optional<ZoyPgSalesMaster> userOptional = salesDBImpl.findByEmail(email);
-	        if (userOptional.isEmpty()) {
-	            response.setStatus(HttpStatus.NOT_FOUND.value());
-	            response.setError("User not found with email: " + email);
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
-	        }
+			Optional<ZoyPgSalesMaster> userOptional = salesDBImpl.findByEmail(email);
+			if (userOptional.isEmpty()) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setError("User not found with email: " + email);
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+			}
 
-	        Optional<ZoyPgSalesUserLoginDetails> loginDetailsOptional = salesDBImpl.findLoginDetailsByEmail(email);
-	        if (loginDetailsOptional.isEmpty()) {
-	            response.setStatus(HttpStatus.NOT_FOUND.value());
-	            response.setError("No login credentials found for user: " + email);
-	            return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
-	        }
+			Optional<ZoyPgSalesUserLoginDetails> loginDetailsOptional = salesDBImpl.findLoginDetailsByEmail(email);
+			if (loginDetailsOptional.isEmpty()) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setError("No login credentials found for user: " + email);
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+			}
 
-	        ZoyPgSalesUserLoginDetails loginDetails = loginDetailsOptional.get();
-	        String plainPassword =loginDetails.getPassword();
-	        sendLogInInfoToUser(loginDetails,  passwordDecoder.decryptedText(plainPassword)); // Modify email content as needed
+			ZoyPgSalesUserLoginDetails loginDetails = loginDetailsOptional.get();
+			String plainPassword =loginDetails.getPassword();
+			sendLogInInfoToUser(loginDetails,  passwordDecoder.decryptedText(plainPassword)); // Modify email content as needed
 
 
-	        response.setStatus(HttpStatus.OK.value());
-	        response.setMessage("Login details resent successfully to " + email);
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Login details resent successfully to " + email);
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 
-	    } catch (Exception e) {
-	        log.error("Failed to resend user details for email: " + email, e);
-	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	        response.setError("Failed to resend credentials: " + e.getMessage());
-	        return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+		} catch (Exception e) {
+			log.error("Failed to resend user details for email: " + email, e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Failed to resend credentials: " + e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> userDesignation() {
+		ResponseBody response = new ResponseBody();
+		try {
+			Object userDesignation=zoyAdminTicketSmartService.getTicketSmartUserDesignation();
+			if(userDesignation==null) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setError("Unable to get the data");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(userDesignation);
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error while getting reponse for user desgination " +  e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Failed to get user designation: " + e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	@Override
+	public ResponseEntity<String> salesGroup() {
+		ResponseBody response = new ResponseBody();
+		try {
+			Object userGroup=zoyAdminTicketSmartService.getTicketSmartUserGroup();
+			if(userGroup==null) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setError("Unable to get the data");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.OK.value());
+			response.setData(userGroup);
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error while getting reponse for user Group " +  e);
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError("Failed to get user Group: " + e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+
 	}
 
 }
