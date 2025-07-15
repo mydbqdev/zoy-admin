@@ -69,6 +69,7 @@ import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.PdfGenerateService;
 import com.integration.zoy.service.ZoyAdminService;
+import com.integration.zoy.service.ZoyAdminTicketSmartService;
 import com.integration.zoy.service.ZoyCodeGenerationService;
 import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.service.ZoyS3Service;
@@ -125,6 +126,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	
 	@Autowired
 	ZoyAdminService zoyAdminService;
+	
+	@Autowired
+	private ZoyAdminTicketSmartService zoyAdminTicketSmartService;
+
 	
 	@Value("${app.minio.user.photos.bucket.name}")
 	private String userPhotoBucketName;
@@ -225,6 +230,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					RegisteredPartner existingPartner = partner.get();
 					existingPartner.setStatus(ZoyConstant.CLOSE);
 					registeredPartnerDetailsRepository.save(existingPartner);
+					zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead Converted to ZoyOwner and generated ZoyCode", ZoyConstant.CLOSE);
 				}
 			}
 			
@@ -518,10 +524,28 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			PgOwnerdetailPortfolio root = new PgOwnerdetailPortfolio();
 			root.setProfile(profile);
 			root.setPgOwnerbasicInformation(basicInformation);
-			root.setPgOwnerBusinessInfo(details[10] != null ? Arrays.stream(details[10].split(","))
-					.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 5)   
-					.map(parts -> new PgOwnerBusinessInfo(parts[0], parts[1],parts[2],parts[3],parts[4]))
-					.collect(Collectors.toList()) : new ArrayList<>());
+//			root.setPgOwnerBusinessInfo(details[10] != null ? Arrays.stream(details[10].split(","))
+//					.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 5)   
+//					.map(parts -> new PgOwnerBusinessInfo(parts[0], parts[1],parts[2],parts[3],parts[4]))
+//					.collect(Collectors.toList()) : new ArrayList<>());
+			List<PgOwnerBusinessInfo> businessInfoList = new ArrayList<>();
+			if (details[10] != null && !details[10].trim().isEmpty()) {
+			    String[] tokens = details[10].split("\\|");
+			    if (tokens.length % 5 != 0) {
+			        log.error("Invalid bank details format. Each record must have 5 fields.");
+			    }
+			    for (int i = 0; i < tokens.length; i += 5) {
+			        String accountNumber = tokens[i].trim().replace(",", "");
+			        String bankName = tokens[i + 1].trim();
+			        String branch = tokens[i + 2].trim();
+			        String ifsc = tokens[i + 3].trim();
+			        String type = tokens[i + 4].trim();
+			        PgOwnerBusinessInfo info = new PgOwnerBusinessInfo(accountNumber, bankName, branch, ifsc, type);
+			        businessInfoList.add(info);
+			    }
+			}
+
+			root.setPgOwnerBusinessInfo(businessInfoList);
 			root.setPgOwnerPropertyInformation(new ArrayList<>(propertyMap.values()));
 
 			response.setStatus(HttpStatus.OK.value());
