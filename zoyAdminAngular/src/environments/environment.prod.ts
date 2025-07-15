@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  basePath:'http://45.129.87.152:8082/api-admin/',
-  //basePath:'https://api-admin.zoypg.com/api-admin/',
+  //basePath:'http://45.129.87.152:8082/api-admin/',
+  basePath:'https://dev-admin.zoypg.com/api-admin/',
   //websocketBasePath:'https://api-admin.zoypg.com/api-admin/',
   websocketBasePath:'http://45.129.87.152:8082/api-admin/',
   basePathExternal:'https://api-qa.zoypg.com:30001',
