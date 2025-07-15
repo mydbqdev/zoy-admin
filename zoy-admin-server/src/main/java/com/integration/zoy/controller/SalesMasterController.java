@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,8 @@ import com.integration.zoy.utils.AuditHistoryUtilities;
 import com.integration.zoy.utils.Email;
 import com.integration.zoy.utils.PaginationRequest;
 import com.integration.zoy.utils.ResponseBody;
+import com.integration.zoy.utils.UserGroupResponse;
+import com.integration.zoy.utils.UserGroupResponseDto;
 import com.integration.zoy.utils.UserMaster;
 
 @RestController
@@ -290,14 +293,17 @@ public class SalesMasterController implements SalesMasterImpl {
 	public ResponseEntity<String> salesGroup() {
 		ResponseBody response = new ResponseBody();
 		try {
-			Object userGroup=zoyAdminTicketSmartService.getTicketSmartUserGroup();
+			List<UserGroupResponseDto> userGroup=zoyAdminTicketSmartService.getTicketSmartUserGroup();
 			if(userGroup==null) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 				response.setError("Unable to get the data");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
+			List<UserGroupResponse> userGroupResponseList = userGroup.stream()
+				    .map(dto -> new UserGroupResponse(dto.getId(), dto.getName(), dto.getDescription()))
+				    .collect(Collectors.toList());
 			response.setStatus(HttpStatus.OK.value());
-			response.setData(userGroup);
+			response.setData(userGroupResponseList);
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error while getting reponse for user Group " +  e);

@@ -74,7 +74,7 @@ public class ZoyAdminTicketSmartService {
 
 	}
 
-	public Object getTicketSmartUserGroup() {
+	public List<UserGroupResponseDto> getTicketSmartUserGroup() {
 		try {
 			String userGroup=ticketSmartService.getTicketSmartAPI("/getUserGroup");
 			if(userGroup==null) {
