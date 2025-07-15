@@ -2,6 +2,7 @@ package com.integration.zoy.controller;
 
 import org.simpleframework.xml.core.Validate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,6 +52,28 @@ public interface SalesMasterImpl {
 	@PostMapping(value = "/zoy_admin/resendSignInDetails",
 	produces = { "application/json" })
 	ResponseEntity<String> resendUserDetails(@RequestParam String email);
+	
+	@Operation(summary = "getUserDesignation for ticket smart user", description = "getUserDesignation for ticket smart user", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/userDesignation",
+	produces = { "application/json" })
+	ResponseEntity<String> userDesignation();
+	
+	@Operation(summary = "getSalesGroup for ticket smart user", description = "getSalesGroup for ticket smart user", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Admin Master" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@GetMapping(value = "/zoy_admin/salesGroup",
+	produces = { "application/json" })
+	ResponseEntity<String> salesGroup();
 	
 
 }
