@@ -293,7 +293,7 @@ public class SalesMasterController implements SalesMasterImpl {
 	public ResponseEntity<String> salesGroup() {
 		ResponseBody response = new ResponseBody();
 		try {
-			List<UserGroupResponseDto> userGroup=zoyAdminTicketSmartService.getTicketSmartUserGroup();
+			List<UserGroupResponseDto> userGroup=zoyAdminTicketSmartService.getTicketSmartSalesUserGroup();
 			if(userGroup==null) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
 				response.setError("Unable to get the data");
