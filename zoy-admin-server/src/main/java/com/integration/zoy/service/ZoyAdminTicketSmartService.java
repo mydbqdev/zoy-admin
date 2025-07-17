@@ -154,7 +154,7 @@ public class ZoyAdminTicketSmartService {
 
 	public boolean assignTicketToGroup(UserMaster userCreated, ZoyPgSalesMasterModel pgSalesMasterModel) {
 		try {
-			if(pgSalesMasterModel.getUserGroupId()!=null || !pgSalesMasterModel.getUserGroupId().isEmpty()) {
+			if(pgSalesMasterModel.getUserGroupId()!=null && !pgSalesMasterModel.getUserGroupId().isEmpty()) {
 				SingleUserGroupResponseDto groupDto=getTicketSmartUserGroup(pgSalesMasterModel.getUserGroupId());
 				if(groupDto==null) 
 					return false;
