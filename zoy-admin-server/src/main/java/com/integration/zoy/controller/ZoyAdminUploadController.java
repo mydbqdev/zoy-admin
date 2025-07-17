@@ -449,8 +449,10 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
 			String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
 			bulkUploadDetails.setFilePath(fileUrl);
-			adminDBImpl.saveBulkUpload(bulkUploadDetails);
-			zoyAdminService.processBulkUpload(property.getOwnerId(),property.getPropertyId(),fileBytes,fileName,jobExecutionId);
+			BulkUploadDetails saved=adminDBImpl.saveBulkUpload(bulkUploadDetails);
+			
+			zoyAdminService.processBulkUpload(property.getOwnerId(),property.getPropertyId(),fileBytes,fileName,jobExecutionId,saved);
+			
 			String historyContent=" has uploaded tenent file for "+property.getOwnerId()+"/"+property.getPropertyId();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_PROPERTY_FILE_UPLOAD);
 
