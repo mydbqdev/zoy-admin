@@ -95,7 +95,7 @@ public class ZoyAdminTicketSmartService {
 			    .filter(group -> group.getName() != null && group.getName().startsWith("Sales-"))
 			    .collect(Collectors.toList());
 			UserGroupResponseDto otherGroup = new UserGroupResponseDto();
-			otherGroup.setId("");
+			otherGroup.setId("0");
 			otherGroup.setName("Other");
 			otherGroup.setDescription("");
 			filteredGroups.add(otherGroup);

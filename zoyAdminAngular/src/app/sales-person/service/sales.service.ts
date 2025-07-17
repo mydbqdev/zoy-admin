@@ -19,9 +19,13 @@ import { MessageService } from 'src/app/message.service';
     }
     
      public registerSubmitSalesPerson(data:any): Observable<any> {
+        if(data.userGroupId == "0"){
+            data.userGroupId = "";
+            data.userGroupName = 'Sales-'+data.userGroupName;
+        }
         const url1=this.basePath +"zoy_admin/zoyAdminSalesCreateUser" ;
         let param={"firstName":data.firstName,"middleName":data.middleName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail,"employeeId":data.empId,
-          "userDesignation":data.userDesignation,"userGroupId":data.userGroupId
+          "userDesignation":data.userDesignation,"userGroupId":data.userGroupId,"userGroupName":data.userGroupName
         };
           return  this.httpclient.post<any>(
               url1,
