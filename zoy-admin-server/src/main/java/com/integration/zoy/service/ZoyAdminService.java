@@ -38,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.integration.zoy.constants.ZoyConstant;
+import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.entity.UserProfile;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.exception.WebServiceException;
@@ -58,6 +59,9 @@ public class ZoyAdminService {
 
 	@Autowired
 	OwnerDBImpl ownerDBImpl;
+	
+	@Autowired
+	AdminDBImpl adminDBImpl;
 
 	@Autowired
 	WhatsAppService whatsAppService;
@@ -173,7 +177,7 @@ public class ZoyAdminService {
 //	}
 	
 	@Async
-	public void processBulkUpload(String ownerId, String propertyId, byte[] file,String fileName,String jobExecutionId) throws WebServiceException {
+	public void processBulkUpload(String ownerId, String propertyId, byte[] file,String fileName,String jobExecutionId, BulkUploadDetails bulkUpload) throws WebServiceException {
 		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(file);
 				Workbook workbook = new XSSFWorkbook(inputStream)){
 			List<PropertyList> propertyList = parsePropertySheet(workbook.getSheet("Property"));
@@ -187,7 +191,11 @@ public class ZoyAdminService {
 					.toJobParameters();
 			jobLauncher.run(bulkUploadProcessJob, jobParameters);
 		} catch (Exception e) {
-			log.error("error:::"+e);
+			log.error("BulkUpload Error::: " + e);
+			bulkUpload.setStatus("Failed");
+			String executionId =e.toString();
+			zoyEmailService.sendErrorEmail(jobExecutionId, executionId);				
+			adminDBImpl.saveBulkUpload(bulkUpload);
 		}
 	}
 

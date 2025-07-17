@@ -1,6 +1,8 @@
 package com.integration.zoy.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,10 +65,14 @@ public class ZoyAdminTicketSmartService {
 			}
 			TypeReference<ApiResponse<List<Role>>> typeRef = new TypeReference<>() {};
 			ApiResponse<List<Role>> data = JsonParserUtil.fromJson(userDesignation, typeRef);
-			if(data.getData().isEmpty()) {
-				return null;
+
+			if (data.getData() == null || data.getData().isEmpty()) {
+			    return null;
 			}
-			return data.getData();
+			List<Role> filteredRoles = data.getData().stream()
+			    .filter(role -> !"Super Admin".equalsIgnoreCase(role.getName()) && !"Admin".equalsIgnoreCase(role.getName()))
+			    .collect(Collectors.toList());
+			return filteredRoles;
 		} catch (Exception e) {
 			log.error("Unable to get ticket smart user desgination " + e);
 			return null;
@@ -74,7 +80,7 @@ public class ZoyAdminTicketSmartService {
 
 	}
 
-	public List<UserGroupResponseDto> getTicketSmartUserGroup() {
+	public List<UserGroupResponseDto> getTicketSmartSalesUserGroup() {
 		try {
 			String userGroup=ticketSmartService.getTicketSmartAPI("/getUserGroup");
 			if(userGroup==null) {
@@ -82,10 +88,46 @@ public class ZoyAdminTicketSmartService {
 			}
 			TypeReference<ApiResponse<List<UserGroupResponseDto>>> typeRef = new TypeReference<>() {};
 			ApiResponse<List<UserGroupResponseDto>> data = JsonParserUtil.fromJson(userGroup, typeRef);
-			if(data.getData().isEmpty()) {
+			if (data.getData() == null || data.getData().isEmpty()) {
+			    return null;
+			}
+			List<UserGroupResponseDto> filteredGroups = data.getData().stream()
+			    .filter(group -> group.getName() != null && group.getName().startsWith("Sales-"))
+			    .collect(Collectors.toList());
+			UserGroupResponseDto otherGroup = new UserGroupResponseDto();
+			otherGroup.setId("");
+			otherGroup.setName("Other");
+			otherGroup.setDescription("");
+			filteredGroups.add(otherGroup);
+
+			return filteredGroups;
+		} catch (Exception e) {
+			log.error("Unable to get ticket smart user desgination " + e);
+			return null;
+		}
+	}
+	
+	public List<UserGroupResponseDto> getTicketSmartVendorUserGroup() {
+		try {
+			String userGroup=ticketSmartService.getTicketSmartAPI("/getUserGroup");
+			if(userGroup==null) {
 				return null;
 			}
-			return data.getData();
+			TypeReference<ApiResponse<List<UserGroupResponseDto>>> typeRef = new TypeReference<>() {};
+			ApiResponse<List<UserGroupResponseDto>> data = JsonParserUtil.fromJson(userGroup, typeRef);
+			if (data.getData() == null || data.getData().isEmpty()) {
+			    return null;
+			}
+			List<UserGroupResponseDto> filteredGroups = data.getData().stream()
+			    .filter(group -> group.getName() != null && group.getName().startsWith("Vendor-"))
+			    .collect(Collectors.toList());
+			UserGroupResponseDto otherGroup = new UserGroupResponseDto();
+			otherGroup.setId("");
+			otherGroup.setName("Other");
+			otherGroup.setDescription("");
+			filteredGroups.add(otherGroup);
+
+			return filteredGroups;
 		} catch (Exception e) {
 			log.error("Unable to get ticket smart user desgination " + e);
 			return null;
@@ -112,18 +154,31 @@ public class ZoyAdminTicketSmartService {
 
 	public boolean assignTicketToGroup(UserMaster userCreated, ZoyPgSalesMasterModel pgSalesMasterModel) {
 		try {
-			SingleUserGroupResponseDto groupDto=getTicketSmartUserGroup(pgSalesMasterModel.getUserGroupId());
-			if(groupDto==null) 
-				return false;
-			UserGroupDto dto=new UserGroupDto();
-			dto.setId(groupDto.getId());
-			List<String> userIds=groupDto.getUserIds();
-			userIds.add(userCreated.getId());
-			dto.setUserId(userIds);
-			String response=ticketSmartService.postTicketSmartAPI("/saveUserGroup", dto);
-			if(response==null)
-				return false;
-			return true;
+			if(pgSalesMasterModel.getUserGroupId()!=null || !pgSalesMasterModel.getUserGroupId().isEmpty()) {
+				SingleUserGroupResponseDto groupDto=getTicketSmartUserGroup(pgSalesMasterModel.getUserGroupId());
+				if(groupDto==null) 
+					return false;
+				UserGroupDto dto=new UserGroupDto();
+				dto.setId(groupDto.getId());
+				List<String> userIds=groupDto.getUserIds();
+				userIds.add(userCreated.getId());
+				dto.setUserId(userIds);
+				String response=ticketSmartService.postTicketSmartAPI("/saveUserGroup", dto);
+				if(response==null)
+					return false;
+				return true;
+			} else {
+				UserGroupDto dto=new UserGroupDto();
+				dto.setId(null);
+				dto.setName(pgSalesMasterModel.getUserGroupName());
+				List<String> userIds=new ArrayList<>();
+				userIds.add(userCreated.getId());
+				dto.setUserId(userIds);
+				String response=ticketSmartService.postTicketSmartAPI("/saveUserGroup", dto);
+				if(response==null)
+					return false;
+				return true;
+			}
 		} catch (Exception e) {
 			log.error("Unable to assign user to ticket group " + e);
 			return false;

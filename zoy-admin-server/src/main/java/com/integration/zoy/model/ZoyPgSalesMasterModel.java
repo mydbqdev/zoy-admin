@@ -38,6 +38,9 @@ public class ZoyPgSalesMasterModel {
 
 	@SerializedName("userGroupId")
 	private String userGroupId;
+	
+	@SerializedName("userGroupName")
+	private String userGroupName;
 
 	public String getEmailId() {
 		return emailId;
@@ -125,6 +128,14 @@ public class ZoyPgSalesMasterModel {
 
 	public void setUserGroupId(String userGroupId) {
 		this.userGroupId = userGroupId;
+	}
+
+	public String getUserGroupName() {
+		return userGroupName;
+	}
+
+	public void setUserGroupName(String userGroupName) {
+		this.userGroupName = userGroupName;
 	}
 
 	
