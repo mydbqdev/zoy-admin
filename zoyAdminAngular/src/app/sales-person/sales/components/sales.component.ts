@@ -109,6 +109,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
 			empId:[''],
 			userDesignation: ['', Validators.required],
     		userGroupId: ['', Validators.required],
+			userGroupName:['']
 		  });
 
 		  this.getUserDesignation();
@@ -152,10 +153,25 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		if (this.form.invalid || this.generateSalesPerson.contactNumber.length !=10) {
 		return;
 		}
+		if (this.generateSalesPerson.userGroupId == '0' ) {
+			if(!this.generateSalesPerson.userGroupName){
+ 				return;
+			}else if(this.isValidGroupName(this.generateSalesPerson.userGroupName)){
+				this.notifyService.showInfo("Please enter the group name in the 'City-Cluster-Zone' format.","")
+				return;
+			}
+		}
+
+		const group =this.salesGroupList.find(s=>s.name.toLocaleLowerCase() == this.generateSalesPerson.userGroupName?.toLocaleLowerCase());
+		if(this.generateSalesPerson.userGroupId == '0' && group?.id){
+			this.generateSalesPerson.userGroupId = group.id ;
+			this.generateSalesPerson.userGroupName="";
+		}
 		this.spinner.show();		     
 		this.submitted=false;
 		this.generateSalesService.registerSubmitSalesPerson(this.generateSalesPerson).subscribe((res) => {
-			this.notifyService.showSuccess(res.message, "");			
+			this.notifyService.showSuccess(res.message, "");	
+			this.generateSalesPerson = new SalesData();
 			this.spinner.hide();
 			this.form.reset();
 		  },error =>{
@@ -442,4 +458,36 @@ nameValidation(event: any, inputId: string) {
 	this.param.pageSize= event.pageSize;
 	this.getSalesPerson();
 	}
+
+groupNameValidation(event: ClipboardEvent, inputId: string) {
+  const clipboardData = event.clipboardData || (window as any).clipboardData;
+  const pastedText = clipboardData.getData('text/plain');
+
+  const cleaned = pastedText.replace(/[^a-zA-Z\s.-]/g, '');
+
+  event.preventDefault();
+
+  const inputElement = document.getElementById(inputId) as HTMLInputElement;
+  if (inputElement) {
+    const start = inputElement.selectionStart || 0;
+    const end = inputElement.selectionEnd || 0;
+    const originalValue = inputElement.value;
+
+    inputElement.value =
+      originalValue.substring(0, start) + cleaned + originalValue.substring(end);
+
+    inputElement.dispatchEvent(new Event('input'));
+  }
+}
+ isValidGroupName(name: string): boolean {
+	if(name){
+	const value = name.split('-');
+ 	 return name && (value.length < 3 || !value[2] || !value[1] ) ;
+	}else{
+		return false;
+	}
+	
+ 
+}
+
 }

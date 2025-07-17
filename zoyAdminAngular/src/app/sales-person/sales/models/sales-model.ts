@@ -14,6 +14,7 @@ export class SalesData {
     isPassWordChange:boolean;
     userDesignation: string;
     userGroupId:string;
+    userGroupName:string;
   }
 
 

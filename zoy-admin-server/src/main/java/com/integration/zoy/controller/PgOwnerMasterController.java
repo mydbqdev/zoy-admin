@@ -530,19 +530,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 //					.collect(Collectors.toList()) : new ArrayList<>());
 			List<PgOwnerBusinessInfo> businessInfoList = new ArrayList<>();
 			if (details[10] != null && !details[10].trim().isEmpty()) {
-			    String[] tokens = details[10].split("\\|");
-			    if (tokens.length % 5 != 0) {
-			        log.error("Invalid bank details format. Each record must have 5 fields.");
-			    }
-			    for (int i = 0; i < tokens.length; i += 5) {
-			        String accountNumber = tokens[i].trim().replace(",", "");
-			        String bankName = tokens[i + 1].trim();
-			        String branch = tokens[i + 2].trim();
-			        String ifsc = tokens[i + 3].trim();
-			        String type = tokens[i + 4].trim();
-			        PgOwnerBusinessInfo info = new PgOwnerBusinessInfo(accountNumber, bankName, branch, ifsc, type);
-			        businessInfoList.add(info);
-			    }
+				businessInfoList=parseBankDetails(details[10]);
 			}
 
 			root.setPgOwnerBusinessInfo(businessInfoList);
@@ -566,6 +554,48 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
+	public List<PgOwnerBusinessInfo> parseBankDetails(String rawDetails) {
+	    List<PgOwnerBusinessInfo> businessInfoList = new ArrayList<>();
+	    if (rawDetails == null || rawDetails.trim().isEmpty()) {
+	        return businessInfoList;
+	    }
+	    List<String> tokens = new ArrayList<>();
+	    StringBuilder currentToken = new StringBuilder();
+	    int pipeCount = 0;
+
+	    for (int i = 0; i < rawDetails.length(); i++) {
+	        char c = rawDetails.charAt(i);
+	        if (c == '|') {
+	            pipeCount++;
+	        } else if (c == ',' && pipeCount == 4) {
+	            tokens.add(currentToken.toString());
+	            currentToken.setLength(0);
+	            pipeCount = 0;
+	            continue;
+	        }
+	        currentToken.append(c);
+	    }
+	    if (currentToken.length() > 0) {
+	        tokens.add(currentToken.toString());
+	    }
+	    for (String token : tokens) {
+	        String[] fields = token.split("\\|", -1);
+	        if (fields.length != 5) {
+	            log.error("Skipping invalid bank record: " + token);
+	            continue;
+	        }
+	        PgOwnerBusinessInfo info = new PgOwnerBusinessInfo(
+	                fields[0].trim(), 
+	                fields[1].trim(), 
+	                fields[2].trim(),
+	                fields[3].trim(), 
+	                fields[4].trim().replace(",", "")  
+	        );
+	        businessInfoList.add(info);
+	    }
+	    return businessInfoList;
+	}
+
 
 
 	@Override
