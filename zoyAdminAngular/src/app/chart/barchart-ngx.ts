@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { DataService } from '../common/service/data.service';
 @Component({
   selector: 'barchart-ngx',
-  template: `<ngx-charts-bar-vertical [view]="[420, 400]" [barPadding]="barPadding" [showGridLines]="showGridLines" [customColors]="colorScheme" [results]="zoyRevenue" [gradient]="gradient" [xAxis]="showXAxis"
+  template: `<ngx-charts-bar-vertical [view]="[380, 400]" [barPadding]="barPadding" [showGridLines]="showGridLines" [customColors]="colorScheme" [results]="zoyRevenue" [gradient]="gradient" [xAxis]="showXAxis"
   [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
   [yAxisLabel]="yAxisLabel">
  </ngx-charts-bar-vertical>`
 })
 
 export class BarNgxChartComponent {
-  view: any[] = [400, 300];
+  view: any[] = [380, 400];
   zoyRevenue: any[];
   // options
   showGridLines=false;
@@ -21,7 +21,7 @@ export class BarNgxChartComponent {
   xAxisLabel = 'Date (DD/MM)';
   showYAxisLabel = true;
   yAxisLabel = 'In Thousand';
-  barPadding=33;  /** 33 for 7 bar, 39 for 6 , 47 for 5,  10 for 12  */
+  barPadding=30;  /** 33 for 7 bar, 39 for 6 , 47 for 5,  10 for 12  */
   colorScheme: { name: string; value: string }[] = [];
   zoyRevenuedata:{"date": string,"revenueInThousands": number}[]=[];
   constructor(private dataService:DataService) {
