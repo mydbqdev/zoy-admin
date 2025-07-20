@@ -294,7 +294,8 @@
             
             <div class="form-group">
                 <label for="exampleInputZipcode1" class="form-label">Designation</label>
-                <select class="form-select form-select-sm"  formControlName="designation" [ngClass]="{'is-invalid':submitted && form.controls.designation.errors}"  [(ngModel)]="userReg.designation">
+                <select class="form-select form-select-sm"  formControlName="designation" placeholder="Select Designation" [ngClass]="{'is-invalid':submitted && form.controls.designation.errors}"  [(ngModel)]="userReg.designation">
+                  <option value="" disabled selected>Select Designation</option>
                   <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
                  </select>
                  <div *ngIf="submitted && form.controls.designation.errors" class="text-danger">
@@ -305,12 +306,15 @@
             </div>
             <div class="form-group">
                 <label for="contactNumber">Contact Number</label>
-                <input type="text" maxlength="15" class="form-control form-control-sm" (keypress)="numberOnly($event)" id="lastname"  placeholder="Enter Contact Number" required autocomplete="false" formControlName="contactNumber" [(ngModel)]="userReg.contactNumber" autocomplete="off"
+                <input type="text" maxlength="10" minlength="10" class="form-control form-control-sm" (keypress)="numberOnly($event)" id="lastname"  placeholder="Enter Contact Number" required autocomplete="false" formControlName="contactNumber" [(ngModel)]="userReg.contactNumber" autocomplete="off"
                 [ngClass]="{'is-invalid':submitted && form.controls.contactNumber.errors}" />
                 <div *ngIf="submitted && form.controls.contactNumber.errors" class="text-danger">
                   <div *ngIf="submitted && form.controls.contactNumber.errors?.required">
                     Contact Number is required
                   </div>
+                   <div *ngIf="form.controls.contactNumber.errors?.minlength || form.controls.contactNumber.errors?.maxlength">
+                    Contact Number must be exactly 10 digits
+                </div>
             </div>
             </div>
             
