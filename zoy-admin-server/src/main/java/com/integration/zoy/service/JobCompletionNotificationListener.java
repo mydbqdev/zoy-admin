@@ -8,6 +8,7 @@ import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.repository.BulkUploadDetailsRepository;
 
@@ -31,9 +32,9 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
 		
 		bulkUploadDetailsOpt.ifPresent(bulkUploadDetails -> {
 			if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-				bulkUploadDetails.setStatus("Completed");
+				bulkUploadDetails.setStatus(ZoyConstant.UPLOAD_COMPLETED);
 			} else if (jobExecution.getStatus() == BatchStatus.FAILED) {
-				bulkUploadDetails.setStatus("Failed");
+				bulkUploadDetails.setStatus(ZoyConstant.UPLOAD_FAILED);
 				String executionId =jobExecution.getExitStatus().getExitDescription();
 				zoyEmailService.sendErrorEmail(jobExecutionId, executionId);				
 			}

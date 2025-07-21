@@ -12,8 +12,8 @@ import com.integration.zoy.entity.ZoyPgPropertyDetails;
 @Repository
 public interface ZoyPgPropertyDetailsRepository extends JpaRepository<ZoyPgPropertyDetails, String> {
 
-	@Query(value ="SELECT DISTINCT zppd.property_city \r\n"
-			+ "FROM pgowners.zoy_pg_property_details zppd \r\n"
+	@Query(value ="SELECT DISTINCT zppd.property_city  "
+			+ "FROM pgowners.zoy_pg_property_details zppd  "
 			+ "ORDER BY zppd.property_city ASC", nativeQuery = true)
 	String[] findDistinctCities();
 
@@ -38,77 +38,61 @@ public interface ZoyPgPropertyDetailsRepository extends JpaRepository<ZoyPgPrope
 	List<String[]> findAllReviewsReplies(String ratingId);
 
 
-	@Query(value = "SELECT " +
-			"(SELECT COUNT(*) AS active_properties_count " +
-			"FROM (" +
-			"    SELECT " +
-			"        zppd.property_id, " +
-			"        zppd.property_name, " +
-			"        zppd.property_contact_number, " +
-			"        zppd.property_pg_email, " +
-			"        zppd.property_house_area, " +
-			"        zpb.fixed_rent, " +
-			"        zpb.in_date, " +
-			"        zpb.out_date " +
-			"    FROM pgowners.zoy_pg_property_details zppd " +
-			"    JOIN pgowners.zoy_pg_owner_booking_details zpb ON zppd.property_id = zpb.property_id " +
-			"    JOIN pgowners.zoy_pg_owner_details zpod ON zppd.pg_owner_id = zpod.pg_owner_id " +
-			"    JOIN pgusers.user_bookings ub ON zpb.booking_id = ub.user_bookings_id " +
-			"    WHERE ub.user_bookings_web_check_in = true " +
-			"      AND ub.user_bookings_web_check_out = false " +
-			"      AND ub.user_bookings_is_cancelled = false " +
-			"    GROUP BY " +
-			"        zppd.property_id, " +
-			"        zppd.property_name, " +
-			"        zppd.property_contact_number, " +
-			"        zppd.property_pg_email, " +
-			"        zppd.property_house_area, " +
-			"        zpb.fixed_rent, " +
-			"        zpb.in_date, " +
-			"        zpb.out_date " +
-			"    HAVING COUNT(zpb.booking_id) > 0 " +
-			") AS subquery) AS potentialPropertiesCount, " +
-
-	        "(SELECT COUNT(*) " +
-	        "FROM (" +
-	        "    SELECT " +
-	        "        zpod.pg_owner_name, " +
-	        "        zpd.property_name, " +
-	        "        zpd.property_contact_number, " +
-	        "        zpd.property_pg_email, " +
-	        "        zpd.property_house_area, " +
-	        "        MAX(zpobd.out_date) AS last_out_date, " +
-	        "        MAX(zpobd.in_date) AS last_in_date " +
-	        "    FROM pgowners.zoy_pg_property_details AS zpd " +
-	        "    JOIN pgowners.zoy_pg_owner_details AS zpod " +
-	        "        ON zpd.pg_owner_id = zpod.pg_owner_id " +
-	        "    LEFT JOIN pgowners.zoy_pg_owner_booking_details AS zpobd " +
-	        "        ON zpd.property_id = zpobd.property_id " +
-	        "    LEFT JOIN pgusers.user_bookings AS ub " +
-	        "        ON zpobd.booking_id = ub.user_bookings_id " +
-	        "    WHERE zpd.property_id NOT IN ( " +
-	        "        SELECT DISTINCT zpobd.property_id " +
-	        "        FROM pgowners.zoy_pg_owner_booking_details AS zpobd " +
-	        "        JOIN pgusers.user_bookings AS ub " +
-	        "            ON zpobd.booking_id = ub.user_bookings_id " +
-	        "        AND ( " +
-	        "            ub.user_bookings_is_cancelled = true " +
-	        "            OR ub.user_bookings_web_check_out = true " +
-	        "        ) " +
-	        "    ) " +
-	        "    GROUP BY " +
-	        "        zpod.pg_owner_name, " +
-	        "        zpd.property_name, " +
-	        "        zpd.property_contact_number, " +
-	        "        zpd.property_pg_email, " +
-	        "        zpd.property_house_area " +
-	        ") AS subquery) AS nonPotentialPropertiesCount, " +
-			
-			" (SELECT count(pom.*)\r\n"
-			+ "FROM pgadmin.pg_owner_master pom\r\n"
-			+ "LEFT JOIN pgowners.zoy_pg_property_details zppd ON pom.zoy_code = zppd.zoy_code\r\n"
-			+ "WHERE zppd.zoy_code IS null" +
-			")  AS upcomingPotentialPropertyCount " ,
+	@Query(value = "select "
+			+ "	( "
+			+ "	select "
+			+ "		COUNT(*) as active_properties_count "
+			+ "	from "
+			+ "		( "
+			+ "		select "
+			+ "			distinct zppd.property_id "
+			+ "		from "
+			+ "			pgowners.zoy_pg_property_details zppd "
+			+ "		join pgowners.zoy_pg_owner_booking_details zpb on "
+			+ "			zppd.property_id = zpb.property_id "
+			+ "		join pgowners.zoy_pg_owner_details zpod on "
+			+ "			zppd.pg_owner_id = zpod.pg_owner_id "
+			+ "		join pgusers.user_bookings ub on "
+			+ "			zpb.booking_id = ub.user_bookings_id "
+			+ "		where "
+			+ "			ub.user_bookings_web_check_in = true "
+			+ "			and ub.user_bookings_web_check_out = false "
+			+ "			and ub.user_bookings_is_cancelled = false ) as subquery) as potentialPropertiesCount, "
+			+ "	( "
+			+ "	select "
+			+ "		COUNT(*) "
+			+ "	from "
+			+ "		( "
+			+ "		select "
+			+ "			distinct zpd.property_id "
+			+ "		from "
+			+ "			pgowners.zoy_pg_property_details as zpd "
+			+ "		join pgowners.zoy_pg_owner_details as zpod on "
+			+ "			zpd.pg_owner_id = zpod.pg_owner_id "
+			+ "		left join pgowners.zoy_pg_owner_booking_details as zpobd on "
+			+ "			zpd.property_id = zpobd.property_id "
+			+ "		left join pgusers.user_bookings as ub on "
+			+ "			zpobd.booking_id = ub.user_bookings_id "
+			+ "		where "
+			+ "			zpd.property_id not in ( "
+			+ "			select "
+			+ "				distinct zpobd.property_id "
+			+ "			from "
+			+ "				pgowners.zoy_pg_owner_booking_details as zpobd "
+			+ "			join pgusers.user_bookings as ub on "
+			+ "				zpobd.booking_id = ub.user_bookings_id "
+			+ "				and ( ub.user_bookings_is_cancelled = true "
+			+ "					or ub.user_bookings_web_check_out = true ) ) "
+			+ "		 ) as subquery) as nonPotentialPropertiesCount, "
+			+ "	( "
+			+ "	select "
+			+ "		count(pom.*) "
+			+ "	from "
+			+ "		pgadmin.pg_owner_master pom "
+			+ "	left join pgowners.zoy_pg_property_details zppd on "
+			+ "		pom.zoy_code = zppd.zoy_code "
+			+ "	where "
+			+ "		zppd.zoy_code is null ) as upcomingPotentialPropertyCount " ,
 			nativeQuery = true)
 	List<Object[]> findPropertiesCardDetails();
 
