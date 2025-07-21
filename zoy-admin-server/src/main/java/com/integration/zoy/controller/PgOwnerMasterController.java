@@ -518,10 +518,16 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			PgOwnerdetailPortfolio root = new PgOwnerdetailPortfolio();
 			root.setProfile(profile);
 			root.setPgOwnerbasicInformation(basicInformation);
-			root.setPgOwnerBusinessInfo(details[10] != null ? Arrays.stream(details[10].split(","))
-					.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 5)   
-					.map(parts -> new PgOwnerBusinessInfo(parts[0], parts[1],parts[2],parts[3],parts[4]))
-					.collect(Collectors.toList()) : new ArrayList<>());
+//			root.setPgOwnerBusinessInfo(details[10] != null ? Arrays.stream(details[10].split(","))
+//					.map(rating -> rating.split("\\|")).filter(parts -> parts.length == 5)   
+//					.map(parts -> new PgOwnerBusinessInfo(parts[0], parts[1],parts[2],parts[3],parts[4]))
+//					.collect(Collectors.toList()) : new ArrayList<>());
+			List<PgOwnerBusinessInfo> businessInfoList = new ArrayList<>();
+			if (details[10] != null && !details[10].trim().isEmpty()) {
+				businessInfoList=parseBankDetails(details[10]);
+			}
+
+			root.setPgOwnerBusinessInfo(businessInfoList);
 			root.setPgOwnerPropertyInformation(new ArrayList<>(propertyMap.values()));
 
 			response.setStatus(HttpStatus.OK.value());
@@ -542,6 +548,48 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
+	public List<PgOwnerBusinessInfo> parseBankDetails(String rawDetails) {
+	    List<PgOwnerBusinessInfo> businessInfoList = new ArrayList<>();
+	    if (rawDetails == null || rawDetails.trim().isEmpty()) {
+	        return businessInfoList;
+	    }
+	    List<String> tokens = new ArrayList<>();
+	    StringBuilder currentToken = new StringBuilder();
+	    int pipeCount = 0;
+
+	    for (int i = 0; i < rawDetails.length(); i++) {
+	        char c = rawDetails.charAt(i);
+	        if (c == '|') {
+	            pipeCount++;
+	        } else if (c == ',' && pipeCount == 4) {
+	            tokens.add(currentToken.toString());
+	            currentToken.setLength(0);
+	            pipeCount = 0;
+	            continue;
+	        }
+	        currentToken.append(c);
+	    }
+	    if (currentToken.length() > 0) {
+	        tokens.add(currentToken.toString());
+	    }
+	    for (String token : tokens) {
+	        String[] fields = token.split("\\|", -1);
+	        if (fields.length != 5) {
+	            log.error("Skipping invalid bank record: " + token);
+	            continue;
+	        }
+	        PgOwnerBusinessInfo info = new PgOwnerBusinessInfo(
+	                fields[0].trim(), 
+	                fields[1].trim(), 
+	                fields[2].trim(),
+	                fields[3].trim(), 
+	                fields[4].trim().replace(",", "")  
+	        );
+	        businessInfoList.add(info);
+	    }
+	    return businessInfoList;
+	}
+
 
 
 	@Override

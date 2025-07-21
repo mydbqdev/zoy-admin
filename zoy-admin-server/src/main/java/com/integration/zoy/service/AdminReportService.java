@@ -582,7 +582,7 @@ public class AdminReportService implements AdminReportImpl{
 			}
 
 			if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
-				queryBuilder.append("AND LOWER(o.pg_owner_email) LIKE LOWER(:ownerName)");
+				queryBuilder.append("AND LOWER(o.pg_owner_email) LIKE LOWER(:ownerEmail)");
 				parameters.put("ownerEmail", "%" + filterData.getOwnerEmail() + "%");
 			}
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
