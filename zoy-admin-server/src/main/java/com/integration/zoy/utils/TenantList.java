@@ -18,6 +18,7 @@ public class TenantList {
 	private String bedNumber;
 	private BigDecimal depositPaid;
 	private String rentPaid;
+	private BigDecimal rentAmount;
 	public String getFirstName() {
 		return firstName;
 	}
@@ -102,12 +103,19 @@ public class TenantList {
 	public void setRentPaid(String rentPaid) {
 		this.rentPaid = rentPaid;
 	}
-
+	public BigDecimal getRentAmount() {
+		return rentAmount;
+	}
+	public void setRentAmount(BigDecimal rentAmount) {
+		this.rentAmount = rentAmount;
+	}
 	@Override
 	public String toString() {
 		return "TenantList [firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
 				+ ", email=" + email + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + ", permanentAddress="
 				+ permanentAddress + ", inDate=" + inDate + ", outDate=" + outDate + ", floor=" + floor + ", room="
-				+ room + ", bedNumber=" + bedNumber + ", depositPaid=" + depositPaid + ", rentPaid=" + rentPaid + "]";
+				+ room + ", bedNumber=" + bedNumber + ", depositPaid=" + depositPaid + ", rentPaid=" + rentPaid
+				+ ", rentAmount=" + rentAmount + "]";
 	}
+	
 }
