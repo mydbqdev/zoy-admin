@@ -123,7 +123,7 @@ export class UserMasterComponent implements OnInit {
 		  firstName: ['', [Validators.required]],
 		  lastName: ['', [Validators.required]],
 		  designation: ['', [Validators.required]],
-      contactNumber: ['', [Validators.required]],
+      contactNumber: ['', [Validators.required,Validators.maxLength(10),Validators.minLength(10)]],
 		  userEmail: ['', [
 			Validators.required,
 			Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
@@ -262,6 +262,7 @@ export class UserMasterComponent implements OnInit {
   }
   resetForm(isCreate:boolean) {
   this.submitted=false;
+  this.userReg= new UserDetails();
   this.createOrUpdate=isCreate;
   this.form.reset(); 
   }
