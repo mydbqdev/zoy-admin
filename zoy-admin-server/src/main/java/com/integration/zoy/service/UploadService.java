@@ -577,7 +577,15 @@ public class UploadService {
 		bookingDetails.setCurrMonthEndDate(date.getSecond());
 		bookingDetails.setCurrMonthStartDate(date.getFirst());
 		bookingDetails.setDue(BigDecimal.ZERO);
-		bookingDetails.setFixedRent(new BigDecimal(details.getRoomMonthlyRent()));
+		bookingDetails.setActualRent(new BigDecimal(details.getRoomMonthlyRent()));
+		if (tenantDetails.getRentAmount().compareTo(BigDecimal.ZERO) > 0) {
+			bookingDetails.setFixedRent(tenantDetails.getRentAmount());
+			BigDecimal rentDiscount = new BigDecimal(details.getRoomMonthlyRent()-tenantDetails.getRentAmount().doubleValue());
+			bookingDetails.setRentDiscount(rentDiscount);
+		} else {
+			bookingDetails.setFixedRent(new BigDecimal(details.getRoomMonthlyRent()));
+			bookingDetails.setRentDiscount(BigDecimal.ZERO);
+		}
 		bookingDetails.setFloor(floorId);
 		bookingDetails.setGender(tenantDetails.getGender());
 		bookingDetails.setGst(BigDecimal.ZERO);
@@ -594,7 +602,8 @@ public class UploadService {
 		long noOfRentCalc=getDiffofTimestamp(checkInDate,date.getSecond());
 		long daysInMonth = checkInDate.toLocalDateTime().toLocalDate().lengthOfMonth();
 		bookingDetails.setNoOfDays(String.valueOf((int)noOfDays));
-		BigDecimal calRent=new BigDecimal((details.getRoomMonthlyRent()/daysInMonth)*noOfRentCalc).setScale(2, RoundingMode.HALF_UP);
+		//Calculate Month rent
+		BigDecimal calRent=new BigDecimal((bookingDetails.getFixedRent().doubleValue()/daysInMonth)*noOfRentCalc).setScale(2, RoundingMode.HALF_UP);
 		bookingDetails.setCalFixedRent(calRent);
 		bookingDetails.setOutDate(tenantDetails.getOutDate());
 		bookingDetails.setPhoneNumber(tenantDetails.getPhoneNumber());
