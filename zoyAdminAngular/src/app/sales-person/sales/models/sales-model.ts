@@ -12,4 +12,15 @@ export class SalesData {
     userEmail: string;
     empId :string;
     isPassWordChange:boolean;
+    userDesignation: string;
+    userGroupId:string;
+    userGroupName:string;
+  }
+
+
+  export class UserDesignation{
+    id: string;
+    name: string;
+    description:string;
+    app_role_id: string[];
   }

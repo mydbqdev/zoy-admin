@@ -146,7 +146,7 @@
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                         aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addProperty" (click)="addProperty(element)">Add Property</a>
+                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addProperty" (click)="addProperty(element)" *ngIf="element.status === 'Active'">Add Property</a>
                                         <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#resendEmail" (click)="resendPropertyList(element)">Resend Email</a>
                                     </div>
                                       </td>

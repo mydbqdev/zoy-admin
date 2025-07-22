@@ -66,6 +66,7 @@ public class SecurityConfig {
 	    .authorizeHttpRequests(requests -> {
 	        try {
 	            requests.antMatchers("/public").permitAll()
+                .antMatchers("/actuator/**").permitAll()
 	            .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**").permitAll()
 	            .antMatchers("/verify-email").permitAll()
 	            .antMatchers("/forgotPassword").permitAll()

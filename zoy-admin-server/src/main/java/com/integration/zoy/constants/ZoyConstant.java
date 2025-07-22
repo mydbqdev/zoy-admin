@@ -101,6 +101,11 @@ public class ZoyConstant {
 	public static final String REOPEN="Reopen";
 	public static final String CANCELLED="Cancelled";
 	public static final String RESOLVED="Resolved";
+	
+	public static final String UPLOAD_PROCESSING="Processing";
+	public static final String UPLOAD_FAILED="Failed";
+	public static final String UPLOAD_COMPLETED="Completed";
+	
 
 	public static final Map<String, String> STATES;
 	public static final Map<String, String> CITIES;

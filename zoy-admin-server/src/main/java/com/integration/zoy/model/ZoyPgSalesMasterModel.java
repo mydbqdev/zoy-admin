@@ -1,91 +1,102 @@
 package com.integration.zoy.model;
 
+import java.util.List;
+
 import com.google.gson.annotations.SerializedName;
 
 public class ZoyPgSalesMasterModel {
 
-    @SerializedName("emailId")
-    private String emailId;
+	@SerializedName("emailId")
+	private String emailId;
 
-    @SerializedName("employeeId")
-    private String employeeId;
+	@SerializedName("employeeId")
+	private String employeeId;
 
-    @SerializedName("firstName")
-    private String firstName;
+	@SerializedName("firstName")
+	private String firstName;
 
-    @SerializedName("lastName")
-    private String lastName;
+	@SerializedName("lastName")
+	private String lastName;
 
-    @SerializedName("middleName")
-    private String middleName;
+	@SerializedName("middleName")
+	private String middleName;
 
-    @SerializedName("mobileNo")
-    private String mobileNo;
+	@SerializedName("mobileNo")
+	private String mobileNo;
 
-    @SerializedName("createdAt")
-    private String createdAt;
-    
-    @SerializedName("fullName")
-    private String fullName;
-    
-    @SerializedName("isPassWordChange")
-    private Boolean isPassWordChange;
+	@SerializedName("createdAt")
+	private String createdAt;
 
-    public String getEmailId() {
-        return emailId;
-    }
+	@SerializedName("fullName")
+	private String fullName;
 
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
-    }
+	@SerializedName("isPassWordChange")
+	private Boolean isPassWordChange;
 
-    public String getEmployeeId() {
-        return employeeId;
-    }
+	@SerializedName("userDesignation")
+	private String userDesignation;
 
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
+	@SerializedName("userGroupId")
+	private String userGroupId;
+	
+	@SerializedName("userGroupName")
+	private String userGroupName;
 
-    public String getFirstName() {
-        return firstName;
-    }
+	public String getEmailId() {
+		return emailId;
+	}
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
 
-    public String getLastName() {
-        return lastName;
-    }
+	public String getEmployeeId() {
+		return employeeId;
+	}
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
 
-    public String getMiddleName() {
-        return middleName;
-    }
+	public String getFirstName() {
+		return firstName;
+	}
 
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public String getMobileNo() {
-        return mobileNo;
-    }
+	public String getLastName() {
+		return lastName;
+	}
 
-    public void setMobileNo(String mobileNo) {
-        this.mobileNo = mobileNo;
-    }
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
+	public String getMiddleName() {
+		return middleName;
+	}
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getMobileNo() {
+		return mobileNo;
+	}
+
+	public void setMobileNo(String mobileNo) {
+		this.mobileNo = mobileNo;
+	}
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
 
 	public String getFullName() {
 		return fullName;
@@ -102,6 +113,30 @@ public class ZoyPgSalesMasterModel {
 	public void setIsPassWordChange(Boolean isPassWordChange) {
 		this.isPassWordChange = isPassWordChange;
 	}
-    
-    
+
+	public String getUserDesignation() {
+		return userDesignation;
+	}
+
+	public void setUserDesignation(String userDesignation) {
+		this.userDesignation = userDesignation;
+	}
+
+	public String getUserGroupId() {
+		return userGroupId;
+	}
+
+	public void setUserGroupId(String userGroupId) {
+		this.userGroupId = userGroupId;
+	}
+
+	public String getUserGroupName() {
+		return userGroupName;
+	}
+
+	public void setUserGroupName(String userGroupName) {
+		this.userGroupName = userGroupName;
+	}
+
+	
 }

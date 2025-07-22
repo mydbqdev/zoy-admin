@@ -11,7 +11,7 @@ import { SidebarComponent } from 'src/app/components/sidebar/sidebar.component';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { SalesData } from '../models/sales-model';
+import { SalesData, UserDesignation } from '../models/sales-model';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GenerateSalesService } from '../../service/sales.service';
@@ -55,6 +55,8 @@ export class SalesComponent implements OnInit, AfterViewInit {
 	submitted=false;
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	private _liveAnnouncer = inject(LiveAnnouncer);
+	designationList :UserDesignation[]=[];
+	salesGroupList :UserDesignation[]=[];
 	constructor(private generateSalesService : GenerateSalesService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService) {
 			this.authService.checkLoginUserVlidaate();
@@ -105,8 +107,13 @@ export class SalesComponent implements OnInit, AfterViewInit {
 			  Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
 			]],
 			empId:[''],
+			userDesignation: ['', Validators.required],
+    		userGroupId: ['', Validators.required],
+			userGroupName:['']
 		  });
 
+		  this.getUserDesignation();
+		  this.getSalesGroup();
 	}
 	ngAfterViewInit() {
 		this.sidemenuComp.expandMenu(9);
@@ -146,10 +153,25 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		if (this.form.invalid || this.generateSalesPerson.contactNumber.length !=10) {
 		return;
 		}
+		if (this.generateSalesPerson.userGroupId == '0' ) {
+			if(!this.generateSalesPerson.userGroupName){
+ 				return;
+			}else if(this.isValidGroupName(this.generateSalesPerson.userGroupName)){
+				this.notifyService.showInfo("Please enter the group name in the 'City-Cluster-Zone' format.","")
+				return;
+			}
+		}
+
+		const group =this.salesGroupList.find(s=>s.name.toLocaleLowerCase() == this.generateSalesPerson.userGroupName?.toLocaleLowerCase());
+		if(this.generateSalesPerson.userGroupId == '0' && group?.id){
+			this.generateSalesPerson.userGroupId = group.id ;
+			this.generateSalesPerson.userGroupName="";
+		}
 		this.spinner.show();		     
 		this.submitted=false;
 		this.generateSalesService.registerSubmitSalesPerson(this.generateSalesPerson).subscribe((res) => {
-			this.notifyService.showSuccess(res.message, "");			
+			this.notifyService.showSuccess(res.message, "");	
+			this.generateSalesPerson = new SalesData();
 			this.spinner.hide();
 			this.form.reset();
 		  },error =>{
@@ -233,6 +255,73 @@ export class SalesComponent implements OnInit, AfterViewInit {
 				}
 			  });  
 	    }  
+		
+      getUserDesignation() {
+			this.generateSalesService.getUserDesignation().subscribe((res) => {
+				this.designationList = res.data || [];
+			  },error =>{
+				this.spinner.hide();
+				console.log("error.error",error)
+				if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "")
+				 }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+				this.errorMsg =error.error.message;
+				console.log("Error:"+this.errorMsg);
+		  
+				if(error.status==500 && error.statusText=="Internal Server Error"){
+				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+				}else{
+				//  this.spinner.hide();
+				  let str;
+				  if(error.status==400){
+				  str=error.error.error;
+				  }else{
+					str=error.error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:",str);
+				  this.errorMsg=str;
+				}
+			  	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			    //this.notifyService.showError(this.errorMsg, "");
+				}
+			  });  
+	    }
+		
+	 getSalesGroup() {
+			this.generateSalesService.getSalesGroup().subscribe((res) => {
+					this.salesGroupList = res.data || [];
+			  },error =>{
+				this.spinner.hide();
+				console.log("error.error",error)
+				if(error.status == 0) {
+					this.notifyService.showError("Internal Server Error/Connection not established", "")
+				 }else if(error.status==403){
+				this.router.navigate(['/forbidden']);
+				}else if (error.error && error.error.message) {
+				this.errorMsg =error.error.message;
+				console.log("Error:"+this.errorMsg);
+		  
+				if(error.status==500 && error.statusText=="Internal Server Error"){
+				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+				}else{
+				  let str;
+				  if(error.status==400){
+				  str=error.error.error;
+				  }else{
+					str=error.error.message;
+					str=str.substring(str.indexOf(":")+1);
+				  }
+				  console.log("Error:",str);
+				  this.errorMsg=str;
+				}
+			  	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			    //this.notifyService.showError(this.errorMsg, "");
+				}
+			  });  
+	    }
 		filterData($event: KeyboardEvent){
 			if ($event.keyCode === 13) {
 				if(this.searchText==''){
@@ -369,4 +458,36 @@ nameValidation(event: any, inputId: string) {
 	this.param.pageSize= event.pageSize;
 	this.getSalesPerson();
 	}
+
+groupNameValidation(event: ClipboardEvent, inputId: string) {
+  const clipboardData = event.clipboardData || (window as any).clipboardData;
+  const pastedText = clipboardData.getData('text/plain');
+
+  const cleaned = pastedText.replace(/[^a-zA-Z\s.-]/g, '');
+
+  event.preventDefault();
+
+  const inputElement = document.getElementById(inputId) as HTMLInputElement;
+  if (inputElement) {
+    const start = inputElement.selectionStart || 0;
+    const end = inputElement.selectionEnd || 0;
+    const originalValue = inputElement.value;
+
+    inputElement.value =
+      originalValue.substring(0, start) + cleaned + originalValue.substring(end);
+
+    inputElement.dispatchEvent(new Event('input'));
+  }
+}
+ isValidGroupName(name: string): boolean {
+	if(name){
+	const value = name.split('-');
+ 	 return name && (value.length < 3 || !value[2] || !value[1] ) ;
+	}else{
+		return false;
+	}
+	
+ 
+}
+
 }

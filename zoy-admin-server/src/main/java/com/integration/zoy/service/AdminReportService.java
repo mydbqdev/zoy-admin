@@ -582,7 +582,7 @@ public class AdminReportService implements AdminReportImpl{
 			}
 
 			if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
-				queryBuilder.append("AND LOWER(o.pg_owner_email) LIKE LOWER(:ownerName)");
+				queryBuilder.append("AND LOWER(o.pg_owner_email) LIKE LOWER(:ownerEmail)");
 				parameters.put("ownerEmail", "%" + filterData.getOwnerEmail() + "%");
 			}
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
@@ -1866,6 +1866,11 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
 			}
 
+			if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
+	            queryBuilder.append(" AND LOWER(pom.email_id) LIKE LOWER(:ownerEmail) ");
+	            parameters.put("ownerEmail", "%" + filterData.getOwnerEmail() + "%");
+	        }
+ 
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
 				queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
@@ -2951,7 +2956,10 @@ public class AdminReportService implements AdminReportImpl{
 				    + "    pom.property_name,\r\n"
 				    + "    pom.mobile_no,\r\n"
 				    + "    pom.email_id,\r\n"
-				    + "    pom.property_house_area,\r\n"
+				    + "    pom.property_door_number || ', ' || \r\n"
+				    + "    pom.property_street_name || ', ' || \r\n"
+				    + "    pom.property_locality || ', ' || \r\n"
+				    + "    pom.property_house_area AS propertyaddress,\r\n"
 				    + "    pom.property_city\r\n"
 				    + "FROM pgadmin.pg_owner_master pom\r\n"
 				    + "LEFT JOIN pgowners.zoy_pg_property_details zppd\r\n"
@@ -2998,7 +3006,7 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "pom.email_id";
 					break;
 				case "propertyAddress":
-					sort = "pom.property_house_area";
+					sort = "propertyaddress";
 					break;
 				default:
 					sort = "ownerName";
@@ -3311,7 +3319,7 @@ public class AdminReportService implements AdminReportImpl{
 				" CASE WHEN zpd.zoy_variable_share = 0 THEN CONCAT(zpd.zoy_fixed_share, ' Rs') " +
 				" ELSE CONCAT(zpd.zoy_variable_share, ' %') END AS zoyshare, " +
 				" CASE WHEN zpd.zoy_variable_share = 0 THEN (COUNT(DISTINCT zpqbd.selected_bed) * zpd.zoy_fixed_share) " +
-				" ELSE ROUND((zpd.zoy_variable_share / 100) * COALESCE(SUM(zpqbd.fixed_rent), 0), 2) END AS zoyShareAmount, " +
+				" ELSE ROUND((zpd.zoy_variable_share / 100) * COALESCE(SUM(user_payment_payable_amount), 0), 2) END AS zoyShareAmount, " +
 				" zpd.property_city AS PropertyCity " +
 				" FROM pgowners.zoy_pg_owner_settlement_split_up zpossu " +
 				" LEFT JOIN pgowners.zoy_pg_owner_settlement_status zposs ON zposs.pg_owner_settlement_id = zpossu.pg_owner_settlement_id " +
