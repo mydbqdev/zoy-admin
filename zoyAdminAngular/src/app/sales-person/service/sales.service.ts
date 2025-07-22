@@ -24,7 +24,7 @@ import { MessageService } from 'src/app/message.service';
             data.userGroupName = 'Sales-'+data.userGroupName;
         }
         const url1=this.basePath +"zoy_admin/zoyAdminSalesCreateUser" ;
-        let param={"firstName":data.firstName,"middleName":data.middleName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail,"employeeId":data.empId,
+        let param={"firstName":data.firstName,"middleName":data.middleName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail.toLocaleLowerCase(),"employeeId":data.empId,
           "userDesignation":data.userDesignation,"userGroupId":data.userGroupId,"userGroupName":data.userGroupName
         };
           return  this.httpclient.post<any>(
