@@ -228,9 +228,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(model.getRegisterId());
 				if(partner.isPresent()) {
 					RegisteredPartner existingPartner = partner.get();
-					existingPartner.setStatus(ZoyConstant.CLOSE);
+					existingPartner.setStatus(ZoyConstant.CLOSED);
 					registeredPartnerDetailsRepository.save(existingPartner);
-					zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead Converted to ZoyOwner and generated ZoyCode", ZoyConstant.CLOSE);
+					if(existingPartner.getRegisterId()!=null)
+					zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead Converted to ZoyOwner and generated ZoyCode", ZoyConstant.CLOSED);
 				}
 			}
 			
@@ -885,8 +886,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 						Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(model.getRegisterId());
 						if(partner.isPresent()) {
 							RegisteredPartner existingPartner = partner.get();
-							existingPartner.setStatus(ZoyConstant.CLOSE);
+							existingPartner.setStatus(ZoyConstant.CLOSED);
 							registeredPartnerDetailsRepository.save(existingPartner);
+							if(existingPartner.getRegisterId()!=null)
+								zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead New Property Converted to Zoy Property and generated ZoyCode", ZoyConstant.CLOSED);
 						}
 					}
 					
