@@ -631,6 +631,22 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 	        nativeQuery = true)
 	PgOwnerMaster getExistingOwnerDetails(String zoyCode);
 
+	@Query(value = "select \r\n"
+			+ "zprod.register_id,\r\n"
+			+ "zprod.firstname ,\r\n"
+			+ "zprod.lastname ,\r\n"
+			+ "zprod.email,\r\n"
+			+ "zprod.mobile,\r\n"
+			+ "p.\"name\" ,\r\n"
+			+ "p.pincode,\r\n"
+			+ "p.state ,\r\n"
+			+ "p.city ,\r\n"
+			+ "p.address\r\n"
+			+ "from pgowners.zoy_pg_registered_owner_details zprod\r\n"
+			+ "left join pgsales.properties p on zprod.property_id = p.property_id\r\n"
+			+ "where zprod.register_id= :ownerDetails or zprod.email= :ownerDetails",
+	        nativeQuery = true)
+	List<Object[]> checkAndGetOwnerDetails(String ownerDetails);
 	
 
 }
