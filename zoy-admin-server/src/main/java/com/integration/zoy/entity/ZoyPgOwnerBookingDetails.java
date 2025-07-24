@@ -120,6 +120,9 @@ public class ZoyPgOwnerBookingDetails {
     @Column(name = "actual_rent")
     private BigDecimal actualRent;
     
+    @Column(name = "actual_in_date")
+	private Timestamp actualInDate;
+    
 	public String getBookingId() {
 		return bookingId;
 	}
@@ -382,6 +385,14 @@ public class ZoyPgOwnerBookingDetails {
 
 	public void setActualRent(BigDecimal actualRent) {
 		this.actualRent = actualRent;
+	}
+
+	public Timestamp getActualInDate() {
+		return actualInDate;
+	}
+
+	public void setActualInDate(Timestamp actualInDate) {
+		this.actualInDate = actualInDate;
 	}
 
 	@PrePersist

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "zoy_pg_rent_gst", schema = "pgowners")
-public class ZoyPgGstCharges {
+public class ZoyPgRentGst {
 
     @Id
 	@GeneratedValue(generator = "UUID")

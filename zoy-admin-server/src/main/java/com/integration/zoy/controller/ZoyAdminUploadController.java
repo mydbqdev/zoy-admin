@@ -50,6 +50,9 @@ import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
+import com.integration.zoy.entity.ZoyPgGenderMaster;
+import com.integration.zoy.entity.ZoyPgPropertyRentCycle;
+import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
@@ -379,8 +382,13 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				populateColumn(masterSheet, 2, filteredShares, ZoyPgShareMaster::getShareType);
 				populateColumn(masterSheet, 3, filteredShares, ZoyPgShareMaster::getShareOccupancyCount);
 				populateColumn(masterSheet, 4, ownerDBImpl.getAllRoomTypes(), ZoyPgRoomTypeMaster::getRoomTypeName);
-				setStaticValues(masterSheet, 5, List.of("Male", "Female","Transgender"));
+				populateColumn(masterSheet, 5, ownerDBImpl.getAllGenderTypes() , ZoyPgGenderMaster::getGenderName);
 				setStaticValues(masterSheet, 6, List.of("Yes", "No"));
+				List<ZoyPgRentCycleMaster> filteredRentCycles = ownerDBImpl.getAllRentCycle().stream()
+						.filter(cycle -> !"00-00".equals(cycle.getCycleName()))
+						.collect(Collectors.toList());
+
+				populateColumn(masterSheet, 7, filteredRentCycles, ZoyPgRentCycleMaster::getCycleName);
 
 				masterSheet.protectSheet(masterPassword);
 				workbook.write(outStream);

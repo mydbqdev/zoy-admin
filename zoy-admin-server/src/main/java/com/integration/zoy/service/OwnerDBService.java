@@ -30,7 +30,7 @@ import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgForceCheckOut;
 import com.integration.zoy.entity.ZoyPgGenderMaster;
-import com.integration.zoy.entity.ZoyPgGstCharges;
+import com.integration.zoy.entity.ZoyPgRentGst;
 import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
@@ -69,7 +69,7 @@ import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
 import com.integration.zoy.repository.ZoyPgFloorNameMasterRepository;
 import com.integration.zoy.repository.ZoyPgForceCheckOutRepository;
 import com.integration.zoy.repository.ZoyPgGenderMasterRepository;
-import com.integration.zoy.repository.ZoyPgGstChargesRepository;
+import com.integration.zoy.repository.ZoyPgRentGstRepository;
 import com.integration.zoy.repository.ZoyPgNoRentalAgreementRespository;
 import com.integration.zoy.repository.ZoyPgOtherChargesRepository;
 import com.integration.zoy.repository.ZoyPgOwnerBookingDetailsRepository;
@@ -168,7 +168,7 @@ public class OwnerDBService implements OwnerDBImpl{
 	private ZoyPgOtherChargesRepository zoyPgOtherChargesRepo;
 
 	@Autowired
-	private ZoyPgGstChargesRepository zoyPgGstChargesRepo;
+	private ZoyPgRentGstRepository zoyPgGstChargesRepo;
 
 	@Autowired
 	private ZoyPgEarlyCheckOutRepository zoyPgEarlyCheckOutRepository;
@@ -703,8 +703,8 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public ZoyPgGstCharges findZoyGstCharges() throws WebServiceException {
-		List<ZoyPgGstCharges> results =zoyPgGstChargesRepo.findAll(PageRequest.of(0, 1)).getContent();
+	public ZoyPgRentGst findZoyGstCharges() throws WebServiceException {
+		List<ZoyPgRentGst> results =zoyPgGstChargesRepo.findAll(PageRequest.of(0, 1)).getContent();
 		return results.isEmpty() ? null : results.get(0);
 	}
 
@@ -714,7 +714,7 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public ZoyPgGstCharges saveGstCharges(ZoyPgGstCharges gst) throws WebServiceException {
+	public ZoyPgRentGst saveGstCharges(ZoyPgRentGst gst) throws WebServiceException {
 		return zoyPgGstChargesRepo.save(gst);
 	}
 
@@ -879,8 +879,8 @@ public class OwnerDBService implements OwnerDBImpl{
 	}
 
 	@Override
-	public List<ZoyPgGstCharges> findAllGstChargesDetailsSorted() throws WebServiceException {
-		List<ZoyPgGstCharges> results = zoyPgGstChargesRepo.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
+	public List<ZoyPgRentGst> findAllGstChargesDetailsSorted() throws WebServiceException {
+		List<ZoyPgRentGst> results = zoyPgGstChargesRepo.findAll(Sort.by(Sort.Order.desc("effectiveDate")));  
 		return results;
 	}
 
@@ -1019,4 +1019,15 @@ public class OwnerDBService implements OwnerDBImpl{
 		return zoyPgPropertyDetailsRepository.findZoyCodeCounter(zoyCode);
 	}
 
+	@Override
+	public ZoyCompanyProfileMaster getZoyHeadOfficeDetails() {
+		return zoyCompanyProfileMasterRepository.getZoyHeadOfficeDetails();
+	}
+
+	@Override
+	public ZoyPgRentGst findPgRentGst() {
+		return zoyPgGstChargesRepo.findPgRentGst();
+	}
+
+	
 }
