@@ -45,7 +45,7 @@ import com.integration.zoy.entity.ZoyPgAutoCancellationMaster;
 import com.integration.zoy.entity.ZoyPgCancellationDetails;
 import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
 import com.integration.zoy.entity.ZoyPgForceCheckOut;
-import com.integration.zoy.entity.ZoyPgGstCharges;
+import com.integration.zoy.entity.ZoyPgRentGst;
 import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgSecurityDepositDetails;
@@ -65,7 +65,7 @@ import com.integration.zoy.repository.ZoyDataGroupingRepository;
 import com.integration.zoy.repository.ZoyPgCancellationDetailsRepository;
 import com.integration.zoy.repository.ZoyPgEarlyCheckOutRepository;
 import com.integration.zoy.repository.ZoyPgForceCheckOutRepository;
-import com.integration.zoy.repository.ZoyPgGstChargesRepository;
+import com.integration.zoy.repository.ZoyPgRentGstRepository;
 import com.integration.zoy.repository.ZoyPgNoRentalAgreementRespository;
 import com.integration.zoy.repository.ZoyPgOtherChargesRepository;
 import com.integration.zoy.repository.ZoyPgRentingDurationRepository;
@@ -161,7 +161,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 	ZoyPgRentingDurationRepository zoyPgRentingDurationRepository;
 
 	@Autowired
-	ZoyPgGstChargesRepository zoyPgGstChargesRepository;
+	ZoyPgRentGstRepository zoyPgGstChargesRepository;
 
 	@Autowired
 	ZoyPgOtherChargesRepository zoyPgOtherChargesRepository;
@@ -809,14 +809,14 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			BigDecimal monthlyRent;
 
 			if (details.getRentId() != null && !details.getRentId().isEmpty()) {
-				Optional<ZoyPgGstCharges> PgGstChargesDetails = zoyPgGstChargesRepository.findById(details.getRentId());
+				Optional<ZoyPgRentGst> PgGstChargesDetails = zoyPgGstChargesRepository.findById(details.getRentId());
 
 				if (!PgGstChargesDetails.isPresent()) {
 					response.setStatus(HttpStatus.BAD_REQUEST.value());
 					response.setError("Required GST Charges details not found");
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 				} else {
-					ZoyPgGstCharges oldDetails = PgGstChargesDetails.get();
+					ZoyPgRentGst oldDetails = PgGstChargesDetails.get();
 
 					final BigDecimal oldCGstPercentage = oldDetails.getCgstPercentage();
 					final BigDecimal oldSGstPercentage = oldDetails.getSgstPercentage();
@@ -915,7 +915,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				igstPercentage = (details.getIgstPercentage() != null) ? details.getIgstPercentage() : BigDecimal.ZERO;
 				monthlyRent = (details.getMonthlyRent() != null) ? details.getMonthlyRent() : BigDecimal.ZERO;
 
-				ZoyPgGstCharges newGstCharges = new ZoyPgGstCharges();
+				ZoyPgRentGst newGstCharges = new ZoyPgRentGst();
 
 				newGstCharges.setCgstPercentage(cgstPercentage);
 				newGstCharges.setSgstPercentage(sgstPercentage);
@@ -933,7 +933,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			}
 
-			List<ZoyPgGstCharges> allDetails = ownerDBImpl.findAllGstChargesDetailsSorted();
+			List<ZoyPgRentGst> allDetails = ownerDBImpl.findAllGstChargesDetailsSorted();
 			List<ZoyGstChargesDto> dto = allDetails.stream().map(this::convertToDTO).collect(Collectors.toList());
 
 			response.setStatus(HttpStatus.OK.value());
@@ -965,7 +965,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		return dto;
 	}
 
-	private ZoyGstChargesDto convertToDTO(ZoyPgGstCharges entity) {
+	private ZoyGstChargesDto convertToDTO(ZoyPgRentGst entity) {
 		ZoyGstChargesDto dto = new ZoyGstChargesDto();
 		dto.setRentId(entity.getRentId());
 		dto.setCgstPercentage(entity.getCgstPercentage());
@@ -2547,7 +2547,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					.findAllSecurityDepositDeadlineSorted();
 			List<ZoyDataGrouping> dataGrouping = ownerDBImpl.findAllDataGroupingSorted();
 			List<ZoyPgOtherCharges> otherCharges = ownerDBImpl.findAllOtherChargesDetailsSorted();
-			List<ZoyPgGstCharges> gstCharges = ownerDBImpl.findAllGstChargesDetailsSorted();
+			List<ZoyPgRentGst> gstCharges = ownerDBImpl.findAllGstChargesDetailsSorted();
 //			List<ZoyPgShortTermMaster> shortTermMaster = ownerDBImpl.findAllShortTerm();
 			List<ZoyPgForceCheckOut> forceCheckOut = ownerDBImpl.findAllForceCheckOutDetailsSorted();
 			List<ZoyPgNoRentalAgreement> noRentalAgreement = ownerDBImpl.findAllNoRentalAgreementDetailsSorted();
@@ -2618,7 +2618,7 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 
 			if (gstCharges != null) {
 				List<ZoyGstChargesDto> listZoyGstChargesDto = new ArrayList<>();
-				for (ZoyPgGstCharges detail : gstCharges) {
+				for (ZoyPgRentGst detail : gstCharges) {
 					listZoyGstChargesDto.add(convertToDTO(detail));
 				}
 				configDTO.setGstCharges(listZoyGstChargesDto);

@@ -50,6 +50,9 @@ import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
+import com.integration.zoy.entity.ZoyPgGenderMaster;
+import com.integration.zoy.entity.ZoyPgPropertyRentCycle;
+import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
@@ -379,9 +382,10 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				populateColumn(masterSheet, 2, filteredShares, ZoyPgShareMaster::getShareType);
 				populateColumn(masterSheet, 3, filteredShares, ZoyPgShareMaster::getShareOccupancyCount);
 				populateColumn(masterSheet, 4, ownerDBImpl.getAllRoomTypes(), ZoyPgRoomTypeMaster::getRoomTypeName);
-				setStaticValues(masterSheet, 5, List.of("Male", "Female","Transgender"));
-				setStaticValues(masterSheet, 6, List.of("Yes", "No"));
-
+				populateColumn(masterSheet, 5, ownerDBImpl.getAllGenderTypes() , ZoyPgGenderMaster::getGenderName);
+				setStaticValues(masterSheet, 6, List.of("Yes", "No","Partial"));
+				populateColumn(masterSheet, 7, ownerDBImpl.getAllRentCycle(), ZoyPgRentCycleMaster::getCycleName);
+				
 				masterSheet.protectSheet(masterPassword);
 				workbook.write(outStream);
 
@@ -464,10 +468,10 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			bulkUploadDetails.setStatus(ZoyConstant.UPLOAD_PROCESSING);
 			bulkUploadDetails.setFileName(fileName);
 			
-			String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
-			String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
-			
-			bulkUploadDetails.setFilePath(fileUrl);
+//			String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
+//			String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+//			
+//			bulkUploadDetails.setFilePath(fileUrl);
 			BulkUploadDetails saved=adminDBImpl.saveBulkUpload(bulkUploadDetails);
 
 			zoyAdminService.processBulkUpload(property.getOwnerId(),property.getPropertyId(),tenantList,propertyList,fileName,jobExecutionId,saved);
