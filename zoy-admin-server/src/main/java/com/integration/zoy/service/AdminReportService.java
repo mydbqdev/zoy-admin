@@ -1323,6 +1323,8 @@ public class AdminReportService implements AdminReportImpl{
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
 		String currentDate = LocalDate.now().toString();
+	    LocalDate toDate = LocalDate.now();
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		for (Object item : dataItems) {
 			Map<String, Object> data = new HashMap<>();
@@ -1333,14 +1335,13 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("contactNumber", potentialPropertyData.getOwnerContactNumber() != null ? potentialPropertyData.getOwnerContactNumber() : "");
 			data.put("email", potentialPropertyData.getOwnerEmailAddress() != null ? potentialPropertyData.getOwnerEmailAddress() : "");
 			data.put("address", potentialPropertyData.getPropertyAddress()!= null ? potentialPropertyData.getPropertyAddress() : "");
-			// Common fields
+			data.put("toDate", toDate.format(formatter));
 			data.put("printedOn", currentDate);
 
 			dataList.add(data);
 		}
 		return dataList;
 	}
-	
 	public List<Map<String, Object>> generateFailureTransactionReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
