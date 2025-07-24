@@ -214,4 +214,15 @@ public interface PgOwnerMasterImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> getPgLocationCode(@RequestParam("location")String location);
 	
+	@Operation(summary = "check owner detalis in sales", description = "to check if the details of owner are present already for zoy code generarion", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Pg Owner" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/checkPgOwnerDetalais",
+	produces = { "application/json" })
+	ResponseEntity<String> checkPgOwnerDetalais(@RequestParam("ownerDetails")String ownerDetails);
+	
 }
