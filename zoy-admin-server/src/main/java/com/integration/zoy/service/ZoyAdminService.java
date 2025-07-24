@@ -279,7 +279,9 @@ public class ZoyAdminService {
 				tenant.setBedNumber(getStringCellValue(row, 11));    
 				tenant.setDepositPaid(new BigDecimal(getStringCellValue(row, 12)));  
 				tenant.setRentPaid(getStringCellValue(row, 13));     
-				tenant.setRentAmount(new BigDecimal(getStringCellValue(row, 14)));     
+				tenant.setRentAmount(new BigDecimal(getStringCellValue(row, 14)));    
+				tenant.setRentCycle(getStringCellValue(row, 15));    
+				tenant.setActualInDate(getTimestampCellValue(row, 16));    
 				tenantList.add(tenant);
 			}
 		}
