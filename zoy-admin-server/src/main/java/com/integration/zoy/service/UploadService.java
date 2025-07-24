@@ -395,14 +395,14 @@ public class UploadService {
 				params.put(3, String.valueOf(saveMyBookings.getInDate()));
 				params.put(4, String.valueOf(saveMyBookings.getOutDate()));
 				whatsapp.setParams(params);
-				//whatsAppService.sendWhatsappMessage(whatsapp);
+				whatsAppService.sendWhatsappMessage(whatsapp);
 
 				ZoyPgShareMaster pgPropertyShareTypes=ownerDBImpl.getShareById(saveMyBookings.getShare());
 				ZoyPgBedDetails bedName=ownerDBImpl.getBedsId(saveMyBookings.getSelectedBed());
 				ZoyPgRoomDetails roomDetails=ownerDBImpl.findRoomName(saveMyBookings.getRoom());
-				//zoyEmailService.sendBookingEmail(master.getUserEmail(), saveMyBookings, propertyDetail, zoyPgOwnerDetails,bedName,pgPropertyShareTypes.getShareType(),roomDetails.getRoomName());
+				zoyEmailService.sendBookingEmail(master.getUserEmail(), saveMyBookings, propertyDetail, zoyPgOwnerDetails,bedName,pgPropertyShareTypes.getShareType(),roomDetails.getRoomName());
 
-				//generateSendRentalAgreement(master,propertyDetail,saveMyBookings);
+				generateSendRentalAgreement(master,propertyDetail,saveMyBookings);
 			}
 
 			response.setStatus(HttpStatus.OK.value());
@@ -675,12 +675,12 @@ public class UploadService {
 		Map<Integer,String> parm=new HashMap<>();
 		parm.put(1, tenantDetails.getFirstName());
 		whatsapp.setParams(parm);
-		//whatsAppService.sendWhatsappMessage(whatsapp);
+		whatsAppService.sendWhatsappMessage(whatsapp);
 
 		RegisterUser registerUser=new RegisterUser();
 		registerUser.setEmail(tenantDetails.getEmail());
 		registerUser.setFirstName(tenantDetails.getFirstName());
-		//zoyEmailService.sendUserWelcomeMail(registerUser);
+		zoyEmailService.sendUserWelcomeMail(registerUser);
 
 		return master.getUserId();
 	}
