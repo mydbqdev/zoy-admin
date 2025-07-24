@@ -1071,4 +1071,40 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	
 	}
 
+	@Override
+	public ResponseEntity<String> checkPgOwnerDetalais(String ownerDetails) {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<Object[]> pgOwnerDetails = pgOwnerMaterRepository.checkAndGetOwnerDetails(ownerDetails);
+
+			if (pgOwnerDetails == null || pgOwnerDetails.isEmpty()) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("No PG Owner details found.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+			}
+
+			Object[] ownerArray = pgOwnerDetails.get(0);
+			PgOwnerMasterModel ownerData = new PgOwnerMasterModel();
+
+			ownerData.setFirstName(ownerArray[1] != null ? (String) ownerArray[1] : null);
+			ownerData.setLastName(ownerArray[2] != null ? (String) ownerArray[2] : null);
+			ownerData.setEmailId(ownerArray[3] != null ? (String) ownerArray[3] : null);
+			ownerData.setMobileNo(ownerArray[4] != null ? (String) ownerArray[4] : null);
+			ownerData.setPropertyName(ownerArray[5] != null ? (String) ownerArray[5] : null);
+			ownerData.setPropertyPincode(ownerArray[6] != null ? Integer.valueOf(ownerArray[6].toString()) : null);
+			ownerData.setPropertyState(ownerArray[7] != null ? (String) ownerArray[7] : null);
+			ownerData.setPropertyCity(ownerArray[8] != null ? (String) ownerArray[8] : null);
+			ownerData.setPropertyHouseArea(ownerArray[9] != null ? (String) ownerArray[9] : null);
+
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Successfully fetched Owner card details.");
+			return new ResponseEntity<>(gson.toJson(ownerData), HttpStatus.OK);
+
+		} catch (Exception ex) {
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(ex.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }
