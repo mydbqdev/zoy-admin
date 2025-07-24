@@ -1,5 +1,6 @@
 package com.integration.zoy.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,9 @@ import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.entity.ZoyPgAmenetiesMaster;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
+import com.integration.zoy.entity.ZoyPgGenderMaster;
+import com.integration.zoy.entity.ZoyPgPropertyRentCycle;
+import com.integration.zoy.entity.ZoyPgRentCycleMaster;
 import com.integration.zoy.entity.ZoyPgRoomTypeMaster;
 import com.integration.zoy.entity.ZoyPgShareMaster;
 import com.integration.zoy.entity.ZoyPgTypeMaster;
@@ -62,7 +67,9 @@ import com.integration.zoy.utils.BulkUploadData;
 import com.integration.zoy.utils.ErrorDetail;
 import com.integration.zoy.utils.OwnerPropertyDetails;
 import com.integration.zoy.utils.PropertyDetails;
+import com.integration.zoy.utils.PropertyList;
 import com.integration.zoy.utils.ResponseBody;
+import com.integration.zoy.utils.TenantList;
 import com.integration.zoy.utils.UploadTenant;
 
 
@@ -375,8 +382,13 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 				populateColumn(masterSheet, 2, filteredShares, ZoyPgShareMaster::getShareType);
 				populateColumn(masterSheet, 3, filteredShares, ZoyPgShareMaster::getShareOccupancyCount);
 				populateColumn(masterSheet, 4, ownerDBImpl.getAllRoomTypes(), ZoyPgRoomTypeMaster::getRoomTypeName);
-				setStaticValues(masterSheet, 5, List.of("Male", "Female","Transgender"));
+				populateColumn(masterSheet, 5, ownerDBImpl.getAllGenderTypes() , ZoyPgGenderMaster::getGenderName);
 				setStaticValues(masterSheet, 6, List.of("Yes", "No"));
+				List<ZoyPgRentCycleMaster> filteredRentCycles = ownerDBImpl.getAllRentCycle().stream()
+						.filter(cycle -> !"00-00".equals(cycle.getCycleName()))
+						.collect(Collectors.toList());
+
+				populateColumn(masterSheet, 7, filteredRentCycles, ZoyPgRentCycleMaster::getCycleName);
 
 				masterSheet.protectSheet(masterPassword);
 				workbook.write(outStream);
@@ -429,14 +441,27 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 
 	@Override
 	public ResponseEntity<String> uploadBulkPropertyTenantFile(String data, MultipartFile file) {
-
 		ResponseBody response=new ResponseBody();
-		try {
+		MultipartFile actualFile= file;
+		String fileName=file.getOriginalFilename();
+		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(actualFile.getInputStream().readAllBytes());
+				Workbook workbook = new XSSFWorkbook(inputStream)){
+
+			String validationDone = zoyAdminService.parseMasterSheet(workbook.getSheet("Tenant"));
+			
+			if(validationDone==null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError("Macros Validation is not done, Please upload validated files only");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+
+			List<PropertyList> propertyList = zoyAdminService.parsePropertySheet(workbook.getSheet("Property"));
+			List<TenantList> tenantList = zoyAdminService.parseTenantSheet(workbook.getSheet("Tenant"));
+
 			UploadTenant property=gson2.fromJson(data,UploadTenant.class);
 			BulkUploadDetails bulkUploadDetails=new BulkUploadDetails();
-			String fileName=file.getOriginalFilename();
-			InputStream inputStream = file.getInputStream();
-			byte[] fileBytes = inputStream.readAllBytes();
+			//InputStream inputStream = file.getInputStream();
+			//byte[] fileBytes = inputStream.readAllBytes();
 			String jobExecutionId = UUID.randomUUID().toString();
 			bulkUploadDetails.setJobExeId(jobExecutionId);
 			bulkUploadDetails.setCategory("Property & Tenant");
@@ -444,13 +469,17 @@ public class ZoyAdminUploadController implements ZoyAdminUploadImpl {
 			bulkUploadDetails.setOwnerName(property.getOwnerName());
 			bulkUploadDetails.setPropertyId(property.getPropertyId());
 			bulkUploadDetails.setPropertyName(property.getPropertyName());
-			bulkUploadDetails.setStatus("Processing");
-			bulkUploadDetails.setFileName(file.getOriginalFilename());
+			bulkUploadDetails.setStatus(ZoyConstant.UPLOAD_PROCESSING);
+			bulkUploadDetails.setFileName(fileName);
+			
 			String uploadedFileName = property.getOwnerId() + "/" + property.getPropertyId() + "/" + fileName;
 			String fileUrl = zoyS3Service.uploadFile(zoypgUploadDocsBucketName,uploadedFileName,file);
+			
 			bulkUploadDetails.setFilePath(fileUrl);
-			adminDBImpl.saveBulkUpload(bulkUploadDetails);
-			zoyAdminService.processBulkUpload(property.getOwnerId(),property.getPropertyId(),fileBytes,fileName,jobExecutionId);
+			BulkUploadDetails saved=adminDBImpl.saveBulkUpload(bulkUploadDetails);
+
+			zoyAdminService.processBulkUpload(property.getOwnerId(),property.getPropertyId(),tenantList,propertyList,fileName,jobExecutionId,saved);
+
 			String historyContent=" has uploaded tenent file for "+property.getOwnerId()+"/"+property.getPropertyId();
 			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_PROPERTY_FILE_UPLOAD);
 

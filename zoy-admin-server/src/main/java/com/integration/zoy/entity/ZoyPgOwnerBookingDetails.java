@@ -114,6 +114,15 @@ public class ZoyPgOwnerBookingDetails {
     @Column(name = "rental_agreement" ,nullable = false)
     private Boolean rentalAgreement = false;
     
+    @Column(name = "rent_discount")
+    private BigDecimal rentDiscount;
+    
+    @Column(name = "actual_rent")
+    private BigDecimal actualRent;
+    
+    @Column(name = "actual_in_date")
+	private Timestamp actualInDate;
+    
 	public String getBookingId() {
 		return bookingId;
 	}
@@ -360,6 +369,30 @@ public class ZoyPgOwnerBookingDetails {
 
 	public void setRentalAgreement(Boolean rentalAgreement) {
 		this.rentalAgreement = rentalAgreement;
+	}
+	
+	public BigDecimal getRentDiscount() {
+		return rentDiscount;
+	}
+
+	public void setRentDiscount(BigDecimal rentDiscount) {
+		this.rentDiscount = rentDiscount;
+	}
+
+	public BigDecimal getActualRent() {
+		return actualRent;
+	}
+
+	public void setActualRent(BigDecimal actualRent) {
+		this.actualRent = actualRent;
+	}
+
+	public Timestamp getActualInDate() {
+		return actualInDate;
+	}
+
+	public void setActualInDate(Timestamp actualInDate) {
+		this.actualInDate = actualInDate;
 	}
 
 	@PrePersist

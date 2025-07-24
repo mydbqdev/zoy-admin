@@ -18,6 +18,9 @@ public class TenantList {
 	private String bedNumber;
 	private BigDecimal depositPaid;
 	private String rentPaid;
+	private BigDecimal rentAmount;
+	private String rentCycle;
+	private Timestamp actualInDate;
 	public String getFirstName() {
 		return firstName;
 	}
@@ -102,12 +105,32 @@ public class TenantList {
 	public void setRentPaid(String rentPaid) {
 		this.rentPaid = rentPaid;
 	}
-
+	public BigDecimal getRentAmount() {
+		return rentAmount;
+	}
+	public void setRentAmount(BigDecimal rentAmount) {
+		this.rentAmount = rentAmount;
+	}
+	public String getRentCycle() {
+		return rentCycle;
+	}
+	public void setRentCycle(String rentCycle) {
+		this.rentCycle = rentCycle;
+	}
+	public Timestamp getActualInDate() {
+		return actualInDate;
+	}
+	public void setActualInDate(Timestamp actualInDate) {
+		this.actualInDate = actualInDate;
+	}
 	@Override
 	public String toString() {
 		return "TenantList [firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
 				+ ", email=" + email + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + ", permanentAddress="
 				+ permanentAddress + ", inDate=" + inDate + ", outDate=" + outDate + ", floor=" + floor + ", room="
-				+ room + ", bedNumber=" + bedNumber + ", depositPaid=" + depositPaid + ", rentPaid=" + rentPaid + "]";
+				+ room + ", bedNumber=" + bedNumber + ", depositPaid=" + depositPaid + ", rentPaid=" + rentPaid
+				+ ", rentAmount=" + rentAmount + ", rentCycle=" + rentCycle + ", actualInDate=" + actualInDate + "]";
 	}
+	
+	
 }
