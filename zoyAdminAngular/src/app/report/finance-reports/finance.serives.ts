@@ -48,7 +48,7 @@ import { MessageService } from 'src/app/message.service';
     },
     { 
       'reportName': 'ZOY Revenue Report', 
-      "columns": ["transactionDate", "invoiceNumber", "pgName", "tenantName", "sharingType", "bedNumber", "paymentMode", "amountPaid", "zoyShare", "zoyShareAmount"]
+      "columns": ["transactionDate", "invoiceNumber", "pgName", "tenantName", "sharingType", "bedNumber", "paymentMode", "amountPaid","amountType", "zoyShare", "zoyShareAmount"]
     }
 
 	  ];

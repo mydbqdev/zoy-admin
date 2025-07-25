@@ -162,14 +162,15 @@ export class SalesComponent implements OnInit, AfterViewInit {
 			}
 		}
 
-		const group =this.salesGroupList.find(s=>s.name.toLocaleLowerCase() == this.generateSalesPerson.userGroupName?.toLocaleLowerCase());
-		if(this.generateSalesPerson.userGroupId == '0' && group?.id){
+		const group =this.salesGroupList.find(s=>s.name.toLocaleLowerCase() == this.generateSalesPerson.userGroupName?.toLocaleLowerCase()) || new UserDesignation();
+
+		if(this.generateSalesPerson.userGroupId == '0' && group.id){
 			this.generateSalesPerson.userGroupId = group.id ;
 			this.generateSalesPerson.userGroupName="";
 		}
-		this.spinner.show();		     
+	   const data = JSON.parse(JSON.stringify(this.generateSalesPerson));
 		this.submitted=false;
-		this.generateSalesService.registerSubmitSalesPerson(this.generateSalesPerson).subscribe((res) => {
+		this.generateSalesService.registerSubmitSalesPerson(data).subscribe((res) => {
 			this.notifyService.showSuccess(res.message, "");	
 			this.generateSalesPerson = new SalesData();
 			this.spinner.hide();
