@@ -21,7 +21,7 @@ import com.integration.zoy.entity.ZoyPgEarlyCheckOut;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgForceCheckOut;
 import com.integration.zoy.entity.ZoyPgGenderMaster;
-import com.integration.zoy.entity.ZoyPgGstCharges;
+import com.integration.zoy.entity.ZoyPgRentGst;
 import com.integration.zoy.entity.ZoyPgNoRentalAgreement;
 import com.integration.zoy.entity.ZoyPgOtherCharges;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
@@ -133,9 +133,9 @@ public interface OwnerDBImpl {
 	ZoyShareMaster saveZoyShare(ZoyShareMaster shareDetails)throws WebServiceException;
 	List<ZoyShareMaster> findAllZoyShare() throws WebServiceException;
 	ZoyPgOtherCharges findZoyOtherCharges() throws WebServiceException;
-	ZoyPgGstCharges findZoyGstCharges() throws WebServiceException;
+	ZoyPgRentGst findZoyGstCharges() throws WebServiceException;
 	ZoyPgOtherCharges saveOtherCharges(ZoyPgOtherCharges other) throws WebServiceException;
-	ZoyPgGstCharges saveGstCharges(ZoyPgGstCharges other) throws WebServiceException;
+	ZoyPgRentGst saveGstCharges(ZoyPgRentGst other) throws WebServiceException;
 	ZoyDataGrouping findZoyDataGroup() throws WebServiceException;
 	ZoyDataGrouping saveDataGroup(ZoyDataGrouping group) throws WebServiceException;
 	List<ZoyDataGrouping> findAllDataGroup()throws WebServiceException;
@@ -177,7 +177,7 @@ public interface OwnerDBImpl {
 	List<ZoyPgAutoCancellationAfterCheckIn> findAllAfterCheckInDatesSorted() throws WebServiceException;
 	List<ZoyPgShortTermRentingDuration> findAllShortTermRentingDurationDetailsSorted() throws WebServiceException;
 	List<ZoyPgAutoCancellationMaster> findAllSecurityDepositDeadlineSorted() throws WebServiceException;
-	List<ZoyPgGstCharges> findAllGstChargesDetailsSorted() throws WebServiceException;
+	List<ZoyPgRentGst> findAllGstChargesDetailsSorted() throws WebServiceException;
 	List<ZoyPgOtherCharges> findAllOtherChargesDetailsSorted() throws WebServiceException;
 	List<RentalAgreementDoc> findAllRentalAgreementDetailsSorted() throws WebServiceException;
 	ZoyPgFloorNameMaster createFloorName(ZoyPgFloorNameMaster floorNameMasters)throws WebServiceException;
@@ -193,4 +193,6 @@ public interface OwnerDBImpl {
 	PgTypeGenderMaster savePgTypeGenderMapping(PgTypeGenderMaster mapping) throws WebServiceException;
 	String getPgIdByPgType(String pgType) throws WebServiceException;
 	void deletePgTypeGenderMapping(String pgId) throws WebServiceException;
+	ZoyCompanyProfileMaster getZoyHeadOfficeDetails();
+	ZoyPgRentGst findPgRentGst();
 }
