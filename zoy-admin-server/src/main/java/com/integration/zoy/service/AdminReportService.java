@@ -3426,7 +3426,7 @@ public class AdminReportService implements AdminReportImpl{
 						sort = "um.user_first_name || '' || um.user_last_name";
 						break;
 					case "pgName":
-						sort = "zpd.property_name";
+						sort = "prop.property_name";
 						break;
 					case "transactionDate":
 						sort = "up.user_payment_created_at";
@@ -3444,7 +3444,7 @@ public class AdminReportService implements AdminReportImpl{
 						sort = "up.user_payment_zoy_payment_mode";
 						break;
 					case "amountPaid":
-						sort = "up.user_payment_payable_amount";
+						sort = "AmountPaid";
 						break;
 					case "zoyShare":
 						sort = "zoyshare";
@@ -3454,6 +3454,7 @@ public class AdminReportService implements AdminReportImpl{
 						break;
 					case "amountType":
 						sort= "dueType";
+						break;
 					default:
 						sort = "um.user_first_name || '' || um.user_last_name";
 				}
