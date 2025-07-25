@@ -35,7 +35,10 @@ public class ZoyShareReportDTO {
 
 	@SerializedName("zoyShareAmount")
 	private BigDecimal zoyShareAmount;
-
+	
+	@SerializedName("amountType")
+	private String amountType;
+	
 	// Getters and Setters
 
 	public Timestamp getTransactionDate() {
@@ -117,4 +120,13 @@ public class ZoyShareReportDTO {
 	public void setZoyShareAmount(BigDecimal zoyShareAmount) {
 		this.zoyShareAmount = zoyShareAmount;
 	}
+
+	public String getAmountType() {
+		return amountType;
+	}
+
+	public void setAmountType(String amountType) {
+		this.amountType = amountType;
+	}
+	
 }
