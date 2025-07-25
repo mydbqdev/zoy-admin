@@ -1488,6 +1488,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("bedNumber", zoyShareReport.getBedNumber() != null ? zoyShareReport.getBedNumber() : "");
 			data.put("paymentMode", zoyShareReport.getPaymentMode() != null ? zoyShareReport.getPaymentMode() : "");
 			data.put("amountPaid", zoyShareReport.getAmountPaid() != null ? zoyShareReport.getAmountPaid() : "");
+			data.put("amountType", zoyShareReport.getAmountType() != null ? zoyShareReport.getAmountType() : "");
 			data.put("zoyShare", zoyShareReport.getZoyShare() != null ? zoyShareReport.getZoyShare() : "");
 			data.put("zoyShareAmount", zoyShareReport.getZoyShareAmount() != null ? zoyShareReport.getZoyShareAmount() : "");
 
@@ -3306,33 +3307,62 @@ public class AdminReportService implements AdminReportImpl{
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder(
-				"SELECT " +
-				" zpossu.pg_owner_settlement_split_up_id, " +
-				" zposs.pg_owner_settlement_id, " +
-				" up.user_payment_created_at AS TransactionDate, " +
-				" up.user_payment_result_invoice_id AS TenantInvoiceNo, " +
-				" zpd.property_name AS PGName, " +
-				" CONCAT(um.user_first_name, '', um.user_last_name) AS TenantName, " +
-				" sm.share_type AS SharingType, " +
-				" bd.bed_name AS BedNo, " +
-				" up.user_payment_zoy_payment_mode AS ModeOfPayment, " +
-				" up.user_payment_payable_amount AS AmountPaid, " +
-				" CASE WHEN zpd.zoy_variable_share = 0 THEN CONCAT(zpd.zoy_fixed_share, ' Rs') " +
-				" ELSE CONCAT(zpd.zoy_variable_share, ' %') END AS zoyshare, " +
-				" CASE WHEN zpd.zoy_variable_share = 0 THEN (COUNT(DISTINCT zpqbd.selected_bed) * zpd.zoy_fixed_share) " +
-				" ELSE ROUND((zpd.zoy_variable_share / 100) * COALESCE(SUM(user_payment_payable_amount), 0), 2) END AS zoyShareAmount, " +
-				" zpd.property_city AS PropertyCity " +
-				" FROM pgowners.zoy_pg_owner_settlement_split_up zpossu " +
-				" LEFT JOIN pgowners.zoy_pg_owner_settlement_status zposs ON zposs.pg_owner_settlement_id = zpossu.pg_owner_settlement_id " +
-				" LEFT JOIN pgusers.user_payments up ON up.user_payment_id = zpossu.payment_id " +
-				" LEFT JOIN pgowners.zoy_pg_property_details zpd ON zpd.property_id = zposs.property_id " +
-				" LEFT JOIN pgowners.zoy_pg_owner_booking_details zpdb ON up.user_payment_booking_id = zpdb.booking_id " +
-				" LEFT JOIN pgowners.zoy_pg_bed_details bd ON zpdb.selected_bed = bd.bed_id " +
-				" LEFT JOIN pgusers.user_master um ON up.user_id = um.user_id " +
-				" LEFT JOIN pgowners.zoy_pg_property_details pd ON zpdb.property_id = pd.property_id " +
-				" LEFT JOIN pgowners.zoy_pg_share_master sm ON zpdb.share = sm.share_id " +
-				" LEFT JOIN pgowners.zoy_pg_owner_booking_details zpqbd ON zpdb.booking_id = zpqbd.booking_id " +
-				" WHERE 1=1 "
+				"  SELECT\r\n"
+				+ "    zpossu.pg_owner_settlement_split_up_id,\r\n"
+				+ "    zposs.pg_owner_settlement_id,\r\n"
+				+ "    up.user_payment_created_at AS TransactionDate,\r\n"
+				+ "    up.user_payment_result_invoice_id AS TenantInvoiceNo,\r\n"
+				+ "    prop.property_name AS PGName,\r\n"
+				+ "    CONCAT(um.user_first_name, '', um.user_last_name) AS TenantName,\r\n"
+				+ "    sm.share_type AS SharingType,\r\n"
+				+ "    bd.bed_name AS BedNo,\r\n"
+				+ "    up.user_payment_zoy_payment_mode AS ModeOfPayment,\r\n"
+				+ "    ud.user_due_amount AS AmountPaid,\r\n"
+				+ "    CASE \r\n"
+				+ "        WHEN due_m.due_name = 'Rent' THEN\r\n"
+				+ "            CASE \r\n"
+				+ "                WHEN prop.zoy_variable_share = 0 THEN CONCAT(prop.zoy_fixed_share, ' Rs')\r\n"
+				+ "                ELSE CONCAT(prop.zoy_variable_share, ' %') \r\n"
+				+ "            END\r\n"
+				+ "        ELSE NULL\r\n"
+				+ "    END AS zoyshare,\r\n"
+				+ "    CASE \r\n"
+				+ "        WHEN due_m.due_name = 'Rent' AND prop.zoy_variable_share = 0 \r\n"
+				+ "            THEN (COUNT(DISTINCT zpqbd.selected_bed) * prop.zoy_fixed_share)\r\n"
+				+ "        WHEN due_m.due_name = 'Rent' AND prop.zoy_variable_share > 0 \r\n"
+				+ "            THEN ROUND((prop.zoy_variable_share / 100.0) * COALESCE(SUM(ud.user_due_amount), 0), 2)\r\n"
+				+ "        WHEN due_m.due_name IN ('Ekyc Charges', 'Document Charges') \r\n"
+				+ "            THEN COALESCE(SUM(ud.user_due_amount), 0)\r\n"
+				+ "        ELSE 0\r\n"
+				+ "    END AS zoyShareAmount,\r\n"
+				+ "    due_m.due_name as dueType,\r\n"
+				+ "    prop.property_city AS PropertyCity\r\n"
+				+ "FROM pgowners.zoy_pg_owner_settlement_split_up zpossu\r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_owner_settlement_status zposs \r\n"
+				+ "    ON zposs.pg_owner_settlement_id = zpossu.pg_owner_settlement_id\r\n"
+				+ "LEFT JOIN pgusers.user_payments up \r\n"
+				+ "    ON up.user_payment_id = zpossu.payment_id\r\n"
+				+ "LEFT JOIN pgusers.user_payment_due upd \r\n"
+				+ "    ON up.user_payment_id = upd.user_payment_id\r\n"
+				+ "LEFT JOIN pgusers.user_dues ud \r\n"
+				+ "    ON ud.user_money_due_id = upd.user_money_due_id \r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_due_type_master ad \r\n"
+				+ "    ON ud.user_money_due_type = ad.due_id \r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_due_master due_m \r\n"
+				+ "    ON due_m.due_type_id = ad.due_type   \r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_property_details prop \r\n"
+				+ "    ON zposs.property_id = prop.property_id\r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_owner_booking_details zpdb \r\n"
+				+ "    ON up.user_payment_booking_id = zpdb.booking_id\r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_bed_details bd \r\n"
+				+ "    ON zpdb.selected_bed = bd.bed_id\r\n"
+				+ "LEFT JOIN pgusers.user_master um \r\n"
+				+ "    ON up.user_id = um.user_id\r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_share_master sm \r\n"
+				+ "    ON zpdb.share = sm.share_id\r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
+				+ "    ON zpdb.booking_id = zpqbd.booking_id\r\n"
+				+ "WHERE due_m.due_name IN ('Rent', 'Ekyc Charges', 'Document Charges')  "
 			);
  
 			Map<String, Object> parameters = new HashMap<>();
@@ -3351,11 +3381,11 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("invoiceNo", "%" + filterData.getInvoiceNo() + "%");
 			}
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-				queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
+				queryBuilder.append(" AND LOWER(prop.property_name) LIKE LOWER(:pgName) ");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
 			}
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-				queryBuilder.append(" AND LOWER(zpd.property_city) LIKE LOWER(:cityLocation) ");
+				queryBuilder.append(" AND LOWER(prop.property_city) LIKE LOWER(:cityLocation) ");
 				parameters.put("cityLocation", "%" + filterRequest.getCityLocation() + "%");
 			}
 			if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
@@ -3368,22 +3398,22 @@ public class AdminReportService implements AdminReportImpl{
 			}
  
 			queryBuilder.append(
-				" GROUP BY " +
-				" zpossu.pg_owner_settlement_split_up_id, " +
-				" zposs.pg_owner_settlement_id, " +
-				" up.user_payment_created_at, " +
-				" up.user_payment_result_invoice_id, " +
-				" zpd.property_name, " +
-				" um.user_first_name, " +
-				" um.user_last_name, " +
-				" sm.share_type, " +
-				" bd.bed_name, " +
-				" up.user_payment_zoy_payment_mode, " +
-				" up.user_payment_payable_amount, " +
-				" pd.zoy_variable_share, " +
-				" zpd.zoy_variable_share, " +
-				" zpd.zoy_fixed_share, " +
-				" zpd.property_city "
+				" GROUP BY \r\n"
+				+ "    zpossu.pg_owner_settlement_split_up_id,\r\n"
+				+ "    zposs.pg_owner_settlement_id,\r\n"
+				+ "    up.user_payment_created_at,\r\n"
+				+ "    up.user_payment_result_invoice_id,\r\n"
+				+ "    prop.property_name,\r\n"
+				+ "    um.user_first_name,\r\n"
+				+ "    um.user_last_name,\r\n"
+				+ "    sm.share_type,\r\n"
+				+ "    bd.bed_name,\r\n"
+				+ "    up.user_payment_zoy_payment_mode,\r\n"
+				+ "    ud.user_due_amount,\r\n"
+				+ "    prop.zoy_variable_share,\r\n"
+				+ "    prop.zoy_fixed_share,\r\n"
+				+ "    prop.property_city,\r\n"
+				+ "    due_m.due_name"
 			);
  
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
@@ -3422,6 +3452,8 @@ public class AdminReportService implements AdminReportImpl{
 					case "zoyShareAmount":
 						sort = "zoyShareAmount";
 						break;
+					case "amountType":
+						sort= "dueType";
 					default:
 						sort = "um.user_first_name || '' || um.user_last_name";
 				}
@@ -3455,7 +3487,7 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setAmountPaid(row[9] != null ?(BigDecimal) row[9] : BigDecimal.ZERO);
 				dto.setZoyShare(row[10] != null ? row[10].toString() : "0");
 				dto.setZoyShareAmount(row[11] != null ?(BigDecimal) row[11] : BigDecimal.ZERO);
-				
+				dto.setAmountType(row[12] != null ? row[12].toString() : "");
 				return dto;
 			}).collect(Collectors.toList());
  

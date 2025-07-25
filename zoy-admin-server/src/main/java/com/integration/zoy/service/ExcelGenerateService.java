@@ -330,8 +330,10 @@ public class ExcelGenerateService {
 			row.createCell(5).setCellValue("Bed Number");
 			row.createCell(6).setCellValue("Mode of Payment");
 			row.createCell(7).setCellValue("Amount Paid");
-			row.createCell(8).setCellValue("ZOY Share in %");
-			row.createCell(9).setCellValue("ZOY Share Amount");
+			row.createCell(8).setCellValue("Amount Type");
+			row.createCell(9).setCellValue("ZOY Share in %");
+			row.createCell(10).setCellValue("ZOY Share Amount");
+			
 			break;		
 		default:
 			throw new IllegalArgumentException("Invalid report type provided: " + reportType);
@@ -638,8 +640,9 @@ public class ExcelGenerateService {
 		        row.createCell(5).setCellValue(nullSafe(report.getBedNumber()));
 		        row.createCell(6).setCellValue(nullSafe(report.getPaymentMode()));
 		        row.createCell(7).setCellValue(nullSafe(report.getAmountPaid()));
-		        row.createCell(8).setCellValue(nullSafe(report.getZoyShare()));
-		        row.createCell(9).setCellValue(nullSafe(report.getZoyShareAmount()));
+		        row.createCell(8).setCellValue(nullSafe(report.getAmountType()));
+		        row.createCell(9).setCellValue(nullSafe(report.getZoyShare()));
+		        row.createCell(10).setCellValue(nullSafe(report.getZoyShareAmount()));
 		    }
 		    break;
 	
