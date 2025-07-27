@@ -108,6 +108,7 @@ import { MessageService } from 'src/app/message.service';
       'paymentMode': 'MODE OF PAYMENT',
       'ownerEmailAddress':'OWNER EMAIL ADDRESS',
       'ownerContactNumber':"OWNER CONTACT NUMBER",
+      'amountType':'AMOUNT TYPE'
       
   };
   
