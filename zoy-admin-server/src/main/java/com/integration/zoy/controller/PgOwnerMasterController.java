@@ -1098,7 +1098,9 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			ownerData.setPropertyState(ownerArray[7] != null ? (String) ownerArray[7] : null);
 			ownerData.setPropertyCity(ownerArray[8] != null ? (String) ownerArray[8] : null);
 			ownerData.setPropertyHouseArea(ownerArray[9] != null ? (String) ownerArray[9] : null);
-
+			ownerData.setPropertyLocality(ownerArray[10] != null ? (String) ownerArray[10] : null);
+			ownerData.setPropertyLocationLatitude(ownerArray[11] != null ? new BigDecimal(ownerArray[11].toString()) : null);
+			ownerData.setPropertyLocationLongitude(ownerArray[12] != null ? new BigDecimal(ownerArray[12].toString()) : null);
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("Successfully fetched Owner card details.");
 			return new ResponseEntity<>(gson.toJson(ownerData), HttpStatus.OK);
