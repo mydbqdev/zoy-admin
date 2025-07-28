@@ -85,15 +85,19 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	// Method to update the selected button
 	selectButton(button: string): void {
 	  this.selectedModel = button;
+	  this.submitted=false;
 	  if(this.selectedModel =='generated'){
 		 this.getZoyCodeDetails();
-		 this.submitted=false;
 		 this.form.reset();
+	  }else if(this.selectedModel=='ticket'){
+		this.revenueTypeTicket='fixed';
+		this.ticket= new ZoyData(); 
+   		this.searchInput ="";
 	  }else{
 		this.searchText='';
 		this.filterData();
 	  }
-
+	  this.generateZCode=new ZoyData();
 	}
 	ngOnDestroy() {
 		if (this.mySubscription) {
@@ -572,5 +576,153 @@ percentageOnly(event: KeyboardEvent) {
 			? (Number(element.zoy_variable_share).toFixed(2) + ' %') 
 			: ('Rs. ' + Number(element.zoy_fixed_share).toFixed(2));
   }
+   revenueTypeTicket: 'fixed' | 'variable' = 'fixed';
+   ticket:ZoyData= new ZoyData(); 
+   searchInput :string="";
+   submitZoyCode(): void {
+	this.submitted =true;
+ 
+    if (!this.generateZCode.zoyShare) {
+      return;
+    }
+
+		let  model = new ZoyData();
+		model.firstName = this.ticket.first_name
+		model.lastName = this.ticket.last_name
+		model.contactNumber = this.ticket.mobile_no
+		model.email_id = this.ticket.email_id
+		model.zoyShare = this.generateZCode.zoyShare
+		model.property_name = this.ticket.property_name
+		model.property_pincode = this.ticket.property_pincode
+		model.property_state = this.ticket.property_state
+		model.property_locality = this.ticket.property_locality
+		model.property_house_area = this.ticket.property_house_area
+		model.property_location_latitude = this.ticket.property_location_latitude
+		model.property_location_longitude = this.ticket.property_location_longitude
+		model.property_state_short_name = ""
+		model.property_city_code = this.ticket.property_city_code
+		model.property_city= this.ticket.property_city
+		model.property_city_code_id = this.ticket.property_city_code_id
+		model.property_locality_code = this.ticket.property_locality_code
+		model.property_locality_code_id = this.ticket.property_locality_code_id
+		model.property_street_name="";
+		model.property_door_number="";
+	this.spinner.show();
+  	this.generateZoyCodeService.generateOwnerCode(model,this.revenueTypeTicket).subscribe((res) => {
+			this.notifyService.showSuccess(res.message, "");
+			this.ticket=new ZoyData();
+			this.searchText="";
+			this.submitted =false			
+			this.spinner.hide();
+		  },error =>{
+			this.spinner.hide();
+			console.log("error.error",error)
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==409){
+				this.confirmationDialogService.confirm('Confirmation!!', 'A Zoycode has already been generated for this email Id/Mobile number, Would you like to resend the code?')
+				.then(
+				  (confirmed) =>{
+				   if(confirmed){
+					this.resendZoyCode()
+				   }
+				}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				); 
+			}else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+			}else if (error.error &&( error.error.message || error.error.error )) {
+			this.errorMsg =error.error.message || error.error.error;
+			console.log("Error:"+this.errorMsg);
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			  let str;
+			  if(error.status==400){
+			  str=error.error.error ;
+			  }else{
+				str=error.error.message || error.error.error;
+				str=str.substring(str.indexOf(":")+1);
+			  }
+			  console.log("Error:",str);
+			  this.errorMsg=str;
+			}
+		  }
+		  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  	//this.notifyService.showError(this.errorMsg, "");
+			}
+		  );  
+  }
+  
+    searchTicket(): void {
+    if (!this.searchInput.trim()) {
+      this.notifyService.showInfo('Please enter a Ticket Number or Email','');
+      return;
+    }
+		this.spinner.show();
+		this.generateZoyCodeService.fetchPGDetails(this.searchInput).subscribe(data => {
+			if(data!="" && data!=null && data!=undefined){
+			   this.ticket=data;
+			if(this.ticket.property_city){
+				this.getLocationDetailsForTicket(this.ticket.property_city,1) ;
+			}
+			if(this.ticket.property_locality){
+				this.getLocationDetailsForTicket(this.ticket.property_locality,2);
+			}
+			
+			console.log("this.ticket",this.ticket)
+		}
+
+		this.spinner.hide();
+		}, error => {
+		this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		 }else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+			this.errorMsg = error.error.message;
+			console.log("Error:" + this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+		} else {
+			if (error.status == 500 && error.statusText == "Internal Server Error") {
+			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+			} else {
+			let str;
+			if (error.status == 400) {
+				str = error.error.error;
+			} else {
+				str = error.error.message;
+				str = str.substring(str.indexOf(":") + 1);
+			}
+			console.log("Error:" ,str);
+			this.errorMsg = str;
+			}
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			//this.notifyService.showError(this.errorMsg, "");
+		}
+		});
+    }
+
+	  getLocationDetailsForTicket(loc:string,type:number) {
+		this.generateZoyCodeService.getLocationDetails(loc).subscribe(data => {
+			if(data!="" && data!=null && data!=undefined){
+				if(type==1 && data.location_short_name!=''){
+					this.ticket.property_city_code_id = data.location_code_id;
+					this.ticket.property_city_code = data.location_short_name;
+				}
+				if(type==2 && data.location_short_name!=''){
+					this.ticket.property_locality_code_id = data.location_code_id;
+					this.ticket.property_locality_code = data.location_short_name;
+				}
+				if(type==3 && data.location_short_name!=''){
+					this.ticket.property_state_short_name = data.location_short_name;
+				}
+			}
+			
+		}, error => {
+			  console.error('Error fetching location details:', error);
+		});
+    }
 
 }

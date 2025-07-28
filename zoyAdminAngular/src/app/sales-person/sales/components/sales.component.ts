@@ -168,6 +168,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
 			this.generateSalesPerson.userGroupId = group.id ;
 			this.generateSalesPerson.userGroupName="";
 		}
+		this.spinner.show();
 	   const data = JSON.parse(JSON.stringify(this.generateSalesPerson));
 		this.submitted=false;
 		this.generateSalesService.registerSubmitSalesPerson(data).subscribe((res) => {
@@ -181,7 +182,7 @@ export class SalesComponent implements OnInit, AfterViewInit {
 			if(error.status == 0) {
 				this.notifyService.showError("Internal Server Error/Connection not established", "")
 			 }else if(error.status==409){
-				this.confirmationDialogService.confirm('Confirmation!!', 'Credential has already been generated for this email Id, Would you like to resend again?')
+				this.confirmationDialogService.confirm('Confirmation!!', error.error.error +', Would you like to resend Credential again ?')
 				.then(
 				  (confirmed) =>{
 				   if(confirmed){

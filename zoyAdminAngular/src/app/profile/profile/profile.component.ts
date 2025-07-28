@@ -95,7 +95,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 				Validators.required,
 				Validators.minLength(8),
 				Validators.maxLength(16),
-				Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+				Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^~])[A-Za-z\d@$!%*?&#^~]{8,}$/)
 			  ]],
 			  confirmPassword: ['', Validators.required]
 			}, 
