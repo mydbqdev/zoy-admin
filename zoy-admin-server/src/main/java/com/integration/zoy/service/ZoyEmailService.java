@@ -149,7 +149,7 @@ public class ZoyEmailService {
  
 			ClassPathResource pdfFile = new ClassPathResource("templates/ZoyPgOwnerRegistrationUsingZOyCode.pdf");
  
-			MultipartFile attachment = new MockMultipartFile("ZoyPgOwnerRegistrationUsingZoyCode.pdf",
+			MultipartFile attachment = new MockMultipartFile("zoyPgOwnerRegistrationUsingZoyCode.pdf",
 					"ZoyPgOwnerRegistrationUsingZoyCode.pdf", "application/pdf", pdfFile.getInputStream());
 			emailService.sendEmail(email, attachment);
  
@@ -194,7 +194,7 @@ public class ZoyEmailService {
 		email.setContent("text/html");
 		try {
 			ClassPathResource pdfFile = new ClassPathResource("templates/ZoyPgOwnerRegistrationUsingZOyCode.pdf");
-			MultipartFile attachment = new MockMultipartFile("ZoyPgOwnerRegistrationUsingZoyCode.pdf",
+			MultipartFile attachment = new MockMultipartFile("zoyPgOwnerRegistrationUsingZoyCode.pdf",
 					"ZoyPgOwnerRegistrationUsingZoyCode.pdf", "application/pdf", pdfFile.getInputStream());
 			emailService.sendEmail(email, attachment);
 		} catch (Exception ex) {
