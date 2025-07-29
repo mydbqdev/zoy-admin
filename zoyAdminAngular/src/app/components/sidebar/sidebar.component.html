@@ -25,7 +25,7 @@
 
   
     <!-- Nav Item - Users Collapse Menu -->
-    <li class="nav-item" [ngClass]="{'active':menu31}" id="menu3" *ngIf="defMenu.users && (rolesArray.includes('MANAGING_USERS_READ') || rolesArray.includes('PERMISSION_APPROVAL_READ')  || rolesArray.includes('LOCKED_USER_READ'))">
+    <li class="nav-item" [ngClass]="{'active':menu31}" id="menu3" *ngIf="defMenu.users && (rolesArray.includes('MANAGING_USERS_READ') || rolesArray.includes('PERMISSION_APPROVAL_READ')  || rolesArray.includes('LOCKED_USER_READ')|| rolesArray.includes('VENDOR_MANAGEMENT_READ'))">
         <a [ngClass]="menu3 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);"  (click)="expandMenu(3)" data-target="#collapseUsers"
         [attr.aria-expanded]="!menu3" aria-controls="collapseUsers">
             <i class="fas fa-fw fa-users-cog"></i>
@@ -39,6 +39,8 @@
                 <a class="collapse-item" routerLink="/permission-approval" [ngClass]="{'active':activeSubNenuName=='permission-approval'}" *ngIf="rolesArray.includes('PERMISSION_APPROVAL_READ')" (click)="setHeaderName('Permission Approval')">Permission Approval</a>
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/locked-user" [ngClass]="{'active':activeSubNenuName=='locked-user'}" *ngIf="rolesArray.includes('LOCKED_USER_READ')" (click)="setHeaderName('Locked User')">Locked User</a>
+                 <div class="p-1"></div>
+                <a class="collapse-item" routerLink="/admin-vendor-management" [ngClass]="{'active':activeSubNenuName=='admin-vendor-management'}" *ngIf="rolesArray.includes('VENDOR_MANAGEMENT_READ')" (click)="setHeaderName('vendor Management')">Vendor Management</a>
             </div>
         </div>
     </li>
@@ -95,8 +97,9 @@
    </li>
 
 
+
    <!-- Nav Item - Support Collapse Menu -->
-   <li class="nav-item"  [ngClass]="{'active':menu61}" id="menu6" *ngIf="defMenu.supports && (rolesArray.includes('TICKETS_READ') || rolesArray.includes('ALL_TICKETS_READ') )"> 
+   <li class="nav-item"  [ngClass]="{'active':menu61}" id="menu6" *ngIf="defMenu.supports && (rolesArray.includes('TICKETS_READ') || rolesArray.includes('ALL_TICKETS_READ') || rolesArray.includes('MY_CLOSED_TICKETS_READ') || rolesArray.includes('ALL_CLOSED_TICKETS_READ'))"> 
     <a [ngClass]="menu6 ? 'nav-link':'nav-link collapsed'" href="javascript:void(0);" (click)="expandMenu(6)" data-target="#collapseSupports"
     aria-expanded="false" aria-controls="collapseSupports">
         <i class="fas fa-fw fa-headset"></i>
@@ -107,11 +110,11 @@
         <div class="py-2 collapse-inner rounded" style="padding-left:15px;margin-right:-15px;">
             <a class="collapse-item" routerLink="/tickets" [ngClass]="{'active':activeSubNenuName=='tickets'}" *ngIf="rolesArray.includes('TICKETS_READ')" >New / My Tickets</a>
             <div class="p-1"></div>
-            <a class="collapse-item" routerLink="/my-closed-tickets" [ngClass]="{'active':activeSubNenuName=='my-closed-tickets'}" *ngIf="rolesArray.includes('TICKETS_READ')" >My Closed Tickets</a>
+            <a class="collapse-item" routerLink="/my-closed-tickets" [ngClass]="{'active':activeSubNenuName=='my-closed-tickets'}" *ngIf="rolesArray.includes('MY_CLOSED_TICKETS_READ')" >My Closed Tickets</a>
             <div class="p-1"></div>
             <a class="collapse-item" routerLink="/all-tickets"  [ngClass]="{'active':activeSubNenuName=='all-tickets'}" *ngIf="rolesArray.includes('ALL_TICKETS_READ')" > All Tickets</a>
             <div class="p-1"></div>
-            <a class="collapse-item" routerLink="/closed-tickets"  [ngClass]="{'active':activeSubNenuName=='all-closed-tickets'}" *ngIf="rolesArray.includes('ALL_TICKETS_READ')" > Closed Tickets</a>
+            <a class="collapse-item" routerLink="/closed-tickets"  [ngClass]="{'active':activeSubNenuName=='all-closed-tickets'}" *ngIf="rolesArray.includes('ALL_CLOSED_TICKETS_READ')" > Closed Tickets</a>
             <!--div class="p-1"></div>
             <a class="collapse-item" routerLink="/leads" [ngClass]="{'active':activeSubNenuName=='leads'}">Leads</a-->
         </div>

@@ -78,6 +78,7 @@ import { AllTicketsComponent } from './supports/all-tickets/component/all-ticket
 import { MyClosedTicketsComponent } from './supports/my-closed-tickets/component/my-closed-tickets.component';
 import { TicketsComponent } from './supports/my-tickets/component/tickets.component';
 import axios from 'axios';
+import { AdminVendorManagementComponent } from './user-management/admin-vendor-management/component/admin-vendor-management.component';
 
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
@@ -130,7 +131,8 @@ const appRoutes: Routes = [
     FinanceReportsComponent,
     OwnerReportsComponent,
     SupportReportsComponent,
-    TenantReportsComponent
+    TenantReportsComponent,
+    AdminVendorManagementComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
