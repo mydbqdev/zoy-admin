@@ -303,8 +303,7 @@ export class BulkUploadComponent {
 		}
 
 		const duplicate =  this.ELEMENT_DATA.filter(d=>d.ownerId == this.selectedOwner.ownerId && d.propertyId == this.selectedProperty.propertyId && d.status != 'Failed' );
-		console.log("duplicate", this.selectedOwner.ownerId , this.selectedProperty.propertyId ,  )
-		console.log("duplicate",duplicate)
+
 		if(duplicate.length>0){
 			this.notifyService.showWarning(" Details have already been uploaded for "+this.selectedProperty.propertyname+"( owned by "+this.selectedOwner.ownerName+" ).","");
 			return;
