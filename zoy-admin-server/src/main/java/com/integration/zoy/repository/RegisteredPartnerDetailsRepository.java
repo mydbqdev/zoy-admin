@@ -56,7 +56,7 @@ public interface RegisteredPartnerDetailsRepository extends JpaRepository<Regist
 	Optional<RegisteredPartner> findByRegisterId(String registerId);
 	
 	@Query(value = "SELECT  "
-			+ "concat(zprod.firstname,'',zprod.lastname) as name, "
+			+ "concat(zprod.firstname,' ',zprod.lastname) as name, "
 			+ "email AS OwnerEmail, "
 			+ "mobile AS Mobile, "
 			+ "property_name AS PropertyName, "

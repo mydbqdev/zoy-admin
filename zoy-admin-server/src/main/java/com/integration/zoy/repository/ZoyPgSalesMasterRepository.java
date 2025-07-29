@@ -47,4 +47,6 @@ public interface ZoyPgSalesMasterRepository extends JpaRepository<ZoyPgSalesMast
 	Page<Object[]> findAllSalesPeople(Pageable pageable, @Param("searchText") String searchText);
 
 	Optional<ZoyPgSalesMaster> findByEmailId(String emailId);
+
+	boolean existsByMobileNo(String mobileNo);
 }

@@ -76,6 +76,18 @@ import { MessageService } from 'src/app/message.service';
                 }
             );
     } 
+     public fetchPGDetails(data:string): Observable<any> {
+      const url1=this.basePath +"zoy_admin/checkPgOwnerDetalais?ownerDetails="+data;
+        return  this.httpclient.post<any>(
+            url1,
+            "",
+            {
+               headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+    }
 
     public getLocationDetails(data:string): Observable<any> {
       const url1=this.basePath +"zoy_admin/location_code?location="+data;

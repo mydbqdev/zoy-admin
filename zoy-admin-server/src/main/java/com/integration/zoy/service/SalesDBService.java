@@ -149,4 +149,9 @@ public class SalesDBService implements SalesDBImpl{
 		
 	}
 
+	@Override
+	public boolean existsByUserMobileNo(String mobileNo) {
+		return zoyPgSalesMasterRepo.existsByMobileNo(mobileNo);
+	}
+
 }

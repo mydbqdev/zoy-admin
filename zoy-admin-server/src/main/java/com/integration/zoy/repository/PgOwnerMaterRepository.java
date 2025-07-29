@@ -641,7 +641,10 @@ public interface PgOwnerMaterRepository extends JpaRepository<PgOwnerMaster, Str
 			+ "p.pincode,\r\n"
 			+ "p.state ,\r\n"
 			+ "p.city ,\r\n"
-			+ "p.address\r\n"
+			+ "p.address,\r\n"
+			+ "p.locality,\r\n"
+			+ "p.property_location_latitude,\r\n"
+			+ "p.property_location_longitude\r\n"
 			+ "from pgowners.zoy_pg_registered_owner_details zprod\r\n"
 			+ "left join pgsales.properties p on zprod.property_id = p.property_id\r\n"
 			+ "where zprod.register_id= :ownerDetails or zprod.email= :ownerDetails",

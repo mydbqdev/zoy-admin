@@ -111,6 +111,11 @@ public class SalesMasterController implements SalesMasterImpl {
 				response.setError("User already exists with this email");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
 			}
+			if (salesDBImpl.existsByUserMobileNo(pgSalesMasterModel.getMobileNo())) {
+				response.setStatus(HttpStatus.CONFLICT.value());
+				response.setError("User already exists with this mobile no");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.CONFLICT);
+			}
 			ZoyPgSalesMaster master = new ZoyPgSalesMaster();
 			master.setFirstName(pgSalesMasterModel.getFirstName());
 			master.setLastName(pgSalesMasterModel.getLastName());
