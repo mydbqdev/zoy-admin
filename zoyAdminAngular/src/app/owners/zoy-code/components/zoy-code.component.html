@@ -28,6 +28,9 @@
             <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Zoy</span><span
                 class="text-header-800-blue">Code</span></h3>
             <div class="input-group ml-4 w-50">
+                <button type="button" class="form-control"
+                  [ngClass]="{ 'btn-primary-custom': selectedModel === 'ticket', 'btn-outline-custom': selectedModel !== 'ticket' }"
+                  (click)="selectButton('ticket')">From Ticket</button>
               <button type="button" class="form-control"
                 [ngClass]="{ 'btn-primary-custom': selectedModel === 'generate', 'btn-outline-custom': selectedModel !== 'generate' }"
                 (click)="selectButton('generate')">Generate</button>
@@ -49,8 +52,75 @@
           <!-- Content Row -->
           <div class="card shadow mb-3">
             <div class="card-body" style="display: block;margin: 0px;padding: 2px;">
-              <div class="scrollable-container-main">
-                <div class="container" *ngIf="selectedModel == 'generate'">
+          <div *ngIf="selectedModel == 'ticket'" class="ml-3 mt-2">
+          <div class="row mb-3">
+            <div class="col-12 col-md-6 col-lg-5">
+              <label class="form-label">Search by Ticket No / Email</label>
+              <input type="text" class="form-control" [(ngModel)]="searchInput" placeholder="Enter Ticket Number or Email" />
+            </div>
+            <div class="col-12 col-md-2 d-flex align-items-end">
+              <button class="btn btn-outline-primary w-100" (click)="searchTicket()" [disabled] ="!searchInput" >Find</button>
+            </div>
+          </div>
+
+<!-- Ticket Info Section -->
+<div class="row pt-2" *ngIf="ticket?.first_name">
+  <div class="col-12 mb-2">
+    <div class="d-flex flex-wrap gap-3">
+      <div><strong>First Name:</strong> {{ ticket.first_name }}</div>
+      <div><strong>Last Name:</strong> {{ ticket.last_name }}</div>
+      <div><strong>Email ID:</strong> {{ ticket.email_id }}</div>
+      <div><strong>Mobile No:</strong> {{ ticket.mobile_no }}</div>
+      <div><strong>Property Name:</strong> {{ ticket.property_name }}</div>
+      <div><strong>Pincode:</strong> {{ ticket.property_pincode }}</div>
+      <div><strong>State:</strong> {{ ticket.property_state }}</div>
+      <div><strong>City:</strong> {{ ticket.property_city }}</div>
+    </div>
+  </div>
+
+  <!-- Full Address -->
+  <div class="col-12">
+    <strong>Full Address:</strong>
+    <div>{{ ticket.property_house_area }}</div>
+  </div>
+
+  <!-- ZOY Share Input -->
+<div class="row pt-3">
+  <div class="col-12 col-md-6 col-lg-4 mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <label class="form-label mb-0">ZOY Share</label>
+      <mat-button-toggle-group class="small-toggle" [(ngModel)]="revenueTypeTicket" aria-label="Revenue Type" appearance="legacy">
+        <mat-button-toggle value="fixed">Fixed</mat-button-toggle>
+        <mat-button-toggle value="variable">Variable</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    <div class="input-group">
+      <input type="text"
+             class="form-control"
+             placeholder="Enter ZOY share"
+             [(ngModel)]="generateZCode.zoyShare"
+             [attr.maxlength]="revenueTypeTicket === 'fixed' ? 8 : 5"
+             (keypress)="revenueTypeTicket === 'fixed' ? numberOnly($event) : percentageOnly($event)"
+              [ngClass]="{
+                            'is-invalid': submitted &&
+                            (!generateZCode.zoyShare || isInvalidZoyShare())
+                          }">
+      <span class="input-group-text">{{ revenueTypeTicket === 'fixed' ? 'Rs' : '%' }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Submit Button -->
+<div class="row mb-4">
+  <div class="col-12 text-center">
+    <button class="btn btn-primary px-5" (click)="submitZoyCode()">Submit</button>
+  </div>
+</div>
+</div>
+
+</div>
+         <div class="scrollable-container-main">
+        <div class="container" *ngIf="selectedModel == 'generate'">
                   <form [formGroup]="form" (ngSubmit)="generateZoyCode()" autocomplete="off">
                   <div class="row justify-content-center mt-3">
                     <div class="col-md-3 mb-2">
@@ -259,7 +329,9 @@
                     <input type="submit" class="btn btn-primary-custom me-2" value="Generate Zoy Code" />
                   </div>
                 </form>
-                </div>              
+                </div>      
+
+             
                 <div *ngIf="selectedModel == 'generated'">
                   <div class="scrollable-container-main">
                   <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" >

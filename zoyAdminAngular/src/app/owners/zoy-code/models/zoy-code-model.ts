@@ -26,4 +26,6 @@ export class ZoyData {
     public property_location_longitude:string="";
     public property_street_name:string="";
     public property_door_number:string="";
+    first_name:string="";
+		last_name:string="";
   }
