@@ -147,10 +147,10 @@ public class ZoyEmailService {
 		email.setContent("text/html");
 		try {
  
-			ClassPathResource pdfFile = new ClassPathResource("templates/ZoyPgOwnerRegistrationUsingZOyCode.pdf");
+			ClassPathResource pdfFile = new ClassPathResource("templates/zoyPgOwnerRegistrationUsingZoyCode.pdf");
  
 			MultipartFile attachment = new MockMultipartFile("zoyPgOwnerRegistrationUsingZoyCode.pdf",
-					"ZoyPgOwnerRegistrationUsingZoyCode.pdf", "application/pdf", pdfFile.getInputStream());
+					"zoyPgOwnerRegistrationUsingZoyCode.pdf", "application/pdf", pdfFile.getInputStream());
 			emailService.sendEmail(email, attachment);
  
 		} catch (Exception ex) {
@@ -193,9 +193,9 @@ public class ZoyEmailService {
 		email.setBody(message);
 		email.setContent("text/html");
 		try {
-			ClassPathResource pdfFile = new ClassPathResource("templates/ZoyPgOwnerRegistrationUsingZOyCode.pdf");
+			ClassPathResource pdfFile = new ClassPathResource("templates/zoyPgOwnerRegistrationUsingZoyCode.pdf");
 			MultipartFile attachment = new MockMultipartFile("zoyPgOwnerRegistrationUsingZoyCode.pdf",
-					"ZoyPgOwnerRegistrationUsingZoyCode.pdf", "application/pdf", pdfFile.getInputStream());
+					"zoyPgOwnerRegistrationUsingZoyCode.pdf", "application/pdf", pdfFile.getInputStream());
 			emailService.sendEmail(email, attachment);
 		} catch (Exception ex) {
 			log.error("Error occured while sending the registration email to " + owneremail + ": " + ex.getMessage(),
