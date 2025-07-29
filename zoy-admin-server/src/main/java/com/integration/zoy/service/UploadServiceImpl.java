@@ -17,6 +17,7 @@ import com.integration.zoy.entity.UserPayment;
 import com.integration.zoy.entity.UserPaymentDue;
 import com.integration.zoy.entity.UserPgDetails;
 import com.integration.zoy.entity.ZoyPgBedDetails;
+import com.integration.zoy.entity.ZoyPgCreditNote;
 import com.integration.zoy.entity.ZoyPgFloorRooms;
 import com.integration.zoy.entity.ZoyPgOwnerBookingDetails;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
@@ -42,6 +43,7 @@ import com.integration.zoy.repository.UserPaymentRepository;
 import com.integration.zoy.repository.UserPgDetailsRepository;
 import com.integration.zoy.repository.ZoyPgAmenetiesMasterRepository;
 import com.integration.zoy.repository.ZoyPgBedDetailsRepository;
+import com.integration.zoy.repository.ZoyPgCreditNoteRepository;
 import com.integration.zoy.repository.ZoyPgFloorRoomsRepository;
 import com.integration.zoy.repository.ZoyPgOwnerBookingDetailsRepository;
 import com.integration.zoy.repository.ZoyPgOwnerDetailsRepository;
@@ -142,6 +144,9 @@ public class UploadServiceImpl {
 
 	@Autowired
 	private UserBookingPaymentRepository userBookingPaymentRepository;
+	
+	@Autowired
+	private ZoyPgCreditNoteRepository zoyPgCreditNoteRepository;
 
 	public ZoyPgOwnerDetails findPgOwnerById(String ownerId) {
 		return repository.findById(ownerId).orElse(null);
@@ -349,6 +354,10 @@ public class UploadServiceImpl {
 
 	public List<UserMaster> saveAllUserMaster(List<UserMaster> userMasters) {
 		return userMasterRepository.saveAll(userMasters);		
+	}
+
+	public ZoyPgCreditNote saveCreditNote(ZoyPgCreditNote creditNote) {
+		return zoyPgCreditNoteRepository.save(creditNote);
 	}
 
 }
