@@ -158,6 +158,11 @@
                     <div class="col-sm-2"><input type="checkbox" name="userseread"    value="LOCKED_USER_READ" id="userseReadLU"  (click)="onChangeCheck($event,'read','userse','LU')"/></div>
                     <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="LOCKED_USER_WRITE"  id="userseReadLU" (click)="onChangeCheck($event,'write','userse','LU')"/></div>
                  </div>
+                  <div class="row" >
+                    <div class="col-sm-8 pl-4">Vendor Management</div>
+                    <div class="col-sm-2"><input type="checkbox" name="userseread"    value="VENDOR_MANAGEMENT_READ" id="userseReadVM"  (click)="onChangeCheck($event,'read','userse','VM')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="VENDOR_MANAGEMENT_WRITE"  id="userseReadVM" (click)="onChangeCheck($event,'write','userse','VM')"/></div>
+                 </div>
                </div>
              <div  class="row">									         
               <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -242,15 +247,25 @@
        </div>
       <div  id="collapseSUPPORTSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #supportsetab>
         <div class="row" >
-          <div class="col-sm-8 pl-4">My Tickets(For User)</div>
+          <div class="col-sm-8 pl-4">New/My Tickets</div>
           <div class="col-sm-2"><input type="checkbox" name="supportseread"    value="TICKETS_READ" id="supportseReadST"  (click)="onChangeCheck($event,'read','supportse','ST')"/></div>
           <div class="col-sm-2"><input type="checkbox" name="supportsewrite"   value="TICKETS_WRITE"  id="supportseWriteST" (click)="onChangeCheck($event,'write','supportse','ST')"/></div>
         </div>
         <div class="row" >
-          <div class="col-sm-8 pl-4">All Tickets(For Admin)</div>
+          <div class="col-sm-8 pl-4">My Closed Tickets</div>
+          <div class="col-sm-2"><input type="checkbox" name="supportseread"    value="MY_CLOSED_TICKETS_READ" id="supportseReadMCT"  (click)="onChangeCheck($event,'read','supportse','MCT')"/></div>
+          <div class="col-sm-2"><input type="checkbox" name="supportsewrite"   value="MY_CLOSED_TICKETS_WRITE"  id="supportseWriteMCT" (click)="onChangeCheck($event,'write','supportse','MCT')"/></div>
+        </div>
+        <div class="row" >
+          <div class="col-sm-8 pl-4">All Tickets</div>
           <div class="col-sm-2"><input type="checkbox" name="supportseread"    value="ALL_TICKETS_READ" id="supportseReadAT"  (click)="onChangeCheck($event,'read','supportse','AT')"/></div>
           <div class="col-sm-2"><input type="checkbox" name="supportsewrite"   value="ALL_TICKETS_WRITE"  id="supportseWriteAT" (click)="onChangeCheck($event,'write','supportse','AT')"/></div>
        </div>
+       <div class="row" >
+          <div class="col-sm-8 pl-4">Closed Tickets</div>
+          <div class="col-sm-2"><input type="checkbox" name="supportseread"    value="ALL_CLOSED_TICKETS_READ" id="supportseReadACT"  (click)="onChangeCheck($event,'read','supportse','ACT')"/></div>
+          <div class="col-sm-2"><input type="checkbox" name="supportsewrite"   value="ALL_CLOSED_TICKETS_WRITE"  id="supportseWriteACT" (click)="onChangeCheck($event,'write','supportse','ACT')"/></div>
+        </div>
      </div>
      <div  class="row">									         
       <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -403,6 +418,11 @@
                       <div class="col-sm-2"><input type="checkbox" name="userscread"    value="LOCKED_USER_READ" id="userscReadLU"  (click)="onChangeCheck($event,'read','usersc','LU')"/></div>
                       <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="LOCKED_USER_WRITE"  id="userscReadLU" (click)="onChangeCheck($event,'write','usersc','LU')"/></div>
                    </div>
+                    <div class="row" >
+                      <div class="col-sm-8 pl-4">Vendor Management</div>
+                      <div class="col-sm-2"><input type="checkbox" name="userscread"    value="VENDOR_MANAGEMENT_READ" id="userscReadVM"  (click)="onChangeCheck($event,'read','usersc','VM')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="VENDOR_MANAGEMENT_WRITE"  id="userscReadVM" (click)="onChangeCheck($event,'write','usersc','VM')"/></div>
+                   </div>
                  </div>  
                   <div  class="row">									         
                      <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -486,15 +506,25 @@
                  </div>
                 <div  id="collapseSUPPORTSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #supportsctab>
                   <div class="row" >
-                    <div class="col-sm-8 pl-4">My Tickets(For User)</div>
+                    <div class="col-sm-8 pl-4">New/My Tickets</div>
                     <div class="col-sm-2"><input type="checkbox" name="supportscread"    value="TICKETS_READ" id="supportscReadST"  (click)="onChangeCheck($event,'read','supportsc','ST')"/></div>
                     <div class="col-sm-2"><input type="checkbox" name="supportscwrite"   value="TICKETS_WRITE"  id="supportscWriteST" (click)="onChangeCheck($event,'write','supportsc','ST')"/></div>
                  </div> 
                  <div class="row" >
-                  <div class="col-sm-8 pl-4">All Tickets(For Admin)</div>
+                    <div class="col-sm-8 pl-4">My Closed Tickets</div>
+                    <div class="col-sm-2"><input type="checkbox" name="supportscread"    value="MY_CLOSED_TICKETS_READ" id="supportscReadMCT"  (click)="onChangeCheck($event,'read','supportsc','MCT')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="supportscwrite"   value="MY_CLOSED_TICKETS_WRITE"  id="supportscWriteMCT" (click)="onChangeCheck($event,'write','supportsc','MCT')"/></div>
+                 </div> 
+                 <div class="row" >
+                  <div class="col-sm-8 pl-4">All Tickets</div>
                   <div class="col-sm-2"><input type="checkbox" name="supportscread"    value="All_TICKETS_READ" id="supportscReadAT"  (click)="onChangeCheck($event,'read','supportsc','AT')"/></div>
                   <div class="col-sm-2"><input type="checkbox" name="supportscwrite"   value="All_TICKETS_WRITE"  id="supportscWriteAT" (click)="onChangeCheck($event,'write','supportsc','AT')"/></div>
                  </div>
+                 <div class="row" >
+                    <div class="col-sm-8 pl-4">Closed Tickets</div>
+                    <div class="col-sm-2"><input type="checkbox" name="supportscread"    value="ALL_CLOSED_TICKETS_READ" id="supportscReadACT"  (click)="onChangeCheck($event,'read','supportsc','ACT')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="supportscwrite"   value="ALL_CLOSED_TICKETS_WRITE"  id="supportscWriteACT" (click)="onChangeCheck($event,'write','supportsc','ACT')"/></div>
+                 </div> 
                </div>
 
                <div  class="row">									         

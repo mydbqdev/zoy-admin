@@ -1,0 +1,267 @@
+
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
+    <div class="spinner-container"><img class="spinner-home-logo" src="assets/images/home-logo.png" alt="Home"/>
+      <img class="spinner-location-logo" src="assets/images/location-logo.png" alt="User"/>
+      <div class="spinner-loading">Loading</div>
+    </div>
+</ngx-spinner>
+  <!-- Content Wrapper. Contains page content -->
+  <div id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <app-sidebar></app-sidebar>
+      <!-- End of Sidebar -->
+  
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+          <!-- Main Content -->
+          <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+
+              <!-- Begin Page Content -->
+              <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Vendor </span><span class="text-header-800-blue">Management</span></h3> 
+                </div>
+                  
+                  <!-- Content Row -->
+                  <div>
+                        <div class="card shadow mb-3">
+                            <!-- Card Body -->
+                           <!-- src/app/admin/admin-vendor-management/admin-vendor-management.component.html -->
+<div style="margin: 10px;">
+
+  <!-- Vendor List View -->
+  <div *ngIf="!selectedVendor">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4>Vendor List</h4>
+      <div class="btn-group" role="group" aria-label="Vendor status filter">
+        <button type="button" class="btn"
+                [class.btn-primary]="currentFilter === 'All'"
+                [class.btn-outline-primary]="currentFilter !== 'All'"
+                (click)="setFilter('All')">All</button>
+        <button type="button" class="btn"
+                [class.btn-primary]="currentFilter === VendorStatus.PendingApproval"
+                [class.btn-outline-primary]="currentFilter !== VendorStatus.PendingApproval"
+                (click)="setFilter(VendorStatus.PendingApproval)">Pending Approval</button>
+        <button type="button" class="btn"
+                [class.btn-primary]="currentFilter === VendorStatus.Approved || currentFilter === VendorStatus.Active"
+                [class.btn-outline-primary]="currentFilter !== VendorStatus.Approved && currentFilter !== VendorStatus.Active"
+                (click)="setFilter(VendorStatus.Approved)">Approved</button>
+        <button type="button" class="btn"
+                [class.btn-primary]="currentFilter === VendorStatus.Rejected"
+                [class.btn-outline-primary]="currentFilter !== VendorStatus.Rejected"
+                (click)="setFilter(VendorStatus.Rejected)">Rejected</button>
+        <button type="button" class="btn"
+                [class.btn-primary]="currentFilter === VendorStatus.Inactive"
+                [class.btn-outline-primary]="currentFilter !== VendorStatus.Inactive"
+                (click)="setFilter(VendorStatus.Inactive)">Inactive</button>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center p-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading vendors...</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="!isLoading && filteredVendors.length === 0 && !errorMessage" class="alert alert-info">
+      No vendors found for the selected filter.
+    </div>
+
+    <div class="table-responsive" *ngIf="!isLoading && filteredVendors.length > 0">
+      <table class="table table-hover table-striped align-middle">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Company Name</th>
+            <th scope="col">Contact Person</th>
+            <th scope="col">Email ID</th>
+            <th scope="col">Contact Number</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vendor of filteredVendors; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ vendor.companyName }}</td>
+            <td>{{ vendor.contactPersonName }}</td>
+            <td>{{ vendor.email }}</td>
+            <td>{{ vendor.contactNumber }}</td>
+            <td><span class="badge {{ getStatusBadgeClass(vendor.status) }}">{{ vendor.status }}</span></td>
+            <td>
+              <button class="btn btn-sm btn-info" (click)="viewVendorDetails(vendor)">View Details</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Vendor Details View -->
+  <div *ngIf="selectedVendor" class="card shadow-sm mt-4">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Vendor Details: {{ selectedVendor.companyName }}</h5>
+      <button type="button" class="btn btn-sm btn-outline-light" (click)="clearSelectedVendor()">
+        <i class="bi bi-arrow-left"></i> Back to List
+      </button>
+    </div>
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-6"><strong>Company Name:</strong></div>
+        <div class="col-md-6">{{ selectedVendor.companyName }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6"><strong>Contact Person:</strong></div>
+        <div class="col-md-6">{{ selectedVendor.contactPersonName }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6"><strong>Email ID:</strong></div>
+        <div class="col-md-6">{{ selectedVendor.email }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6"><strong>Address:</strong></div>
+        <div class="col-md-6">{{ selectedVendor.address }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6"><strong>Contact Number:</strong></div>
+        <div class="col-md-6">{{ selectedVendor.contactNumber }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6"><strong>Alternative Number:</strong></div>
+        <div class="col-md-6">{{ selectedVendor.alternativeNumber || 'N/A' }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6"><strong>Services Offered:</strong></div>
+        <div class="col-md-6">{{ selectedVendor.servicesOffered?.join(', ') || 'N/A' }}</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6"><strong>GST/Registration Number:</strong></div>
+        <div class="col-md-6">{{ selectedVendor.gstRegistrationNumber || 'N/A' }}</div>
+      </div>
+      <div class="row mb-3" *ngIf="selectedVendor.idAttachmentUrl">
+        <div class="col-md-6"><strong>ID Attachment:</strong></div>
+        <div class="col-md-6">
+          <a [href]="selectedVendor.idAttachmentUrl" target="_blank" class="btn btn-sm btn-outline-primary">View Attachment</a>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-6"><strong>Current Status:</strong></div>
+        <div class="col-md-6">
+          <span class="badge {{ getStatusBadgeClass(selectedVendor.status) }}">{{ selectedVendor.status }}</span>
+        </div>
+      </div>
+
+      <!-- Display reasons if applicable -->
+      <div *ngIf="selectedVendor.status === VendorStatus.Rejected && selectedVendor.rejectionReason" class="row mb-3">
+        <div class="col-md-6"><strong>Rejection Reason:</strong></div>
+        <div class="col-md-6 text-danger">{{ selectedVendor.rejectionReason }}</div>
+      </div>
+      <div *ngIf="selectedVendor.status === VendorStatus.Inactive && selectedVendor.inactiveReason" class="row mb-3">
+        <div class="col-md-6"><strong>Inactive Reason:</strong></div>
+        <div class="col-md-6 text-warning">{{ selectedVendor.inactiveReason }}</div>
+      </div>
+
+      <!-- Action Buttons and Forms based on Current Vendor Status -->
+      <div class="d-flex flex-wrap gap-2 mt-4">
+        <!-- Actions for Pending Approval vendors -->
+        <div *ngIf="selectedVendor.status === VendorStatus.PendingApproval">
+          <button class="btn btn-success me-2" (click)="approveVendor()" [disabled]="isApproving">
+            <span *ngIf="isApproving" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            {{ isApproving ? 'Approving...' : 'Approve Vendor' }}
+          </button>
+          <!-- Toggle button for rejection reason form -->
+          <button class="btn btn-danger" type="button" data-bs-toggle="collapse" data-bs-target="#rejectFormCollapse" aria-expanded="false" aria-controls="rejectFormCollapse">
+            Reject Vendor
+          </button>
+        </div>
+
+        <!-- Rejection Reason Form (Collapsible) -->
+        <div class="collapse w-100 mt-2" id="rejectFormCollapse">
+          <div class="card card-body bg-light">
+            <form [formGroup]="rejectionReasonForm" (ngSubmit)="rejectVendor()">
+              <div class="mb-3">
+                <label for="rejectionReason" class="form-label">Reason for Rejection <span class="text-danger">*</span></label>
+                <textarea id="rejectionReason" formControlName="reason" class="form-control" rows="3"
+                          [class.is-invalid]="rejectionReasonForm.get('reason')?.invalid && rejectionReasonForm.get('reason')?.touched"></textarea>
+                <div *ngIf="rejectionReasonForm.get('reason')?.invalid && rejectionReasonForm.get('reason')?.touched" class="invalid-feedback">
+                  Rejection reason is required.
+                </div>
+              </div>
+              <button type="submit" class="btn btn-danger btn-sm" [disabled]="rejectionReasonForm.invalid || isRejecting">
+                <span *ngIf="isRejecting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                {{ isRejecting ? 'Rejecting...' : 'Confirm Reject' }}
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Actions for Approved, Active, or Inactive vendors (to change status) -->
+        <div *ngIf="selectedVendor.status === VendorStatus.Approved || selectedVendor.status === VendorStatus.Active || selectedVendor.status === VendorStatus.Inactive">
+          <!-- Toggle button for status change form -->
+          <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#statusChangeFormCollapse" aria-expanded="false" aria-controls="statusChangeFormCollapse">
+            Change Status
+          </button>
+        </div>
+
+        <!-- Status Change Form (Collapsible) -->
+        <div class="collapse w-100 mt-2" id="statusChangeFormCollapse">
+          <div class="card card-body bg-light">
+            <form [formGroup]="statusChangeForm" (ngSubmit)="changeVendorStatus()">
+              <div class="mb-3">
+                <label for="newStatus" class="form-label">New Status <span class="text-danger">*</span></label>
+                <select id="newStatus" formControlName="newStatus" class="form-select"
+                        (change)="onStatusChangeSelection()"
+                        [class.is-invalid]="statusChangeForm.get('newStatus')?.invalid && statusChangeForm.get('newStatus')?.touched">
+                  <option value="" disabled>Select a new status</option>
+                  <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+                </select>
+                <div *ngIf="statusChangeForm.get('newStatus')?.invalid && statusChangeForm.get('newStatus')?.touched" class="invalid-feedback">
+                  New status is required.
+                </div>
+              </div>
+              <!-- Reason field, conditionally displayed/required -->
+              <div class="mb-3" *ngIf="statusChangeForm.get('newStatus')?.value === VendorStatus.Inactive || statusChangeForm.get('newStatus')?.value === VendorStatus.Rejected">
+                <label for="statusChangeReason" class="form-label">Reason <span class="text-danger">*</span></label>
+                <textarea id="statusChangeReason" formControlName="reason" class="form-control" rows="2"
+                          [class.is-invalid]="statusChangeForm.get('reason')?.invalid && statusChangeForm.get('reason')?.touched"></textarea>
+                <div *ngIf="statusChangeForm.get('reason')?.invalid && statusChangeForm.get('reason')?.touched" class="invalid-feedback">
+                  Reason is required for this status change.
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm" [disabled]="statusChangeForm.invalid || isChangingStatus">
+                <span *ngIf="isChangingStatus" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                {{ isChangingStatus ? 'Updating...' : 'Update Status' }}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+                        </div>             
+                  </div>
+              </div>
+              <!-- /.container-fluid -->
+          </div>
+          <!-- End of Main Content -->
+      </div>
+      <!-- End of Content Wrapper -->
+  </div>
+  <!-- End of Page Wrapper -->
+  </div>
+
+

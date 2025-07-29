@@ -588,9 +588,9 @@ percentageOnly(event: KeyboardEvent) {
 
 		let  model = new ZoyData();
 		model.firstName = this.ticket.first_name
-		model.lastName = this.ticket.last_name
+		model.lastName = this.ticket.last_name || '';
 		model.contactNumber = this.ticket.mobile_no
-		model.email_id = this.ticket.email_id
+		model.userEmail = this.ticket.email_id
 		model.zoyShare = this.generateZCode.zoyShare
 		model.property_name = this.ticket.property_name
 		model.property_pincode = this.ticket.property_pincode
@@ -624,7 +624,7 @@ percentageOnly(event: KeyboardEvent) {
 				.then(
 				  (confirmed) =>{
 				   if(confirmed){
-					this.resendZoyCode()
+					this.resendZoyCode();
 				   }
 				}).catch(
 					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
@@ -648,7 +648,7 @@ percentageOnly(event: KeyboardEvent) {
 			  this.errorMsg=str;
 			}
 		  }
-		  if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+		  if(error.status !== 401 && error.status !=409 ){this.notifyService.showError(this.errorMsg, "");}
 		  	//this.notifyService.showError(this.errorMsg, "");
 			}
 		  );  
@@ -659,6 +659,7 @@ percentageOnly(event: KeyboardEvent) {
       this.notifyService.showInfo('Please enter a Ticket Number or Email','');
       return;
     }
+	this.ticket= new ZoyData(); 
 		this.spinner.show();
 		this.generateZoyCodeService.fetchPGDetails(this.searchInput).subscribe(data => {
 			if(data!="" && data!=null && data!=undefined){
@@ -669,10 +670,10 @@ percentageOnly(event: KeyboardEvent) {
 			if(this.ticket.property_locality){
 				this.getLocationDetailsForTicket(this.ticket.property_locality,2);
 			}
-			
-			console.log("this.ticket",this.ticket)
+		this.revenueTypeTicket='fixed';
+		this.submitted=false;
+		this.generateZCode = new ZoyData();
 		}
-
 		this.spinner.hide();
 		}, error => {
 		this.spinner.hide();
@@ -714,9 +715,6 @@ percentageOnly(event: KeyboardEvent) {
 				if(type==2 && data.location_short_name!=''){
 					this.ticket.property_locality_code_id = data.location_code_id;
 					this.ticket.property_locality_code = data.location_short_name;
-				}
-				if(type==3 && data.location_short_name!=''){
-					this.ticket.property_state_short_name = data.location_short_name;
 				}
 			}
 			
