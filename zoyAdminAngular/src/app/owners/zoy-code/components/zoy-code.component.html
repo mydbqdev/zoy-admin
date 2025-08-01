@@ -232,8 +232,8 @@
                     </div>
                     <div class="col-md-4 mb-2">
                       <label for="phone">Area</label>
-                      <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZCode.property_locality" formControlName="areaAddress" placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}" (blur)="getLocationDetails(generateZCode.property_locality,2)">
-                      <select id="area-dropdown" class="form-select" formControlName="areaAddress" (change)="getLocationDetails(generateZCode.property_locality,2)" [(ngModel)]="generateZCode.property_locality" *ngIf="areaTypeOption"  
+                      <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZCode.property_locality" formControlName="areaAddress" placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption"  [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}" (blur)="getAreaDetails(generateZCode.property_locality)">
+                      <select id="area-dropdown" class="form-select" formControlName="areaAddress" (change)="getAreaDetails(generateZCode.property_locality)" [(ngModel)]="generateZCode.property_locality" *ngIf="areaTypeOption"  
                       [ngClass]="{'is-invalid':submitted && (form.controls.areaAddress.errors)}">
                         <option></option>
                         <option *ngFor="let cond of areaList">{{cond}}</option>
