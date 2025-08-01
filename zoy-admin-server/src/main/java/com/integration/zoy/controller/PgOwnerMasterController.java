@@ -39,6 +39,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
+import com.integration.zoy.entity.PgAreaCode;
 import com.integration.zoy.entity.PgLocationCode;
 import com.integration.zoy.entity.PgOwnerMaster;
 import com.integration.zoy.entity.RegisteredPartner;
@@ -60,6 +61,7 @@ import com.integration.zoy.model.RegisteredPgOwners;
 import com.integration.zoy.model.Room;
 import com.integration.zoy.model.UserStatus;
 import com.integration.zoy.repository.AdminUserMasterRepository;
+import com.integration.zoy.repository.PgAreaCodeRepository;
 import com.integration.zoy.repository.PgLocationCodeRepository;
 import com.integration.zoy.repository.PgOwnerMaterRepository;
 import com.integration.zoy.repository.PgOwnerPropertyStatusRepository;
@@ -95,6 +97,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	RegisteredPartnerDetailsRepository registeredPartnerDetailsRepo;
 	@Autowired
 	PgLocationCodeRepository pgLocationCodeRepository;
+	@Autowired
+	PgAreaCodeRepository pgAreaCodeRepository;
 	@Autowired
 	ZoyCodeGenerationService zoyCodeGenerationService;
 	@Autowired
@@ -926,20 +930,18 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	}
 
 	private void processLocation(PgOwnerMasterModel model) {
-		List<PgLocationCode> codes=new ArrayList<>(); 
 		if(model.getPropertyCityCodeId()==null || model.getPropertyCityCodeId().trim().isEmpty()) {
-			PgLocationCode code=new PgLocationCode();
-			code.setLocationName(model.getPropertyCity());
-			code.setLocationShortName(model.getPropertyCityCode());
-			codes.add(code);
-		}
-		if(model.getPropertyLocalityCodeId()==null || model.getPropertyLocalityCodeId().trim().isEmpty()) {
 			PgLocationCode code=new PgLocationCode();
 			code.setLocationName(model.getPropertyLocality());
 			code.setLocationShortName(model.getPropertyLocalityCode());
-			codes.add(code);
+			commonDBImpl.saveLocationCode(code);
 		}
-		commonDBImpl.saveLocationCode(codes);
+		if(model.getPropertyLocalityCodeId()==null || model.getPropertyLocalityCodeId().trim().isEmpty()) {
+			PgAreaCode code=new PgAreaCode();
+			code.setAreaName(model.getPropertyCity());
+			code.setAreaShortName(model.getPropertyCityCode());
+			commonDBImpl.saveAreaCode(code);
+		}
 	}
 
 //	@Override
@@ -1114,6 +1116,34 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			response.setError(ex.getMessage());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@Override
+	public ResponseEntity<String> getPgAreaCode(String area) {
+
+		ResponseBody response = new ResponseBody();
+		try {
+			PgAreaCode areaCode=pgAreaCodeRepository.findByAreaName(area);
+			if(areaCode==null) {
+				return new ResponseEntity<>(gson.toJson(""), HttpStatus.OK);
+			}
+			return new ResponseEntity<>(gson.toJson(areaCode), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while getting location details API:/zoy_admin/area_code.getPgAreaCode ", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	
+	
+	
 	}
 
 }
