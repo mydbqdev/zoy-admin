@@ -26,6 +26,8 @@ import com.integration.zoy.entity.AdminUserMaster;
 import com.integration.zoy.entity.AuditHistory;
 import com.integration.zoy.entity.LeadHistory;
 import com.integration.zoy.entity.UserHelpRequestHistory;
+import com.integration.zoy.entity.ZoyPgSalesMaster;
+import com.integration.zoy.entity.ZoyVendorMaster;
 import com.integration.zoy.exception.WebServiceException;
 import com.integration.zoy.exception.ZoyAdminApplicationException;
 import com.integration.zoy.repository.AdminUserMasterRepository;
@@ -41,10 +43,10 @@ public class AuditHistoryUtilities {
 	AdminUserMasterRepository userMasterRepository;
 	@Autowired
 	LeadHistoryRepository leadHistoryRepository;
-	
+
 	@Autowired
 	UserHelpRequestHistoryRepository userHelpRequestHistoryRepository;
-	
+
 	private static final Gson gson = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
 			.registerTypeAdapter(Timestamp.class, (JsonSerializer<Timestamp>) (src, typeOfSrc, context) -> {
@@ -63,14 +65,14 @@ public class AuditHistoryUtilities {
 			})
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
-	
+
 	public void auditForUserLoginLogout(String email,boolean islogin) throws WebServiceException {
 		try {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); 
-			 Date date = new Date();
+			Date date = new Date();
 			String currentDate=dateFormat.format(date);
-			
+
 			String userName="";
 			Optional<AdminUserMaster> user=userMasterRepository.findById(email);
 			if(user.isPresent()) {
@@ -93,7 +95,7 @@ public class AuditHistoryUtilities {
 			new ZoyAdminApplicationException(e, "");
 		}
 	}
-	
+
 	public void auditForCreateUserDelete(String email,boolean isCreate,AdminUserMaster object) throws WebServiceException {
 		try {
 			String userName="";
@@ -111,7 +113,7 @@ public class AuditHistoryUtilities {
 			AuditHistory auditHistory=new AuditHistory();
 			auditHistory.setUserEmail(email);
 			auditHistory.setOperation(isCreate? ZoyConstant.ZOY_ADMIN_USER_CREATE : ZoyConstant.ZOY_ADMIN_USER_DELETE);
-			
+
 			auditHistory.setHistoryData(histotyData);
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
@@ -119,7 +121,33 @@ public class AuditHistoryUtilities {
 			new ZoyAdminApplicationException(e, "");
 		}
 	}
-	
+
+	public void auditForCreateSalesUserDelete(String email,boolean isCreate,ZoyPgSalesMaster master) throws WebServiceException {
+		try {
+			String userName="";
+			Optional<AdminUserMaster> user=userMasterRepository.findById(email);
+			if(user.isPresent()) {
+				userName=user.get().getFirstName()+" "+user.get().getLastName();
+			}
+			String histotyData=null;
+			if(isCreate) {
+				histotyData=userName+" has created the user for, User Name="+master.getFirstName()+" "+master.getLastName()+", Designation=Sales, Contact Number="+master.getMobileNo()+", Email="+master.getEmailId();
+			}else {
+				String status=master.getStatus() ? "Active":"Inactive";
+				histotyData=userName+" has deleted the user for, User Name="+master.getFirstName()+" "+master.getLastName()+", Designation=Sales, Contact Number="+master.getMobileNo()+", Email="+master.getEmailId()+", status="+status;	
+			}
+			AuditHistory auditHistory=new AuditHistory();
+			auditHistory.setUserEmail(email);
+			auditHistory.setOperation(isCreate? ZoyConstant.ZOY_ADMIN_SALES_USER_CREATE : ZoyConstant.ZOY_ADMIN_SALES_USER_DELETE);
+
+			auditHistory.setHistoryData(histotyData);
+			auditHistoryRepository.save(auditHistory);
+		}catch(Exception e) {
+			log.error("Error in audit entry for auditForCreateUserDelete"+email+":",e);
+			new ZoyAdminApplicationException(e, "");
+		}
+	}
+
 	public void auditForUpdateUser(String email,AdminUserMaster object,AdminUserMaster dbObject)throws WebServiceException {
 		try {
 			String userName="";
@@ -134,21 +162,21 @@ public class AuditHistoryUtilities {
 				}
 				histotyData.append(" User Name from "+dbObject.getFirstName()+" "+dbObject.getLastName()+" to "+object.getFirstName()+" "+object.getLastName());
 			}
-			
+
 			if(!dbObject.getDesignation().equals(object.getDesignation())) {
 				if(!(",".equals(histotyData.substring(histotyData.length()-1)))) {
 					histotyData.append(",");
 				}
 				histotyData.append(" Designation from "+dbObject.getDesignation()+" to "+object.getDesignation());
 			}
-			
+
 			if(!String.valueOf(dbObject.getContactNumber()).equals(String.valueOf(object.getContactNumber()))) {
 				if(!(",".equals(histotyData.substring(histotyData.length()-1)))) {
 					histotyData.append(",");
 				}
 				histotyData.append(" Contact Number from "+dbObject.getContactNumber()+" to "+object.getContactNumber());
 			}
-			
+
 
 			if(!dbObject.getStatus()==object.getStatus()) {
 				if(!(",".equals(histotyData.substring(histotyData.length()-1)))) {
@@ -158,11 +186,11 @@ public class AuditHistoryUtilities {
 				String status=object.getStatus() ? "Active":"Inactive";
 				histotyData.append(" Status from "+oldStatus +" to "+status);
 			}
-			
+
 			AuditHistory auditHistory=new AuditHistory();
 			auditHistory.setUserEmail(email);
 			auditHistory.setOperation(ZoyConstant.ZOY_ADMIN_USER_UPDATE);
-			
+
 			auditHistory.setHistoryData(histotyData.toString());
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
@@ -170,7 +198,7 @@ public class AuditHistoryUtilities {
 			new ZoyAdminApplicationException(e, "");
 		}
 	}
-	
+
 	public void auditForRoleCreate(String email,boolean isCreate,String history) {
 		try {
 			String userName="";
@@ -187,7 +215,7 @@ public class AuditHistoryUtilities {
 			history=history.replace("read_prv", "Read");
 			history=history.replace("write_prv", "Write");
 			history=history.replace("\"", "");
-			
+
 			String histotyData=null;
 			if(isCreate) {
 				histotyData=userName+" has created the role for, "+history;
@@ -197,7 +225,7 @@ public class AuditHistoryUtilities {
 			AuditHistory auditHistory=new AuditHistory();
 			auditHistory.setUserEmail(email);
 			auditHistory.setOperation(isCreate? ZoyConstant.ZOY_ADMIN_ROLE_CREATE: ZoyConstant.ZOY_ADMIN_ROLE_DELETE);
-			
+
 			auditHistory.setHistoryData(histotyData);
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
@@ -205,15 +233,15 @@ public class AuditHistoryUtilities {
 			new ZoyAdminApplicationException(e, "");
 		}
 	}
-	
+
 
 	public void auditForRoleUpdate(String roleName,StringBuffer history, List<com.integration.zoy.model.RoleScreen> appRoleScreensDB,
 			List<com.integration.zoy.model.RoleScreen> appRoleScreensNewUpdate,List<com.integration.zoy.model.RoleScreen> appRoleScreenDeleted) {
 		final String email=SecurityContextHolder.getContext().getAuthentication().getName();
 		try {
 			final List<com.integration.zoy.model.RoleScreen> listOneListDB = appRoleScreensDB.stream().filter(two -> appRoleScreensNewUpdate.stream()
-		              .anyMatch(one -> one.getScreenName().equals(two.getScreenName()))) 
-		              .collect(Collectors.toList());
+					.anyMatch(one -> one.getScreenName().equals(two.getScreenName()))) 
+					.collect(Collectors.toList());
 			if(appRoleScreenDeleted !=null && !appRoleScreenDeleted.isEmpty()){
 				listOneListDB.addAll(appRoleScreenDeleted);
 			}
@@ -230,20 +258,20 @@ public class AuditHistoryUtilities {
 			appRoleScreens=appRoleScreens.replace("read_prv", "Read");
 			appRoleScreens=appRoleScreens.replace("write_prv", "Write");
 			appRoleScreens=appRoleScreens.replace("\"", "");
-			
+
 			appRoleScreensnew=appRoleScreensnew.replace("true", "Yes");
 			appRoleScreensnew=appRoleScreensnew.replace("false", "No");
 			appRoleScreensnew=appRoleScreensnew.replace("screen_name", "Screen Name");
 			appRoleScreensnew=appRoleScreensnew.replace("read_prv", "Read");
 			appRoleScreensnew=appRoleScreensnew.replace("write_prv", "Write");
 			appRoleScreensnew=appRoleScreensnew.replace("\"", "");
-			
+
 			StringBuffer histotyData=new StringBuffer(userName+" has updated the role ("+roleName+") for, ");
 			if(history!=null && !(String.valueOf(history).isEmpty())) {
 				histotyData.append(history);
 				histotyData.append(", ");
 			}
-			
+
 			histotyData.append("Roles from ");
 			histotyData.append(appRoleScreens);
 			histotyData.append(" to ");
@@ -251,7 +279,7 @@ public class AuditHistoryUtilities {
 			AuditHistory auditHistory=new AuditHistory();
 			auditHistory.setUserEmail(email);
 			auditHistory.setOperation(ZoyConstant.ZOY_ADMIN_ROLE_UPDATE);
-			
+
 			auditHistory.setHistoryData(histotyData.toString());
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
@@ -268,7 +296,7 @@ public class AuditHistoryUtilities {
 			if(user.isPresent()) {
 				userName=user.get().getFirstName()+" "+user.get().getLastName();
 			}
-			
+
 			Optional<AdminUserMaster> user2=userMasterRepository.findById(userEmail);
 			if(user2.isPresent()) {
 				userNameFor=user2.get().getFirstName()+" "+user2.get().getLastName();
@@ -279,7 +307,7 @@ public class AuditHistoryUtilities {
 			AuditHistory auditHistory=new AuditHistory();
 			auditHistory.setUserEmail(loginEmail);
 			auditHistory.setOperation(ZoyConstant.ZOY_ADMIN_USER_AUTHORZITION_ASSIGN);
-			
+
 			auditHistory.setHistoryData(histotyData);
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
@@ -287,7 +315,7 @@ public class AuditHistoryUtilities {
 			new ZoyAdminApplicationException(e, "");
 		}
 	}
-	
+
 	public void auditForCommon(String loginEmail, String history,String operation) {
 		try {
 			String userName="";
@@ -303,7 +331,7 @@ public class AuditHistoryUtilities {
 			AuditHistory auditHistory=new AuditHistory();
 			auditHistory.setUserEmail(loginEmail);
 			auditHistory.setOperation(operation);
-			
+
 			auditHistory.setHistoryData(histotyData);
 			auditHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
@@ -311,7 +339,7 @@ public class AuditHistoryUtilities {
 			new ZoyAdminApplicationException(e, "");
 		}
 	}
-	
+
 	public void leadHistory(String history,String supportEmail,String inquryNumber,String status,String createdDate) {
 		try {
 			final Timestamp ts = Timestamp.valueOf(createdDate);
@@ -327,8 +355,8 @@ public class AuditHistoryUtilities {
 			new ZoyAdminApplicationException(e, "");
 		}
 	}
-	
-	
+
+
 	public void userHelpRequestHistory(String history,String status,String inquryNumber,String userEmail,String createdDate) {
 		try {
 			final Timestamp ts = Timestamp.valueOf(createdDate);
@@ -341,6 +369,53 @@ public class AuditHistoryUtilities {
 			userHelpRequestHistoryRepository.save(auditHistory);
 		}catch(Exception e) {
 			log.error("Error in audit entry for User Help Request History",e);
+			new ZoyAdminApplicationException(e, "");
+		}
+	}
+
+	public void auditForCreateVendorUserDelete(String email,boolean isCreate,ZoyVendorMaster vendor) throws WebServiceException {
+		try {
+			String userName="";
+			String operation="";
+			Optional<AdminUserMaster> user=userMasterRepository.findById(email);
+			if(user.isPresent()) {
+				userName=user.get().getFirstName()+" "+user.get().getLastName();
+			}
+			String histotyData=null;
+			if(isCreate) {
+				operation = ZoyConstant.ZOY_ADMIN_VENDOR_USER_CREATE;
+				histotyData=userName+" has created the user for, User Name="+vendor.getVendorFirstName()+" "+vendor.getVendorLastName()+", Designation=Vendor, Contact Number="+vendor.getVendorMobileNo()+", Email="+vendor.getVendorEmail();
+			} else {
+				String statusCode = vendor.getVendorStatus();
+				String status;
+
+				if ("P".equalsIgnoreCase(statusCode)) {
+					status = "Pending for Approval";
+					operation = ZoyConstant.ZOY_ADMIN_VENDOR_USER_PENDING;
+				} else if ("A".equalsIgnoreCase(statusCode)) {
+					status = "Approved";
+					operation = ZoyConstant.ZOY_ADMIN_VENDOR_USER_APPROVED;
+				} else if ("R".equalsIgnoreCase(statusCode)) {
+					status = "Rejected";
+					operation = ZoyConstant.ZOY_ADMIN_VENDOR_USER_REJECTED;
+				} else if ("I".equalsIgnoreCase(statusCode)) {
+					status = "Inactive";
+					operation = ZoyConstant.ZOY_ADMIN_VENDOR_USER_INACTIVE;
+				} else {
+					status = "Unknown";
+					operation = ZoyConstant.ZOY_ADMIN_VENDOR_USER_UNKNOWN;
+				}
+
+				histotyData = userName + " has deleted the user for, User Name=" + vendor.getVendorFirstName() + " " + vendor.getVendorLastName() +
+						", Designation=Vendor, Contact Number=" + vendor.getVendorMobileNo() + ", Email=" + vendor.getVendorEmail() + ", status=" + status;
+			}
+			AuditHistory auditHistory = new AuditHistory();
+			auditHistory.setUserEmail(email);
+			auditHistory.setOperation(operation);
+			auditHistory.setHistoryData(histotyData);
+			auditHistoryRepository.save(auditHistory);
+		}catch(Exception e) {
+			log.error("Error in audit entry for auditForCreateVendorUserDelete"+email+":",e);
 			new ZoyAdminApplicationException(e, "");
 		}
 	}
