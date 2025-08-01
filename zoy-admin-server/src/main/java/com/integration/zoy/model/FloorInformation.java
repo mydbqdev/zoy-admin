@@ -1,15 +1,16 @@
 package com.integration.zoy.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FloorInformation {
-	private String floorName;
-	private String floorId;
-	private String totalRooms;
-	private String totalOccupancy;
-	private String occupied;
-	private String vacant;
-	private List<Room> rooms;
+	private String floorName ="";
+	private String floorId ="";
+	private String totalRooms = "0";
+	private String totalOccupancy = "0";
+	private String occupied ="0";
+	private String vacant ="0";
+	private List<Room> rooms = new ArrayList<>();
 
 	
 
