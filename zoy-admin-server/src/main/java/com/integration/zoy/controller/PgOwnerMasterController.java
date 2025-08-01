@@ -932,14 +932,14 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	private void processLocation(PgOwnerMasterModel model) {
 		if(model.getPropertyCityCodeId()==null || model.getPropertyCityCodeId().trim().isEmpty()) {
 			PgLocationCode code=new PgLocationCode();
-			code.setLocationName(model.getPropertyLocality());
-			code.setLocationShortName(model.getPropertyLocalityCode());
+			code.setLocationName(model.getPropertyCity());
+			code.setLocationShortName(model.getPropertyCityCode());
 			commonDBImpl.saveLocationCode(code);
 		}
 		if(model.getPropertyLocalityCodeId()==null || model.getPropertyLocalityCodeId().trim().isEmpty()) {
 			PgAreaCode code=new PgAreaCode();
-			code.setAreaName(model.getPropertyCity());
-			code.setAreaShortName(model.getPropertyCityCode());
+			code.setAreaName(model.getPropertyLocality());
+			code.setAreaShortName(model.getPropertyLocalityCode());
 			commonDBImpl.saveAreaCode(code);
 		}
 	}
