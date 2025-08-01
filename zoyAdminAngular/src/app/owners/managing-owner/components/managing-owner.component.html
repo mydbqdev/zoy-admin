@@ -219,8 +219,8 @@
           </div>
           <div class="col-sm-2" style="text-align: right;">Area</div>
           <div class="col-sm-4">
-            <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZoyCode.property_locality"  placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}"  (blur)="getLocationDetails(generateZoyCode.property_locality,2)" >
-                      <select id="area-dropdown" class="form-select" (change)="getLocationDetails(generateZoyCode.property_locality,2)"  [(ngModel)]="generateZoyCode.property_locality" *ngIf="areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}">
+            <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZoyCode.property_locality"  placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}"  (blur)="getAreaDetails(generateZoyCode.property_locality)" >
+                      <select id="area-dropdown" class="form-select" (change)="getAreaDetails(generateZoyCode.property_locality)"  [(ngModel)]="generateZoyCode.property_locality" *ngIf="areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}">
                         <option></option>
                         <option *ngFor="let cond of areaList">{{cond}}</option>
                       </select>
