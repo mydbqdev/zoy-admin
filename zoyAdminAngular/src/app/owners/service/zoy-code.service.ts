@@ -99,7 +99,21 @@ import { MessageService } from 'src/app/message.service';
                withCredentials:true
             }
         );
-    } 
+    }
+    
+    public getAreaDetails(data:string): Observable<any> {
+      const url1=this.basePath +"zoy_admin/area_code?area="+data;
+        return  this.httpclient.get<any>(
+            url1,
+            {
+               headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+    }
+
+
 
 
 
