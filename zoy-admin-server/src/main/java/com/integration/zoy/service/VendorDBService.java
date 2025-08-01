@@ -67,11 +67,9 @@ public class VendorDBService implements VendorDBImpl{
 		}
 		Sort sort = Sort.by(order);
 		Pageable pageable = PageRequest.of(paginationRequest.getPageIndex(), paginationRequest.getPageSize(), sort);
-		String searchText = Optional.ofNullable(paginationRequest.getFilter())
-				.map(Filter::getSearchText)
-				.filter(text -> !text.isBlank())
-				.orElse("");
-		Page<Object[]> resultPage = vendorMasterRepository.findAllVendors(pageable, searchText);
+		String searchText = Optional.ofNullable(paginationRequest.getFilter()).map(Filter::getSearchText).filter(text -> !text.isBlank()).orElse("");
+		String statusText = Optional.ofNullable(paginationRequest.getFilter()).map(Filter::getStatus).filter(text -> !text.isBlank()).orElse("");
+		Page<Object[]> resultPage = vendorMasterRepository.findAllVendors(pageable, searchText,statusText);
 
 		return resultPage.map(result -> {
 			String vendorId = result[0] != null ? result[0].toString() : null;
