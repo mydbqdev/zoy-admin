@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.integration.zoy.entity.NotificationsAndAlerts;
 import com.integration.zoy.repository.NotificationsAndAlertsRepository;
+import com.integration.zoy.utils.ReviewRatingDto;
 
 @Service
 public class NotificationService {
@@ -110,4 +111,12 @@ public class NotificationService {
 //    public void sendRemainderNotificationForLeadsFollowUp() {
 //    	
 //    }
+    
+    public void notifyForReviewRating(String[] userIds, ReviewRatingDto dto) throws Exception {
+    	String notificationMessage = "A review given by "+dto.getTenantName()+ " rated for " + dto.getPgName() + " with " + dto.getStar()+"stars";      
+                String screenName = "CONFIGURATION_MASTER,CONFIGURATION_MASTER_APPROVAL";
+        String category = "Low Review and Rating";
+        String infoType = "alert";
+        notifyUsers(userIds, notificationMessage, screenName, category, infoType);
+    }
 }
