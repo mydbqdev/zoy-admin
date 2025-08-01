@@ -42,11 +42,13 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_LOGOUT="USER_LOGOUT";
 	public static final String ZOY_ADMIN_USER_CREATE="USER_ADD";
 	public static final String ZOY_ADMIN_SALES_USER_CREATE="SALES_USER_ADD";
+	public static final String ZOY_ADMIN_VENDOR_USER_CREATE="VENDOR_USER_ADD";
 	public static final String ZOY_ADMIN_USER_UPDATE="USER_UPDATE";
 	public static final String ZOY_ADMIN_USER_ACTIVE="USER_ACTIVE";
 	public static final String ZOY_ADMIN_USER_INACTIVE="USER_INACTIVE";
 	public static final String ZOY_ADMIN_USER_DELETE="USER_DELETE";
 	public static final String ZOY_ADMIN_SALES_USER_DELETE="SALES_USER_DELETE";
+	public static final String ZOY_ADMIN_VENDOR_USER_DELETE="VENDOR_USER_DELETE";
 	public static final String ZOY_ADMIN_USER_AUTHORZITION_APPROVE="USER_ROLE_APPROVED";
 	public static final String ZOY_ADMIN_USER_AUTHORZITION_REJECTED="USER_ROLE_REJECTED";
 	public static final String ZOY_ADMIN_ZOY_CODE_GENERATE="ZOY_CODE_GENERATE";
@@ -177,4 +179,9 @@ public class ZoyConstant {
 
 	public static final String ZOY_SALES_TEAM= "Sales Team";
 	public static final String ZOY_API_USER= "zoyadmin@zoypg.com";
+	public static final String ZOY_ADMIN_VENDOR_USER_PENDING = "VENDOR_USER_PENDING";
+	public static final String ZOY_ADMIN_VENDOR_USER_APPROVED = "VENDOR_USER_APPROVED";
+	public static final String ZOY_ADMIN_VENDOR_USER_REJECTED = "VENDOR_USER_REJECTED";
+	public static final String ZOY_ADMIN_VENDOR_USER_INACTIVE = "VENDOR_USER_INACTIVE";
+	public static final String ZOY_ADMIN_VENDOR_USER_UNKNOWN = "VENDOR_USER_UNKNOWN";
 }

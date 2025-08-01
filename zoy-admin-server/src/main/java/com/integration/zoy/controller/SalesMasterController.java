@@ -18,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -149,7 +150,7 @@ public class SalesMasterController implements SalesMasterImpl {
 			newPasswordHistory.setPassword(adminSalesUserLoginDetails.getPassword());
 			adminUserPasswordHistoryRepo.save(newPasswordHistory);
 			// audit here
-			//			auditHistoryUtilities.auditForCreateSalesUserDelete(SecurityContextHolder.getContext().getAuthentication().getName(), true, master);
+			auditHistoryUtilities.auditForCreateSalesUserDelete(SecurityContextHolder.getContext().getAuthentication().getName(), true, master);
 			//Ticket user creation and group added
 			UserMaster userCreated=zoyAdminTicketSmartService.createTicketSmartUser(pgSalesMasterModel);
 			log.info(userCreated!=null ? "Ticket smart user created" : "Ticket smart user not created");
