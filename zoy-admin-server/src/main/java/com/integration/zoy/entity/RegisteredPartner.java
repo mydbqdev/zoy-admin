@@ -23,7 +23,7 @@ public class RegisteredPartner {
 	@Column(name = "firstname", nullable = false, length = 50)
 	private String firstname;
 
-	@Column(name = "lastname", nullable = false, length = 50)
+	@Column(name = "lastname")
 	private String lastname;
 
 	@Column(name = "email", nullable = false, length = 100)
