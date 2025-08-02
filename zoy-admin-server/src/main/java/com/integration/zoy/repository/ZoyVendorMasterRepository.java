@@ -27,7 +27,7 @@ public interface ZoyVendorMasterRepository extends JpaRepository<ZoyVendorMaster
 			+ "			zvm.vendor_email, "
 			+ "			zvm.vendor_gst_registrastion_no, "
 			+ "			CASE  "
-			+ "			WHEN zvm.vendor_status = 'P' THEN 'Pending for approval' "
+			+ "			WHEN zvm.vendor_status = 'P' THEN 'Pending Approval' "
 			+ "			WHEN zvm.vendor_status = 'A' THEN 'Approved' "
 			+ "			WHEN zvm.vendor_status = 'R' THEN 'Rejected' "
 			+ "			ELSE 'Unknown' "
