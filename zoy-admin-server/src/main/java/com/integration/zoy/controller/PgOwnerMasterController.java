@@ -506,9 +506,11 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 						floorLevelDetails.setTotalRooms(String.valueOf(filteredRooms.size()));
 
 						floorLevelDetails.setRooms(new ArrayList<>(filteredRooms.values()));
-						floors.put(floorName, floorLevelDetails);
+						if(floorName!=null)
+							floors.put(floorName, floorLevelDetails);
 					}
-					newProperty.setFloorInformation(new ArrayList<>(floors.values()));
+					List<FloorInformation> floorInfoList = !floors.isEmpty() ? new ArrayList<>(floors.values()) : List.of(new FloorInformation());
+					newProperty.setFloorInformation(floorInfoList);
 					basicPropertyInfo.setNumberOfFloors(String.valueOf(floors.size()));
 					basicPropertyInfo.setTotalOccupancy(String.valueOf(totalBeds));
 					return newProperty;

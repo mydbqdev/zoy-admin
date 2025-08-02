@@ -58,6 +58,7 @@ import com.integration.zoy.entity.UserPaymentDue;
 import com.integration.zoy.entity.UserPgDetails;
 import com.integration.zoy.entity.ZoyCompanyProfileMaster;
 import com.integration.zoy.entity.ZoyPgBedDetails;
+import com.integration.zoy.entity.ZoyPgCreditNote;
 import com.integration.zoy.entity.ZoyPgFloorNameMaster;
 import com.integration.zoy.entity.ZoyPgFloorRooms;
 import com.integration.zoy.entity.ZoyPgFloorRoomsId;
@@ -506,8 +507,13 @@ public class UploadService {
 					Double balanceRent = booking.getCalFixedRent().doubleValue()-booking.getFixedRent().doubleValue();
 					if(balanceRent > 0) {
 						BigDecimal balRent=calcBalanceRent(booking,tenantDetails);
-						if(balRent.doubleValue() > 0)
+						if(balRent.doubleValue() > 0) {
 							saveDues(booking,balRent,duesType,ZoyConstant.RENT_DUE);
+						} 
+					} else if (balanceRent < 0) {
+						BigDecimal calRent=calcActualRent(tenantDetails,booking.getFixedRent().doubleValue());
+						Double balanceWithoutGst = calRent.doubleValue()-booking.getFixedRent().doubleValue();
+						saveCreditNote(booking,balanceWithoutGst);
 					}
 				} else {
 					BigDecimal calcFixedRent=calcActualRent(tenantDetails,booking.getFixedRent().doubleValue());
@@ -552,6 +558,17 @@ public class UploadService {
 		}
 	}
 
+	private void saveCreditNote(ZoyPgOwnerBookingDetails booking, Double balanceRent) {
+		ZoyPgCreditNote creditNote = new ZoyPgCreditNote();
+		creditNote.setAdjustmentAmount(new BigDecimal(Math.abs(balanceRent)));
+		creditNote.setAdjustmentStatus(false);
+		creditNote.setBookingId(booking.getBookingId());
+		creditNote.setPropertyId(booking.getPropertyId());
+		creditNote.setUserId(booking.getTenantId());
+		uploadDBImpl.saveCreditNote(creditNote);;
+	}
+
+
 	private BigDecimal calcBalanceRent(ZoyPgOwnerBookingDetails booking, TenantList tenantDetails) {
 		int rentCycleStartDay = Integer.parseInt(tenantDetails.getRentCycle().split("-")[0]);
 		LocalDate checkInDate = booking.getInDate().toLocalDateTime().toLocalDate();
@@ -566,15 +583,19 @@ public class UploadService {
 	private BigDecimal calcActualRent(TenantList tenantDetails,Double fixedRent) {
 		int rentCycleStartDay = Integer.parseInt(tenantDetails.getRentCycle().split("-")[0]);
 		LocalDate currentDate = LocalDate.now(ZoneId.of(ZoyConstant.IST));
-		LocalDate nextMonthDate = currentDate.plusMonths(1).withDayOfMonth(rentCycleStartDay).minusDays(1);
-		LocalDateTime resultDateTime = LocalDateTime.of(nextMonthDate, LocalTime.MAX);
-		Timestamp rentCycleNextMonthDate = Timestamp.valueOf(resultDateTime);
+		LocalDate rentCycleDate = currentDate.withDayOfMonth(rentCycleStartDay).minusDays(1);
 
-		long noOfRentCalc=getDiffofTimestamp(tenantDetails.getInDate(),rentCycleNextMonthDate);
-		long daysInMonth = tenantDetails.getInDate().toLocalDateTime().toLocalDate().lengthOfMonth();
-		//Calculate Month rent
-		BigDecimal calRent=new BigDecimal((fixedRent/daysInMonth)*noOfRentCalc).setScale(2, RoundingMode.HALF_UP);
+		LocalDate inDateLocal = tenantDetails.getInDate().toLocalDateTime().toLocalDate();
+		if (inDateLocal.isAfter(rentCycleDate)) {
+		    rentCycleDate = rentCycleDate.plusMonths(1);
+		}
+		LocalDateTime resultDateTime = LocalDateTime.of(rentCycleDate, LocalTime.MAX);
+		Timestamp rentCycleNextMonthDate = Timestamp.valueOf(resultDateTime);
+		long noOfRentCalc = getDiffofTimestamp(tenantDetails.getInDate(), rentCycleNextMonthDate);
+		long daysInMonth = inDateLocal.lengthOfMonth();
+		BigDecimal calRent = new BigDecimal((fixedRent / daysInMonth) * noOfRentCalc).setScale(2, RoundingMode.HALF_UP);
 		return calRent;
+
 	}
 
 	private UserPayment saveUserPayment(ZoyPgOwnerBookingDetails booking, UserDues paidDue, BigDecimal rentAmount,String description) {
