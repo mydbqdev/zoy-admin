@@ -12,6 +12,6 @@ public class TicketHistoryResponseDto {
 	private String newStatus;
 	private String newAssignee;
 	private String changedBy;
-	private Timestamp createdAt;
+	private String createdAt;
 	private List<String> historyImage;
 }
