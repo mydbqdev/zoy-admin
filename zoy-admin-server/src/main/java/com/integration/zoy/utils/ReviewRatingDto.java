@@ -8,5 +8,5 @@ public class ReviewRatingDto {
     private String tenantName;
     private String tenantMobileNo;
     private String pgName;
-    private int star;
+    private double star;
 }
