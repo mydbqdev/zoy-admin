@@ -15,7 +15,7 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
 	@Query(value = "select * from pgcommon.user_profile up where verify_token=:token",nativeQuery = true)
 	Optional<UserProfile> findByVerifyToken(String token);
 
-	@Query(value = "select * from pgcommon.user_profile up where up.email_id=:email",nativeQuery = true)
+	@Query(value = "select * from pgcommon.user_profile up where up.email_id=:email ",nativeQuery = true)
 	Optional<UserProfile> findRegisterEmail(String email);
 
 }
