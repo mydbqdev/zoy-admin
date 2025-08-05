@@ -226,10 +226,6 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			user.setZoyVariableShare(model.getZoyVariableShare());
 			commonDBImpl.registerNewUserAccount(user);
 			//audit history here
-			String historyContent=" has generated the zoy code for,"+user.getPropertyOwnerName();
-			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);
-			emailBodyService.sendZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,token);
-
 			if(model.getRegisterId()!=null) {
 				Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(model.getRegisterId());
 				if(partner.isPresent()) {
@@ -241,6 +237,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				}
 			}
 			
+			String historyContent=" has generated the zoy code for,"+user.getPropertyOwnerName();
+			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);
+			emailBodyService.sendZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,token);
+
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("ZOY code has been generated & sent successfully.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -885,11 +885,6 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					ownerData.setPropertyStreetName(model.getPropertyStreetName());
 					pgOwnerMaterRepository.save(ownerData);
 
-					//audit history here
-					String historyContent=" has generated the zoy code for existing owner,"+model.getFirstName() +" "+ model.getLastName();
-					auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);
-					emailBodyService.sendExistingOwnerZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,model.getPropertyName());
-
 					if(model.getRegisterId()!=null) {
 						Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(model.getRegisterId());
 						if(partner.isPresent()) {
@@ -900,7 +895,11 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 								zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead New Property Converted to Zoy Property and generated ZoyCode", ZoyConstant.CLOSED);
 						}
 					}
-					
+					//audit history here
+					String historyContent=" has generated the zoy code for existing owner,"+model.getFirstName() +" "+ model.getLastName();
+					auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);
+					emailBodyService.sendExistingOwnerZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,model.getPropertyName());
+
 					response.setStatus(HttpStatus.OK.value());
 					response.setMessage("ZOY code has been generated & sent successfully.");
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
