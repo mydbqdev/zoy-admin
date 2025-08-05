@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { ServiceHelper } from 'src/app/common/shared/service-helper';
 import { BASE_PATH } from 'src/app/common/shared/variables';
 import { MessageService } from 'src/app/message.service';
-import { Vendor, VendorStatus } from "../model/admin-vendor-management.model";
+import {  VendorStatus } from "../model/admin-vendor-management.model";
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,7 @@ export class VendorService {
 
 
   private apiUrl = 'YOUR_BACKEND_API_BASE_URL/api/vendors'; // **IMPORTANT: Replace with your actual backend API URL**
-  private currentVendors: Vendor[] = [
+  private currentVendors: any[] = [
     {
       id: 'v1', companyName: 'Alpha Solutions', contactPersonName: 'Alice Smith', email: 'alice@alpha.com',
       address: '123 Main St', contactNumber: '111-222-3333', servicesOffered: ['IT Support'],
@@ -56,7 +56,7 @@ export class VendorService {
 
 
 
-  getVendors(statusFilter?: VendorStatus): Observable<Vendor[]> {
+  getVendors(statusFilter?: VendorStatus): Observable<any[]> {
     let filtered = [...this.currentVendors]; // Deep copy for manipulation
     if (statusFilter) {
       filtered = filtered.filter(v => v.status === statusFilter);
@@ -99,16 +99,23 @@ export class VendorService {
     // return this.http.post(`${this.apiUrl}/${vendorId}/reject`, { reason });
   }
 
-  changeVendorStatus(vendorId: string, newStatus: VendorStatus, reason?: string): Observable<any> {
-    return this.updateVendorStatus(vendorId, newStatus, reason);
-    // return this.http.post(`${this.apiUrl}/${vendorId}/change-status`, { newStatus, reason });
+public getUserDesignation(): Observable<any> {
+const url1=this.basePath +"zoy_admin/userDesignation";
+    return  this.httpclient.get<any>(
+         url1,
+          {
+            headers:ServiceHelper.buildHeaders(),
+            observe : 'body',
+            withCredentials:true
+          }
+         );
   }
 
-
-  public getLockedUserDetais(): Observable<any> {
-    const url = this.basePath + 'zoy_admin/userListlocked'; 
-    return  this.httpclient.get<any>(
+  public getVendorDetails(data:any): Observable<any> {
+    const url = this.basePath + 'zoy_admin/getVendorDetails'; 
+    return  this.httpclient.post<any>(
       url,
+      data,
       {
           headers:ServiceHelper.buildHeaders(),
          observe : 'body',
@@ -116,8 +123,32 @@ export class VendorService {
       });
   }
 
-  public doUnlock(data:any): Observable<any> {
-    const url = this.basePath + 'zoy_admin/zoyAdminUserUnlock'; 
+  public approveVendorDetails(data:any): Observable<any> {
+    const url = this.basePath + 'zoy_admin/approveVendorDetails'; 
+    return  this.httpclient.post<any>(
+      url,
+      data,
+      {
+          headers:ServiceHelper.buildHeaders(),
+         observe : 'body',
+         withCredentials:true
+      });
+  }
+
+   public rejectingVendorDetails(data:any): Observable<any> {
+    const url = this.basePath + 'zoy_admin/rejectingVendorDetails'; 
+    return  this.httpclient.post<any>(
+      url,
+      data,
+      {
+          headers:ServiceHelper.buildHeaders(),
+         observe : 'body',
+         withCredentials:true
+      });
+  }
+
+  public changeVendorStatus(data:any): Observable<any> {
+    const url = this.basePath + 'zoy_admin/getVendorDetails'; 
     return  this.httpclient.post<any>(
       url,
       data,

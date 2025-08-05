@@ -186,7 +186,7 @@
                   <div class="row justify-content-center mt-3">
                     <div class="col-md-4 mb-2">
                       <label for="email">PG Name</label>
-                      <input type="text" id="pgName" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))' [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="75" placeholder="Enter PG Name" 
+                      <input type="text" id="pgName" [(ngModel)]="generateZCode.property_name" formControlName="pgName" class="form-control" maxlength="75" placeholder="Enter PG Name" 
                        [ngClass]="{'is-invalid':submitted && (form.controls.pgName.errors)}">  
                        <div *ngIf="submitted && form.controls.pgName.errors" class="text-danger">
                         <div *ngIf="submitted && form.controls.pgName.errors?.required">

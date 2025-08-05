@@ -4,6 +4,7 @@ export class OwnerRequestParam {
     sortActive: string;
     sortDirection: string;
     filter: Filter;
+    activity:string ;
   }
 
   export class Filter{
