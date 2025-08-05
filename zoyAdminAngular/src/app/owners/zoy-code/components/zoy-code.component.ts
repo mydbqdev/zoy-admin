@@ -763,7 +763,7 @@ percentageOnly(event: KeyboardEvent) {
 		});
     }
 	 getAreaDetailsForTicket(loc:string) {
-		this.generateZoyCodeService.getLocationDetails(loc).subscribe(data => {
+		this.generateZoyCodeService.getAreaDetails(loc).subscribe(data => {
 			if(data!="" && data!=null && data!=undefined &&  data?.location_short_name!=''){
 				this.ticket.property_locality_code_id = data.area_code_id;
 				this.ticket.property_locality_code = data.area_short_name;

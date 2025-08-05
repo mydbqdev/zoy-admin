@@ -45,7 +45,28 @@ public class RatingsAndReviewsReport {
 
 	@SerializedName("reviews")
 	public List<ReviewReplies> threads;
-
+	
+	@SerializedName("ownerContactNum")
+	public String ownerContactNum;
+	
+	@SerializedName("ownerName")
+	public String ownerName;
+	
+	public String getOwnerContactNum() {
+	    return ownerContactNum;
+	}
+ 
+	public void setOwnerContactNum(String ownerContactNum) {
+	    this.ownerContactNum = ownerContactNum;
+	}
+	
+	public String getOwnerName() {
+		return ownerName;
+	}
+	
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName ;
+	}
 	public String getCleanliness() {
 		return cleanliness;
 	}

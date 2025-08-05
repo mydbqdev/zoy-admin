@@ -518,7 +518,7 @@ export class ConfigurationMasterComponent implements OnInit, AfterViewInit {
 					}
 				  break;
 				case "gstCharges":
-					if( this.isNotValidNumber(this.editConfigMaster.gstCharges.monthlyRent) || this.isNotValidNumber(this.editConfigMaster.gstCharges.cgstPercentage) 
+					if( this.isNotValidNumber(this.editConfigMaster.gstCharges.perDayRent) || this.isNotValidNumber(this.editConfigMaster.gstCharges.cgstPercentage) 
 						|| this.isNotValidNumber(this.editConfigMaster.gstCharges.sgstPercentage) || this.isNotValidNumber(this.editConfigMaster.gstCharges.igstPercentage)
 						|| !this.editConfigMaster.gstCharges?.effectiveDate ){
 						return true;
