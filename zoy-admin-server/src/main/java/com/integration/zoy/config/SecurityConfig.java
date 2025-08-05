@@ -81,6 +81,8 @@ public class SecurityConfig {
 	            .antMatchers("/zoy_admin/saveExistingPgOwnerData").permitAll()
 	            .antMatchers("/zoy_admin/resendPgOwnerData").permitAll()
 	            .antMatchers("/zoy_admin/resendExistingPgOwnerData").permitAll()
+	            .antMatchers("/zoy_admin/check_area_code").permitAll()
+	            .antMatchers("/zoy_admin/check_location_code").permitAll()
 	            .antMatchers("/zoy_admin/zoyWebhook").permitAll()
 	            .anyRequest().authenticated()
 	            .and()

@@ -8,7 +8,7 @@ import com.integration.zoy.entity.PgAreaCode;
 
 @Repository
 public interface PgAreaCodeRepository extends JpaRepository<PgAreaCode, String> {
-    
+	boolean existsByAreaShortName(String shortName);
 	PgAreaCode findByAreaShortName(String shortName);
 	PgAreaCode findByAreaName(String areaName);
 }
