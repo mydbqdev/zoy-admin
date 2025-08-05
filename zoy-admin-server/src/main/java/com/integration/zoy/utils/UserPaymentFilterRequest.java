@@ -46,6 +46,9 @@ public class UserPaymentFilterRequest {
 	
 	@JsonProperty("isAlert")
 	private boolean isAlert;
+	
+	@JsonProperty("searchText")
+	private String searchText;
 
 	public String getPropertyId() {
 		return propertyId;
@@ -144,5 +147,11 @@ public class UserPaymentFilterRequest {
 		this.isAlert = isAlert;
 	}
 	
-	
+	public String getSearchText() {
+	    return searchText;
+	}
+ 
+	public void setSearchText(String searchText) {
+	    this.searchText = searchText;
+	}
 }

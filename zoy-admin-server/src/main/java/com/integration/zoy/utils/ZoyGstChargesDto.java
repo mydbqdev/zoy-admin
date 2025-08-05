@@ -20,6 +20,9 @@ public class ZoyGstChargesDto {
 	@SerializedName("monthlyRent")
 	private BigDecimal monthlyRent;
 	
+	@SerializedName("perDayRent")
+	private BigDecimal perDayRent;
+	
 	@SerializedName("effectiveDate")
 	private String effectiveDate;
 	
@@ -119,6 +122,14 @@ public class ZoyGstChargesDto {
 
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	public BigDecimal getPerDayRent() {
+		return perDayRent;
+	}
+
+	public void setPerDayRent(BigDecimal perDayRent) {
+		this.perDayRent = perDayRent;
 	}
 	
 }
