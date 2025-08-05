@@ -1146,4 +1146,60 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	
 	}
 
+	@Override
+	public ResponseEntity<String> checkPgAreaCode(String areaCode) {
+		ResponseBody response = new ResponseBody();
+		try {
+			boolean area=pgAreaCodeRepository.existsByAreaShortName(areaCode);
+			if(area) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setMessage("Area Code is already available "+ areaCode);
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Area Code is not available");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while getting location details API:/zoy_admin/check_area_code.checkPgAreaCode ", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> checkPgLoactionCode(String locationCode) {
+		ResponseBody response = new ResponseBody();
+		try {
+			boolean area=pgLocationCodeRepository.existsByLocationShortName(locationCode);
+			if(area) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setMessage("Location Code is already available "+ locationCode);
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Location Code is not available");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while getting location details API:/zoy_admin/check_location_code.checkPgLocationCode ", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
 }
