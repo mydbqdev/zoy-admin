@@ -215,7 +215,12 @@
         <div class="row mt-2">
           <div class="col-sm-2" >City Code</div>
           <div class="col-sm-4">
-            <input class="form-control" placeholder="City Code" [(ngModel)]="generateZoyCode.property_city_code"  (ngModelChange)="generateZoyCode.property_city_code = $event.toUpperCase()" maxlength="3" [readonly]="!isEditCityCode"  [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_city_code==undefined || generateZoyCode.property_city_code==null || generateZoyCode.property_city_code=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))'/>
+            <input class="form-control" placeholder="City Code" [(ngModel)]="generateZoyCode.property_city_code"  (ngModelChange)="generateZoyCode.property_city_code = $event.toUpperCase()" maxlength="3" [readonly]="!isEditCityCode" (blur)="onCheckCityCodeChange($event)"
+             [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_city_code==undefined || generateZoyCode.property_city_code==null || generateZoyCode.property_city_code=='' || isCityCodeAvailable)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))'
+             />
+              <div *ngIf="submittedAddProperty && isCityCodeAvailable && generateZoyCode.property_city_code"  class="text-danger">
+                City Code is already in use.Try another.
+               </div>
           </div>
           <div class="col-sm-2" style="text-align: right;">Area</div>
           <div class="col-sm-4">
@@ -229,7 +234,11 @@
         <div class="row mt-2">
           <div class="col-sm-2">Area Code</div>
           <div class="col-sm-4">
-            <input class="form-control" placeholder="Area Code" [(ngModel)]="generateZoyCode.property_locality_code" (ngModelChange)="generateZoyCode.property_locality_code = $event.toUpperCase()" maxlength="3" [readonly]="!isEditAreaCode" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality_code==undefined || generateZoyCode.property_locality_code==null || generateZoyCode.property_locality_code=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))'/>
+            <input class="form-control" placeholder="Area Code" [(ngModel)]="generateZoyCode.property_locality_code" (ngModelChange)="generateZoyCode.property_locality_code = $event.toUpperCase()" maxlength="3" (blur)="onCheckAreaCodeChange($event)" [readonly]="!isEditAreaCode" 
+            [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality_code==undefined || generateZoyCode.property_locality_code==null || generateZoyCode.property_locality_code=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))'/>
+           <div *ngIf="submittedAddProperty && isAreaCodeAvailable && generateZoyCode.property_locality_code"  class="text-danger">
+               Area Code is already in use.Try another.
+           </div>
           </div>
           <div class="col-sm-2" style="text-align: right;">Zoy Share</div>
           

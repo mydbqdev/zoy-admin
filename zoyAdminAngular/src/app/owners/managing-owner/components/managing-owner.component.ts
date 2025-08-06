@@ -430,7 +430,7 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	  generateCodeForProperty(){
 		this.submittedAddProperty=true;
 		if (this.generateZoyCode.property_name==undefined || this.generateZoyCode.property_name==null || this.generateZoyCode.property_name=='' || this.generateZoyCode.property_pincode==undefined || this.generateZoyCode.property_pincode==null || this.generateZoyCode.property_locality==undefined || this.generateZoyCode.property_locality==null || this.generateZoyCode.property_locality=='' 
-			|| this.generateZoyCode.zoyShare==undefined || this.generateZoyCode.zoyShare==null || this.generateZoyCode.zoyShare=='' || this.isInvalidZoyShare() 
+			|| this.generateZoyCode.zoyShare==undefined || this.generateZoyCode.zoyShare==null || this.generateZoyCode.zoyShare=='' || this.isInvalidZoyShare() || this.isCityCodeAvailable || this.isAreaCodeAvailable
 			|| this.isNotValidNumber(this.generateZoyCode.zoyShare) || this.generateZoyCode.property_city_code==undefined || this.generateZoyCode.property_city_code==null || this.generateZoyCode.property_city_code=='' || this.generateZoyCode.property_locality_code==undefined || this.generateZoyCode.property_locality_code==null || this.generateZoyCode.property_locality_code=='') {
 		return;
 		}
@@ -612,6 +612,43 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 	}
 	});
 }
+
+	isCityCodeAvailable:boolean=false;
+	 onCheckCityCodeChange(event: any){
+      const cityCode = event.target.value;
+        if (cityCode && cityCode.length === 3) {
+          this.checkLocationCode(cityCode);
+		}
+ 	  }
+	  checkLocationCode(loc:string){
+		this.generateZoyCodeService.checkLocationCode(loc).subscribe(data => {
+		this.isCityCodeAvailable = false;
+		}, error => {
+	    	if(error.status==400){
+				this.isCityCodeAvailable = true;
+				this.notifyService.showInfo(error.error.message, "")
+	     }
+		});
+     }
+
+	 isAreaCodeAvailable:boolean=false;
+	  onCheckAreaCodeChange(event: any){
+      const areaCode = event.target.value;
+        if (areaCode && areaCode.length === 3) {
+          this. checkAreaCode(areaCode);
+		}
+ 	  }
+	  checkAreaCode(loc:string){
+		this.generateZoyCodeService.checkAreaCode(loc).subscribe(data => {
+			this.isAreaCodeAvailable=false;
+		}, error => {
+			console.log("error",error)
+	    	if(error.status==400){
+			this.isAreaCodeAvailable=true;
+			this.notifyService.showInfo(error.error.message, "");
+			}
+		});
+     }
   getAreaDetails(loc:string){
 		this.spinner.show();
 		this.generateZoyCodeService.getAreaDetails(loc).subscribe(data => {
