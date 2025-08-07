@@ -2,7 +2,6 @@ package com.integration.zoy.entity;
 
 import javax.persistence.*;
 
-
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
@@ -67,6 +66,10 @@ public class UserDues {
 
     @Column(name = "user_igst_percentage", nullable = false, precision = 10, scale = 2)
     private BigDecimal userIgstPercentage = BigDecimal.ZERO;
+    
+    @Column(name = "user_invoice_no")
+    private String userInvoiceNo;
+    
 
     // Getters and Setters
     public String getUserMoneyDueId() {
@@ -211,6 +214,14 @@ public class UserDues {
 
 	public void setUserIgstPercentage(BigDecimal userIgstPercentage) {
 		this.userIgstPercentage = userIgstPercentage;
+	}
+
+	public String getUserInvoiceNo() {
+		return userInvoiceNo;
+	}
+
+	public void setUserInvoiceNo(String userInvoiceNo) {
+		this.userInvoiceNo = userInvoiceNo;
 	}
 
 	@PrePersist
