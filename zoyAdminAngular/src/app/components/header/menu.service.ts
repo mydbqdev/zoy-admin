@@ -33,7 +33,7 @@ export class MenuService {
     { name: "Sales User Creation", link: "/sales-person", permission: "SALES_PERSON_READ", icon:"fas fa-fw fa-money-check" },
     { name: "Payment Approval", link: "/payment-approval", permission: "PAYMENT_APPROVAL_READ", icon:"fas fa-fw fa-money-check" },
     { name: "Locked User", link: "/locked-user", permission: "LOCKED_USER_READ", icon:"fas fa-fw fa-users-cog" },
-    { name: "Vendor Management", link: "/admin-vendor-management", permission: "VENDOR_MANAGEMENT_READ", icon:"fas fa-fw fa-users-cog" },
+    { name: "Manage Vendor ", link: "/admin-vendor-management", permission: "VENDOR_MANAGEMENT_READ", icon:"fas fa-fw fa-users-cog" },
     { name: "Permission Approval", link: "/permission-approval", permission: "PERMISSION_APPROVAL_READ", icon:"fas fa-fw fa-users-cog" },
     { name: "Profile", link: "/profile", permission: "DEFAULT_PERMISSION", icon:"fas fa-th-list" },
     { name: "Role and Permission", link: "/role-master", permission: "ROLE_AND_PERMISSION_READ", icon:"fas fa-fw fa-cogs"},
@@ -49,6 +49,7 @@ export class MenuService {
     { name: "My Closed Tickets", link: "/my-closed-tickets", permission: "MY_CLOSED_TICKETS_READ", icon:"fas fa-chart-bar" },
     { name: "All Tickets", link: "/all-tickets", permission: "ALL_TICKETS_READ", icon:"fas fa-chart-bar" },
     { name: "Closed Tickets", link: "/all-closed-tickets", permission: "ALL_CLOSED_TICKETS_READ", icon:"fas fa-chart-bar" },
+    { name: "Low Ratings", link: "/low-ratings", permission: "LOW_RATINGS_READ", icon:"fas fa-chart-bar" },
   ];
   
 
