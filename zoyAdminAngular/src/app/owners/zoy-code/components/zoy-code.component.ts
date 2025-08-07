@@ -147,11 +147,15 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		return true;
 	   }
 
-	   generateZoyCode() {
-		this.submitted=true;	
-		if (this.form.invalid || this.generateZCode.contactNumber.length !=10) {
-		return;
-		}
+  generateZoyCode() {
+	this.submitted=true;	
+	if (this.form.invalid || this.generateZCode.contactNumber.length !=10 || this.isCityCodeAvailable || this.isAreaCodeAvailable) {
+	  return;
+	 }
+	this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to create Zoy code for '+this.ticket.first_name+' ?')
+	 .then(
+	 (confirmed) =>{
+     if(confirmed){
 		this.spinner.show();		     
 		this.submitted=false;
 		this.generateZCode.userEmail=this.generateZCode.userEmail.toLocaleLowerCase();
@@ -198,8 +202,12 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		  	//this.notifyService.showError(this.errorMsg, "");
 			}
 		  }
-		  );  
-		}  
+		  ); 
+	 }
+	}).catch(
+	 () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+	); 
+  }  
 
 		resendZoyCode() {
 			this.submitted=true;	
@@ -381,7 +389,6 @@ percentageOnlyWithZero(event): boolean {
 
 	return true;
   }
-
   
   onPincodeChange(event: any) {
         const pincode = event.target.value;
@@ -494,7 +501,6 @@ percentageOnlyWithZero(event): boolean {
 				this.isEditCityCode=true;
 				this.generateZCode.property_city_code_id = '';
 				this.generateZCode.property_city_code = '';
-		
 			}
 			this.spinner.hide();
 		}, error => {
@@ -526,7 +532,44 @@ percentageOnlyWithZero(event): boolean {
 		}
 		});
     }
-	  getAreaDetails(loc:string){
+	isCityCodeAvailable:boolean=false;
+	 onCheckCityCodeChange(event: any){
+      const cityCode = event.target.value;
+        if (cityCode && cityCode.length === 3) {
+          this.checkLocationCode(cityCode);
+		}
+ 	  }
+	  checkLocationCode(loc:string){
+		this.generateZoyCodeService.checkLocationCode(loc).subscribe(data => {
+		this.isCityCodeAvailable = false;
+		}, error => {
+	    	if(error.status==400){
+				this.isCityCodeAvailable = true;
+				this.notifyService.showInfo(error.error.message, "")
+	     }
+		});
+     }
+
+	 isAreaCodeAvailable:boolean=false;
+	  onCheckAreaCodeChange(event: any){
+      const areaCode = event.target.value;
+        if (areaCode && areaCode.length === 3) {
+          this. checkAreaCode(areaCode);
+		}
+ 	  }
+	  checkAreaCode(loc:string){
+		this.generateZoyCodeService.checkAreaCode(loc).subscribe(data => {
+			this.isAreaCodeAvailable=false;
+		}, error => {
+			console.log("error",error)
+	    	if(error.status==400){
+			this.isAreaCodeAvailable=true;
+			this.notifyService.showInfo(error.error.message, "");
+			}
+		});
+     }
+
+	 getAreaDetails(loc:string){
 		this.spinner.show();
 		this.generateZoyCodeService.getAreaDetails(loc).subscribe(data => {
 			if(data!="" && data!=null && data!=undefined && data?.area_short_name !=''){
@@ -622,18 +665,23 @@ percentageOnly(event: KeyboardEvent) {
    revenueTypeTicket: 'fixed' | 'variable' = 'fixed';
    ticket:ZoyData= new ZoyData(); 
    searchInput :string="";
+   ownerEmail :string="";
    submitZoyCode(): void {
 	this.submitted =true;
  
-    if (!this.generateZCode.zoyShare) {
+    if (!this.generateZCode.zoyShare || !this.ticket.property_city_code  || !this.ticket.property_locality_code 
+		 || this.isCityCodeAvailable || this.isAreaCodeAvailable || !this.ownerEmail  ||!this.validateEmailFormat(this.ownerEmail)) {
       return;
     }
-
+this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to create Zoy code for '+this.ticket.first_name+' ?')
+	.then(
+	 (confirmed) =>{
+	 if(confirmed){
 		let  model = new ZoyData();
 		model.firstName = this.ticket.first_name
 		model.lastName = this.ticket.last_name || '';
 		model.contactNumber = this.ticket.mobile_no
-		model.userEmail = this.ticket.email_id
+		model.userEmail = this.ticket.email_id || this.ownerEmail
 		model.zoyShare = this.generateZCode.zoyShare
 		model.property_name = this.ticket.property_name
 		model.property_pincode = this.ticket.property_pincode
@@ -695,6 +743,10 @@ percentageOnly(event: KeyboardEvent) {
 		  	//this.notifyService.showError(this.errorMsg, "");
 			}
 		  );  
+	 }
+    }).catch(
+	() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+	);
   }
   
     searchTicket(): void {
@@ -707,6 +759,7 @@ percentageOnly(event: KeyboardEvent) {
 		this.generateZoyCodeService.fetchPGDetails(this.searchInput).subscribe(data => {
 			if(data!="" && data!=null && data!=undefined){
 			   this.ticket=data;
+			   this.ownerEmail = this.ticket.email_id;
 			if(this.ticket.property_city){
 				this.getLocationDetailsForTicket(this.ticket.property_city) ;
 			}
@@ -753,9 +806,11 @@ percentageOnly(event: KeyboardEvent) {
 			if(data!="" && data!=null && data!=undefined && data?.location_short_name!=''){
 				this.ticket.property_city_code_id = data.location_code_id;
 				this.ticket.property_city_code = data.location_short_name;
+				this.isEditCityCode=false;
 			}else{
 				this.ticket.property_city_code_id = "";
 				this.ticket.property_city_code = "";
+				this.isEditCityCode=true;
 			}
 			
 		}, error => {
@@ -767,9 +822,11 @@ percentageOnly(event: KeyboardEvent) {
 			if(data!="" && data!=null && data!=undefined &&  data?.location_short_name!=''){
 				this.ticket.property_locality_code_id = data.area_code_id;
 				this.ticket.property_locality_code = data.area_short_name;
+				this.isEditAreaCode=false;
 			}else{
 				this.ticket.property_locality_code_id = '';
 				this.ticket.property_locality_code = '';
+				this.isEditAreaCode=true;
 			}
 			
 		}, error => {
@@ -777,4 +834,8 @@ percentageOnly(event: KeyboardEvent) {
 		});
     }
 
+	validateEmailFormat(email: string): boolean {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	}
 }
