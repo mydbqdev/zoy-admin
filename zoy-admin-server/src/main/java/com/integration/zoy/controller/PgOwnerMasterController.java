@@ -233,7 +233,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					existingPartner.setStatus(ZoyConstant.CLOSED);
 					registeredPartnerDetailsRepository.save(existingPartner);
 					if(existingPartner.getRegisterId()!=null)
-					zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead Converted to ZoyOwner and generated ZoyCode", ZoyConstant.CLOSED);
+					zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead Converted to ZoyOwner and generated ZoyCode", ZoyConstant.RESOLVED);
 				}
 			}
 			
@@ -892,7 +892,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 							existingPartner.setStatus(ZoyConstant.CLOSED);
 							registeredPartnerDetailsRepository.save(existingPartner);
 							if(existingPartner.getRegisterId()!=null)
-								zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead New Property Converted to Zoy Property and generated ZoyCode", ZoyConstant.CLOSED);
+								zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead New Property Converted to Zoy Property and generated ZoyCode", ZoyConstant.RESOLVED);
 						}
 					}
 					//audit history here
