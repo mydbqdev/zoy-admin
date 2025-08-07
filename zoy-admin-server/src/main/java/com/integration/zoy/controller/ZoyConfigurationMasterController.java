@@ -806,8 +806,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 			BigDecimal cgstPercentage;
 			BigDecimal sgstPercentage;
 			BigDecimal igstPercentage;
-			BigDecimal monthlyRent;
-
+//			BigDecimal monthlyRent;
+			BigDecimal perDayRent;
 			if (details.getRentId() != null && !details.getRentId().isEmpty()) {
 				Optional<ZoyPgRentGst> PgGstChargesDetails = zoyPgGstChargesRepository.findById(details.getRentId());
 
@@ -821,7 +821,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 					final BigDecimal oldCGstPercentage = oldDetails.getCgstPercentage();
 					final BigDecimal oldSGstPercentage = oldDetails.getSgstPercentage();
 					final BigDecimal oldIGstPercentage = oldDetails.getIgstPercentage();
-					final BigDecimal oldMonthlyRent = oldDetails.getMonthlyRent();
+//					final BigDecimal oldMonthlyRent = oldDetails.getMonthlyRent();
+					final BigDecimal oldperDayRent = oldDetails.getPerDayRent();
 
 					cgstPercentage = (details.getCgstPercentage() != null) ? details.getCgstPercentage()
 							: oldDetails.getCgstPercentage();
@@ -829,13 +830,14 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 							: oldDetails.getSgstPercentage();
 					igstPercentage = (details.getIgstPercentage() != null) ? details.getIgstPercentage()
 							: oldDetails.getIgstPercentage();
-					monthlyRent = (details.getMonthlyRent() != null) ? details.getMonthlyRent()
-							: oldDetails.getMonthlyRent();
+					perDayRent = (details.getPerDayRent() != null) ? details.getPerDayRent()
+							: oldDetails.getPerDayRent();
 
 					oldDetails.setCgstPercentage(cgstPercentage);
 					oldDetails.setSgstPercentage(sgstPercentage);
 					oldDetails.setIgstPercentage(igstPercentage);
-					oldDetails.setMonthlyRent(monthlyRent);
+					oldDetails.setMonthlyRent(perDayRent.multiply(BigDecimal.valueOf(30)));
+					oldDetails.setPerDayRent(perDayRent);
 					oldDetails.setComponentName("RENT");
 					oldDetails.setIsApproved(details.getIsApproved());
 					oldDetails.setEffectiveDate(details.getEffectiveDate());
@@ -861,8 +863,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 							historyContent.append(", IGST percentage charges from ").append(oldIGstPercentage.stripTrailingZeros().toPlainString())
 									.append(" to ").append(oldDetails.getIgstPercentage());
 						}
-						if (oldMonthlyRent != oldDetails.getMonthlyRent()) {
-							historyContent.append(", monthly Rent charges from ").append(oldMonthlyRent.stripTrailingZeros().toPlainString()).append(" to ")
+						if (oldperDayRent != oldDetails.getMonthlyRent()) {
+							historyContent.append(", monthly Rent charges from ").append(oldperDayRent.stripTrailingZeros().toPlainString()).append(" to ")
 									.append(oldDetails.getMonthlyRent());
 						}
 					
@@ -892,9 +894,9 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 							historyContent.append(", IGST percentage charges from ").append(oldIGstPercentage.stripTrailingZeros().toPlainString())
 									.append(" to ").append(oldDetails.getIgstPercentage());
 						}
-						if (oldMonthlyRent != oldDetails.getMonthlyRent()) {
-							historyContent.append(", monthly Rent charges from ").append(oldMonthlyRent.stripTrailingZeros().toPlainString()).append(" to ")
-									.append(oldDetails.getMonthlyRent());
+						if (oldperDayRent != oldDetails.getPerDayRent()) {
+							historyContent.append(", monthly Rent charges from ").append(oldperDayRent.stripTrailingZeros().toPlainString()).append(" to ")
+									.append(oldDetails.getPerDayRent());
 						}
 					
 						auditHistoryUtilities.auditForCommon(
@@ -913,14 +915,15 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 				cgstPercentage = (details.getCgstPercentage() != null) ? details.getCgstPercentage() : BigDecimal.ZERO;
 				sgstPercentage = (details.getSgstPercentage() != null) ? details.getSgstPercentage() : BigDecimal.ZERO;
 				igstPercentage = (details.getIgstPercentage() != null) ? details.getIgstPercentage() : BigDecimal.ZERO;
-				monthlyRent = (details.getMonthlyRent() != null) ? details.getMonthlyRent() : BigDecimal.ZERO;
+				perDayRent = (details.getPerDayRent() != null) ? details.getPerDayRent() : BigDecimal.ZERO;
 
 				ZoyPgRentGst newGstCharges = new ZoyPgRentGst();
 
 				newGstCharges.setCgstPercentage(cgstPercentage);
 				newGstCharges.setSgstPercentage(sgstPercentage);
 				newGstCharges.setIgstPercentage(igstPercentage);
-				newGstCharges.setMonthlyRent(monthlyRent);
+				newGstCharges.setMonthlyRent(perDayRent.multiply(BigDecimal.valueOf(30)));
+				newGstCharges.setPerDayRent(perDayRent);
 				newGstCharges.setComponentName("RENT");
 
 				newGstCharges.setEffectiveDate(details.getEffectiveDate());
@@ -971,7 +974,8 @@ public class ZoyConfigurationMasterController implements ZoyConfigurationMasterI
 		dto.setCgstPercentage(entity.getCgstPercentage());
 		dto.setSgstPercentage(entity.getSgstPercentage());
 		dto.setIgstPercentage(entity.getIgstPercentage());
-		dto.setMonthlyRent(entity.getMonthlyRent());
+//		dto.setMonthlyRent(entity.getMonthlyRent());
+		dto.setPerDayRent(entity.getPerDayRent());
 		dto.setIsApproved(entity.getIsApproved() != null ? entity.getIsApproved() : false);
 		dto.setEffectiveDate(entity.getEffectiveDate() != null ? entity.getEffectiveDate() : "");
 		dto.setApprovedBy(entity.getApprovedBy() != null ? entity.getApprovedBy() : "");
