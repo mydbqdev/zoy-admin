@@ -1666,7 +1666,9 @@ public class AdminReportService implements AdminReportImpl{
 							+ " MAX(CASE WHEN rating_master.review_type = 'price' THEN rrt.rating ELSE NULL END) AS value_for_money_rating,\r\n"
 							+ " MAX(CASE WHEN rating_master.review_type = 'maintainance' THEN rrt.rating ELSE NULL END) AS maintainance,\r\n"
 							+ " MAX(CASE WHEN rating_master.review_type = 'accomodation' THEN rrt.rating ELSE NULL END) AS accomodation,\r\n"
-							+ "zppd.property_city \r\n"
+							+ "zpobd.phone_number, \r\n"
+							+ "zppd.property_city, \r\n"
+							+ "zpobd.name \r\n"
 							+ "from pgcommon.review_ratings rr \r\n"
 							+ "left join pgcommon.review_ratings_types rrt on rr.rating_id = rrt.rating_id \r\n"
 							+ "left join pgcommon.review_ratings_master rating_master on rrt.review_type_id = rating_master.review_type_id \r\n"
@@ -1710,6 +1712,30 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
+			if(filterData.getOwnerName() != null && !filterData.getOwnerName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpobd.name) LIKE LOWER(CONCAT('%', :ownerName, '%'))");
+				parameters.put("ownerName", filterData.getOwnerName());
+			}
+			if(filterData.getOwnerContactNum()!= null && !filterData.getOwnerContactNum().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpobd.phone_number) LIKE LOWER(CONCAT('%', :ownerConcatNumber, '%'))");
+				parameters.put("ownerConcatNumber", filterData.getOwnerContactNum());
+ 
+			}
+			if (filterRequest.getSearchText() != null && !filterRequest.getSearchText().trim().isEmpty()) {
+			    String searchText = "%" + filterRequest.getSearchText().toLowerCase().trim() + "%";
+			    queryBuilder.append(" AND (")
+			        .append("LOWER(zppd.property_name) LIKE :searchText OR ")
+			        .append("LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE :searchText OR ")
+			        .append("LOWER(um.user_mobile) LIKE :searchText OR ")
+			        .append("LOWER(zpobd.name) LIKE :searchText OR ")
+			        .append("LOWER(zpobd.phone_number) LIKE :searchText OR ")
+			        .append("LOWER(rr.written_review) LIKE :searchText OR ")
+			        .append("LOWER(CAST(rr.overall_rating AS TEXT)) LIKE :searchText OR ")
+			        .append("LOWER(zppd.property_city) LIKE :searchText")
+			        .append(")");
+			    parameters.put("searchText", searchText);
+			}
+ 
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {
 				String sort = "";
@@ -1744,11 +1770,15 @@ public class AdminReportService implements AdminReportImpl{
 				case "overallRating":
 					sort = "rr.overall_rating";
 					break;
+				case "ownerContactNumber":
+					sort = "zpobd.phone_number";	
+				case "ownerName":
+					sort="zpobd.name";
 				default:
 					sort = "rr.timestamp";
 				}
 				queryBuilder.append(" group by rr.rating_id,rr.partner_id,rr.written_review,rr.overall_rating,rr.customer_id,rr.property_id, "+
-						"rr.timestamp,zpbd.bed_name,zppd.property_id,um.user_id,ud.user_profile_image,um.user_mobile " );
+						"rr.timestamp,zpbd.bed_name,zppd.property_id,um.user_id,ud.user_profile_image,um.user_mobile,zpobd.phone_number,zpobd.name " );
 
 
 				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
@@ -1789,6 +1819,8 @@ public class AdminReportService implements AdminReportImpl{
 				model.setValueForMoney(row[18] != null ? row[18].toString() : "");
 				model.setMaintenance(row[19] != null ? row[19].toString() : "");
 				model.setAccommodation(row[20] != null ? row[20].toString() : "");
+				model.setOwnerName(row[23] != null ? row[23].toString() : "");
+				model.setOwnerContactNum(row[22] != null ? row[22].toString() : "");
 				String replies=row[0] != null ? row[0].toString() : "";
 
 				List<String[]> reviewReplies = zoyPgPropertyDetailsRepository.findAllReviewsReplies(replies);

@@ -20,7 +20,10 @@ public class ZoyPgRentGst {
 
     @Column(name = "monthly_rent", nullable = false, precision = 10, scale = 2)
     private BigDecimal monthlyRent;
-
+    
+    @Column(name = "per_day_rent", nullable = false, precision = 10, scale = 2)
+    private BigDecimal perDayRent;
+    
     @Column(name = "component_name", nullable = false, length = 50)
     private String componentName;
     
@@ -151,6 +154,14 @@ public class ZoyPgRentGst {
 
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	public BigDecimal getPerDayRent() {
+		return perDayRent;
+	}
+
+	public void setPerDayRent(BigDecimal perDayRent) {
+		this.perDayRent = perDayRent;
 	}
     
 }

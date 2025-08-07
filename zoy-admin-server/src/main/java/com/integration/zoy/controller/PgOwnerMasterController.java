@@ -233,7 +233,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					existingPartner.setStatus(ZoyConstant.CLOSED);
 					registeredPartnerDetailsRepository.save(existingPartner);
 					if(existingPartner.getRegisterId()!=null)
-					zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead Converted to ZoyOwner and generated ZoyCode", ZoyConstant.CLOSED);
+					zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead Converted to ZoyOwner and generated ZoyCode", ZoyConstant.RESOLVED);
 				}
 			}
 			
@@ -892,9 +892,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 							existingPartner.setStatus(ZoyConstant.CLOSED);
 							registeredPartnerDetailsRepository.save(existingPartner);
 							if(existingPartner.getRegisterId()!=null)
-								zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead New Property Converted to Zoy Property and generated ZoyCode", ZoyConstant.CLOSED);
+								zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead New Property Converted to Zoy Property and generated ZoyCode", ZoyConstant.RESOLVED);
 						}
 					}
+					
 					//audit history here
 					String historyContent=" has generated the zoy code for existing owner,"+model.getFirstName() +" "+ model.getLastName();
 					auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);

@@ -333,14 +333,14 @@
                                 <div class="col-sm-10">
                                 <div class="row">
                                 <div class="col-sm-3">
-                                  <div>Monthly Rent</div>
+                                  <div>Daily Rent </div>
                                   <div class="input-group input-group-sm">
                                     <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                     <input 
                                       type="text" 
                                       class="form-control form-control-sm" 
-                                      [(ngModel)]="editConfigMaster.gstCharges.monthlyRent" [disabled]="gstChargesDisabled" (keypress)="numberOnly($event)" maxlength="7"
-                                       [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(editConfigMaster.gstCharges?.monthlyRent) }" 
+                                      [(ngModel)]="editConfigMaster.gstCharges.perDayRent" [disabled]="gstChargesDisabled" (keypress)="numberOnly($event)" maxlength="7"
+                                       [ngClass]="{'is-invalid': !gstChargesDisabled && isNotValidNumber(editConfigMaster.gstCharges?.perDayRent) }" 
                                       style="max-width: 90px !important;" />
                                   </div>
                                   <p class="small text-muted " style="font-size: 12px;">
@@ -436,12 +436,12 @@
                                   <div class="input-group input-group-sm">
                                     <span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
                                     <span class="form-control form-control-sm" style="background-color: #eaecf4;max-width: 90px !important;">
-                                      {{ showConfigMaster.gstCharges.monthlyRent }}
+                                      {{ showConfigMaster.gstCharges.perDayRent }}
                                     </span>
                                     <!-- <input 
                                       type="text" 
                                       class="form-control form-control-sm" 
-                                      [(ngModel)]="showConfigMaster.gstCharges.monthlyRent" disabled
+                                      [(ngModel)]="showConfigMaster.gstCharges.perDayRent" disabled
                                       style="max-width: 90px !important;" /> -->
                                   </div>
                                 </div>
@@ -1955,7 +1955,7 @@
               </div>
               <div class="ms-3" style="min-width: 140px;">
                 <i class="fas fa-rupee-sign" style="font-size: small;"></i>
-                <span> {{ gstDetail.monthlyRent }} </span>
+                <span> {{ gstDetail.perDayRent }} </span>
               </div>
               <div class="ms-3" style="min-width: 80px;">{{ gstDetail.cgstPercentage }}%</div>
               <div class="ms-3" style="min-width: 80px;">{{ gstDetail.sgstPercentage }}%</div>
@@ -2355,7 +2355,7 @@
             <div class="d-flex rule-data">
               <div style="min-width: 140px;">
                 <i class="fas fa-rupee-sign" style="font-size: small;"></i>
-                <span> {{ editConfigMaster.gstCharges.monthlyRent }} </span>
+                <span> {{ editConfigMaster.gstCharges.perDayRent }} </span>
               </div>
               <div class="ms-3" style="min-width: 80px;">{{ editConfigMaster.gstCharges.cgstPercentage }}%</div>
               <div class="ms-3" style="min-width: 80px;">{{ editConfigMaster.gstCharges.sgstPercentage }}%</div>
