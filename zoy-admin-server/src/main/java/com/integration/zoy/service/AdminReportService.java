@@ -1059,12 +1059,14 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("pgAddress", tenantRefund.getUserPgPropertyAddress() != null ? tenantRefund.getUserPgPropertyAddress() : "");
 			data.put("bookingId", tenantRefund.getBookingId() != null ? tenantRefund.getBookingId() : "");
 			data.put("refundTitle", tenantRefund.getRefundTitle() != null ? tenantRefund.getRefundTitle() : "");
-			data.put("refundableAmount", tenantRefund.getRefundableAmount());
+			data.put("Amount", tenantRefund.getRefundableAmount());
 			data.put("amountPaid", tenantRefund.getAmountPaid());
 			data.put("paymentDate", tuService.formatTimestamp(tenantRefund.getPaymentDate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getPaymentDate().toInstant()) : "");
 			data.put("invoiceNo", tenantRefund.getTransactionNumber() != null ? tenantRefund.getTransactionNumber() : "");
 			data.put("status", tenantRefund.getPaymentStatus() != null ? tenantRefund.getPaymentStatus() : "");
-
+			data.put("accNum", tenantRefund.getTenantAccountNumber() != null ? tenantRefund.getTenantAccountNumber() : "");
+			data.put("ifscCode", tenantRefund.getTenantIfscCode() != null ? tenantRefund.getTenantIfscCode() : "");
+			
 			// Common fields
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
@@ -1526,11 +1528,15 @@ public class AdminReportService implements AdminReportImpl{
 					+ "        WHEN urd.refund_process_status = 'F' THEN 'Failed'\r\n"
 					+ "    END AS Status,\r\n"
 					+ "    urd.refund_created_timestamp,\r\n"
-					+ "    zppd.property_city\r\n"
+					+ "    zppd.property_city,\r\n"
+					+ "    bd.user_account_number,\r\n"
+					+ "    bd.user_ifsc_code\r\n"
 					+ "FROM pgcommon.user_refund_details urd \r\n"
 					+ "JOIN pgusers.user_master um ON urd.user_id = um.user_id \r\n"
 					+ "JOIN pgowners.zoy_pg_property_details zppd ON urd.property_id = zppd.property_id \r\n"
 					+ "LEFT JOIN pgusers.user_bookings ub ON urd.booking_id = ub.user_bookings_id \r\n"
+					+ "LEFT JOIN pgcommon.bank_master bm ON urd.user_id = bm.user_id \r\n "
+					+ "LEFT JOIN pgcommon.bank_details bd ON bm.user_bank_id = bd.user_bank_id \r\n"
 					+ "WHERE 1 = 1");
 
 			Map<String, Object> parameters = new HashMap<>();
@@ -1586,6 +1592,15 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
+			if (filterData.getTenantAccountNumber() != null && !filterData.getTenantAccountNumber().isEmpty()) {
+				queryBuilder.append(" AND bd.user_account_number LIKE :tenantAccountNum ");
+				parameters.put("tenantAccountNum", "%" + filterData.getTenantAccountNumber() + "%");
+			}
+			
+			if (filterData.getTenantIfscCode() != null && !filterData.getTenantIfscCode().isEmpty()) {
+				queryBuilder.append(" AND bd.user_ifsc_code LIKE :tenantIfscCode ");
+				parameters.put("tenantIfscCode", "%" + filterData.getTenantIfscCode() + "%");
+			}
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {
 				String sort = "";
@@ -1611,6 +1626,12 @@ public class AdminReportService implements AdminReportImpl{
 				case "refundableAmount":
 					sort = "urd.refund_amount";
 					break;
+				case "tenantAccountNum":
+					sort = "bd.user_account_number";
+					break;
+				case "tenantIfscCode":
+					sort = "bd.user_ifsc_code";
+					break;	
 				default:
 					sort = "urd.refund_updated_timestamp";
 				}
@@ -1644,6 +1665,8 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setTransactionNumber("");
 				dto.setAmountPaid(BigDecimal.valueOf(0).doubleValue());
 				dto.setPaymentDate(row[8] != null ? (Timestamp)(row[8]) : null);
+				dto.setTenantAccountNumber(row[10] != null ? (String) row[10] : "");
+				dto.setTenantIfscCode(row[11] != null ? (String) row[11] : "");
 				return dto;
 			}).collect(Collectors.toList());
 
@@ -1688,12 +1711,17 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
+			
+			if (filterRequest.getLowRating() != null && !filterRequest.getLowRating().isEmpty()) {
+			    queryBuilder.append(" AND rr.overall_rating < :lowRating");
+			    parameters.put("lowRating", Double.parseDouble(filterRequest.getLowRating()));
+			}
 
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
 				queryBuilder.append(" AND zppd.property_name IS NOT NULL AND LOWER(zppd.property_name) LIKE LOWER(:pgName)");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
 			}
-
+			
 			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
 				queryBuilder.append(" AND um.user_first_name || ' ' || um.user_last_name IS NOT NULL AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName)");
 				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");

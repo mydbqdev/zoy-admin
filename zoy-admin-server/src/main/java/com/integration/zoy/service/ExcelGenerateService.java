@@ -193,15 +193,17 @@ public class ExcelGenerateService {
 		case "tenantRefundReport":
 			row.createCell(0).setCellValue("Tenant Name");
 			row.createCell(1).setCellValue("Tenant Mobile Number");
-			row.createCell(2).setCellValue("PG Name");
-			row.createCell(3).setCellValue("PG Address");
-			row.createCell(4).setCellValue("Booking ID");
-			row.createCell(5).setCellValue("Refund Title");
-			row.createCell(6).setCellValue("Refundable Amount(₹)");
-			row.createCell(7).setCellValue("Amount Paid(₹)");
-			row.createCell(8).setCellValue("Payment Date");
-			row.createCell(9).setCellValue("Invoice Number");
-			row.createCell(10).setCellValue("Status");
+			row.createCell(2).setCellValue("Tenant Account Number");
+			row.createCell(3).setCellValue("Tenant Ifsc Code");
+			row.createCell(4).setCellValue("PG Name");
+			row.createCell(5).setCellValue("PG Address");
+			row.createCell(6).setCellValue("Booking ID");
+			row.createCell(7).setCellValue("Refund Title");
+			row.createCell(8).setCellValue("Refundable Amount(₹)");
+			row.createCell(9).setCellValue("Amount Paid(₹)");
+			row.createCell(10).setCellValue("Payment Date");
+			row.createCell(11).setCellValue("Invoice Number");
+			row.createCell(12).setCellValue("Status");
 			break;	
 		case "reviewsAndRatingReport":
 			row.createCell(0).setCellValue("Review Date");
@@ -214,6 +216,7 @@ public class ExcelGenerateService {
 			row.createCell(7).setCellValue("Maintenance");
 			row.createCell(8).setCellValue("Value For Money");
 			row.createCell(9).setCellValue("Overall Rating");
+			
 			break;	
 		case "UpcomingTenantsReport":
 			row.createCell(0).setCellValue("Tenant Name");
@@ -459,14 +462,18 @@ public class ExcelGenerateService {
 				TenentRefund tenentRefund = (TenentRefund) dto;
 				row.createCell(0).setCellValue(nullSafe(tenentRefund.getCustomerName()));
 				row.createCell(1).setCellValue(nullSafe(tenentRefund.getTenantMobileNum()));
-				row.createCell(2).setCellValue(nullSafe(tenentRefund.getPgPropertyName()));
-				row.createCell(3).setCellValue(nullSafe(tenentRefund.getUserPgPropertyAddress()));
-				row.createCell(4).setCellValue(nullSafe(tenentRefund.getBookingId()));
-				row.createCell(5).setCellValue(nullSafe(tenentRefund.getRefundTitle()));
-				setCurrencyCell(row,6,nullSafe(tenentRefund.getRefundableAmount()));
-				row.createCell(7).setCellValue(nullSafe(tuService.formatTimestamp(tenentRefund.getPaymentDate().toInstant())));
-				row.createCell(8).setCellValue(nullSafe(tenentRefund.getTransactionNumber()));
-				row.createCell(9).setCellValue(nullSafe(tenentRefund.getPaymentStatus()));
+				row.createCell(2).setCellValue(nullSafe(tenentRefund.getTenantAccountNumber()));
+				row.createCell(3).setCellValue(nullSafe(tenentRefund.getTenantIfscCode()));
+				row.createCell(4).setCellValue(nullSafe(tenentRefund.getPgPropertyName()));
+				row.createCell(5).setCellValue(nullSafe(tenentRefund.getUserPgPropertyAddress()));
+				row.createCell(6).setCellValue(nullSafe(tenentRefund.getBookingId()));
+				row.createCell(7).setCellValue(nullSafe(tenentRefund.getRefundTitle()));
+				setCurrencyCell(row,8,nullSafe(tenentRefund.getRefundableAmount()));
+				setCurrencyCell(row,9, nullSafe(tenentRefund.getAmountPaid()));
+				row.createCell(10).setCellValue(nullSafe(tuService.formatTimestamp(tenentRefund.getPaymentDate().toInstant())));
+				row.createCell(11).setCellValue(nullSafe(tenentRefund.getTransactionNumber()));
+				row.createCell(12).setCellValue(nullSafe(tenentRefund.getPaymentStatus()));
+			
 			}
 			break;	
 			
