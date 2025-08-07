@@ -1848,7 +1848,7 @@ public class AdminReportService implements AdminReportImpl{
 				model.setMaintenance(row[19] != null ? row[19].toString() : "");
 				model.setAccommodation(row[20] != null ? row[20].toString() : "");
 				model.setOwnerName(row[23] != null ? row[23].toString() : "");
-				model.setOwnerContactNum(row[22] != null ? row[22].toString() : "");
+				model.setOwnerContactNum(row[21] != null ? row[21].toString() : "");
 				String replies=row[0] != null ? row[0].toString() : "";
 
 				List<String[]> reviewReplies = zoyPgPropertyDetailsRepository.findAllReviewsReplies(replies);
