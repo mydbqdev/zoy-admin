@@ -111,8 +111,55 @@ import { MessageService } from 'src/app/message.service';
                withCredentials:true
             }
         );
-    }
+     }
+     public checkLocationCode(data:string): Observable<any> {
+      const url1=this.basePath +"zoy_admin/check_location_code?locationCode="+data;
+        return  this.httpclient.get<any>(
+            url1,
+            {
+               headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+     }
+     public checkAreaCode(data:string): Observable<any> {
+      const url1=this.basePath +"zoy_admin/check_area_code?areaCode="+data;
+        return  this.httpclient.get<any>(
+            url1,
+            {
+               headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+     }
 
+// API: zoy_admin/check_location_code?locationCode=BLR
+// Method: Get
+// Response:
+// {
+//     "status": 400,
+//     "message": "Location Code is already available BLR"
+// }
+
+// {
+//     "status": 200,
+//     "message": "Location Code is not available"
+// }
+
+// API: zoy_admin/check_area_code?areaCode=BLR
+// Method: Get
+// Response:
+// {
+//     "status": 400,
+//     "message": "Area Code is already available BLR"
+// }
+
+// {
+//     "status": 200,
+//     "message": "Area Code is not available"
+// }
 
 
 
