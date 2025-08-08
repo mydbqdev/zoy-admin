@@ -312,6 +312,7 @@ export class ManageOwnerComponent implements OnInit, AfterViewInit {
 		  this.generateZoyCode.property_house_area=''
 		  this.generateZoyCode.property_location_latitude='';
 		  this.generateZoyCode.property_location_longitude='';
+		  this.areaList=[];
         }
       }
 	  zoycodeDisableField:boolean=true;

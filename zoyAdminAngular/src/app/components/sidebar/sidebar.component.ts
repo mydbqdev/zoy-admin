@@ -24,6 +24,8 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 	public menu7: boolean = false;
 	public menu8: boolean = false;
 	public menu9: boolean = false;
+	public menu12: boolean = false;
+	public menu13: boolean = false;
 
 	public menu11: boolean = true;
 	public menu21: boolean = false;
@@ -34,6 +36,8 @@ export class SidebarComponent implements OnInit,AfterViewInit {
 	public menu71: boolean = false;
 	public menu81: boolean = false;
 	public menu91: boolean = false;
+	public menu121: boolean = false;
+	public menu131: boolean = false;
 
 	public activeSubNenuName: string = '';	
 	public defMenu: DefMenu;
@@ -87,371 +91,32 @@ export class SidebarComponent implements OnInit,AfterViewInit {
   collaspeExpand(){
     this.dataService.setIsExpandSideBar(this.isExpandSideBar ? false:true);
   }
+  expandMenu(activeMenuKey: number): void {
+	const allMenuKeys = ['menu1', 'menu2', 'menu3', 'menu4', 'menu5', 'menu6', 'menu7', 'menu8', 'menu9', 'menu12', 'menu13'];
+	const menu= 'menu'+activeMenuKey;
+	const value =(this as any)[menu];
+	allMenuKeys.forEach((key) => {
+		(this as any)[key] = false;
+	});
+	
+	(this as any)[menu] = !value;
+}
 
-  expandMenu(id: number): void {
-		switch (id) {
-			case 1: {
-				if (!this.menu1) {
-					this.menu1 = true;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				} else {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				}
-				break;
-			}
-			case 2: {
-				if (!this.menu2) {
-					this.menu1 = false;
-					this.menu2 = true;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				} else {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				}
-				break;
-			}
-			case 3: {
-				if (!this.menu3) {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = true;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				} else {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				}
-				break;
-			}
-			case 4: {
-				if (!this.menu4) {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = true;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				} else {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				}
-				break;
-			}
-			case 5: {
-				if (!this.menu5) {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = true;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				} else {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				}
-				break;
-			}
-			case 6: {
-				if (!this.menu6) {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = true;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				} else {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				}
-				break;
-			}
-			case 7: {
-				if (!this.menu7) {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = true;
-					this.menu8 = false;
-					this.menu9 = false;
-				} else {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				}
-				break;
-			}
-			case 8: {
-				if (!this.menu8) {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = true;
-					this.menu9 = false;
-				} else {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				}
-				break;
-			}
+activeMenu(id: number, menuName: string): void {
+	const menuKeys = [
+		'menu11', 'menu21', 'menu31', 'menu41', 
+		'menu51', 'menu61', 'menu71', 'menu81', 'menu91',
+		'menu121', 'menu131'
+	];
+    const menu= 'menu'+id+1;
+    const value =(this as any)[menu];
+	menuKeys.forEach((key) => {
+		(this as any)[key] = false;
+	});
+	(this as any)[menu] = !value;
+	this.activeSubNenuName = menuName;
+ }
 
-			case 9: {
-				if (!this.menu8) {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = true;
-				} else {
-					this.menu1 = false;
-					this.menu2 = false;
-					this.menu3 = false;
-					this.menu4 = false;
-					this.menu5 = false;
-					this.menu6 = false;
-					this.menu7 = false;
-					this.menu8 = false;
-					this.menu9 = false;
-				}
-				break;
-			}
-			
-			default: {
-				this.menu1 = false;
-				this.menu2 = false;
-				this.menu3 = false;
-				this.menu4 = false;
-				this.menu5 = false;
-				this.menu6 = false;
-				this.menu7 = false;
-				this.menu8 = false;
-				this.menu9 = false;
-				break;
-			}
-    }
-	}
-
-	activeMenu(id: number, menuName: string): void {
-		switch (id) {
-			case 1: {
-				this.menu11 = true;
-				this.menu21 = false;
-				this.menu31 = false;
-				this.menu41 = false;
-				this.menu51 = false;
-				this.menu61 = false;
-				this.menu71 = false;
-				this.menu81 = false;
-				this.menu91 = false;
-				break;
-			}
-			case 2: {
-				this.menu11 = false;
-				this.menu21 = true;
-				this.menu31 = false;
-				this.menu41 = false;
-				this.menu51 = false;
-				this.menu61 = false;
-				this.menu71 = false;
-				this.menu81 = false;
-				this.menu91 = false;
-				break;
-			}
-			case 3: {
-				this.menu11 = false;
-				this.menu21 = false;
-				this.menu31 = true;
-				this.menu41 = false;
-				this.menu51 = false;
-				this.menu61 = false;
-				this.menu71 = false;
-				this.menu81 = false;
-				this.menu91 = false;
-				break;
-			}
-			case 4: {
-				this.menu11 = false;
-				this.menu21 = false;
-				this.menu31 = false;
-				this.menu41 = true;
-				this.menu51 = false;
-				this.menu61 = false;
-				this.menu71 = false;
-				this.menu81 = false;
-				this.menu91 = false;
-				break;
-			}
-			case 5: {
-				this.menu11 = false;
-				this.menu21 = false;
-				this.menu31 = false;
-				this.menu41 = false;
-				this.menu51 = true;
-				this.menu61 = false;
-				this.menu71 = false;
-				this.menu81 = false;
-				this.menu91 = false;
-				break;
-			}
-			case 6: {
-				this.menu11 = false;
-				this.menu21 = false;
-				this.menu31 = false;
-				this.menu41 = false;
-				this.menu51 = false;
-				this.menu61 = true;
-				this.menu71 = false;
-				this.menu81 = false;
-				this.menu91 = false;
-				break;
-			}
-			case 7: {
-				this.menu11 = false;
-				this.menu21 = false;
-				this.menu31 = false;
-				this.menu41 = false;
-				this.menu51 = false;
-				this.menu61 = false;
-				this.menu71 = true;
-				this.menu81 = false;
-				this.menu91 = false;
-				break;
-			}
-			case 8: {
-				this.menu11 = false;
-				this.menu21 = false;
-				this.menu31 = false;
-				this.menu41 = false;
-				this.menu51 = false;
-				this.menu61 = false;
-				this.menu71 = false;
-				this.menu81 = true;
-				this.menu91 = false;
-				break;
-			}
-
-			case 9: {
-				this.menu11 = false;
-				this.menu21 = false;
-				this.menu31 = false;
-				this.menu41 = false;
-				this.menu51 = false;
-				this.menu61 = false;
-				this.menu71 = false;
-				this.menu81 = false;
-				this.menu91 = true;
-				break;
-			}
-
-
-			default: {
-				this.menu11 = false;
-				this.menu21 = false;
-				this.menu31 = false;
-				this.menu41 = false;
-				this.menu51 = false;
-				this.menu61 = false;
-				this.menu71 = false;
-				this.menu81 = false;
-				this.menu91 = false;
-				break;
-			}
-
-		}
-    this.activeSubNenuName = menuName;
-	}
 
 	setOwnerResetId(){
 		this.dataService.setOwenerId("");
