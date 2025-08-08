@@ -1,9 +1,3 @@
-/* Make sure offcanvas body has enough height */
-.offcanvas-body {
-    height: 100%; /* Full height of the offcanvas */
-    padding: 0px; /* Optional: Padding to avoid content touching edges */
-    overflow-y: auto; /* Ensure content scrolls if necessary */
-}
 
 /* Style the scrollbar for vertical and horizontal scrollbars */
 .scrollable-container::-webkit-scrollbar,.scrollable-container-main::-webkit-scrollbar {
@@ -24,7 +18,7 @@
 .scrollable-container {
     max-height: calc(100vh - 220px);  /* Set a max height to enable vertical scrolling */
     overflow-y: auto;   /* Enable vertical scrolling */
-    overflow-x: auto;   /* Enable horizontal scrolling */
+    overflow-x: hidden;   /* Enable horizontal scrolling */
     padding-right: 5px; /* Optional: prevent scrollbar overlap */
     box-sizing: border-box; /* Prevents padding from affecting width */
 }
@@ -33,7 +27,7 @@
 .scrollable-container-main {
     height: calc(100vh - 207px);  /* Set a max height to enable vertical scrolling */
     overflow-y: auto;   /* Enable vertical scrolling */
-    overflow-x: auto;   /* Enable horizontal scrolling */
+    overflow-x: hidden;   /* Enable horizontal scrolling */
     padding-right: 0px; /* Optional: prevent scrollbar overlap */
     box-sizing: border-box; /* Prevents padding from affecting width */
 }
@@ -56,4 +50,12 @@
 
 .btn-group .btn:last-child {
     margin-right: 0; /* Removes right margin from the last button */
+}
+.modal-content {
+  overflow-x: hidden;
+}
+/* Ensure Bootstrap grid columns don't overflow */
+.row > [class*="col-"] {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
