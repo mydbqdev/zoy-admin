@@ -43,7 +43,7 @@ import { MessageService } from 'src/app/message.service';
 		},
     {
 		  'reportName': 'Tenant Refunds Report',
-		  'columns': ['paymentDate','customerName', 'tenantMobileNum', 'PgPropertyName','userPgPropertyAddress','bookingId', 'refundTitle','refundableAmount','amountPaid','transactionNumber','paymentStatus' ],
+		  'columns': ['paymentDate','customerName', 'tenantMobileNum','tenantAccountNumber','tenantIfscCode', 'PgPropertyName','userPgPropertyAddress','bookingId', 'refundTitle','refundableAmount','amountPaid','transactionNumber','paymentStatus' ],
 		},
     {
 		  'reportName': 'Upcoming Tenants Report',

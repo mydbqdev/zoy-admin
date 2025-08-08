@@ -158,11 +158,6 @@
                     <div class="col-sm-2"><input type="checkbox" name="userseread"    value="LOCKED_USER_READ" id="userseReadLU"  (click)="onChangeCheck($event,'read','userse','LU')"/></div>
                     <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="LOCKED_USER_WRITE"  id="userseReadLU" (click)="onChangeCheck($event,'write','userse','LU')"/></div>
                  </div>
-                  <div class="row" >
-                    <div class="col-sm-8 pl-4">Vendor Management</div>
-                    <div class="col-sm-2"><input type="checkbox" name="userseread"    value="VENDOR_MANAGEMENT_READ" id="userseReadVM"  (click)="onChangeCheck($event,'read','userse','VM')"/></div>
-                    <div class="col-sm-2"><input type="checkbox" name="usersewrite"   value="VENDOR_MANAGEMENT_WRITE"  id="userseReadVM" (click)="onChangeCheck($event,'write','userse','VM')"/></div>
-                 </div>
                </div>
              <div  class="row">									         
               <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -221,6 +216,21 @@
           <div class="col-sm-2"><input type="checkbox" name="salesewrite"   value="SALES_PERSON_WRITE"  id="saleseWriteSP" (click)="onChangeCheck($event,'write','salese','SP')"/></div>
        </div> 
        </div>
+       <div  class="row">									         
+          <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+          <span  class="collapsed" data-toggle="collapse" data-target="#collapseVENDORE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+          <span class="title"> Vendor</span>
+          </div>
+          <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="vendorereadAll"  (click)="onChangeCheckAll($event,'read','vendore')"/></div>
+          <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="vendorewriteAll" (click)="onChangeCheckAll($event,'write','vendore')" /></div>								                
+         </div>
+        <div  id="collapseVENDORE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #vendoretab>
+        <div class="row" >
+            <div class="col-sm-8 pl-4">Manage Vendor </div>
+             <div class="col-sm-2"><input type="checkbox" name="vendoreread"    value="VENDOR_MANAGEMENT_READ" id="vendoreReadVM"  (click)="onChangeCheck($event,'read','vendore','VM')"/></div>
+             <div class="col-sm-2"><input type="checkbox" name="vendorewrite"   value="VENDOR_MANAGEMENT_WRITE"  id="vendoreWriteVM" (click)="onChangeCheck($event,'write','vendore','VM')"/></div>
+        </div>
+       </div>
 
          <div  class="row">									         
           <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -237,6 +247,23 @@
           <div class="col-sm-2"><input type="checkbox" name="financesewrite"   value="PAYMENT_APPROVAL_WRITE"  id="financeseWritePA" (click)="onChangeCheck($event,'write','financese','PA')"/></div>
        </div> 
        </div>
+
+       <div  class="row">									         
+          <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+          <span  class="collapsed" data-toggle="collapse" data-target="#collapseRATINGSREVIEWSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+          <span class="title"> Ratings and Reviews</span>
+          </div>
+          <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ratingsreviewsereadAll"  (click)="onChangeCheckAll($event,'read','ratingsreviewse')"/></div>
+          <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ratingsreviewsewriteAll" (click)="onChangeCheckAll($event,'write','ratingsreviewse')" /></div>								                
+         </div>
+        <div  id="collapseRATINGSREVIEWSE" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #ratingsreviewsetab>
+         <div class="row" >
+          <div class="col-sm-8 pl-4">Low Ratings</div>
+          <div class="col-sm-2"><input type="checkbox" name="ratingsreviewseread"    value="LOW_RATINGS_READ" id="ratingsreviewseReadLR"  (click)="onChangeCheck($event,'read','ratingsreviewse','LR')"/></div>
+          <div class="col-sm-2"><input type="checkbox" name="ratingsreviewsewrite"   value="LOW_RATINGS_WRITE"  id="ratingsreviewseWriteLR" (click)="onChangeCheck($event,'write','ratingsreviewse','LR')"/></div>
+       </div> 
+       </div>
+
        <div  class="row">									         
         <div class="col-sm-8" style="font-weight:500;font-size:14px;">
         <span  class="collapsed" data-toggle="collapse" data-target="#collapseSUPPORTSE" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
@@ -418,11 +445,6 @@
                       <div class="col-sm-2"><input type="checkbox" name="userscread"    value="LOCKED_USER_READ" id="userscReadLU"  (click)="onChangeCheck($event,'read','usersc','LU')"/></div>
                       <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="LOCKED_USER_WRITE"  id="userscReadLU" (click)="onChangeCheck($event,'write','usersc','LU')"/></div>
                    </div>
-                    <div class="row" >
-                      <div class="col-sm-8 pl-4">Vendor Management</div>
-                      <div class="col-sm-2"><input type="checkbox" name="userscread"    value="VENDOR_MANAGEMENT_READ" id="userscReadVM"  (click)="onChangeCheck($event,'read','usersc','VM')"/></div>
-                      <div class="col-sm-2"><input type="checkbox" name="userscwrite"   value="VENDOR_MANAGEMENT_WRITE"  id="userscReadVM" (click)="onChangeCheck($event,'write','usersc','VM')"/></div>
-                   </div>
                  </div>  
                   <div  class="row">									         
                      <div class="col-sm-8" style="font-weight:500;font-size:14px;">
@@ -481,6 +503,22 @@
                  </div> 
                  </div>
 
+                 <div  class="row">									         
+                  <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                  <span  class="collapsed" data-toggle="collapse" data-target="#collapseVENDORC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                  <span class="title"> Vendor</span>
+                  </div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="vendorcreadAll"  (click)="onChangeCheckAll($event,'read','vendorc')"/></div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="vendorcwriteAll" (click)="onChangeCheckAll($event,'write','vendorc')" /></div>								                
+                </div>
+                <div  id="collapseVENDORC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #vendorctab>
+                <div class="row" >
+                    <div class="col-sm-8 pl-4">Manage Vendor </div>
+                    <div class="col-sm-2"><input type="checkbox" name="vendorcread"    value="VENDOR_MANAGEMENT_READ" id="vendorcReadVM"  (click)="onChangeCheck($event,'read','vendorc','VM')"/></div>
+                    <div class="col-sm-2"><input type="checkbox" name="vendorcwrite"   value="VENDOR_MANAGEMENT_WRITE"  id="vendorcWriteVM" (click)="onChangeCheck($event,'write','vendorc','VM')"/></div>
+                </div>
+              </div>
+
                   <div  class="row">									         
                     <div class="col-sm-8" style="font-weight:500;font-size:14px;">
                     <span  class="collapsed" data-toggle="collapse" data-target="#collapseFINANCESC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
@@ -496,6 +534,21 @@
                     <div class="col-sm-2"><input type="checkbox" name="financescwrite"   value="PAYMENT_APPROVAL_WRITE"  id="financescWritePA" (click)="onChangeCheck($event,'write','financesc','PA')"/></div>
                  </div> 
                  </div>
+                  <div  class="row">									         
+                  <div class="col-sm-8" style="font-weight:500;font-size:14px;">
+                  <span  class="collapsed" data-toggle="collapse" data-target="#collapseRATINGSREVIEWSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>
+                  <span class="title"> Ratings and Reviews</span>
+                  </div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ratingsreviewscreadAll"  (click)="onChangeCheckAll($event,'read','ratingsreviewsc')"/></div>
+                  <div class="col-sm-2" style="font-weight:500;font-size:14px;"><input type="checkbox" id="ratingsreviewscwriteAll" (click)="onChangeCheckAll($event,'write','ratingsreviewsc')" /></div>								                
+                </div>
+                <div  id="collapseRATINGSREVIEWSC" style="font-size: 14px;" class="collapse" data-parent="#accordionRole" #ratingsreviewsctab>
+                <div class="row" >
+                  <div class="col-sm-8 pl-4">Low Ratings</div>
+                  <div class="col-sm-2"><input type="checkbox" name="ratingsreviewscread"    value="LOW_RATINGS_READ" id="ratingsreviewscReadLR"  (click)="onChangeCheck($event,'read','ratingsreviewsc','LR')"/></div>
+                  <div class="col-sm-2"><input type="checkbox" name="ratingsreviewscwrite"   value="LOW_RATINGS_WRITE"  id="ratingsreviewscWriteLR" (click)="onChangeCheck($event,'write','ratingsreviewsc','LR')"/></div>
+              </div> 
+              </div>
                  <div  class="row">									         
                   <div class="col-sm-8" style="font-weight:500;font-size:14px;">
                   <span  class="collapsed" data-toggle="collapse" data-target="#collapseSUPPORTSC" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-angle-down rotate-icon"></i></span>

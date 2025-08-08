@@ -117,9 +117,9 @@ export class AdminVendorManagementComponent implements OnInit,AfterViewInit{
 }
 
 ngAfterViewInit(){
-  this.sidemenuComp.expandMenu(3);
-  this.sidemenuComp.activeMenu(3,'admin-vendor-management');
-  this.dataService.setHeaderName("Vendor Management");
+  this.sidemenuComp.expandMenu(12);
+  this.sidemenuComp.activeMenu(12,'admin-vendor-management');
+  this.dataService.setHeaderName("Manage Vendor");
 
   this.getRetrieveData();
  this.getUserDesignation();

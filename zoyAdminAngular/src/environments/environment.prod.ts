@@ -53,7 +53,14 @@ export const environment = {
       "supportReports": true,
       "financeReports": true
     },
-
+    "vendor":true,
+    "vendorSubMenu":{
+      'mangeVendor': true
+    },
+      "ratingsAndReviews":true,
+    "ratingsAndReviewsSubMenu":{
+      'lowRatings': true
+    }
   
     
     // "userManagement":true,

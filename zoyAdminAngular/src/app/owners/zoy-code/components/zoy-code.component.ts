@@ -407,6 +407,7 @@ percentageOnlyWithZero(event): boolean {
 		  this.generateZCode.property_house_area=''
 		  this.generateZCode.property_location_latitude='';
 		  this.generateZCode.property_location_longitude='';
+		  this.areaList=[];
         }
       }
 	  zoycodeDisableField:boolean=true;

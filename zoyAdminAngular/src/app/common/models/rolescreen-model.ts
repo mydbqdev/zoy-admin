@@ -91,6 +91,9 @@ export class RoleScreenModel {
 
     SUPPORT_REPORTS_READ: boolean = false;
     SUPPORT_REPORTS_WRITE: boolean = false;
+
+    LOW_RATINGS_READ: boolean = false;
+    LOW_RATINGS_WRITE: boolean = false;
     
 
 }
