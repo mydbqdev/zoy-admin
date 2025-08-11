@@ -10,11 +10,21 @@ public class ZoyPgVendorModel {
 	@SerializedName("userDesignation")
 	private String userDesignation;
 
+	@SerializedName("userDesignationName")
+	private String userDesignationName;
+
+	
 	@SerializedName("userGroupName")
 	private String userGroupName;
 
 	@SerializedName("rejectedReason")
 	private String rejectedReason;
+	
+	@SerializedName("reason")
+	private String reason;
+	
+	@SerializedName("status")
+	private String status;
 
 	public String getVendorId() {
 		return vendorId;
@@ -48,11 +58,38 @@ public class ZoyPgVendorModel {
 		this.rejectedReason = rejectedReason;
 	}
 
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getUserDesignationName() {
+		return userDesignationName;
+	}
+
+	public void setUserDesignationName(String userDesignationName) {
+		this.userDesignationName = userDesignationName;
+	}
+
 	@Override
 	public String toString() {
-		return "ZoyPgVendorModel [vendorId=" + vendorId + ", userDesignation=" + userDesignation + ", userGroupName="
-				+ userGroupName + ", rejectedReason=" + rejectedReason + "]";
+		return "ZoyPgVendorModel [vendorId=" + vendorId + ", userDesignation=" + userDesignation
+				+ ", userDesignationName=" + userDesignationName + ", userGroupName=" + userGroupName
+				+ ", rejectedReason=" + rejectedReason + ", reason=" + reason + ", status=" + status + "]";
 	}
+
+	
 
 
 }
