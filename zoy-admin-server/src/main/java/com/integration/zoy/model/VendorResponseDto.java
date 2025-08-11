@@ -21,6 +21,8 @@ public class VendorResponseDto {
     private Timestamp vendorCreatedAt;
     private List<VendorServiceDto> services;
     private List<String> vendorFilePaths;
+    private String vendorDesgination;
+    private String vendorGroup;
 
     @Data
     public static class VendorServiceDto {

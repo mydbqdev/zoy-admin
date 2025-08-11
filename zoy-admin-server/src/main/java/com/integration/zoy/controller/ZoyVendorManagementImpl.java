@@ -52,4 +52,15 @@ public interface ZoyVendorManagementImpl {
 	produces = { "application/json" })
 	ResponseEntity<String> rejectingVendorDetails(@RequestBody ZoyPgVendorModel vendorModel);
 	
+	@Operation(summary = "Vendor Status Update", description = "vendor users status update", security = {
+			@SecurityRequirement(name = "basicAuth")}, tags={ "Vendor" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "OK" , content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "400", description = "Bad Request"),
+			@ApiResponse(responseCode = "404", description = "Not Found"),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	@PostMapping(value = "/zoy_admin/vendorStatusUpdate",
+	produces = { "application/json" })
+	ResponseEntity<String> vendorStatusUpdate(@RequestBody ZoyPgVendorModel vendorModel);
+	
 }

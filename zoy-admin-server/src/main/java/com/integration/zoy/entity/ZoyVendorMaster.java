@@ -88,4 +88,13 @@ public class ZoyVendorMaster {
     @Column(name = "vendor_rejected_reason")
     private String vendorRejectedReason;
     
+    @Column(name = "vendor_desgination")
+    private String vendorDesgination;
+    
+    @Column(name = "vendor_group_name")
+    private String vendorGroupName;
+    
+    @Column(name = "vendor_status_reason")
+    private String vendorStatusReason;	
+    
 }
