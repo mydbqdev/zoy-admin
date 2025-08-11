@@ -38,6 +38,12 @@ public class TenentRefund {
 
 	@SerializedName("paymentStatus")
 	private String paymentStatus;
+	
+	@SerializedName("tenantAccountNumber")
+	private String tenantAccountNumber ;
+	
+	@SerializedName("tenantIfscCode")
+	private String tenantIfscCode ;
 
 	public double getRefundableAmount() {
 		return refundableAmount;
@@ -113,6 +119,22 @@ public class TenentRefund {
 
 	public String getTransactionNumber() {
 		return transactionNumber;
+	}
+
+	public String getTenantAccountNumber() {
+		return tenantAccountNumber;
+	}
+
+	public void setTenantAccountNumber(String tenantAccountNumber) {
+		this.tenantAccountNumber = tenantAccountNumber;
+	}
+
+	public String getTenantIfscCode() {
+		return tenantIfscCode;
+	}
+
+	public void setTenantIfscCode(String tenantIfscCode) {
+		this.tenantIfscCode = tenantIfscCode;
 	}
 
 	public void setTransactionNumber(String transactionNumber) {

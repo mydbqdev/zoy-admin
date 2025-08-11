@@ -64,8 +64,8 @@ public class NotificationsAndAlertsService {
     }
     
     public void reviewRatingAlert(ReviewRatingDto dto) throws Exception {
-        List<String> screens = Arrays.asList("CONFIGURATION_MASTER", "CONFIGURATION_MASTER_APPROVAL");
-        String[] emails = notificationsAndAlertsRepository.findUsersWithScreenAccess(screens);
+        String screenname="LOW_RATINGS";
+    	String[] emails =notificationsAndAlertsRepository.findScreenAccess(screenname);
         notificationService.notifyForReviewRating(emails, dto);
     }
 }

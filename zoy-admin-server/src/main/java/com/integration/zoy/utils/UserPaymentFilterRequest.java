@@ -49,6 +49,9 @@ public class UserPaymentFilterRequest {
 	
 	@JsonProperty("searchText")
 	private String searchText;
+	
+	@JsonProperty("lowRating")
+	private String lowRating;
 
 	public String getPropertyId() {
 		return propertyId;
@@ -154,4 +157,13 @@ public class UserPaymentFilterRequest {
 	public void setSearchText(String searchText) {
 	    this.searchText = searchText;
 	}
+
+	public String getLowRating() {
+		return lowRating;
+	}
+
+	public void setLowRating(String lowRating) {
+		this.lowRating = lowRating;
+	}
+	
 }

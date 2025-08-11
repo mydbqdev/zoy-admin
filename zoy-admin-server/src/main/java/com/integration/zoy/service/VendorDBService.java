@@ -84,6 +84,8 @@ public class VendorDBService implements VendorDBImpl{
 			String statusLabel = result[9] != null ? result[9].toString() : null;
 			String servicesJson = result[10] != null ? result[10].toString() : "[]"; 
 			String filePathsStr = result[11] != null ? result[11].toString() : null;
+			String desgination = result[12] != null ? result[12].toString() : null;
+			String group = result[13] != null ? result[13].toString() : null;
 
 			VendorResponseDto dto = new VendorResponseDto();
 			dto.setVendorId(vendorId);
@@ -96,6 +98,8 @@ public class VendorDBService implements VendorDBImpl{
 			dto.setVendorEmail(email);
 			dto.setVendorGstRegistrastionNo(gst);
 			dto.setVendorStatus(statusLabel);
+			dto.setVendorDesgination(desgination);
+			dto.setVendorGroup(group);
 			if (filePathsStr != null && !filePathsStr.isBlank()) {
 				List<String> fileKeys = Arrays.asList(filePathsStr.split(","));
 				List<String> preSignedUrls = fileKeys.stream()
