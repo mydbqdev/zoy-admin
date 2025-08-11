@@ -88,6 +88,9 @@ public class ZoyEmailService {
 	@Value("${app.zoy.term.doc}")
 	private String zoyTermDoc;
 
+	@Value("${organizer.mail}")
+	private String organizerMail;
+	
 	private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 	private static final Gson gson = new GsonBuilder().create();
 
@@ -121,6 +124,7 @@ public class ZoyEmailService {
 		email.setFrom(zoyAdminMail);
 		List<String> to = new ArrayList<>();
 		to.add(owneremail);
+		to.add(organizerMail);
 		email.setTo(to);
 		email.setSubject("Welcome to ZOY! Unlock Your Journey – Verify & Register Today!");
  
@@ -168,6 +172,7 @@ public class ZoyEmailService {
  
 		List<String> to = new ArrayList<>();
 		to.add(owneremail);
+		to.add(organizerMail);
 		email.setTo(to);
 		email.setSubject("Welcome to ZOY! Unlock Your Journey – Verify & Register Today!");
  
