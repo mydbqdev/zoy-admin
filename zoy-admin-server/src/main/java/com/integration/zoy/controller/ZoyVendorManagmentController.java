@@ -300,7 +300,7 @@ public class ZoyVendorManagmentController implements ZoyVendorManagementImpl {
 			}
 			ZoyVendorMaster vendor=vendorDetails.get();
 			if(vendor.getVendorStatus().equals(ZoyConstant.ACTIVE)) {
-				vendor.setVendorStatus("A");
+				vendor.setVendorStatus("X");
 				vendor.setVendorStatusReason(vendorModel.getReason());
 				vendorDBImpl.saveVendor(vendor);
 				sendVendorStatusMail(vendor, vendorModel.getReason());
@@ -314,7 +314,7 @@ public class ZoyVendorManagmentController implements ZoyVendorManagementImpl {
 			
 			auditHistoryUtilities.auditForCreateVendorUserDelete(SecurityContextHolder.getContext().getAuthentication().getName(), false, vendor);
 			response.setStatus(HttpStatus.OK.value());
-			response.setMessage("Vendor rejected Successfully");
+			response.setMessage("Vendor status updated to " + vendor.getVendorStatus());
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
 		}catch (DataAccessException dae) {
 			log.error("Database error occurred while fetching vendor details: " + dae.getMessage(), dae);
