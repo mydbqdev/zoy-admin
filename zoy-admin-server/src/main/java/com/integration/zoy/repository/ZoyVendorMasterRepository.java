@@ -30,6 +30,8 @@ public interface ZoyVendorMasterRepository extends JpaRepository<ZoyVendorMaster
 			+ "			WHEN zvm.vendor_status = 'P' THEN 'Pending Approval' "
 			+ "			WHEN zvm.vendor_status = 'A' THEN 'Approved' "
 			+ "			WHEN zvm.vendor_status = 'R' THEN 'Rejected' "
+			+ "			WHEN zvm.vendor_status = 'X' THEN 'Active'"
+			+ "         WHEN zvm.vendor_status = 'I' THEN 'Inactive'"
 			+ "			ELSE 'Unknown' "
 			+ "			END AS vendor_status_label, "
 			+ "			CAST(JSON_AGG( "
