@@ -147,8 +147,9 @@ const url1=this.basePath +"zoy_admin/userDesignation";
       });
   }
 
+
   public changeVendorStatus(data:any): Observable<any> {
-    const url = this.basePath + 'zoy_admin/getVendorDetails'; 
+    const url = this.basePath + 'zoy_admin/vendorStatusUpdate'; 
     return  this.httpclient.post<any>(
       url,
       data,
@@ -158,7 +159,6 @@ const url1=this.basePath +"zoy_admin/userDesignation";
          withCredentials:true
       });
   }
-
   private errorHandler(error: HttpErrorResponse) {
     return of(error.message || "server error");
   }

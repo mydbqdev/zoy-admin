@@ -44,23 +44,23 @@
                                 <button type="button" class="btn"
                                         [class.btn-primary]="currentFilter === 'All'"
                                         [class.btn-outline-primary]="currentFilter !== 'All'"
-                                        (click)="setFilter('All')">All</button>
+                                        (click)="setFilter('All','')">All</button>
                                 <button type="button" class="btn"
                                         [class.btn-primary]="currentFilter === VendorStatus.PendingApproval"
                                         [class.btn-outline-primary]="currentFilter !== VendorStatus.PendingApproval"
-                                        (click)="setFilter(VendorStatus.PendingApproval)">Pending for approval</button>
+                                        (click)="setFilter(VendorStatus.PendingApproval,'P')">Pending Approval</button>
                                 <button type="button" class="btn"
                                         [class.btn-primary]="currentFilter === VendorStatus.Approved || currentFilter === VendorStatus.Active"
                                         [class.btn-outline-primary]="currentFilter !== VendorStatus.Approved && currentFilter !== VendorStatus.Active"
-                                        (click)="setFilter(VendorStatus.Approved)">Approved</button>
+                                        (click)="setFilter(VendorStatus.Approved,'A')">Approved</button>
                                 <button type="button" class="btn"
                                         [class.btn-primary]="currentFilter === VendorStatus.Rejected"
                                         [class.btn-outline-primary]="currentFilter !== VendorStatus.Rejected"
-                                        (click)="setFilter(VendorStatus.Rejected)">Rejected</button>
+                                        (click)="setFilter(VendorStatus.Rejected,'R')">Rejected</button>
                                 <button type="button" class="btn"
                                         [class.btn-primary]="currentFilter === VendorStatus.Inactive"
                                         [class.btn-outline-primary]="currentFilter !== VendorStatus.Inactive"
-                                        (click)="setFilter(VendorStatus.Inactive)">Inactive</button>
+                                        (click)="setFilter(VendorStatus.Inactive,'I')">Inactive</button>
                               </div>
                             </div>
 
@@ -155,7 +155,7 @@
                               <span class="common-status"
                                     [ngClass]="{
                                       'status-active': element.vendor_status === 'Approved',
-                                      'status-pending': element.vendor_status === 'Pending for approval',
+                                      'status-pending': element.vendor_status === 'Pending Approval',
                                       'status-inactive': element.vendor_status === 'Inactive'
                                     }">
                                 {{ element.vendor_status }}
@@ -266,8 +266,8 @@
             <div class="row mt-1">
             <div class="col-md-6 d-flex">
               <strong class="me-2">Designation : </strong>
-              <span *ngIf="venderDesignation">{{ venderDesignation || 'N/A' }}</span>
-              <div class="col-md-6" *ngIf="!venderDesignation">
+              <span *ngIf="selectedVendor.vendor_status != 'Pending Approval'">{{ selectedVendor.vendor_desgination || 'N/A' }}</span>
+              <div class="col-md-6" *ngIf="selectedVendor.vendor_status == 'Pending Approval'">
               <select id="venderDesignation" class="form-select form-select-sm"
                 [(ngModel)]="venderDesignation"
                 [ngClass]="{ 'is-invalid': isApproving && !venderDesignation}">
@@ -285,8 +285,8 @@
 
             <div class="col-md-6 d-flex">
               <strong class="me-2">Vendor Group : </strong>
-              <span *ngIf="venderGroupName" >{{ venderGroupName || 'N/A' }}</span>
-              <div class="col-md-8" *ngIf="!venderGroupName">
+              <span *ngIf="selectedVendor.vendor_status != 'Pending Approval'" >{{ selectedVendor.vendor_group || 'N/A' }}</span>
+              <div class="col-md-8" *ngIf="selectedVendor.vendor_status == 'Pending Approval'">
               <div class="input-group input-group-sm">
                 <span class="input-group-text">vender-</span>
                 <input type="text" id="venderGroupName" name="venderGroupName" class="form-control"
@@ -344,7 +344,7 @@
               </div>
 
               <!-- Change Status -->
-              <div *ngIf="selectedVendor.vendor_status === VendorStatus.Approved || selectedVendor.vendor_status === VendorStatus.Active || selectedVendor.vendor_status === VendorStatus.Inactive">
+              <div *ngIf="selectedVendor.vendor_status === 'Approved' || selectedVendor.vendor_status === 'Active' || selectedVendor.vendor_status === 'Inactive'">
                 <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#statusChangeFormCollapse"
                   aria-expanded="false" aria-controls="statusChangeFormCollapse" (click)="scrollTo('statusFormDiv')">
                   Change Status
@@ -354,30 +354,13 @@
               <!-- Status Change Form -->
               <div class="collapse w-100 mt-2" id="statusChangeFormCollapse" #statusFormDiv>
                 <div class="card card-body bg-light">
-                  <form [formGroup]="statusChangeForm" (ngSubmit)="changeVendorStatus()">
+                  <form>
                     <div class="mb-3">
-                      <label for="newStatus" class="form-label">New Status <span class="text-danger">*</span></label>
-                      <select id="newStatus" formControlName="newStatus" class="form-select form-select-sm w-auto"
-                        (change)="onStatusChangeSelection()"
-                        [class.is-invalid]="statusChangeForm.get('newStatus')?.invalid && statusChangeForm.get('newStatus')?.touched">
-                        <option value="" disabled>Select a new status</option>
-                        <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
-                      </select>
-                      <div *ngIf="statusChangeForm.get('newStatus')?.invalid && statusChangeForm.get('newStatus')?.touched" class="invalid-feedback">
-                        New status is required.
-                      </div>
+                      <label class="form-label"> Reason <span class="text-danger">*</span></label>
+                      <textarea class="form-control" rows="2" placeholder="Please Enter The Status Change Reason" [(ngModel)]="statusChangeReason"></textarea>
                     </div>
-                    <div class="mb-3" *ngIf="statusChangeForm.get('newStatus')?.value === VendorStatus.Inactive || statusChangeForm.get('newStatus')?.value === VendorStatus.Rejected">
-                      <label for="statusChangeReason" class="form-label">Reason <span class="text-danger">*</span></label>
-                      <textarea id="statusChangeReason" formControlName="reason" class="form-control" rows="2"
-                        [class.is-invalid]="statusChangeForm.get('reason')?.invalid && statusChangeForm.get('reason')?.touched"></textarea>
-                      <div *ngIf="statusChangeForm.get('reason')?.invalid && statusChangeForm.get('reason')?.touched" class="invalid-feedback">
-                        Reason is required for this status change.
-                      </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-sm" [disabled]="statusChangeForm.invalid || isChangingStatus">
-                      <span *ngIf="isChangingStatus" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                      {{ isChangingStatus ? 'Updating...' : 'Update Status' }}
+                    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!statusChangeReason"  (click)="changeVendorStatus()" >
+                       Update Status to {{newUpdateStatus()}}
                     </button>
                   </form>
                 </div>
@@ -388,8 +371,8 @@
 
   
         <hr>
-        <div>
-          <div>
+        <div *ngIf="selectedVendor.vendor_status != 'Pending Approval' && selectedVendor.vendor_status !='Rejected'">
+          <div >
             <div>Vendors Information</div>
            
           </div> 
