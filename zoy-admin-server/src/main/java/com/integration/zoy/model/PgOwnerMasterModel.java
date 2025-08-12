@@ -76,6 +76,12 @@ public class PgOwnerMasterModel {
 
 	@JsonProperty("property_street_name")
 	private String propertyStreetName;
+	
+	@JsonProperty("intial_zoy_code")
+	private Boolean intialZoyCode;
+	
+	@JsonProperty("zoy_code")
+	private String zoyCode;
 
 	public String getFirstName() {
 		return firstName;
@@ -259,6 +265,22 @@ public class PgOwnerMasterModel {
 
 	public void setPropertyStreetName(String propertyStreetName) {
 		this.propertyStreetName = propertyStreetName;
+	}
+
+	public Boolean getIntialZoyCode() {
+		return intialZoyCode;
+	}
+
+	public void setIntialZoyCode(Boolean intialZoyCode) {
+		this.intialZoyCode = intialZoyCode;
+	}
+
+	public String getZoyCode() {
+		return zoyCode;
+	}
+
+	public void setZoyCode(String zoyCode) {
+		this.zoyCode = zoyCode;
 	}
 
 

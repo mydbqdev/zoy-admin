@@ -37,6 +37,9 @@ public class PgOwnerDetails {
 	@JsonProperty("registerId")
 	private String registerId;
 
+	@JsonProperty("intialZoyCode")
+	private Boolean intialZoyCode;
+	
 	public String getZoyCode() {
 		return zoyCode;
 	}
@@ -115,6 +118,14 @@ public class PgOwnerDetails {
 
 	public void setPgName(String pgName) {
 		this.pgName = pgName;
+	}
+
+	public Boolean getIntialZoyCode() {
+		return intialZoyCode;
+	}
+
+	public void setIntialZoyCode(Boolean intialZoyCode) {
+		this.intialZoyCode = intialZoyCode;
 	}
 	
 	

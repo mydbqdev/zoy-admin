@@ -309,6 +309,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				ownerDetails.setZoyVariableShare(details[6] != null ? (BigDecimal) details[6] : null);
 				ownerDetails.setZoyFixedShare(details[7] != null ? (BigDecimal) details[7] : null);
 				ownerDetails.setRegisterId(details[8] != null ? (String) details[8] : null);
+				ownerDetails.setIntialZoyCode(details[9] != null ? (Boolean) details[9] : false);
 				pgOwnerDetailsList.add(ownerDetails);
 			}
 
@@ -1095,18 +1096,20 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			Object[] ownerArray = pgOwnerDetails.get(0);
 			PgOwnerMasterModel ownerData = new PgOwnerMasterModel();
 
-			ownerData.setFirstName(ownerArray[1] != null ? (String) ownerArray[1] : null);
-			ownerData.setLastName(ownerArray[2] != null ? (String) ownerArray[2] : null);
-			ownerData.setEmailId(ownerArray[3] != null ? (String) ownerArray[3] : null);
-			ownerData.setMobileNo(ownerArray[4] != null ? (String) ownerArray[4] : null);
-			ownerData.setPropertyName(ownerArray[5] != null ? (String) ownerArray[5] : null);
+			ownerData.setFirstName(ownerArray[1] != null ? (String) ownerArray[1] : "");
+			ownerData.setLastName(ownerArray[2] != null ? (String) ownerArray[2] : "");
+			ownerData.setEmailId(ownerArray[3] != null ? (String) ownerArray[3] : "");
+			ownerData.setMobileNo(ownerArray[4] != null ? (String) ownerArray[4] : "");
+			ownerData.setPropertyName(ownerArray[5] != null ? (String) ownerArray[5] : "");
 			ownerData.setPropertyPincode(ownerArray[6] != null ? Integer.valueOf(ownerArray[6].toString()) : null);
-			ownerData.setPropertyState(ownerArray[7] != null ? (String) ownerArray[7] : null);
-			ownerData.setPropertyCity(ownerArray[8] != null ? (String) ownerArray[8] : null);
-			ownerData.setPropertyHouseArea(ownerArray[9] != null ? (String) ownerArray[9] : null);
-			ownerData.setPropertyLocality(ownerArray[10] != null ? (String) ownerArray[10] : null);
+			ownerData.setPropertyState(ownerArray[7] != null ? (String) ownerArray[7] : "");
+			ownerData.setPropertyCity(ownerArray[8] != null ? (String) ownerArray[8] : "");
+			ownerData.setPropertyHouseArea(ownerArray[9] != null ? (String) ownerArray[9] : "");
+			ownerData.setPropertyLocality(ownerArray[10] != null ? (String) ownerArray[10] : "");
 			ownerData.setPropertyLocationLatitude(ownerArray[11] != null ? new BigDecimal(ownerArray[11].toString()) : null);
 			ownerData.setPropertyLocationLongitude(ownerArray[12] != null ? new BigDecimal(ownerArray[12].toString()) : null);
+			ownerData.setIntialZoyCode(ownerArray[13] != null ? Boolean.valueOf(ownerArray[13].toString()) : false);
+			ownerData.setZoyCode(ownerArray[14] != null ? ownerArray[14].toString() : "");
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("Successfully fetched Owner card details.");
 			return new ResponseEntity<>(gson.toJson(ownerData), HttpStatus.OK);
