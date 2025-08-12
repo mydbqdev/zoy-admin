@@ -64,6 +64,7 @@ export class AdminVendorManagementComponent implements OnInit,AfterViewInit{
   venderDesignation:string='';
   designationList :UserDesignation[]=[];
   @ViewChild('detailsCloseModal') detailsCloseModal : ElementRef;
+  statusChangeReason:string='';
   constructor(private route: ActivatedRoute, private router: Router, private userService: UserService,private notifyService:NotificationService,private menuService:MenuService,   private fb: FormBuilder,private http: HttpClient ,
     private spinner:NgxSpinnerService,private renderer: Renderer2 ,private authService:AuthService,private confirmationDialogService:ConfirmationDialogService,private dataService:DataService,private alertDialogService: AlertDialogService,private vendorService: VendorService){
       this.authService.checkLoginUserVlidaate();
@@ -89,16 +90,6 @@ export class AdminVendorManagementComponent implements OnInit,AfterViewInit{
         this.isExpandSideBar=name;
       });
 
-       //   this.vendorService = new MockVendorService(this.http);
-
-    // Initialize the reactive forms
-    this.rejectionReasonForm = this.fb.group({
-      reason: ['', Validators.required]
-    });
-    this.statusChangeForm = this.fb.group({
-      newStatus: ['', Validators.required],
-      reason: ['']
-    });
   }
  
   ngOnDestroy() {
@@ -130,13 +121,8 @@ ngAfterViewInit(){
   currentFilter: VendorStatus | 'All' = 'All';
 
   selectedVendor: VendorModel  = new VendorModel(); 
-
-  rejectionReasonForm!: FormGroup;
-  statusChangeForm!: FormGroup;
-
   isApproving = false;
   isRejecting = false;
-  isChangingStatus = false;
   actionMessage: string | null = null; 
 
   statusOptions: VendorStatus[] = [
@@ -157,8 +143,7 @@ ngAfterViewInit(){
 
   viewVendorDetails(vendor: VendorModel): void {
     this.selectedVendor = { ...vendor }; 
-    this.rejectionReasonForm.reset();
-    this.statusChangeForm.reset({ newStatus: vendor.vendor_status, reason: '' });
+    this.statusChangeReason=''
     this.actionMessage = null;
   }
 
@@ -166,35 +151,24 @@ ngAfterViewInit(){
     this.selectedVendor = null;
     this.actionMessage = null; 
   }
-
   changeVendorStatus(): void {
-    if (!this.selectedVendor || this.statusChangeForm.invalid) {
+    if (!this.selectedVendor || !this.statusChangeReason) {
       return;
-    }
-
-    const newStatus: VendorStatus = this.statusChangeForm.get('newStatus')?.value;
-    const reason: string = this.statusChangeForm.get('reason')?.value;
-
-    if ((newStatus === VendorStatus.Inactive || newStatus === VendorStatus.Rejected) && !reason) {
-        this.statusChangeForm.get('reason')?.setErrors({ required: true });
-        return;
     }
    let request= {
     "vendorId": this.selectedVendor.vendor_id,
-    "newStatus": newStatus,
-    "reason": reason
+    "status": this.newUpdateStatus(),
+    "reason": this.statusChangeReason
    }
-
-    this.isChangingStatus = true;
     this.actionMessage = null;
-
+console.log("request",request)
    this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want to unlock the "'+this.selectedVendor.vendor_first_name +' '+this.selectedVendor.vendor_last_name+'" ?')
   .then(
     (confirmed) =>{
      if(confirmed){
   this.spinner.show();
   this.vendorService.changeVendorStatus(request).subscribe(data => {
-     this.notifyService.showSuccess(data.message,"")
+     this.notifyService.showSuccess(data.message,"");
   this.applyFilter();
     this.spinner.hide();
  }, error => {
@@ -233,17 +207,27 @@ ngAfterViewInit(){
     ); 
   }
 
-  onStatusChangeSelection(): void {
-    const selectedStatus = this.statusChangeForm.get('newStatus')?.value;
-    const reasonControl = this.statusChangeForm.get('reason');
-
-    if (selectedStatus === VendorStatus.Inactive || selectedStatus === VendorStatus.Rejected) {
-      reasonControl?.setValidators(Validators.required);
-    } else {
-      reasonControl?.clearValidators();
+  newUpdateStatus():string{
+    var status=''
+    if(this.selectedVendor.vendor_status === 'Approved' || this.selectedVendor.vendor_status === 'Active' ){
+      status = 'Inactive';
+    }else if( this.selectedVendor.vendor_status === 'Inactive'){
+      status = 'Active';
     }
-    reasonControl?.updateValueAndValidity();
+    return status;
   }
+
+  // onStatusChangeSelection(): void {
+  //   const selectedStatus = this.statusChangeForm.get('newStatus')?.value;
+  //   const reasonControl = this.statusChangeForm.get('reason');
+
+  //   if (selectedStatus === VendorStatus.Inactive || selectedStatus === VendorStatus.Rejected) {
+  //     reasonControl?.setValidators(Validators.required);
+  //   } else {
+  //     reasonControl?.clearValidators();
+  //   }
+  //   reasonControl?.updateValueAndValidity();
+  // }
 
 
     getRetrieveData(){
@@ -265,12 +249,15 @@ ngAfterViewInit(){
   applyFilter(): void {
     this.param.pageIndex=0
 		this.paginator.pageIndex=0;
+    this.paramFilter.status = this.currentFilterStatus ||null;
 		this.param.filter=this.paramFilter;
 		this.getVendorDetails();
   }
+  currentFilterStatus:string='';
 
-  setFilter(status: VendorStatus | 'All'): void {
+  setFilter(status: VendorStatus | 'All',S:string): void {
     this.currentFilter = status;
+    this.currentFilterStatus= S;
     this.applyFilter();
   }
 
@@ -451,10 +438,11 @@ rejectingVendorDetails(){
 approveVendorDetails(){
 this.isApproving = true;
 if (!this.selectedVendor ||!this.venderDesignation || !this.venderGroupName || this.isValidGroupName(this.venderGroupName)) return;
- 
+  
   let request= {
     "vendorId": this.selectedVendor.vendor_id,
     "userDesignation": this.venderDesignation,
+    "userDesignationName": this.designationList.find(d=>d.id==this.venderDesignation)?.name || '',
     "userGroupName": 'vender-'+this.venderGroupName
   }
   this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want to unlock the "'+this.selectedVendor.vendor_first_name +' '+this.selectedVendor.vendor_last_name+'" ?')
@@ -503,5 +491,6 @@ if (!this.selectedVendor ||!this.venderDesignation || !this.venderGroupName || t
     () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
     ); 
   } 
-   
+
+
 }
