@@ -87,6 +87,7 @@ public class TicketSmartService {
 	
 	public String postTicketSmartAPI(String url, String ticketJson, List<MultipartFile> mediaFiles) {
 		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 		//headers.setAccept(Collections.singletonList(MediaType.ALL));
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		headers.set("X-API-KEY", ticketSmartApiKey);
@@ -115,7 +116,7 @@ public class TicketSmartService {
 			HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
 			ResponseEntity<String> response = httpsRestTemplate.exchange(ticketSmartUrl+"/"+url,HttpMethod.POST,entity,String.class);
 			//System.out.println("Response:");
-			//System.out.println(response.getBody());
+			System.out.println(response.getBody());
 			if(response.getStatusCodeValue() == 200) {
 				return response.getBody();
 			} else {
