@@ -1,6 +1,6 @@
 
 export enum VendorStatus {
-  PendingApproval = 'Pending for approval',
+  PendingApproval = 'Pending Approval',
   Approved = 'Approved',
   Rejected = 'Rejected',
   Inactive = 'Inactive',
@@ -45,4 +45,6 @@ export class VendorModel {
   vendor_file_paths: string[] = [];
   inactiveReason: string = '';
   rejectionReason: string = '';
+  vendor_desgination: string = '';
+  vendor_group: string = '';
 }
