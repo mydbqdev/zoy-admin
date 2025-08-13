@@ -964,7 +964,9 @@ public class UploadService {
 			pdf.setShareName(data.get(0)[6].toString());
 			pdf.setFloorName(data.get(0)[7].toString());
 			pdf.setRoomName(data.get(0)[8].toString());
+			pdf.setSecurityAmt(data.get(0)[9].toString());
 			pdf.setSecurityWord(numberToWordsService.numberToWords(Double.valueOf(data.get(0)[9].toString())));
+			pdf.setRentAmt(data.get(0)[10].toString());
 			pdf.setRentWord(numberToWordsService.numberToWords(Double.valueOf(data.get(0)[10].toString())));
 			pdf.setInDate(data.get(0)[11].toString());
 			pdf.setOutDate(data.get(0)[12].toString());
