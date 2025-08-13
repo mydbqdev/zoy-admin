@@ -83,6 +83,9 @@ public class PgOwnerMasterModel {
 	@JsonProperty("zoy_code")
 	private String zoyCode;
 
+	@JsonProperty("ticket_status")
+	private String ticketStatus;
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -281,6 +284,14 @@ public class PgOwnerMasterModel {
 
 	public void setZoyCode(String zoyCode) {
 		this.zoyCode = zoyCode;
+	}
+
+	public String getTicketStatus() {
+		return ticketStatus;
+	}
+
+	public void setTicketStatus(String ticketStatus) {
+		this.ticketStatus = ticketStatus;
 	}
 
 
