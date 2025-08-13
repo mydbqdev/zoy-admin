@@ -666,6 +666,7 @@ percentageOnly(event: KeyboardEvent) {
    revenueTypeTicket: 'fixed' | 'variable' = 'fixed';
    ticket:ZoyData= new ZoyData(); 
    searchInput :string="";
+   ticketId:string='';
    ownerEmail :string="";
    submitZoyCode(): void {
 	this.submitted =true;
@@ -679,6 +680,7 @@ this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to crea
 	 (confirmed) =>{
 	 if(confirmed){
 		let  model = new ZoyData();
+		model.registerId=this.ticketId
 		model.firstName = this.ticket.first_name
 		model.lastName = this.ticket.last_name || '';
 		model.contactNumber = this.ticket.mobile_no
@@ -759,6 +761,7 @@ this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to crea
 		this.spinner.show();
 		this.generateZoyCodeService.fetchPGDetails(this.searchInput).subscribe(data => {
 			if(data!="" && data!=null && data!=undefined){
+			   this.ticketId=JSON.parse(JSON.stringify(this.searchInput));
 			   this.ticket=data;
 			   this.ownerEmail = this.ticket.email_id;
 			if(this.ticket.property_city){
