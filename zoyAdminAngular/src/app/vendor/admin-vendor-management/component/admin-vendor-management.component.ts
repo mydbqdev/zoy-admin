@@ -443,7 +443,7 @@ if (!this.selectedVendor ||!this.venderDesignation || !this.venderGroupName || t
     "vendorId": this.selectedVendor.vendor_id,
     "userDesignation": this.venderDesignation,
     "userDesignationName": this.designationList.find(d=>d.id==this.venderDesignation)?.name || '',
-    "userGroupName": 'vender-'+this.venderGroupName
+    "userGroupName": 'Vendor-'+this.venderGroupName
   }
   this.confirmationDialogService.confirm('Confirmation!!', 'Are you sure you want to unlock the "'+this.selectedVendor.vendor_first_name +' '+this.selectedVendor.vendor_last_name+'" ?')
   .then(
