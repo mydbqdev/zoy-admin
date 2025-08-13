@@ -28,4 +28,5 @@ export class ZoyData {
     public property_door_number:string="";
     first_name:string="";
 		last_name:string="";
+    registerId:string="";
   }
