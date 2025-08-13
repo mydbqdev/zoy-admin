@@ -1110,6 +1110,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			ownerData.setPropertyLocationLongitude(ownerArray[12] != null ? new BigDecimal(ownerArray[12].toString()) : null);
 			ownerData.setIntialZoyCode(ownerArray[13] != null ? Boolean.valueOf(ownerArray[13].toString()) : false);
 			ownerData.setZoyCode(ownerArray[14] != null ? ownerArray[14].toString() : "");
+			ownerData.setTicketStatus(ownerArray[15] != null ? ownerArray[15].toString() : "");
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("Successfully fetched Owner card details.");
 			return new ResponseEntity<>(gson.toJson(ownerData), HttpStatus.OK);
