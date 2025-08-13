@@ -53,9 +53,15 @@ public class GenerateBulkUploadRentalPdf   {
 
 	@JsonProperty("securityWord")
 	String securityWord;
+	
+	@JsonProperty("securityAmt")
+	String securityAmt;
 
 	@JsonProperty("rentWord")
 	String rentWord;
+	
+	@JsonProperty("rentAmt")
+	String rentAmt;
 
 	@JsonProperty("inDate")
 	String inDate;
@@ -225,16 +231,30 @@ public class GenerateBulkUploadRentalPdf   {
 	public void setBookingId(String bookingId) {
 		this.bookingId = bookingId;
 	}
+	public String getSecurityAmt() {
+		return securityAmt;
+	}
+	public void setSecurityAmt(String securityAmt) {
+		this.securityAmt = securityAmt;
+	}
+	public String getRentAmt() {
+		return rentAmt;
+	}
+	public void setRentAmt(String rentAmt) {
+		this.rentAmt = rentAmt;
+	}
 	@Override
 	public String toString() {
 		return "GenerateBulkUploadRentalPdf [pgName=" + pgName + ", tenantName=" + tenantName + ", tenantAddress="
 				+ tenantAddress + ", ownerName=" + ownerName + ", ownerPhNo=" + ownerPhNo + ", ownerAddress="
 				+ ownerAddress + ", pgAddress=" + pgAddress + ", pgCity=" + pgCity + ", shareName=" + shareName
 				+ ", floorName=" + floorName + ", roomName=" + roomName + ", securityWord=" + securityWord
-				+ ", rentWord=" + rentWord + ", inDate=" + inDate + ", outDate=" + outDate + ", modeOfPayment="
-				+ modeOfPayment + ", rentCycle=" + rentCycle + ", noOfDays=" + noOfDays + ", officeAddress="
-				+ officeAddress + ", isRental=" + isRental + ", bookingId=" + bookingId + "]";
+				+ ", securityAmt=" + securityAmt + ", rentWord=" + rentWord + ", rentAmt=" + rentAmt + ", inDate="
+				+ inDate + ", outDate=" + outDate + ", modeOfPayment=" + modeOfPayment + ", rentCycle=" + rentCycle
+				+ ", noOfDays=" + noOfDays + ", officeAddress=" + officeAddress + ", isRental=" + isRental
+				+ ", bookingId=" + bookingId + "]";
 	}
+	
 	
 
 
