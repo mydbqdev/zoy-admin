@@ -29,4 +29,6 @@ export class ZoyData {
     first_name:string="";
 		last_name:string="";
     registerId:string="";
+    intial_zoy_code:string="";
+    ticket_status:string="";
   }

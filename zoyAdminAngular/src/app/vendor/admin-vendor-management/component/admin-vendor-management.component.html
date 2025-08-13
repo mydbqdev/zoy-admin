@@ -288,7 +288,7 @@
               <span *ngIf="selectedVendor.vendor_status != 'Pending Approval'" >{{ selectedVendor.vendor_group || 'N/A' }}</span>
               <div class="col-md-8" *ngIf="selectedVendor.vendor_status == 'Pending Approval'">
               <div class="input-group input-group-sm">
-                <span class="input-group-text">vender-</span>
+                <span class="input-group-text">Vendor-</span>
                 <input type="text" id="venderGroupName" name="venderGroupName" class="form-control"
                   [(ngModel)]="venderGroupName"
                   placeholder="e.g., City-cluster-Zone"
