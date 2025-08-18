@@ -84,6 +84,7 @@ public class SecurityConfig {
 	            .antMatchers("/zoy_admin/check_area_code").permitAll()
 	            .antMatchers("/zoy_admin/check_location_code").permitAll()
 	            .antMatchers("/zoy_admin/zoyWebhook").permitAll()
+	            .antMatchers("/zoy_admin/getBlacklisted").permitAll()
 	            .anyRequest().authenticated()
 	            .and()
 	            .exceptionHandling(handling -> handling
