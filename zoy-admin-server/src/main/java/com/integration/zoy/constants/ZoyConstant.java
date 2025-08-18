@@ -99,7 +99,7 @@ public class ZoyConstant {
 	public static final String LEAD_GEN="LEAD_GEN";
 	public static final String SYSTEM="System";
 	public static final String SUPPORT_TICKET="SUPPORT_TICKET";
-	public static final Object CLOSE = "Close"; 
+	public static final String CLOSE = "Close"; 
 	public static final String CLOSED="Closed";
 	public static final String REOPEN="Reopen";
 	public static final String CANCELLED="Cancelled";
