@@ -17,6 +17,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { GenerateZoyCodeService } from '../../service/zoy-code.service';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { GoogleAPIService } from 'src/app/setting/organization-info-config/services/google.api.service';
+import { ZoyOwnerService } from '../../service/zoy-owner.service';
 
 
 @Component({
@@ -51,7 +52,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	submitted=false;
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	private _liveAnnouncer = inject(LiveAnnouncer);
-	constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
+	constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService : ZoyOwnerService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private googleAPIService:GoogleAPIService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
@@ -327,39 +328,74 @@ nameValidation(event: any, inputId: string) {
 				.then(
 				  (confirmed) =>{
 				   if(confirmed){
-					this.spinner.show();		     
-			    this.generateZoyCodeService.resendOwnerCode(element.email_id).subscribe((res) => {
-				this.notifyService.showSuccess(res.message, "");
-				this.spinner.hide();
-			  },error =>{
-				this.spinner.hide();
-				console.log("error.error",error)
-				if(error.status == 0) {
-					this.notifyService.showError("Internal Server Error/Connection not established", "")
-				 }else if(error.status==403){
-				this.router.navigate(['/forbidden']);
-				}else if (error.error && error.error.message) {
-				this.errorMsg =error.error.message;
-				console.log("Error:"+this.errorMsg);
-		  
-				if(error.status==500 && error.statusText=="Internal Server Error"){
-				  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
-				}else{
-				//  this.spinner.hide();
-				  let str;
-				  if(error.status==400){
-				  str=error.error.error;
-				  }else{
-					str=error.error.message;
-					str=str.substring(str.indexOf(":")+1);
-				  }
-				  console.log("Error:",str);
-				  this.errorMsg=str;
-				}
-			  	if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
-			    //this.notifyService.showError(this.errorMsg, "");
-				}
-			  });  
+					this.spinner.show();	
+					if(element.intial_zoy_code){
+						this.generateZoyCodeService.resendOwnerCode(element.email_id).subscribe((res) => {
+							this.notifyService.showSuccess(res.message, "");
+							this.spinner.hide();
+						},error =>{
+							this.spinner.hide();
+							console.log("error.error",error)
+							if(error.status == 0) {
+								this.notifyService.showError("Internal Server Error/Connection not established", "")
+							}else if(error.status==403){
+							this.router.navigate(['/forbidden']);
+							}else if (error.error && error.error.message) {
+							this.errorMsg =error.error.message;
+							console.log("Error:"+this.errorMsg);
+					
+							if(error.status==500 && error.statusText=="Internal Server Error"){
+							this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+							}else{
+							//  this.spinner.hide();
+							let str;
+							if(error.status==400){
+							str=error.error.error;
+							}else{
+								str=error.error.message;
+								str=str.substring(str.indexOf(":")+1);
+							}
+							console.log("Error:",str);
+							this.errorMsg=str;
+							}
+							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+							//this.notifyService.showError(this.errorMsg, "");
+							}
+						});
+					}else{
+					    this.zoyOwnerService.resendOwnerCode(element.zoy_code).subscribe((res) => {
+							this.notifyService.showSuccess(res.message, "");		
+							this.spinner.hide();
+						},error =>{
+							this.spinner.hide();
+							console.log("error.error",error)
+							if(error.status == 0) {
+								this.notifyService.showError("Internal Server Error/Connection not established", "")
+							}else if(error.status==403){
+							this.router.navigate(['/forbidden']);
+							}else if (error.error && error.error.message) {
+							this.errorMsg =error.error.message;
+							console.log("Error:"+this.errorMsg);
+							if(error.status==500 && error.statusText=="Internal Server Error"){
+							this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+							}else{
+							let str;
+							if(error.status==400){
+							str=error.error.error;
+							}else{
+								str=error.error.message;
+								str=str.substring(str.indexOf(":")+1);
+							}
+							console.log("Error:",str);
+							this.errorMsg=str;
+							}
+							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+							//this.notifyService.showError(this.errorMsg, "");
+							}
+						}
+						); 
+					}     
+			      
 				   }
 				}).catch(
 					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
@@ -702,7 +738,8 @@ this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to crea
 		model.property_street_name="";
 		model.property_door_number="";
 	this.spinner.show();
-  	this.generateZoyCodeService.generateOwnerCode(model,this.revenueTypeTicket).subscribe((res) => {
+	if(this.ticket.intial_zoy_code){  
+    this.generateZoyCodeService.generateOwnerCode(model,this.revenueTypeTicket).subscribe((res) => {
 			this.notifyService.showSuccess(res.message, "");
 			this.ticket=new ZoyData();
 			this.searchText="";
@@ -746,7 +783,53 @@ this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to crea
 		  	//this.notifyService.showError(this.errorMsg, "");
 			}
 		  );  
-	 }
+	}else{
+  	  this.generateZoyCodeService.generateOwnerCodeForMoreProperty(model,this.revenueTypeTicket).subscribe((res) => {
+			this.notifyService.showSuccess(res.message, "");
+			this.ticket=new ZoyData();
+			this.searchText="";
+			this.submitted =false			
+			this.spinner.hide();
+		  },error =>{
+			this.spinner.hide();
+			console.log("error.error",error)
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==409){
+				this.confirmationDialogService.confirm('Confirmation!!', 'A Zoycode has already been generated for this email Id/Mobile number, Would you like to resend the code?')
+				.then(
+				  (confirmed) =>{
+				   if(confirmed){
+					this.resendZoyCode();
+				   }
+				}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				); 
+			}else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+			}else if (error.error &&( error.error.message || error.error.error )) {
+			this.errorMsg =error.error.message || error.error.error;
+			console.log("Error:"+this.errorMsg);
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			  let str;
+			  if(error.status==400){
+			  str=error.error.error ;
+			  }else{
+				str=error.error.message || error.error.error;
+				str=str.substring(str.indexOf(":")+1);
+			  }
+			  console.log("Error:",str);
+			  this.errorMsg=str;
+			}
+		  }
+		  if(error.status !== 401 && error.status !=409 ){this.notifyService.showError(this.errorMsg, "");}
+		  	//this.notifyService.showError(this.errorMsg, "");
+			}
+		  );  
+	}
+ }
     }).catch(
 	() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 	);
@@ -761,6 +844,12 @@ this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to crea
 		this.spinner.show();
 		this.generateZoyCodeService.fetchPGDetails(this.searchInput).subscribe(data => {
 			if(data!="" && data!=null && data!=undefined){
+				const model: ZoyData = data
+			if(model.zoy_code){
+				this.notifyService.showInfo('Please check in Generated tab',model.zoy_code+" Zoycode has already been generated for this Ticket !,"); 
+			}else if(model.ticket_status == 'Closed' || model.ticket_status == 'Resolved'){
+				this.notifyService.showInfo("This ticket is Resolved/Closed",''); 
+			}else{
 			   this.ticketId=JSON.parse(JSON.stringify(this.searchInput));
 			   this.ticket=data;
 			   this.ownerEmail = this.ticket.email_id;
@@ -770,9 +859,10 @@ this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to crea
 			if(this.ticket.property_locality){
 				this.getAreaDetailsForTicket(this.ticket.property_locality);
 			}
-		this.revenueTypeTicket='fixed';
-		this.submitted=false;
-		this.generateZCode = new ZoyData();
+				this.revenueTypeTicket='fixed';
+				this.submitted=false;
+				this.generateZCode = new ZoyData();
+			}
 		}
 		this.spinner.hide();
 		}, error => {
