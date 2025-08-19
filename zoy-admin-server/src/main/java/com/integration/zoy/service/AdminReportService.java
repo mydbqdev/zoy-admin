@@ -1059,12 +1059,14 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("pgAddress", tenantRefund.getUserPgPropertyAddress() != null ? tenantRefund.getUserPgPropertyAddress() : "");
 			data.put("bookingId", tenantRefund.getBookingId() != null ? tenantRefund.getBookingId() : "");
 			data.put("refundTitle", tenantRefund.getRefundTitle() != null ? tenantRefund.getRefundTitle() : "");
-			data.put("refundableAmount", tenantRefund.getRefundableAmount());
+			data.put("Amount", tenantRefund.getRefundableAmount());
 			data.put("amountPaid", tenantRefund.getAmountPaid());
 			data.put("paymentDate", tuService.formatTimestamp(tenantRefund.getPaymentDate().toInstant()) != null ? tuService.formatTimestamp(tenantRefund.getPaymentDate().toInstant()) : "");
 			data.put("invoiceNo", tenantRefund.getTransactionNumber() != null ? tenantRefund.getTransactionNumber() : "");
 			data.put("status", tenantRefund.getPaymentStatus() != null ? tenantRefund.getPaymentStatus() : "");
-
+			data.put("accNum", tenantRefund.getTenantAccountNumber() != null ? tenantRefund.getTenantAccountNumber() : "");
+			data.put("ifscCode", tenantRefund.getTenantIfscCode() != null ? tenantRefund.getTenantIfscCode() : "");
+			
 			// Common fields
 			Timestamp fromDateTimestamp = filterRequest.getFromDate();
 			Timestamp toDateTimestamp = filterRequest.getToDate();
@@ -1323,6 +1325,8 @@ public class AdminReportService implements AdminReportImpl{
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
 		String currentDate = LocalDate.now().toString();
+	    LocalDate toDate = LocalDate.now();
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		for (Object item : dataItems) {
 			Map<String, Object> data = new HashMap<>();
@@ -1333,14 +1337,13 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("contactNumber", potentialPropertyData.getOwnerContactNumber() != null ? potentialPropertyData.getOwnerContactNumber() : "");
 			data.put("email", potentialPropertyData.getOwnerEmailAddress() != null ? potentialPropertyData.getOwnerEmailAddress() : "");
 			data.put("address", potentialPropertyData.getPropertyAddress()!= null ? potentialPropertyData.getPropertyAddress() : "");
-			// Common fields
+			data.put("toDate", toDate.format(formatter));
 			data.put("printedOn", currentDate);
 
 			dataList.add(data);
 		}
 		return dataList;
 	}
-	
 	public List<Map<String, Object>> generateFailureTransactionReport(CommonResponseDTO<?> reportData, UserPaymentFilterRequest filterRequest) {
 		List<Map<String, Object>> dataList = new ArrayList<>();
 		List<?> dataItems = reportData.getData();
@@ -1487,6 +1490,7 @@ public class AdminReportService implements AdminReportImpl{
 			data.put("bedNumber", zoyShareReport.getBedNumber() != null ? zoyShareReport.getBedNumber() : "");
 			data.put("paymentMode", zoyShareReport.getPaymentMode() != null ? zoyShareReport.getPaymentMode() : "");
 			data.put("amountPaid", zoyShareReport.getAmountPaid() != null ? zoyShareReport.getAmountPaid() : "");
+			data.put("amountType", zoyShareReport.getAmountType() != null ? zoyShareReport.getAmountType() : "");
 			data.put("zoyShare", zoyShareReport.getZoyShare() != null ? zoyShareReport.getZoyShare() : "");
 			data.put("zoyShareAmount", zoyShareReport.getZoyShareAmount() != null ? zoyShareReport.getZoyShareAmount() : "");
 
@@ -1524,11 +1528,15 @@ public class AdminReportService implements AdminReportImpl{
 					+ "        WHEN urd.refund_process_status = 'F' THEN 'Failed'\r\n"
 					+ "    END AS Status,\r\n"
 					+ "    urd.refund_created_timestamp,\r\n"
-					+ "    zppd.property_city\r\n"
+					+ "    zppd.property_city,\r\n"
+					+ "    bd.user_account_number,\r\n"
+					+ "    bd.user_ifsc_code\r\n"
 					+ "FROM pgcommon.user_refund_details urd \r\n"
 					+ "JOIN pgusers.user_master um ON urd.user_id = um.user_id \r\n"
 					+ "JOIN pgowners.zoy_pg_property_details zppd ON urd.property_id = zppd.property_id \r\n"
 					+ "LEFT JOIN pgusers.user_bookings ub ON urd.booking_id = ub.user_bookings_id \r\n"
+					+ "LEFT JOIN pgcommon.bank_master bm ON urd.user_id = bm.user_id \r\n "
+					+ "LEFT JOIN pgcommon.bank_details bd ON bm.user_bank_id = bd.user_bank_id \r\n"
 					+ "WHERE 1 = 1");
 
 			Map<String, Object> parameters = new HashMap<>();
@@ -1584,6 +1592,15 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
+			if (filterData.getTenantAccountNumber() != null && !filterData.getTenantAccountNumber().isEmpty()) {
+				queryBuilder.append(" AND bd.user_account_number LIKE :tenantAccountNum ");
+				parameters.put("tenantAccountNum", "%" + filterData.getTenantAccountNumber() + "%");
+			}
+			
+			if (filterData.getTenantIfscCode() != null && !filterData.getTenantIfscCode().isEmpty()) {
+				queryBuilder.append(" AND bd.user_ifsc_code LIKE :tenantIfscCode ");
+				parameters.put("tenantIfscCode", "%" + filterData.getTenantIfscCode() + "%");
+			}
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {
 				String sort = "";
@@ -1609,6 +1626,12 @@ public class AdminReportService implements AdminReportImpl{
 				case "refundableAmount":
 					sort = "urd.refund_amount";
 					break;
+				case "tenantAccountNum":
+					sort = "bd.user_account_number";
+					break;
+				case "tenantIfscCode":
+					sort = "bd.user_ifsc_code";
+					break;	
 				default:
 					sort = "urd.refund_updated_timestamp";
 				}
@@ -1642,6 +1665,8 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setTransactionNumber("");
 				dto.setAmountPaid(BigDecimal.valueOf(0).doubleValue());
 				dto.setPaymentDate(row[8] != null ? (Timestamp)(row[8]) : null);
+				dto.setTenantAccountNumber(row[10] != null ? (String) row[10] : "");
+				dto.setTenantIfscCode(row[11] != null ? (String) row[11] : "");
 				return dto;
 			}).collect(Collectors.toList());
 
@@ -1664,7 +1689,9 @@ public class AdminReportService implements AdminReportImpl{
 							+ " MAX(CASE WHEN rating_master.review_type = 'price' THEN rrt.rating ELSE NULL END) AS value_for_money_rating,\r\n"
 							+ " MAX(CASE WHEN rating_master.review_type = 'maintainance' THEN rrt.rating ELSE NULL END) AS maintainance,\r\n"
 							+ " MAX(CASE WHEN rating_master.review_type = 'accomodation' THEN rrt.rating ELSE NULL END) AS accomodation,\r\n"
-							+ "zppd.property_city \r\n"
+							+ "zpobd.phone_number, \r\n"
+							+ "zppd.property_city, \r\n"
+							+ "zpobd.name \r\n"
 							+ "from pgcommon.review_ratings rr \r\n"
 							+ "left join pgcommon.review_ratings_types rrt on rr.rating_id = rrt.rating_id \r\n"
 							+ "left join pgcommon.review_ratings_master rating_master on rrt.review_type_id = rating_master.review_type_id \r\n"
@@ -1684,12 +1711,17 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("fromDate", filterRequest.getFromDate());
 				parameters.put("toDate", filterRequest.getToDate());
 			}
+			
+			if (filterRequest.getLowRating() != null && !filterRequest.getLowRating().isEmpty()) {
+			    queryBuilder.append(" AND rr.overall_rating < :lowRating");
+			    parameters.put("lowRating", Double.parseDouble(filterRequest.getLowRating()));
+			}
 
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
 				queryBuilder.append(" AND zppd.property_name IS NOT NULL AND LOWER(zppd.property_name) LIKE LOWER(:pgName)");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
 			}
-
+			
 			if (filterData.getTenantName() != null && !filterData.getTenantName().isEmpty()) {
 				queryBuilder.append(" AND um.user_first_name || ' ' || um.user_last_name IS NOT NULL AND LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE LOWER(:tenantName)");
 				parameters.put("tenantName", "%" + filterData.getTenantName() + "%");
@@ -1708,6 +1740,30 @@ public class AdminReportService implements AdminReportImpl{
 				queryBuilder.append(" AND LOWER(zppd.property_city) LIKE LOWER(CONCAT('%', :cityLocation, '%'))");
 				parameters.put("cityLocation", filterRequest.getCityLocation());
 			}
+			if(filterData.getOwnerName() != null && !filterData.getOwnerName().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpobd.name) LIKE LOWER(CONCAT('%', :ownerName, '%'))");
+				parameters.put("ownerName", filterData.getOwnerName());
+			}
+			if(filterData.getOwnerContactNum()!= null && !filterData.getOwnerContactNum().isEmpty()) {
+				queryBuilder.append(" AND LOWER(zpobd.phone_number) LIKE LOWER(CONCAT('%', :ownerConcatNumber, '%'))");
+				parameters.put("ownerConcatNumber", filterData.getOwnerContactNum());
+ 
+			}
+			if (filterRequest.getSearchText() != null && !filterRequest.getSearchText().trim().isEmpty()) {
+			    String searchText = "%" + filterRequest.getSearchText().toLowerCase().trim() + "%";
+			    queryBuilder.append(" AND (")
+			        .append("LOWER(zppd.property_name) LIKE :searchText OR ")
+			        .append("LOWER(um.user_first_name || ' ' || um.user_last_name) LIKE :searchText OR ")
+			        .append("LOWER(um.user_mobile) LIKE :searchText OR ")
+			        .append("LOWER(zpobd.name) LIKE :searchText OR ")
+			        .append("LOWER(zpobd.phone_number) LIKE :searchText OR ")
+			        .append("LOWER(rr.written_review) LIKE :searchText OR ")
+			        .append("LOWER(CAST(rr.overall_rating AS TEXT)) LIKE :searchText OR ")
+			        .append("LOWER(zppd.property_city) LIKE :searchText")
+			        .append(")");
+			    parameters.put("searchText", searchText);
+			}
+ 
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
 					&& filterRequest.getSortActive() != null) {
 				String sort = "";
@@ -1742,11 +1798,15 @@ public class AdminReportService implements AdminReportImpl{
 				case "overallRating":
 					sort = "rr.overall_rating";
 					break;
+				case "ownerContactNumber":
+					sort = "zpobd.phone_number";	
+				case "ownerName":
+					sort="zpobd.name";
 				default:
 					sort = "rr.timestamp";
 				}
 				queryBuilder.append(" group by rr.rating_id,rr.partner_id,rr.written_review,rr.overall_rating,rr.customer_id,rr.property_id, "+
-						"rr.timestamp,zpbd.bed_name,zppd.property_id,um.user_id,ud.user_profile_image,um.user_mobile " );
+						"rr.timestamp,zpbd.bed_name,zppd.property_id,um.user_id,ud.user_profile_image,um.user_mobile,zpobd.phone_number,zpobd.name " );
 
 
 				String sortDirection = filterRequest.getSortDirection().equalsIgnoreCase("ASC") ? "ASC" : "DESC";
@@ -1787,6 +1847,8 @@ public class AdminReportService implements AdminReportImpl{
 				model.setValueForMoney(row[18] != null ? row[18].toString() : "");
 				model.setMaintenance(row[19] != null ? row[19].toString() : "");
 				model.setAccommodation(row[20] != null ? row[20].toString() : "");
+				model.setOwnerName(row[23] != null ? row[23].toString() : "");
+				model.setOwnerContactNum(row[21] != null ? row[21].toString() : "");
 				String replies=row[0] != null ? row[0].toString() : "";
 
 				List<String[]> reviewReplies = zoyPgPropertyDetailsRepository.findAllReviewsReplies(replies);
@@ -1866,6 +1928,11 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("tenantContactNum", "%" + filterData.getTenantContactNum() + "%");
 			}
 
+			if (filterData.getOwnerEmail() != null && !filterData.getOwnerEmail().isEmpty()) {
+	            queryBuilder.append(" AND LOWER(pom.email_id) LIKE LOWER(:ownerEmail) ");
+	            parameters.put("ownerEmail", "%" + filterData.getOwnerEmail() + "%");
+	        }
+ 
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
 				queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
@@ -2951,7 +3018,10 @@ public class AdminReportService implements AdminReportImpl{
 				    + "    pom.property_name,\r\n"
 				    + "    pom.mobile_no,\r\n"
 				    + "    pom.email_id,\r\n"
-				    + "    pom.property_house_area,\r\n"
+				    + "    pom.property_door_number || ', ' || \r\n"
+				    + "    pom.property_street_name || ', ' || \r\n"
+				    + "    pom.property_locality || ', ' || \r\n"
+				    + "    pom.property_house_area AS propertyaddress,\r\n"
 				    + "    pom.property_city\r\n"
 				    + "FROM pgadmin.pg_owner_master pom\r\n"
 				    + "LEFT JOIN pgowners.zoy_pg_property_details zppd\r\n"
@@ -2998,7 +3068,7 @@ public class AdminReportService implements AdminReportImpl{
 					sort = "pom.email_id";
 					break;
 				case "propertyAddress":
-					sort = "pom.property_house_area";
+					sort = "propertyaddress";
 					break;
 				default:
 					sort = "ownerName";
@@ -3297,33 +3367,62 @@ public class AdminReportService implements AdminReportImpl{
 			FilterData filterData, Boolean applyPagination) throws WebServiceException {
 		try {
 			StringBuilder queryBuilder = new StringBuilder(
-				"SELECT " +
-				" zpossu.pg_owner_settlement_split_up_id, " +
-				" zposs.pg_owner_settlement_id, " +
-				" up.user_payment_created_at AS TransactionDate, " +
-				" up.user_payment_result_invoice_id AS TenantInvoiceNo, " +
-				" zpd.property_name AS PGName, " +
-				" CONCAT(um.user_first_name, '', um.user_last_name) AS TenantName, " +
-				" sm.share_type AS SharingType, " +
-				" bd.bed_name AS BedNo, " +
-				" up.user_payment_zoy_payment_mode AS ModeOfPayment, " +
-				" up.user_payment_payable_amount AS AmountPaid, " +
-				" CASE WHEN zpd.zoy_variable_share = 0 THEN CONCAT(zpd.zoy_fixed_share, ' Rs') " +
-				" ELSE CONCAT(zpd.zoy_variable_share, ' %') END AS zoyshare, " +
-				" CASE WHEN zpd.zoy_variable_share = 0 THEN (COUNT(DISTINCT zpqbd.selected_bed) * zpd.zoy_fixed_share) " +
-				" ELSE ROUND((zpd.zoy_variable_share / 100) * COALESCE(SUM(zpqbd.fixed_rent), 0), 2) END AS zoyShareAmount, " +
-				" zpd.property_city AS PropertyCity " +
-				" FROM pgowners.zoy_pg_owner_settlement_split_up zpossu " +
-				" LEFT JOIN pgowners.zoy_pg_owner_settlement_status zposs ON zposs.pg_owner_settlement_id = zpossu.pg_owner_settlement_id " +
-				" LEFT JOIN pgusers.user_payments up ON up.user_payment_id = zpossu.payment_id " +
-				" LEFT JOIN pgowners.zoy_pg_property_details zpd ON zpd.property_id = zposs.property_id " +
-				" LEFT JOIN pgowners.zoy_pg_owner_booking_details zpdb ON up.user_payment_booking_id = zpdb.booking_id " +
-				" LEFT JOIN pgowners.zoy_pg_bed_details bd ON zpdb.selected_bed = bd.bed_id " +
-				" LEFT JOIN pgusers.user_master um ON up.user_id = um.user_id " +
-				" LEFT JOIN pgowners.zoy_pg_property_details pd ON zpdb.property_id = pd.property_id " +
-				" LEFT JOIN pgowners.zoy_pg_share_master sm ON zpdb.share = sm.share_id " +
-				" LEFT JOIN pgowners.zoy_pg_owner_booking_details zpqbd ON zpdb.booking_id = zpqbd.booking_id " +
-				" WHERE 1=1 "
+				"  SELECT\r\n"
+				+ "    zpossu.pg_owner_settlement_split_up_id,\r\n"
+				+ "    zposs.pg_owner_settlement_id,\r\n"
+				+ "    up.user_payment_created_at AS TransactionDate,\r\n"
+				+ "    up.user_payment_result_invoice_id AS TenantInvoiceNo,\r\n"
+				+ "    prop.property_name AS PGName,\r\n"
+				+ "    CONCAT(um.user_first_name, '', um.user_last_name) AS TenantName,\r\n"
+				+ "    sm.share_type AS SharingType,\r\n"
+				+ "    bd.bed_name AS BedNo,\r\n"
+				+ "    up.user_payment_zoy_payment_mode AS ModeOfPayment,\r\n"
+				+ "    ud.user_due_amount AS AmountPaid,\r\n"
+				+ "    CASE \r\n"
+				+ "        WHEN due_m.due_name = 'Rent' THEN\r\n"
+				+ "            CASE \r\n"
+				+ "                WHEN prop.zoy_variable_share = 0 THEN CONCAT(prop.zoy_fixed_share, ' Rs')\r\n"
+				+ "                ELSE CONCAT(prop.zoy_variable_share, ' %') \r\n"
+				+ "            END\r\n"
+				+ "        ELSE NULL\r\n"
+				+ "    END AS zoyshare,\r\n"
+				+ "    CASE \r\n"
+				+ "        WHEN due_m.due_name = 'Rent' AND prop.zoy_variable_share = 0 \r\n"
+				+ "            THEN (COUNT(DISTINCT zpqbd.selected_bed) * prop.zoy_fixed_share)\r\n"
+				+ "        WHEN due_m.due_name = 'Rent' AND prop.zoy_variable_share > 0 \r\n"
+				+ "            THEN ROUND((prop.zoy_variable_share / 100.0) * COALESCE(SUM(ud.user_due_amount), 0), 2)\r\n"
+				+ "        WHEN due_m.due_name IN ('Ekyc Charges', 'Document Charges') \r\n"
+				+ "            THEN COALESCE(SUM(ud.user_due_amount), 0)\r\n"
+				+ "        ELSE 0\r\n"
+				+ "    END AS zoyShareAmount,\r\n"
+				+ "    due_m.due_name as dueType,\r\n"
+				+ "    prop.property_city AS PropertyCity\r\n"
+				+ "FROM pgowners.zoy_pg_owner_settlement_split_up zpossu\r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_owner_settlement_status zposs \r\n"
+				+ "    ON zposs.pg_owner_settlement_id = zpossu.pg_owner_settlement_id\r\n"
+				+ "LEFT JOIN pgusers.user_payments up \r\n"
+				+ "    ON up.user_payment_id = zpossu.payment_id\r\n"
+				+ "LEFT JOIN pgusers.user_payment_due upd \r\n"
+				+ "    ON up.user_payment_id = upd.user_payment_id\r\n"
+				+ "LEFT JOIN pgusers.user_dues ud \r\n"
+				+ "    ON ud.user_money_due_id = upd.user_money_due_id \r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_due_type_master ad \r\n"
+				+ "    ON ud.user_money_due_type = ad.due_id \r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_due_master due_m \r\n"
+				+ "    ON due_m.due_type_id = ad.due_type   \r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_property_details prop \r\n"
+				+ "    ON zposs.property_id = prop.property_id\r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_owner_booking_details zpdb \r\n"
+				+ "    ON up.user_payment_booking_id = zpdb.booking_id\r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_bed_details bd \r\n"
+				+ "    ON zpdb.selected_bed = bd.bed_id\r\n"
+				+ "LEFT JOIN pgusers.user_master um \r\n"
+				+ "    ON up.user_id = um.user_id\r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_share_master sm \r\n"
+				+ "    ON zpdb.share = sm.share_id\r\n"
+				+ "LEFT JOIN pgowners.zoy_pg_owner_booking_details zpqbd \r\n"
+				+ "    ON zpdb.booking_id = zpqbd.booking_id\r\n"
+				+ "WHERE due_m.due_name IN ('Rent', 'Ekyc Charges', 'Document Charges')  "
 			);
  
 			Map<String, Object> parameters = new HashMap<>();
@@ -3342,11 +3441,11 @@ public class AdminReportService implements AdminReportImpl{
 				parameters.put("invoiceNo", "%" + filterData.getInvoiceNo() + "%");
 			}
 			if (filterData.getPgName() != null && !filterData.getPgName().isEmpty()) {
-				queryBuilder.append(" AND LOWER(zpd.property_name) LIKE LOWER(:pgName) ");
+				queryBuilder.append(" AND LOWER(prop.property_name) LIKE LOWER(:pgName) ");
 				parameters.put("pgName", "%" + filterData.getPgName() + "%");
 			}
 			if (filterRequest.getCityLocation() != null && !filterRequest.getCityLocation().isEmpty()) {
-				queryBuilder.append(" AND LOWER(zpd.property_city) LIKE LOWER(:cityLocation) ");
+				queryBuilder.append(" AND LOWER(prop.property_city) LIKE LOWER(:cityLocation) ");
 				parameters.put("cityLocation", "%" + filterRequest.getCityLocation() + "%");
 			}
 			if (filterData.getBedNumber() != null && !filterData.getBedNumber().isEmpty()) {
@@ -3359,22 +3458,22 @@ public class AdminReportService implements AdminReportImpl{
 			}
  
 			queryBuilder.append(
-				" GROUP BY " +
-				" zpossu.pg_owner_settlement_split_up_id, " +
-				" zposs.pg_owner_settlement_id, " +
-				" up.user_payment_created_at, " +
-				" up.user_payment_result_invoice_id, " +
-				" zpd.property_name, " +
-				" um.user_first_name, " +
-				" um.user_last_name, " +
-				" sm.share_type, " +
-				" bd.bed_name, " +
-				" up.user_payment_zoy_payment_mode, " +
-				" up.user_payment_payable_amount, " +
-				" pd.zoy_variable_share, " +
-				" zpd.zoy_variable_share, " +
-				" zpd.zoy_fixed_share, " +
-				" zpd.property_city "
+				" GROUP BY \r\n"
+				+ "    zpossu.pg_owner_settlement_split_up_id,\r\n"
+				+ "    zposs.pg_owner_settlement_id,\r\n"
+				+ "    up.user_payment_created_at,\r\n"
+				+ "    up.user_payment_result_invoice_id,\r\n"
+				+ "    prop.property_name,\r\n"
+				+ "    um.user_first_name,\r\n"
+				+ "    um.user_last_name,\r\n"
+				+ "    sm.share_type,\r\n"
+				+ "    bd.bed_name,\r\n"
+				+ "    up.user_payment_zoy_payment_mode,\r\n"
+				+ "    ud.user_due_amount,\r\n"
+				+ "    prop.zoy_variable_share,\r\n"
+				+ "    prop.zoy_fixed_share,\r\n"
+				+ "    prop.property_city,\r\n"
+				+ "    due_m.due_name"
 			);
  
 			if (filterRequest.getSortDirection() != null && !filterRequest.getSortDirection().isEmpty()
@@ -3387,7 +3486,7 @@ public class AdminReportService implements AdminReportImpl{
 						sort = "um.user_first_name || '' || um.user_last_name";
 						break;
 					case "pgName":
-						sort = "zpd.property_name";
+						sort = "prop.property_name";
 						break;
 					case "transactionDate":
 						sort = "up.user_payment_created_at";
@@ -3405,13 +3504,16 @@ public class AdminReportService implements AdminReportImpl{
 						sort = "up.user_payment_zoy_payment_mode";
 						break;
 					case "amountPaid":
-						sort = "up.user_payment_payable_amount";
+						sort = "AmountPaid";
 						break;
 					case "zoyShare":
 						sort = "zoyshare";
 						break;
 					case "zoyShareAmount":
 						sort = "zoyShareAmount";
+						break;
+					case "amountType":
+						sort= "dueType";
 						break;
 					default:
 						sort = "um.user_first_name || '' || um.user_last_name";
@@ -3446,7 +3548,7 @@ public class AdminReportService implements AdminReportImpl{
 				dto.setAmountPaid(row[9] != null ?(BigDecimal) row[9] : BigDecimal.ZERO);
 				dto.setZoyShare(row[10] != null ? row[10].toString() : "0");
 				dto.setZoyShareAmount(row[11] != null ?(BigDecimal) row[11] : BigDecimal.ZERO);
-				
+				dto.setAmountType(row[12] != null ? row[12].toString() : "");
 				return dto;
 			}).collect(Collectors.toList());
  

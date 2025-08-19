@@ -105,7 +105,7 @@ public class CsvGenerateService {
                 writer.println("Transaction Date,Invoice No,Property ID,Property Name,Total Amount(₹),GST Amount(₹),Basic Amount(₹),Payment Method");
                 break;
             case "tenantRefundReport":
-                writer.println("Tenant Name,Tenant Mobile Number,PG Name,PG Address,Booking ID,Refund Title,Refundable Amount(₹),Amount Paid(₹),Payment Date,Invoice Number,Status");
+                writer.println("Tenant Name,Tenant Mobile Number,Tenant Account Number,Tenant IFSC Code,PG Name,PG Address,Booking ID,Refund Title,Refundable Amount(₹),Amount Paid(₹),Payment Date,Invoice Number,Status");
                 break;    
             case "reviewsAndRatingReport":
                 writer.println("Review Date,Tenant Name,PG Name,Tenant Contact,Cleanliness,Accommodation,Aminities,Maintenance,Value For Money,Overall Rating");
@@ -147,7 +147,7 @@ public class CsvGenerateService {
             	writer.println("Inquiry Number,Name,Inquired For, Date,Assigned To,Status");
                 break; 
             case "ZoyShareReport":
-            	writer.println("Transaction Date,Tenant Invoice No. (Rent),PG Name,Tenant Name,Sharing Type,Bed Number,Mode of Payment,Amount Paid,ZOY Share in %,Zoy Share Amount");
+            	writer.println("Transaction Date,Tenant Invoice No. (Rent),PG Name,Tenant Name,Sharing Type,Bed Number,Mode of Payment,Amount Paid,,Amount Type,ZOY Share in %,Zoy Share Amount");
                 break;    
             default:
                 throw new IllegalArgumentException("Invalid report type provided: " + reportType);
@@ -285,9 +285,11 @@ public class CsvGenerateService {
             case "tenantRefundReport":
                 if (dto instanceof TenentRefund) {
                     TenentRefund tenentRefund = (TenentRefund) dto;
-                    writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                    writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                             safeToString(tenentRefund.getCustomerName()),
                             safeToString(tenentRefund.getTenantMobileNum()),
+                        	safeToString(tenentRefund.getTenantAccountNumber()),
+                    		safeToString(tenentRefund.getTenantIfscCode()),
                             safeToString(tenentRefund.getPgPropertyName()),
                             safeToString(tenentRefund.getUserPgPropertyAddress()),
                             safeToString(tenentRefund.getBookingId()),
@@ -466,7 +468,7 @@ public class CsvGenerateService {
             case "ZoyShareReport":
                 if (dto instanceof ZoyShareReportDTO) {
                     ZoyShareReportDTO zoyShareReportDetails = (ZoyShareReportDTO) dto;
-                    writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                    writer.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
                         tuService.formatTimestamp(zoyShareReportDetails.getTransactionDate().toInstant()),
                         safeToString(zoyShareReportDetails.getInvoiceNumber()),
                         safeToString(zoyShareReportDetails.getPgName()),
@@ -475,6 +477,7 @@ public class CsvGenerateService {
                         safeToString(zoyShareReportDetails.getBedNumber()),
                         safeToString(zoyShareReportDetails.getPaymentMode()),
                         safeToString(zoyShareReportDetails.getAmountPaid()),
+                        safeToString(zoyShareReportDetails.getAmountType()),
                         safeToString(zoyShareReportDetails.getZoyShare()),
                         safeToString(zoyShareReportDetails.getZoyShareAmount()));
                 }
