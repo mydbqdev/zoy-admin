@@ -78,6 +78,10 @@ import { AllTicketsComponent } from './supports/all-tickets/component/all-ticket
 import { MyClosedTicketsComponent } from './supports/my-closed-tickets/component/my-closed-tickets.component';
 import { TicketsComponent } from './supports/my-tickets/component/tickets.component';
 import axios from 'axios';
+import { VendorMenuRoutingModule } from './vendor/vendor-menu-routing.module';
+import { AdminVendorManagementComponent } from './vendor/admin-vendor-management/component/admin-vendor-management.component';
+import { RatingAndReviewsMenuRoutingModule } from './ratings-and-reviews/rating-reviews-menu-routing.module';
+import { LowRatingsComponent } from './ratings-and-reviews/low-ratting/component/low-ratings.component';
 
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
@@ -130,7 +134,9 @@ const appRoutes: Routes = [
     FinanceReportsComponent,
     OwnerReportsComponent,
     SupportReportsComponent,
-    TenantReportsComponent
+    TenantReportsComponent,
+    AdminVendorManagementComponent,
+    LowRatingsComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
@@ -157,7 +163,9 @@ const appRoutes: Routes = [
     AppDocumentUploadRoutingModule,
     AppNotificationRoutingModule,
     SupportMenuRoutingModule,
-    ReportsMenuRoutingModule
+    ReportsMenuRoutingModule,
+    VendorMenuRoutingModule,
+    RatingAndReviewsMenuRoutingModule
     ],
   providers: [
     {

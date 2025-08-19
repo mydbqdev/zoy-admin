@@ -108,6 +108,11 @@ import { MessageService } from 'src/app/message.service';
       'paymentMode': 'MODE OF PAYMENT',
       'ownerEmailAddress':'OWNER EMAIL ADDRESS',
       'ownerContactNumber':"OWNER CONTACT NUMBER",
+      'amountType':'AMOUNT TYPE',
+      'ownerContactNum':"OWNER CONTACT NUMBER",
+      'customerMobileNo':"CUSTOMER MOBILE NO",
+      'tenantAccountNumber':"TENANT ACCOUNT NUMBER",
+      'tenantIfscCode':'TENANT IFSC CODE'
       
   };
   

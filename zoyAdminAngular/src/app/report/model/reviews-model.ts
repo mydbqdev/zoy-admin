@@ -1,5 +1,7 @@
 export class ReviewsModel{
     pgName : string = '';
+    ownerName:string = '';
+    ownerContactNum: string = '';
     customerName : string = '';
     customerMobileNo : string = '';
     writtenReview : string = '';

@@ -20,7 +20,7 @@ export class FiltersRequestModel{
     public propertyId: string ='';
 
     public isAlert :boolean;
-
+    public lowRating: string ='';
 }
 
 export class FilterData {
