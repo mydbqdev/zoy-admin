@@ -526,8 +526,8 @@ onChangeCheck(id,type,sec,page){
     }
 }
 
-menuListCrete:string[]=['ownersc','usersc','tenantsc','salesc','financesc','supportsc','reportsc','settingsc'];
-menuListEdit:string[]=['ownerse','userse','tenantse','salese','financese','supportse','reportse','settingse'];
+menuListCrete:string[]=['ownersc','usersc','tenantsc','salesc','vendorc','financesc','ratingsreviewsc','supportsc','reportsc','settingsc'];
+menuListEdit:string[]=['ownerse','userse','tenantse','salese','vendore','financese','ratingsreviewse','supportse','reportse','settingse'];
 menuSubMenus: string[] = [
  " ZOYCODES",
   "MANAGING_OWNERS",
@@ -552,7 +552,11 @@ menuSubMenus: string[] = [
   "TENANT_REPORTS",
   "OWNER_REPORTS",
   "FINANCE_REPORTS",
-  "SUPPORT_REPORTS"
+  "SUPPORT_REPORTS",
+  "VENDOR_MANAGEMENT",
+  "ALL_CLOSED_TICKETS",
+  "MY_CLOSED_TICKETS",
+  "LOW_RATINGS"
 
 ];
 

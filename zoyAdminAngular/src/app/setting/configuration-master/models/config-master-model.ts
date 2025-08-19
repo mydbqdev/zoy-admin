@@ -148,7 +148,7 @@ export class GstChargesModel{
     cgstPercentage:number ;
     sgstPercentage: number ;
     igstPercentage:number ;
-    monthlyRent: number ;
+    perDayRent: number ;
     effectiveDate:string='';
     isApproved:boolean=false;
     createdBy:string='';

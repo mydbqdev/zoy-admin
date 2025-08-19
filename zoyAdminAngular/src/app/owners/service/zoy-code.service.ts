@@ -22,8 +22,10 @@ import { MessageService } from 'src/app/message.service';
         const url1=this.basePath +"zoy_admin/savePgOwnerData" ;
         let param={"firstName":data.firstName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail,"zoy_variable_share": (revenueType === 'fixed'?'0':data.zoyShare),"zoy_fixed_share":(revenueType === 'fixed'?data.zoyShare:'0'),
                   "property_name":data.property_name,"property_pincode":data.property_pincode,"property_state":data.property_state,"property_city":data.property_city,"property_state_short_name":data.property_state_short_name,
-                  "property_locality":data.property_locality,"property_house_area":data.property_house_area,"property_location_latitude":data.property_location_latitude,"property_location_longitude":data.property_location_longitude,"property_city_code":data.property_city_code,"property_city_code_id":data.property_city_code_id,
-                  "property_locality_code":data.property_locality_code,"property_locality_code_id":data.property_locality_code_id,"property_street_name":data.property_street_name,"property_door_number":data.property_door_number};
+                  "property_locality":data.property_locality,"property_house_area":(data.property_door_number+', '+data.property_street_name +', '+data.property_house_area ),"property_location_latitude":data.property_location_latitude,
+                  "property_location_longitude":data.property_location_longitude,"property_city_code":data.property_city_code,"property_city_code_id":data.property_city_code_id,
+                  "property_locality_code":data.property_locality_code,"property_locality_code_id":data.property_locality_code_id,"property_street_name":data.property_street_name,"property_door_number":data.property_door_number,
+                   "registerId":data.registerId};
         return  this.httpclient.post<any>(
               url1,
               param,
@@ -38,9 +40,10 @@ import { MessageService } from 'src/app/message.service';
       public generateOwnerCodeForMoreProperty(data:any,revenueType:string): Observable<any> {
         const url1=this.basePath +"zoy_admin/saveExistingPgOwnerData" ;
         let param={"firstName":data.firstName,"lastName":data.lastName,"mobileNo":data.contactNumber,"emailId":data.userEmail,"zoy_variable_share": (revenueType == 'fixed'?'0':data.zoyShare),"zoy_fixed_share":(revenueType == 'fixed'?data.zoyShare:'0'),
-                  "property_name":data.property_name,"property_pincode":data.property_pincode,"property_state":data.property_state,"property_city":data.property_city,"property_state_short_name":data.property_state_short_name,"property_locality":data.property_locality,"property_house_area":data.property_house_area,
+                  "property_name":data.property_name,"property_pincode":data.property_pincode,"property_state":data.property_state,"property_city":data.property_city,"property_state_short_name":data.property_state_short_name,"property_locality":data.property_locality,
+                  "property_house_area":(data.property_door_number+', '+data.property_street_name +', '+data.property_house_area ),
                   "property_location_latitude":data.property_location_latitude,"property_location_longitude":data.property_location_longitude,"property_city_code":data.property_city_code,"property_city_code_id":data.property_city_code_id,"property_locality_code":data.property_locality_code,
-                  "property_locality_code_id":data.property_locality_code_id,"property_street_name":data.property_street_name,"property_door_number":data.property_door_number};
+                  "property_locality_code_id":data.property_locality_code_id,"property_street_name":data.property_street_name,"property_door_number":data.property_door_number,"registerId":data.registerId};
           return  this.httpclient.post<any>(
               url1,
               param,
@@ -76,6 +79,18 @@ import { MessageService } from 'src/app/message.service';
                 }
             );
     } 
+     public fetchPGDetails(data:string): Observable<any> {
+      const url1=this.basePath +"zoy_admin/checkPgOwnerDetalais?ownerDetails="+data;
+        return  this.httpclient.post<any>(
+            url1,
+            "",
+            {
+               headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+    }
 
     public getLocationDetails(data:string): Observable<any> {
       const url1=this.basePath +"zoy_admin/location_code?location="+data;
@@ -88,6 +103,39 @@ import { MessageService } from 'src/app/message.service';
             }
         );
     } 
+    public getAreaDetails(data:string): Observable<any> {
+      const url1=this.basePath +"zoy_admin/area_code?area="+data;
+        return  this.httpclient.get<any>(
+            url1,
+            {
+               headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+     }
+     public checkLocationCode(data:string): Observable<any> {
+      const url1=this.basePath +"zoy_admin/check_location_code?locationCode="+data;
+        return  this.httpclient.get<any>(
+            url1,
+            {
+               headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+     }
+     public checkAreaCode(data:string): Observable<any> {
+      const url1=this.basePath +"zoy_admin/check_area_code?areaCode="+data;
+        return  this.httpclient.get<any>(
+            url1,
+            {
+               headers:ServiceHelper.buildHeaders(),
+               observe : 'body',
+               withCredentials:true
+            }
+        );
+     }
 
 
 

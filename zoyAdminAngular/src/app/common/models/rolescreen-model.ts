@@ -15,6 +15,9 @@ export class RoleScreenModel {
     LOCKED_USER_READ : boolean = false;
     LOCKED_USER_WRITE : boolean = false;
 
+    VENDOR_MANAGEMENT_READ : boolean = false;
+    VENDOR_MANAGEMENT_WRITE : boolean = false;
+
     TENANTSZOY_READ : boolean = false;
     TENANTSZOY_WRITE : boolean = false;
 
@@ -23,6 +26,15 @@ export class RoleScreenModel {
 
     TICKETS_READ : boolean = false;
     TICKETS_WRITE : boolean = false;
+
+    ALL_TICKETS_READ: boolean = false;
+    ALL_TICKETS_WRITE : boolean = false;
+
+    MY_CLOSED_TICKETS_READ: boolean = false;
+    MY_CLOSED_TICKETS_WRITE: boolean = false;
+
+    ALL_CLOSED_TICKETS_READ: boolean = false;
+    ALL_CLOSED_TICKETS_WRITE: boolean = false;
 
     ROLE_AND_PERMISSION_READ : boolean = false;
     ROLE_AND_PERMISSION_WRITE : boolean = false;
@@ -78,6 +90,9 @@ export class RoleScreenModel {
 
     SUPPORT_REPORTS_READ: boolean = false;
     SUPPORT_REPORTS_WRITE: boolean = false;
+
+    LOW_RATINGS_READ: boolean = false;
+    LOW_RATINGS_WRITE: boolean = false;
     
 
 }
