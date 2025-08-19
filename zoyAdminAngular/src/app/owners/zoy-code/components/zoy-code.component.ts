@@ -17,6 +17,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { GenerateZoyCodeService } from '../../service/zoy-code.service';
 import { ConfirmationDialogService } from 'src/app/common/shared/confirm-dialog/confirm-dialog.service';
 import { GoogleAPIService } from 'src/app/setting/organization-info-config/services/google.api.service';
+import { ZoyOwnerService } from '../../service/zoy-owner.service';
 
 
 @Component({
@@ -51,7 +52,7 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	submitted=false;
 	columnSortDirections = Object.assign({}, this.columnSortDirectionsOg);
 	private _liveAnnouncer = inject(LiveAnnouncer);
-	constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,
+	constructor(private generateZoyCodeService : GenerateZoyCodeService,private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder, private http: HttpClient, private userService: UserService,private zoyOwnerService : ZoyOwnerService,
 		private spinner: NgxSpinnerService, private authService:AuthService,private dataService:DataService,private notifyService: NotificationService, private confirmationDialogService:ConfirmationDialogService,private googleAPIService:GoogleAPIService) {
 			this.authService.checkLoginUserVlidaate();
 			this.userNameSession = userService.getUsername();
@@ -85,15 +86,19 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 	// Method to update the selected button
 	selectButton(button: string): void {
 	  this.selectedModel = button;
+	  this.submitted=false;
 	  if(this.selectedModel =='generated'){
 		 this.getZoyCodeDetails();
-		 this.submitted=false;
 		 this.form.reset();
+	  }else if(this.selectedModel=='ticket'){
+		this.revenueTypeTicket='fixed';
+		this.ticket= new ZoyData(); 
+   		this.searchInput ="";
 	  }else{
 		this.searchText='';
 		this.filterData();
 	  }
-
+	  this.generateZCode=new ZoyData();
 	}
 	ngOnDestroy() {
 		if (this.mySubscription) {
@@ -145,9 +150,13 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 
 	   generateZoyCode() {
 		this.submitted=true;	
-		if (this.form.invalid || this.generateZCode.contactNumber.length !=10) {
+	if (this.form.invalid || this.generateZCode.contactNumber.length !=10 || this.isCityCodeAvailable || this.isAreaCodeAvailable) {
 		return;
 		}
+	this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to create Zoy code for '+this.ticket.first_name+' ?')
+	 .then(
+	 (confirmed) =>{
+     if(confirmed){
 		this.spinner.show();		     
 		this.submitted=false;
 		this.generateZCode.userEmail=this.generateZCode.userEmail.toLocaleLowerCase();
@@ -194,6 +203,10 @@ export class ZoyCodeComponent implements OnInit, AfterViewInit {
 		  	//this.notifyService.showError(this.errorMsg, "");
 			}
 		  }
+		  ); 
+	 }
+	}).catch(
+	 () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
 		  );  
 		}  
 
@@ -316,6 +329,7 @@ nameValidation(event: any, inputId: string) {
 				  (confirmed) =>{
 				   if(confirmed){
 					this.spinner.show();		     
+					if(element.intial_zoy_code){
 			    this.generateZoyCodeService.resendOwnerCode(element.email_id).subscribe((res) => {
 				this.notifyService.showSuccess(res.message, "");
 				this.spinner.hide();
@@ -348,6 +362,39 @@ nameValidation(event: any, inputId: string) {
 			    //this.notifyService.showError(this.errorMsg, "");
 				}
 			  });  
+					}else{
+					    this.zoyOwnerService.resendOwnerCode(element.zoy_code).subscribe((res) => {
+							this.notifyService.showSuccess(res.message, "");		
+							this.spinner.hide();
+						},error =>{
+							this.spinner.hide();
+							console.log("error.error",error)
+							if(error.status == 0) {
+								this.notifyService.showError("Internal Server Error/Connection not established", "")
+							}else if(error.status==403){
+							this.router.navigate(['/forbidden']);
+							}else if (error.error && error.error.message) {
+							this.errorMsg =error.error.message;
+							console.log("Error:"+this.errorMsg);
+							if(error.status==500 && error.statusText=="Internal Server Error"){
+							this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+							}else{
+							let str;
+							if(error.status==400){
+							str=error.error.error;
+							}else{
+								str=error.error.message;
+								str=str.substring(str.indexOf(":")+1);
+							}
+							console.log("Error:",str);
+							this.errorMsg=str;
+							}
+							if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+							//this.notifyService.showError(this.errorMsg, "");
+							}
+						}
+						); 
+					}     
 				   }
 				}).catch(
 					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
@@ -396,6 +443,7 @@ percentageOnlyWithZero(event): boolean {
 		  this.generateZCode.property_house_area=''
 		  this.generateZCode.property_location_latitude='';
 		  this.generateZCode.property_location_longitude='';
+		  this.areaList=[];
         }
       }
 	  zoycodeDisableField:boolean=true;
@@ -421,13 +469,13 @@ percentageOnlyWithZero(event): boolean {
 		   }else{
 			 this.generateZCode.property_locality = this.generateZoyCodeService.extractArea(addressComponents);
 			 this.areaList=Object.assign([]);
-			 this.getLocationDetails(this.generateZCode.property_locality,2)
+			 this.getAreaDetails(this.generateZCode.property_locality)
 			 this.areaTypeOption=false;
 		   }
 
-		   this.getLocationDetails(this.generateZCode.property_city,1);
+		   this.getLocationDetails(this.generateZCode.property_city);
 		   if(this.areaTypeOption){
-		   this.getLocationDetails(this.generateZCode.property_locality,2);
+		   this.getAreaDetails(this.generateZCode.property_locality);
 		   }
         } else {
 		  this.generateZCode.property_city = '';
@@ -477,20 +525,95 @@ percentageOnlyWithZero(event): boolean {
 	  }
 	  isEditCityCode:boolean=true;
   		isEditAreaCode:boolean=true;
-	  getLocationDetails(loc:string,type:number){
+		//getAreaDetails
+	  getLocationDetails(loc:string){
 		this.spinner.show();
 		this.generateZoyCodeService.getLocationDetails(loc).subscribe(data => {
-			if(data!="" && data!=null && data!=undefined){
-				if(type==1 && data.location_short_name!=''){
+			if(data!="" && data!=null && data!=undefined && data?.location_short_name!=''){
 				this.isEditCityCode=false;
 				this.generateZCode.property_city_code_id = data.location_code_id;
 				this.generateZCode.property_city_code = data.location_short_name;
+			}else{
+				this.isEditCityCode=true;
+				this.generateZCode.property_city_code_id = '';
+				this.generateZCode.property_city_code = '';
+			}
+			this.spinner.hide();
+		}, error => {
+		this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		 }else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+			this.errorMsg = error.error.message;
+			console.log("Error:" + this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+		} else {
+			if (error.status == 500 && error.statusText == "Internal Server Error") {
+			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+			} else {
+			let str;
+			if (error.status == 400) {
+				str = error.error.error;
+			} else {
+				str = error.error.message;
+				str = str.substring(str.indexOf(":") + 1);
+			}
+			console.log("Error:" ,str);
+			this.errorMsg = str;
+			}
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			//this.notifyService.showError(this.errorMsg, "");
+		}
+		});
 				}
-				if(type==2 && data.location_short_name!=''){
+	isCityCodeAvailable:boolean=false;
+	 onCheckCityCodeChange(event: any){
+      const cityCode = event.target.value;
+        if (cityCode && cityCode.length === 3) {
+          this.checkLocationCode(cityCode);
+		}
+ 	  }
+	  checkLocationCode(loc:string){
+		this.generateZoyCodeService.checkLocationCode(loc).subscribe(data => {
+		this.isCityCodeAvailable = false;
+		}, error => {
+	    	if(error.status==400){
+				this.isCityCodeAvailable = true;
+				this.notifyService.showInfo(error.error.message, "")
+	     }
+		});
+     }
+	 isAreaCodeAvailable:boolean=false;
+	  onCheckAreaCodeChange(event: any){
+      const areaCode = event.target.value;
+        if (areaCode && areaCode.length === 3) {
+          this. checkAreaCode(areaCode);
+		}
+ 	  }
+	  checkAreaCode(loc:string){
+		this.generateZoyCodeService.checkAreaCode(loc).subscribe(data => {
+			this.isAreaCodeAvailable=false;
+		}, error => {
+			console.log("error",error)
+	    	if(error.status==400){
+			this.isAreaCodeAvailable=true;
+			this.notifyService.showInfo(error.error.message, "");
+			}
+		});
+     }
+	 getAreaDetails(loc:string){
+		this.spinner.show();
+		this.generateZoyCodeService.getAreaDetails(loc).subscribe(data => {
+			if(data!="" && data!=null && data!=undefined && data?.area_short_name !=''){
 					this.isEditAreaCode=false;
-					this.generateZCode.property_locality_code_id = data.location_code_id;
-					this.generateZCode.property_locality_code = data.location_short_name;
-				}
+				this.generateZCode.property_locality_code_id = data.area_code_id;
+				this.generateZCode.property_locality_code = data.area_short_name;
+			}else{
+				this.isEditAreaCode=true;
+				this.generateZCode.property_locality_code_id = '';
+				this.generateZCode.property_locality_code = '';
 			}
 			this.spinner.hide();
 		}, error => {
@@ -572,5 +695,232 @@ percentageOnly(event: KeyboardEvent) {
 			? (Number(element.zoy_variable_share).toFixed(2) + ' %') 
 			: ('Rs. ' + Number(element.zoy_fixed_share).toFixed(2));
   }
+   revenueTypeTicket: 'fixed' | 'variable' = 'fixed';
+   ticket:ZoyData= new ZoyData(); 
+   searchInput :string="";
+   ticketId:string='';
+   ownerEmail :string="";
+   submitZoyCode(): void {
+	this.submitted =true;
+    if (!this.generateZCode.zoyShare || !this.ticket.property_city_code  || !this.ticket.property_locality_code 
+		 || this.isCityCodeAvailable || this.isAreaCodeAvailable || !this.ownerEmail  ||!this.validateEmailFormat(this.ownerEmail)) {
+      return;
+    }
+this.confirmationDialogService.confirm('Confirmation!!', 'Would you like to create Zoy code for '+this.ticket.first_name+' ?')
+	.then(
+	 (confirmed) =>{
+	 if(confirmed){
+		let  model = new ZoyData();
+		model.registerId=this.ticketId
+		model.firstName = this.ticket.first_name
+		model.lastName = this.ticket.last_name || '';
+		model.contactNumber = this.ticket.mobile_no
+		model.userEmail = this.ticket.email_id || this.ownerEmail
+		model.zoyShare = this.generateZCode.zoyShare
+		model.property_name = this.ticket.property_name
+		model.property_pincode = this.ticket.property_pincode
+		model.property_state = this.ticket.property_state
+		model.property_locality = this.ticket.property_locality
+		model.property_house_area = this.ticket.property_house_area
+		model.property_location_latitude = this.ticket.property_location_latitude
+		model.property_location_longitude = this.ticket.property_location_longitude
+		model.property_state_short_name = ""
+		model.property_city_code = this.ticket.property_city_code
+		model.property_city= this.ticket.property_city
+		model.property_city_code_id = this.ticket.property_city_code_id
+		model.property_locality_code = this.ticket.property_locality_code
+		model.property_locality_code_id = this.ticket.property_locality_code_id
+		model.property_street_name="";
+		model.property_door_number="";
+	this.spinner.show();
+	if(this.ticket.intial_zoy_code){  
+    this.generateZoyCodeService.generateOwnerCode(model,this.revenueTypeTicket).subscribe((res) => {
+			this.notifyService.showSuccess(res.message, "");
+			this.ticket=new ZoyData();
+			this.searchText="";
+			this.submitted =false			
+			this.spinner.hide();
+		  },error =>{
+			this.spinner.hide();
+			console.log("error.error",error)
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==409){
+				this.confirmationDialogService.confirm('Confirmation!!', 'A Zoycode has already been generated for this email Id/Mobile number, Would you like to resend the code?')
+				.then(
+				  (confirmed) =>{
+				   if(confirmed){
+					this.resendZoyCode();
+				   }
+				}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				); 
+			}else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+			}else if (error.error &&( error.error.message || error.error.error )) {
+			this.errorMsg =error.error.message || error.error.error;
+			console.log("Error:"+this.errorMsg);
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			  let str;
+			  if(error.status==400){
+			  str=error.error.error ;
+			  }else{
+				str=error.error.message || error.error.error;
+				str=str.substring(str.indexOf(":")+1);
+			  }
+			  console.log("Error:",str);
+			  this.errorMsg=str;
+			}
+		  }
+		  if(error.status !== 401 && error.status !=409 ){this.notifyService.showError(this.errorMsg, "");}
+		  	//this.notifyService.showError(this.errorMsg, "");
+			}
+		  );  
+	}else{
+  	  this.generateZoyCodeService.generateOwnerCodeForMoreProperty(model,this.revenueTypeTicket).subscribe((res) => {
+			this.notifyService.showSuccess(res.message, "");
+			this.ticket=new ZoyData();
+			this.searchText="";
+			this.submitted =false			
+			this.spinner.hide();
+		  },error =>{
+			this.spinner.hide();
+			console.log("error.error",error)
+			if(error.status == 0) {
+				this.notifyService.showError("Internal Server Error/Connection not established", "")
+			 }else if(error.status==409){
+				this.confirmationDialogService.confirm('Confirmation!!', 'A Zoycode has already been generated for this email Id/Mobile number, Would you like to resend the code?')
+				.then(
+				  (confirmed) =>{
+				   if(confirmed){
+					this.resendZoyCode();
+				   }
+				}).catch(
+					() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+				); 
+			}else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+			}else if (error.error &&( error.error.message || error.error.error )) {
+			this.errorMsg =error.error.message || error.error.error;
+			console.log("Error:"+this.errorMsg);
+			if(error.status==500 && error.statusText=="Internal Server Error"){
+			  this.errorMsg=error.statusText+"! Please login again or contact your Help Desk.";
+			}else{
+			  let str;
+			  if(error.status==400){
+			  str=error.error.error ;
+			  }else{
+				str=error.error.message || error.error.error;
+				str=str.substring(str.indexOf(":")+1);
+			  }
+			  console.log("Error:",str);
+			  this.errorMsg=str;
+			}
+		  }
+		  if(error.status !== 401 && error.status !=409 ){this.notifyService.showError(this.errorMsg, "");}
+		  	//this.notifyService.showError(this.errorMsg, "");
+			}
+		  );  
+	}
+ }
+    }).catch(
+	() => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')
+	);
+  }
+    searchTicket(): void {
+    if (!this.searchInput.trim()) {
+      this.notifyService.showInfo('Please enter a Ticket Number or Email','');
+      return;
+    }
+	this.ticket= new ZoyData(); 
+		this.spinner.show();
+		this.generateZoyCodeService.fetchPGDetails(this.searchInput).subscribe(data => {
+			if(data!="" && data!=null && data!=undefined){
+				const model: ZoyData = data
+			if(model.zoy_code){
+				this.notifyService.showInfo('Please check in Generated tab',model.zoy_code+" Zoycode has already been generated for this Ticket !,"); 
+			}else if(model.ticket_status == 'Closed' || model.ticket_status == 'Resolved'){
+				this.notifyService.showInfo("This ticket is Resolved/Closed",''); 
+			}else{
+			   this.ticketId=JSON.parse(JSON.stringify(this.searchInput));
+			   this.ticket=data;
+			   this.ownerEmail = this.ticket.email_id;
+			if(this.ticket.property_city){
+				this.getLocationDetailsForTicket(this.ticket.property_city) ;
+			}
+			if(this.ticket.property_locality){
+				this.getAreaDetailsForTicket(this.ticket.property_locality);
+			}
+				this.revenueTypeTicket='fixed';
+				this.submitted=false;
+				this.generateZCode = new ZoyData();
+			}
+		}
+		this.spinner.hide();
+		}, error => {
+		this.spinner.hide();
+		if(error.status == 0) {
+			this.notifyService.showError("Internal Server Error/Connection not established", "")
+		 }else if(error.status==403){
+			this.router.navigate(['/forbidden']);
+		}else if (error.error && error.error.message) {
+			this.errorMsg = error.error.message;
+			console.log("Error:" + this.errorMsg);
+			this.notifyService.showError(this.errorMsg, "");
+		} else {
+			if (error.status == 500 && error.statusText == "Internal Server Error") {
+			this.errorMsg = error.statusText + "! Please login again or contact your Help Desk.";
+			} else {
+			let str;
+			if (error.status == 400) {
+				str = error.error.error;
+			} else {
+				str = error.error.message;
+				str = str.substring(str.indexOf(":") + 1);
+			}
+			console.log("Error:" ,str);
+			this.errorMsg = str;
+			}
+			if(error.status !== 401 ){this.notifyService.showError(this.errorMsg, "");}
+			//this.notifyService.showError(this.errorMsg, "");
+		}
+		});
+    }
+	  getLocationDetailsForTicket(loc:string) {
+		this.generateZoyCodeService.getLocationDetails(loc).subscribe(data => {
+			if(data!="" && data!=null && data!=undefined && data?.location_short_name!=''){
+				this.ticket.property_city_code_id = data.location_code_id;
+				this.ticket.property_city_code = data.location_short_name;
+				this.isEditCityCode=false;
+			}else{
+				this.ticket.property_city_code_id = "";
+				this.ticket.property_city_code = "";
+				this.isEditCityCode=true;
+			}
+		}, error => {
+			  console.error('Error fetching location details:', error);
+		});
+    }
+	 getAreaDetailsForTicket(loc:string) {
+		this.generateZoyCodeService.getAreaDetails(loc).subscribe(data => {
+			if(data!="" && data!=null && data!=undefined &&  data?.location_short_name!=''){
+				this.ticket.property_locality_code_id = data.area_code_id;
+				this.ticket.property_locality_code = data.area_short_name;
+				this.isEditAreaCode=false;
+			}else{
+				this.ticket.property_locality_code_id = '';
+				this.ticket.property_locality_code = '';
+				this.isEditAreaCode=true;
+			}
+		}, error => {
+			  console.error('Error fetching location details:', error);
+		});
+    }
 
+	validateEmailFormat(email: string): boolean {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	}
 }
