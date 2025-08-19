@@ -28,4 +28,6 @@ public interface SalesDBImpl {
 
 	Property savePropertyDetails(Property property);
 
+	boolean existsByUserMobileNo(String mobileNo);
+
 }

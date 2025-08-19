@@ -77,9 +77,13 @@ public class SecurityConfig {
 	            .antMatchers("/admin_reset_password").permitAll()
 	            .antMatchers("/zoy_admin/savePgOwnerData").permitAll()
 	            .antMatchers("/zoy_admin/location_code").permitAll()
+	            .antMatchers("/zoy_admin/area_code").permitAll()
 	            .antMatchers("/zoy_admin/saveExistingPgOwnerData").permitAll()
 	            .antMatchers("/zoy_admin/resendPgOwnerData").permitAll()
 	            .antMatchers("/zoy_admin/resendExistingPgOwnerData").permitAll()
+	            .antMatchers("/zoy_admin/check_area_code").permitAll()
+	            .antMatchers("/zoy_admin/check_location_code").permitAll()
+	            .antMatchers("/zoy_admin/zoyWebhook").permitAll()
 	            .anyRequest().authenticated()
 	            .and()
 	            .exceptionHandling(handling -> handling

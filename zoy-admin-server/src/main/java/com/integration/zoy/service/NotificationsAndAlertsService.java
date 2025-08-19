@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.integration.zoy.repository.NotificationsAndAlertsRepository;
+import com.integration.zoy.utils.ReviewRatingDto;
 
 @Service
 public class NotificationsAndAlertsService {
@@ -60,5 +61,11 @@ public class NotificationsAndAlertsService {
         List<String> screens = Arrays.asList("CONFIGURATION_MASTER", "CONFIGURATION_MASTER_APPROVAL");
         String[] emails = notificationsAndAlertsRepository.findUsersWithScreenAccess(screens);
         notificationService.notifyForRuleAutoReject(emails,ruleName);
+    }
+    
+    public void reviewRatingAlert(ReviewRatingDto dto) throws Exception {
+        String screenname="LOW_RATINGS";
+    	String[] emails =notificationsAndAlertsRepository.findScreenAccess(screenname);
+        notificationService.notifyForReviewRating(emails, dto);
     }
 }

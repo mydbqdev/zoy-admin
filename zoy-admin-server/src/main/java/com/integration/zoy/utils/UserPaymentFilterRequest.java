@@ -46,6 +46,12 @@ public class UserPaymentFilterRequest {
 	
 	@JsonProperty("isAlert")
 	private boolean isAlert;
+	
+	@JsonProperty("searchText")
+	private String searchText;
+	
+	@JsonProperty("lowRating")
+	private String lowRating;
 
 	public String getPropertyId() {
 		return propertyId;
@@ -144,5 +150,20 @@ public class UserPaymentFilterRequest {
 		this.isAlert = isAlert;
 	}
 	
+	public String getSearchText() {
+	    return searchText;
+	}
+ 
+	public void setSearchText(String searchText) {
+	    this.searchText = searchText;
+	}
+
+	public String getLowRating() {
+		return lowRating;
+	}
+
+	public void setLowRating(String lowRating) {
+		this.lowRating = lowRating;
+	}
 	
 }

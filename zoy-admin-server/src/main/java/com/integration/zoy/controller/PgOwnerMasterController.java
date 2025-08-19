@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,6 +39,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.AdminUserMaster;
+import com.integration.zoy.entity.PgAreaCode;
 import com.integration.zoy.entity.PgLocationCode;
 import com.integration.zoy.entity.PgOwnerMaster;
 import com.integration.zoy.entity.RegisteredPartner;
@@ -58,6 +61,7 @@ import com.integration.zoy.model.RegisteredPgOwners;
 import com.integration.zoy.model.Room;
 import com.integration.zoy.model.UserStatus;
 import com.integration.zoy.repository.AdminUserMasterRepository;
+import com.integration.zoy.repository.PgAreaCodeRepository;
 import com.integration.zoy.repository.PgLocationCodeRepository;
 import com.integration.zoy.repository.PgOwnerMaterRepository;
 import com.integration.zoy.repository.PgOwnerPropertyStatusRepository;
@@ -69,6 +73,7 @@ import com.integration.zoy.service.EmailService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.PdfGenerateService;
 import com.integration.zoy.service.ZoyAdminService;
+import com.integration.zoy.service.ZoyAdminTicketSmartService;
 import com.integration.zoy.service.ZoyCodeGenerationService;
 import com.integration.zoy.service.ZoyEmailService;
 import com.integration.zoy.service.ZoyS3Service;
@@ -92,6 +97,8 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	RegisteredPartnerDetailsRepository registeredPartnerDetailsRepo;
 	@Autowired
 	PgLocationCodeRepository pgLocationCodeRepository;
+	@Autowired
+	PgAreaCodeRepository pgAreaCodeRepository;
 	@Autowired
 	ZoyCodeGenerationService zoyCodeGenerationService;
 	@Autowired
@@ -125,6 +132,10 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	
 	@Autowired
 	ZoyAdminService zoyAdminService;
+	
+	@Autowired
+	private ZoyAdminTicketSmartService zoyAdminTicketSmartService;
+
 	
 	@Value("${app.minio.user.photos.bucket.name}")
 	private String userPhotoBucketName;
@@ -215,19 +226,21 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 			user.setZoyVariableShare(model.getZoyVariableShare());
 			commonDBImpl.registerNewUserAccount(user);
 			//audit history here
-			String historyContent=" has generated the zoy code for,"+user.getPropertyOwnerName();
-			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);
-			emailBodyService.sendZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,token);
-
 			if(model.getRegisterId()!=null) {
 				Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(model.getRegisterId());
 				if(partner.isPresent()) {
 					RegisteredPartner existingPartner = partner.get();
-					existingPartner.setStatus(ZoyConstant.CLOSE);
+					existingPartner.setStatus(ZoyConstant.CLOSED);
 					registeredPartnerDetailsRepository.save(existingPartner);
+					if(existingPartner.getRegisterId()!=null)
+					zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead Converted to ZoyOwner and generated ZoyCode", ZoyConstant.RESOLVED);
 				}
 			}
 			
+			String historyContent=" has generated the zoy code for,"+user.getPropertyOwnerName();
+			auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);
+			emailBodyService.sendZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,token);
+
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("ZOY code has been generated & sent successfully.");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -296,6 +309,7 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 				ownerDetails.setZoyVariableShare(details[6] != null ? (BigDecimal) details[6] : null);
 				ownerDetails.setZoyFixedShare(details[7] != null ? (BigDecimal) details[7] : null);
 				ownerDetails.setRegisterId(details[8] != null ? (String) details[8] : null);
+				ownerDetails.setIntialZoyCode(details[9] != null ? (Boolean) details[9] : false);
 				pgOwnerDetailsList.add(ownerDetails);
 			}
 
@@ -872,20 +886,22 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 					ownerData.setPropertyStreetName(model.getPropertyStreetName());
 					pgOwnerMaterRepository.save(ownerData);
 
+					if(model.getRegisterId()!=null) {
+						Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(model.getRegisterId());
+						if(partner.isPresent()) {
+							RegisteredPartner existingPartner = partner.get();
+							existingPartner.setStatus(ZoyConstant.CLOSED);
+							registeredPartnerDetailsRepository.save(existingPartner);
+							if(existingPartner.getRegisterId()!=null)
+								zoyAdminTicketSmartService.updateUserTicket(model.getRegisterId(), "Lead New Property Converted to Zoy Property and generated ZoyCode", ZoyConstant.RESOLVED);
+						}
+					}
+					
 					//audit history here
 					String historyContent=" has generated the zoy code for existing owner,"+model.getFirstName() +" "+ model.getLastName();
 					auditHistoryUtilities.auditForCommon(SecurityContextHolder.getContext().getAuthentication().getName(), historyContent, ZoyConstant.ZOY_ADMIN_ZOY_CODE_GENERATE);
 					emailBodyService.sendExistingOwnerZoyCode(model.getEmailId(),model.getFirstName(),model.getLastName(),zoyCode,model.getPropertyName());
 
-					if(model.getRegisterId()!=null) {
-						Optional<RegisteredPartner> partner = registeredPartnerDetailsRepository.findByRegisterId(model.getRegisterId());
-						if(partner.isPresent()) {
-							RegisteredPartner existingPartner = partner.get();
-							existingPartner.setStatus(ZoyConstant.CLOSE);
-							registeredPartnerDetailsRepository.save(existingPartner);
-						}
-					}
-					
 					response.setStatus(HttpStatus.OK.value());
 					response.setMessage("ZOY code has been generated & sent successfully.");
 					return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -915,20 +931,18 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 	}
 
 	private void processLocation(PgOwnerMasterModel model) {
-		List<PgLocationCode> codes=new ArrayList<>(); 
 		if(model.getPropertyCityCodeId()==null || model.getPropertyCityCodeId().trim().isEmpty()) {
 			PgLocationCode code=new PgLocationCode();
 			code.setLocationName(model.getPropertyCity());
 			code.setLocationShortName(model.getPropertyCityCode());
-			codes.add(code);
+			commonDBImpl.saveLocationCode(code);
 		}
 		if(model.getPropertyLocalityCodeId()==null || model.getPropertyLocalityCodeId().trim().isEmpty()) {
-			PgLocationCode code=new PgLocationCode();
-			code.setLocationName(model.getPropertyLocality());
-			code.setLocationShortName(model.getPropertyLocalityCode());
-			codes.add(code);
+			PgAreaCode code=new PgAreaCode();
+			code.setAreaName(model.getPropertyLocality());
+			code.setAreaShortName(model.getPropertyLocalityCode());
+			commonDBImpl.saveAreaCode(code);
 		}
-		commonDBImpl.saveLocationCode(codes);
 	}
 
 //	@Override
@@ -1065,6 +1079,131 @@ public class PgOwnerMasterController implements PgOwnerMasterImpl {
 		}
 	
 	
+	}
+
+	@Override
+	public ResponseEntity<String> checkPgOwnerDetalais(String ownerDetails) {
+		ResponseBody response = new ResponseBody();
+		try {
+			List<Object[]> pgOwnerDetails = pgOwnerMaterRepository.checkAndGetOwnerDetails(ownerDetails);
+
+			if (pgOwnerDetails == null || pgOwnerDetails.isEmpty()) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
+				response.setMessage("No PG Owner details found.");
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.NOT_FOUND);
+			}
+
+			Object[] ownerArray = pgOwnerDetails.get(0);
+			PgOwnerMasterModel ownerData = new PgOwnerMasterModel();
+
+			ownerData.setFirstName(ownerArray[1] != null ? (String) ownerArray[1] : "");
+			ownerData.setLastName(ownerArray[2] != null ? (String) ownerArray[2] : "");
+			ownerData.setEmailId(ownerArray[3] != null ? (String) ownerArray[3] : "");
+			ownerData.setMobileNo(ownerArray[4] != null ? (String) ownerArray[4] : "");
+			ownerData.setPropertyName(ownerArray[5] != null ? (String) ownerArray[5] : "");
+			ownerData.setPropertyPincode(ownerArray[6] != null ? Integer.valueOf(ownerArray[6].toString()) : null);
+			ownerData.setPropertyState(ownerArray[7] != null ? (String) ownerArray[7] : "");
+			ownerData.setPropertyCity(ownerArray[8] != null ? (String) ownerArray[8] : "");
+			ownerData.setPropertyHouseArea(ownerArray[9] != null ? (String) ownerArray[9] : "");
+			ownerData.setPropertyLocality(ownerArray[10] != null ? (String) ownerArray[10] : "");
+			ownerData.setPropertyLocationLatitude(ownerArray[11] != null ? new BigDecimal(ownerArray[11].toString()) : null);
+			ownerData.setPropertyLocationLongitude(ownerArray[12] != null ? new BigDecimal(ownerArray[12].toString()) : null);
+			ownerData.setIntialZoyCode(ownerArray[13] != null ? Boolean.valueOf(ownerArray[13].toString()) : false);
+			ownerData.setZoyCode(ownerArray[14] != null ? ownerArray[14].toString() : "");
+			ownerData.setTicketStatus(ownerArray[15] != null ? ownerArray[15].toString() : "");
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Successfully fetched Owner card details.");
+			return new ResponseEntity<>(gson.toJson(ownerData), HttpStatus.OK);
+
+		} catch (Exception ex) {
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(ex.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> getPgAreaCode(String area) {
+
+		ResponseBody response = new ResponseBody();
+		try {
+			PgAreaCode areaCode=pgAreaCodeRepository.findByAreaName(area);
+			if(areaCode==null) {
+				return new ResponseEntity<>(gson.toJson(""), HttpStatus.OK);
+			}
+			return new ResponseEntity<>(gson.toJson(areaCode), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while getting location details API:/zoy_admin/area_code.getPgAreaCode ", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	
+	
+	
+	}
+
+	@Override
+	public ResponseEntity<String> checkPgAreaCode(String areaCode) {
+		ResponseBody response = new ResponseBody();
+		try {
+			boolean area=pgAreaCodeRepository.existsByAreaShortName(areaCode);
+			if(area) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setMessage("Area Code is already available "+ areaCode);
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Area Code is not available");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while getting location details API:/zoy_admin/check_area_code.checkPgAreaCode ", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	public ResponseEntity<String> checkPgLoactionCode(String locationCode) {
+		ResponseBody response = new ResponseBody();
+		try {
+			boolean area=pgLocationCodeRepository.existsByLocationShortName(locationCode);
+			if(area) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setMessage("Location Code is already available "+ locationCode);
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.OK.value());
+			response.setMessage("Location Code is not available");
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while getting location details API:/zoy_admin/check_location_code.checkPgLocationCode ", e);
+			try {
+				new ZoyAdminApplicationException(e, "");
+			}catch(Exception ex){
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				response.setError(ex.getMessage());
+				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+			}
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }

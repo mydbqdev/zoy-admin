@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.integration.zoy.entity.PgAreaCode;
 import com.integration.zoy.entity.PgLocationCode;
 import com.integration.zoy.entity.UserProfile;
+import com.integration.zoy.repository.PgAreaCodeRepository;
 import com.integration.zoy.repository.PgLocationCodeRepository;
 import com.integration.zoy.repository.UserProfileRepository;
 
@@ -18,6 +20,9 @@ public class CommonDBService implements CommonDBImpl {
 
 	@Autowired
 	private PgLocationCodeRepository pgLocationCodeRepository;
+	
+	@Autowired
+	private PgAreaCodeRepository pgAreaCodeRepository;
 
 	@Override
 	public UserProfile registerNewUserAccount(UserProfile user) {
@@ -46,6 +51,21 @@ public class CommonDBService implements CommonDBImpl {
 	@Override
 	public List<PgLocationCode> saveLocationCode(List<PgLocationCode> codes) {
 		return pgLocationCodeRepository.saveAll(codes);
+	}
+
+	@Override
+	public List<PgAreaCode> saveAreaCode(List<PgAreaCode> areas) {
+		return pgAreaCodeRepository.saveAll(areas);
+	}
+
+	@Override
+	public PgLocationCode saveLocationCode(PgLocationCode code) {
+		return pgLocationCodeRepository.save(code);
+	}
+
+	@Override
+	public PgAreaCode saveAreaCode(PgAreaCode code) {
+		return pgAreaCodeRepository.save(code);
 	}
 
 

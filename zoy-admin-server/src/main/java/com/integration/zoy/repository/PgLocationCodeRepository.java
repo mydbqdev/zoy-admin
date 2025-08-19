@@ -11,4 +11,5 @@ public interface PgLocationCodeRepository extends JpaRepository<PgLocationCode, 
     
     PgLocationCode findByLocationShortName(String shortName);
     PgLocationCode findByLocationName(String locationName);
+	boolean existsByLocationShortName(String locationCode);
 }

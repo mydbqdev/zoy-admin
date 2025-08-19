@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,6 +88,9 @@ public class ZoyEmailService {
 	@Value("${app.zoy.term.doc}")
 	private String zoyTermDoc;
 
+	@Value("${organizer.mail}")
+	private String organizerMail;
+	
 	private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 	private static final Gson gson = new GsonBuilder().create();
 
@@ -119,74 +124,87 @@ public class ZoyEmailService {
 		email.setFrom(zoyAdminMail);
 		List<String> to = new ArrayList<>();
 		to.add(owneremail);
+		to.add(organizerMail);
 		email.setTo(to);
 		email.setSubject("Welcome to ZOY! Unlock Your Journey – Verify & Register Today!");
+ 
 		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
-				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we've made it quick and simple for you!</p>"
-				+ "<p>Click the link to verify your email:<a href=\"" + verifyLink + "\">Verify Email</a></p>"
-				+ "<p><strong>(Verifying Email is mandatory to register on ZOY)</strong></p>"
-				+ "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
-				+ "<p>Please use this code to verify your account and complete your registration in the app.</p>"
-				+ "<h4><strong>Steps to Register:</strong></h4>" + "<ul>" + "<li>Download ZOY Owner App from <a href='"
+				+ "<p>We are excited to welcome you to <strong>ZOY</strong>, your trusted companion for hassle-free PG Management. To get started, we've made it quick and simple for you!</p>"
+				+ "<p>Click the link to verify your email: <a href='" + verifyLink + "'>Verify Email</a></p>"
+				+ "<p><em>*Note: Only after successful Email verification the Invitation Code will allow you to register with the mobile application.</em></p>"
+				+ "<p><strong>Your ZOY Code: </strong>" + zoyCode + "</p>"
+				+ "<p>Please follow the below instructions and use this code to complete your registration in the <strong>ZOY Partner Mobile Application</strong>.</p>"
+				+ "<h4><strong>Steps to Register:</strong></h4>" + "<ol>" + "<li>Download ZOY Owner App from <a href='"
 				+ ownerAppLink + "'>" + ownerAppLink + "</a>.</li>"
-				+ "<li>Open the app and select &quot;Register&quot;.</li>"
+				+ "<li>Open the app and select <strong>\"Register\"</strong>.</li>"
 				+ "<li>Enter your invitation code provided above to fetch your details.</li>"
-				+ "<li>Enter your desired Password</li>"
-				+ "<li>Start exploring amazing functions tailored just for you!</li>" + "</ul>"
-				+ "<p>This verification ensures you a secure experience.</p>"
+				+ "<li>Enter your desired Password.</li>"
+				+ "<li>Complete your <strong>eKYC</strong> by entering your Aadhar details and follow the verification steps.</li>"
+				+ "<li>Finally add and verify your Bank account details to complete the registration process.</li>"
+				+ "</ol>" + "<p>Start exploring amazing functions tailored just for you!</p>"
 				+ "<p>If you have any questions or need assistance, feel free to reach out to our support team at <a href='mailto:"
 				+ zoySupportMail + "'>" + zoySupportMail + "</a>.</p>"
-				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>" + "<p>Best regards,</p>"
-				+ "<p>ZOY Administrator</p>";
-
+				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>"
+				+ "<p>Best regards,<br/>ZOY Administrator</p>";
+ 
 		email.setBody(message);
 		email.setContent("text/html");
 		try {
-			emailService.sendEmail(email, null);
-		} catch (Exception e) {
-			log.error("Error occurred while sending the registration email to " + owneremail + ": " + e.getMessage(),
-					e);
+ 
+			ClassPathResource pdfFile = new ClassPathResource("templates/zoyPgOwnerRegistrationUsingZoyCode.pdf");
+ 
+			MultipartFile attachment = new MockMultipartFile("zoyPgOwnerRegistrationUsingZoyCode.pdf",
+					"zoyPgOwnerRegistrationUsingZoyCode.pdf", "application/pdf", pdfFile.getInputStream());
+			emailService.sendEmail(email, attachment);
+ 
+		} catch (Exception ex) {
+			log.error("Error occured while sending the registration email to " + owneremail + ": " + ex.getMessage(),
+					ex);
 		}
+ 
 	}
-
+ 
 	public void resendPgOwnerDetails(String owneremail, String firstName, String lastName, String zoyCode,
 			String token) {
 		String verifyLink = emailVerificationUrl + token;
 		Email email = new Email();
 		email.setFrom(zoyAdminMail);
-
+ 
 		List<String> to = new ArrayList<>();
 		to.add(owneremail);
+		to.add(organizerMail);
 		email.setTo(to);
-
 		email.setSubject("Welcome to ZOY! Unlock Your Journey – Verify & Register Today!");
-
+ 
 		String message = "<p>Dear " + firstName + " " + lastName + ",</p>"
-				+ "<p>We are excited to welcome you to ZOY, your trusted companion for hassle-free PG Management. To get started, we've made it quick and simple for you!</p>"
-				+ "<p>Click the link to verify your email:<a href=\"" + verifyLink + "\">Verify Email</a></p>"
-				+ "<p><strong>(Verifying Email is mandatory to register on ZOY)</strong></p>"
-				+ "<p><strong>Your Invitation Code: </strong>" + zoyCode + "</p>"
-				+ "<p>Please use this code to verify your account and complete your registration in the app.</p>"
-				+ "<h4><strong>Steps to Register:</strong></h4>" + "<ul>" + "<li>Download ZOY Owner App from <a href='"
+				+ "<p>We are excited to welcome you to <strong>ZOY</strong>, your trusted companion for hassle-free PG Management. To get started, we've made it quick and simple for you!</p>"
+				+ "<p>Click the link to verify your email: <a href='" + verifyLink + "'>Verify Email</a></p>"
+				+ "<p><em>*Note: Only after successful Email verification the Invitation Code will allow you to register with the mobile application.</em></p>"
+				+ "<p><strong>Your ZOY Code: </strong>" + zoyCode + "</p>"
+				+ "<p>Please follow the below instructions and use this code to complete your registration in the <strong>ZOY Partner Mobile Application</strong>.</p>"
+				+ "<h4><strong>Steps to Register:</strong></h4>" + "<ol>" + "<li>Download ZOY Owner App from <a href='"
 				+ ownerAppLink + "'>" + ownerAppLink + "</a>.</li>"
-				+ "<li>Open the app and select &quot;Register&quot;.</li>"
+				+ "<li>Open the app and select <strong>\"Register\"</strong>.</li>"
 				+ "<li>Enter your invitation code provided above to fetch your details.</li>"
-				+ "<li>Enter your desired Password</li>"
-				+ "<li>Start exploring amazing functions tailored just for you!</li>" + "</ul>"
-				+ "<p>This verification ensures you a secure experience.</p>"
+				+ "<li>Enter your desired Password.</li>"
+				+ "<li>Complete your <strong>eKYC</strong> by entering your Aadhar details and follow the verification steps.</li>"
+				+ "<li>Finally add and verify your Bank account details to complete the registration process.</li>"
+				+ "</ol>" + "<p>Start exploring amazing functions tailored just for you!</p>"
 				+ "<p>If you have any questions or need assistance, feel free to reach out to our support team at <a href='mailto:"
 				+ zoySupportMail + "'>" + zoySupportMail + "</a>.</p>"
-				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>" + "<p>Best regards,</p>"
-				+ "<p>ZOY Administrator</p>";
-
+				+ "<p>Welcome aboard, and we can't wait to make your experience amazing!</p>"
+				+ "<p>Best regards,<br/>ZOY Administrator</p>";
+ 
 		email.setBody(message);
 		email.setContent("text/html");
-
 		try {
-			emailService.sendEmail(email, null);
-		} catch (Exception e) {
-			log.error("Error occurred while sending the registration email to " + owneremail + ": " + e.getMessage(),
-					e);
+			ClassPathResource pdfFile = new ClassPathResource("templates/zoyPgOwnerRegistrationUsingZoyCode.pdf");
+			MultipartFile attachment = new MockMultipartFile("zoyPgOwnerRegistrationUsingZoyCode.pdf",
+					"zoyPgOwnerRegistrationUsingZoyCode.pdf", "application/pdf", pdfFile.getInputStream());
+			emailService.sendEmail(email, attachment);
+		} catch (Exception ex) {
+			log.error("Error occured while sending the registration email to " + owneremail + ": " + ex.getMessage(),
+					ex);
 		}
 	}
 

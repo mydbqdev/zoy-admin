@@ -119,6 +119,12 @@ public class FilterData {
 	
 	@SerializedName("invoiceNo")
 	String invoiceNo;
+	
+	@SerializedName("tenantAccountNumber")
+	String tenantAccountNumber ;
+	
+	@SerializedName("tenantIfscCode")
+	String tenantIfscCode ;
 
 	public String getCheckInDate() {
 		return checkInDate;
@@ -430,6 +436,22 @@ public class FilterData {
 
 	public void setOwnerContactNum(String ownerContactNum) {
 		this.ownerContactNum = ownerContactNum;
+	}
+
+	public String getTenantAccountNumber() {
+		return tenantAccountNumber;
+	}
+
+	public void setTenantAccountNumber(String tenantAccountNumber) {
+		this.tenantAccountNumber = tenantAccountNumber;
+	}
+
+	public String getTenantIfscCode() {
+		return tenantIfscCode;
+	}
+
+	public void setTenantIfscCode(String tenantIfscCode) {
+		this.tenantIfscCode = tenantIfscCode;
 	}
 
 }
