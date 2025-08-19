@@ -146,7 +146,7 @@
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                         aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addProperty" (click)="addProperty(element)">Add Property</a>
+                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addProperty" (click)="addProperty(element)" *ngIf="element.status === 'Active'">Add Property</a>
                                         <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#resendEmail" (click)="resendPropertyList(element)">Resend Email</a>
                                     </div>
                                       </td>
@@ -185,11 +185,13 @@
         <div class="row">
           <div class="col-sm-2">PG Name</div>
           <div class="col-sm-4">
-            <input class="form-control" maxlength="75" [(ngModel)]="generateZoyCode.property_name" placeholder="Enter PG Name" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_name==undefined || generateZoyCode.property_name==null || generateZoyCode.property_name=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'/>
+            <input class="form-control" maxlength="75" [(ngModel)]="generateZoyCode.property_name" placeholder="Enter PG Name" 
+                  [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_name==undefined || generateZoyCode.property_name==null || generateZoyCode.property_name=='')}" />
           </div>
           <div class="col-sm-2" style="text-align: right;">Pin Code</div>
           <div class="col-sm-4">
-            <input class="form-control" placeholder="Enter Pin Code" [(ngModel)]="generateZoyCode.property_pincode"  (blur)="onPincodeChange($event)" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_pincode==undefined || generateZoyCode.property_pincode==null)}"/>
+            <input class="form-control" placeholder="Enter Pin Code" [(ngModel)]="generateZoyCode.property_pincode"  (blur)="onPincodeChange($event)"
+               [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_pincode==undefined || generateZoyCode.property_pincode==null)}"/>
           </div>
         </div>
         <div class="row mt-2">
@@ -205,22 +207,29 @@
         <div class="row mt-2">
           <div class="col-sm-2">Street Name</div>
           <div class="col-sm-4">
-            <input class="form-control" maxlength="70" [(ngModel)]="generateZoyCode.property_street_name" placeholder="Enter Street Name" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_street_name==undefined || generateZoyCode.property_street_name==null || generateZoyCode.property_street_name=='')}"/>
+            <input class="form-control" maxlength="70" [(ngModel)]="generateZoyCode.property_street_name" placeholder="Enter Street Name" 
+                [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_street_name==undefined || generateZoyCode.property_street_name==null || generateZoyCode.property_street_name=='')}"/>
           </div>
           <div class="col-sm-2" style="text-align: right;">Door/Flat Number</div>
           <div class="col-sm-4">
-            <input class="form-control" maxlength="70" placeholder="Enter Door/Flat Number" [(ngModel)]="generateZoyCode.property_door_number"  [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_door_number==undefined || generateZoyCode.property_door_number==null || generateZoyCode.property_door_number=='')}"/>
+            <input class="form-control" maxlength="70" placeholder="Enter Door/Flat Number" [(ngModel)]="generateZoyCode.property_door_number"  
+            [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_door_number==undefined || generateZoyCode.property_door_number==null || generateZoyCode.property_door_number=='')}"/>
           </div>
         </div>
         <div class="row mt-2">
           <div class="col-sm-2" >City Code</div>
           <div class="col-sm-4">
-            <input class="form-control" placeholder="City Code" [(ngModel)]="generateZoyCode.property_city_code"  (ngModelChange)="generateZoyCode.property_city_code = $event.toUpperCase()" maxlength="3" [readonly]="!isEditCityCode"  [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_city_code==undefined || generateZoyCode.property_city_code==null || generateZoyCode.property_city_code=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))'/>
+            <input class="form-control" placeholder="City Code" [(ngModel)]="generateZoyCode.property_city_code"  (ngModelChange)="generateZoyCode.property_city_code = $event.toUpperCase()" maxlength="3" [readonly]="!isEditCityCode" (blur)="onCheckCityCodeChange($event)"
+             [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_city_code==undefined || generateZoyCode.property_city_code==null || generateZoyCode.property_city_code=='' || isCityCodeAvailable)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))'
+             />
+              <div *ngIf="submittedAddProperty && isCityCodeAvailable && generateZoyCode.property_city_code"  class="text-danger">
+                City Code is already in use.Try another.
+               </div>
           </div>
           <div class="col-sm-2" style="text-align: right;">Area</div>
           <div class="col-sm-4">
-            <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZoyCode.property_locality"  placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}"  (blur)="getLocationDetails(generateZoyCode.property_locality,2)" >
-                      <select id="area-dropdown" class="form-select" (change)="getLocationDetails(generateZoyCode.property_locality,2)"  [(ngModel)]="generateZoyCode.property_locality" *ngIf="areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}">
+            <input type="text"  maxlength="200" id="area" [(ngModel)]="generateZoyCode.property_locality"  placeholder="Enter Area Address" class="form-control" *ngIf="!areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}"  (blur)="getAreaDetails(generateZoyCode.property_locality)" >
+              <select id="area-dropdown" class="form-select" (change)="getAreaDetails(generateZoyCode.property_locality)"  [(ngModel)]="generateZoyCode.property_locality" *ngIf="areaTypeOption" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality==undefined || generateZoyCode.property_locality==null || generateZoyCode.property_locality=='')}">
                         <option></option>
                         <option *ngFor="let cond of areaList">{{cond}}</option>
                       </select>
@@ -229,7 +238,11 @@
         <div class="row mt-2">
           <div class="col-sm-2">Area Code</div>
           <div class="col-sm-4">
-            <input class="form-control" placeholder="Area Code" [(ngModel)]="generateZoyCode.property_locality_code" (ngModelChange)="generateZoyCode.property_locality_code = $event.toUpperCase()" maxlength="3" [readonly]="!isEditAreaCode" [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality_code==undefined || generateZoyCode.property_locality_code==null || generateZoyCode.property_locality_code=='')}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))'/>
+            <input class="form-control" placeholder="Area Code" [(ngModel)]="generateZoyCode.property_locality_code" (ngModelChange)="generateZoyCode.property_locality_code = $event.toUpperCase()" maxlength="3" (blur)="onCheckAreaCodeChange($event)" [readonly]="!isEditAreaCode" 
+            [ngClass]="{'is-invalid':submittedAddProperty && (generateZoyCode.property_locality_code==undefined || generateZoyCode.property_locality_code==null || generateZoyCode.property_locality_code=='' || isAreaCodeAvailable)}" onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122))'/>
+           <div *ngIf="submittedAddProperty && isAreaCodeAvailable && generateZoyCode.property_locality_code"  class="text-danger">
+               Area Code is already in use.Try another.
+           </div>
           </div>
           <div class="col-sm-2" style="text-align: right;">Zoy Share</div>
           
