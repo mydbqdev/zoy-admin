@@ -67,11 +67,11 @@ public class ZoyAdminTicketSmartService {
 			ApiResponse<List<Role>> data = JsonParserUtil.fromJson(userDesignation, typeRef);
 
 			if (data.getData() == null || data.getData().isEmpty()) {
-			    return null;
+				return null;
 			}
 			List<Role> filteredRoles = data.getData().stream()
-			    .filter(role -> !"Super Admin".equalsIgnoreCase(role.getName()) && !"Admin".equalsIgnoreCase(role.getName()))
-			    .collect(Collectors.toList());
+					.filter(role -> role.getName() != null && role.getName().toLowerCase().contains("sales"))
+					.collect(Collectors.toList());
 			return filteredRoles;
 		} catch (Exception e) {
 			log.error("Unable to get ticket smart user desgination " + e);
