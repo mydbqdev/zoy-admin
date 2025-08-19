@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import com.integration.zoy.model.PgBlacklistedModel;
 import com.integration.zoy.model.PgOwnerFilter;
 import com.integration.zoy.repository.PgEmailMobileBlacklistedRepository;
 import com.integration.zoy.utils.CommonResponseDTO;
+import com.integration.zoy.utils.PgBlacklistedResponse;
 import com.integration.zoy.utils.ResponseBody;
 
 @RestController
@@ -152,7 +155,18 @@ public class PgBlacklistedController implements PgBlacklistedImpl {
 		ResponseBody response=new ResponseBody();
 		try {
 			List<PgEmailMobileBlacklisted> result =  blacklistedRepository.findAll();
-			return new ResponseEntity<>(gson.toJson(result), HttpStatus.OK);
+			List<String> emailIds = result.stream()
+			        .map(PgEmailMobileBlacklisted::getEmail)
+			        .filter(e -> e != null && !e.trim().isEmpty())  
+			        .collect(Collectors.toList());
+			List<String> mobileNos = result.stream()
+			        .map(PgEmailMobileBlacklisted::getMobile)
+			        .filter(m -> m != null && !m.trim().isEmpty())
+			        .collect(Collectors.toList());
+	        PgBlacklistedResponse blacklistedResponse = new PgBlacklistedResponse();
+	        blacklistedResponse.setEmailIds(emailIds);
+	        blacklistedResponse.setMobileNos(mobileNos);
+	        return new ResponseEntity<>(gson.toJson(blacklistedResponse), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("Error getting getUserPaymentsByDateRange API:/zoy_admin/getBlacklisted.getBlacklisted ",e);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
