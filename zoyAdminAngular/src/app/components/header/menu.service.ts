@@ -50,6 +50,7 @@ export class MenuService {
     { name: "All Tickets", link: "/all-tickets", permission: "ALL_TICKETS_READ", icon:"fas fa-chart-bar" },
     { name: "Closed Tickets", link: "/all-closed-tickets", permission: "ALL_CLOSED_TICKETS_READ", icon:"fas fa-chart-bar" },
     { name: "Low Ratings", link: "/low-ratings", permission: "LOW_RATINGS_READ", icon:"fas fa-chart-bar" },
+    { name: "Black List", link: "/blacklist", permission: "BLACK_LIST_READ", icon:"fas fa-chart-bar" },
   ];
   
 
