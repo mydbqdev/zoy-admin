@@ -1,0 +1,180 @@
+
+<ngx-spinner bdColor="rgba(0,0,0,0.8)" size="medium" color="#fff" type="custom" [fullScreen]="true">
+    <div class="spinner-container"><img class="spinner-home-logo" src="assets/images/home-logo.png" alt="Home"/>
+      <img class="spinner-location-logo" src="assets/images/location-logo.png" alt="User"/>
+      <div class="spinner-loading">Loading</div>
+    </div>
+</ngx-spinner>
+  <!-- Content Wrapper. Contains page content -->
+  <div id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <app-sidebar></app-sidebar>
+      <!-- End of Sidebar -->
+  
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column" [ngClass]=" isExpandSideBar ?'side-bar-expand':'side-bar-collaspe'">
+          <!-- Main Content -->
+          <div id="content">
+                  <div style="display: block;margin-bottom: 5.375rem;">
+                  <!-- Topbar -->
+                  <app-header></app-header>
+                  <!-- End of Topbar -->
+                  </div>
+
+              <!-- Begin Page Content -->
+              <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-3">
+                    <h3 class="h3 mb-0"><span class="text-header-800 text-header-border">Black </span><span class="text-header-800-blue">List</span></h3> 
+                    <div class="d-flex align-items-center justify-content-between">
+                      <!-- Search Input -->
+                        <div class="position-relative mr-3">
+                          <button class="btn btn-sm btn-outline-danger" title="Delete selected Blacklist" *ngIf="deleteBlacklistedIds.length > 1" (click)="deleteBlacklisted()">
+                          <i class="fas fa-trash-alt"></i> Delete </button>
+                        </div>
+                      <div class="position-relative mr-3">
+                        <i class="fas fa-search fa-sm position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%); z-index: 1;"></i>
+                        <input type="text" class="form-control form-control-sm border-1" [(ngModel)]="searchText" (keyup)="filterData($event)" style="border-radius: 20px; padding-left: 35px; width: 300px;"placeholder="Search by keyword" aria-label="Search" aria-describedby="basic-addon2"/>
+                      </div>
+                    
+                      <!-- "Create a User" Button -->
+                      <div *ngIf="rolesArray.includes('BLACK_LIST_READ')">
+                        <a href="javascript:void(0)" (click)="resetForm()" data-bs-toggle="offcanvas" data-bs-target="#balckListDetailsModel" aria-controls="offcanvasRight" class="btn btn-sm btn-primary-custom shadow-sm">
+                          <i class="fas fa-user-plus text-white"></i> Create User </a>
+                      </div>
+                    </div>
+                </div>
+                  
+                  <!-- Content Row -->
+                  <div>
+                        <div class="card shadow mb-3">
+                        <div style="margin: 10px;">
+                          <div >
+
+                        <div class="card shadow mb-3">
+                        <div class="card-body" style="display: block;margin: 0px;padding: 2px;" >
+                          <div class="scrollable-container-main">
+                          <div>
+                          <table mat-table [dataSource]="dataSource" >
+
+                          <!-- Email -->
+                          <ng-container matColumnDef="email">
+                            <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;" title="Email ID">
+                              EMAIL 
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                             <input  type="checkbox" title="select for delete" (change)="deleteSelection(element.id,$event)" />
+                                  <span> {{ element.email }} </span>
+                            </td>
+                          </ng-container>
+
+                          <!-- Contact Number -->
+                          <ng-container matColumnDef="mobile">
+                            <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;" title="Mobile Number">
+                              MOBILE NUMBER
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                              {{ element.mobile }}
+                            </td>
+                          </ng-container>
+                          <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef  style="font-weight: 600;" title="Mobile Number">
+                              ACTIONS
+                            </th>
+                            <td mat-cell *matCellDef="let element" >
+                              <ng-container *ngIf="rolesArray.includes('BLACK_LIST_WRITE')">
+                                <button class="btn btn-sm btn-outline-primary m-1"  data-bs-toggle="offcanvas" data-bs-target="#balckListDetailsModel"  (click)="viewDetails(element)" >
+                                <i class="fas fa-edit"></i>
+                              </button>
+                              <button class="btn btn-sm btn-outline-danger" (click)="onDelete(element)">
+                                <i class="fas fa-trash-alt"></i>
+                              </button>
+                              </ng-container>
+                              
+                            </td>
+                          </ng-container>
+
+                          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                          <tr mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
+                                                          
+                        </table>
+                        <div style="text-align: center;min-height: 45px;padding-top: 10px;" *ngIf="dataSource.data.length==0"> No records found</div>                 
+                        </div>
+                          </div>
+                          <mat-paginator #paginator [length]="totalProduct" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
+                        </div>
+                        </div>
+                          </div>
+
+                        </div>
+                        </div>             
+                  </div>
+              </div>
+              <!-- /.container-fluid -->
+          </div>
+          <!-- End of Main Content -->
+      </div>
+      <!-- End of Content Wrapper -->
+  </div>
+  <!-- End of Page Wrapper -->
+  </div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="balckListDetailsModel" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="static">
+    <div class="offcanvas-header bg-gradiant-popup-header">
+      <h5 class="offcanvas-title" id="offcanvasRightLabel"><span *ngIf="!selectedBlacklist.id" > Create a new user</span> <span *ngIf="selectedBlacklist.id" > Update user</span> </h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" #detailsCloseModal></button>
+    </div>
+    <hr class="sidebar-divider my-0">
+    <div class="offcanvas-body">
+        <form #blacklistForm="ngForm" (ngSubmit)="saveBlacklisted(blacklistForm)">
+  <!-- Email -->
+  <div class="form-group">
+    <label>Email</label>
+    <input 
+      type="email" 
+      class="form-control"
+      name="email"
+      [(ngModel)]="selectedBlacklist.email"
+      [ngClass]="{'is-invalid':submitted && (!selectedBlacklist.email && !selectedBlacklist.mobile || (emailCtrl.invalid && emailCtrl.touched)) }"
+      #emailCtrl="ngModel"
+      email>
+    
+    <!-- Show validation errors -->
+    <div *ngIf="submitted && !selectedBlacklist.email && !selectedBlacklist.mobile" class="text-danger">
+      Either Email or Mobile is required
+    </div>
+    <div *ngIf="submitted && emailCtrl.invalid && emailCtrl.touched" class="text-danger">
+      Invalid email format
+    </div>
+  </div>
+
+  <!-- Mobile -->
+  <div class="form-group">
+    <label>Mobile</label>
+    <input 
+      type="text" 
+      class="form-control"
+      name="mobile"
+      [(ngModel)]="selectedBlacklist.mobile"
+      [ngClass]="{'is-invalid':submitted && (!selectedBlacklist.email && !selectedBlacklist.mobile || (mobileCtrl.invalid && mobileCtrl.touched)) }"
+      #mobileCtrl="ngModel"
+      pattern="^[0-9]{10}$">
+
+    <!-- Show validation errors -->
+    <div *ngIf="submitted && !selectedBlacklist.email && !selectedBlacklist.mobile" class="text-danger">
+      Either Email or Mobile is required
+    </div>
+    <div *ngIf="submitted && mobileCtrl.invalid && mobileCtrl.touched" class="text-danger">
+      Invalid mobile number (10 digits required)
+    </div>
+  </div>
+<div class="text-center">
+ <button type="submit" class="btn btn-primary">Submit</button>
+</div>
+ 
+</form>
+
+    </div>
+  </div>
+

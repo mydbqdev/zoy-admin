@@ -1,0 +1,16 @@
+th, td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  align-content: center;
+  padding: 0px 0px 0px 6px;
+}
+
+::ng-deep .custom-row-height {
+  height: 40px !important;
+}
+
+::ng-deep .custom-header-cell{
+ font-weight: bold;
+  height: 40px !important;
+}
