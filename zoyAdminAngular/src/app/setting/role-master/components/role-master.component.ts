@@ -556,7 +556,8 @@ menuSubMenus: string[] = [
   "VENDOR_MANAGEMENT",
   "ALL_CLOSED_TICKETS",
   "MY_CLOSED_TICKETS",
-  "LOW_RATINGS"
+  "LOW_RATINGS",
+  "BLACK_LIST"
 
 ];
 

@@ -207,6 +207,8 @@
                 <a class="collapse-item" routerLink="/user-audit" *ngIf="rolesArray.includes('USER_AUDIT_READ')" [ngClass]="{'active':activeSubNenuName=='user-audit'}">User Audit</a>
                 <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/organization-info-config" *ngIf="rolesArray.includes('ORGANIZATION_INFO_CONFIG_READ')" [ngClass]="{'active':activeSubNenuName=='organization-info-config'}">Organization Information</a>
+                <div class="p-1"></div>
+                <a class="collapse-item" routerLink="/blacklist" *ngIf="rolesArray.includes('BLACK_LIST_READ')" [ngClass]="{'active':activeSubNenuName=='blacklist'}">Black list</a>
                 <!-- <div class="p-1"></div>
                 <a class="collapse-item" routerLink="/cancellation-refund-rules" *ngIf="rolesArray.includes('CANCELLATION_AND_REFUND_RULES_READ')">Cancellation and <br *ngIf="isExpandSideBar">  Refund Rules</a>
                 <div class="p-1"></div>
