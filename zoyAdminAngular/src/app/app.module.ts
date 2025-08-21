@@ -82,6 +82,7 @@ import { VendorMenuRoutingModule } from './vendor/vendor-menu-routing.module';
 import { AdminVendorManagementComponent } from './vendor/admin-vendor-management/component/admin-vendor-management.component';
 import { RatingAndReviewsMenuRoutingModule } from './ratings-and-reviews/rating-reviews-menu-routing.module';
 import { LowRatingsComponent } from './ratings-and-reviews/low-ratting/component/low-ratings.component';
+import { BlacklistComponent } from './setting/blacklist/component/blacklist.component';
 
 const appRoutes: Routes = [
   {path:'**',component:PageNotFoundComponent,pathMatch:'full'}
@@ -136,7 +137,8 @@ const appRoutes: Routes = [
     SupportReportsComponent,
     TenantReportsComponent,
     AdminVendorManagementComponent,
-    LowRatingsComponent
+    LowRatingsComponent,
+    BlacklistComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes,
