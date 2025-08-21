@@ -64,7 +64,7 @@
                               EMAIL 
                             </th>
                             <td mat-cell *matCellDef="let element">
-                             <input  type="checkbox" title="select for delete" (change)="deleteSelection(element.id,$event)" />
+                             <input  type="checkbox" title="select for delete" (change)="deleteSelection(element.id,$event)"  [checked]="deleteBlacklistedIds.includes(element.id)" />
                                   <span> {{ element.email }} </span>
                             </td>
                           </ng-container>
