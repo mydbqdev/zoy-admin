@@ -363,7 +363,12 @@
         <div class="col-sm-8 pl-4">Organization Info Configuration</div>
         <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="ORGANIZATION_INFO_CONFIG_READ" id="settingseReadOIC"  (click)="onChangeCheck($event,'read','settingse','OIC')"/></div>
         <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="ORGANIZATION_INFO_CONFIG_WRITE"  id="settingseReadOIC" (click)="onChangeCheck($event,'write','settingse','OIC')"/></div>
-     </div>        
+     </div>     
+     <div class="row" >
+          <div class="col-sm-8 pl-4">Black List</div>
+          <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="BLACK_LIST_READ" id="settingseReadBL"  (click)="onChangeCheck($event,'read','settingse','BL')"/></div>
+          <div class="col-sm-2"><input type="checkbox" name="settingsewrite"   value="BLACK_LIST_WRITE"  id="settingseWriteBL" (click)="onChangeCheck($event,'write','settingse','BL')"/></div>
+      </div>   
       <!--     <div class="row" >
               <div class="col-sm-8 pl-4">Percentage & Charge</div>
               <div class="col-sm-2"><input type="checkbox" name="settingseread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="settingseReadPCC"  (click)="onChangeCheck($event,'read','settingse','PCC')"/></div>
@@ -649,7 +654,12 @@
                     <div class="col-sm-8 pl-4">Organization Info Configuration</div>
                     <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="ORGANIZATION_INFO_CONFIG_READ" id="settingscReadOIC"  (click)="onChangeCheck($event,'read','settingsc','OIC')"/></div>
                     <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="ORGANIZATION_INFO_CONFIG_WRITE"  id="settingscReadOIC" (click)="onChangeCheck($event,'write','settingsc','OIC')"/></div>
-                 </div>        
+                 </div>   
+                 <div class="row" >
+                      <div class="col-sm-8 pl-4">Black List</div>
+                      <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="BLACK_LIST_READ" id="settingscReadBL"  (click)="onChangeCheck($event,'read','settingsc','BL')"/></div>
+                      <div class="col-sm-2"><input type="checkbox" name="settingscwrite"   value="BLACK_LIST_WRITE"  id="settingscWriteBL" (click)="onChangeCheck($event,'write','settingsc','BL')"/></div>
+                  </div>     
                   <!--   <div class="row" >
                         <div class="col-sm-8 pl-4">Percentage & Charge</div>
                         <div class="col-sm-2"><input type="checkbox" name="settingscread"    value="PERCENTAGE_AND_CHARGE_CONFIGURATIONS_READ" id="settingscReadPCC"  (click)="onChangeCheck($event,'read','settingsc','PCC')"/></div>

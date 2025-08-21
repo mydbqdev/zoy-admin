@@ -5,6 +5,7 @@ import { DbMasterConfigurationComponent } from './db-master-configuration/compon
 import { ConfigurationMasterComponent } from './configuration-master/components/configuration-master.component';
 import { UserAuditComponent } from './user-audit/components/user-audit.component';
 import { OrganizationInfoConfigComponent } from './organization-info-config/components/organization-info-config.component';
+import { BlacklistComponent } from './blacklist/component/blacklist.component';
 
 const routes: Routes = [
   { path: 'role-master', component: RoleMasterComponent},
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'configuration-master', component: ConfigurationMasterComponent},
   { path: 'user-audit', component: UserAuditComponent},
   { path: 'organization-info-config', component: OrganizationInfoConfigComponent},
+  { path: 'blacklist', component: BlacklistComponent},
 ];
 
 @NgModule({

@@ -94,6 +94,9 @@ export class RoleScreenModel {
 
     LOW_RATINGS_READ: boolean = false;
     LOW_RATINGS_WRITE: boolean = false;
+
+    BLACK_LIST_READ: boolean = false;
+    BLACK_LIST_WRITE: boolean = false;
     
 
 }
