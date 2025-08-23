@@ -51,6 +51,7 @@ import com.integration.zoy.repository.RegisteredPartnerDetailsRepository;
 import com.integration.zoy.repository.UserHelpRequestRepository;
 import com.integration.zoy.service.AdminReportImpl;
 import com.integration.zoy.service.EmailService;
+import com.integration.zoy.service.NotificationService;
 import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.OwnerDBImpl;
 import com.integration.zoy.service.SalesDBImpl;
@@ -126,8 +127,11 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
 	@Autowired
 	SupportDBImpl supportDBImpl;
 	
+//	@Autowired
+//	EmailService emailService;
+	
 	@Autowired
-	EmailService emailService;
+	NotificationService notificationService;
 	
 	@Autowired
 	SalesDBImpl salesDBImpl;
@@ -781,7 +785,7 @@ public class ZoyAdminSupportController implements ZoyAdminSupportImpl{
         email.setSubject(subject);
         email.setBody(message);
         email.setContent("text/html");
-        emailService.sendEmail(email, null);
+        notificationService.sendEmail(email, null);
 	}
 	
 	private String prepareEmailContentAssign(String name, String description, final String urgency, String currentDate,
