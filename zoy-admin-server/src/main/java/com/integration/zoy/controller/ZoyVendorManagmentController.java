@@ -33,7 +33,6 @@ import com.integration.zoy.model.VendorResponseDto;
 import com.integration.zoy.model.ZoyPgSalesMasterModel;
 import com.integration.zoy.model.ZoyPgVendorModel;
 import com.integration.zoy.service.EmailService;
-import com.integration.zoy.service.NotificationService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.VendorDBImpl;
 import com.integration.zoy.service.ZoyAdminTicketSmartService;
@@ -60,11 +59,8 @@ public class ZoyVendorManagmentController implements ZoyVendorManagementImpl {
 	@Autowired
 	private ZoyAdminTicketSmartService zoyAdminTicketSmartService;
 
-//	@Autowired
-//	EmailService emailService;
-	
 	@Autowired
-	NotificationService notificationService;
+	EmailService emailService;
 
 	@Autowired
 	AuditHistoryUtilities auditHistoryUtilities;
@@ -206,7 +202,7 @@ public class ZoyVendorManagmentController implements ZoyVendorManagementImpl {
 					+ "</html>";
 			email.setBody(message);
 			email.setContent("text/html");
-			notificationService.sendEmail(email, null);
+			emailService.sendEmail(email, null);
 			log.info("Signin Details sent successfully to " + vendor.getVendorEmail());
 
 		} catch (Exception e) {
@@ -284,7 +280,7 @@ public class ZoyVendorManagmentController implements ZoyVendorManagementImpl {
 	        email.setBody(message);
 	        email.setContent("text/html");
 
-	        notificationService.sendEmail(email, null);
+	        emailService.sendEmail(email, null);
 	        log.info("Rejection email sent successfully to " + vendor.getVendorEmail());
 
 	    } catch (Exception e) {
@@ -377,7 +373,7 @@ public class ZoyVendorManagmentController implements ZoyVendorManagementImpl {
 	        email.setBody(message);
 	        email.setContent("text/html");
 
-	        notificationService.sendEmail(email, null);
+	        emailService.sendEmail(email, null);
 	        log.info("Status email sent successfully to " + vendor.getVendorEmail());
 
 	    } catch (Exception e) {
