@@ -16,7 +16,7 @@ public class NotificationsAndAlertsService {
 	private NotificationsAndAlertsRepository notificationsAndAlertsRepository;
 	
     @Autowired
-    private NotificationService notificationService;
+    private InappNotificationService notificationService;
 
     public void approveUser( String userId,  String approvalDetails) throws Exception {
     	String screenname="ROLE_AND_PERMISSION";

@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -78,6 +80,7 @@ import com.integration.zoy.entity.ZoyPgRoomBeds;
 import com.integration.zoy.entity.ZoyPgRoomBedsId;
 import com.integration.zoy.entity.ZoyPgRoomDetails;
 import com.integration.zoy.entity.ZoyPgShareMaster;
+import com.integration.zoy.model.NotificationManagerRequest;
 import com.integration.zoy.model.RegisterUser;
 import com.integration.zoy.repository.ZoyPgRoomAmenetiesId;
 import com.integration.zoy.utils.GenerateBulkUploadRentalPdf;
@@ -99,8 +102,11 @@ public class UploadService {
 	@Autowired
 	UserDBService userDBImpl;
 
-	@Autowired 
-	WhatsAppService whatsAppService;
+//	@Autowired 
+//	WhatsAppService whatsAppService;
+	
+	@Autowired
+	NotificationService notificationService;
 
 	@Autowired
 	ZoyEmailService zoyEmailService;
@@ -135,6 +141,7 @@ public class UploadService {
 	
 	private ZoyPgRentGst charges=new ZoyPgRentGst();
 	private ZoyCompanyProfileMaster zoyCompanyProfileMaster = new ZoyCompanyProfileMaster();
+	DateTimeFormatter invoiceOutputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
 	private static final Logger log = LoggerFactory.getLogger(UploadService.class);
 	private static final Gson gson = new GsonBuilder()
@@ -386,17 +393,30 @@ public class UploadService {
 				ZoyPgPropertyDetails propertyDetail = ownerDBImpl.getPropertyById(userBooking.getUserBookingsPropertyId());
 				ZoyPgOwnerDetails zoyPgOwnerDetails = ownerDBImpl.findPgOwnerById(userBooking.getUserBookingsPgOwnerId());
 				ZoyPgOwnerBookingDetails saveMyBookings = ownerDBImpl.getBookingDetails(userBooking.getUserBookingsId());
+				ZoyPgBedDetails bedInfo = ownerDBImpl.getBedsId(saveMyBookings.getSelectedBed());
 				UserMaster master=userDBImpl.findUserMaster(userBooking.getUserId());
-				Whatsapp whatsapp = new Whatsapp();
-				whatsapp.tonumber("+91" + master.getUserMobile());
-				whatsapp.templateid(ZoyConstant.ZOY_TENANT_ONLINE_BOOKING);
-				Map<Integer, String> params = new HashMap<>();
-				params.put(1, master.getUserFirstName() +" "+ master.getUserLastName());
-				params.put(2, propertyDetail.getPropertyName());
-				params.put(3, String.valueOf(saveMyBookings.getInDate()));
-				params.put(4, String.valueOf(saveMyBookings.getOutDate()));
-				whatsapp.setParams(params);
-				whatsAppService.sendWhatsappMessage(whatsapp);
+				
+//				Whatsapp whatsapp = new Whatsapp();
+//				whatsapp.tonumber("+91" + master.getUserMobile());
+//				whatsapp.templateid(ZoyConstant.ZOY_TENANT_ONLINE_BOOKING);
+//				Map<Integer, String> params = new HashMap<>();
+//				params.put(1, master.getUserFirstName() +" "+ master.getUserLastName());
+//				params.put(2, propertyDetail.getPropertyName());
+//				params.put(3, String.valueOf(saveMyBookings.getInDate()));
+//				params.put(4, String.valueOf(saveMyBookings.getOutDate()));
+//				whatsapp.setParams(params);
+//				whatsAppService.sendWhatsappMessage(whatsapp);
+				
+				Map<String,String> map = new HashMap<>();
+				map.put("var0", saveMyBookings.getBookingId());
+				map.put("var1", propertyDetail.getPropertyName());
+				map.put("var2", convertDateFormate(saveMyBookings.getInDate()));
+				map.put("var3", bedInfo.getBedName());
+				//User Notification
+				NotificationManagerRequest request=notificationService.buildUserRequest(master,gson.toJson(map),
+						ZoyConstant.ZOY_USER_BOOKING_CONFIRMATION,null);
+				notificationService.sendNotification(request);
+
 
 				ZoyPgShareMaster pgPropertyShareTypes=ownerDBImpl.getShareById(saveMyBookings.getShare());
 				ZoyPgBedDetails bedName=ownerDBImpl.getBedsId(saveMyBookings.getSelectedBed());
@@ -416,7 +436,13 @@ public class UploadService {
 		}
 	}
 
-
+	public String convertDateFormate(Timestamp timestamp) {
+		//LocalDateTime dateTime = LocalDateTime.parse(String.valueOf(timestamp), invoiceInputFormatter);
+		ZonedDateTime dateTime = timestamp.toInstant().atZone(ZoneId.of(ZoyConstant.IST));
+		String formattedTimestamp = dateTime.format(invoiceOutputFormatter);
+		return formattedTimestamp;
+	}
+	
 	private void createWebcheckIn(String ownerId,ZoyPgOwnerBookingDetails booking, List<UserBookings> userBookingDetails, 
 			List<PgOwnerUserStatus> userStatus, List<UserPgDetails> userPgDetails,List<ZoyPgBedDetails> bedDetails,
 			Map<String,TenantList> userCsvDetails,List<String[]> duesType,List<UserMaster> userMasters) {
@@ -679,7 +705,7 @@ public class UploadService {
 		master.setUserEkycIsVideoVerified(false);
 		master.setUserEkycPaid(false);
 		master.setUserStatus(ZoyConstant.INACTIVE);
-		uploadDBImpl.saveUser(master);
+		UserMaster userMaster=uploadDBImpl.saveUser(master);
 		List<NotificationModeMaster> modeMaster=uploadDBImpl.findAllNotificationMode();
 		List<UserNotifications> notifications =new ArrayList<>();
 		for(NotificationModeMaster mode:modeMaster) {
@@ -690,13 +716,20 @@ public class UploadService {
 		}
 		uploadDBImpl.saveAllUserNotification(notifications);
 
-		Whatsapp whatsapp=new Whatsapp();
-		whatsapp.tonumber("+91"+tenantDetails.getPhoneNumber());
-		whatsapp.templateid(ZoyConstant.ZOY_TENANT_REG_WELCOME_MSG);
-		Map<Integer,String> parm=new HashMap<>();
-		parm.put(1, tenantDetails.getFirstName());
-		whatsapp.setParams(parm);
-		whatsAppService.sendWhatsappMessage(whatsapp);
+//		Whatsapp whatsapp=new Whatsapp();
+//		whatsapp.tonumber("+91"+tenantDetails.getPhoneNumber());
+//		whatsapp.templateid(ZoyConstant.ZOY_TENANT_REG_WELCOME_MSG);
+//		Map<Integer,String> parm=new HashMap<>();
+//		parm.put(1, tenantDetails.getFirstName());
+//		whatsapp.setParams(parm);
+//		whatsAppService.sendWhatsappMessage(whatsapp);
+		
+		Map<String,String> map = new HashMap<>();
+		map.put("var0", userMaster.getUserFirstName() +" "+userMaster.getUserLastName());
+		//User Notification
+		NotificationManagerRequest request=notificationService.buildUserRequest(userMaster,gson.toJson(map),
+				ZoyConstant.ZOY_USER_WELCOME_MESSAGE,null);
+		notificationService.sendNotification(request);
 
 		RegisterUser registerUser=new RegisterUser();
 		registerUser.setEmail(tenantDetails.getEmail());
