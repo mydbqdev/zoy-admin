@@ -1,10 +1,12 @@
 package com.integration.zoy.utils;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.validation.annotation.Validated;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Email
@@ -19,9 +21,6 @@ public class Email   {
 
 	@JsonProperty("to")
 	private List<String> to = null;
-	
-	@JsonProperty("cc")
-	private List<String> cc = null;
 
 	@JsonProperty("subject")
 	private String subject = null;
@@ -31,6 +30,20 @@ public class Email   {
 
 	@JsonProperty("content")
 	private String content = null;
+
+	private List<Attachment> attachments = new ArrayList<>();
+
+	public void addAttachment(String fileName, byte[] content, String mimeType) {
+		attachments.add(new Attachment(fileName, content, mimeType));
+	}
+
+	public List<Attachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<Attachment> attachments) {
+		this.attachments = attachments;
+	}
 
 	public Email from(String from) {
 		this.from = from;
@@ -58,7 +71,6 @@ public class Email   {
 		return this;
 	}
 
-
 	public List<String> getTo() {
 		return to;
 	}
@@ -71,7 +83,6 @@ public class Email   {
 		this.subject = subject;
 		return this;
 	}
-
 
 	public String getSubject() {
 		return subject;
@@ -86,7 +97,6 @@ public class Email   {
 		return this;
 	}
 
-
 	public String getBody() {
 		return body;
 	}
@@ -100,15 +110,6 @@ public class Email   {
 		return this;
 	}
 
-
-	public List<String> getCc() {
-		return cc;
-	}
-
-	public void setCc(List<String> cc) {
-		this.cc = cc;
-	}
-
 	public String getContent() {
 		return content;
 	}
@@ -116,7 +117,6 @@ public class Email   {
 	public void setContent(String content) {
 		this.content = content;
 	}
-
 
 	@Override
 	public boolean equals(java.lang.Object o) {
@@ -127,11 +127,9 @@ public class Email   {
 			return false;
 		}
 		Email email = (Email) o;
-		return Objects.equals(this.from, email.from) &&
-				Objects.equals(this.to, email.to) &&
-				Objects.equals(this.subject, email.subject) &&
-				Objects.equals(this.body, email.body) &&
-				Objects.equals(this.content, email.content);
+		return Objects.equals(this.from, email.from) && Objects.equals(this.to, email.to)
+				&& Objects.equals(this.subject, email.subject) && Objects.equals(this.body, email.body)
+				&& Objects.equals(this.content, email.content);
 	}
 
 	@Override
