@@ -52,11 +52,8 @@ import com.integration.zoy.utils.ZoyShortTermDto;
 @Service
 public class ZoyEmailService {
 
-//	@Autowired
-//	EmailService notificationService;
-	
 	@Autowired
-	NotificationService notificationService;
+	EmailService emailService;
 
 	@Autowired
 	PdfGenerateService pdfGenerateService;
@@ -114,7 +111,7 @@ public class ZoyEmailService {
 		email.setBody(message);
 		email.setContent("text/html");
 		try {
-			notificationService.sendEmail(email, null);
+			emailService.sendEmail(email, null);
 		} catch (Exception e) {
 			log.error("Error occurred while sending the registration email to " + zoyAdminMail + ": " + e.getMessage(),
 					e);
@@ -158,7 +155,7 @@ public class ZoyEmailService {
  
 			MultipartFile attachment = new MockMultipartFile("zoyPgOwnerRegistrationUsingZoyCode.pdf",
 					"zoyPgOwnerRegistrationUsingZoyCode.pdf", "application/pdf", pdfFile.getInputStream());
-			notificationService.sendEmail(email, attachment);
+			emailService.sendEmail(email, attachment);
  
 		} catch (Exception ex) {
 			log.error("Error occured while sending the registration email to " + owneremail + ": " + ex.getMessage(),
@@ -204,7 +201,7 @@ public class ZoyEmailService {
 			ClassPathResource pdfFile = new ClassPathResource("templates/zoyPgOwnerRegistrationUsingZoyCode.pdf");
 			MultipartFile attachment = new MockMultipartFile("zoyPgOwnerRegistrationUsingZoyCode.pdf",
 					"zoyPgOwnerRegistrationUsingZoyCode.pdf", "application/pdf", pdfFile.getInputStream());
-			notificationService.sendEmail(email, attachment);
+			emailService.sendEmail(email, attachment);
 		} catch (Exception ex) {
 			log.error("Error occured while sending the registration email to " + owneremail + ": " + ex.getMessage(),
 					ex);
@@ -239,7 +236,7 @@ public class ZoyEmailService {
 			content = Files.readAllBytes(path);
 			MultipartFile multipartFile = new CustomMultipartFile(content, path.getFileName().toString(),
 					path.getFileName().toString(), Files.probeContentType(path.toFile().toPath()));
-			notificationService.sendEmail(email, multipartFile);
+			emailService.sendEmail(email, multipartFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -265,7 +262,7 @@ public class ZoyEmailService {
 			byte[] content = Files.readAllBytes(path);
 			MultipartFile multipartFile = new CustomMultipartFile(content, path.getFileName().toString(),
 					path.getFileName().toString(), Files.probeContentType(path.toFile().toPath()));
-			notificationService.sendEmail(email, multipartFile);
+			emailService.sendEmail(email, multipartFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -312,7 +309,7 @@ public class ZoyEmailService {
 			byte[] content = Files.readAllBytes(path);
 			MultipartFile multipartFile = new CustomMultipartFile(content, path.getFileName().toString(),
 					path.getFileName().toString(), Files.probeContentType(path.toFile().toPath()));
-			notificationService.sendEmail(email, multipartFile);
+			emailService.sendEmail(email, multipartFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -340,7 +337,7 @@ public class ZoyEmailService {
 			e.printStackTrace();
 		}
 		try {
-			notificationService.sendEmail(email, null);
+			emailService.sendEmail(email, null);
 		} catch (Exception e) {
 			log.error("Error occurred while sending the  email to " + zoyAdminMail + ": " + e.getMessage(), e);
 		}
@@ -377,7 +374,7 @@ public class ZoyEmailService {
 		email.setBody(message);
 		email.setContent("text/html");
 		try {
-			notificationService.sendEmail(email, null);
+			emailService.sendEmail(email, null);
 		} catch (Exception e) {
 			log.error("Error occurred while sending the  email to " + zoyAdminMail + ": " + e.getMessage(), e);
 		}
@@ -411,7 +408,7 @@ public class ZoyEmailService {
 		email.setBody(message);
 		email.setContent("text/html");
 		try {
-			notificationService.sendEmail(email, null);
+			emailService.sendEmail(email, null);
 		} catch (Exception e) {
 			log.error("Error occurred while sending the Password Change Warning Mails to " + zoyAdminMail + ": "
 					+ e.getMessage(), e);
@@ -458,7 +455,7 @@ public class ZoyEmailService {
 			MultipartFile multipartFile = new CustomMultipartFile(content, "error_log_" + executionId + ".txt",
 					"error_log_" + executionId + ".txt", "text/plain");
 
-			notificationService.sendEmail(email, multipartFile);
+			emailService.sendEmail(email, multipartFile);
 
 		} catch (Exception e) {
 			log.error("Failed to send error email for executionId {}: {}", executionId, e.getMessage(), e);
@@ -490,7 +487,7 @@ public class ZoyEmailService {
 		email.setContent("text/html");
 
 		try {
-			notificationService.sendEmail(email, null);
+			emailService.sendEmail(email, null);
 		} catch (Exception e) {
 			log.error("Error occurred while sending the approval notification email to recipients " + to + ": "
 					+ e.getMessage(), e);
@@ -533,7 +530,7 @@ public class ZoyEmailService {
 		email.setContent("text/html");
 
 		try {
-			notificationService.sendEmail(email, null);
+			emailService.sendEmail(email, null);
 		} catch (Exception e) {
 			log.error("Error occurred while sending the approval request email to  recipients " + to + ": "
 					+ e.getMessage(), e);
@@ -569,7 +566,7 @@ public class ZoyEmailService {
 		email.setContent("text/html");
 
 		try {
-			notificationService.sendEmail(email, null);
+			emailService.sendEmail(email, null);
 		} catch (Exception e) {
 			log.error("Error occurred while sending the rejection email to  recipients " + to + ": " + e.getMessage(),
 					e);
@@ -605,7 +602,7 @@ public class ZoyEmailService {
 		email.setContent("text/html");
 
 		try {
-			notificationService.sendEmail(email, null);
+			emailService.sendEmail(email, null);
 		} catch (Exception e) {
 			log.error("Error occurred while sending the automatic rejection email to recipients " + to + ": "
 					+ e.getMessage(), e);
@@ -659,7 +656,7 @@ public class ZoyEmailService {
 //	    email.setContent("text/html");
 //
 //	    try {
-//	        notificationService.sendEmail(email, null);
+//	        emailService.sendEmail(email, null);
 //	    } catch (Exception e) {
 //	        log.error("Error occurred while sending the policy update email to recipients " + to + ": " + e.getMessage(), e);
 //	    }
@@ -701,7 +698,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Token Advance update email: " + recipient + ": " + e.getMessage(), e);
 	        }
@@ -742,7 +739,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Security Deposit Limits update email: " + recipient + ": " + e.getMessage(), e);
 	        }
@@ -783,7 +780,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send GST Charges update email: " + recipient + ": " + e.getMessage(), e);
 	        }
@@ -826,7 +823,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Other Charges update email: " + recipient + ": " + e.getMessage(), e);
 	        }
@@ -869,7 +866,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Other Charges update email: " + recipient + ": " + e.getMessage(), e);
 	        }
@@ -914,7 +911,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Force Checkout update email to " + recipient + ": " + e.getMessage(), e);
 	        }
@@ -956,7 +953,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Rental Agreement rule change update email to " + recipient + ": " + e.getMessage(), e);
 	        }
@@ -1012,7 +1009,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Early Check-out rule update email:" + recipient + ": " + e.getMessage(), e);
 	        }
@@ -1069,7 +1066,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Security Deposit Deadline update email:" + recipient + ": " + e.getMessage(), e);
 	        }
@@ -1126,7 +1123,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Auto Cancellation After Check-in rule update email:" + recipient + ": " + e.getMessage(), e);
 	        }
@@ -1197,7 +1194,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Cancellation & Refund Policy update email:" + recipient + ": " + e.getMessage(), e);
 	        }
@@ -1272,7 +1269,7 @@ public class ZoyEmailService {
 	        email.setContent("text/html");
 
 	        try {
-	            notificationService.sendEmail(email, null);
+	            emailService.sendEmail(email, null);
 	        } catch (Exception e) {
 	            log.error("Failed to send Short-Term Stay Policy update email:" + recipient + ": " + e.getMessage(), e);
 	        }
@@ -1305,7 +1302,7 @@ public class ZoyEmailService {
 		email.setBody(message);
 		email.setContent("text/html");
 		try {
-			notificationService.sendEmail(email, null);
+			emailService.sendEmail(email, null);
 		} catch (Exception e) {
 			log.error("Error occurred while sending the registration email to " + owneremail + ": " + e.getMessage(),
 					e);
