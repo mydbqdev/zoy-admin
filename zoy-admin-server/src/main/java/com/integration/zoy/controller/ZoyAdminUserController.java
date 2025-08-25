@@ -206,6 +206,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 						userLock.setAttemptSequence(0);
 						adminUserLoginDetailsRepository.unLockUserByEmail(details.getEmail());
 						userRepository.save(userLock);
+						loginDetails.setIsLock(false);
 					}
 				}
 			}
