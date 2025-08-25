@@ -112,7 +112,8 @@ import { MessageService } from 'src/app/message.service';
       'ownerContactNum':"OWNER CONTACT NUMBER",
       'customerMobileNo':"CUSTOMER MOBILE NO",
       'tenantAccountNumber':"TENANT ACCOUNT NUMBER",
-      'tenantIfscCode':'TENANT IFSC CODE'
+      'tenantIfscCode':'TENANT IFSC CODE',
+      'reviewDate':'REVIEW DATE'
       
   };
   
