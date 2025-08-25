@@ -38,11 +38,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.integration.zoy.constants.ZoyConstant;
 import com.integration.zoy.entity.BulkUploadDetails;
 import com.integration.zoy.entity.UserProfile;
 import com.integration.zoy.entity.ZoyPgOwnerDetails;
 import com.integration.zoy.exception.WebServiceException;
+import com.integration.zoy.model.NotificationManagerRequest;
 import com.integration.zoy.utils.OtpVerification;
 import com.integration.zoy.utils.PropertyList;
 import com.integration.zoy.utils.SessionInfo;
@@ -64,8 +68,11 @@ public class ZoyAdminService {
 	@Autowired
 	AdminDBImpl adminDBImpl;
 
+//	@Autowired
+//	WhatsAppService whatsAppService;
+	
 	@Autowired
-	WhatsAppService whatsAppService;
+	NotificationService notificationService;
 
 	@Autowired
 	ZoyEmailService zoyEmailService;
@@ -115,6 +122,7 @@ public class ZoyAdminService {
 	private final Map<String, String> otpMap = new ConcurrentHashMap<>();
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private final Set<String> blacklistedTokens = new HashSet<>();
+	private Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
 	private final ConcurrentHashMap<String, SessionInfo> userSingleDeviceLockMap = new ConcurrentHashMap<>();
 
@@ -346,15 +354,21 @@ public class ZoyAdminService {
 			//			zoyPgOwnerDetails.setZoyShare(user.getZoyShare());
 			zoyPgOwnerDetails.setZoyFixedShare(user.getZoyFixedShare());
 			zoyPgOwnerDetails.setZoyVariableShare(user.getZoyVariableShare());
-			ownerDBImpl.savePgOwner(zoyPgOwnerDetails);
+			ZoyPgOwnerDetails owner=ownerDBImpl.savePgOwner(zoyPgOwnerDetails);
 
-			Whatsapp whatsapp = new Whatsapp();
-			whatsapp.tonumber("+91" + user.getMobileNo());
-			whatsapp.templateid(ZoyConstant.ZOY_OWNER_REG_WELCOME_MSG);
-			Map<Integer, String> params = new HashMap<>();
-			params.put(1, user.getPropertyOwnerName());
-			whatsapp.setParams(params);
-			whatsAppService.sendWhatsappMessage(whatsapp);
+//			Whatsapp whatsapp = new Whatsapp();
+//			whatsapp.tonumber("+91" + user.getMobileNo());
+//			whatsapp.templateid(ZoyConstant.ZOY_OWNER_REG_WELCOME_MSG);
+//			Map<Integer, String> params = new HashMap<>();
+//			params.put(1, user.getPropertyOwnerName());
+//			whatsapp.setParams(params);
+//			whatsAppService.sendWhatsappMessage(whatsapp);
+			Map<String,String> ownermap = new HashMap<>();
+			ownermap.put("var1", owner.getPgOwnerName());
+			NotificationManagerRequest ownerRequest=notificationService.buildOwnerRequest(owner,gson.toJson(ownermap),
+					ZoyConstant.ZOY_OWNER_WELCOME_MESSAGE,null);
+			notificationService.sendNotification(ownerRequest);
+
 
 			zoyEmailService.sendRegistrationMail(user);
 
