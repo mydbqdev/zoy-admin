@@ -78,6 +78,7 @@ import com.integration.zoy.repository.AdminUserPasswordHistoryRepository;
 import com.integration.zoy.repository.NotificationsAndAlertsRepository;
 import com.integration.zoy.service.AdminDBImpl;
 import com.integration.zoy.service.EmailService;
+import com.integration.zoy.service.NotificationService;
 import com.integration.zoy.service.NotificationsAndAlertsService;
 import com.integration.zoy.service.PasswordDecoder;
 import com.integration.zoy.service.ZoyAdminService;
@@ -130,8 +131,11 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 	@Autowired
 	private JwtUtil jwtUtil;
 
+//	@Autowired
+//	EmailService emailService;
+	
 	@Autowired
-	EmailService emailService;
+	NotificationService notificationService;
 
 	@Autowired
 	ZoyEmailService zoyEmailService;
@@ -751,7 +755,7 @@ public class ZoyAdminUserController implements ZoyAdminUserImpl {
 						+ "<p class=\"footer\">Warm regards,<br>Team ZOY</p>";
 				email.setBody(message);
 				email.setContent("text/html");
-				emailService.sendEmail(email,null); 
+				notificationService.sendEmail(email,null); 
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("Signin Details sent successfully");
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
