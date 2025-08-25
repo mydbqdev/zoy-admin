@@ -26,7 +26,7 @@ export class LowRatingsComponent implements OnInit, AfterViewInit {
 	
 	lowRatingDataList :any[]=[];
 	lowRatingDataSource: MatTableDataSource<any>=new MatTableDataSource(this.lowRatingDataList);;
-	displayedColumns: string[] = ['pgName','ownerName','ownerContactNum', 'customerName','customerMobileNo','cleanliness', 'accommodation', 'amenities', 'maintenance','valueForMoney','overallRating'];
+	displayedColumns: string[] = ['reviewDate','pgName','ownerName','ownerContactNum', 'customerName','customerMobileNo','cleanliness', 'accommodation', 'amenities', 'maintenance','valueForMoney','overallRating'];
 	columnHeaders = {} ;
 	sortActive:string="overallRating";
 	sortDirection:string="asc";

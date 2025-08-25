@@ -56,10 +56,9 @@
                     <div class="col-md-4 mb-3">
                       <label for="firstName">First Name <i class="fa fa-asterisk"></i></label>
                       <input type="text" [(ngModel)]="generateSalesPerson.firstName"
-                        onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
                         maxlength="20" id="firstName" formControlName="firstName" class="form-control" placeholder="Enter First Name"
                         [ngClass]="{'is-invalid':submitted && form.controls.firstName.errors}" required
-                        autocomplete="off" (paste)="nameValidation($event,'firstName')">
+                        autocomplete="off" >
                       <div *ngIf="submitted && form.controls.firstName.errors" class="text-danger">
                         <div *ngIf="submitted && form.controls.firstName.errors?.required">
                           First Name is required.
@@ -69,18 +68,14 @@
                     <div class="col-md-4 mb-3">
                       <label for="middleName">Middle Name</label>
                       <input type="text" [(ngModel)]="generateSalesPerson.middleName"
-                        onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
-                        maxlength="20" formControlName="middleName" id="middleName" class="form-control" 
-                        (paste)="nameValidation($event,'middleName')">
+                        maxlength="20" formControlName="middleName" id="middleName" class="form-control" >
                         
                     </div>
                     <div class="col-md-4 mb-3">
                       <label for="lastName">Last Name <i class="fa fa-asterisk"></i></label>
                       <input type="text" [(ngModel)]="generateSalesPerson.lastName"
-                        onkeypress='return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode == 32))'
                         maxlength="20" formControlName="lastName" id="lastName" class="form-control" placeholder="Enter Last Name"
-                        [ngClass]="{'is-invalid':submitted && form.controls.lastName.errors}"
-                        (paste)="nameValidation($event,'lastName')">
+                        [ngClass]="{'is-invalid':submitted && form.controls.lastName.errors}">
                       <div *ngIf="submitted && form.controls.lastName.errors" class="text-danger">
                         <div *ngIf="submitted && form.controls.lastName.errors?.required">
                           Last Name is required.
