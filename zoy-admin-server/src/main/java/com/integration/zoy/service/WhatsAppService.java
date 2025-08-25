@@ -23,49 +23,49 @@ public class WhatsAppService {
 
 	private static final Logger log = LoggerFactory.getLogger(WhatsAppService.class);
 
-	@Autowired
-	WebClient webClient;
-
-	@Value("${app.notification.url}")
-	private String notificationUrl;
-
-	@Value("${app.notification.username}")
-	private String notificationUserName;
-
-	@Value("${app.notification.password}")
-	private String notificationPassword;
-
-
-	public void sendWhatsappMessage(Whatsapp whatsapp) {
-		try {
-			NotificationRequest notificationRequest = new NotificationRequest();
-			notificationRequest.setProcessType("immediate");
-			notificationRequest.setAppName("ZOY PG");
-			notificationRequest.setMessageType("whatsapp");
-			notificationRequest.setWhatsapp(whatsapp);
-
-			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-			body.add("notification", notificationRequest);
-
-			byte[] credEncoded = Base64.getEncoder().encode((notificationUserName+":"+notificationPassword).getBytes());
-			String authStringEnc = new String(credEncoded);
-			ResponseEntity<String> responses = webClient.post()
-					.uri(notificationUrl)
-					.header("Authorization", "Basic " + authStringEnc) 
-					.contentType(MediaType.MULTIPART_FORM_DATA)
-					.body(BodyInserters.fromMultipartData(body))
-					.retrieve()
-					.toEntity(String.class).block();
-			if(responses.getStatusCodeValue()==200) {
-				log.info(responses.getBody());
-			} else {
-				log.error(responses.getBody());
-			}
-		}
-		catch(HttpStatusCodeException ex) {
-			log.error(ex.getMessage());
-		}
-
-	}
+//	@Autowired
+//	WebClient webClient;
+//
+//	@Value("${app.notification.url}")
+//	private String notificationUrl;
+//
+//	@Value("${app.notification.username}")
+//	private String notificationUserName;
+//
+//	@Value("${app.notification.password}")
+//	private String notificationPassword;
+//
+//
+//	public void sendWhatsappMessage(Whatsapp whatsapp) {
+//		try {
+//			NotificationRequest notificationRequest = new NotificationRequest();
+//			notificationRequest.setProcessType("immediate");
+//			notificationRequest.setAppName("ZOY PG");
+//			notificationRequest.setMessageType("whatsapp");
+//			notificationRequest.setWhatsapp(whatsapp);
+//
+//			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+//			body.add("notification", notificationRequest);
+//
+//			byte[] credEncoded = Base64.getEncoder().encode((notificationUserName+":"+notificationPassword).getBytes());
+//			String authStringEnc = new String(credEncoded);
+//			ResponseEntity<String> responses = webClient.post()
+//					.uri(notificationUrl)
+//					.header("Authorization", "Basic " + authStringEnc) 
+//					.contentType(MediaType.MULTIPART_FORM_DATA)
+//					.body(BodyInserters.fromMultipartData(body))
+//					.retrieve()
+//					.toEntity(String.class).block();
+//			if(responses.getStatusCodeValue()==200) {
+//				log.info(responses.getBody());
+//			} else {
+//				log.error(responses.getBody());
+//			}
+//		}
+//		catch(HttpStatusCodeException ex) {
+//			log.error(ex.getMessage());
+//		}
+//
+//	}
 
 }

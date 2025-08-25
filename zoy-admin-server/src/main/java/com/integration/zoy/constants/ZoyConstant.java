@@ -184,4 +184,41 @@ public class ZoyConstant {
 	public static final String ZOY_ADMIN_VENDOR_USER_REJECTED = "VENDOR_USER_REJECTED";
 	public static final String ZOY_ADMIN_VENDOR_USER_INACTIVE = "VENDOR_USER_INACTIVE";
 	public static final String ZOY_ADMIN_VENDOR_USER_UNKNOWN = "VENDOR_USER_UNKNOWN";
+	
+	public static final String ZOY_USER_BOOKING_CANCELLATION="cd7d2845-9556-468d-9b9f-17434a58d253";
+	public static final String ZOY_OWNER_BOOKING_CANCELLATION="a0688aaf-2df2-4106-91ce-af82f0824d05";
+	public static final String ZOY_USER_WEB_CHECK_IN="5543d465-5bcb-47d6-b22e-cf1dde051651";
+	public static final String ZOY_USER_BOOKING_CONFIRMATION="1dc2cf3b-6e54-44b6-b3a2-dfbef36169f9";
+	public static final String ZOY_OWNER_BOOKING_CONFIRMATION="53782760-27b0-4467-94a0-a7ae4fa21bac";
+	public static final String ZOY_USER_PAYMENT_SUCCESS="23b8194f-a7c7-49c4-88a2-2b96df4dc46d";
+	public static final String ZOY_USER_PAYMENT_FAILED="65e6a07a-3d55-4dab-adc9-3b9097def04a";
+	public static final String ZOY_USER_OTP_MESSAGE="84692adc-5389-4b8c-b664-339e04a44a88";
+	public static final String ZOY_USER_WELCOME_MESSAGE="f9f89f0e-8b59-4964-bc32-b1629e515baa";
+	public static final String ZOY_OWNER_RECEVIED_PAYMENT="19a3c65c-809c-45e7-a6dc-57fd3b6a7dbf";
+	public static final String ZOY_USER_CHECKOUT_REQUEST="2cadf95d-4356-480a-a9ab-bc584c194fd9";
+	public static final String ZOY_USER_CHECKOUT_APPROVAL="206c9544-90c2-479f-8252-68237003e3ac";
+	public static final String ZOY_OWNER_CHECKOUT_APPROVAL="ea09c49f-bdaa-4ca1-a7c6-60d33d6df5f9";
+	public static final String ZOY_USER_CHECKOUT_REJECTED="909338c0-9ee3-462b-a229-3b2b28bf123f";
+	public static final String ZOY_USER_SWAP_REQUEST="156969e2-b6fe-47b3-99dd-df5c7a60d24f";
+	public static final String ZOY_USER_SWAP_APPROVED="307da861-9205-4bdc-ac85-92b5bd2f9b7c";
+	public static final String ZOY_USER_SWAP_REJECTED="331186cb-51e4-4c0b-ac23-f2876d6e3a2b";
+	public static final String ZOY_USER_EXTENATION_REQUEST="e6b0b367-577a-4306-88b4-ab60a83a4eb7";
+	public static final String ZOY_USER_EXTENATION_APPOVED="8206ae92-ecde-4f4c-af6e-990ff3e05e00";
+	public static final String ZOY_USER_EXTENATION_REJECTED="93a52e88-591f-461c-a81f-d3e9fcc96764";
+	public static final String ZOY_USER_REFUND_PROCESSED="082cc787-5f2a-4b29-80ef-1225a071ab1d";
+	public static final String ZOY_OWNER_REFUND_PROCESSED="9dcc5f18-ac4c-4f12-8cdc-7a11616e1560";
+	public static final String ZOY_OWNER_TENANT_REVIEW="51470281-5132-44d7-8bbf-ff1065a10dee";
+	public static final String ZOY_OWNER_TENANT_BOOKING="53782760-27b0-4467-94a0-a7ae4fa21bac";
+	public static final String ZOY_TENANT_COMPLAINT_REQUEST="19c184e4-d873-4d56-aca4-576200989e37";
+	public static final String ZOY_TENANT_COMPLAINT_STATUS="a50a3b9a-c2c5-4dd5-8543-e617d8483864";
+	
+	public static final String ZOY_TENANT_EKYC_UPDATE="76a68cb6-dac2-442b-9aae-8e4c87bc207a";
+	public static final String ZOY_TENANT_OVER_DUE="84c1c6ba-1355-4244-bf0c-5c2ba9041498";
+	public static final String ZOY_TENANT_UPCOMING_DUE="476774d8-0f8c-40ea-8216-2cb343dd215a";
+	public static final String ZOY_TENANT_SECURITY_DUE="a5fbf277-633a-418b-abe2-07f84173e299";
+	public static final String ZOY_TENANT_CHECKOUT_REMINDER="ee980694-0279-4fdd-a54f-79e338f56d22";
+	public static final String ZOY_TENANT_UPCOMING_CHECKIN="7bec28e5-91a8-47a2-a9b9-6a57c729ead1";
+	public static final String ZOY_OWNER_WELCOME_MESSAGE="8c460a27-9cc7-41e9-a6f3-6c24affba7a6";
+	public static final String ZOY_ADMIN_REVIEW_STATUS = "review.status";
+	public static final String ZOY = "ZoyPG";
 }
