@@ -955,9 +955,11 @@ public class UploadService {
 			List<String[]> data=ownerDBImpl.getRentalAgreementDetails(saveMyBookings.getBookingId());
 			GenerateBulkUploadRentalPdf pdf = new GenerateBulkUploadRentalPdf();
 			pdf.setTenantName(data.get(0)[0].toString());
+			pdf.setTenantMobile(data.get(0)[17].toString());
 			pdf.setTenantAddress(data.get(0)[1].toString());
 			pdf.setOwnerName(data.get(0)[2].toString());
 			pdf.setOwnerPhNo(data.get(0)[3].toString());
+			pdf.setOwnerEmail(data.get(0)[18].toString());
 			pdf.setOwnerAddress(data.get(0)[4].toString());
 			pdf.setPgAddress(data.get(0)[4].toString());
 			pdf.setPgCity(data.get(0)[5].toString());
