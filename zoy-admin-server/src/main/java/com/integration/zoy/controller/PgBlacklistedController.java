@@ -31,6 +31,7 @@ import com.integration.zoy.model.BlacklistDeleteRequest;
 import com.integration.zoy.model.PgBlacklistedModel;
 import com.integration.zoy.model.PgOwnerFilter;
 import com.integration.zoy.repository.PgEmailMobileBlacklistedRepository;
+import com.integration.zoy.service.NotificationService;
 import com.integration.zoy.utils.CommonResponseDTO;
 import com.integration.zoy.utils.PgBlacklistedResponse;
 import com.integration.zoy.utils.ResponseBody;
@@ -41,6 +42,9 @@ public class PgBlacklistedController implements PgBlacklistedImpl {
 	private static final Logger log=LoggerFactory.getLogger(PgBlacklistedController.class);
 	@Autowired
 	private PgEmailMobileBlacklistedRepository blacklistedRepository;
+	
+	@Autowired
+	NotificationService notificationService;
 
 	private static final Gson gson = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -70,6 +74,7 @@ public class PgBlacklistedController implements PgBlacklistedImpl {
 				blacklisted.setEmail(model.getEmail());
 				blacklisted.setMobile(model.getMobile());
 				PgEmailMobileBlacklisted saved=blacklistedRepository.save(blacklisted);
+				notificationService.reloadBlackListedData();
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("Blacklisted value saved successfully");
 				response.setData(saved);
@@ -85,6 +90,7 @@ public class PgBlacklistedController implements PgBlacklistedImpl {
 				blacklisted.setEmail(model.getEmail());
 				blacklisted.setMobile(model.getMobile());
 				PgEmailMobileBlacklisted saved=blacklistedRepository.save(blacklisted);
+				notificationService.reloadBlackListedData();
 				response.setStatus(HttpStatus.OK.value());
 				response.setMessage("Blacklisted value updated successfully");
 				response.setData(saved);
@@ -115,6 +121,7 @@ public class PgBlacklistedController implements PgBlacklistedImpl {
 				return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 			}
 			blacklistedRepository.deleteByIdIn(model.getIds());
+			notificationService.reloadBlackListedData();
 			response.setStatus(HttpStatus.OK.value());
 			response.setMessage("Blacklisted value deleted successfully");
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
@@ -174,6 +181,6 @@ public class PgBlacklistedController implements PgBlacklistedImpl {
 			return new ResponseEntity<>(gson.toJson(response), HttpStatus.BAD_REQUEST);
 		}
 	}
-
-
+	
+	
 }
