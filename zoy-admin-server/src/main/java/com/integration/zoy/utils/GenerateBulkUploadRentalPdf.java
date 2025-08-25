@@ -24,6 +24,9 @@ public class GenerateBulkUploadRentalPdf   {
 	@JsonProperty("tenantName")
 	String tenantName;
 
+	@JsonProperty("tenantMobile")
+	String tenantMobile;
+
 	@JsonProperty("tenantAddress")
 	String tenantAddress;
 
@@ -32,6 +35,9 @@ public class GenerateBulkUploadRentalPdf   {
 
 	@JsonProperty("ownerPhNo")
 	String ownerPhNo;
+
+	@JsonProperty("ownerEmail")
+	String ownerEmail;
 
 	@JsonProperty("ownerAddress")
 	String ownerAddress;
@@ -53,13 +59,13 @@ public class GenerateBulkUploadRentalPdf   {
 
 	@JsonProperty("securityWord")
 	String securityWord;
-	
+
 	@JsonProperty("securityAmt")
 	String securityAmt;
 
 	@JsonProperty("rentWord")
 	String rentWord;
-	
+
 	@JsonProperty("rentAmt")
 	String rentAmt;
 
@@ -80,10 +86,10 @@ public class GenerateBulkUploadRentalPdf   {
 
 	@JsonProperty("officeAddress")
 	String officeAddress;
-	
+
 	@JsonProperty("isRental")
 	Boolean isRental;
-	
+
 	@JsonProperty("bookingId")
 	String bookingId;
 
@@ -243,18 +249,30 @@ public class GenerateBulkUploadRentalPdf   {
 	public void setRentAmt(String rentAmt) {
 		this.rentAmt = rentAmt;
 	}
+	
+	public String getTenantMobile() {
+		return tenantMobile;
+	}
+	public void setTenantMobile(String tenantMobile) {
+		this.tenantMobile = tenantMobile;
+	}
+	public String getOwnerEmail() {
+		return ownerEmail;
+	}
+	public void setOwnerEmail(String ownerEmail) {
+		this.ownerEmail = ownerEmail;
+	}
 	@Override
 	public String toString() {
-		return "GenerateBulkUploadRentalPdf [pgName=" + pgName + ", tenantName=" + tenantName + ", tenantAddress="
-				+ tenantAddress + ", ownerName=" + ownerName + ", ownerPhNo=" + ownerPhNo + ", ownerAddress="
-				+ ownerAddress + ", pgAddress=" + pgAddress + ", pgCity=" + pgCity + ", shareName=" + shareName
-				+ ", floorName=" + floorName + ", roomName=" + roomName + ", securityWord=" + securityWord
-				+ ", securityAmt=" + securityAmt + ", rentWord=" + rentWord + ", rentAmt=" + rentAmt + ", inDate="
-				+ inDate + ", outDate=" + outDate + ", modeOfPayment=" + modeOfPayment + ", rentCycle=" + rentCycle
-				+ ", noOfDays=" + noOfDays + ", officeAddress=" + officeAddress + ", isRental=" + isRental
-				+ ", bookingId=" + bookingId + "]";
+		return "GenerateBulkUploadRentalPdf [pgName=" + pgName + ", tenantName=" + tenantName + ", tenantMobile="
+				+ tenantMobile + ", tenantAddress=" + tenantAddress + ", ownerName=" + ownerName + ", ownerPhNo="
+				+ ownerPhNo + ", ownerEmail=" + ownerEmail + ", ownerAddress=" + ownerAddress + ", pgAddress="
+				+ pgAddress + ", pgCity=" + pgCity + ", shareName=" + shareName + ", floorName=" + floorName
+				+ ", roomName=" + roomName + ", securityWord=" + securityWord + ", securityAmt=" + securityAmt
+				+ ", rentWord=" + rentWord + ", rentAmt=" + rentAmt + ", inDate=" + inDate + ", outDate=" + outDate
+				+ ", modeOfPayment=" + modeOfPayment + ", rentCycle=" + rentCycle + ", noOfDays=" + noOfDays
+				+ ", officeAddress=" + officeAddress + ", isRental=" + isRental + ", bookingId=" + bookingId + "]";
 	}
-	
 	
 
 
