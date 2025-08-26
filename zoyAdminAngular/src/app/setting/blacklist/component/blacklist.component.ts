@@ -308,7 +308,7 @@ if (this.deleteBlacklistedIds.length == 0 ) return;
  });
 
    }else{
-    this.deleteBlacklistedIds=[];
+    this.deleteBlacklistedIds = this.deleteBlacklistedIds.length == 1 ? [] : this.deleteBlacklistedIds ;
    }
   }).catch(
     () => console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)')

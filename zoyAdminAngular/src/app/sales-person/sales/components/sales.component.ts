@@ -373,12 +373,6 @@ export class SalesComponent implements OnInit, AfterViewInit {
 		}
 		});
     }
-nameValidation(event: any, inputId: string) {
-  const clipboardData = event.clipboardData || (window as any).clipboardData;
-  const pastedText = clipboardData.getData('text/plain');
-  const clString = pastedText.replace(/[^a-zA-Z\s.]/g, '');
-   event.preventDefault();
-  }
 
 
   resend(element:any){
